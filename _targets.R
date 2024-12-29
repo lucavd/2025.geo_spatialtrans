@@ -63,6 +63,12 @@ list(
     format = "file"
   ),
 
+  tar_target(
+    name = gnn_file,
+    command = "R/07_GNN.R",
+    format = "file"
+  ),
+
   # Target per la simulazione dei dati
   tar_target(
     name = spatial_simulation,
@@ -141,9 +147,23 @@ list(
       source(rf_file)
       spatial_simulation  # Use as dependency
       list(
-        high = readRDS("results/rf_spatial_results_simulated_high_correlation.rds"),
-        medium = readRDS("results/rf_spatial_results_simulated_medium_correlation.rds"),
-        low = readRDS("results/rf_spatial_results_simulated_low_correlation.rds")
+        high = readRDS("results/ranger_results_simulated_high_correlation.rds"),
+        medium = readRDS("results/ranger_results_simulated_medium_correlation.rds"),
+        low = readRDS("results/ranger_results_simulated_low_correlation.rds")
+      )
+    },
+    format = "rds"
+  ),
+
+  tar_target(
+    name = gnn_analysis,
+    command = {
+      source(gnn_file)
+      spatial_simulation  # Use as dependency
+      list(
+        high = readRDS("results/gnn_results_simulated_high_correlation.rds"),
+        medium = readRDS("results/gnn_results_simulated_medium_correlation.rds"),
+        low = readRDS("results/gnn_results_simulated_low_correlation.rds")
       )
     },
     format = "rds"
@@ -159,13 +179,15 @@ list(
       gam_analysis
       lgcp_analysis
       rf_analysis
+      gnn_analysis
 
       source("R/results.R")
       list(
         metrics = read.csv("results/all_correlation_levels_metrics.csv"),
         plots = list(
           metrics = "results/all_correlation_levels_metrics_plot.png",
-          errors = "results/all_correlation_levels_fp_fn_errors.png"
+          errors = "results/all_correlation_levels_fp_fn_errors.png",
+          f1_comparison = "results/f1_score_comparison.png"
         )
       )
     },

@@ -1,5 +1,4 @@
 #!/usr/bin/env Rscript
-
 # Script per calcolare e confrontare le metriche tra i metodi su tutti i livelli di correlazione
 
 library(tidyverse)
@@ -9,122 +8,195 @@ library(telegram.bot)
 bot <- Bot(token = Sys.getenv("R_TELEGRAM_BOT_lucavdRbot"))
 chat_id <- Sys.getenv("R_TELEGRAM_BOT_lucavdRbot_chatID")
 
-# Livelli di correlazione
-correlation_levels <- c("high", "medium", "low")
+# Funzione per inviare messaggi e file su Telegram
+send_telegram <- function(content, type = "message") {
+  tryCatch({
+    if (type == "message") {
+      bot$send_message(chat_id = chat_id, text = content)
+    } else if (type == "document") {
+      bot$send_document(chat_id = chat_id, document = content)
+    } else if (type == "photo") {
+      bot$send_photo(chat_id = chat_id, photo = content)
+    }
+  }, error = function(e) {
+    warning("Errore nell'invio su Telegram: ", e$message)
+  })
+}
 
-# Inizializza dataframe per raccogliere tutte le metriche
+# Funzione per calcolare FP e FN
+calculate_fp_fn <- function(predicted, true) {
+  fp <- sum(predicted != true)
+  fn <- sum(!predicted %in% true)
+  return(list(fp = fp, fn = fn))
+}
+
+# Funzione per il tema personalizzato
+custom_theme <- function() {
+  theme_minimal() +
+    theme(
+      plot.background = element_rect(fill = "white", color = NA),
+      panel.background = element_rect(fill = "white", color = NA),
+      panel.grid.major = element_line(color = "grey90"),
+      panel.grid.minor = element_line(color = "grey95"),
+      axis.text = element_text(color = "black"),
+      axis.title = element_text(color = "black", face = "bold"),
+      plot.title = element_text(color = "black", face = "bold", hjust = 0.5),
+      legend.background = element_rect(fill = "white", color = NA),
+      legend.title = element_text(face = "bold"),
+      strip.background = element_rect(fill = "grey95"),
+      strip.text = element_text(color = "black", face = "bold")
+    )
+}
+
+# Inizializza dataframe per le metriche
 all_metrics <- tibble()
 
 # Analizza ciascun livello di correlazione
-for (correlation_level in correlation_levels) {
+for(correlation_level in c("low", "medium", "high")) {
+  # Carica i dati
+  data <- readRDS(paste0("data/simulated_", correlation_level, "_correlation.rds"))
+  true_hotspots <- data$true_hotspots
 
-  # Carica i risultati per il livello di correlazione corrente
+  # Carica i risultati per ogni metodo
   seurat_results <- readRDS(paste0("results/seurat_results_simulated_", correlation_level, "_correlation.rds"))
   tweedie_results <- readRDS(paste0("results/tweedie_results_simulated_", correlation_level, "_correlation.rds"))
   gam_results <- readRDS(paste0("results/gam_geospatial_results_simulated_", correlation_level, "_correlation.rds"))
   rf_results <- readRDS(paste0("results/ranger_results_simulated_", correlation_level, "_correlation.rds"))
+  gnn_results <- readRDS(paste0("results/gnn_results_simulated_", correlation_level, "_correlation.rds"))
 
-  # True hotspots (da simulazione)
-  data <- readRDS(paste0("data/simulated_", correlation_level, "_correlation.rds"))
-  true_hotspots <- data$true_hotspots
-
-  # Funzione per calcolare FP e FN
-  calculate_fp_fn <- function(predicted, true) {
-    fp <- sum(predicted != true)
-    fn <- sum(!predicted %in% true)
-    return(list(fp = fp, fn = fn))
-  }
-
-  # Calcolo delle metriche per Seurat
-  seurat_predicted <- seurat_results$hotspots
-  seurat_metrics <- calculate_fp_fn(seurat_predicted, true_hotspots)
-  tp_seurat <- sum(seurat_predicted == true_hotspots)
-  precision_seurat <- tp_seurat / (tp_seurat + seurat_metrics$fp)
-  recall_seurat <- tp_seurat / (tp_seurat + seurat_metrics$fn)
-  f1_seurat <- 2 * (precision_seurat * recall_seurat) / (precision_seurat + recall_seurat)
-
-  # Calcolo delle metriche per Tweedie
-  tweedie_predicted <- tweedie_results$hotspots
-  tweedie_metrics <- calculate_fp_fn(tweedie_predicted, true_hotspots)
-  tp_tweedie <- sum(tweedie_predicted == true_hotspots)
-  precision_tweedie <- tp_tweedie / (tp_tweedie + tweedie_metrics$fp)
-  recall_tweedie <- tp_tweedie / (tp_tweedie + tweedie_metrics$fn)
-  f1_tweedie <- 2 * (precision_tweedie * recall_tweedie) / (precision_tweedie + recall_tweedie)
-
-  # Calcolo delle metriche per GAM
-  gam_predicted <- gam_results$hotspots
-  gam_metrics <- calculate_fp_fn(gam_predicted, true_hotspots)
-  tp_gam <- sum(gam_predicted == true_hotspots)
-  precision_gam <- tp_gam / (tp_gam + gam_metrics$fp)
-  recall_gam <- tp_gam / (tp_gam + gam_metrics$fn)
-  f1_gam <- 2 * (precision_gam * recall_gam) / (precision_gam + recall_gam)
-
-  # Calcolo delle metriche per RF
-  rf_predicted <- rf_results$hotspots
-  rf_metrics <- calculate_fp_fn(rf_predicted, true_hotspots)
-  tp_rf <- sum(rf_predicted == true_hotspots)
-  precision_rf <- tp_rf / (tp_rf + rf_metrics$fp)
-  recall_rf <- tp_rf / (tp_rf + rf_metrics$fn)
-  f1_rf <- 2 * (precision_rf * recall_rf) / (precision_rf + recall_rf)
-
-  # Creazione di un dataframe di confronto per il livello corrente
-  metrics <- tibble(
-    Correlation_Level = correlation_level,
-    Method = c("Seurat", "Tweedie", "GAM", "RF"),
-    True_Positives = c(tp_seurat, tp_tweedie, tp_gam, tp_rf),
-    False_Positives = c(seurat_metrics$fp, tweedie_metrics$fp, gam_metrics$fp, rf_metrics$fp),
-    False_Negatives = c(seurat_metrics$fn, tweedie_metrics$fn, gam_metrics$fn, rf_metrics$fn),
-    Precision = c(precision_seurat, precision_tweedie, precision_gam, precision_rf),
-    Recall = c(recall_seurat, recall_tweedie, recall_gam, recall_rf),
-    F1_Score = c(f1_seurat, f1_tweedie, f1_gam, f1_rf)
+  # Lista dei metodi e risultati
+  methods_list <- list(
+    Seurat = seurat_results$hotspots,
+    Tweedie = tweedie_results$hotspots,
+    GAM = gam_results$hotspots,
+    RF = rf_results$hotspots,
+    GNN = gnn_results$hotspots
   )
 
-  # Aggiungi i risultati al dataframe complessivo
-  all_metrics <- bind_rows(all_metrics, metrics)
+  # Calcola metriche per ogni metodo
+  metrics_list <- lapply(names(methods_list), function(method) {
+    predicted <- methods_list[[method]]
+    metrics <- calculate_fp_fn(predicted, true_hotspots)
+    tp <- sum(predicted == true_hotspots)
+    precision <- tp / (tp + metrics$fp)
+    recall <- tp / (tp + metrics$fn)
+    f1 <- 2 * (precision * recall) / (precision + recall)
+
+    tibble(
+      Correlation_Level = correlation_level,
+      Method = method,
+      True_Positives = tp,
+      False_Positives = metrics$fp,
+      False_Negatives = metrics$fn,
+      Precision = precision,
+      Recall = recall,
+      F1_Score = f1
+    )
+  })
+
+  # Combina i risultati
+  all_metrics <- bind_rows(all_metrics, bind_rows(metrics_list))
 }
 
-# Salva tutte le metriche
-write_csv(all_metrics, "results/all_correlation_levels_metrics.csv")
+# Colori personalizzati
+custom_colors <- c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F")
 
-# Invia la tabella delle metriche su Telegram
-tryCatch({
-  bot$send_document(chat_id = chat_id, document = "results/all_correlation_levels_metrics.csv")
-}, error = function(e) {
-  warning("Errore nell'invio della tabella su Telegram: ", e$message)
-})
-
-# Grafico delle metriche per tutti i livelli di correlazione
+# Grafico delle metriche principali
 metrics_plot <- all_metrics %>%
   pivot_longer(cols = c(Precision, Recall, F1_Score), names_to = "Metric", values_to = "Value") %>%
-  ggplot(aes(x = Method, y = Value, fill = Metric)) +
+  mutate(Correlation_Level = factor(Correlation_Level, levels = c("low", "medium", "high"))) %>%
+  ggplot(aes(x = Method, y = Value, fill = Method)) +
   geom_bar(stat = "identity", position = "dodge") +
-  facet_wrap(~Correlation_Level) +
-  theme_minimal() +
-  labs(title = "Confronto delle metriche tra i metodi per diversi livelli di correlazione", y = "Value")
+  facet_grid(Metric ~ Correlation_Level) +
+  scale_fill_manual(values = custom_colors) +
+  custom_theme() +
+  labs(
+    title = "Confronto delle metriche tra i metodi",
+    y = "Valore",
+    x = "Metodo"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave("results/all_correlation_levels_metrics_plot.png", plot = metrics_plot)
+# Salva il grafico delle metriche
+ggsave(
+  "results/all_correlation_levels_metrics_plot.png",
+  plot = metrics_plot,
+  width = 12,
+  height = 8,
+  dpi = 300,
+  bg = "white"
+)
 
-# Invia il grafico delle metriche su Telegram
-tryCatch({
-  bot$send_photo(chat_id = chat_id, photo = "results/all_correlation_levels_metrics_plot.png")
-}, error = function(e) {
-  warning("Errore nell'invio del grafico delle metriche su Telegram: ", e$message)
-})
-
-# Grafico per FP e FN
+# Grafico per errori (FP e FN)
 errors_plot <- all_metrics %>%
-  pivot_longer(cols = c(False_Positives, False_Negatives), names_to = "Error_Type", values_to = "Count") %>%
-  ggplot(aes(x = Method, y = Count, fill = Error_Type)) +
+  pivot_longer(
+    cols = c(False_Positives, False_Negatives),
+    names_to = "Error_Type",
+    values_to = "Count"
+  ) %>%
+  mutate(Correlation_Level = factor(Correlation_Level, levels = c("low", "medium", "high"))) %>%
+  ggplot(aes(x = Method, y = Count, fill = Method)) +
   geom_bar(stat = "identity", position = "dodge") +
-  facet_wrap(~Correlation_Level) +
-  theme_minimal() +
-  labs(title = "Confronto dei falsi positivi e negativi tra i metodi per diversi livelli di correlazione", y = "Count")
+  facet_grid(Error_Type ~ Correlation_Level) +
+  scale_fill_manual(values = custom_colors) +
+  custom_theme() +
+  labs(
+    title = "Confronto dei falsi positivi e negativi tra i metodi",
+    y = "Conteggio",
+    x = "Metodo"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave("results/all_correlation_levels_fp_fn_errors.png", plot = errors_plot)
+# Salva il grafico degli errori
+ggsave(
+  "results/all_correlation_levels_fp_fn_errors.png",
+  plot = errors_plot,
+  width = 12,
+  height = 8,
+  dpi = 300,
+  bg = "white"
+)
 
-# Invia il grafico degli errori su Telegram
-tryCatch({
-  bot$send_photo(chat_id = chat_id, photo = "results/all_correlation_levels_fp_fn_errors.png")
-}, error = function(e) {
-  warning("Errore nell'invio del grafico degli errori su Telegram: ", e$message)
-})
+# Grafico di confronto F1-Score
+f1_plot <- all_metrics %>%
+  mutate(Correlation_Level = factor(Correlation_Level, levels = c("low", "medium", "high"))) %>%
+  ggplot(aes(x = Correlation_Level, y = F1_Score, color = Method, group = Method)) +
+  geom_line(size = 1) +
+  geom_point(size = 3) +
+  scale_color_manual(values = custom_colors) +
+  custom_theme() +
+  labs(
+    title = "Confronto F1-Score per livello di correlazione",
+    y = "F1-Score",
+    x = "Livello di Correlazione"
+  )
+
+# Salva il grafico F1-Score
+ggsave(
+  "results/f1_score_comparison.png",
+  plot = f1_plot,
+  width = 10,
+  height = 6,
+  dpi = 300,
+  bg = "white"
+)
+
+# Salva le metriche in CSV
+write_csv(all_metrics, "results/all_correlation_levels_metrics.csv")
+
+# Invia risultati su Telegram
+send_telegram("Analisi completata! Invio risultati...")
+send_telegram("results/all_correlation_levels_metrics.csv", "document")
+send_telegram("results/all_correlation_levels_metrics_plot.png", "photo")
+send_telegram("results/all_correlation_levels_fp_fn_errors.png", "photo")
+send_telegram("results/f1_score_comparison.png", "photo")
+
+# Return list of results for targets
+list(
+  metrics = all_metrics,
+  plots = list(
+    metrics = "results/all_correlation_levels_metrics_plot.png",
+    errors = "results/all_correlation_levels_fp_fn_errors.png",
+    f1_comparison = "results/f1_score_comparison.png"
+  )
+)
