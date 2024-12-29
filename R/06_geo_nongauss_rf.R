@@ -1,9 +1,9 @@
 #!/usr/bin/env Rscript
 
-# Script per l'analisi geospaziale con Random Forest
+# Script per l'analisi geospaziale con Ranger (Random Forest ottimizzato)
 
 library(tidyverse)
-library(randomForest)
+library(ranger)
 library(telegram.bot)
 library(future)
 library(future.apply)
@@ -21,11 +21,11 @@ send_telegram_message <- function(message) {
   })
 }
 
-# Funzione per analizzare un dataset con Random Forest spaziale
+# Funzione per analizzare un dataset con Ranger
 analyze_rf_spatial <- function(data_path) {
   tryCatch({
     # Notifica inizio analisi
-    send_telegram_message(paste("Iniziata analisi Random Forest spaziale per:", data_path))
+    send_telegram_message(paste("Iniziata analisi Ranger spaziale per:", data_path))
 
     # Carica il dataset
     data <- readRDS(data_path)
@@ -38,16 +38,16 @@ analyze_rf_spatial <- function(data_path) {
       gene = factor(rep(1:ncol(data$expression), each = nrow(data$expression)))
     )
 
-    # Adatta Random Forest
-    rf_model <- randomForest(
-      expression ~ x + y + gene,
+    # Adatta Ranger
+    rf_model <- ranger(
+      formula = expression ~ x + y + gene,
       data = df,
-      importance = TRUE,
-      ntree = 500
+      importance = "impurity",
+      num.trees = 500
     )
 
     # Calcola i valori predetti
-    predicted_values <- predict(rf_model, type = "response")
+    predicted_values <- predict(rf_model, data = df)$predictions
 
     # Identifica hotspot basati sui valori predetti
     hotspots <- kmeans(matrix(predicted_values, ncol = ncol(data$expression)), centers = 3)$cluster
@@ -57,15 +57,15 @@ analyze_rf_spatial <- function(data_path) {
       hotspots = hotspots,
       model = rf_model,
       scores = predicted_values
-    ), file = paste0("results/rf_spatial_results_", basename(data_path)))
+    ), file = paste0("results/ranger_results_", basename(data_path)))
 
     # Notifica completamento
-    send_telegram_message(paste("Completata analisi Random Forest spaziale per:", data_path))
+    send_telegram_message(paste("Completata analisi Ranger spaziale per:", data_path))
 
     return(hotspots)
 
   }, error = function(e) {
-    send_telegram_message(paste("Errore nell'analisi Random Forest spaziale per:", data_path, "-", e$message))
+    send_telegram_message(paste("Errore nell'analisi Ranger spaziale per:", data_path, "-", e$message))
     stop(e)
   })
 }

@@ -22,7 +22,7 @@ for (correlation_level in correlation_levels) {
   seurat_results <- readRDS(paste0("results/seurat_results_simulated_", correlation_level, "_correlation.rds"))
   tweedie_results <- readRDS(paste0("results/tweedie_results_simulated_", correlation_level, "_correlation.rds"))
   gam_results <- readRDS(paste0("results/gam_geospatial_results_simulated_", correlation_level, "_correlation.rds"))
-  rf_results <- readRDS(paste0("results/rf_spatial_results_simulated_", correlation_level, "_correlation.rds"))
+  rf_results <- readRDS(paste0("results/ranger_results_simulated_", correlation_level, "_correlation.rds"))
 
   # True hotspots (da simulazione)
   data <- readRDS(paste0("data/simulated_", correlation_level, "_correlation.rds"))

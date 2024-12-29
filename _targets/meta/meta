@@ -1,17 +1,17 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|7ed42b022b8091c8
-controller|object|4beec027d17ad02a
-tweedie_file|stem|945edef9543ea465|94a6c7ff34cd6506|2c530c1562a7fbd1|2097849341|R/03_bio_nongauss_tweedie.R|t20085.7143031471s|0086ca36ec155f57|2520|file|local|vector|||0.094||
-rf_file|stem|871392e46bdec3b6|51de114feecb209a|2c530c1562a7fbd1|-1296466766|R/06_geo_nongauss_rf.R|t20085.7470996544s|583a0c2eadc3462b|2460|file|local|vector|||0.108||
-simulation_file|stem|38e788f7d2279aae|9c9759f72f24da21|2c530c1562a7fbd1|1040532757|R/01_simulate_data.R|t20086.6096798588s|122084243013aa15|4749|file|local|vector|||0.092||
-gam_file|stem|b502f911d301f014|e4f176d339b32bc6|2c530c1562a7fbd1|199838118|R/04_geo_gauss_gam.R|t20085.7157043058s|78efa67830800e87|2491|file|local|vector|||0.099||
-lgcp_file|stem|5ac2739966d94eeb|7b4bee7aadf7b39e|2c530c1562a7fbd1|-1687877830|R/05_geo_nongauss_lgcp.R|t20085.7250224887s|9307420128d3ed25|2482|file|local|vector|||0.106||
+.Random.seed|object|f7ce0106139df914|||||||||||||||
+controller|object|4beec027d17ad02a|||||||||||||||
+final_results|stem|7b7319aee2318119|6229f392b1ffcb34|1ec816e8a7037ce7|-1928978403||t20086.6296215102s||596|rds|local|vector|||0.002||could not load dependency rf_analysis of target final_results. invalid description argument
+gam_analysis|stem|c1df30d4148a62fe|fa358376d0601067|3ebdd77953b0723e|-1968087536||t20086.6359405042s|19e6c8d862db6d7f|12084297|rds|local|vector|||68.001||
+gam_file|stem|b502f911d301f014|e4f176d339b32bc6|2c530c1562a7fbd1|199838118|R/04_geo_gauss_gam.R|t20086.6340957475s|78efa67830800e87|2491|file|local|vector|||0.099||
+lgcp_analysis|stem|755f59600376abe9|b9bfc19e583f5f62|061f7ad45e3b3c93|-785942876||t20086.6356007714s|8eb7ba67b605c5fc|56541301|rds|local|vector|||22.265||
+lgcp_file|stem|5ac2739966d94eeb|7b4bee7aadf7b39e|2c530c1562a7fbd1|-1687877830|R/05_geo_nongauss_lgcp.R|t20086.6340957591s|9307420128d3ed25|2482|file|local|vector|||0.106||
+rf_analysis|stem|55961da5ce0cfe59|edf33dff076fdef4|fbe6d5d958afbff0|1282743680||t20086.6295205464s||6447026|rds|local|vector|||2.129||Can not handle categorical predictors with more than 53 categories.
+rf_file|stem|871392e46bdec3b6|51de114feecb209a|2c530c1562a7fbd1|-1296466766|R/06_geo_nongauss_rf.R|t20086.6340957591s|583a0c2eadc3462b|2460|file|local|vector|||0.108||
 setup_dirs|stem|3bc8899d2aee6193|2f4f0252c2ca43cc|2c530c1562a7fbd1|-1009687941||t20086.6294358909s|ba41eabafff2540f|48|rds|local|vector|||0.106||
-seurat_file|stem|63aad5602bc4b75b|485c134c6b0f0980|2c530c1562a7fbd1|-366750910|R/02_bio_gauss_seurat.R|t20085.7671649303s|0b0894083123407a|2600|file|local|vector|||0.107||
-spatial_simulation|stem|ebbf48a581fdc3f7|b1af97110837f9cf|e1d929d86e138642|-904271883||t20086.6294638316s|5f0defbe3a97411f|186849|rds|local|vector|||2.385||
-gam_analysis|stem|87ca5d6c84497df0|fa358376d0601067|cb06e1f099f86bc0|-1968087536||t20086.6295010087s|289d7f629a9b006c|325126|rds|local|vector|||3.182||
-tweedie_analysis|stem|7ad1f63ac33d6355|d2a7991103a0d60b|2bf3351ccdc0ab7c|788278091||t20086.6295171782s|49fd35deaefde993|485949|rds|local|vector|||4.534||
-rf_analysis|stem|55961da5ce0cfe59|edf33dff076fdef4|b4c84ae03c7727eb|1282743680||t20086.6295205464s|dcac901246659aef|6447026|rds|local|vector|||3.686||
-lgcp_analysis|stem|6410590174cc0630|b9bfc19e583f5f62|eec9b3aba19fb857|-785942876||t20086.6295207315s|acc0c8d2d656c925|1087921|rds|local|vector|||4.759||
-seurat_analysis|stem|c1bcd2a0bf4abd17|401076e4a12f7a2b|2407fd9a8902d471|-1395635565||t20086.6295506052s|929d8100a8e01fe2|84309|rds|local|vector|||7.455|Data is of class matrix. Coercing to dgCMatrix.. span too small.   fewer data values than degrees of freedom.. pseudoinverse used at 0.51273. neighborhood radius 0.35158. reciprocal condition number  0. There are other near singularities as well. 0.047007. Youre computing too large a percentage of total singular values, use a standard svd instead.. did not convergeresults might be invalid try increasing work or maxit. Data is of class matrix. Coercing to dgCMatrix.. span too small.   fewer data values than degrees of freedom.. pseudoinverse used at 0.42515. neighborhood radius 0.23133. reciprocal condition number  0. There are other near singularities as well. 0.061345. Youre computing too large a percentage of total singular values, use a standard svd instead.. did not convergeresults might be invalid try increasing work or maxit. Data is of class matrix. Coercing to dgCMatrix.. span too small.   fewer data values than degrees of freedom.. pseudoinverse used at 0.44932. neighborhood radius 0.43159. reciprocal condition number  0. There are other near singularities as well. 0.15155. Youre computing too large a percentage of total singular values, use a standard svd instead.. did not convergeresults might be invalid try increasing work or maxit|
-final_results|stem|7b7319aee2318119|6229f392b1ffcb34|1952f1786d06ff13|-1928978403||t20086.6296215102s|239094893e016070|596|rds|local|vector|||1.78||
+seurat_analysis|stem|902711dc3aa1fd13|401076e4a12f7a2b|996d163911a8f24f|-1395635565||t20086.6353569327s|0a18397dec258677|3176407|rds|local|vector|||15.76|Data is of class matrix. Coercing to dgCMatrix.. Youre computing too large a percentage of total singular values, use a standard svd instead.. Data is of class matrix. Coercing to dgCMatrix.. Youre computing too large a percentage of total singular values, use a standard svd instead.. Data is of class matrix. Coercing to dgCMatrix.. Youre computing too large a percentage of total singular values, use a standard svd instead.|
+seurat_file|stem|63aad5602bc4b75b|485c134c6b0f0980|2c530c1562a7fbd1|-366750910|R/02_bio_gauss_seurat.R|t20086.6340957591s|0b0894083123407a|2600|file|local|vector|||0.107||
+simulation_file|stem|b624ebae4419b5de|9c9759f72f24da21|2c530c1562a7fbd1|1040532757|R/01_simulate_data.R|t20086.6345704614s|ac46c1d842958fef|4751|file|local|vector|||0.084||
+spatial_simulation|stem|b44bbdbb2900e33b|b1af97110837f9cf|bcd70cb0dd8bcc2c|-904271883||t20086.6351392639s|8bbc9773167688b6|22842435|rds|local|vector|||35.495||
+tweedie_analysis|stem|0e04d8e7d645b24d|d2a7991103a0d60b|003d1da58a8569f1|788278091||t20086.636619206s|a3948dbb996ed6d4|19070005|rds|local|vector|||124.584||
+tweedie_file|stem|945edef9543ea465|94a6c7ff34cd6506|2c530c1562a7fbd1|2097849341|R/03_bio_nongauss_tweedie.R|t20086.6340957591s|0086ca36ec155f57|2520|file|local|vector|||0.094||

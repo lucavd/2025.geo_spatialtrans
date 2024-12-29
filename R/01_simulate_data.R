@@ -23,9 +23,9 @@ send_telegram_message <- function(message) {
 }
 
 # Parametri della simulazione
-n_cells <- 100  # Numero di cellule (ridotto per test iniziale)
-n_genes <- 10   # Numero di geni (ridotto per test iniziale)
-grid_size <- 100 # Dimensione della griglia spaziale
+n_cells <- 1000  # Numero di cellule (ridotto per test iniziale)
+n_genes <- 100   # Numero di geni (ridotto per test iniziale)
+grid_size <- 200 # Dimensione della griglia spaziale
 
 # Funzione per generare coordinate spaziali
 generate_spatial_coordinates <- function(n_cells, grid_size) {
