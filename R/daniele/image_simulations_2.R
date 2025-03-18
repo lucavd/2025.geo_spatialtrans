@@ -15,13 +15,16 @@ library(MASS)      # Per mvrnorm
 library(cluster)   # Per silhouette/clustering o altri metodi
 library(future)
 library(future.apply)
+library(tictoc)
+
+tictoc::tic()
 
 # ========================================
 # 1) Parametri principali
 # ========================================
-image_path            <- "colon.png"  # Path dell'immagine
-n_cells               <- 3000          # Numero di celle da simulare
-n_genes               <- 100           # Numero di geni
+image_path            <- here::here("R/daniele/colon.png") # Path dell'immagine
+n_cells               <- 300      # Numero di celle da simulare
+n_genes               <- 10           # Numero di geni
 k_cell_types          <- 3             # Numero di "tipi" cellulari in base all'intensità
 use_spatial_correlation <- TRUE        # Se vuoi usare anche la distanza (x,y)
 
@@ -228,6 +231,8 @@ p <- ggplot(cell_df, aes(x=x, y=y, color=intensity_cluster)) +
 
 print(p)
 
+ggplot2::ggsave(here::here("R/daniele/output.png"), plot = p, device = "png", dpi = 600 )
+
 # (Opzionale) Rinomino i cluster con "cells_a", "cells_b", ...
 levels(result$intensity_cluster) <- paste0("cells_", letters[1:k_cell_types])
 
@@ -236,7 +241,7 @@ print(table(result$intensity_cluster))
 
 saveRDS(result, file = "data/simulated_image_correlation.rds")
 
-
+tictoc::toc()
 
 
 # Fine script
