@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# Script: simulazione di trascrittomica spaziale con miglioramenti
+# Script: simulazione di trascrittomica spaziale con visualizzazione di immagini intermedie
 # 1) Caricamento immagine e threshold
 # 2) Clustering con kmeans++
 # 3) Sampling celle
@@ -19,6 +19,7 @@ library(tictoc)
 library(gstat)
 library(sp)
 library(scales)
+library(reshape2)
 
 tictoc::tic()
 
@@ -26,9 +27,9 @@ tictoc::tic()
 # 1) Parametri principali
 # =======================
 image_path            <- here::here("R/daniele/colon.png")
-n_cells               <- 40000
-n_genes               <- 100
-k_cell_types          <- 10
+n_cells               <- 30000
+n_genes               <- 10
+k_cell_types          <- 5
 use_spatial_correlation <- TRUE
 threshold_value       <- 0.7
 
@@ -205,16 +206,93 @@ result <- list(
 # 6) Visualizzazione
 # ========================
 p <- ggplot(cell_df, aes(x = x, y = y, color = intensity_cluster)) +
-  geom_point(size = 0.1, alpha = 0.7) +
+  geom_point(size = 0.3, alpha = 0.7) +
   scale_y_reverse() +
   coord_fixed() +
   theme_minimal() +
   labs(title = sprintf("Distribuzione spaziale (threshold=%.2f)", threshold_value),
        color = "Cell Type")
 
-print(p)
+ggsave(here::here("R/daniele/output.png"), plot = p, device = "png", dpi = 300)
 
-ggplot2::ggsave(here::here("R/daniele/output.png"), plot = p, device = "png", dpi = 300)
+### 5a) Profilo medio di espressione per cluster
+# Combina i profili medi in un unico data frame
+mean_expr_df <- do.call(rbind, lapply(1:length(mean_expression_list), function(k) {
+  data.frame(Cluster = factor(k),
+             Gene = 1:n_genes,
+             Expression = mean_expression_list[[k]])
+}))
+
+# Crea una heatmap dei profili medi di espressione per ogni cluster
+p5a <- ggplot(mean_expr_df, aes(x = Gene, y = Cluster, fill = Expression)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "red") +
+  labs(x = "gene",
+       y = "cluster") +
+  theme_minimal() +
+  xlim (c(0, 50))
+
+ggsave(here::here("R/daniele/profilo_espressione.png"), plot = p5a, device = "png", dpi = 300)
+
+### 5b) Distanze e densità locale
+# Aggiunge a cell_df le informazioni sulla distanza media e densità locale
+scatter_df <- cell_df %>%
+  mutate(mean_distance = mean_dist,
+         density = local_density)
+
+# Distribuzione spaziale delle cellule colorata in base alla distanza media
+p5b <- ggplot(scatter_df, aes(x = x, y = y, color = mean_distance)) +
+  geom_point(alpha = 0.7, size = 1) +
+  scale_color_gradient(low = "blue", high = "red") +
+  labs(x = "x",
+       y = "y",
+       color = "mean distance") +
+  theme_minimal()
+
+ggsave(here::here("R/daniele/distanze_locali.png"), plot = p5b, device = "png", dpi = 300)
+
+### 5c) Parametrizzazione della dispersione
+dispersion_df <- data.frame(mean_distance = mean_dist,
+                            dispersion = dispersion_param)
+
+p5c <- ggplot(dispersion_df, aes(x = mean_distance, y = dispersion)) +
+  geom_point(alpha = 0.5, color = "palegreen3", size = 3) +
+  geom_smooth(method = "loess", se = FALSE, color = "mediumseagreen") +
+  labs(x = "mean distance",
+       y = "dispersion") +
+  theme_minimal()
+
+ggsave(here::here("R/daniele/parametrizzazione_dispersione.png"), plot = p5c, device = "png", dpi = 300)
+
+### 5d) Probabilità di Dropout
+dropout_df <- data.frame(mean_distance = mean_dist,
+                         dropout_prob = dropout_prob)
+
+p5d <- ggplot(dropout_df, aes(x = mean_distance, y = dropout_prob)) +
+  geom_point(alpha = 0.5, color = "palevioletred3", size = 3) +
+  geom_smooth(method = "loess", se = FALSE, color = "mediumorchid4") +
+  labs(x = "mean distance",
+       y = "dropout") +
+  theme_minimal()
+
+ggsave(here::here("R/daniele/probabilita_dropout.png"), plot = p5d, device = "png", dpi = 300)
+
+### 5e) Distribuzione dell'espressione genica
+# Converto expression_data matrix in un vettore con tutte le conte
+all_gene_counts <- as.vector(expression_data)
+
+# Creo dataframe
+df_counts <- data.frame(Expression = all_gene_counts)
+
+# Istogramma
+p5e <- ggplot(df_counts, aes(x = Expression)) +
+  geom_histogram(bins = 50, fill = "steelblue", color = "black", alpha = 0.8) +
+  labs(x = "counts",
+       y = "frequency") +
+  theme_minimal() +
+  xlim(c(0, 1000))
+
+ggsave(here::here("R/daniele/distribuzione_espressione.png"), plot = p5e, device = "png", dpi = 300)
 
 # Rinomino i cluster
 levels(result$intensity_cluster) <- paste0("cells_", letters[1:k_cell_types])
