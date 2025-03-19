@@ -7,7 +7,7 @@ SCREEN_NAME="r_simulation"
 PROJECT_DIR="$HOME/2025.geo_spatialtrans"
 
 # Script R da eseguire
-SCRIPT_PATH="R/daniele/image_simulations_2_parallel_gemini.R"
+SCRIPT_PATH="R/daniele/image_simulations_2_claude.R"
 
 # Cartella per i log
 LOG_DIR="$PROJECT_DIR/logs"

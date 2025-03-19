@@ -8,6 +8,7 @@
 # 5) Visualizzazione
 
 library(imager)
+library(magick)
 library(tidyverse)
 library(MASS)
 library(cluster)
@@ -21,7 +22,7 @@ tictoc::tic()
 # =======================
 # 1) Parametri principali
 # =======================
-image_path            <- here::here("R/daniele/colon.png")
+image_path            <- here::here("R/daniele/granuloma.png")
 n_cells               <- 3000
 n_genes               <- 10
 k_cell_types          <- 3
