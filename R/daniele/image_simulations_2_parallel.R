@@ -23,7 +23,7 @@ cat(sprintf("Utilizzo %d core per il calcolo parallelo...\n", num_cores))
 # 1) Parametri principali
 # ========================================
 image_path            <- here::here("R/daniele/colon.png") # Path dell'immagine
-n_cells               <- 30000      # Numero di celle da simulare
+n_cells               <- 3000     # Numero di celle da simulare
 n_genes               <- 10           # Numero di geni
 k_cell_types          <- 3             # Numero di "tipi" cellulari in base all'intensità
 use_spatial_correlation <- TRUE        # Se vuoi usare anche la distanza (x,y)
@@ -286,7 +286,7 @@ p <- ggplot(cell_df, aes(x=x, y=y, color=intensity_cluster)) +
 
 # p
 
-ggplot2::ggsave(here::here("R/daniele/output.png"), plot = p, device = "png", dpi = 600 )
+ggplot2::ggsave(here::here("R/daniele/output.png"), plot = p, device = "png", dpi = 300 )
 
 # (Opzionale) Rinomino i cluster con "cells_a", "cells_b", ...
 levels(result$intensity_cluster) <- paste0("cells_", letters[1:k_cell_types])

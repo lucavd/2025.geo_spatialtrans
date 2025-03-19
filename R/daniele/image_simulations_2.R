@@ -231,7 +231,7 @@ p <- ggplot(cell_df, aes(x=x, y=y, color=intensity_cluster)) +
 
 print(p)
 
-ggplot2::ggsave(here::here("R/daniele/output.png"), plot = p, device = "png", dpi = 600 )
+ggplot2::ggsave(here::here("R/daniele/output.png"), plot = p, device = "png", dpi = 300 )
 
 # (Opzionale) Rinomino i cluster con "cells_a", "cells_b", ...
 levels(result$intensity_cluster) <- paste0("cells_", letters[1:k_cell_types])
