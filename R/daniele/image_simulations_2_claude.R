@@ -25,7 +25,7 @@ tictoc::tic()
 # =======================
 # 1) Parametri principali
 # =======================
-image_path            <- here::here("R/daniele/colon.png")
+image_path            <- here::here("R/daniele/granuloma.png")
 n_cells               <- 40000
 n_genes               <- 100
 k_cell_types          <- 10
@@ -205,7 +205,7 @@ result <- list(
 # 6) Visualizzazione
 # ========================
 p <- ggplot(cell_df, aes(x = x, y = y, color = intensity_cluster)) +
-  geom_point(size = 0.1, alpha = 0.7) +
+  geom_point(size = 0.5, alpha = 0.7) +
   scale_y_reverse() +
   coord_fixed() +
   theme_minimal() +

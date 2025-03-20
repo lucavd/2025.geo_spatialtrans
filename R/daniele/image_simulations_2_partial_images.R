@@ -26,9 +26,9 @@ tictoc::tic()
 # =======================
 # 1) Parametri principali
 # =======================
-image_path            <- here::here("R/daniele/colon.png")
-n_cells               <- 30000
-n_genes               <- 10
+image_path            <- here::here("R/daniele/granuloma.png")
+n_cells               <- 40000
+n_genes               <- 100
 k_cell_types          <- 5
 use_spatial_correlation <- TRUE
 threshold_value       <- 0.7
@@ -281,16 +281,30 @@ ggsave(here::here("R/daniele/probabilita_dropout.png"), plot = p5d, device = "pn
 # Converto expression_data matrix in un vettore con tutte le conte
 all_gene_counts <- as.vector(expression_data)
 
-# Creo dataframe
-df_counts <- data.frame(Expression = all_gene_counts)
+# Domanda: non maledirmi, e se nel poster mettessimo un plot distribuzione come l'istogramma
+# che hai fatto per la sub-poissoniana dei geni stabili e uno per la binomiale negativa degli altri geni?
 
-# Istogramma
-p5e <- ggplot(df_counts, aes(x = Expression)) +
-  geom_histogram(bins = 50, fill = "steelblue", color = "black", alpha = 0.8) +
-  labs(x = "counts",
-       y = "frequency") +
+# Separazione geni stabili e non-stabili per confronto distribuzione
+stable_counts <- as.vector(expression_data[, stable_genes])
+neg_binom_counts <- as.vector(expression_data[, setdiff(1:n_genes, stable_genes)])
+
+# Creo dataframe con tipo di gene
+df_counts <- data.frame(
+  Expression = c(stable_counts, neg_binom_counts),
+  GeneType = c(rep("Stable (Sub-Poisson)", length(stable_counts)),
+               rep("Variable (Negative Binomial)", length(neg_binom_counts)))
+)
+
+# Istogrammi separati per tipo di gene
+p5e <- ggplot(df_counts, aes(x = Expression, fill = GeneType)) +
+  geom_histogram(bins = 50, color = "black", alpha = 0.8, position = "identity") +
+  labs(x = "counts", y = "frequency") +
+  facet_wrap(~GeneType, scales = "free_y") +
+  scale_fill_manual(values = c("Stable (Sub-Poisson)" = "palegreen3",
+                              "Variable (Negative Binomial)" = "steelblue")) +
   theme_minimal() +
-  xlim(c(0, 1000))
+  xlim(c(0, 200)) +
+  theme(legend.position = "none")
 
 ggsave(here::here("R/daniele/distribuzione_espressione.png"), plot = p5e, device = "png", dpi = 300)
 

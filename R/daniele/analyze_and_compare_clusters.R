@@ -150,8 +150,8 @@ true_clusters_sorted <- sort(true_cluster_sizes, decreasing = TRUE)
 true_sorted_names <- names(true_clusters_sorted)
 
 # Assegna etichette "cells_a", "cells_b", "cells_c" basate sulla dimensione
-num_true_clusters <- min(length(true_sorted_names), 3)
-true_labels <- c("cells_a", "cells_b", "cells_c")[1:num_true_clusters]
+num_true_clusters <- min(length(true_sorted_names), 5)
+true_labels <- c("cells_a", "cells_b", "cells_c", "cells_d", "cells_e")[1:num_true_clusters]
 
 # Crea un vettore di mappatura per i cluster reali
 true_cluster_renamed <- setNames(true_labels, true_sorted_names[1:num_true_clusters])
@@ -191,8 +191,8 @@ seurat_clusters_sorted <- sort(seurat_cluster_sizes, decreasing = TRUE)
 seurat_sorted_names <- names(seurat_clusters_sorted)
 
 # Assegna etichette "cells_a", "cells_b", "cells_c" basate sulla dimensione
-num_seurat_labels <- min(length(seurat_sorted_names), 3)
-seurat_labels <- c("cells_a", "cells_b", "cells_c")[1:num_seurat_labels]
+num_seurat_labels <- min(length(seurat_sorted_names), 5)
+seurat_labels <- c("cells_a", "cells_b", "cells_c", "cells_d", "cells_e")[1:num_seurat_labels]
 
 # Crea un vettore di mappatura per i cluster Seurat
 seurat_cluster_renamed <- setNames(seurat_labels, seurat_sorted_names[1:num_seurat_labels])
@@ -288,8 +288,8 @@ hdbscan_clusters_sorted <- sort(hdbscan_cluster_sizes, decreasing = TRUE)
 hdbscan_sorted_names <- names(hdbscan_clusters_sorted)
 
 # Assegna etichette "cells_a", "cells_b", "cells_c" basate sulla dimensione
-num_hdbscan_labels <- min(length(hdbscan_sorted_names), 3)
-hdbscan_labels <- c("cells_a", "cells_b", "cells_c")[1:num_hdbscan_labels]
+num_hdbscan_labels <- min(length(hdbscan_sorted_names), 5)
+hdbscan_labels <- c("cells_a", "cells_b", "cells_c", "cells_d", "cells_e")[1:num_hdbscan_labels]
 
 # Crea un vettore di mappatura per i cluster HDBSCAN
 hdbscan_cluster_renamed <- setNames(hdbscan_labels, hdbscan_sorted_names[1:num_hdbscan_labels])
@@ -419,7 +419,7 @@ print(metrics_combined)
 
 # Salva i risultati in un file CSV
 write_csv(metrics_combined, "results/metrics_comparison.csv")
-cat("Confronto completato e metriche salvate in 'results/metrics_comparison.csv'.\n")
+cat("Confronto completato e metriche salvate in 'results/metrics_comparison_colon_40k100gene5clust.csv'.\n")
 
 # ========================================
 # 24) Ripristina la parallelizzazione
