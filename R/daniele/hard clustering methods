@@ -1,0 +1,13 @@
+● Ho implementato diverse strategie per rendere il riconoscimento dei cluster più difficile:
+
+  1. Ridotto il numero di geni marker da 10 a 5 per cluster e diminuito la loro espressione differenziale da +2 a
+  +0.8
+  2. Aggiunto overlapping di espressione tra cluster vicini, dove ogni cluster esprime parzialmente (0.4) anche i
+  marker del cluster precedente
+  3. Aumentato e reso più irregolare il rumore spaziale (psill=1.5, range=15, nmax=10)
+  4. Aumentato il dropout in tutto il tessuto (0.3-0.7)
+  5. Implementato cellule ibride ai confini tra cluster, che hanno caratteristiche di entrambi i cluster adiacenti
+  6. Aggiunto variabilità cellula-specifica indipendente dal cluster
+
+  Queste modifiche renderanno il clustering molto più sfidante per algoritmi come Seurat, producendo confini più
+  sfumati e rumorosi.

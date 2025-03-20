@@ -25,10 +25,10 @@ tictoc::tic()
 # =======================
 # 1) Parametri principali
 # =======================
-image_path            <- here::here("R/daniele/granuloma.png")
-n_cells               <- 40000
+image_path            <- here::here("R/daniele/colon.png")
+n_cells               <- 20000
 n_genes               <- 100
-k_cell_types          <- 10
+k_cell_types          <- 5
 use_spatial_correlation <- TRUE
 threshold_value       <- 0.7
 
@@ -112,15 +112,26 @@ cat(sprintf("Celle totali campionate: %d\n", nrow(cell_df)))
 # ========================
 # 5) Generazione dei profili di espressione
 # ========================
-# 5a) Medie di espressione per cluster
+# 5a) Medie di espressione per cluster - più sfumata e con overlapping
 mean_expression_list <- list()
 for (k in seq_len(k_cell_types)) {
   mu <- rep(2, n_genes)  # baseline log(7) ~ 2
-  start_idx <- (k - 1) * 10 + 1
-  end_idx   <- min(k * 10, n_genes)
+
+  # Riduzione del numero e dell'intensità dei marker
+  start_idx <- (k - 1) * 5 + 1  # Ridotto da 10 a 5 geni marker per tipo
+  end_idx   <- min(k * 5, n_genes)
   if (start_idx <= end_idx) {
-    mu[start_idx:end_idx] <- mu[start_idx:end_idx] + 2
+    mu[start_idx:end_idx] <- mu[start_idx:end_idx] + 0.8  # Ridotto da +2 a +0.8
   }
+
+  # Aggiungi espressione parziale nei cluster adiacenti (overlapping)
+  if (k > 1) {
+    prev_markers <- ((k-2) * 5 + 1):min((k-1) * 5, n_genes)
+    if (length(prev_markers) > 0) {
+      mu[prev_markers] <- mu[prev_markers] + 0.4  # Espressione parziale del cluster precedente
+    }
+  }
+
   mean_expression_list[[k]] <- mu
 }
 
@@ -139,11 +150,11 @@ for (i in 1:N) {
 # Calcola la densità locale (per il modello di dropout)
 local_density <- apply(dist_mat, 1, function(row) mean(row < quantile(row, 0.1)))
 
-# 5c) Dispersione crescente ai bordi dei cluster (minore al centro)
-dispersion_param <- rescale(mean_dist, to = c(5, 0.5))  # Valori: centro (alto) -> bordi (basso)
+# 5c) Dispersione molto elevata ovunque (con poca differenza centro/bordi)
+dispersion_param <- rescale(mean_dist, to = c(1.5, 0.8))  # Valori più bassi = più variabilità
 
-# 5d) Dropout probability crescente ai bordi
-dropout_prob <- rescale(mean_dist, to = c(0.1, 0.5))  # Maggior dropout ai bordi
+# 5d) Dropout probability elevata ovunque
+dropout_prob <- rescale(mean_dist, to = c(0.3, 0.7))  # Maggior dropout ovunque
 
 # 5e) Generazione espressione usando Negative Binomial
 expression_data <- matrix(0, nrow = N, ncol = n_genes)
@@ -157,9 +168,9 @@ if (use_spatial_correlation) {
   sp_df <- cell_df
   coordinates(sp_df) <- ~ x + y
 
-  # Crea un modello gstat per il GP
+  # Crea un modello gstat per il GP con range più corto (più irregolarità spaziali)
   gp_sim <- gstat(formula = z ~ 1, locations = ~x+y, dummy = TRUE,
-                  beta = 0, model = vgm(psill=1, range=30, model="Exp"), nmax=20)
+                  beta = 0, model = vgm(psill=1.5, range=15, model="Exp"), nmax=10)
 
   # Genera il noise spaziale
   set.seed(123)
@@ -169,14 +180,74 @@ if (use_spatial_correlation) {
   gp_noise <- scale(gp_noise)
 }
 
-# Genera l'espressione genica
+# Crea cellule ibride ai confini tra cluster
+# Identifica coppie di cellule vicine appartenenti a cluster diversi
+hybrid_pairs <- list()
+for (i in 1:N) {
+  # Trova cellule vicine (tra le 20 più vicine)
+  neighbors <- order(dist_mat[i,])[2:20]
+  diff_cluster_neighbors <- neighbors[cluster_labels[neighbors] != cluster_labels[i]]
+
+  # Se ci sono vicini di cluster diversi, aggiungi alla lista
+  if (length(diff_cluster_neighbors) > 0) {
+    hybrid_pairs[[length(hybrid_pairs) + 1]] <- c(i, diff_cluster_neighbors[1])
+  }
+}
+
+# Limita a 1000 coppie casuali per efficienza
+if (length(hybrid_pairs) > 1000) {
+  set.seed(456)
+  hybrid_pairs <- hybrid_pairs[sample(length(hybrid_pairs), 1000)]
+}
+
+# Crea una matrice di ibridazione (quanto ogni cellula è ibrida di un altro cluster)
+hybrid_matrix <- matrix(0, nrow = N, ncol = k_cell_types)
+for (pair in hybrid_pairs) {
+  cell1 <- pair[1]
+  cell2 <- pair[2]
+
+  # Prendi i cluster delle due cellule
+  cluster1 <- as.integer(cluster_labels[cell1])
+  cluster2 <- as.integer(cluster_labels[cell2])
+
+  # La cellula 1 è in parte del cluster 2
+  hybrid_matrix[cell1, cluster2] <- runif(1, 0.2, 0.5)
+
+  # La cellula 2 è in parte del cluster 1
+  hybrid_matrix[cell2, cluster1] <- runif(1, 0.2, 0.5)
+}
+
+# Genera l'espressione genica con variabilità aggiuntiva tra cellule dello stesso tipo
 for (g in seq_len(n_genes)) {
   cl <- as.integer(cluster_labels)
-  mu_vals <- sapply(cl, function(x) mean_expression_list[[x]][g])
 
-  # Aggiungi correlazione spaziale se richiesta
+  # Aggiungi variabilità cellula-specifica indipendente dal cluster
+  cell_specific_effect <- rnorm(N, 0, 0.3)
+
+  # Calcola medie di espressione di base
+  base_expr <- sapply(cl, function(x) mean_expression_list[[x]][g])
+
+  # Applica effetto di ibridazione tra cluster (cellule ai confini)
+  for (k in 1:k_cell_types) {
+    # Trova cellule che hanno componente del cluster k
+    hybrid_cells <- which(hybrid_matrix[, k] > 0)
+    if (length(hybrid_cells) > 0) {
+      # Applica l'effetto ibrido usando il profilo del cluster k
+      hybrid_effect <- mean_expression_list[[k]][g] * hybrid_matrix[hybrid_cells, k]
+      base_expr[hybrid_cells] <- base_expr[hybrid_cells] * (1 - hybrid_matrix[hybrid_cells, k]) + hybrid_effect
+    }
+  }
+
+  # Combina con l'effetto cellula-specifico
+  mu_vals <- base_expr + cell_specific_effect
+
+  # Aggiungi correlazione spaziale se richiesta (più intensa)
   if (use_spatial_correlation) {
-    mu_vals <- mu_vals + 0.5 * gp_noise
+    mu_vals <- mu_vals + 1.5 * gp_noise  # Aumentato da 0.5 a 1.5 per maggiore rumore spaziale
+
+    # Aggiungi noise casuale addizionale per confondere i pattern
+    random_noise <- rnorm(length(mu_vals), 0, 0.4)
+    mu_vals <- mu_vals + random_noise
   }
 
   if (g %in% stable_genes) {
