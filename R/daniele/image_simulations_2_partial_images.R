@@ -232,7 +232,7 @@ p5a <- ggplot(mean_expr_df, aes(x = Gene, y = Cluster, fill = Expression)) +
   theme_minimal() +
   xlim (c(0, 50))
 
-ggsave(here::here("R/daniele/profilo_espressione.png"), plot = p5a, device = "png", dpi = 300)
+ggsave(here::here("R/daniele/profilo_espressione_colon.png"), plot = p5a, device = "png", dpi = 300)
 
 ### 5b) Distanze e densità locale
 # Aggiunge a cell_df le informazioni sulla distanza media e densità locale
@@ -243,13 +243,23 @@ scatter_df <- cell_df %>%
 # Distribuzione spaziale delle cellule colorata in base alla distanza media
 p5b <- ggplot(scatter_df, aes(x = x, y = y, color = mean_distance)) +
   geom_point(alpha = 0.7, size = 1) +
+  facet_wrap(~ intensity_cluster, ncol = 2) +
   scale_color_gradient(low = "blue", high = "red") +
-  labs(x = "x",
-       y = "y",
-       color = "mean distance") +
-  theme_minimal()
+  labs(
+    title = "Spatial distribution of cells by cluster",
+    x = "x",
+    y = "y",
+    color = "mean distance"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major = element_line(color = "white", size = 1.2),
+    panel.grid.minor = element_line(color = "white", size = 1.2),
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 16, face = "bold"),
+  )
 
-ggsave(here::here("R/daniele/distanze_locali.png"), plot = p5b, device = "png", dpi = 300)
+ggsave(here::here("R/daniele/distanze_locali_colon.png"), plot = p5b, device = "png", dpi = 300)
 
 ### 5c) Parametrizzazione della dispersione
 dispersion_df <- data.frame(mean_distance = mean_dist,
@@ -260,9 +270,14 @@ p5c <- ggplot(dispersion_df, aes(x = mean_distance, y = dispersion)) +
   geom_smooth(method = "loess", se = FALSE, color = "mediumseagreen") +
   labs(x = "mean distance",
        y = "dispersion") +
-  theme_minimal()
-
-ggsave(here::here("R/daniele/parametrizzazione_dispersione.png"), plot = p5c, device = "png", dpi = 300)
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major = element_line(color = "white", size = 1.2),
+    panel.grid.minor = element_line(color = "white", size = 1.2),
+    axis.text = element_text(size = 16),
+    axis.title = element_text(size = 16, face = "bold")
+  )
+ggsave(here::here("R/daniele/parametrizzazione_dispersione_colon.png"), plot = p5c, device = "png", dpi = 300)
 
 ### 5d) Probabilità di Dropout
 dropout_df <- data.frame(mean_distance = mean_dist,
@@ -273,9 +288,15 @@ p5d <- ggplot(dropout_df, aes(x = mean_distance, y = dropout_prob)) +
   geom_smooth(method = "loess", se = FALSE, color = "mediumorchid4") +
   labs(x = "mean distance",
        y = "dropout") +
-  theme_minimal()
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major = element_line(color = "white", size = 1.2),
+    panel.grid.minor = element_line(color = "white", size = 1.2),
+    axis.text = element_text(size = 16),
+    axis.title = element_text(size = 16, face = "bold")
+  )
 
-ggsave(here::here("R/daniele/probabilita_dropout.png"), plot = p5d, device = "png", dpi = 300)
+ggsave(here::here("R/daniele/probabilita_dropout_colon.png"), plot = p5d, device = "png", dpi = 300)
 
 ### 5e) Distribuzione dell'espressione genica
 # Converto expression_data matrix in un vettore con tutte le conte
@@ -301,10 +322,17 @@ p5e <- ggplot(df_counts, aes(x = Expression, fill = GeneType)) +
   labs(x = "counts", y = "frequency") +
   facet_wrap(~GeneType, scales = "free_y") +
   scale_fill_manual(values = c("Stable (Sub-Poisson)" = "palegreen3",
-                              "Variable (Negative Binomial)" = "steelblue")) +
-  theme_minimal() +
+                               "Variable (Negative Binomial)" = "steelblue")) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major = element_line(color = "white", size = 1.2),
+    panel.grid.minor = element_line(color = "white", size = 1.2),
+    axis.text = element_text(size = 16),
+    axis.title = element_text(size = 16, face = "bold")
+  ) +
   xlim(c(0, 200)) +
   theme(legend.position = "none")
+
 
 ggsave(here::here("R/daniele/distribuzione_espressione.png"), plot = p5e, device = "png", dpi = 300)
 
