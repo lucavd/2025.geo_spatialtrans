@@ -215,6 +215,10 @@ p <- ggplot(cell_df, aes(x = x, y = y, color = intensity_cluster)) +
 
 ggsave(here::here("R/daniele/output.png"), plot = p, device = "png", dpi = 300)
 
+# ===========================
+# 1) plot and save "COLON"
+# ===========================
+
 ### 5a) Profilo medio di espressione per cluster
 # Combina i profili medi in un unico data frame
 mean_expr_df <- do.call(rbind, lapply(1:length(mean_expression_list), function(k) {
@@ -224,13 +228,16 @@ mean_expr_df <- do.call(rbind, lapply(1:length(mean_expression_list), function(k
 }))
 
 # Crea una heatmap dei profili medi di espressione per ogni cluster
-p5a <- ggplot(mean_expr_df, aes(x = Gene, y = Cluster, fill = Expression)) +
+p5a <- ggplot(mean_expr_df, aes(x = Cluster, y = Gene, fill = Expression)) +
   geom_tile() +
-  scale_fill_gradient(low = "white", high = "red") +
-  labs(x = "gene",
-       y = "cluster") +
+  scale_fill_gradientn(colors = c("steelblue4", "lightskyblue")) +
+  labs(x = "cluster",
+       y = "gene") +
   theme_minimal() +
-  xlim (c(0, 50))
+  theme (panel.grid.major = element_blank(),
+         panel.grid.minor = element_blank()
+  ) +
+  ylim (c(0, 50))
 
 ggsave(here::here("R/daniele/profilo_espressione_colon.png"), plot = p5a, device = "png", dpi = 300)
 
@@ -251,12 +258,12 @@ p5b <- ggplot(scatter_df, aes(x = x, y = y, color = mean_distance)) +
     y = "y",
     color = "mean distance"
   ) +
-  theme_minimal(base_size = 14) +
+  theme_minimal(base_size = 8) +
   theme(
-    panel.grid.major = element_line(color = "white", size = 1.2),
-    panel.grid.minor = element_line(color = "white", size = 1.2),
-    axis.text = element_text(size = 14),
-    axis.title = element_text(size = 16, face = "bold"),
+    panel.grid.major = element_line(color = "white", size = 0.3),
+    panel.grid.minor = element_line(color = "white", size = 0.3),
+    axis.text = element_text(size = 8),
+    axis.title = element_text(size = 8, face = "bold"),
   )
 
 ggsave(here::here("R/daniele/distanze_locali_colon.png"), plot = p5b, device = "png", dpi = 300)
@@ -270,12 +277,12 @@ p5c <- ggplot(dispersion_df, aes(x = mean_distance, y = dispersion)) +
   geom_smooth(method = "loess", se = FALSE, color = "mediumseagreen") +
   labs(x = "mean distance",
        y = "dispersion") +
-  theme_minimal(base_size = 14) +
+  theme_minimal(base_size = 9) +
   theme(
-    panel.grid.major = element_line(color = "white", size = 1.2),
-    panel.grid.minor = element_line(color = "white", size = 1.2),
-    axis.text = element_text(size = 16),
-    axis.title = element_text(size = 16, face = "bold")
+    panel.grid.major = element_line(color = "white", size = 0.3),
+    panel.grid.minor = element_line(color = "white", size = 0.3),
+    axis.text = element_text(size = 9),
+    axis.title = element_text(size = 9, face = "bold"),
   )
 ggsave(here::here("R/daniele/parametrizzazione_dispersione_colon.png"), plot = p5c, device = "png", dpi = 300)
 
@@ -284,16 +291,16 @@ dropout_df <- data.frame(mean_distance = mean_dist,
                          dropout_prob = dropout_prob)
 
 p5d <- ggplot(dropout_df, aes(x = mean_distance, y = dropout_prob)) +
-  geom_point(alpha = 0.5, color = "palevioletred3", size = 3) +
+  geom_point(alpha = 0.5, color = "palevioletred3", size = 1) +
   geom_smooth(method = "loess", se = FALSE, color = "mediumorchid4") +
   labs(x = "mean distance",
        y = "dropout") +
-  theme_minimal(base_size = 14) +
+  theme_minimal(base_size = 9) +
   theme(
-    panel.grid.major = element_line(color = "white", size = 1.2),
-    panel.grid.minor = element_line(color = "white", size = 1.2),
-    axis.text = element_text(size = 16),
-    axis.title = element_text(size = 16, face = "bold")
+    panel.grid.major = element_line(color = "white", size = 0.3),
+    panel.grid.minor = element_line(color = "white", size = 0.3),
+    axis.text = element_text(size = 9),
+    axis.title = element_text(size = 9, face = "bold"),
   )
 
 ggsave(here::here("R/daniele/probabilita_dropout_colon.png"), plot = p5d, device = "png", dpi = 300)
@@ -302,8 +309,6 @@ ggsave(here::here("R/daniele/probabilita_dropout_colon.png"), plot = p5d, device
 # Converto expression_data matrix in un vettore con tutte le conte
 all_gene_counts <- as.vector(expression_data)
 
-# Domanda: non maledirmi, e se nel poster mettessimo un plot distribuzione come l'istogramma
-# che hai fatto per la sub-poissoniana dei geni stabili e uno per la binomiale negativa degli altri geni?
 
 # Separazione geni stabili e non-stabili per confronto distribuzione
 stable_counts <- as.vector(expression_data[, stable_genes])
@@ -312,7 +317,7 @@ neg_binom_counts <- as.vector(expression_data[, setdiff(1:n_genes, stable_genes)
 # Creo dataframe con tipo di gene
 df_counts <- data.frame(
   Expression = c(stable_counts, neg_binom_counts),
-  GeneType = c(rep("Stable (Sub-Poisson)", length(stable_counts)),
+  GeneType = c(rep("Stable (sub-Poisson)", length(stable_counts)),
                rep("Variable (Negative Binomial)", length(neg_binom_counts)))
 )
 
@@ -321,21 +326,19 @@ p5e <- ggplot(df_counts, aes(x = Expression, fill = GeneType)) +
   geom_histogram(bins = 50, color = "black", alpha = 0.8, position = "identity") +
   labs(x = "counts", y = "frequency") +
   facet_wrap(~GeneType, scales = "free_y") +
-  scale_fill_manual(values = c("Stable (Sub-Poisson)" = "palegreen3",
+  scale_fill_manual(values = c("Stable (sub-Poisson)" = "palegreen3",
                                "Variable (Negative Binomial)" = "steelblue")) +
-  theme_minimal(base_size = 14) +
+  theme_minimal(base_size = 8) +
   theme(
-    panel.grid.major = element_line(color = "white", size = 1.2),
-    panel.grid.minor = element_line(color = "white", size = 1.2),
-    axis.text = element_text(size = 16),
-    axis.title = element_text(size = 16, face = "bold")
+    panel.grid.major = element_line(color = "white", size = 0.3),
+    panel.grid.minor = element_line(color = "white", size = 0.3),
+    axis.text = element_text(size = 6),
+    axis.title = element_text(size = 6, face = "bold"),
   ) +
   xlim(c(0, 200)) +
   theme(legend.position = "none")
 
-
-ggsave(here::here("R/daniele/distribuzione_espressione.png"), plot = p5e, device = "png", dpi = 300)
-
+ggsave(here::here("R/daniele/distribuzione_espressione_colon.png"), plot = p5e, device = "png", dpi = 300)
 # Rinomino i cluster
 levels(result$intensity_cluster) <- paste0("cells_", letters[1:k_cell_types])
 
