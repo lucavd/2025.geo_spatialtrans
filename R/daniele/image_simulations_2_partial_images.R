@@ -26,7 +26,7 @@ tictoc::tic()
 # =======================
 # 1) Parametri principali
 # =======================
-image_path            <- here::here("R/daniele/granuloma.png")
+image_path            <- here::here("R/daniele/colon.png")
 n_cells               <- 40000
 n_genes               <- 100
 k_cell_types          <- 5
