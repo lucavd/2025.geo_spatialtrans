@@ -35,18 +35,9 @@ This repository provides a comprehensive set of tools for simulating and analyzi
 
 ```
 R/
-├── 01_simulate_data.R                # Main simulation wrapper
-├── 01_simulate_data_simple.R         # Simplified simulation wrapper
-├── 02_bio_gauss_seurat.R             # Seurat-based analysis (Gaussian)
-├── 03_bio_nongauss_tweedie.R         # Non-Gaussian analysis using Tweedie
-├── 04_geo_gauss_gam.R                # Gaussian GAM-based spatial analysis
-├── 05_geo_nongauss_lgcp.R            # Log-Gaussian Cox Process analysis
-├── 06_geo_nongauss_rf.R              # Random Forest-based spatial analysis
-├── 07_GNN.R                          # Graph Neural Network analysis
 ├── analyze_and_compare_clusters.R    # Cluster evaluation framework
 ├── image_simulations.R               # Core simulation engine
-├── image_simulations_partial_images.R # Visualization utilities
-└── results.R                         # Results aggregation
+└──image_simulations_partial_images.R # Visualization utilities
 ```
 
 The design philosophy of the framework emphasizes:
@@ -60,21 +51,6 @@ The design philosophy of the framework emphasizes:
 #### 2.2.1 Simulation Core
 
 The heart of the framework is the `simulate_spatial_transcriptomics()` function in `image_simulations.R`, which generates realistic spatial transcriptomics data from image inputs. This function implements sophisticated statistical models to create synthetic data with complex properties reflecting real-world biological and technical characteristics.
-
-#### 2.2.2 Analysis Modules
-
-The framework includes multiple analytical approaches organized by statistical assumptions:
-
-1. **Biological paradigm**:
-   - Gaussian models: Standard single-cell analysis with Seurat
-   - Non-Gaussian models: Tweedie distribution-based approaches
-
-2. **Geospatial paradigm**:
-   - Gaussian models: Generalized Additive Models (GAMs)
-   - Non-Gaussian models: Log-Gaussian Cox Process and Random Forests
-
-3. **Network-based approaches**:
-   - Graph Neural Networks for capturing spatial relationships
 
 #### 2.2.3 Evaluation Framework
 
