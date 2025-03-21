@@ -10,6 +10,7 @@ library(scales)
 library(MASS)
 library(sp)
 library(here)
+library(gstat)
 
 generate_diagnostic_plots <- function(
   input_rds_path,           # Path del file RDS da analizzare
@@ -64,6 +65,20 @@ generate_diagnostic_plots <- function(
   # Calcola la densità locale
   local_density <- apply(dist_mat, 1, function(row) mean(row < quantile(row, 0.1)))
   
+  # Calcola i parametri di dispersione e dropout (stima)
+  # Qui stimiamo valori simili a quelli che sarebbero stati usati nella simulazione
+  dispersion_param <- rescale(mean_dist, to = c(5, 0.5))
+  dropout_prob <- rescale(mean_dist, to = c(0.1, 0.5))
+  
+  # Identificazione geni stabili (stima)
+  # Come stima approssimata, consideriamo geni stabili quelli con bassa varianza
+  gene_var <- apply(expression_data, 2, var)
+  gene_mean <- colMeans(expression_data)
+  cv2 <- gene_var / (gene_mean^2)  # Coefficiente di variazione quadratico
+  
+  n_genes <- ncol(expression_data)
+  stable_genes <- which(cv2 < quantile(cv2, 0.1))  # Ipotizziamo che circa il 10% siano geni stabili
+  
   # ============================
   # 1) Distribuzione spaziale dei cluster
   # ============================
@@ -87,7 +102,6 @@ generate_diagnostic_plots <- function(
   cat("Generazione del profilo di espressione per cluster...\n")
   
   # Calcola il profilo medio di espressione per ogni cluster
-  n_genes <- ncol(expression_data)
   k_cell_types <- length(levels(intensity_cluster))
   mean_expression_list <- list()
   
@@ -105,23 +119,23 @@ generate_diagnostic_plots <- function(
   }))
   
   # Crea una heatmap dei profili medi di espressione per ogni cluster
-  p2 <- ggplot(mean_expr_df, aes(x = Cluster, y = Gene, fill = log1p(Expression))) +
+  p2 <- ggplot(mean_expr_df, aes(x = Cluster, y = Gene, fill = Expression)) +
     geom_tile() +
     scale_fill_gradientn(colors = c("steelblue4", "lightskyblue", "yellow", "red"), 
-                         name = "log(expr+1)") +
+                       name = "Expression") +
     labs(title = "Profilo medio di espressione per cluster",
          x = "Cluster",
          y = "Gene") +
     theme_minimal() +
     theme(panel.grid.major = element_blank(),
           panel.grid.minor = element_blank()) +
-    ylim(c(0, min(n_genes, 100)))  # Limita la visualizzazione ai primi 100 geni
+    ylim(c(0, min(n_genes, 50)))  # Limita la visualizzazione ai primi 50 geni
   
   ggsave(file.path(output_dir, paste0(base_name, "_expression_profile.png")), 
          plot = p2, width = plot_width, height = plot_height, dpi = dpi)
   
   # ============================
-  # 3) Distribuzione delle distanze per cluster
+  # 3) Distanze locali per cluster con heatmap
   # ============================
   cat("Generazione del grafico di distanze per cluster...\n")
   
@@ -147,81 +161,117 @@ generate_diagnostic_plots <- function(
          plot = p3, width = plot_width + 2, height = plot_height + 1, dpi = dpi)
   
   # ============================
-  # 4) Relazione tra distanza e dropout
+  # 4) Parametrizzazione della dispersione
   # ============================
-  cat("Analisi della relazione tra distanza e dropout...\n")
+  cat("Generazione del grafico di parametrizzazione della dispersione...\n")
+  
+  dispersion_df <- data.frame(mean_distance = mean_dist,
+                            dispersion = dispersion_param)
+  
+  p4 <- ggplot(dispersion_df, aes(x = mean_distance, y = dispersion)) +
+    geom_point(alpha = 0.5, color = "palegreen3", size = 1) +
+    geom_smooth(method = "loess", se = FALSE, color = "mediumseagreen") +
+    labs(title = "Parametrizzazione della dispersione",
+         subtitle = "Relazione tra distanza media e parametro di dispersione",
+         x = "Distanza media", 
+         y = "Dispersione") +
+    theme_minimal() +
+    theme(
+      panel.grid.major = element_line(color = "white", size = 0.3),
+      panel.grid.minor = element_line(color = "white", size = 0.3)
+    )
+  
+  ggsave(file.path(output_dir, paste0(base_name, "_dispersion_param.png")), 
+         plot = p4, width = plot_width, height = plot_height, dpi = dpi)
+  
+  # ============================
+  # 5) Probabilità di Dropout
+  # ============================
+  cat("Generazione del grafico di probabilità di dropout...\n")
+  
+  dropout_df <- data.frame(mean_distance = mean_dist,
+                         dropout_prob = dropout_prob)
+  
+  p5 <- ggplot(dropout_df, aes(x = mean_distance, y = dropout_prob)) +
+    geom_point(alpha = 0.5, color = "palevioletred3", size = 1) +
+    geom_smooth(method = "loess", se = FALSE, color = "mediumorchid4") +
+    labs(title = "Probabilità di dropout",
+         subtitle = "Relazione tra distanza media e probabilità di dropout",
+         x = "Distanza media", 
+         y = "Prob. dropout") +
+    theme_minimal() +
+    theme(
+      panel.grid.major = element_line(color = "white", size = 0.3),
+      panel.grid.minor = element_line(color = "white", size = 0.3)
+    )
+  
+  ggsave(file.path(output_dir, paste0(base_name, "_dropout_prob.png")), 
+         plot = p5, width = plot_width, height = plot_height, dpi = dpi)
+  
+  # ============================
+  # 6) Distribuzione dell'espressione genica (sub-Poisson vs Negative Binomial)
+  # ============================
+  cat("Generazione del grafico di distribuzione dell'espressione genica...\n")
+  
+  # Separa le conte in base al tipo di gene
+  stable_counts <- as.vector(expression_data[, stable_genes])
+  neg_binom_counts <- as.vector(expression_data[, setdiff(1:n_genes, stable_genes)])
+  
+  # Crea dataframe con tipo di gene
+  df_counts <- data.frame(
+    Expression = c(stable_counts, neg_binom_counts),
+    GeneType = c(rep("Stable (sub-Poisson)", length(stable_counts)),
+                 rep("Variable (Negative Binomial)", length(neg_binom_counts)))
+  )
+  
+  # Istogrammi separati per tipo di gene
+  p6 <- ggplot(df_counts, aes(x = Expression, fill = GeneType)) +
+    geom_histogram(bins = 50, color = "black", alpha = 0.8, position = "identity") +
+    labs(title = "Distribuzione dell'espressione genica",
+         subtitle = "Confronto tra geni stabili (sub-Poisson) e variabili (Negative Binomial)",
+         x = "Counts", 
+         y = "Frequenza") +
+    facet_wrap(~GeneType, scales = "free_y", ncol = 1) +
+    scale_fill_manual(values = c("Stable (sub-Poisson)" = "palegreen3",
+                               "Variable (Negative Binomial)" = "steelblue")) +
+    theme_minimal() +
+    xlim(c(0, min(200, max(df_counts$Expression)))) +
+    theme(legend.position = "none")
+  
+  ggsave(file.path(output_dir, paste0(base_name, "_expression_distribution.png")), 
+         plot = p6, width = plot_width, height = plot_height, dpi = dpi)
+  
+  # ============================
+  # 7) Relazione tra distanza e dropout osservato
+  # ============================
+  cat("Analisi della relazione tra distanza e dropout osservato...\n")
   
   # Calcola la proporzione di zeri per cella
   zero_prop <- rowMeans(expression_data == 0)
   
   # Crea dataframe per il grafico
-  dropout_df <- data.frame(
+  observed_dropout_df <- data.frame(
     mean_distance = mean_dist,
     zero_proportion = zero_prop,
     cluster = intensity_cluster
   )
   
   # Crea il grafico per la relazione tra distanza e dropout
-  p4 <- ggplot(dropout_df, aes(x = mean_distance, y = zero_proportion, color = cluster)) +
+  p7 <- ggplot(observed_dropout_df, aes(x = mean_distance, y = zero_proportion, color = cluster)) +
     geom_point(alpha = 0.5, size = 1) +
     geom_smooth(method = "loess", se = TRUE, aes(group = 1), color = "black") +
-    labs(title = "Relazione tra distanza e dropout",
-         subtitle = "Proporzione di geni non espressi (zero counts)",
+    labs(title = "Dropout osservato",
+         subtitle = "Proporzione di geni non espressi in funzione della distanza",
          x = "Distanza media intra-cluster",
          y = "Proporzione di zeri",
          color = "Cluster") +
     theme_minimal()
   
-  ggsave(file.path(output_dir, paste0(base_name, "_dropout_distance.png")), 
-         plot = p4, width = plot_width, height = plot_height, dpi = dpi)
+  ggsave(file.path(output_dir, paste0(base_name, "_observed_dropout.png")), 
+         plot = p7, width = plot_width, height = plot_height, dpi = dpi)
   
   # ============================
-  # 5) Distribuzione dell'espressione genica
-  # ============================
-  cat("Generazione del grafico di distribuzione dell'espressione genica...\n")
-  
-  # Identifica potenziali geni stabili (con bassa varianza)
-  gene_var <- apply(expression_data, 2, var)
-  gene_mean <- colMeans(expression_data)
-  cv2 <- gene_var / (gene_mean^2)  # Coefficiente di variazione quadratico
-  
-  # Definisci geni a bassa e alta variabilità
-  low_var_genes <- which(cv2 < quantile(cv2, 0.25))
-  high_var_genes <- which(cv2 > quantile(cv2, 0.75))
-  
-  # Crea dataframe per i grafici
-  df_expr_low <- data.frame(
-    Expression = as.vector(expression_data[, low_var_genes]),
-    GeneType = "Geni a bassa variabilità"
-  )
-  
-  df_expr_high <- data.frame(
-    Expression = as.vector(expression_data[, high_var_genes]),
-    GeneType = "Geni ad alta variabilità"
-  )
-  
-  df_expr_combined <- rbind(df_expr_low, df_expr_high)
-  
-  # Crea istogrammi separati per tipo di gene
-  p5 <- ggplot(df_expr_combined, aes(x = Expression, fill = GeneType)) +
-    geom_histogram(bins = 50, alpha = 0.7, position = "identity") +
-    labs(title = "Distribuzione dell'espressione genica",
-         subtitle = "Confronto tra geni a bassa e alta variabilità",
-         x = "Conta di espressione",
-         y = "Frequenza",
-         fill = "Tipo di gene") +
-    facet_wrap(~GeneType, scales = "free_y", ncol = 1) +
-    scale_fill_manual(values = c("Geni a bassa variabilità" = "palegreen3",
-                                "Geni ad alta variabilità" = "steelblue")) +
-    theme_minimal() +
-    xlim(c(0, min(200, max(df_expr_combined$Expression)))) +
-    theme(legend.position = "none")
-  
-  ggsave(file.path(output_dir, paste0(base_name, "_expression_distribution.png")), 
-         plot = p5, width = plot_width, height = plot_height, dpi = dpi)
-  
-  # ============================
-  # 6) Heatmap di espressione per un sottoinsieme di geni marker
+  # 8) Heatmap di espressione per geni marker
   # ============================
   cat("Generazione della heatmap di espressione per geni marker...\n")
   
@@ -283,7 +333,7 @@ generate_diagnostic_plots <- function(
   heatmap_data$Cell <- factor(heatmap_data$Cell, levels = cell_order)
   
   # Crea la heatmap
-  p6 <- ggplot(heatmap_data, aes(x = Gene, y = Cell, fill = Expression_Z)) +
+  p8 <- ggplot(heatmap_data, aes(x = Gene, y = Cell, fill = Expression_Z)) +
     geom_tile() +
     scale_fill_gradientn(colors = c("navy", "white", "firebrick"), 
                          limits = c(-2, 2), 
@@ -299,10 +349,10 @@ generate_diagnostic_plots <- function(
     facet_grid(Cluster ~ ., scales = "free_y", space = "free_y")
   
   ggsave(file.path(output_dir, paste0(base_name, "_marker_heatmap.png")), 
-         plot = p6, width = plot_width, height = plot_height + 2, dpi = dpi)
+         plot = p8, width = plot_width, height = plot_height + 2, dpi = dpi)
   
   # ============================
-  # 7) Distribuzione spaziale dell'espressione per geni rappresentativi
+  # 9) Distribuzione spaziale dell'espressione per geni rappresentativi
   # ============================
   cat("Generazione di mappe di espressione spaziale per geni selezionati...\n")
   
@@ -329,7 +379,7 @@ generate_diagnostic_plots <- function(
                 values_to = "expression")
   
   # Crea una mappa spaziale per ogni gene rappresentativo
-  p7 <- ggplot(spatial_expr_long, aes(x = x, y = y, color = expression)) +
+  p9 <- ggplot(spatial_expr_long, aes(x = x, y = y, color = expression)) +
     geom_point(size = 0.7, alpha = 0.7) +
     scale_color_gradientn(colors = c("gray90", "blue", "red"), 
                          name = "Espressione") +
@@ -342,7 +392,79 @@ generate_diagnostic_plots <- function(
     theme_minimal()
   
   ggsave(file.path(output_dir, paste0(base_name, "_spatial_expression.png")), 
-         plot = p7, width = plot_width + 2, height = plot_height + 2, dpi = dpi)
+         plot = p9, width = plot_width + 2, height = plot_height + 2, dpi = dpi)
+  
+  # ============================
+  # 10) Density plot per ogni cluster
+  # ============================
+  cat("Generazione di mappe di densità per cluster...\n")
+  
+  # Imposta un SP object per il plot di densità
+  cell_sp <- cell_df
+  sp::coordinates(cell_sp) <- ~ x + y
+  
+  # Per ogni cluster, crea una mappa di densità
+  cluster_densities_list <- list()
+  
+  for (k in 1:k_cell_types) {
+    cluster_name <- levels(intensity_cluster)[k]
+    # Filtra solo cellule di questo cluster
+    cluster_cells <- cell_df %>% filter(cluster == cluster_name)
+    
+    if (nrow(cluster_cells) > 10) { # Assicurati di avere abbastanza punti
+      # Crea un SP object
+      cluster_sp <- cluster_cells
+      sp::coordinates(cluster_sp) <- ~ x + y
+      
+      # Crea una griglia per la densità
+      grid_size <- 100
+      x_range <- range(cell_df$x)
+      y_range <- range(cell_df$y)
+      grd <- expand.grid(
+        x = seq(x_range[1], x_range[2], length.out = grid_size),
+        y = seq(y_range[1], y_range[2], length.out = grid_size)
+      )
+      sp::coordinates(grd) <- ~ x + y
+      gridded(grd) <- TRUE
+      
+      # Calcola la densità
+      kde_result <- gstat::idw(formula = z ~ 1, 
+                         locations = cluster_sp, 
+                         newdata = grd,
+                         nmax = 30, 
+                         idp = 2)
+      
+      # Converti i risultati in data frame
+      kde_df <- as.data.frame(kde_result)
+      colnames(kde_df)[3] <- "density"
+      
+      # Prepara i dati
+      kde_df$cluster <- cluster_name
+      cluster_densities_list[[k]] <- kde_df
+    }
+  }
+  
+  # Unisci tutti i dataframe
+  if (length(cluster_densities_list) > 0) {
+    all_densities <- bind_rows(cluster_densities_list)
+    
+    # Crea una mappa di densità per ogni cluster
+    p10 <- ggplot() +
+      geom_tile(data = all_densities, aes(x = x, y = y, fill = density)) +
+      geom_point(data = cell_df, aes(x = x, y = y), color = "black", size = 0.1, alpha = 0.5) +
+      facet_wrap(~ cluster, ncol = 2) +
+      scale_fill_gradientn(colors = c("white", "yellow", "red"), 
+                         name = "Densità", 
+                         trans = "log1p") +
+      scale_y_reverse() +
+      labs(title = "Densità cellulare per cluster",
+           x = "Coordinata X", 
+           y = "Coordinata Y") +
+      theme_minimal()
+    
+    ggsave(file.path(output_dir, paste0(base_name, "_cluster_densities.png")), 
+           plot = p10, width = plot_width + 2, height = plot_height + 2, dpi = dpi)
+  }
   
   # Restituisci l'elenco dei file creati
   output_files <- list.files(output_dir, pattern = paste0(base_name, "_"), full.names = TRUE)
