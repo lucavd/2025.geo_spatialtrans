@@ -37,7 +37,8 @@ This repository provides a comprehensive set of tools for simulating and analyzi
 R/
 ├── analyze_and_compare_clusters.R    # Cluster evaluation framework
 ├── image_simulations.R               # Core simulation engine
-└──image_simulations_partial_images.R # Visualization utilities
+├── image_simulations_partial_images.R # Visualization utilities
+└── testing/                          # Testing modules for simulation validation
 ```
 
 The design philosophy of the framework emphasizes:
@@ -52,20 +53,168 @@ The design philosophy of the framework emphasizes:
 
 The heart of the framework is the `simulate_spatial_transcriptomics()` function in `image_simulations.R`, which generates realistic spatial transcriptomics data from image inputs. This function implements sophisticated statistical models to create synthetic data with complex properties reflecting real-world biological and technical characteristics.
 
-#### 2.2.3 Evaluation Framework
+#### 2.2.2 Evaluation Framework
 
 The `analyze_and_compare_clusters.R` script provides a comprehensive framework for evaluating clustering performance using:
 - Multiple clustering algorithms (Seurat and HDBSCAN)
 - Quantitative performance metrics
 - Spatial visualization of results
 
-## 3. Theoretical Foundations of the Simulation Framework
+## 3. Visium HD Mode: High-Resolution Simulation
 
-### 3.1 Count Distribution Models
+The framework now includes dedicated support for simulating Visium HD data, a high-resolution spatial transcriptomics technology from 10x Genomics that provides 2μm x 2μm resolution.
+
+### 3.1 Grid-Based Spatial Structure
+
+Visium HD uses a regular grid of spots rather than the scattered pattern of original Visium. Our framework implements this structure through:
+
+```r
+# Grid mode with high resolution (2μm)
+simulate_spatial_transcriptomics(
+  image_path = "images/colon.png",
+  grid_mode = TRUE,              # Enables grid-based simulation
+  grid_resolution = 2,           # 2μm x 2μm spots like Visium HD
+  grid_spacing = 0,              # No gap between adjacent spots
+  # Other parameters...
+)
+```
+
+This approach:
+- Creates a regular grid of adjacent spots following the exact Visium HD geometry
+- Maps image regions to grid locations deterministically rather than randomly
+- Matches the tissue structure precision of high-resolution technologies
+- Enables accurate modeling of spatial autocorrelation at microscopic scales
+
+### 3.2 Advanced Spatial Correlation Models
+
+The framework now offers two complementary methods for spatial correlation modeling:
+
+#### 3.2.1 Gaussian Random Fields (GRF)
+
+GRF implements a continuous spatial correlation model through Gaussian processes with exponential covariance:
+
+```r
+correlation_method = "grf",
+spatial_params = list(
+  spatial_noise_intensity = 1.0,  # Magnitude of spatial effect
+  spatial_range = 30,            # Correlation length scale (μm)
+  random_noise_sd = 0.2          # Cell-specific random variation
+)
+```
+
+This model is particularly suitable for:
+- Smooth gradient patterns across tissue regions
+- Diffusion-like processes (morphogen gradients, secreted signals)
+- Continuous biological processes that vary gradually in space
+
+#### 3.2.2 Conditional Autoregressive Models (CAR)
+
+The CAR model is newly implemented for grid-based simulations:
+
+```r
+correlation_method = "car",
+spatial_params = list(
+  spatial_noise_intensity = 1.2,  # Controls variance
+  spatial_range = 20             # Controls neighborhood size
+)
+```
+
+This model is ideal for:
+- Capturing local dependencies between adjacent spots
+- Modeling interacting cellular neighborhoods
+- Simulating lattice-based processes common in grid-structured data
+
+### 3.3 Gradient-Based Region Transitions
+
+A key advancement in the framework is the implementation of gradient-based transitions between tissue regions:
+
+```r
+spatial_params = list(
+  gradient_regions = TRUE,      # Enable gradient transitions
+  gradient_width = 5            # Width of gradient zone (in grid units)
+)
+```
+
+This feature:
+- Calculates distance to region boundaries for each grid point
+- Applies gradual phenotypic transitions at region interfaces
+- Mixes expression profiles of adjacent regions based on distance
+- Creates realistic cell state transitions rather than artificial sharp boundaries
+
+The implementation automatically identifies boundary regions and creates distance maps for smooth transitions, consistent with observations in real tissue interfaces.
+
+### 3.4 Library Size and Dropout Modeling
+
+The framework now incorporates sophisticated modeling of library size (sequencing depth) and dropout effects:
+
+#### 3.4.1 Spatially Varying Library Size
+
+```r
+library_size_params = list(
+  mean_library_size = 10000,     # Mean UMI count per spot
+  library_size_cv = 0.3,         # Coefficient of variation
+  spatial_effect_on_library = 0.5 # Spatial correlation in library size
+)
+```
+
+This accounts for:
+- Log-normal distribution of library sizes observed in real data
+- Spatial correlation in sequencing depth due to tissue properties
+- Impact of library size on expression level and zero counts
+
+#### 3.4.2 Expression-Dependent Dropout
+
+Dropout (zero counts) in real data depends strongly on expression level. The framework now models this relationship:
+
+```r
+dropout_params = list(
+  dropout_range = c(0.1, 0.4),    # Base dropout rates (min, max)
+  expression_dependent_dropout = TRUE,  # Enable expression-dependent dropout
+  dropout_curve_midpoint = 0.5,   # Expression level at 50% dropout probability
+  dropout_curve_steepness = 5     # Steepness of logistic dropout curve
+)
+```
+
+This creates realistic patterns where:
+- Lowly expressed genes have higher dropout probability
+- Relationship follows logistic function, matching empirical observations
+- Dropout combines spatial effects with expression-level dependency
+- Dropout rate increases at tissue borders, mimicking edge artifacts
+
+### 3.5 Enhanced Validation Metrics
+
+The framework now calculates spatial autocorrelation metrics for validation:
+
+```r
+# Examine spatial autocorrelation in simulated data
+result$spatial_autocorrelation$moran_i  # Moran's I values for selected genes
+```
+
+This provides:
+- Quantitative measurement of spatial structure
+- Comparability with real Visium HD data
+- Validation of the spatial correlation models
+- Benchmark for spatial analysis methods
+
+### 3.6 Performance Optimization
+
+The new implementation includes significant computational optimizations:
+
+- **Vectorized border detection**: Efficiently identifies region boundaries using matrix operations
+- **Optimized distance calculations**: Uses fast distance matrix computation with spatial indexing
+- **Vectorized expression generation**: Replaces loops with matrix operations for expression calculation
+- **Efficient gradient application**: Applies gradients to all border points simultaneously
+- **Block processing**: Handles large datasets through block-wise calculations
+
+These optimizations enable simulating large Visium HD datasets (100,000+ spots) with reasonable computational resources.
+
+## 4. Theoretical Foundations of the Simulation Framework
+
+### 4.1 Count Distribution Models
 
 The core statistical challenge in transcriptomics simulation is accurately modeling the distribution of gene expression counts. Our framework implements multiple distributions based on empirical observations from real data:
 
-#### 3.1.1 Negative Binomial Distribution
+#### 4.1.1 Negative Binomial Distribution
 
 The primary distribution used in our simulation is the Negative Binomial (NB) distribution, which naturally models the overdispersion (variance > mean) consistently observed in transcriptomic data. The probability mass function is:
 
@@ -88,7 +237,7 @@ The biological justification for using the NB distribution includes:
 - **Regulatory network variability**: Cell-to-cell differences in regulatory network states
 - **Microenvironmental heterogeneity**: Local variations in the cellular microenvironment even within the same nominal cell type
 
-#### 3.1.2 Sub-Poisson Model for Constitutive Genes
+#### 4.1.2 Sub-Poisson Model for Constitutive Genes
 
 For a subset of genes (approximately 10%), our simulation implements a Binomial model with high success probability (p=0.9). This model captures the behavior of constitutively expressed "housekeeping" genes that show remarkably stable expression with lower-than-Poisson variance (variance-to-mean ratio < 1).
 
@@ -113,11 +262,11 @@ The biological rationale for implementing sub-Poisson models includes:
 - **Redundant regulatory mechanisms**: Multiple parallel regulatory pathways ensuring stable expression
 - **High-frequency transcriptional initiation**: Consistent production with reduced bursting behavior
 
-### 3.2 Spatial Correlation Models
+### 4.2 Spatial Correlation Models
 
 Real tissues exhibit complex patterns of spatial correlation in gene expression due to intercellular communication, developmental gradients, and tissue organization. Our framework implements sophisticated spatial correlation models to capture these biological realities.
 
-#### 3.2.1 Gaussian Process Implementation
+#### 4.2.1 Gaussian Process Implementation
 
 We implement a Gaussian Process (GP) model with an exponential covariance function to create spatially correlated random fields:
 
@@ -147,135 +296,111 @@ The biological justification for using a GP with exponential covariance includes
 - **Hierarchical organization**: Tissues show multi-scale organization with different correlation ranges
 - **Continuous transitions**: Expression changes gradually across spatial domains rather than discontinuously
 
-#### 3.2.2 Hybrid Cell Implementation
+#### 4.2.2 Conditional Autoregressive Model
 
-A unique feature of our framework is the explicit modeling of cells at the boundaries between different regions or types. Real tissues often contain cells with intermediate phenotypes at interfaces between distinct cell populations, which we model through a hybrid cell mechanism:
+For grid-based data like Visium HD, the CAR model provides an alternative approach to spatial correlation:
+
+$$X_i | X_{-i} \sim \mathcal{N}\left(\alpha + \rho \sum_{j \in N_i} w_{ij}(X_j - \alpha), \tau^2\right)$$
+
+Where:
+- $X_i$ is the value at location $i$
+- $X_{-i}$ represents all values except at location $i$
+- $N_i$ is the neighborhood of location $i$
+- $w_{ij}$ are spatial weights
+- $\rho$ controls the strength of spatial dependence
+- $\tau^2$ is the conditional variance
+
+The CAR implementation is particularly suited for regular grid data with well-defined neighborhood structures, making it ideal for high-resolution spatial transcriptomics simulations.
+
+#### 4.2.3 Gradient and Hybrid Cell Implementation
+
+Our framework implements two complementary approaches to modeling transitions between spatial domains:
+
+1. **Gradient-based transitions**: Uses distance to boundary to create smooth transitions:
 
 ```r
-# Identify cells at boundaries between clusters
-hybrid_pairs <- list()
-for (i in 1:N) {
-  # Find cells in spatial proximity but different clusters
-  neighbors <- order(dist_mat[i,])[2:20]
-  diff_cluster_neighbors <- neighbors[cluster_labels[neighbors] != cluster_labels[i]]
-  
-  # Create hybrid pairs
-  if (length(diff_cluster_neighbors) > 0) {
-    hybrid_pairs[[length(hybrid_pairs) + 1]] <- c(i, diff_cluster_neighbors[1])
-  }
-}
-
-# Apply hybrid effects to expression profiles
-for (k in 1:k_cell_types) {
-  hybrid_cells <- which(hybrid_matrix[, k] > 0)
-  if (length(hybrid_cells) > 0) {
-    hybrid_effect <- mean_expression_list[[k]][g] * hybrid_matrix[hybrid_cells, k]
-    base_expr[hybrid_cells] <- base_expr[hybrid_cells] * (1 - hybrid_matrix[hybrid_cells, k]) + hybrid_effect
-  }
-}
+gradient_weight <- (1 - cell_df$boundary_dist[i])^2
+base_expr[i] <- base_expr[i] * (1 - gradient_weight) + other_expr * gradient_weight
 ```
 
-The implementation creates a weighted mixture of expression profiles for cells at boundaries, where each cell can have contributions from multiple cell types based on spatial proximity.
+2. **Hybrid cell approach**: Explicitly models cells at boundaries as mixtures:
+
+```r
+hybrid_effect <- hybrid_matrix %*% all_cluster_expr
+hybrid_weight <- rowSums(hybrid_matrix)
+base_expr[hybrid_cells] <- base_expr[hybrid_cells] * (1 - hybrid_weight[hybrid_cells]) + 
+                         hybrid_effect[hybrid_cells]
+```
 
 The biological rationale includes:
 - **Transitional cell states**: Cells at interfaces often exhibit intermediate phenotypes
 - **Cell-cell communication**: Signaling between adjacent cells can induce partial phenotypic shifts
 - **Plasticity gradients**: Cells may show varying degrees of commitment to particular lineages
 
-### 3.3 Technical Artifact Models
+### 4.3 Technical Artifact Models
 
 Real spatial transcriptomics data contains various technical artifacts that can confound analysis. Our framework explicitly models these artifacts with spatial dependence to create realistic challenges for analytical methods.
 
-#### 3.3.1 Spatially-varying Dropout
+#### 4.3.1 Spatially-varying and Expression-dependent Dropout
 
-Dropout (false zeros) in spatial transcriptomics often shows spatial dependence due to tissue processing artifacts, varying RNA quality across the specimen, and local microenvironmental factors. We implement a spatially-varying dropout model:
+Dropout (false zeros) in spatial transcriptomics combines spatial effects with expression-level dependency:
 
 ```r
-# Spatially-varying dropout probability
-dropout_prob <- rescale(mean_dist, to = dropout_params$dropout_range)
+# Expression-dependent component
+norm_expr <- scale01_vec(expression_data[, g])
+dropout_prob_expr <- 1 / (1 + exp((norm_expr - dropout_params$dropout_curve_midpoint) * 
+                                 dropout_params$dropout_curve_steepness))
 
-# Apply dropout to expression data
-zero_idx <- rbinom(N, 1, dropout_prob) == 1
-expression_data[zero_idx, g] <- 0
+# Combine with spatial component
+dropout_prob <- 0.7 * dropout_prob_expr + 0.3 * base_dropout
 ```
 
-The `dropout_range` parameter controls the range of dropout probabilities, with different settings for easy, medium, and hard difficulty levels:
-- Easy: c(0.1, 0.3) — Low dropout with moderate spatial variation
-- Medium: c(0.2, 0.5) — Moderate dropout with substantial spatial variation
-- Hard: c(0.3, 0.7) — High dropout with extreme spatial variation
+This sophisticated model captures the dual nature of dropout in real data:
+- **Expression dependence**: Lower expressed genes have higher dropout probability
+- **Spatial effects**: Tissue edges and processing artifacts create spatial patterns in dropout
+- **Combined effect**: The final model combines both factors with appropriate weighting
 
-The biological and technical rationale includes:
-- **Edge effects**: Tissue edges often show higher technical artifacts due to processing damage
-- **Fixation gradients**: Chemical fixatives penetrate tissues unevenly, creating gradients in preservation quality
-- **Microenvironmental factors**: Local tissue properties can affect RNA stability and capture efficiency
-
-#### 3.3.2 Spatially-varying Dispersion
+#### 4.3.2 Spatially-varying Dispersion
 
 The variability in gene expression (dispersion) also exhibits spatial dependence in real tissues. Our framework implements spatially-varying dispersion using the distance-based metric:
 
 ```r
-# Spatially-varying dispersion parameter
-dispersion_param <- rescale(mean_dist, to = dropout_params$dispersion_range)
+# Near boundaries: higher variability (lower dispersion parameter)
+dispersion_param <- dropout_params$dispersion_range[2] + 
+  cell_df$boundary_dist * (dropout_params$dispersion_range[1] - dropout_params$dispersion_range[2])
 ```
-
-The `dispersion_range` parameter controls the range of dispersion values:
-- Easy: c(3.0, 1.5) — Moderate variability with mild spatial dependence
-- Medium: c(2.0, 1.0) — Higher variability with moderate spatial dependence
-- Hard: c(1.5, 0.8) — Extreme variability with strong spatial dependence
-
-Lower dispersion values (closer to zero) result in higher variability in the Negative Binomial distribution.
 
 The biological justification includes:
 - **Border instability**: Cells at tissue interfaces show higher transcriptional variability
 - **Stress response heterogeneity**: Variability in stress responses at tissue edges
 - **Identity ambiguity**: Cells in transitional zones show less stable gene expression patterns
 
-### 3.4 Marker Gene Models
+### 4.4 Library Size Modeling
 
-The simulation creates realistic marker gene patterns that define cell types or spatial domains while accounting for biological complexity.
-
-#### 3.4.1 Marker Gene Implementation
-
-The implementation defines cell type-specific marker genes with customizable expression levels:
+The framework models library size (sequencing depth) with both global and spatial components:
 
 ```r
-for (k in seq_len(k_cell_types)) {
-  mu <- rep(2, n_genes)  # baseline log(7) ~ 2
-  
-  # Cell type-specific markers
-  start_idx <- (k - 1) * marker_params$marker_genes_per_type + 1
-  end_idx   <- min(k * marker_params$marker_genes_per_type, n_genes)
-  if (start_idx <= end_idx) {
-    mu[start_idx:end_idx] <- mu[start_idx:end_idx] + marker_params$marker_expression_fold
-  }
-  
-  # Overlapping expression in adjacent types
-  if (k > 1 && marker_params$marker_overlap_fold > 0) {
-    prev_markers <- ((k-2) * marker_params$marker_genes_per_type + 1):min((k-1) * marker_params$marker_genes_per_type, n_genes)
-    if (length(prev_markers) > 0) {
-      mu[prev_markers] <- mu[prev_markers] + marker_params$marker_overlap_fold
-    }
-  }
-  
-  mean_expression_list[[k]] <- mu
-}
+# Log-normal distribution for global variation
+library_size <- rlnorm(N, meanlog = log_mean, sdlog = log_sd)
+
+# Spatial effect using Gaussian Process
+lib_effect <- library_size_params$spatial_effect_on_library * lib_noise
+library_size <- library_size * exp(lib_effect)
+
+# Apply to expression counts
+scaled_counts <- raw_counts * (library_size / mean(library_size))
 ```
 
-Key parameters include:
-- `marker_genes_per_type`: Number of markers per cell type (5-10 depending on difficulty)
-- `marker_expression_fold`: Log-fold increase for markers (0.8-2.0 depending on difficulty)
-- `marker_overlap_fold`: Degree of marker overlap between adjacent types (0.0-0.4)
+This accounts for:
+- **Log-normal global distribution**: Matching empirical observations in real data
+- **Spatial correlation**: Areas with better RNA preservation or higher cell density show correlated sequencing depth
+- **Scaling effect**: Library size acts as a scaling factor on observed counts
 
-The biological rationale includes:
-- **Graded marker specificity**: Real markers show varying degrees of specificity
-- **Cross-lineage expression**: Many genes are expressed at different levels across multiple cell types
-- **Transcriptional programs overlap**: Adjacent cell types often share partial transcriptional programs
-
-## 4. Customizable Difficulty Levels
+## 5. Customizable Difficulty Levels
 
 A key feature of our framework is the ability to simulate data with varying levels of analytical challenge through pre-defined difficulty tiers.
 
-### 4.1 Difficulty Parameterization
+### 5.1 Difficulty Parameterization
 
 The framework provides three difficulty levels with comprehensive parameter adjustments:
 
@@ -284,12 +409,12 @@ The framework provides three difficulty levels with comprehensive parameter adju
 simulate_spatial_transcriptomics(
   image_path = "images/colon.png",
   difficulty_level = "hard",  # One of "easy", "medium", "hard"
-  n_cells = 30000,
+  grid_mode = TRUE,           # Use Visium HD grid mode
   n_genes = 100
 )
 ```
 
-#### 4.1.1 Easy Difficulty
+#### 5.1.1 Easy Difficulty
 
 The "easy" setting creates data with clear cell type boundaries and strong marker genes:
 - 10 marker genes per cell type with +2.0 log-fold expression
@@ -300,7 +425,7 @@ The "easy" setting creates data with clear cell type boundaries and strong marke
 
 This setting is appropriate for benchmarking basic analytical methods or educational purposes.
 
-#### 4.1.2 Medium Difficulty
+#### 5.1.2 Medium Difficulty
 
 The "medium" setting introduces moderate challenges:
 - 7 marker genes per cell type with +1.2 log-fold expression
@@ -311,7 +436,7 @@ The "medium" setting introduces moderate challenges:
 
 This setting approximates high-quality real-world datasets from technologies like 10x Visium.
 
-#### 4.1.3 Hard Difficulty
+#### 5.1.3 Hard Difficulty
 
 The "hard" setting creates extremely challenging data that reflects difficult real-world scenarios:
 - Only 5 marker genes per cell type with +0.8 log-fold expression
@@ -323,197 +448,6 @@ The "hard" setting creates extremely challenging data that reflects difficult re
 
 This setting mimics challenging datasets from tissues with subtle biological differences, significant technical noise, or technologies with high dropout rates.
 
-### 4.2 Hard Clustering Challenge Implementation
-
-The hard difficulty level implements multiple specific challenges for clustering algorithms:
-
-#### 4.2.1 Reduced Marker Gene Contrast
-
-The implementation significantly reduces the signal-to-noise ratio for marker genes:
-
-```r
-# Reduced number and intensity of markers
-start_idx <- (k - 1) * 5 + 1  # Reduced from 10 to 5 markers per type
-end_idx   <- min(k * 5, n_genes)
-if (start_idx <= end_idx) {
-  mu[start_idx:end_idx] <- mu[start_idx:end_idx] + 0.8  # Reduced from +2.0 to +0.8
-}
-
-# Significant marker overlap between types
-if (k > 1) {
-  prev_markers <- ((k-2) * 5 + 1):min((k-1) * 5, n_genes)
-  if (length(prev_markers) > 0) {
-    mu[prev_markers] <- mu[prev_markers] + 0.4  # Partial expression in adjacent types
-  }
-}
-```
-
-This creates a realistic scenario where:
-- Marker genes show modest fold-changes (approximately 2.2-fold)
-- Each cell type has fewer definitive markers
-- Markers show partial expression in adjacent cell types
-
-#### 4.2.2 Enhanced Spatial Noise
-
-The implementation introduces stronger spatial effects with shorter correlation lengths:
-
-```r
-# Model with shorter range and higher intensity
-gp_sim <- gstat(formula = z ~ 1, locations = ~x+y, dummy = TRUE,
-              beta = 0, model = vgm(psill=1.5, range=15, model="Exp"), nmax=10)
-
-# Apply stronger spatial effect with additional random noise
-if (use_spatial_correlation) {
-  mu_vals <- mu_vals + 1.5 * gp_noise  # Increased from 0.5 to 1.5
-  
-  # Additional random noise component
-  random_noise <- rnorm(length(mu_vals), 0, 0.4)
-  mu_vals <- mu_vals + random_noise
-}
-```
-
-This creates spatial patterns that are:
-- More irregular (shorter range parameter)
-- More intense (higher psill value)
-- Confounded by additional cell-specific random noise
-
-#### 4.2.3 Increased Technical Challenges
-
-The implementation increases both the average and spatial variation of technical artifacts:
-
-```r
-# Very high dispersion (low parameter values = higher variability)
-dispersion_param <- rescale(mean_dist, to = c(1.5, 0.8))
-
-# High dropout probability throughout
-dropout_prob <- rescale(mean_dist, to = c(0.3, 0.7))
-```
-
-This creates extremely challenging technical characteristics:
-- Up to 70% dropout probability at domain boundaries
-- At least 30% dropout even in domain cores
-- Very high biological variability (NB dispersion parameter as low as 0.8)
-
-#### 4.2.4 Cell-specific Random Effects
-
-An additional layer of cell-specific variability is added independently of cluster identity:
-
-```r
-# Cell-specific random effect independent of cluster
-cell_specific_effect <- rnorm(N, 0, 0.3)
-```
-
-This models biological heterogeneity within nominally identical cells, creating additional challenges for clustering algorithms.
-
-## 5. The `analyze_and_compare_clusters.R` Framework
-
-The framework includes a comprehensive tool for evaluating clustering method performance, implemented in the `analyze_and_compare_clusters.R` script.
-
-### 5.1 Function Overview
-
-```r
-analyze_and_compare_clusters(
-  # Main parameters
-  rds_path = "data/simulated_image_correlation.rds",  # Path to simulation output
-  output_path = "results/metrics_comparison.csv",     # Where to save results
-  k_cell_types = NULL,                               # Number of cell types (auto-detected if NULL)
-  
-  # Algorithm parameters
-  seurat_resolution = 0.25,                          # Resolution for Seurat clustering
-  hdbscan_minPts = 7                                 # Parameter for HDBSCAN clustering
-)
-```
-
-This function provides a comprehensive evaluation workflow:
-
-1. Reads a simulated dataset containing known ground truth clusters
-2. Processes the data using a standardized Seurat pipeline:
-   - SCTransform normalization
-   - PCA dimensionality reduction
-   - UMAP visualization
-3. Applies multiple clustering algorithms:
-   - Seurat's graph-based clustering (community detection)
-   - HDBSCAN density-based clustering
-4. Evaluates performance through:
-   - Contingency tables comparing true vs. predicted clusters
-   - Performance metrics (TP, FP, FN, Precision) for each approach
-   - Spatial visualization of clustering results
-   - Silhouette analysis for clustering quality assessment
-
-### 5.2 Technical Details
-
-The function implements sophisticated cluster mapping and evaluation:
-
-```r
-# True clusters are renamed based on size for consistent comparisons
-true_cluster_sizes <- table(seu@meta.data$intensity_cluster)
-true_clusters_sorted <- sort(true_cluster_sizes, decreasing = TRUE)
-true_sorted_names <- names(true_clusters_sorted)
-
-# Matching number of clusters from ground truth
-num_true_clusters <- min(length(true_sorted_names), k_cell_types)
-true_labels <- paste0("cells_", letters[1:num_true_clusters])
-```
-
-This approach ensures fair comparisons by:
-- Mapping clusters to standardized names based on size
-- Handling different numbers of detected clusters appropriately
-- Creating consistent labels for performance evaluation
-
-### 5.3 Metric Calculation
-
-The function implements detailed metric calculation for rigorous evaluation:
-
-```r
-calculate_metrics <- function(true_labels, predicted_labels, method_name) {
-  # Create contingency table
-  true_factors <- factor(true_labels)
-  predicted_factors <- factor(predicted_labels)
-  all_classes <- union(levels(true_factors), levels(predicted_factors))
-  true_factors <- factor(true_labels, levels = all_classes)
-  predicted_factors <- factor(predicted_labels, levels = all_classes)
-  contingency <- table(true_factors, predicted_factors)
-  
-  # Calculate performance metrics
-  TP <- diag(contingency)
-  FP <- colSums(contingency) - TP
-  FN <- rowSums(contingency) - TP
-  Precision <- ifelse((TP + FP) > 0, TP / (TP + FP), NA)
-  
-  # Combine results
-  metrics_per_class <- tibble(
-    Class = rownames(contingency),
-    True_Positives = TP,
-    False_Positives = FP,
-    False_Negatives = FN,
-    Precision = Precision
-  )
-  
-  # Calculate totals
-  total_TP <- sum(TP)
-  total_FP <- sum(FP)
-  total_FN <- sum(FN)
-  total_Precision <- ifelse((total_TP + total_FP) > 0, total_TP / (total_TP + total_FP), NA)
-  
-  # Return combined results
-  metrics <- bind_rows(metrics_per_class, 
-                     tibble(Class = "Total", 
-                           True_Positives = total_TP,
-                           False_Positives = total_FP, 
-                           False_Negatives = total_FN, 
-                           Precision = total_Precision)) %>%
-    mutate(Method = method_name) %>%
-    dplyr::select(Method, everything())
-  
-  return(metrics)
-}
-```
-
-These metrics provide a comprehensive evaluation framework for:
-- Per-class performance assessment
-- Overall clustering quality
-- Comparative analysis between methods
-
 ## 6. Advanced Customization
 
 For users with specific research needs, the framework provides extensive customization options beyond the pre-defined difficulty levels.
@@ -523,17 +457,17 @@ For users with specific research needs, the framework provides extensive customi
 The function accepts detailed parameter lists for fine-grained control:
 
 ```r
-# Example with fully customized parameters
+# Example with fully customized parameters for Visium HD simulation
 simulate_spatial_transcriptomics(
   # Core parameters
   image_path = "images/tissue.png",
   output_path = "data/custom_simulation.rds",
   output_plot = "results/custom_distribution.png",
-  n_cells = 25000,
+  grid_mode = TRUE,
+  grid_resolution = 2,
   n_genes = 150,
   k_cell_types = 7,
-  threshold_value = 0.65,
-  random_seed = 42,
+  correlation_method = "grf",
   
   # Marker gene parameters
   marker_params = list(
@@ -546,23 +480,28 @@ simulate_spatial_transcriptomics(
   spatial_params = list(
     spatial_noise_intensity = 1.2, # Intensity of spatial effect
     spatial_range = 25,            # Correlation range
-    random_noise_sd = 0.3          # Cell-specific random noise
+    random_noise_sd = 0.3,         # Cell-specific random noise
+    gradient_regions = TRUE,       # Enable gradient transitions
+    gradient_width = 8             # Width of transition regions
   ),
   
-  # Technical artifact parameters
+  # Modeling library size and technical artifacts
+  library_size_params = list(
+    mean_library_size = 8000,       # Average UMI count per spot
+    library_size_cv = 0.4,          # Coefficient of variation
+    spatial_effect_on_library = 0.6 # Spatial correlation in library size
+  ),
+  
+  # Dropout and technical artifacts
   dropout_params = list(
-    dropout_range = c(0.25, 0.6),  # Range of dropout probabilities
-    dispersion_range = c(1.8, 0.9) # Range of NB dispersion values
+    dropout_range = c(0.15, 0.5),    # Base dropout probabilities
+    dispersion_range = c(2.0, 0.9),  # Range of NB dispersion values
+    expression_dependent_dropout = TRUE,  # Enable expression-dependent dropout
+    dropout_curve_midpoint = 0.4,    # Expression level at 50% dropout
+    dropout_curve_steepness = 6      # Steepness of dropout curve
   ),
   
-  # Hybrid cell parameters
-  hybrid_params = list(
-    use_hybrid_cells = TRUE,       # Enable/disable hybrid cells
-    max_hybrid_pairs = 1000,       # Maximum hybrid cell pairs
-    hybrid_intensity_range = c(0.2, 0.5) # Range of hybrid effects
-  ),
-  
-  # Cell-specific parameters
+  # Cell-specific variation
   cell_specific_params = list(
     cell_specific_noise_sd = 0.25  # SD of cell-specific random effect
   )
@@ -588,91 +527,38 @@ The image processing pipeline includes:
 - Grayscale conversion for multi-channel images
 - Intensity thresholding to define tissue regions
 - K-means++ clustering to define spatial domains
+- Projection onto regular grid for Visium HD mode
 
-## 7. Statistical Properties and Advantages
+## 7. Validation and Analysis Tools
 
-### 7.1 Statistical Properties of the Simulation
+### 7.1 Spatial Autocorrelation Analysis
 
-#### 7.1.1 Overdispersion Modeling
+The framework calculates Moran's I statistic to quantify spatial autocorrelation:
 
-The Negative Binomial distribution used for most genes models overdispersion in gene expression, a key property of real transcriptomic data. The variance-mean relationship is:
+$$I = \frac{n}{S_0} \frac{\sum_i \sum_j w_{ij} (x_i - \bar{x}) (x_j - \bar{x})}{\sum_i (x_i - \bar{x})^2}$$
 
-$$\text{Var}(X) = \mu + \frac{\mu^2}{r}$$
+Where:
+- $n$ is the number of spots/cells
+- $w_{ij}$ are spatial weights
+- $S_0$ is the sum of all weights
+- $x_i$ is the gene expression at location $i$
+- $\bar{x}$ is the mean expression
 
-This allows the variance to exceed the mean by an amount proportional to the square of the mean, matching empirical observations from real data.
+This provides a standardized measure of spatial structure that can be:
+- Compared between simulated and real datasets
+- Used to validate spatial correlation models
+- Applied to benchmark spatial analysis methods
 
-#### 7.1.2 Sub-Poisson Variation
+### 7.2 Enhanced Visualization
 
-For stable genes, the Binomial distribution with high success probability creates a sub-Poisson variance pattern:
+The framework includes advanced visualization capabilities:
 
-$$\text{Var}(X) = np(1-p)$$
+1. **Grid visualization**: Shows spot-level data with appropriate geometry
+2. **Library size maps**: Visualizes spatial patterns in sequencing depth
+3. **Autocorrelation plots**: Displays spatial structure metrics
+4. **Multiple output formats**: Saves visualizations for further analysis
 
-When p is large (e.g., 0.9), the variance is less than the mean (np), providing a realistic model for constitutively expressed genes.
-
-#### 7.1.3 Spatial Correlation Structure
-
-The Gaussian Process implements a continuous spatial correlation structure with an exponential covariance function:
-
-$$C(d) = \sigma^2 \exp(-d/\rho)$$
-
-This creates smooth spatial patterns that mimic the continuous nature of biological processes across tissue.
-
-#### 7.1.4 Varying Noise at Boundaries
-
-The spatially-varying dispersion and dropout models capture important biological realities:
-- Expression is more variable at tissue boundaries
-- Technical artifacts (dropouts) are more common at edges
-- There's a gradual transition between different cell types/regions
-
-### 7.2 Advantages Over Alternative Approaches
-
-#### 7.2.1 Compared to Simple Poisson Models
-
-Traditional simulations often use Poisson distributions, which:
-- Constrain variance to equal the mean
-- Cannot model overdispersion seen in real data
-- Miss the heterogeneous noise structure across tissue
-
-Our Negative Binomial approach provides:
-- Flexible variance-mean relationships
-- Spatially varying dispersion
-- More realistic expression distributions
-
-#### 7.2.2 Compared to Uniform Dropout Models
-
-Many simulations use uniform random dropout, while our approach:
-- Models spatially-varying dropout rates
-- Creates realistic patterns of missing data
-- Reflects the true technical biases in spatial transcriptomics
-
-The implementation creates more realistic technical artifacts by:
-- Linking dropout to spatial location
-- Creating higher dropout at domain boundaries
-- Modeling the relationship between technical artifacts and biological variation
-
-#### 7.2.3 Compared to Discrete Spatial Correlations
-
-Simple approaches might model correlation only within predefined regions, while our GP approach:
-- Creates continuous correlation patterns
-- Allows smooth transitions between regions
-- Better models the true biological continuity of tissues
-
-The Gaussian Process implementation provides:
-- Principled statistical framework for spatial correlation
-- Continuous rather than discrete correlation structure
-- Control over correlation length scale and intensity
-
-#### 7.2.4 Hybrid Cell Modeling
-
-A unique feature of our framework is the explicit modeling of hybrid cells at domain boundaries:
-- Creates cells with mixed expression profiles
-- Models gradual transitions between domains
-- Represents biological reality of interface regions
-
-This approach addresses a major limitation of existing simulations:
-- Most assume sharp boundaries between cell types
-- Real tissues show gradual transitions and intermediate cells
-- Boundary regions are often most biologically interesting
+These visualizations provide both qualitative and quantitative assessment of simulation quality and realism.
 
 ## 8. Conclusion and Future Directions
 
@@ -682,10 +568,13 @@ This simulation and analysis framework provides a sophisticated toolkit for gene
 
 The framework makes several important contributions to spatial transcriptomics methodology:
 1. **Realistic statistical properties** that match real data characteristics
-2. **Spatially-varying technical artifacts** that reflect actual technical challenges
-3. **Customizable difficulty levels** for systematic benchmarking
-4. **Image-based spatial domains** for biological realism
-5. **Comprehensive evaluation tools** for method comparison
+2. **Grid-based simulation for Visium HD** that models high-resolution technologies
+3. **Advanced spatial correlation models** using both GRF and CAR approaches
+4. **Gradient-based transitions** that create realistic border regions
+5. **Expression-dependent dropout modeling** that reflects empirical observations
+6. **Library size variation** with spatial correlation patterns
+7. **Optimized implementation** for handling large datasets efficiently
+8. **Comprehensive evaluation tools** for method comparison
 
 ### 8.2 Future Extensions
 
@@ -695,6 +584,7 @@ Future development of this framework could include:
 3. **Ligand-receptor interaction modeling** for cell-cell communication
 4. **Dynamic temporal components** for developmental processes
 5. **Integration with single-cell reference atlases** for multi-modal simulation
+6. **Automated parameter estimation** from real datasets
 
 ### 8.3 Applications
 
