@@ -84,17 +84,37 @@ analyze_and_compare_clusters <- function(
   expression_matrix <- Matrix::Matrix(t(data$expression), sparse = TRUE)  # Seurato si aspetta righe = geni, colonne = cellule
 
   # ========================================
-  # 7) Crea l'oggetto Seurat includendo 'intensity_cluster' nel meta.data
+  # 7) Crea l'oggetto Seurat includendo 'intensity_cluster' e altri metadati nel meta.data
   # ========================================
   cat("Creazione dell'oggetto Seurat...\n")
+  
+  # Creiamo un dataframe base con i metadati essenziali
+  meta_df <- data.frame(
+    cell = cell_ids,
+    x = data$coordinates$x,
+    y = data$coordinates$y,
+    intensity_cluster = data$intensity_cluster
+  )
+  
+  # Aggiungi parametri di dispersione se presenti
+  if ("dispersion_param" %in% names(data)) {
+    meta_df$dispersion_param <- data$dispersion_param
+  }
+  
+  # Aggiungi informazioni sulla library size se presenti
+  if ("library_size" %in% names(data)) {
+    meta_df$library_size <- data$library_size
+  }
+  
+  # Aggiungi informazioni sul boundary_dist se presenti
+  if ("boundary_dist" %in% names(data)) {
+    meta_df$boundary_dist <- data$boundary_dist
+  }
+  
+  # Crea l'oggetto Seurat con tutti i metadati disponibili
   seu <- CreateSeuratObject(
     counts = expression_matrix,
-    meta.data = data.frame(
-      cell = cell_ids,
-      x = data$coordinates$x,
-      y = data$coordinates$y,
-      intensity_cluster = data$intensity_cluster
-    )
+    meta.data = meta_df
   )
 
   # Imposta i nomi delle righe
@@ -458,8 +478,8 @@ analyze_and_compare_clusters <- function(
 
 # Esempio: analisi di un dataset simulato con parametri personalizzati
 # analyze_and_compare_clusters(
-#   rds_path = "data/simulated_image_correlation.rds",
-#   output_path = "results/metrics_comparison.csv",
+#   rds_path = "data/simulated_visiumhd.rds",
+#   output_path = "results/visiumhd_metrics.csv",
 #   k_cell_types = NULL,               # Numero di tipi cellulari (opzionale, altrimenti letto dal file)
 #   seurat_resolution = 0.3,           # Risoluzione per il clustering Seurat
 #   hdbscan_minPts = 10                # Parametro minPts per HDBSCAN

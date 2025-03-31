@@ -1052,9 +1052,9 @@ simulate_spatial_transcriptomics <- function(
 
 # Esempio 1: Visium HD-like con griglia a 2µm
 # simulate_spatial_transcriptomics(
-#   image_path = here::here("images/colon.png"), 
-#   output_path = "data/simulated_visium_hd.rds",
-#   output_plot = "results/simulated_visium_hd.png",
+#   image_path = "images/colon.png", 
+#   output_path = "data/simulated_visiumhd_simple.rds",
+#   output_plot = "results/simulated_visiumhd_simple.png",
 #   grid_mode = TRUE,                    # Attiva la modalità griglia
 #   grid_resolution = 2,                 # Risoluzione 2µm come Visium HD
 #   difficulty_level = "medium",
@@ -1064,6 +1064,7 @@ simulate_spatial_transcriptomics <- function(
 #   spatial_params = list(
 #     gradient_regions = TRUE,           # Attiva gradienti tra regioni
 #     gradient_width = 5,                # Larghezza del gradiente (in unità griglia)
+#     gradient_exponent = 1.5,           # Forma del gradiente
 #     spatial_noise_intensity = 1.0,
 #     spatial_range = 30,
 #     random_noise_sd = 0.2
@@ -1071,20 +1072,28 @@ simulate_spatial_transcriptomics <- function(
 #   dropout_params = list(
 #     expression_dependent_dropout = TRUE,  # Dropout dipendente dal livello di espressione
 #     dropout_curve_midpoint = 0.5,
-#     dropout_curve_steepness = 5
+#     dropout_curve_steepness = 5,
+#     cell_type_dispersion_effect = 0.2    # Effetto del tipo cellulare sulla dispersione
 #   ),
 #   library_size_params = list(
 #     mean_library_size = 10000,         # Media conteggi per spot
 #     library_size_cv = 0.3,             # Coefficiente di variazione
-#     spatial_effect_on_library = 0.5    # Effetto spaziale sulla dimensione libreria
+#     spatial_effect_on_library = 0.5,   # Effetto spaziale sulla dimensione libreria
+#     cell_type_effect = TRUE            # Effetto del tipo cellulare
+#   ),
+#   cell_specific_params = list(
+#     cell_specific_noise_sd = 0.2,
+#     use_gene_modules = TRUE,
+#     n_gene_modules = 5,                # Moduli di co-espressione genica
+#     module_correlation = 0.6           # Correlazione tra geni dello stesso modulo
 #   )
 # )
 
 # Esempio 2: dataset "facile" con metodo originale (pre-HD)
 # simulate_spatial_transcriptomics(
-#   image_path = here::here("images/colon.png"),
-#   output_path = "data/simulated_easy_correlation.rds",
-#   output_plot = "results/simulated_easy_distribution.png",
+#   image_path = "images/colon.png",
+#   output_path = "data/simulated_basic.rds",
+#   output_plot = "results/simulated_basic.png",
 #   grid_mode = FALSE,                    # Disattiva la modalità griglia
 #   difficulty_level = "easy",
 #   n_cells = 20000,
@@ -1093,22 +1102,34 @@ simulate_spatial_transcriptomics <- function(
 
 # Esempio 3: dataset difficile con pattern CAR (Conditional Autoregressive)
 # simulate_spatial_transcriptomics(
-#   image_path = here::here("images/granuloma.png"),
-#   output_path = "data/simulated_car_model.rds",
-#   output_plot = "results/simulated_car_model.png",
+#   image_path = "images/granuloma.png",
+#   output_path = "data/simulated_visiumhd_car.rds",
+#   output_plot = "results/simulated_visiumhd_car.png",
 #   grid_mode = TRUE,
 #   grid_resolution = 2,
 #   difficulty_level = "hard",
-#   n_cells = 30000,
 #   n_genes = 100,
-#   correlation_method = "car"           # Conditional Autoregressive model
+#   correlation_method = "car",           # Conditional Autoregressive model
+#   spatial_params = list(
+#     gradient_regions = TRUE,
+#     gradient_width = 8,
+#     gradient_exponent = 1.5,
+#     spatial_noise_intensity = 1.8,
+#     spatial_range = 20,
+#     random_noise_sd = 0.15
+#   ),
+#   cell_specific_params = list(
+#     use_gene_modules = TRUE,
+#     n_gene_modules = 4,
+#     module_correlation = 0.8
+#   )
 # )
 
-# Esempio 4: dataset personalizzato con migliorie biologiche
+# Esempio 4: dataset Visium HD con migliorie biologiche
 simulate_spatial_transcriptomics(
   image_path = "images/colon.png",
-  output_path = "data/simulated_improved_bio.rds",
-  output_plot = "results/simulated_improved_bio.png",
+  output_path = "data/simulated_visiumhd.rds",
+  output_plot = "results/simulated_visiumhd.png",
   grid_mode = TRUE,
   grid_resolution = 2,
   difficulty_level = "medium",
