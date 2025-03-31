@@ -1132,46 +1132,47 @@ simulate_spatial_transcriptomics(
   output_plot = "results/simulated_visiumhd.png",
   grid_mode = TRUE,
   grid_resolution = 2,
+  threshold_value = 0.6,               
   difficulty_level = "medium",
   n_genes = 150,
   k_cell_types = 7,
   # Correlazione forte ma con range corto
   correlation_method = "grf",
   spatial_params = list(
-    spatial_noise_intensity = 1.5,     # Intensità più alta
-    spatial_range = 15,                # Range più corto
-    random_noise_sd = 0.15,            # Ridotto per favorire pattern spaziali
+    spatial_noise_intensity = 0.8,     # Intensità più alta
+    spatial_range = 25,                # Range più corto
+    random_noise_sd = 0.1,            # Ridotto per favorire pattern spaziali
     gradient_regions = TRUE,
-    gradient_width = 10,               # Gradiente più ampio
+    gradient_width = 15,               # Gradiente più ampio
     gradient_exponent = 1.5            # Transizione non lineare del gradiente
   ),
   # Marker con forte sovrapposizione
   marker_params = list(
-    marker_genes_per_type = 8,
-    marker_expression_fold = 1.2,      # Differenza moderatamente alta
-    marker_overlap_fold = 0.4          # Moderata sovrapposizione
+    marker_genes_per_type = 10,
+    marker_expression_fold = 2.0,      # Differenza moderatamente alta
+    marker_overlap_fold = 0.1          # Moderata sovrapposizione
   ),
   # Dropout e dispersione
   dropout_params = list(
-    dropout_range = c(0.1, 0.4),
-    dispersion_range = c(2.0, 0.8),
+    dropout_range = c(0.05, 0.3),
+    dispersion_range = c(3.0, 1.2),
     cell_type_dispersion_effect = 0.3,  # Effetto specifico di tipo cellulare
     expression_dependent_dropout = TRUE,
-    dropout_curve_midpoint = 0.4,
-    dropout_curve_steepness = 6         # Moderatamente ripida
+    dropout_curve_midpoint = 0.3,
+    dropout_curve_steepness = 8         # Moderatamente ripida
   ),
   # Effetti sulla dimensione libreria
   library_size_params = list(
     mean_library_size = 8000,
     library_size_cv = 0.4,              # Variabilità moderata-alta
-    spatial_effect_on_library = 0.5,    # Moderato effetto spaziale
+    spatial_effect_on_library = 0.7,    # Moderato effetto spaziale
     cell_type_effect = TRUE             # Effetto del tipo cellulare
   ),
   # Parametri di correlazione di geni
   cell_specific_params = list(
-    cell_specific_noise_sd = 0.2,
+    cell_specific_noise_sd = 0.15,
     use_gene_modules = TRUE,
     n_gene_modules = 6,                 # Programmi di espressione ben definiti
-    module_correlation = 0.7            # Correlazione moderata-alta
+    module_correlation = 0.8            # Correlazione moderata-alta
   )
 )
