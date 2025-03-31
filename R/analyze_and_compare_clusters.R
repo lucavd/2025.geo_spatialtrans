@@ -149,17 +149,16 @@ analyze_and_compare_clusters <- function(
   print(plot3 + plot4)
 
   # ========================================
-  # 11) Normalizzazione con SCTransform
+  # 11) Normalizzazione (standard LogNormalize invece di SCTransform per robustezza)
   # ========================================
-  cat("Normalizzazione dei dati con SCTransform...\n")
-  seu <- SCTransform(seu, verbose=FALSE)
-
-  # Imposta l'assay di default
-  DefaultAssay(seu) <- "SCT"
+  cat("Normalizzazione dei dati con LogNormalize...\n")
+  seu <- NormalizeData(seu, normalization.method = "LogNormalize", scale.factor = 10000, verbose = FALSE)
+  seu <- FindVariableFeatures(seu, selection.method = "vst", nfeatures = 2000, verbose = FALSE)
+  seu <- ScaleData(seu, verbose = FALSE)
 
   # Ispezione delle metriche dopo la normalizzazione
-  plot5 <- VlnPlot(seu, features = "nFeature_SCT", pt.size = 0.1) + NoLegend()
-  plot6 <- VlnPlot(seu, features = "nCount_SCT", pt.size = 0.1) + NoLegend()
+  plot5 <- VlnPlot(seu, features = "nFeature_RNA", pt.size = 0.1) + NoLegend()
+  plot6 <- VlnPlot(seu, features = "nCount_RNA", pt.size = 0.1) + NoLegend()
   print(plot5 + plot6)
 
   # ========================================
@@ -168,8 +167,9 @@ analyze_and_compare_clusters <- function(
   cat("Esecuzione della PCA...\n")
   seu <- RunPCA(
     object = seu,
-    assay = "SCT",
+    assay = "RNA",  # Usiamo l'assay RNA normalizzato
     npcs = 30,
+    features = VariableFeatures(object = seu),
     approximate = FALSE
   )
 
