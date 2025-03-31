@@ -570,21 +570,23 @@ The framework makes several important contributions to spatial transcriptomics m
 1. **Realistic statistical properties** that match real data characteristics
 2. **Grid-based simulation for Visium HD** that models high-resolution technologies
 3. **Advanced spatial correlation models** using both GRF and CAR approaches
-4. **Gradient-based transitions** that create realistic border regions
-5. **Expression-dependent dropout modeling** that reflects empirical observations
-6. **Library size variation** with spatial correlation patterns
-7. **Optimized implementation** for handling large datasets efficiently
-8. **Comprehensive evaluation tools** for method comparison
+4. **Enhanced gradient-based transitions** with non-linear functions and multi-type cell mixing
+5. **Gene co-expression modules** that simulate realistic transcriptional programs
+6. **Cell-type specific effects** on library size and dispersion
+7. **Expression-dependent dropout modeling** that reflects empirical observations
+8. **Library size variation** with both spatial and cell type dependencies
+9. **Optimized implementation** using vectorized operations for efficiency
+10. **Comprehensive evaluation tools** with spatial autocorrelation metrics
 
 ### 8.2 Future Extensions
 
-Future development of this framework could include:
-1. **Multi-resolution spatial patterns** to model hierarchical tissue organization
-2. **Cell type-specific dropout rates** to reflect varying RNA content
-3. **Ligand-receptor interaction modeling** for cell-cell communication
-4. **Dynamic temporal components** for developmental processes
-5. **Integration with single-cell reference atlases** for multi-modal simulation
-6. **Automated parameter estimation** from real datasets
+Having implemented several key biological improvements such as gene co-expression modules and cell-type specific effects, future development of this framework could include:
+1. **Dynamic temporal components** to model developmental processes and cellular responses
+2. **Ligand-receptor interaction modeling** for realistic cell-cell communication networks
+3. **Multi-scale spatial patterns** that capture hierarchical tissue organization
+4. **Automated parameter inference** from real Visium HD datasets
+5. **Multi-omic integration** for simultaneous simulation of transcriptomic, proteomic, and epigenomic data
+6. **Context-aware simulation** that incorporates histological features from input images
 
 ### 8.3 Applications
 

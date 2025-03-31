@@ -173,6 +173,7 @@ if (requireNamespace("spdep", quietly = TRUE)) {
 **Soluzione implementata:**
 - Simulazione delle dimensioni delle librerie con distribuzione log-normale
 - Effetto spaziale sulla dimensione della libreria
+- Effetto del tipo cellulare sulla dimensione della libreria
 - Scaling dei conteggi di espressione in base alla dimensione della libreria
 
 ```r
@@ -186,7 +187,7 @@ library_size <- rlnorm(N, meanlog = log_mean, sdlog = log_sd)
 
 # Aggiungi effetto spaziale sulla dimensione libreria
 if (library_size_params$spatial_effect_on_library > 0) {
-  # Crea un GP per l'effetto spaziale
+  # Crea un GP con correlazione spaziale a raggio ampio
   sp_df_lib <- cell_df
   coordinates(sp_df_lib) <- ~ x + y
   
@@ -194,7 +195,7 @@ if (library_size_params$spatial_effect_on_library > 0) {
                  beta = 0, model = vgm(psill = 1.0, 
                                       range = spatial_params$spatial_range * 1.5, 
                                       model = "Exp"), 
-                 nmax = 10)
+                 nmax = 15)
   
   lib_noise <- predict(lib_gp, newdata = sp_df_lib, nsim = 1)$sim1
   
@@ -204,17 +205,35 @@ if (library_size_params$spatial_effect_on_library > 0) {
   library_size <- library_size * exp(lib_effect)
 }
 
+# Aggiungi effetto del tipo cellulare sulla dimensione della libreria
+if (library_size_params$cell_type_effect) {
+  # Diversi tipi cellulari hanno diversi contenuti di RNA
+  cell_type_effect <- numeric(N)
+  
+  # Crea effetti diversi per diversi tipi cellulari
+  type_effects <- rnorm(k_cell_types, mean = 0, sd = 0.2)
+  
+  # Assegna effetto in base al tipo cellulare
+  for (k in 1:k_cell_types) {
+    cell_type_effect[cluster_labels == k] <- type_effects[k]
+  }
+  
+  # Applica effetto moltiplicativo
+  library_size <- library_size * exp(cell_type_effect)
+}
+
 # Applica l'effetto della dimensione della libreria ai conteggi
 scaled_counts <- raw_counts * (library_size / mean(library_size))
 expression_data[, g] <- round(scaled_counts)
 ```
 
-**Fondamento teorico:** La distribuzione della dimensione della libreria nei dati di trascrittomica segue tipicamente una distribuzione log-normale (Lytal et al. 2020). Nei dati Visium reali, la dimensione della libreria mostra anche pattern spaziali dovuti a:
+**Fondamento teorico:** La distribuzione della dimensione della libreria nei dati di trascrittomica segue tipicamente una distribuzione log-normale (Lytal et al. 2020). Nei dati Visium reali, la dimensione della libreria mostra pattern complessi dovuti a:
 1. Variazione dell'efficienza di cattura RNA in diverse regioni tissutali
 2. Differenze nella densità cellulare tra regioni
-3. Effetti tecnici durante la preparazione delle librerie
+3. Contenuto di RNA intrinsecamente diverso tra tipi cellulari (es. cellule secretorie hanno più RNA di cellule di supporto)
+4. Effetti tecnici durante la preparazione delle librerie
 
-La modellazione realistica di questa variazione è fondamentale per simulare correttamente la variabilità tecnica nei dati.
+La modellazione realistica di questa variazione, inclusa la dipendenza dal tipo cellulare, è fondamentale per simulare correttamente la variabilità tecnica e biologica nei dati.
 
 ### 3.2 Dropout Dipendente dall'Espressione
 
@@ -255,15 +274,17 @@ dove:
 
 Questa relazione si basa sul fatto che geni altamente espressi hanno maggiori probabilità di essere catturati anche in presenza di inefficienze tecniche.
 
-### 3.3 Dispersione Variabile Spazialmente
+### 3.3 Dispersione Variabile per Tipo Cellulare e Posizione
 
-**Problema affrontato:** La variabilità biologica (dispersione) è spesso maggiore ai confini tra regioni tissutali, un fenomeno non adeguatamente catturato dal modello originale.
+**Problema affrontato:** La variabilità biologica (dispersione) è spesso eterogenea in base sia alla posizione nel tessuto che al tipo cellulare, un fenomeno non adeguatamente catturato dal modello originale.
 
 **Soluzione implementata:**
 - Dispersione variabile basata sulla distanza dal confine tra cluster
-- Parametrizzazione della dispersione nei dati simulati
+- Effetto del tipo cellulare sulla dispersione 
+- Parametrizzazione avanzata della dispersione nei dati simulati
 
 ```r
+# Dispersione basata sulla posizione (distanza dal confine)
 if (spatial_params$gradient_regions && exists("boundary_dist", where = cell_df)) {
   # Più vicino al confine = più variabilità (parametro dispersione più basso)
   dispersion_param <- dropout_params$dispersion_range[2] + 
@@ -272,17 +293,85 @@ if (spatial_params$gradient_regions && exists("boundary_dist", where = cell_df))
   # Metodo originale basato sulla distanza media
   dispersion_param <- rescale(mean_dist, to = dropout_params$dispersion_range)
 }
+
+# Aggiungi effetto del tipo cellulare sulla dispersione
+# Alcuni tipi cellulari sono intrinsecamente più variabili di altri
+set.seed(random_seed + 4)
+# Crea effetti casuali per ogni tipo cellulare
+type_dispersion_effects <- runif(k_cell_types, 
+                               min = 1 - dropout_params$cell_type_dispersion_effect,
+                               max = 1 + dropout_params$cell_type_dispersion_effect)
+
+# Applica effetto moltiplicativo per tipo cellulare
+for (k in 1:k_cell_types) {
+  dispersion_param[cluster_labels == k] <- dispersion_param[cluster_labels == k] * type_dispersion_effects[k]
+}
 ```
 
 **Fondamento teorico:** Nella distribuzione Binomiale Negativa, il parametro di dispersione (size) è inversamente correlato alla variabilità extra-Poissoniana. Un valore basso di questo parametro comporta alta variabilità.
 
-L'implementazione si basa sull'osservazione che le aree di transizione tra regioni tissutali mostrano maggiore eterogeneità trascrizionale dovuta a:
+L'implementazione si basa sull'osservazione che:
 
-1. Cellule in stati intermedi o transitori
-2. Misture di popolazioni cellulari diverse
-3. Risposte a segnali contrastanti dalle regioni adiacenti
+1. Le aree di transizione tra regioni tissutali mostrano maggiore eterogeneità trascrizionale
+2. Diversi tipi cellulari hanno intrinsecamente diversi livelli di variabilità trascrizionale (es. cellule staminali vs. cellule differenziate)
+3. La variabilità dell'espressione genica è un fenomeno multifattoriale che combina effetti spaziali, di tipo cellulare e di stato cellulare
 
-Questo fenomeno è documentato in studi come Edsgärd et al. (2018) che mostrano come confini tissutali e gradienti funzionali siano caratterizzati da maggiore variabilità di espressione.
+Studi come Edsgärd et al. (2018) e Tirosh et al. (2016) documentano queste differenze di variabilità sia a livello spaziale che a livello di tipo cellulare, evidenziando l'importanza di una modellazione realistica della dispersione.
+
+### 3.4 Implementazione di Moduli Genici Co-espressi
+
+**Problema affrontato:** Il modello originale trattava ogni gene come indipendente, mentre nei dati reali esistono gruppi di geni con espressione coordinata che formano moduli o programmi trascrizionali.
+
+**Soluzione implementata:**
+- Creazione di moduli di geni co-espressi
+- Implementazione di rumore correlato all'interno di ciascun modulo
+- Parametrizzazione del livello di correlazione tra geni dello stesso modulo
+
+```r
+# Crea moduli di geni co-espressi
+if (cell_specific_params$use_gene_modules) {
+  # Calcola il numero di geni per modulo
+  genes_per_module <- ceiling(n_genes / cell_specific_params$n_gene_modules)
+  
+  # Assegna geni ai moduli
+  gene_modules <- list()
+  for (m in 1:cell_specific_params$n_gene_modules) {
+    start_idx <- (m-1) * genes_per_module + 1
+    end_idx <- min(m * genes_per_module, n_genes)
+    gene_modules[[m]] <- start_idx:end_idx
+  }
+  
+  # Crea rumore correlato per ogni modulo
+  module_noise <- matrix(0, nrow = N, ncol = n_genes)
+  
+  # Genera rumore base per ogni modulo
+  base_module_noise <- matrix(rnorm(cell_specific_params$n_gene_modules * N), 
+                             nrow = N, ncol = cell_specific_params$n_gene_modules)
+  
+  # Applica il rumore del modulo a ciascun gene appartenente al modulo
+  for (m in 1:length(gene_modules)) {
+    module_genes <- gene_modules[[m]]
+    # Assegna lo stesso rumore base a tutti i geni del modulo, scalato per la correlazione
+    module_noise[, module_genes] <- base_module_noise[, m] * cell_specific_params$module_correlation
+  }
+  
+  # Aggiunta al modello di espressione
+  if (cell_specific_params$use_gene_modules && !is.null(module_noise)) {
+    # Aggiungi il rumore correlato del modulo genico a cui appartiene questo gene
+    mu_vals <- mu_vals + module_noise[, g]
+  }
+}
+```
+
+**Fondamento teorico:** Nei sistemi biologici reali, i geni non funzionano in modo indipendente ma sono organizzati in programmi trascrizionali coordinati che regolano processi cellulari specifici. Questi programmi creano pattern di co-espressione dove gruppi di geni mostrano correlazione positiva.
+
+Studi come quelli di Stuart et al. (2003), Zhang & Horvath (2005) e Buettner et al. (2017) hanno dimostrato che:
+
+1. I moduli di co-espressione sono una caratteristica fondamentale dei dati di trascrittomica
+2. Questi moduli spesso corrispondono a pathway biologici o programmi funzionali
+3. La correlazione all'interno dei moduli varia in base al tipo di tessuto e allo stato cellulare
+
+La simulazione di questi pattern di co-espressione è essenziale per creare dati sintetici che riflettano realisticamente la complessità dei sistemi biologici reali.
 
 ## 4. Visualizzazione e Validazione
 
@@ -350,23 +439,49 @@ result <- list(
 
 **Fondamento teorico:** La validazione quantitativa è essenziale per garantire che i dati simulati rappresentino accuratamente le caratteristiche statistiche dei dati reali. Le metriche di autocorrelazione spaziale, in particolare l'indice di Moran I, sono ampiamente utilizzate nella letteratura per quantificare i pattern spaziali di espressione genica (Svensson et al. 2018, Hu et al. 2021).
 
-## 5. Conclusione e Sviluppi Futuri
+## 5. Miglioramenti Recenti e Direzioni Future
 
-Le modifiche implementate hanno trasformato il framework di simulazione in uno strumento molto più accurato per replicare le caratteristiche dei dati Visium HD. In particolare:
+### 5.1 Miglioramenti Implementati
 
-1. La modalità griglia riproduce fedelmente la struttura spaziale di Visium HD
-2. I gradienti e i modelli di correlazione spaziale catturano pattern biologici realistici
-3. La modellazione della dimensione della libreria e del dropout riflette le sfide tecniche dei dati reali
+Le recenti modifiche hanno trasformato significativamente il framework di simulazione, rendendolo molto più aderente alla realtà biologica dei dati Visium HD:
 
-### Potenziali Sviluppi Futuri
+1. **Miglioramento dei gradienti tra regioni:** 
+   - Implementazione di una funzione di transizione non lineare (esponente personalizzabile)
+   - Considerazione di molteplici tipi cellulari vicini anziché solo coppie
+   - Transizioni più graduali che riflettono l'eterogeneità dei confini tissutali
 
-1. **Composizione cellulare mista:** Implementare la simulazione esplicita di composizioni cellulari miste in ogni spot, particolarmente rilevante per bin a 2μm che possono comunque contenere frammenti di più cellule.
+2. **Moduli genici co-espressi:**
+   - Simulazione di programmi trascrizionali coordinati
+   - Correlazione parametrizzabile tra geni dello stesso modulo
+   - Riproduzione di pathway biologici realistici
 
-2. **Correlazione tra geni:** Aggiungere la possibilità di simulare strutture di correlazione complesse tra geni, riflettendo pathway e programmi trascrizionali coordinati.
+3. **Effetti specifici del tipo cellulare:**
+   - Variazione della dimensione della libreria per tipo cellulare
+   - Dispersione genica specifica per tipo cellulare
+   - Riproduzione dell'eterogeneità trascrizionale osservata in diversi tipi di cellule
 
-3. **Struttura di covarianza stimata da dati reali:** Permettere l'importazione di matrici di covarianza stimate da dati Visium HD reali per guidare la simulazione.
+4. **Autocorrelazione spaziale migliorata:**
+   - Parametrizzazione avanzata dei modelli GRF e CAR
+   - Pattern spaziali più marcati con valori di Moran I più realistici
+   - Maggiore variabilità di struttura spaziale tra geni
 
-4. **Integrazione con dati di imaging multipli:** Estendere il framework per simulare dati multi-modali che integrano trascrittomica spaziale con imaging di proteine o altre modalità.
+Questi miglioramenti hanno portato a simulazioni con caratteristiche molto più simili ai dati Visium HD reali, con pattern spaziali complessi, correlazioni tra geni biologicamente plausibili, e variabilità realistica sia a livello tecnico che biologico.
+
+### 5.2 Direzioni Future
+
+Nonostante i significativi progressi, diverse aree rimangono aperte per ulteriori sviluppi:
+
+1. **Dinamiche temporali:** Implementare la simulazione di processi dinamici come sviluppo, differenziamento o risposte a stimoli, che potrebbero essere modellati come serie temporali di dati spaziali.
+
+2. **Interazioni ligando-recettore:** Modellare esplicitamente le interazioni cellula-cellula attraverso coppie ligando-recettore, creando pattern di espressione spazialmente dipendenti basati su meccanismi di comunicazione intercellulare.
+
+3. **Inferenza di parametri da dati reali:** Sviluppare metodi per stimare automaticamente i parametri di simulazione a partire da dati Visium HD reali, per creare simulazioni "gemelle digitali" di dataset specifici.
+
+4. **Modelli gerarchici multi-scala:** Implementare pattern spaziali a diverse scale di risoluzione (organismi, tessuti, regioni, singole cellule) che meglio riflettono l'organizzazione gerarchica dei sistemi biologici.
+
+5. **Integrazione multi-omica:** Estendere il framework per simulare simultaneamente più livelli di dati omici (trascrittoma, proteoma, epigenoma) con le loro reciproche dipendenze.
+
+Il framework continuerà ad evolversi per rispondere alle crescenti esigenze di benchmark avanzati per metodi di analisi di dati di trascrittomica spaziale ad alta risoluzione.
 
 ## Bibliografia
 

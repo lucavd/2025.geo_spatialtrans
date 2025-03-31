@@ -56,12 +56,14 @@ simulate_spatial_transcriptomics <- function(
     spatial_range = NULL,           # Range di correlazione spaziale
     random_noise_sd = NULL,         # Deviazione standard del rumore casuale
     gradient_regions = FALSE,       # Usare gradienti invece di confini netti tra regioni
-    gradient_width = 5              # Ampiezza del gradiente (in unità della griglia)
+    gradient_width = 5,             # Ampiezza del gradiente (in unità della griglia)
+    gradient_exponent = 1.5         # Esponente per la transizione del gradiente (1=lineare, >1=più graduale al centro)
   ),
   
   dropout_params = list(
     dropout_range = NULL,           # Range di probabilità di dropout
     dispersion_range = NULL,        # Range del parametro di dispersione
+    cell_type_dispersion_effect = 0.2, # Effetto del tipo cellulare sulla dispersione
     expression_dependent_dropout = TRUE, # Dropout dipendente dal livello di espressione
     dropout_curve_midpoint = 0.5,   # Punto medio della curva di dropout (in scala di espressione normalizzata)
     dropout_curve_steepness = 5     # Ripidità della curva di dropout
@@ -70,7 +72,8 @@ simulate_spatial_transcriptomics <- function(
   library_size_params = list(
     mean_library_size = 10000,      # Dimensione media della libreria per spot
     library_size_cv = 0.3,          # Coefficiente di variazione della dimensione della libreria
-    spatial_effect_on_library = 0.5 # Effetto spaziale sulla dimensione della libreria (0-1)
+    spatial_effect_on_library = 0.5, # Effetto spaziale sulla dimensione della libreria (0-1)
+    cell_type_effect = TRUE         # Effetto del tipo cellulare sulla dimensione libreria
   ),
   
   hybrid_params = list(
@@ -80,7 +83,10 @@ simulate_spatial_transcriptomics <- function(
   ),
   
   cell_specific_params = list(
-    cell_specific_noise_sd = NULL   # Deviazione standard del rumore cellula-specifico
+    cell_specific_noise_sd = NULL,  # Deviazione standard del rumore cellula-specifico
+    use_gene_modules = TRUE,        # Usare moduli di geni co-espressi
+    n_gene_modules = 5,             # Numero di moduli genici
+    module_correlation = 0.7        # Correlazione tra geni nello stesso modulo
   )
 ) {
   tictoc::tic()
@@ -475,6 +481,19 @@ simulate_spatial_transcriptomics <- function(
     dispersion_param <- rescale(mean_dist, to = dropout_params$dispersion_range)
   }
   
+  # Aggiungi effetto del tipo cellulare sulla dispersione
+  # Alcuni tipi cellulari sono intrinsecamente più variabili di altri
+  set.seed(random_seed + 4)
+  # Crea effetti casuali per ogni tipo cellulare
+  type_dispersion_effects <- runif(k_cell_types, 
+                                 min = 1 - dropout_params$cell_type_dispersion_effect,
+                                 max = 1 + dropout_params$cell_type_dispersion_effect)
+  
+  # Applica effetto moltiplicativo per tipo cellulare
+  for (k in 1:k_cell_types) {
+    dispersion_param[cluster_labels == k] <- dispersion_param[cluster_labels == k] * type_dispersion_effects[k]
+  }
+  
   # 5d) Simulazione delle dimensioni delle librerie
   # La dimensione della libreria influisce sui conteggi finali
   set.seed(random_seed + 1)
@@ -494,11 +513,12 @@ simulate_spatial_transcriptomics <- function(
     coordinates(sp_df_lib) <- ~ x + y
     
     # Crea un GP per l'effetto spaziale sulla dimensione libreria
+    # Usa una correlazione spaziale a raggio più ampio per la dimensione libreria
     lib_gp <- gstat(formula = z ~ 1, locations = ~x+y, dummy = TRUE,
                    beta = 0, model = vgm(psill = 1.0, 
                                         range = spatial_params$spatial_range * 1.5, 
                                         model = "Exp"), 
-                   nmax = 10)
+                   nmax = 15)
     
     # Genera il noise spaziale
     set.seed(random_seed + 2)
@@ -510,6 +530,25 @@ simulate_spatial_transcriptomics <- function(
     
     # Applica alla dimensione libreria (effetto moltiplicativo)
     library_size <- library_size * exp(lib_effect)
+  }
+  
+  # Aggiungi effetto del tipo cellulare sulla dimensione della libreria
+  if (library_size_params$cell_type_effect) {
+    # Diversi tipi cellulari hanno diversi contenuti di RNA
+    cell_type_effect <- numeric(N)
+    
+    # Crea effetti diversi per diversi tipi cellulari
+    # Alcuni tipi cellulari hanno librerie sistematicamente più grandi
+    set.seed(random_seed + 3)
+    type_effects <- rnorm(k_cell_types, mean = 0, sd = 0.2)  # Effetti casuali per tipo
+    
+    # Assegna effetto in base al tipo cellulare
+    for (k in 1:k_cell_types) {
+      cell_type_effect[cluster_labels == k] <- type_effects[k]
+    }
+    
+    # Applica effetto moltiplicativo
+    library_size <- library_size * exp(cell_type_effect)
   }
   
   # 5e) Impostazione probabilità di dropout
@@ -528,6 +567,38 @@ simulate_spatial_transcriptomics <- function(
   # Identificazione geni stabili (sub-Poissoniani)
   stable_genes <- sample(n_genes, max(1, round(n_genes * 0.1)))  # 10% geni stabili
   
+  # Crea moduli di geni co-espressi
+  gene_modules <- NULL
+  module_noise <- NULL
+  
+  if (cell_specific_params$use_gene_modules) {
+    # Calcola il numero di geni per modulo
+    genes_per_module <- ceiling(n_genes / cell_specific_params$n_gene_modules)
+    
+    # Assegna geni ai moduli
+    gene_modules <- list()
+    for (m in 1:cell_specific_params$n_gene_modules) {
+      start_idx <- (m-1) * genes_per_module + 1
+      end_idx <- min(m * genes_per_module, n_genes)
+      gene_modules[[m]] <- start_idx:end_idx
+    }
+    
+    # Crea rumore correlato per ogni modulo
+    # Questo rumore sarà applicato a tutti i geni dello stesso modulo
+    module_noise <- matrix(0, nrow = N, ncol = n_genes)
+    
+    # Genera rumore base per ogni modulo
+    base_module_noise <- matrix(rnorm(cell_specific_params$n_gene_modules * N), 
+                               nrow = N, ncol = cell_specific_params$n_gene_modules)
+    
+    # Applica il rumore del modulo a ciascun gene appartenente al modulo
+    for (m in 1:length(gene_modules)) {
+      module_genes <- gene_modules[[m]]
+      # Assegna lo stesso rumore base a tutti i geni del modulo, scalato per la correlazione
+      module_noise[, module_genes] <- base_module_noise[, m] * cell_specific_params$module_correlation
+    }
+  }
+  
   # Simulazione della correlazione spaziale continua
   if (use_spatial_correlation) {
     if (correlation_method == "grf") {
@@ -537,18 +608,19 @@ simulate_spatial_transcriptomics <- function(
       coordinates(sp_df) <- ~ x + y
       
       # Crea un modello gstat per il GP con parametri personalizzati
+      # Aumentiamo l'intensità (psill) e riduciamo leggermente il range per pattern più definiti
       gp_sim <- gstat(formula = z ~ 1, locations = ~x+y, dummy = TRUE,
-                     beta = 0, model = vgm(psill=spatial_params$spatial_noise_intensity, 
-                                          range=spatial_params$spatial_range, 
-                                          model="Exp"), 
-                     nmax=10)
+                     beta = 0, model = vgm(psill = spatial_params$spatial_noise_intensity * 2, 
+                                          range = spatial_params$spatial_range * 0.8, 
+                                          model = "Exp"), 
+                     nmax = 20)  # Aumentiamo nmax per calcolo più accurato
       
       # Genera il noise spaziale
       set.seed(random_seed)
       gp_noise <- predict(gp_sim, newdata = sp_df, nsim = 1)$sim1
       
-      # Normalizza il noise
-      gp_noise <- scale(gp_noise)
+      # Normalizza il noise ma mantieni maggiore varianza
+      gp_noise <- scale(gp_noise) * 1.5
       
     } else if (correlation_method == "car") {
       # Metodo CAR (Conditional Autoregressive) con spdep
@@ -662,19 +734,24 @@ simulate_spatial_transcriptomics <- function(
         orig_clusters <- as.integer(cluster_labels[gradient_points])
         
         # Pre-calcola i pesi del gradiente per tutti i punti di confine
-        gradient_weights <- (1 - cell_df$boundary_dist[gradient_points])^2  # Relazione quadratica
+        # Usa esponente personalizzabile per controllo più fine della forma del gradiente
+        gradient_weights <- (1 - cell_df$boundary_dist[gradient_points])^spatial_params$gradient_exponent
         
         # Crea una matrice di medie di espressione per tipo di cellula
         # Questo è più rapido che cercare ripetutamente nel mean_expression_list
         cluster_expr_matrix <- sapply(1:k_cell_types, function(k) mean_expression_list[[k]][g])
+        
+        # Prepara una matrice di pesi per tutti i tipi cellulari
+        cell_type_weights <- matrix(0, nrow = length(gradient_points), ncol = k_cell_types)
         
         # Identifica, per ogni punto gradiente, il cluster più vicino diverso da quello originale
         for (i in seq_along(gradient_points)) {
           point_idx <- gradient_points[i]
           orig_cl <- orig_clusters[i]
           
-          # Trova cluster vicini in modo vettorizzato
-          dist_threshold <- spatial_params$gradient_width * grid_resolution
+          # Trova cluster vicini con soglia dinamica basata sull'ampiezza del gradiente
+          # Usa una soglia maggiore per trovare più cluster vicini
+          dist_threshold <- spatial_params$gradient_width * 1.5 * grid_resolution
           nearby_points <- which(dist_mat[point_idx, ] < dist_threshold)
           
           if (length(nearby_points) > 0) {
@@ -682,14 +759,34 @@ simulate_spatial_transcriptomics <- function(
             nearby_cls <- nearby_cls[nearby_cls != orig_cl]
             
             if (length(nearby_cls) > 0) {
-              # Calcola l'espressione media dei cluster vicini
-              other_expr <- mean(cluster_expr_matrix[nearby_cls])
+              # Conta le occorrenze di ciascun cluster vicino
+              cls_counts <- table(nearby_cls)
               
-              # Applica il mix con il peso del gradiente
-              weight <- gradient_weights[i]
-              base_expr[point_idx] <- base_expr[point_idx] * (1 - weight) + other_expr * weight
+              # Normalizza i conteggi per ottenere pesi relativi
+              cls_weights <- as.numeric(cls_counts) / sum(cls_counts)
+              
+              # Per ogni tipo cellulare vicino, aggiungi il peso appropriato
+              for (cl_idx in seq_along(cls_counts)) {
+                cl_type <- as.integer(names(cls_counts)[cl_idx])
+                cell_type_weights[i, cl_type] <- cls_weights[cl_idx]
+              }
             }
           }
+        }
+        
+        # Normalizza i pesi per tipo cellulare, preservando il peso totale del gradiente
+        row_sums <- rowSums(cell_type_weights)
+        valid_rows <- row_sums > 0
+        if (any(valid_rows)) {
+          cell_type_weights[valid_rows, ] <- cell_type_weights[valid_rows, ] / row_sums[valid_rows]
+          
+          # Calcola l'espressione ponderata di tutti i tipi cellulari in una singola operazione
+          weighted_expr <- cell_type_weights %*% cluster_expr_matrix
+          
+          # Applica il mix con il peso del gradiente
+          # Usa versione vettorizzata per tutti i punti in una volta
+          base_expr[gradient_points] <- base_expr[gradient_points] * (1 - gradient_weights) + 
+                                        weighted_expr * gradient_weights
         }
       }
     } else if (hybrid_params$use_hybrid_cells) {
@@ -719,6 +816,12 @@ simulate_spatial_transcriptomics <- function(
     
     # Combina con l'effetto cellula-specifico
     mu_vals <- base_expr + cell_specific_effect
+    
+    # Aggiungi effetto dei moduli genici se abilitato
+    if (cell_specific_params$use_gene_modules && !is.null(module_noise)) {
+      # Aggiungi il rumore correlato del modulo genico a cui appartiene questo gene
+      mu_vals <- mu_vals + module_noise[, g]
+    }
     
     # Aggiungi correlazione spaziale se richiesta
     if (use_spatial_correlation) {
@@ -795,6 +898,8 @@ simulate_spatial_transcriptomics <- function(
     expression        = expression_data,
     threshold_used    = threshold_value,
     library_size      = library_size,  # Aggiungiamo libreria per ogni spot
+    dispersion_param  = dispersion_param,  # Parametro di dispersione per ogni spot
+    gene_modules      = gene_modules,  # Informazioni sui moduli di geni
     parameters        = list(
       image_path = image_path,
       n_cells = n_cells,
@@ -999,43 +1104,53 @@ simulate_spatial_transcriptomics <- function(
 #   correlation_method = "car"           # Conditional Autoregressive model
 # )
 
-# Esempio 4: dataset personalizzato per benchmarking
-# simulate_spatial_transcriptomics(
-#   image_path = here::here("images/colon.png"),
-#   output_path = "data/simulated_benchmarking.rds",
-#   output_plot = "results/simulated_benchmarking.png",
-#   grid_mode = TRUE,
-#   grid_resolution = 2,
-#   difficulty_level = "medium",
-#   n_genes = 150,
-#   k_cell_types = 7,
-#   # Correlazione forte ma con range corto
-#   correlation_method = "grf",
-#   spatial_params = list(
-#     spatial_noise_intensity = 1.5,     # Intensità più alta
-#     spatial_range = 15,                # Range più corto
-#     random_noise_sd = 0.2,
-#     gradient_regions = TRUE,
-#     gradient_width = 10                # Gradiente più ampio
-#   ),
-#   # Marker con forte sovrapposizione
-#   marker_params = list(
-#     marker_genes_per_type = 8,
-#     marker_expression_fold = 1.0,      # Differenza moderata
-#     marker_overlap_fold = 0.5          # Alta sovrapposizione
-#   ),
-#   # Dropout sia spaziale che basato su espressione
-#   dropout_params = list(
-#     dropout_range = c(0.1, 0.4),
-#     dispersion_range = c(2.0, 0.8),
-#     expression_dependent_dropout = TRUE,
-#     dropout_curve_midpoint = 0.4,
-#     dropout_curve_steepness = 8        # Più ripida
-#   ),
-#   # Alta variabilità nelle dimensioni libreria
-#   library_size_params = list(
-#     mean_library_size = 8000,
-#     library_size_cv = 0.5,             # Alta variabilità
-#     spatial_effect_on_library = 0.7    # Forte effetto spaziale
-#   )
-# )
+# Esempio 4: dataset personalizzato con migliorie biologiche
+simulate_spatial_transcriptomics(
+  image_path = "images/colon.png",
+  output_path = "data/simulated_improved_bio.rds",
+  output_plot = "results/simulated_improved_bio.png",
+  grid_mode = TRUE,
+  grid_resolution = 2,
+  difficulty_level = "medium",
+  n_genes = 150,
+  k_cell_types = 7,
+  # Correlazione forte ma con range corto
+  correlation_method = "grf",
+  spatial_params = list(
+    spatial_noise_intensity = 1.5,     # Intensità più alta
+    spatial_range = 15,                # Range più corto
+    random_noise_sd = 0.15,            # Ridotto per favorire pattern spaziali
+    gradient_regions = TRUE,
+    gradient_width = 10,               # Gradiente più ampio
+    gradient_exponent = 1.5            # Transizione non lineare del gradiente
+  ),
+  # Marker con forte sovrapposizione
+  marker_params = list(
+    marker_genes_per_type = 8,
+    marker_expression_fold = 1.2,      # Differenza moderatamente alta
+    marker_overlap_fold = 0.4          # Moderata sovrapposizione
+  ),
+  # Dropout e dispersione
+  dropout_params = list(
+    dropout_range = c(0.1, 0.4),
+    dispersion_range = c(2.0, 0.8),
+    cell_type_dispersion_effect = 0.3,  # Effetto specifico di tipo cellulare
+    expression_dependent_dropout = TRUE,
+    dropout_curve_midpoint = 0.4,
+    dropout_curve_steepness = 6         # Moderatamente ripida
+  ),
+  # Effetti sulla dimensione libreria
+  library_size_params = list(
+    mean_library_size = 8000,
+    library_size_cv = 0.4,              # Variabilità moderata-alta
+    spatial_effect_on_library = 0.5,    # Moderato effetto spaziale
+    cell_type_effect = TRUE             # Effetto del tipo cellulare
+  ),
+  # Parametri di correlazione di geni
+  cell_specific_params = list(
+    cell_specific_noise_sd = 0.2,
+    use_gene_modules = TRUE,
+    n_gene_modules = 6,                 # Programmi di espressione ben definiti
+    module_correlation = 0.7            # Correlazione moderata-alta
+  )
+)
