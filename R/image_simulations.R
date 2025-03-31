@@ -379,7 +379,6 @@ simulate_spatial_transcriptomics <- function(
             }
           }
         }
-        }
       }
       
       # Normalizza le distanze per ogni cluster
