@@ -1,11 +1,11 @@
 #!/usr/bin/env Rscript
 
-# Script: simulazione di trascrittomica spaziale parametrizzata
+# Script: simulazione di trascrittomica spaziale parametrizzata per Visium HD
 # 1) Caricamento immagine e threshold
-# 2) Clustering con kmeans++
-# 3) Sampling celle
+# 2) Creazione di una griglia regolare ad alta risoluzione (tipo Visium HD)
+# 3) Clustering con kmeans++
 # 4) Generazione dei profili con modello Negative Binomial
-# 5) Simulazione di dropout spaziale
+# 5) Simulazione di dropout spaziale e correlazione 
 # 6) Visualizzazione
 
 library(imager)
@@ -19,21 +19,30 @@ library(tictoc)
 library(gstat)
 library(sp)
 library(scales)
+library(spatstat)    # Per funzioni spaziali avanzate
+library(spdep)       # Per analisi di autocorrelazione spaziale
+library(fields)      # Per simulazione GRF (Gaussian Random Fields)
 
 simulate_spatial_transcriptomics <- function(
   # Parametri generali
   image_path = NULL,            # Path dell'immagine
   output_path = "data/simulated_image_correlation.rds", # Path per salvare i risultati
   output_plot = NULL,           # Path per salvare il plot (opzionale)
-  n_cells = 20000,              # Numero di celle da campionare
+  n_cells = 20000,              # Numero di celle da campionare (se grid_mode=FALSE)
   n_genes = 100,                # Numero di geni totali
   k_cell_types = 5,             # Numero di tipi cellulari
   threshold_value = 0.7,        # Soglia per il thresholding dell'immagine
   random_seed = 123,            # Seed per riproducibilità
   
+  # Parametri della griglia Visium HD
+  grid_mode = TRUE,             # Usare modalità griglia (Visium HD) invece di sampling casuale
+  grid_resolution = 2,          # Dimensione della griglia in μm (es. 2μm x 2μm per Visium HD)
+  grid_spacing = 0,             # Spazio tra bin della griglia (0 per griglia continua)
+  
   # Parametri per la simulazione dell'espressione genica
   difficulty_level = "hard",    # "easy", "medium", o "hard"
   use_spatial_correlation = TRUE, # Usare correlazione spaziale?
+  correlation_method = "grf",   # Metodo di correlazione spaziale: "grf" (Gaussian Random Field) o "car" (Conditional Autoregressive)
   
   # Parametri avanzati (personalizzabili)
   marker_params = list(
@@ -45,12 +54,23 @@ simulate_spatial_transcriptomics <- function(
   spatial_params = list(
     spatial_noise_intensity = NULL, # Intensità del rumore spaziale
     spatial_range = NULL,           # Range di correlazione spaziale
-    random_noise_sd = NULL          # Deviazione standard del rumore casuale
+    random_noise_sd = NULL,         # Deviazione standard del rumore casuale
+    gradient_regions = FALSE,       # Usare gradienti invece di confini netti tra regioni
+    gradient_width = 5              # Ampiezza del gradiente (in unità della griglia)
   ),
   
   dropout_params = list(
     dropout_range = NULL,           # Range di probabilità di dropout
-    dispersion_range = NULL         # Range del parametro di dispersione
+    dispersion_range = NULL,        # Range del parametro di dispersione
+    expression_dependent_dropout = TRUE, # Dropout dipendente dal livello di espressione
+    dropout_curve_midpoint = 0.5,   # Punto medio della curva di dropout (in scala di espressione normalizzata)
+    dropout_curve_steepness = 5     # Ripidità della curva di dropout
+  ),
+  
+  library_size_params = list(
+    mean_library_size = 10000,      # Dimensione media della libreria per spot
+    library_size_cv = 0.3,          # Coefficiente di variazione della dimensione della libreria
+    spatial_effect_on_library = 0.5 # Effetto spaziale sulla dimensione della libreria (0-1)
   ),
   
   hybrid_params = list(
@@ -212,24 +232,196 @@ simulate_spatial_transcriptomics <- function(
     mutate(intensity_cluster = factor(km_intensity$clusters))
   
   # ========================
-  # 4) Campiono n_cells pixel in proporzione al cluster
+  # 4a) Creazione di griglia Visium HD o sampling casuale
   # ========================
-  clust_counts <- table(img_df_thresh$intensity_cluster)
-  clust_freq   <- clust_counts / sum(clust_counts)
-  cells_per_cluster <- round(clust_freq * n_cells)
-  
-  cell_list <- vector("list", length(levels(img_df_thresh$intensity_cluster)))
-  set.seed(random_seed)
-  for (i in seq_along(levels(img_df_thresh$intensity_cluster))) {
-    clust_name <- levels(img_df_thresh$intensity_cluster)[i]
-    n_sub      <- cells_per_cluster[clust_name]
-    df_sub     <- img_df_thresh %>% filter(intensity_cluster == clust_name)
-    idx_sub    <- sample(seq_len(nrow(df_sub)), min(n_sub, nrow(df_sub)), replace = FALSE)
-    cell_list[[i]] <- df_sub[idx_sub, ]
+  if (grid_mode) {
+    cat("Modalità griglia attiva - Creazione griglia Visium HD-like\n")
+    
+    # Calcola le dimensioni della griglia in base all'immagine
+    # Nota: convertiamo le coordinate immagine in μm
+    # Assumiamo che 1 pixel = 1 μm per semplicità
+    img_width_um <- w
+    img_height_um <- h
+    
+    # Calcola il numero di bin necessari
+    n_bins_x <- ceiling(img_width_um / grid_resolution)
+    n_bins_y <- ceiling(img_height_um / grid_resolution)
+    
+    cat(sprintf("Dimensione immagine: %d x %d μm\n", img_width_um, img_height_um))
+    cat(sprintf("Risoluzione griglia: %d μm, risultato: %d x %d bin = %d bin totali\n", 
+                grid_resolution, n_bins_x, n_bins_y, n_bins_x * n_bins_y))
+    
+    # Crea le coordinate della griglia
+    x_coords <- seq(1, img_width_um, by = grid_resolution + grid_spacing)
+    y_coords <- seq(1, img_height_um, by = grid_resolution + grid_spacing)
+    
+    # Crea un dataframe con tutte le coordinate possibili
+    grid_points <- expand.grid(x = x_coords, y = y_coords)
+    
+    # Assegna a ciascun punto della griglia il valore più vicino dell'immagine originale
+    grid_df <- grid_points %>%
+      rowwise() %>%
+      mutate(
+        img_x = min(max(round(x), 1), w),
+        img_y = min(max(round(y), 1), h),
+        value = img_array[img_x, img_y]
+      ) %>%
+      filter(value < threshold_value) %>%  # Applica la stessa soglia
+      ungroup()
+    
+    # Assegna cluster usando i centroidi k-means dell'immagine originale
+    # Trova i centroidi dei cluster
+    cluster_centroids <- sapply(levels(img_df_thresh$intensity_cluster), function(cl) {
+      mean(img_df_thresh$value[img_df_thresh$intensity_cluster == cl])
+    })
+    
+    # Assegna ogni punto griglia al cluster più vicino
+    grid_df <- grid_df %>%
+      mutate(intensity_cluster = factor(apply(outer(value, cluster_centroids, FUN = function(x, y) abs(x - y)), 
+                                            1, which.min)))
+    
+    # Questa è la nostra "cell_df" finale
+    cell_df <- grid_df
+    
+    # Se vogliamo applicare gradienti ai confini tra regioni
+    if (spatial_params$gradient_regions) {
+      cat("Applicazione gradienti tra regioni\n")
+      
+      # Crea una matrice di distanza per calcolare quanto ogni punto è vicino al confine
+      cell_coords <- cell_df %>% dplyr::select(x, y)
+      
+      # Per ogni cluster, identifica i punti di bordo
+      all_clusters <- levels(cell_df$intensity_cluster)
+      boundary_dists <- matrix(Inf, nrow = nrow(cell_df), ncol = length(all_clusters))
+      
+      for (i in seq_along(all_clusters)) {
+        cl <- all_clusters[i]
+        # Punti in questo cluster
+        in_cluster <- cell_df$intensity_cluster == cl
+        
+        # Crea una matrice binaria per il cluster e calcola la distanza dal bordo
+        cluster_mat <- matrix(0, nrow = n_bins_x, ncol = n_bins_y)
+        
+        # Converti coordinate x,y in indici matrice
+        x_idx <- ceiling((cell_df$x - min(cell_df$x)) / grid_resolution) + 1
+        y_idx <- ceiling((cell_df$y - min(cell_df$y)) / grid_resolution) + 1
+        
+        # Assicurati che gli indici siano entro i limiti
+        x_idx <- pmin(pmax(x_idx, 1), n_bins_x)
+        y_idx <- pmin(pmax(y_idx, 1), n_bins_y)
+        
+        # Segna i punti in questo cluster - vettorizzato
+        idx <- in_cluster
+        if (sum(idx) > 0) {
+          # Converti indici logici in indici di matrice in una singola operazione
+          cluster_mat[cbind(x_idx[idx], y_idx[idx])] <- 1
+          
+          # Crea una matrice di bordo vettorizzando la logica del bordo
+          # Modo più efficiente per trovare i bordi
+          border_mat <- matrix(0, nrow = n_bins_x, ncol = n_bins_y)
+          
+          # Applica filtro per rilevare i bordi
+          # Prima identifica tutti i punti interni (circondati da 1)
+          interior <- matrix(0, nrow = n_bins_x, ncol = n_bins_y)
+          interior[2:(n_bins_x-1), 2:(n_bins_y-1)] <- 
+            cluster_mat[2:(n_bins_x-1), 2:(n_bins_y-1)] * 
+            cluster_mat[1:(n_bins_x-2), 2:(n_bins_y-1)] * 
+            cluster_mat[3:n_bins_x, 2:(n_bins_y-1)] * 
+            cluster_mat[2:(n_bins_x-1), 1:(n_bins_y-2)] * 
+            cluster_mat[2:(n_bins_x-1), 3:n_bins_y]
+          
+          # I bordi sono i punti che sono nel cluster ma non interni
+          border_mat <- cluster_mat * (1 - (interior > 0))
+          
+          # Aggiungi anche tutti i punti di bordo esterno (i confini della griglia)
+          border_mat[1,] <- border_mat[1,] | (cluster_mat[1,] > 0)
+          border_mat[n_bins_x,] <- border_mat[n_bins_x,] | (cluster_mat[n_bins_x,] > 0)
+          border_mat[,1] <- border_mat[,1] | (cluster_mat[,1] > 0)
+          border_mat[,n_bins_y] <- border_mat[,n_bins_y] | (cluster_mat[,n_bins_y] > 0)
+          
+          # Trova le coordinate dei punti di bordo
+          border_indices <- which(border_mat > 0, arr.ind = TRUE)
+          
+          if (nrow(border_indices) > 0) {
+            # Converti indici in coordinate reali
+            border_coords <- matrix(0, nrow = nrow(border_indices), ncol = 2)
+            border_coords[,1] <- min(cell_df$x) + (border_indices[,1] - 1) * grid_resolution
+            border_coords[,2] <- min(cell_df$y) + (border_indices[,2] - 1) * grid_resolution
+            
+            # Per ogni punto nella griglia, calcola la distanza minima da un punto di bordo
+            # in modo vettorizzato
+            cell_coords_mat <- as.matrix(cell_coords)
+            
+            # Questa operazione calcola tutte le distanze punto-bordo in una volta
+            # ed estrae il minimo per ogni punto
+            # La funzione pdist calcola la distanza euclidea tra tutte le coppie di punti
+            # in due matrici
+            if (nrow(border_coords) < 5000) {  # Limite per evitare problemi di memoria con matrici grandi
+              # Calcola tutte le distanze in una volta
+              all_dists <- fields::rdist(cell_coords_mat, border_coords)
+              boundary_dists[, i] <- apply(all_dists, 1, min)
+            } else {
+              # Per insiemi molto grandi, elabora a blocchi per evitare problemi di memoria
+              boundary_dists[, i] <- Inf
+              block_size <- 1000
+              n_blocks <- ceiling(nrow(border_coords) / block_size)
+              
+              for (b in 1:n_blocks) {
+                start_idx <- (b-1) * block_size + 1
+                end_idx <- min(b * block_size, nrow(border_coords))
+                
+                block_coords <- border_coords[start_idx:end_idx, , drop = FALSE]
+                block_dists <- fields::rdist(cell_coords_mat, block_coords)
+                
+                # Aggiorna il minimo corrente
+                boundary_dists[, i] <- pmin(boundary_dists[, i], apply(block_dists, 1, min))
+              }
+            }
+          }
+        }
+        }
+      }
+      
+      # Normalizza le distanze per ogni cluster
+      for (i in seq_along(all_clusters)) {
+        if (any(is.finite(boundary_dists[, i]))) {
+          boundary_dists[, i] <- boundary_dists[, i] / max(boundary_dists[, i], na.rm = TRUE)
+        }
+      }
+      
+      # Salva le distanze dal bordo per uso successivo
+      cell_df$boundary_dist <- apply(boundary_dists, 1, min, na.rm = TRUE)
+      
+      # Se dist < gradient_width, consideriamo il punto in zona di transizione
+      cell_df$in_gradient <- cell_df$boundary_dist < (spatial_params$gradient_width * grid_resolution / 
+                                                     max(img_width_um, img_height_um))
+    }
+    
+  } else {
+    # Modalità campionamento originale
+    cat("Modalità campionamento casuale attiva\n")
+    
+    # ========================
+    # 4b) Campiono n_cells pixel in proporzione al cluster
+    # ========================
+    clust_counts <- table(img_df_thresh$intensity_cluster)
+    clust_freq   <- clust_counts / sum(clust_counts)
+    cells_per_cluster <- round(clust_freq * n_cells)
+    
+    cell_list <- vector("list", length(levels(img_df_thresh$intensity_cluster)))
+    set.seed(random_seed)
+    for (i in seq_along(levels(img_df_thresh$intensity_cluster))) {
+      clust_name <- levels(img_df_thresh$intensity_cluster)[i]
+      n_sub      <- cells_per_cluster[clust_name]
+      df_sub     <- img_df_thresh %>% filter(intensity_cluster == clust_name)
+      idx_sub    <- sample(seq_len(nrow(df_sub)), min(n_sub, nrow(df_sub)), replace = FALSE)
+      cell_list[[i]] <- df_sub[idx_sub, ]
+    }
+    
+    cell_df <- bind_rows(cell_list)
   }
   
-  cell_df <- bind_rows(cell_list)
-  cat(sprintf("Celle totali campionate: %d\n", nrow(cell_df)))
+  cat(sprintf("Celle/bin totali: %d\n", nrow(cell_df)))
   
   # ========================
   # 5) Generazione dei profili di espressione
@@ -273,36 +465,135 @@ simulate_spatial_transcriptomics <- function(
   local_density <- apply(dist_mat, 1, function(row) mean(row < quantile(row, 0.1)))
   
   # 5c) Impostazione parametri di dispersione in base ai parametri
-  dispersion_param <- rescale(mean_dist, to = dropout_params$dispersion_range)
+  if (spatial_params$gradient_regions && exists("boundary_dist", where = cell_df)) {
+    # Se utilizziamo gradienti, facciamo variare la dispersione in base alla distanza dal confine
+    # Più vicino al confine = più variabilità (parametro dispersione più basso)
+    # boundary_dist è già normalizzato da 0 a 1
+    dispersion_param <- dropout_params$dispersion_range[2] + 
+      cell_df$boundary_dist * (dropout_params$dispersion_range[1] - dropout_params$dispersion_range[2])
+  } else {
+    # Altrimenti usiamo il metodo originale basato sulla distanza media
+    dispersion_param <- rescale(mean_dist, to = dropout_params$dispersion_range)
+  }
   
-  # 5d) Impostazione probabilità di dropout in base ai parametri
-  dropout_prob <- rescale(mean_dist, to = dropout_params$dropout_range)
+  # 5d) Simulazione delle dimensioni delle librerie
+  # La dimensione della libreria influisce sui conteggi finali
+  set.seed(random_seed + 1)
   
-  # 5e) Generazione espressione usando Negative Binomial
+  # Genera dimensioni libreria con distribuzione log-normale
+  library_size_sd <- library_size_params$mean_library_size * library_size_params$library_size_cv
+  log_mean <- log(library_size_params$mean_library_size^2 / 
+                 sqrt(library_size_params$mean_library_size^2 + library_size_sd^2))
+  log_sd <- sqrt(log(1 + (library_size_sd^2 / library_size_params$mean_library_size^2)))
+  
+  library_size <- rlnorm(N, meanlog = log_mean, sdlog = log_sd)
+  
+  # Aggiungi effetto spaziale sulla dimensione libreria se richiesto
+  if (library_size_params$spatial_effect_on_library > 0) {
+    # Converti cell_df in oggetto spatial per il GP
+    sp_df_lib <- cell_df
+    coordinates(sp_df_lib) <- ~ x + y
+    
+    # Crea un GP per l'effetto spaziale sulla dimensione libreria
+    lib_gp <- gstat(formula = z ~ 1, locations = ~x+y, dummy = TRUE,
+                   beta = 0, model = vgm(psill = 1.0, 
+                                        range = spatial_params$spatial_range * 1.5, 
+                                        model = "Exp"), 
+                   nmax = 10)
+    
+    # Genera il noise spaziale
+    set.seed(random_seed + 2)
+    lib_noise <- predict(lib_gp, newdata = sp_df_lib, nsim = 1)$sim1
+    
+    # Normalizza e scala il noise
+    lib_noise <- scale(lib_noise)
+    lib_effect <- library_size_params$spatial_effect_on_library * lib_noise
+    
+    # Applica alla dimensione libreria (effetto moltiplicativo)
+    library_size <- library_size * exp(lib_effect)
+  }
+  
+  # 5e) Impostazione probabilità di dropout
+  if (spatial_params$gradient_regions && exists("boundary_dist", where = cell_df)) {
+    # Più dropout vicino al confine
+    base_dropout <- dropout_params$dropout_range[1] + 
+      (1 - cell_df$boundary_dist) * (dropout_params$dropout_range[2] - dropout_params$dropout_range[1])
+  } else {
+    # Metodo originale
+    base_dropout <- rescale(mean_dist, to = dropout_params$dropout_range)
+  }
+  
+  # 5f) Generazione espressione usando Negative Binomial
   expression_data <- matrix(0, nrow = N, ncol = n_genes)
   
   # Identificazione geni stabili (sub-Poissoniani)
   stable_genes <- sample(n_genes, max(1, round(n_genes * 0.1)))  # 10% geni stabili
   
-  # Simulazione con Gaussian Process per correlazione spaziale continua
+  # Simulazione della correlazione spaziale continua
   if (use_spatial_correlation) {
-    # Converti cell_df in oggetto spatial
-    sp_df <- cell_df
-    coordinates(sp_df) <- ~ x + y
-    
-    # Crea un modello gstat per il GP con parametri personalizzati
-    gp_sim <- gstat(formula = z ~ 1, locations = ~x+y, dummy = TRUE,
-                    beta = 0, model = vgm(psill=spatial_params$spatial_noise_intensity, 
-                                         range=spatial_params$spatial_range, 
-                                         model="Exp"), 
-                    nmax=10)
-    
-    # Genera il noise spaziale
-    set.seed(random_seed)
-    gp_noise <- predict(gp_sim, newdata = sp_df, nsim = 1)$sim1
-    
-    # Normalizza il noise
-    gp_noise <- scale(gp_noise)
+    if (correlation_method == "grf") {
+      # Metodo GRF (Gaussian Random Field) con gstat
+      # Converti cell_df in oggetto spatial
+      sp_df <- cell_df
+      coordinates(sp_df) <- ~ x + y
+      
+      # Crea un modello gstat per il GP con parametri personalizzati
+      gp_sim <- gstat(formula = z ~ 1, locations = ~x+y, dummy = TRUE,
+                     beta = 0, model = vgm(psill=spatial_params$spatial_noise_intensity, 
+                                          range=spatial_params$spatial_range, 
+                                          model="Exp"), 
+                     nmax=10)
+      
+      # Genera il noise spaziale
+      set.seed(random_seed)
+      gp_noise <- predict(gp_sim, newdata = sp_df, nsim = 1)$sim1
+      
+      # Normalizza il noise
+      gp_noise <- scale(gp_noise)
+      
+    } else if (correlation_method == "car") {
+      # Metodo CAR (Conditional Autoregressive) con spdep
+      # Crea una griglia di vicinanza per i punti
+      coords_matrix <- as.matrix(cell_df[, c("x", "y")])
+      
+      # Definiamo vicinanza come punti entro una certa distanza
+      nb <- dnearneigh(coords_matrix, 0, spatial_params$spatial_range)
+      
+      # Se abbiamo troppi pochi vicini, aumentiamo la distanza
+      if (min(card(nb)) < 3) {
+        cat("Aumentiamo il raggio per includere più vicini\n")
+        nb <- dnearneigh(coords_matrix, 0, spatial_params$spatial_range * 2)
+      }
+      
+      # Creiamo la matrice dei pesi spaziali
+      lw <- nb2listw(nb, style = "W")
+      
+      # Simula un processo spaziale autocorrelato
+      set.seed(random_seed)
+      gp_noise <- spam.spGauss(lw, sigma2 = spatial_params$spatial_noise_intensity, n = 1)
+      
+      # Normalizza
+      gp_noise <- scale(gp_noise)
+    } else {
+      # Metodo di fallback
+      cat("Metodo di correlazione spaziale non riconosciuto, uso GRF come fallback\n")
+      
+      # Usa un metodo più semplice basato su fields
+      set.seed(random_seed)
+      coords_matrix <- as.matrix(cell_df[, c("x", "y")])
+      
+      # Normalizza coordinate per evitare problemi numerici
+      coords_norm <- scale(coords_matrix)
+      
+      # Crea la matrice di covarianza spaziale
+      cov_mat <- exp(-rdist(coords_norm) / (spatial_params$spatial_range / 100))
+      
+      # Simuliamo un campo casuale gaussiano
+      gp_noise <- t(chol(cov_mat)) %*% rnorm(nrow(coords_norm))
+      
+      # Normalizza
+      gp_noise <- as.vector(scale(gp_noise))
+    }
   }
   
   # Crea cellule ibride ai confini tra cluster, se richiesto
@@ -359,16 +650,71 @@ simulate_spatial_transcriptomics <- function(
     # Calcola medie di espressione di base
     base_expr <- sapply(cl, function(x) mean_expression_list[[x]][g])
     
-    # Applica effetto di ibridazione tra cluster (cellule ai confini)
-    if (hybrid_params$use_hybrid_cells) {
-      for (k in 1:k_cell_types) {
-        # Trova cellule che hanno componente del cluster k
-        hybrid_cells <- which(hybrid_matrix[, k] > 0)
-        if (length(hybrid_cells) > 0) {
-          # Applica l'effetto ibrido usando il profilo del cluster k
-          hybrid_effect <- mean_expression_list[[k]][g] * hybrid_matrix[hybrid_cells, k]
-          base_expr[hybrid_cells] <- base_expr[hybrid_cells] * (1 - hybrid_matrix[hybrid_cells, k]) + hybrid_effect
+    # Applica effetto di ibridazione o gradienti
+    if (spatial_params$gradient_regions && exists("boundary_dist", where = cell_df) && 
+        exists("in_gradient", where = cell_df)) {
+      # Usa l'approccio gradiente per i confini - versione vettorizzata
+      
+      # Identifica tutti i punti in zona gradiente
+      gradient_points <- which(cell_df$in_gradient)
+      
+      if (length(gradient_points) > 0) {
+        # Ottieni i cluster originali per tutti i punti gradiente contemporaneamente
+        orig_clusters <- as.integer(cluster_labels[gradient_points])
+        
+        # Pre-calcola i pesi del gradiente per tutti i punti di confine
+        gradient_weights <- (1 - cell_df$boundary_dist[gradient_points])^2  # Relazione quadratica
+        
+        # Crea una matrice di medie di espressione per tipo di cellula
+        # Questo è più rapido che cercare ripetutamente nel mean_expression_list
+        cluster_expr_matrix <- sapply(1:k_cell_types, function(k) mean_expression_list[[k]][g])
+        
+        # Identifica, per ogni punto gradiente, il cluster più vicino diverso da quello originale
+        for (i in seq_along(gradient_points)) {
+          point_idx <- gradient_points[i]
+          orig_cl <- orig_clusters[i]
+          
+          # Trova cluster vicini in modo vettorizzato
+          dist_threshold <- spatial_params$gradient_width * grid_resolution
+          nearby_points <- which(dist_mat[point_idx, ] < dist_threshold)
+          
+          if (length(nearby_points) > 0) {
+            nearby_cls <- as.integer(cluster_labels[nearby_points])
+            nearby_cls <- nearby_cls[nearby_cls != orig_cl]
+            
+            if (length(nearby_cls) > 0) {
+              # Calcola l'espressione media dei cluster vicini
+              other_expr <- mean(cluster_expr_matrix[nearby_cls])
+              
+              # Applica il mix con il peso del gradiente
+              weight <- gradient_weights[i]
+              base_expr[point_idx] <- base_expr[point_idx] * (1 - weight) + other_expr * weight
+            }
+          }
         }
+      }
+    } else if (hybrid_params$use_hybrid_cells) {
+      # Approccio con cellule ibride - vettorizzato
+      # Calcola l'effetto di tutti i cluster contemporaneamente
+      
+      # Crea una matrice dove ogni riga è la media di espressione per ogni tipo di cellula
+      all_cluster_expr <- sapply(1:k_cell_types, function(k) mean_expression_list[[k]][g])
+      
+      # Applica l'effetto ibrido per tutti i punti e cluster in un'operazione matriciale
+      # base_expr finale = base_expr attuale * (1-peso_ibrido) + espressione_altro_cluster * peso_ibrido
+      
+      # Calcola l'effetto ibrido complessivo
+      hybrid_effect <- hybrid_matrix %*% all_cluster_expr
+      
+      # Calcola il peso complessivo dell'effetto ibrido su ogni cellula
+      hybrid_weight <- rowSums(hybrid_matrix)
+      
+      # Applica solo a cellule che hanno un effetto ibrido
+      hybrid_cells <- which(hybrid_weight > 0)
+      if (length(hybrid_cells) > 0) {
+        # Effetto ibrido totale per ogni cellula
+        base_expr[hybrid_cells] <- base_expr[hybrid_cells] * (1 - hybrid_weight[hybrid_cells]) + 
+                                 hybrid_effect[hybrid_cells]
       }
     }
     
@@ -384,19 +730,63 @@ simulate_spatial_transcriptomics <- function(
       mu_vals <- mu_vals + random_noise
     }
     
+    # Genera conteggi di espressione
     if (g %in% stable_genes) {
       # Modello sub-Poisson: Binomiale con p alto e n moderato
       p <- 0.9
       n_trial <- round(exp(mu_vals)/(1-p))
-      expression_data[, g] <- rbinom(N, n_trial, p)
+      raw_counts <- rbinom(N, n_trial, p)
     } else {
       # Negative Binomial con dispersione variabile spazialmente
-      expression_data[, g] <- rnbinom(N, mu = exp(mu_vals), size = dispersion_param)
+      raw_counts <- rnbinom(N, mu = exp(mu_vals), size = dispersion_param)
     }
     
-    # Applica dropout spazialmente variabile
-    zero_idx <- rbinom(N, 1, dropout_prob) == 1
-    expression_data[zero_idx, g] <- 0
+    # Applica l'effetto della dimensione della libreria
+    # Scala i conteggi in base alla dimensione relativa della libreria
+    # (mantenendo la somma totale constante per evitare bias nelle medie)
+    scaled_counts <- raw_counts * (library_size / mean(library_size))
+    # Arrotonda a numeri interi (conteggi)
+    expression_data[, g] <- round(scaled_counts)
+    
+    # Applica dropout in base al modello specificato - versione vettorizzata
+    if (dropout_params$expression_dependent_dropout) {
+      # Dropout dipendente dal livello di espressione - usa una funzione logistica
+      # Più il gene è espresso, meno probabile è il dropout
+      
+      # Definisci una funzione vettorizzata per normalizzare tra 0 e 1
+      scale01_vec <- function(x) {
+        if (all(x == x[1])) return(rep(0.5, length(x)))
+        (x - min(x)) / (max(x) - min(x))
+      }
+      
+      # Normalizza l'espressione del gene corrente
+      norm_expr <- scale01_vec(expression_data[, g])
+      
+      # Calcola la probabilità di dropout con una funzione logistica vettorizzata
+      # Formula: p(dropout) = 1 / (1 + exp((expr - midpoint) * steepness))
+      dropout_prob_expr <- 1 / (1 + exp((norm_expr - dropout_params$dropout_curve_midpoint) * 
+                                       dropout_params$dropout_curve_steepness))
+      
+      # Combina con il dropout spaziale base (media pesata) - operazione vettorizzata
+      dropout_prob <- 0.7 * dropout_prob_expr + 0.3 * base_dropout
+      
+      # Tronca i valori al range [0,1] in un'unica operazione
+      dropout_prob <- pmin(pmax(dropout_prob, 0), 1)
+      
+      # Applica dropout in modo vettorizzato
+      zero_idx <- runif(N) < dropout_prob  # Più efficiente di rbinom() per vettori lunghi
+      expression_data[zero_idx, g] <- 0
+    } else {
+      # Modello di dropout originale (solo spaziale) - vettorizzato
+      zero_idx <- runif(N) < base_dropout  # Più efficiente di rbinom() per vettori lunghi
+      expression_data[zero_idx, g] <- 0
+    }
+  }
+  
+  # Funzione helper per normalizzare tra 0 e 1
+  scale01 <- function(x) {
+    if (max(x) == min(x)) return(rep(0.5, length(x)))
+    (x - min(x)) / (max(x) - min(x))
   }
   
   # Prepara l'output
@@ -405,41 +795,137 @@ simulate_spatial_transcriptomics <- function(
     intensity_cluster = cell_df$intensity_cluster,
     expression        = expression_data,
     threshold_used    = threshold_value,
+    library_size      = library_size,  # Aggiungiamo libreria per ogni spot
     parameters        = list(
       image_path = image_path,
       n_cells = n_cells,
       n_genes = n_genes,
       k_cell_types = k_cell_types,
       difficulty_level = difficulty_level,
+      grid_mode = grid_mode,
+      grid_resolution = grid_resolution,
       use_spatial_correlation = use_spatial_correlation,
+      correlation_method = correlation_method,
       marker_params = marker_params,
       spatial_params = spatial_params,
       dropout_params = dropout_params,
+      library_size_params = library_size_params,
       hybrid_params = hybrid_params,
       cell_specific_params = cell_specific_params
     )
   )
   
+  # Aggiungi informazioni aggiuntive se disponibili
+  if (spatial_params$gradient_regions && exists("boundary_dist", where = cell_df)) {
+    result$boundary_dist = cell_df$boundary_dist
+  }
+  
+  # Calcola e aggiungi l'autocorrelazione spaziale globale (Moran's I) per alcuni geni
+  if (requireNamespace("spdep", quietly = TRUE)) {
+    coords_matrix <- as.matrix(cell_df[, c("x", "y")])
+    nb <- spdep::dnearneigh(coords_matrix, 0, spatial_params$spatial_range)
+    lw <- spdep::nb2listw(nb, style = "W")
+    
+    # Calcola Moran's I per i primi 10 geni (o tutti se < 10)
+    moran_genes <- min(10, ncol(expression_data))
+    moran_i <- numeric(moran_genes)
+    
+    for (g in 1:moran_genes) {
+      # Gestisci casi degeneri (tutti zeri)
+      if (all(expression_data[, g] == 0)) {
+        moran_i[g] <- NA
+      } else {
+        tryCatch({
+          moran_i[g] <- spdep::moran.test(expression_data[, g], lw)$estimate[1]
+        }, error = function(e) {
+          moran_i[g] <- NA
+        })
+      }
+    }
+    
+    result$spatial_autocorrelation <- list(
+      moran_i = moran_i,
+      genes_tested = 1:moran_genes
+    )
+  }
+  
   # ========================
   # 6) Visualizzazione
   # ========================
-  p <- ggplot(cell_df, aes(x = x, y = y, color = intensity_cluster)) +
-    geom_point(size = 0.5, alpha = 0.7) +
-    scale_y_reverse() +
-    coord_fixed() +
-    theme_minimal() +
-    labs(title = sprintf("Distribuzione spaziale (livello difficoltà: %s)", difficulty_level),
-         subtitle = sprintf("Threshold: %.2f, Geni marker: %d per tipo, Fold-change: %.1f", 
-                           threshold_value, 
-                           marker_params$marker_genes_per_type,
-                           marker_params$marker_expression_fold),
-         color = "Cell Type")
+  # Plot della distribuzione spaziale dei cluster
+  if (grid_mode) {
+    # Per griglia, usiamo geom_tile
+    p <- ggplot(cell_df, aes(x = x, y = y, fill = intensity_cluster)) +
+      geom_tile(width = grid_resolution, height = grid_resolution) +
+      scale_y_reverse() +
+      coord_fixed() +
+      theme_minimal() +
+      labs(title = sprintf("Visium HD (2µm) - Livello difficoltà: %s", difficulty_level),
+           subtitle = sprintf("Griglia %dµm, %d bin, %d geni (marker/tipo: %d, fold: %.1f)", 
+                             grid_resolution, nrow(cell_df), n_genes,
+                             marker_params$marker_genes_per_type,
+                             marker_params$marker_expression_fold),
+           fill = "Cell Type")
+  } else {
+    # Per sampling casuale, usiamo punti
+    p <- ggplot(cell_df, aes(x = x, y = y, color = intensity_cluster)) +
+      geom_point(size = 0.5, alpha = 0.7) +
+      scale_y_reverse() +
+      coord_fixed() +
+      theme_minimal() +
+      labs(title = sprintf("Distribuzione spaziale (livello difficoltà: %s)", difficulty_level),
+           subtitle = sprintf("Threshold: %.2f, Geni marker: %d per tipo, Fold-change: %.1f", 
+                             threshold_value, 
+                             marker_params$marker_genes_per_type,
+                             marker_params$marker_expression_fold),
+           color = "Cell Type")
+  }
   
   print(p)
   
-  # Salva il plot se richiesto
+  # Plot della dimensione libreria
+  if (exists("library_size")) {
+    p_lib <- ggplot(data.frame(x = cell_df$x, y = cell_df$y, lib_size = library_size), 
+                   aes(x = x, y = y, fill = lib_size)) +
+      geom_tile(width = grid_resolution, height = grid_resolution) +
+      scale_fill_viridis_c(option = "plasma") +
+      scale_y_reverse() +
+      coord_fixed() +
+      theme_minimal() +
+      labs(title = "Distribuzione della dimensione della libreria",
+           fill = "Library size")
+    
+    print(p_lib)
+  }
+  
+  # Plot dell'autocorrelazione spaziale se calcolata
+  if (exists("spatial_autocorrelation", where = result)) {
+    p_auto <- ggplot(data.frame(gene = result$spatial_autocorrelation$genes_tested,
+                               moran_i = result$spatial_autocorrelation$moran_i), 
+                    aes(x = gene, y = moran_i)) +
+      geom_bar(stat = "identity", fill = "steelblue") +
+      theme_minimal() +
+      labs(title = "Indice di Moran per geni selezionati",
+           x = "Gene index", y = "Moran's I")
+    
+    print(p_auto)
+  }
+  
+  # Salva i plot se richiesto
   if (!is.null(output_plot)) {
+    # Salva il plot principale
     ggplot2::ggsave(output_plot, plot = p, device = "png", dpi = 300)
+    
+    # Salva anche i plot aggiuntivi se esistono
+    if (exists("p_lib")) {
+      ggplot2::ggsave(sub(".png$", "_library_size.png", output_plot), 
+                     plot = p_lib, device = "png", dpi = 300)
+    }
+    
+    if (exists("p_auto")) {
+      ggplot2::ggsave(sub(".png$", "_autocorrelation.png", output_plot), 
+                     plot = p_auto, device = "png", dpi = 300)
+    }
   }
   
   # Rinomino i cluster
@@ -460,47 +946,97 @@ simulate_spatial_transcriptomics <- function(
 # Esempi d'uso
 # ========================
 
-# Esempio 1: dataset "facile" (ben separato, con marker forti)
+# Esempio 1: Visium HD-like con griglia a 2µm
+# simulate_spatial_transcriptomics(
+#   image_path = here::here("images/colon.png"), 
+#   output_path = "data/simulated_visium_hd.rds",
+#   output_plot = "results/simulated_visium_hd.png",
+#   grid_mode = TRUE,                    # Attiva la modalità griglia
+#   grid_resolution = 2,                 # Risoluzione 2µm come Visium HD
+#   difficulty_level = "medium",
+#   n_genes = 100,
+#   k_cell_types = 5,
+#   correlation_method = "grf",          # Gaussian Random Field
+#   spatial_params = list(
+#     gradient_regions = TRUE,           # Attiva gradienti tra regioni
+#     gradient_width = 5,                # Larghezza del gradiente (in unità griglia)
+#     spatial_noise_intensity = 1.0,
+#     spatial_range = 30,
+#     random_noise_sd = 0.2
+#   ),
+#   dropout_params = list(
+#     expression_dependent_dropout = TRUE,  # Dropout dipendente dal livello di espressione
+#     dropout_curve_midpoint = 0.5,
+#     dropout_curve_steepness = 5
+#   ),
+#   library_size_params = list(
+#     mean_library_size = 10000,         # Media conteggi per spot
+#     library_size_cv = 0.3,             # Coefficiente di variazione
+#     spatial_effect_on_library = 0.5    # Effetto spaziale sulla dimensione libreria
+#   )
+# )
+
+# Esempio 2: dataset "facile" con metodo originale (pre-HD)
 # simulate_spatial_transcriptomics(
 #   image_path = here::here("images/colon.png"),
 #   output_path = "data/simulated_easy_correlation.rds",
 #   output_plot = "results/simulated_easy_distribution.png",
+#   grid_mode = FALSE,                    # Disattiva la modalità griglia
 #   difficulty_level = "easy",
 #   n_cells = 20000,
 #   n_genes = 100
 # )
 
-# Esempio 2: dataset "difficile" (confini sfumati, marker deboli)
+# Esempio 3: dataset difficile con pattern CAR (Conditional Autoregressive)
 # simulate_spatial_transcriptomics(
 #   image_path = here::here("images/granuloma.png"),
-#   output_path = "data/simulated_hard_correlation.rds",
-#   output_plot = "results/simulated_hard_distribution.png",
+#   output_path = "data/simulated_car_model.rds",
+#   output_plot = "results/simulated_car_model.png",
+#   grid_mode = TRUE,
+#   grid_resolution = 2,
 #   difficulty_level = "hard",
 #   n_cells = 30000,
-#   n_genes = 100
+#   n_genes = 100,
+#   correlation_method = "car"           # Conditional Autoregressive model
 # )
 
-# Esempio 3: dataset con parametri personalizzati
+# Esempio 4: dataset personalizzato per benchmarking
 # simulate_spatial_transcriptomics(
 #   image_path = here::here("images/colon.png"),
-#   output_path = "data/simulated_custom_correlation.rds",
-#   output_plot = "results/simulated_custom_distribution.png",
-#   difficulty_level = "medium",  # base di partenza
-#   n_cells = 25000,
+#   output_path = "data/simulated_benchmarking.rds",
+#   output_plot = "results/simulated_benchmarking.png",
+#   grid_mode = TRUE,
+#   grid_resolution = 2,
+#   difficulty_level = "medium",
 #   n_genes = 150,
 #   k_cell_types = 7,
+#   # Correlazione forte ma con range corto
+#   correlation_method = "grf",
+#   spatial_params = list(
+#     spatial_noise_intensity = 1.5,     # Intensità più alta
+#     spatial_range = 15,                # Range più corto
+#     random_noise_sd = 0.2,
+#     gradient_regions = TRUE,
+#     gradient_width = 10                # Gradiente più ampio
+#   ),
+#   # Marker con forte sovrapposizione
 #   marker_params = list(
 #     marker_genes_per_type = 8,
-#     marker_expression_fold = 1.0,
-#     marker_overlap_fold = 0.3
+#     marker_expression_fold = 1.0,      # Differenza moderata
+#     marker_overlap_fold = 0.5          # Alta sovrapposizione
 #   ),
-#   spatial_params = list(
-#     spatial_noise_intensity = 1.2,
-#     spatial_range = 25,
-#     random_noise_sd = 0.3
-#   ),
+#   # Dropout sia spaziale che basato su espressione
 #   dropout_params = list(
-#     dropout_range = c(0.25, 0.6),
-#     dispersion_range = c(1.8, 0.9)
+#     dropout_range = c(0.1, 0.4),
+#     dispersion_range = c(2.0, 0.8),
+#     expression_dependent_dropout = TRUE,
+#     dropout_curve_midpoint = 0.4,
+#     dropout_curve_steepness = 8        # Più ripida
+#   ),
+#   # Alta variabilità nelle dimensioni libreria
+#   library_size_params = list(
+#     mean_library_size = 8000,
+#     library_size_cv = 0.5,             # Alta variabilità
+#     spatial_effect_on_library = 0.7    # Forte effetto spaziale
 #   )
 # )
