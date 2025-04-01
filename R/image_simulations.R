@@ -8,6 +8,9 @@
 # 5) Simulazione di dropout spaziale e correlazione
 # 6) Visualizzazione
 
+# Aumenta il limite massimo di dimensione dei dati per la parallelizzazione
+options(future.globals.maxSize = 10000 * 1024^2)  # 10GB
+
 library(imager)
 library(tidyverse)
 library(MASS)
@@ -371,7 +374,11 @@ simulate_spatial_transcriptomics <- function(
       boundary_dists <- matrix(Inf, nrow = nrow(cell_df), ncol = length(all_clusters))
       
       # Utilizzare parallelizzazione per i cluster
-      plan(multisession, workers = min(parallel::detectCores() - 1, 20))
+      plan(multisession, workers = min(parallel::detectCores() - 1, 15))
+      
+      # Riduciamo l'ingombro di memoria esportando meno variabili
+      future::future_options(globals.maxSize = 10000 * 1024^2, 
+                            future.globals.onReference = "ignore")
       
       # Pre-calcola indici x,y di matrice per tutti i punti in una sola volta
       x_idx <- ceiling((cell_df$x - min(cell_df$x)) / grid_resolution) + 1
@@ -446,8 +453,8 @@ simulate_spatial_transcriptomics <- function(
             grid_blocks <- ceiling(nrow(cell_coords_mat) / grid_block_size)
             
             # Configura parallelizzazione per i calcoli di distanza
-            # Utilizziamo molti più workers per massimizzare la parallelizzazione
-            plan(multisession, workers = min(parallel::detectCores() - 1, 100))
+            # Limitiamo il numero di workers per evitare sovraccarico di memoria
+            plan(multisession, workers = min(parallel::detectCores() - 1, 20))
             
             # Definiamo le coppie di blocchi da processare in un'unica lista
             block_pairs <- expand.grid(b = 1:n_blocks, gb = 1:grid_blocks)
@@ -568,8 +575,10 @@ simulate_spatial_transcriptomics <- function(
   unique_clusters <- unique(cluster_labels)
   
   # future_lapply per parallelizzare
-  # Utilizza più cores per la parallelizzazione
-  plan(multisession, workers = min(parallel::detectCores() - 1, 100))
+  # Utilizziamo parallelizzazione bilanciata
+  plan(multisession, workers = min(parallel::detectCores() - 1, 40))
+  future::future_options(globals.maxSize = 10000 * 1024^2, 
+                        future.globals.onReference = "ignore")
   
   # Chunk più grandi per migliorare l'efficienza
   chunk_size <- max(1, ceiling(N/1000))
@@ -737,8 +746,10 @@ simulate_spatial_transcriptomics <- function(
       sp_df <- cell_df
       coordinates(sp_df) <- ~ x + y
       
-      # Usa parallelizzazione per accelerare il calcolo - utilizziamo più cores
-      plan(multisession, workers = min(parallel::detectCores() - 1, 100))
+      # Usa parallelizzazione per accelerare il calcolo - limitiamo per evitare problemi di memoria
+      plan(multisession, workers = min(parallel::detectCores() - 1, 20))
+      future::future_options(globals.maxSize = 10000 * 1024^2, 
+                            future.globals.onReference = "ignore")
       
       # Calcola il numero ottimale di blocchi in base al numero di punti
       n_points <- nrow(sp_df)
@@ -900,8 +911,10 @@ simulate_spatial_transcriptomics <- function(
     }
   }
   
-  # Configura multi-sessione con più core
-  plan(multisession, workers = min(parallel::detectCores() - 1, 100))
+  # Configura multi-sessione con parallelizzazione bilanciata
+  plan(multisession, workers = min(parallel::detectCores() - 1, 40))
+  future::future_options(globals.maxSize = 10000 * 1024^2, 
+                        future.globals.onReference = "ignore")
   
   # Genera l'espressione genica in parallelo per chunk di geni
   expression_chunks <- future_lapply(gene_chunks, function(genes_subset) {
