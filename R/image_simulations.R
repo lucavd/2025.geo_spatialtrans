@@ -8,29 +8,20 @@
 # 5) Simulazione di dropout spaziale e correlazione
 # 6) Visualizzazione
 
-# Aumenta il limite massimo di dimensione dei dati per la parallelizzazione
+# Configurazione semplificata per parallelizzazione
+# Imposta il limite massimo di memoria per dati condivisi
 options(future.globals.maxSize = 10000 * 1024^2)  # 10GB
 
-# Imposta il numero di core disponibili e disabilita i limiti di parallelizzazione 
-options(mc.cores = 110)
-options(future.fork.enable = TRUE)
-options(future.rng.onMisuse = "ignore")
-
-# Carica il pacchetto parallelly se disponibile e imposta opzioni
-if (requireNamespace("parallelly", quietly = TRUE)) {
-  try({
-    options(parallelly.availableCores.fallback = 110)
-    options(parallelly.validateCores.limit = 999)
-  }, silent = TRUE)
-}
+# Configura il futuro una sola volta all'inizio
+library(future)
+library(future.apply)
+plan(multisession, workers = 16)  # Limita a 3 workers come da test
 
 library(imager)
 library(tidyverse)
 library(MASS)
 library(cluster)
 library(ClusterR)
-library(future)
-library(future.apply)
 library(tictoc)
 library(gstat)
 library(sp)
@@ -266,24 +257,24 @@ simulate_spatial_transcriptomics <- function(
     # Calcola le dimensioni dell'immagine in μm
     img_width_um <- w * pixel_size_um
     img_height_um <- h * pixel_size_um
-    
+
     # Determina le dimensioni della griglia e le coordinate
     if (use_fixed_grid) {
       # Usa una griglia fissa con dimensioni standard Visium HD (6.5mm x 6.5mm)
       # Converti da mm a μm
       grid_width_um <- fixed_grid_width_mm * 1000  # 6.5mm = 6500μm
       grid_height_um <- fixed_grid_height_mm * 1000  # 6.5mm = 6500μm
-      
+
       # Calcola il numero di bin necessari per la griglia fissa
       n_bins_x <- ceiling(grid_width_um / grid_resolution)
       n_bins_y <- ceiling(grid_height_um / grid_resolution)
-      
+
       cat(sprintf("Dimensione immagine originale: %d x %d μm\n", img_width_um, img_height_um))
-      cat(sprintf("Usando griglia fissa Visium HD: %.1f x %.1f mm (%d x %d μm)\n", 
+      cat(sprintf("Usando griglia fissa Visium HD: %.1f x %.1f mm (%d x %d μm)\n",
                   fixed_grid_width_mm, fixed_grid_height_mm, grid_width_um, grid_height_um))
       cat(sprintf("Risoluzione griglia: %d μm, risultato: %d x %d bin = %d bin totali\n",
                   grid_resolution, n_bins_x, n_bins_y, n_bins_x * n_bins_y))
-      
+
       # Crea le coordinate della griglia fissa in μm
       x_coords <- seq(0, grid_width_um - grid_resolution, by = grid_resolution + grid_spacing)
       y_coords <- seq(0, grid_height_um - grid_resolution, by = grid_resolution + grid_spacing)
@@ -291,15 +282,15 @@ simulate_spatial_transcriptomics <- function(
       # Usa una griglia che si adatta all'immagine (comportamento originale)
       grid_width_um <- img_width_um
       grid_height_um <- img_height_um
-      
+
       # Calcola il numero di bin necessari
       n_bins_x <- ceiling(img_width_um / grid_resolution)
       n_bins_y <- ceiling(img_height_um / grid_resolution)
-      
+
       cat(sprintf("Dimensione immagine: %d x %d μm\n", img_width_um, img_height_um))
       cat(sprintf("Risoluzione griglia: %d μm, risultato: %d x %d bin = %d bin totali\n",
                   grid_resolution, n_bins_x, n_bins_y, n_bins_x * n_bins_y))
-      
+
       # Crea le coordinate della griglia adattata all'immagine in μm
       x_coords <- seq(0, img_width_um - grid_resolution, by = grid_resolution + grid_spacing)
       y_coords <- seq(0, img_height_um - grid_resolution, by = grid_resolution + grid_spacing)
@@ -316,13 +307,13 @@ simulate_spatial_transcriptomics <- function(
       } else {
         offset_x <- 0
       }
-      
+
       if (grid_height_um > img_height_um) {
         offset_y <- (grid_height_um - img_height_um) / 2
       } else {
         offset_y <- 0
       }
-      
+
       # Assegna a ciascun punto della griglia il valore dell'immagine, se il punto è all'interno dell'immagine
       grid_df <- grid_points %>%
         rowwise() %>%
@@ -330,10 +321,10 @@ simulate_spatial_transcriptomics <- function(
           # Calcola le coordinate relative all'immagine, considerando l'offset
           rel_x = x - offset_x,
           rel_y = y - offset_y,
-          
+
           # Controlla se il punto è all'interno dell'immagine
           is_in_image = (rel_x >= 0 && rel_x < img_width_um && rel_y >= 0 && rel_y < img_height_um),
-          
+
           # Se il punto è fuori dall'immagine, assegna un valore superiore alla soglia
           # altrimenti prendi il valore dall'immagine
           value = if (is_in_image) {
@@ -385,18 +376,15 @@ simulate_spatial_transcriptomics <- function(
       # Per ogni cluster, identifica i punti di bordo
       all_clusters <- levels(cell_df$intensity_cluster)
       boundary_dists <- matrix(Inf, nrow = nrow(cell_df), ncol = length(all_clusters))
-      
-      # Utilizzare parallelizzazione per i cluster, forza il numero di workers
-      future::plan(future::multisession, workers = min(110, 15))
-      # Ignora riferimenti per ridurre la memoria necessaria
-      options(future.globals.onReference = "ignore")
-      
+
+      # Utilizziamo la configurazione già definita, senza impostare nuovi plan
+
       # Pre-calcola indici x,y di matrice per tutti i punti in una sola volta
       x_idx <- ceiling((cell_df$x - min(cell_df$x)) / grid_resolution) + 1
       y_idx <- ceiling((cell_df$y - min(cell_df$y)) / grid_resolution) + 1
       x_idx <- pmin(pmax(x_idx, 1), n_bins_x)
       y_idx <- pmin(pmax(y_idx, 1), n_bins_y)
-      
+
       # Processa i cluster in parallelo
       cluster_results <- future_lapply(seq_along(all_clusters), function(i) {
         cl <- all_clusters[i]
@@ -405,7 +393,7 @@ simulate_spatial_transcriptomics <- function(
 
         # Crea una matrice binaria per il cluster e calcola la distanza dal bordo
         cluster_mat <- matrix(0, nrow = n_bins_x, ncol = n_bins_y)
-        
+
         # Utilizziamo gli indici x,y pre-calcolati
 
         # Segna i punti in questo cluster - vettorizzato
@@ -458,42 +446,40 @@ simulate_spatial_transcriptomics <- function(
             boundary_dists[, i] <- Inf
             block_size <- 100  # Blocchi più grandi per maggiore efficienza parallela
             n_blocks <- ceiling(nrow(border_coords) / block_size)
-            
+
             # Elabora anche i punti della griglia a blocchi per risparmiare memoria
             grid_block_size <- 500  # Aumentato per bilanciare efficienza/memoria
             grid_blocks <- ceiling(nrow(cell_coords_mat) / grid_block_size)
-            
-            # Configura parallelizzazione per i calcoli di distanza
-            # Limitiamo il numero di workers per evitare sovraccarico di memoria
-            future::plan(future::multisession, workers = min(110, 20))
-            
+
+            # Utilizziamo la configurazione già definita all'inizio
+
             # Definiamo le coppie di blocchi da processare in un'unica lista
             block_pairs <- expand.grid(b = 1:n_blocks, gb = 1:grid_blocks)
-            
+
             # Parallelizziamo il calcolo delle distanze
             results <- future_lapply(1:nrow(block_pairs), function(pair_idx) {
               b <- block_pairs$b[pair_idx]
               gb <- block_pairs$gb[pair_idx]
-              
+
               # Calcola gli indici per questo blocco di punti bordo
               start_idx <- (b-1) * block_size + 1
               end_idx <- min(b * block_size, nrow(border_coords))
               block_coords <- border_coords[start_idx:end_idx, , drop = FALSE]
-              
+
               # Calcola gli indici per questo blocco di punti griglia
               grid_start <- (gb-1) * grid_block_size + 1
               grid_end <- min(gb * grid_block_size, nrow(cell_coords_mat))
-              
+
               # Calcola distanze solo per il sottoinsieme corrente
               block_dists <- fields::rdist(cell_coords_mat[grid_start:grid_end, , drop = FALSE], block_coords)
-              
+
               # Calcola i minimi per riga e restituisci insieme agli indici della griglia
               list(
                 grid_range = c(grid_start, grid_end),
                 min_dists = apply(block_dists, 1, min)
               )
             })
-            
+
             # Unisci i risultati
             for (r in results) {
               grid_start <- r$grid_range[1]
@@ -584,17 +570,14 @@ simulate_spatial_transcriptomics <- function(
   # Versione vettorizzata e ottimizzata
   mean_dist <- numeric(N)
   unique_clusters <- unique(cluster_labels)
-  
+
   # future_lapply per parallelizzare
-  # Utilizziamo parallelizzazione bilanciata
-  future::plan(future::multisession, workers = min(110, 40))
-  # Ignora riferimenti per ridurre la memoria necessaria
-  options(future.globals.onReference = "ignore")
-  
+  # Utilizziamo la configurazione già definita all'inizio
+
   # Chunk più grandi per migliorare l'efficienza
   chunk_size <- max(1, ceiling(N/1000))
   chunks <- split(1:N, ceiling(seq_along(1:N)/chunk_size))
-  
+
   mean_dist <- future_lapply(chunks, function(chunk_idx) {
     result <- numeric(length(chunk_idx))
     for (j in seq_along(chunk_idx)) {
@@ -605,7 +588,7 @@ simulate_spatial_transcriptomics <- function(
     }
     return(result)
   }) %>% unlist()
-  
+
   # Calcola la densità locale (per il modello di dropout)
   # Versione ottimizzata con chunking
   local_density <- future_lapply(chunks, function(chunk_idx) {
@@ -756,43 +739,40 @@ simulate_spatial_transcriptomics <- function(
       # Utilizza blocchi più piccoli per ridurre la memoria
       sp_df <- cell_df
       coordinates(sp_df) <- ~ x + y
-      
-      # Usa parallelizzazione per accelerare il calcolo - limitiamo per evitare problemi di memoria
-      future::plan(future::multisession, workers = min(110, 20))
-      # Ignora riferimenti per ridurre la memoria necessaria
-      options(future.globals.onReference = "ignore")
-      
+
+      # Utilizziamo la configurazione già definita
+
       # Calcola il numero ottimale di blocchi in base al numero di punti
       n_points <- nrow(sp_df)
       # Blocchi più piccoli per efficienza con parallelizzazione massiccia
       block_size <- min(1000, max(200, floor(n_points/20)))
       n_blocks <- ceiling(n_points / block_size)
-      
-      cat(sprintf("Processando correlazione spaziale in %d blocchi di %d punti\n", 
+
+      cat(sprintf("Processando correlazione spaziale in %d blocchi di %d punti\n",
                  n_blocks, block_size))
-      
+
       # Inizializza il vettore del rumore
       gp_noise <- numeric(n_points)
-      
+
       if (n_blocks > 1) {
         # Processo a blocchi per risparmiare memoria
         for (b in 1:n_blocks) {
           start_idx <- (b-1) * block_size + 1
           end_idx <- min(b * block_size, n_points)
-          
+
           # Crea un modello gstat solo per questo blocco
           sp_block <- sp_df[start_idx:end_idx,]
-          
+
           gp_sim <- gstat(formula = z ~ 1, locations = ~x+y, dummy = TRUE,
                          beta = 0, model = vgm(psill = spatial_params$spatial_noise_intensity * 2,
                                               range = spatial_params$spatial_range * 0.8,
                                               model = "Exp"),
                          nmax = 20)
-                         
+
           # Genera il noise spaziale per questo blocco
           set.seed(random_seed + b) # Seed diverso per ogni blocco ma riproducibile
           noise_block <- predict(gp_sim, newdata = sp_block, nsim = 1)$sim1
-          
+
           # Assegna al vettore completo
           gp_noise[start_idx:end_idx] <- noise_block
         }
@@ -803,12 +783,12 @@ simulate_spatial_transcriptomics <- function(
                                             range = spatial_params$spatial_range * 0.8,
                                             model = "Exp"),
                        nmax = 20)
-        
+
         # Genera il noise spaziale
         set.seed(random_seed)
         gp_noise <- predict(gp_sim, newdata = sp_df, nsim = 1)$sim1
       }
-      
+
       # Normalizza il noise ma mantieni maggiore varianza
       gp_noise <- scale(gp_noise) * 1.5
 
@@ -904,14 +884,14 @@ simulate_spatial_transcriptomics <- function(
   # Genera l'espressione genica con variabilità aggiuntiva tra cellule dello stesso tipo
   # Preallochiamo la matrice di espressione - migliora efficienza
   expression_data <- matrix(0, nrow = N, ncol = n_genes)
-  
+
   # Converti cluster_labels in interi una sola volta
   cl <- as.integer(cluster_labels)
-  
+
   # Parallelizzazione massiccia per la generazione dell'espressione genica
   # Dividi i geni in chunk per parallelizzare
   gene_chunks <- split(seq_len(n_genes), ceiling(seq_len(n_genes)/min(50, ceiling(n_genes/10))))
-  
+
   # Pre-calcola alcune strutture di dati comuni a tutti i geni
   # Crea una matrice di medie di espressione per tipo di cellula e gene
   # Organizzato come matrice [gene, cluster]
@@ -921,20 +901,17 @@ simulate_spatial_transcriptomics <- function(
       all_mean_expr[g, k] <- mean_expression_list[[k]][g]
     }
   }
-  
-  # Configura multi-sessione con parallelizzazione bilanciata
-  future::plan(future::multisession, workers = min(110, 40))
-  # Ignora riferimenti per ridurre la memoria necessaria
-  options(future.globals.onReference = "ignore")
-  
+
+  # Utilizziamo la configurazione già definita all'inizio
+
   # Genera l'espressione genica in parallelo per chunk di geni
   expression_chunks <- future_lapply(gene_chunks, function(genes_subset) {
     # Alloca lo storage per l'espressione di questo chunk
     chunk_expression <- matrix(0, nrow = N, ncol = length(genes_subset))
-    
+
     for (i in seq_along(genes_subset)) {
       g <- genes_subset[i]
-      
+
       # Aggiungi variabilità cellula-specifica indipendente dal cluster
       cell_specific_effect <- rnorm(N, 0, cell_specific_params$cell_specific_noise_sd)
 
@@ -1103,12 +1080,12 @@ simulate_spatial_transcriptomics <- function(
       zero_idx <- runif(N) < base_dropout  # Più efficiente di rbinom() per vettori lunghi
       chunk_expression[zero_idx, i] <- 0
     }
-    
+
     } # Fine del ciclo for sui geni di questo chunk
-    
+
     return(chunk_expression)
   }) # Fine del future_lapply
-  
+
   # Combina i risultati dei chunk in una singola matrice di espressione
   for (i in seq_along(gene_chunks)) {
     genes_subset <- gene_chunks[[i]]
