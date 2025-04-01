@@ -11,6 +11,15 @@
 # Aumenta il limite massimo di dimensione dei dati per la parallelizzazione
 options(future.globals.maxSize = 10000 * 1024^2)  # 10GB
 
+# Imposta il numero di core disponibili e disabilita i limiti di parallelizzazione 
+options(mc.cores = 110)
+parallelly::parallelly.options(
+  validate.workers = FALSE,
+  availableCores.fallback = 110,
+  availableCores.methods = "mc.cores",
+  limit.cores = 999
+)
+
 library(imager)
 library(tidyverse)
 library(MASS)
