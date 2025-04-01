@@ -1,0 +1,187 @@
+Analizzando il file: results/easy/simulated_granuloma_easy.rds 
+Numero di tipi cellulari letto dal file RDS: 5 
+Creazione della matrice di espressione...
+Creazione dell'oggetto Seurat...
+Generazione dei plot diagnostici pre-filtering...
+Warning: Default search for "data" layer in "RNA" assay yielded no results; utilizing "counts" layer instead.
+Warning: Default search for "data" layer in "RNA" assay yielded no results; utilizing "counts" layer instead.
+Filtraggio dei geni a bassa espressione...
+Numero di geni dopo il filtraggio: 100
+Numero di cellule dopo il filtraggio: 30000
+Generazione dei plot diagnostici post-filtering...
+Warning: Default search for "data" layer in "RNA" assay yielded no results; utilizing "counts" layer instead.
+Warning: Default search for "data" layer in "RNA" assay yielded no results; utilizing "counts" layer instead.
+Normalizzazione dei dati con SCTransform...
+Esecuzione della PCA...
+PC_ 1 
+Positive:  Feature46, Feature44, Feature49, Feature48, Feature45, Feature47, Feature43, Feature42, Feature50, Feature41 
+	   Feature34, Feature39, Feature32, Feature31, Feature18, Feature33, Feature16, Feature40, Feature36, Feature19 
+	   Feature11, Feature38, Feature12, Feature14, Feature20, Feature15, Feature37, Feature35, Feature17, Feature13 
+Negative:  Feature1, Feature8, Feature6, Feature9, Feature3, Feature10, Feature5, Feature2, Feature7, Feature4 
+	   Feature26, Feature22, Feature21, Feature30, Feature23, Feature25, Feature29, Feature27, Feature28, Feature24 
+	   Feature83, Feature93, Feature61, Feature68, Feature98, Feature69, Feature64, Feature80, Feature52, Feature55 
+PC_ 2 
+Positive:  Feature34, Feature39, Feature31, Feature32, Feature33, Feature36, Feature37, Feature38, Feature40, Feature35 
+	   Feature16, Feature18, Feature14, Feature11, Feature20, Feature17, Feature12, Feature19, Feature15, Feature13 
+	   Feature78, Feature61, Feature72, Feature52, Feature75, Feature70, Feature85, Feature94, Feature74, Feature55 
+Negative:  Feature46, Feature44, Feature45, Feature49, Feature47, Feature48, Feature42, Feature50, Feature43, Feature41 
+	   Feature6, Feature1, Feature7, Feature9, Feature3, Feature10, Feature5, Feature2, Feature8, Feature4 
+	   Feature26, Feature30, Feature22, Feature21, Feature23, Feature25, Feature27, Feature24, Feature29, Feature28 
+PC_ 3 
+Positive:  Feature34, Feature39, Feature31, Feature33, Feature32, Feature36, Feature37, Feature38, Feature40, Feature35 
+	   Feature46, Feature48, Feature44, Feature41, Feature42, Feature43, Feature47, Feature50, Feature49, Feature45 
+	   Feature92, Feature76, Feature96, Feature99, Feature81, Feature67, Feature65, Feature79, Feature71, Feature94 
+Negative:  Feature16, Feature18, Feature14, Feature11, Feature19, Feature20, Feature12, Feature17, Feature15, Feature13 
+	   Feature4, Feature8, Feature5, Feature3, Feature6, Feature2, Feature7, Feature1, Feature24, Feature9 
+	   Feature10, Feature25, Feature27, Feature23, Feature22, Feature29, Feature28, Feature26, Feature30, Feature21 
+PC_ 4 
+Positive:  Feature21, Feature22, Feature26, Feature30, Feature23, Feature25, Feature29, Feature27, Feature28, Feature24 
+	   Feature13, Feature40, Feature37, Feature50, Feature39, Feature32, Feature35, Feature42, Feature19, Feature43 
+	   Feature33, Feature31, Feature45, Feature17, Feature38, Feature34, Feature47, Feature44, Feature48, Feature36 
+Negative:  Feature8, Feature3, Feature10, Feature5, Feature2, Feature7, Feature4, Feature6, Feature1, Feature9 
+	   Feature51, Feature71, Feature55, Feature64, Feature82, Feature68, Feature58, Feature61, Feature65, Feature67 
+	   Feature88, Feature81, Feature74, Feature84, Feature70, Feature95, Feature100, Feature76, Feature89, Feature94 
+PC_ 5 
+Positive:  Feature87, Feature73, Feature68, Feature100, Feature90, Feature56, Feature98, Feature81, Feature25, Feature86 
+	   Feature75, Feature96, Feature80, Feature69, Feature92, Feature57, Feature54, Feature61, Feature58, Feature64 
+	   Feature71, Feature67, Feature55, Feature59, Feature51, Feature65, Feature89, Feature97, Feature62, Feature78 
+Negative:  Feature46, Feature45, Feature47, Feature50, Feature38, Feature36, Feature44, Feature31, Feature49, Feature48 
+	   Feature39, Feature37, Feature17, Feature34, Feature13, Feature32, Feature43, Feature35, Feature40, Feature33 
+	   Feature42, Feature1, Feature6, Feature12, Feature9, Feature20, Feature18, Feature41, Feature16, Feature19 
+PCA completata.
+PC_ 1 
+Positive:  Feature46, Feature44, Feature49, Feature48, Feature45 
+Negative:  Feature1, Feature8, Feature6, Feature9, Feature3 
+PC_ 2 
+Positive:  Feature34, Feature39, Feature31, Feature32, Feature33 
+Negative:  Feature46, Feature44, Feature45, Feature49, Feature47 
+PC_ 3 
+Positive:  Feature34, Feature39, Feature31, Feature33, Feature32 
+Negative:  Feature16, Feature18, Feature14, Feature11, Feature19 
+PC_ 4 
+Positive:  Feature21, Feature22, Feature26, Feature30, Feature23 
+Negative:  Feature8, Feature3, Feature10, Feature5, Feature2 
+PC_ 5 
+Positive:  Feature87, Feature73, Feature68, Feature100, Feature90 
+Negative:  Feature46, Feature45, Feature47, Feature50, Feature38 
+Rinomina dei cluster reali basati sulla dimensione...
+Esecuzione del clustering con Seurat...
+Clustering con Seurat completato. Numero di cluster identificati: 5 
+Rinomina dei cluster Seurat basati sulla dimensione...
+Esecuzione di UMAP con Seurat...
+Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
+This message will be shown once per session
+19:24:35 UMAP embedding parameters a = 1.121 b = 1.057
+19:24:35 Read 30000 rows and found 30 numeric columns
+19:24:35 Using Annoy for neighbor search, n_neighbors = 5
+19:24:35 Building Annoy index with metric = cosine, n_trees = 50
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+19:24:37 Writing NN index file to temp file /tmp/RtmpD8Q3Ic/file2ae4a2727330a
+19:24:37 Searching Annoy index using 3 threads, search_k = 500
+19:24:38 Annoy recall = 100%
+19:24:39 Commencing smooth kNN distance calibration using 3 threads with target n_neighbors = 5
+19:24:40 Initializing from normalized Laplacian + noise (using RSpectra)
+19:24:41 Commencing optimization for 200 epochs, with 200716 positive edges
+Using method 'umap'
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+19:24:45 Optimization finished
+Calcolo del Silhouette Score...
+  cluster size ave.sil.width
+1       1 8187          0.74
+2       2 7381          0.71
+3       3 7136          0.75
+4       4 5036          0.78
+5       5 2260          0.85
+Creazione del plot spaziale dei cluster Seurat...
+Creazione del plot delle proporzioni dei cluster Seurat...
+Applicazione di HDBSCAN sui dati UMAP...
+Risultati HDBSCAN:
+
+   1    2    3    4    5 
+7124 5014 2289 7382 8191 
+Rinomina dei cluster HDBSCAN basati sulla dimensione...
+Creazione delle tabelle di contingenza...
+Tabella di contingenza (intensity_cluster vs Renamed HDBSCAN):
+         
+          cells_a cells_b cells_c cells_d cells_e
+  cells_a    8112      28      26      12       8
+  cells_b       3       1       2       0    2252
+  cells_c      17      11    7046      11      11
+  cells_d      16      10      15    4978      13
+  cells_e      43    7332      35      13       5
+Tabella di contingenza (intensity_cluster vs Renamed Seurat):
+         
+          cells_a cells_b cells_c cells_d cells_e
+  cells_a    8114      32      23      15       2
+  cells_b       7       0       2       3    2246
+  cells_c      18       8    7052      14       4
+  cells_d      13       9      12    4992       6
+  cells_e      35    7332      47      12       2
+Salvataggio dell'oggetto Seurat con i cluster rinominati...
+Analisi completata e oggetto Seurat salvato in results/easy/seurat_hdbscan_combined_easy.rds 
+Calcolo delle metriche di performance per i cluster Seurat e HDBSCAN...
+
+Calcolo di True Positives (TP), False Positives (FP), False Negatives (FN) e Precision per Seurat:
+
+Tabella di contingenza per Seurat:
+            predicted_factors
+true_factors cells_a cells_b cells_c cells_d cells_e
+     cells_a    8114      32      23      15       2
+     cells_b      35    7332      47      12       2
+     cells_c      18       8    7052      14       4
+     cells_d      13       9      12    4992       6
+     cells_e       7       0       2       3    2246
+
+Calcolo di True Positives (TP), False Positives (FP) e False Negatives (FN) e Precision per HDBSCAN:
+
+Tabella di contingenza per HDBSCAN:
+            predicted_factors
+true_factors cells_a cells_b cells_c cells_d cells_e
+     cells_a    8112      28      26      12       8
+     cells_b      43    7332      35      13       5
+     cells_c      17      11    7046      11      11
+     cells_d      16      10      15    4978      13
+     cells_e       3       1       2       0    2252
+
+Metriche di Performance Combinate:
+# A tibble: 12 × 6
+   Method  Class   True_Positives False_Positives False_Negatives Precision
+   <chr>   <chr>            <int>           <dbl>           <dbl>     <dbl>
+ 1 Seurat  cells_a           8114              73              72     0.991
+ 2 Seurat  cells_b           7332              49              96     0.993
+ 3 Seurat  cells_c           7052              84              44     0.988
+ 4 Seurat  cells_d           4992              44              40     0.991
+ 5 Seurat  cells_e           2246              14              12     0.994
+ 6 Seurat  Total            29736             264             264     0.991
+ 7 HDBSCAN cells_a           8112              79              74     0.990
+ 8 HDBSCAN cells_b           7332              50              96     0.993
+ 9 HDBSCAN cells_c           7046              78              50     0.989
+10 HDBSCAN cells_d           4978              36              54     0.993
+11 HDBSCAN cells_e           2252              37               6     0.984
+12 HDBSCAN Total            29720             280             280     0.991
+Confronto completato e metriche salvate in results/easy/metrics_comparison_easy.csv 
+# A tibble: 12 × 6
+   Method  Class   True_Positives False_Positives False_Negatives Precision
+   <chr>   <chr>            <int>           <dbl>           <dbl>     <dbl>
+ 1 Seurat  cells_a           8114              73              72     0.991
+ 2 Seurat  cells_b           7332              49              96     0.993
+ 3 Seurat  cells_c           7052              84              44     0.988
+ 4 Seurat  cells_d           4992              44              40     0.991
+ 5 Seurat  cells_e           2246              14              12     0.994
+ 6 Seurat  Total            29736             264             264     0.991
+ 7 HDBSCAN cells_a           8112              79              74     0.990
+ 8 HDBSCAN cells_b           7332              50              96     0.993
+ 9 HDBSCAN cells_c           7046              78              50     0.989
+10 HDBSCAN cells_d           4978              36              54     0.993
+11 HDBSCAN cells_e           2252              37               6     0.984
+12 HDBSCAN Total            29720             280             280     0.991
+Warning messages:
+1: The `slot` argument of `GetAssayData()` is deprecated as of SeuratObject 5.0.0.
+ℹ Please use the `layer` argument instead. 
+2: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead. 
