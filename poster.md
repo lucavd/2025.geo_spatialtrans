@@ -7,7 +7,7 @@ Questo report presenta i risultati della simulazione e dell'analisi di dati di t
 La simulazione della trascrittomica spaziale rappresenta uno strumento fondamentale per comprendere le dinamiche di espressione genica in tessuti biologici complessi. In questo studio, abbiamo utilizzato un modello di simulazione parametrizzato che genera profili di espressione realistica a partire da immagini istologiche.
 
 ### Immagine di Riferimento
-![Immagine Granuloma](/home/user/2025.geo_spatialtrans/images/granuloma.png)
+![Immagine Granuloma](images/granuloma.png)
 
 ## 2. Metodologia
 
@@ -62,13 +62,13 @@ L'analisi è stata condotta utilizzando `analyze_and_compare_clusters.R`, che im
 Le seguenti figure mostrano la distribuzione spaziale delle cellule simulate nei 5 tipi cellulari identificati per ciascun livello di difficoltà:
 
 **Livello Easy**:
-![Distribuzione Spaziale - Easy](/home/user/2025.geo_spatialtrans/results/easy/simulated_granuloma_easy_distribution.png)
+![Distribuzione Spaziale - Easy](results/easy/simulated_granuloma_easy_distribution.png)
 
 **Livello Medium**:
-![Distribuzione Spaziale - Medium](/home/user/2025.geo_spatialtrans/results/medium/simulated_granuloma_medium_distribution.png)
+![Distribuzione Spaziale - Medium](results/medium/simulated_granuloma_medium_distribution.png)
 
 **Livello Hard**:
-![Distribuzione Spaziale - Hard](/home/user/2025.geo_spatialtrans/results/hard/simulated_granuloma_hard_distribution.png)
+![Distribuzione Spaziale - Hard](results/hard/simulated_granuloma_hard_distribution.png)
 
 Come si può osservare, tutti e tre i livelli di difficoltà mantengono la struttura anatomica del granuloma, ma presentano caratteristiche di clustering diverse in base ai parametri utilizzati. Si noti che, malgrado la differenza nei parametri, la distribuzione spaziale risulta visivamente simile a causa della discretizzazione delle cellule.
 
