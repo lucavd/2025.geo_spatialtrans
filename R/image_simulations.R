@@ -13,12 +13,16 @@ options(future.globals.maxSize = 10000 * 1024^2)  # 10GB
 
 # Imposta il numero di core disponibili e disabilita i limiti di parallelizzazione 
 options(mc.cores = 110)
-parallelly::parallelly.options(
-  validate.workers = FALSE,
-  availableCores.fallback = 110,
-  availableCores.methods = "mc.cores",
-  limit.cores = 999
-)
+options(future.fork.enable = TRUE)
+options(future.rng.onMisuse = "ignore")
+
+# Carica il pacchetto parallelly se disponibile e imposta opzioni
+if (requireNamespace("parallelly", quietly = TRUE)) {
+  try({
+    options(parallelly.availableCores.fallback = 110)
+    options(parallelly.validateCores.limit = 999)
+  }, silent = TRUE)
+}
 
 library(imager)
 library(tidyverse)
@@ -382,8 +386,8 @@ simulate_spatial_transcriptomics <- function(
       all_clusters <- levels(cell_df$intensity_cluster)
       boundary_dists <- matrix(Inf, nrow = nrow(cell_df), ncol = length(all_clusters))
       
-      # Utilizzare parallelizzazione per i cluster
-      plan(multisession, workers = min(parallel::detectCores() - 1, 15))
+      # Utilizzare parallelizzazione per i cluster, forza il numero di workers
+      future::plan(future::multisession, workers = min(110, 15))
       # Ignora riferimenti per ridurre la memoria necessaria
       options(future.globals.onReference = "ignore")
       
@@ -461,7 +465,7 @@ simulate_spatial_transcriptomics <- function(
             
             # Configura parallelizzazione per i calcoli di distanza
             # Limitiamo il numero di workers per evitare sovraccarico di memoria
-            plan(multisession, workers = min(parallel::detectCores() - 1, 20))
+            future::plan(future::multisession, workers = min(110, 20))
             
             # Definiamo le coppie di blocchi da processare in un'unica lista
             block_pairs <- expand.grid(b = 1:n_blocks, gb = 1:grid_blocks)
@@ -583,7 +587,7 @@ simulate_spatial_transcriptomics <- function(
   
   # future_lapply per parallelizzare
   # Utilizziamo parallelizzazione bilanciata
-  plan(multisession, workers = min(parallel::detectCores() - 1, 40))
+  future::plan(future::multisession, workers = min(110, 40))
   # Ignora riferimenti per ridurre la memoria necessaria
   options(future.globals.onReference = "ignore")
   
@@ -754,7 +758,7 @@ simulate_spatial_transcriptomics <- function(
       coordinates(sp_df) <- ~ x + y
       
       # Usa parallelizzazione per accelerare il calcolo - limitiamo per evitare problemi di memoria
-      plan(multisession, workers = min(parallel::detectCores() - 1, 20))
+      future::plan(future::multisession, workers = min(110, 20))
       # Ignora riferimenti per ridurre la memoria necessaria
       options(future.globals.onReference = "ignore")
       
@@ -919,7 +923,7 @@ simulate_spatial_transcriptomics <- function(
   }
   
   # Configura multi-sessione con parallelizzazione bilanciata
-  plan(multisession, workers = min(parallel::detectCores() - 1, 40))
+  future::plan(future::multisession, workers = min(110, 40))
   # Ignora riferimenti per ridurre la memoria necessaria
   options(future.globals.onReference = "ignore")
   
