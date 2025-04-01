@@ -375,10 +375,8 @@ simulate_spatial_transcriptomics <- function(
       
       # Utilizzare parallelizzazione per i cluster
       plan(multisession, workers = min(parallel::detectCores() - 1, 15))
-      
-      # Riduciamo l'ingombro di memoria esportando meno variabili
-      future::future_options(globals.maxSize = 10000 * 1024^2, 
-                            future.globals.onReference = "ignore")
+      # Ignora riferimenti per ridurre la memoria necessaria
+      options(future.globals.onReference = "ignore")
       
       # Pre-calcola indici x,y di matrice per tutti i punti in una sola volta
       x_idx <- ceiling((cell_df$x - min(cell_df$x)) / grid_resolution) + 1
@@ -577,8 +575,8 @@ simulate_spatial_transcriptomics <- function(
   # future_lapply per parallelizzare
   # Utilizziamo parallelizzazione bilanciata
   plan(multisession, workers = min(parallel::detectCores() - 1, 40))
-  future::future_options(globals.maxSize = 10000 * 1024^2, 
-                        future.globals.onReference = "ignore")
+  # Ignora riferimenti per ridurre la memoria necessaria
+  options(future.globals.onReference = "ignore")
   
   # Chunk più grandi per migliorare l'efficienza
   chunk_size <- max(1, ceiling(N/1000))
@@ -748,8 +746,8 @@ simulate_spatial_transcriptomics <- function(
       
       # Usa parallelizzazione per accelerare il calcolo - limitiamo per evitare problemi di memoria
       plan(multisession, workers = min(parallel::detectCores() - 1, 20))
-      future::future_options(globals.maxSize = 10000 * 1024^2, 
-                            future.globals.onReference = "ignore")
+      # Ignora riferimenti per ridurre la memoria necessaria
+      options(future.globals.onReference = "ignore")
       
       # Calcola il numero ottimale di blocchi in base al numero di punti
       n_points <- nrow(sp_df)
@@ -913,8 +911,8 @@ simulate_spatial_transcriptomics <- function(
   
   # Configura multi-sessione con parallelizzazione bilanciata
   plan(multisession, workers = min(parallel::detectCores() - 1, 40))
-  future::future_options(globals.maxSize = 10000 * 1024^2, 
-                        future.globals.onReference = "ignore")
+  # Ignora riferimenti per ridurre la memoria necessaria
+  options(future.globals.onReference = "ignore")
   
   # Genera l'espressione genica in parallelo per chunk di geni
   expression_chunks <- future_lapply(gene_chunks, function(genes_subset) {
