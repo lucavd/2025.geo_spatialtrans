@@ -8,14 +8,22 @@
 # 5) Simulazione di dropout spaziale e correlazione
 # 6) Visualizzazione
 
-# Configurazione semplificata per parallelizzazione
+# Configurazione ottimizzata per parallelizzazione con memoria abbondante (256GB)
 # Imposta il limite massimo di memoria per dati condivisi
-options(future.globals.maxSize = 10000 * 1024^2)  # 10GB
+options(future.globals.maxSize = 50000 * 1024^2)  # 50GB
+
+# Ottimizza gestione della memoria per grandi dataset
+options(future.fork.enable = FALSE)  # Disabilita fork che può causare problemi con grandi dataset
+options(future.gc = TRUE)            # Forza garbage collection al termine di ogni future
 
 # Configura il futuro una sola volta all'inizio
 library(future)
 library(future.apply)
-plan(multisession, workers = 16)  # Limita a 3 workers come da test
+
+# Sfrutta le risorse disponibili ma evita di sovraccaricare la memoria
+# Con 256GB di RAM e complessità del calcolo, un buon bilanciamento è usare più worker
+# ma non troppi (16-20) per evitare overhead di comunicazione e swap
+plan(multisession, workers = 16)  # Utilizza 16 worker per sfruttare i core disponibili
 
 library(imager)
 library(tidyverse)
@@ -369,27 +377,50 @@ simulate_spatial_transcriptomics <- function(
     # Se vogliamo applicare gradienti ai confini tra regioni
     if (spatial_params$gradient_regions) {
       cat("Applicazione gradienti tra regioni\n")
+      
+      # Usiamo strategie avanzate di gestione memoria
+      # Forzare garbage collection prima di iniziare questa operazione intensiva
+      gc(full = TRUE)
+      
+      # Riduciamo temporaneamente il numero di worker per questa operazione intensiva
+      old_workers <- future::nbrOfWorkers()
+      plan(multisession, workers = 4) # Limitiamo a 4 worker per questa sezione
+      cat(sprintf("Temporaneamente ridotto workers da %d a %d per gestione memoria\n", 
+                  old_workers, future::nbrOfWorkers()))
 
       # Crea una matrice di distanza per calcolare quanto ogni punto è vicino al confine
       cell_coords <- cell_df %>% dplyr::select(x, y)
 
       # Per ogni cluster, identifica i punti di bordo
       all_clusters <- levels(cell_df$intensity_cluster)
-      boundary_dists <- matrix(Inf, nrow = nrow(cell_df), ncol = length(all_clusters))
-
-      # Utilizziamo la configurazione già definita, senza impostare nuovi plan
-
+      
+      # Calcoliamo la dimensione della matrice e avvisiamo
+      matrix_size_mb <- nrow(cell_df) * length(all_clusters) * 8 / (1024*1024)
+      cat(sprintf("Creazione matrice boundary_dists di %.1f MB\n", matrix_size_mb))
+      
+      # Inizializza in modo più efficiente usando un valore NA invece di una matrice piena
+      boundary_dists <- matrix(NA_real_, nrow = nrow(cell_df), ncol = length(all_clusters))
+      
       # Pre-calcola indici x,y di matrice per tutti i punti in una sola volta
       x_idx <- ceiling((cell_df$x - min(cell_df$x)) / grid_resolution) + 1
       y_idx <- ceiling((cell_df$y - min(cell_df$y)) / grid_resolution) + 1
       x_idx <- pmin(pmax(x_idx, 1), n_bins_x)
       y_idx <- pmin(pmax(y_idx, 1), n_bins_y)
 
-      # Processa i cluster in parallelo
-      cluster_results <- future_lapply(seq_along(all_clusters), function(i) {
+      # Processa i cluster in serie ma con calcoli interni parallelizzati
+      # Questo riduce il consumo di memoria complessivo
+      boundary_dists_list <- list()  # Lista temporanea per i risultati
+      
+      for (i in seq_along(all_clusters)) {
         cl <- all_clusters[i]
         # Punti in questo cluster
         in_cluster <- cell_df$intensity_cluster == cl
+        boundary_dists[, i] <- Inf  # Inizializza con infinito
+        
+        # Se non ci sono punti in questo cluster, salta
+        if (!any(in_cluster)) {
+          next
+        }
 
         # Crea una matrice binaria per il cluster e calcola la distanza dal bordo
         cluster_mat <- matrix(0, nrow = n_bins_x, ncol = n_bins_y)
@@ -398,100 +429,169 @@ simulate_spatial_transcriptomics <- function(
 
         # Segna i punti in questo cluster - vettorizzato
         idx <- in_cluster
-        if (sum(idx) > 0) {
-          # Converti indici logici in indici di matrice in una singola operazione
-          cluster_mat[cbind(x_idx[idx], y_idx[idx])] <- 1
+        # Converti indici logici in indici di matrice in una singola operazione
+        cluster_mat[cbind(x_idx[idx], y_idx[idx])] <- 1
 
-          # Crea una matrice di bordo vettorizzando la logica del bordo
-          # Modo più efficiente per trovare i bordi
-          border_mat <- matrix(0, nrow = n_bins_x, ncol = n_bins_y)
+        # Crea una matrice di bordo vettorizzando la logica del bordo
+        # Modo più efficiente per trovare i bordi
+        border_mat <- matrix(0, nrow = n_bins_x, ncol = n_bins_y)
 
-          # Applica filtro per rilevare i bordi
-          # Prima identifica tutti i punti interni (circondati da 1)
-          interior <- matrix(0, nrow = n_bins_x, ncol = n_bins_y)
-          interior[2:(n_bins_x-1), 2:(n_bins_y-1)] <-
-            cluster_mat[2:(n_bins_x-1), 2:(n_bins_y-1)] *
-            cluster_mat[1:(n_bins_x-2), 2:(n_bins_y-1)] *
-            cluster_mat[3:n_bins_x, 2:(n_bins_y-1)] *
-            cluster_mat[2:(n_bins_x-1), 1:(n_bins_y-2)] *
-            cluster_mat[2:(n_bins_x-1), 3:n_bins_y]
+        # Applica filtro per rilevare i bordi
+        # Prima identifica tutti i punti interni (circondati da 1)
+        interior <- matrix(0, nrow = n_bins_x, ncol = n_bins_y)
+        interior[2:(n_bins_x-1), 2:(n_bins_y-1)] <-
+          cluster_mat[2:(n_bins_x-1), 2:(n_bins_y-1)] *
+          cluster_mat[1:(n_bins_x-2), 2:(n_bins_y-1)] *
+          cluster_mat[3:n_bins_x, 2:(n_bins_y-1)] *
+          cluster_mat[2:(n_bins_x-1), 1:(n_bins_y-2)] *
+          cluster_mat[2:(n_bins_x-1), 3:n_bins_y]
 
-          # I bordi sono i punti che sono nel cluster ma non interni
-          border_mat <- cluster_mat * (1 - (interior > 0))
+        # I bordi sono i punti che sono nel cluster ma non interni
+        border_mat <- cluster_mat * (1 - (interior > 0))
 
-          # Aggiungi anche tutti i punti di bordo esterno (i confini della griglia)
-          border_mat[1,] <- border_mat[1,] | (cluster_mat[1,] > 0)
-          border_mat[n_bins_x,] <- border_mat[n_bins_x,] | (cluster_mat[n_bins_x,] > 0)
-          border_mat[,1] <- border_mat[,1] | (cluster_mat[,1] > 0)
-          border_mat[,n_bins_y] <- border_mat[,n_bins_y] | (cluster_mat[,n_bins_y] > 0)
+        # Aggiungi anche tutti i punti di bordo esterno (i confini della griglia)
+        border_mat[1,] <- border_mat[1,] | (cluster_mat[1,] > 0)
+        border_mat[n_bins_x,] <- border_mat[n_bins_x,] | (cluster_mat[n_bins_x,] > 0)
+        border_mat[,1] <- border_mat[,1] | (cluster_mat[,1] > 0)
+        border_mat[,n_bins_y] <- border_mat[,n_bins_y] | (cluster_mat[,n_bins_y] > 0)
 
-          # Trova le coordinate dei punti di bordo
-          border_indices <- which(border_mat > 0, arr.ind = TRUE)
+        # Trova le coordinate dei punti di bordo
+        border_indices <- which(border_mat > 0, arr.ind = TRUE)
 
-          if (nrow(border_indices) > 0) {
-            # Converti indici in coordinate reali in μm
-            border_coords <- matrix(0, nrow = nrow(border_indices), ncol = 2)
-            border_coords[,1] <- min(cell_df$x) + (border_indices[,1] - 1) * grid_resolution
-            border_coords[,2] <- min(cell_df$y) + (border_indices[,2] - 1) * grid_resolution
+        if (nrow(border_indices) > 0) {
+          # Converti indici in coordinate reali in μm
+          border_coords <- matrix(0, nrow = nrow(border_indices), ncol = 2)
+          border_coords[,1] <- min(cell_df$x) + (border_indices[,1] - 1) * grid_resolution
+          border_coords[,2] <- min(cell_df$y) + (border_indices[,2] - 1) * grid_resolution
 
-            # Per ogni punto nella griglia, calcola la distanza minima da un punto di bordo
-            # in modo vettorizzato
-            cell_coords_mat <- as.matrix(cell_coords)
+          # Per ogni punto nella griglia, calcola la distanza minima da un punto di bordo
+          cell_coords_mat <- as.matrix(cell_coords)
 
-            # Questa operazione calcola tutte le distanze punto-bordo in una volta
-            # ed estrae il minimo per ogni punto
-            # La funzione pdist calcola la distanza euclidea tra tutte le coppie di punti
-            # in due matrici
-            # Utilizza l'elaborazione parallela a blocchi per evitare problemi di memoria
-            boundary_dists[, i] <- Inf
-            block_size <- 100  # Blocchi più grandi per maggiore efficienza parallela
-            n_blocks <- ceiling(nrow(border_coords) / block_size)
+          # Strategia ottimizzata: usa blocchi più grandi e meno worker per questo
+          # calcolo particolarmente intensivo per memoria
+          block_size <- 300  # Blocchi più grandi per ridurre overhead
+          n_blocks <- ceiling(nrow(border_coords) / block_size)
 
-            # Elabora anche i punti della griglia a blocchi per risparmiare memoria
-            grid_block_size <- 500  # Aumentato per bilanciare efficienza/memoria
-            grid_blocks <- ceiling(nrow(cell_coords_mat) / grid_block_size)
+          # Elabora anche i punti della griglia a blocchi più grandi per risparmiare memoria
+          grid_block_size <- 2000  # Blocchi più grandi per ridurre overhead
+          grid_blocks <- ceiling(nrow(cell_coords_mat) / grid_block_size)
 
-            # Utilizziamo la configurazione già definita all'inizio
+          # Definiamo le coppie di blocchi da processare in un'unica lista (meno coppie)
+          block_pairs <- expand.grid(b = 1:n_blocks, gb = 1:grid_blocks)
+          
+          # Liberiamo alcune variabili non più necessarie per ridurre il consumo di memoria
+          rm(cluster_mat, interior, border_mat)
+          gc()  # Forzare garbage collection
 
-            # Definiamo le coppie di blocchi da processare in un'unica lista
-            block_pairs <- expand.grid(b = 1:n_blocks, gb = 1:grid_blocks)
-
-            # Parallelizziamo il calcolo delle distanze
-            results <- future_lapply(1:nrow(block_pairs), function(pair_idx) {
+          # Ulteriore riduzione temporanea dei worker per questa parte estremamente intensiva
+          # e aggiunta di gestione batch sequenziale per contenere l'uso di memoria
+          local_workers <- min(2, future::availableCores())
+          old_plan <- plan()
+          plan(multisession, workers = local_workers)
+          cat(sprintf("Fase critica di memoria: ridotto worker a %d\n", local_workers))
+          
+          # Elaboriamo i blocchi in batch più piccoli
+          batch_size <- min(10, nrow(block_pairs))
+          n_batches <- ceiling(nrow(block_pairs) / batch_size)
+          
+          # Inizializza storage per i risultati
+          results <- list()
+          
+          for (batch_idx in 1:n_batches) {
+            batch_start <- (batch_idx-1) * batch_size + 1
+            batch_end <- min(batch_idx * batch_size, nrow(block_pairs))
+            cat(sprintf("Elaborazione batch %d/%d (righe %d-%d)...\n", 
+                        batch_idx, n_batches, batch_start, batch_end))
+            
+            # Parallelizza solo all'interno del batch
+            batch_results <- future_lapply(batch_start:batch_end, function(pair_idx) {
               b <- block_pairs$b[pair_idx]
               gb <- block_pairs$gb[pair_idx]
-
+  
               # Calcola gli indici per questo blocco di punti bordo
               start_idx <- (b-1) * block_size + 1
               end_idx <- min(b * block_size, nrow(border_coords))
               block_coords <- border_coords[start_idx:end_idx, , drop = FALSE]
-
+  
               # Calcola gli indici per questo blocco di punti griglia
               grid_start <- (gb-1) * grid_block_size + 1
               grid_end <- min(gb * grid_block_size, nrow(cell_coords_mat))
-
-              # Calcola distanze solo per il sottoinsieme corrente
-              block_dists <- fields::rdist(cell_coords_mat[grid_start:grid_end, , drop = FALSE], block_coords)
-
+  
+              # Calcola distanze con metodo ottimizzato per memoria
+              # Utilizziamo calcolo a batch per rdist quando possibile
+              block_dists <- NULL
+              if (nrow(block_coords) > 500 && (grid_end - grid_start + 1) > 500) {
+                # Per blocchi molto grandi, suddividi ulteriormente il calcolo
+                min_dists <- numeric(grid_end - grid_start + 1)
+                sub_batch_size <- 100
+                n_sub_batches <- ceiling(nrow(block_coords) / sub_batch_size)
+                
+                for (sb in 1:n_sub_batches) {
+                  sb_start <- (sb-1) * sub_batch_size + 1
+                  sb_end <- min(sb * sub_batch_size, nrow(block_coords))
+                  
+                  sub_dists <- fields::rdist(
+                    cell_coords_mat[grid_start:grid_end, , drop = FALSE], 
+                    block_coords[sb_start:sb_end, , drop = FALSE]
+                  )
+                  
+                  # Aggiorna i minimi correnti
+                  if (sb == 1) {
+                    min_dists <- apply(sub_dists, 1, min)
+                  } else {
+                    new_mins <- apply(sub_dists, 1, min)
+                    min_dists <- pmin(min_dists, new_mins)
+                  }
+                  
+                  # Liberazione memoria immediata
+                  rm(sub_dists)
+                  if (sb %% 5 == 0) gc()
+                }
+              } else {
+                # Per blocchi più piccoli, usa l'approccio diretto
+                block_dists <- fields::rdist(
+                  cell_coords_mat[grid_start:grid_end, , drop = FALSE], 
+                  block_coords
+                )
+                min_dists <- apply(block_dists, 1, min)
+                rm(block_dists)
+              }
+  
               # Calcola i minimi per riga e restituisci insieme agli indici della griglia
               list(
                 grid_range = c(grid_start, grid_end),
-                min_dists = apply(block_dists, 1, min)
+                min_dists = min_dists
               )
-            })
-
-            # Unisci i risultati
-            for (r in results) {
-              grid_start <- r$grid_range[1]
-              grid_end <- r$grid_range[2]
-              boundary_dists[grid_start:grid_end, i] <- pmin(
-                boundary_dists[grid_start:grid_end, i],
-                r$min_dists
-              )
-            }
+            }, future.scheduling = 1)  # Gestione memoria ottimizzata
+            
+            # Aggiungi i risultati di questo batch
+            results <- c(results, batch_results)
+            
+            # Libera la memoria dopo ogni batch
+            rm(batch_results)
+            gc(full = TRUE)
           }
+          
+          cat("Calcolo delle distanze completato\n")
+          
+          # Ripristina piano originale
+          plan(old_plan)
+
+          # Unisci i risultati
+          for (r in results) {
+            grid_start <- r$grid_range[1]
+            grid_end <- r$grid_range[2]
+            boundary_dists[grid_start:grid_end, i] <- pmin(
+              boundary_dists[grid_start:grid_end, i],
+              r$min_dists
+            )
+          }
+          
+          # Liberiamo memoria
+          rm(results, border_coords)
+          gc()
         }
-      })
+      } # Fine del loop sui cluster
 
       # Normalizza le distanze per ogni cluster
       for (i in seq_along(all_clusters)) {
@@ -506,8 +606,18 @@ simulate_spatial_transcriptomics <- function(
       # Se dist < gradient_width, consideriamo il punto in zona di transizione
       cell_df$in_gradient <- cell_df$boundary_dist < (spatial_params$gradient_width * grid_resolution /
                                                      max(img_width_um, img_height_um))
+      
+      # Liberiamo memoria importante
+      rm(boundary_dists)
+      gc(full = TRUE)
+      
+      # Ripristiniamo il numero originale di worker
+      if (exists("old_workers")) {
+        plan(multisession, workers = old_workers)
+        cat(sprintf("Ripristinato numero di worker a %d\n", future::nbrOfWorkers()))
+      }
     }
-
+    
   } else {
     # Modalità campionamento originale
     cat("Modalità campionamento casuale attiva\n")
@@ -571,13 +681,12 @@ simulate_spatial_transcriptomics <- function(
   mean_dist <- numeric(N)
   unique_clusters <- unique(cluster_labels)
 
-  # future_lapply per parallelizzare
-  # Utilizziamo la configurazione già definita all'inizio
-
-  # Chunk più grandi per migliorare l'efficienza
-  chunk_size <- max(1, ceiling(N/1000))
+  # Calcolo più efficiente con chunking ottimizzato
+  # Chunk più grandi per migliorare l'efficienza ma non eccessivi per evitare overhead
+  chunk_size <- max(1, ceiling(N/500))  # Chunk più grandi per ridurre overhead
   chunks <- split(1:N, ceiling(seq_along(1:N)/chunk_size))
 
+  # Utilizziamo future_lapply con scheduling migliorato
   mean_dist <- future_lapply(chunks, function(chunk_idx) {
     result <- numeric(length(chunk_idx))
     for (j in seq_along(chunk_idx)) {
@@ -587,7 +696,10 @@ simulate_spatial_transcriptomics <- function(
       result[j] <- mean(dist_mat[i, same_cluster])
     }
     return(result)
-  }) %>% unlist()
+  }, future.scheduling = 1, future.chunk.size = NULL, future.seed = TRUE) %>% unlist()
+  
+  # Forza garbage collection per liberare memoria
+  gc()
 
   # Calcola la densità locale (per il modello di dropout)
   # Versione ottimizzata con chunking
@@ -600,7 +712,11 @@ simulate_spatial_transcriptomics <- function(
       result[j] <- mean(row < q)
     }
     return(result)
-  }) %>% unlist()
+  }, future.scheduling = 1, future.chunk.size = NULL, future.seed = TRUE) %>% unlist()
+  
+  # Libera memoria dopo il calcolo
+  rm(chunks)
+  gc()
 
   # 5c) Impostazione parametri di dispersione in base ai parametri
   if (spatial_params$gradient_regions && exists("boundary_dist", where = cell_df)) {
@@ -888,9 +1004,14 @@ simulate_spatial_transcriptomics <- function(
   # Converti cluster_labels in interi una sola volta
   cl <- as.integer(cluster_labels)
 
-  # Parallelizzazione massiccia per la generazione dell'espressione genica
-  # Dividi i geni in chunk per parallelizzare
-  gene_chunks <- split(seq_len(n_genes), ceiling(seq_len(n_genes)/min(50, ceiling(n_genes/10))))
+  # Parallelizzazione ottimizzata per la generazione dell'espressione genica
+  # Dividi i geni in chunk più grandi per ridurre overhead di parallelizzazione
+  # ma mantenere una buona parallelizzazione
+  chunk_size <- max(5, ceiling(n_genes/32))  # Massimo 32 chunk per bilanciare carico e memoria
+  gene_chunks <- split(seq_len(n_genes), ceiling(seq_len(n_genes)/chunk_size))
+  
+  cat(sprintf("Generazione espressione genica in %d chunk paralleli, con %d worker\n", 
+              length(gene_chunks), future::nbrOfWorkers()))
 
   # Pre-calcola alcune strutture di dati comuni a tutti i geni
   # Crea una matrice di medie di espressione per tipo di cellula e gene
@@ -902,18 +1023,24 @@ simulate_spatial_transcriptomics <- function(
     }
   }
 
-  # Utilizziamo la configurazione già definita all'inizio
-
   # Genera l'espressione genica in parallelo per chunk di geni
+  # con impostazioni ottimizzate per la memoria
   expression_chunks <- future_lapply(gene_chunks, function(genes_subset) {
     # Alloca lo storage per l'espressione di questo chunk
     chunk_expression <- matrix(0, nrow = N, ncol = length(genes_subset))
+    
+    # Genera rumore cellula-specifico una volta sola per tutto il chunk
+    # invece di rigenerarlo per ogni gene - grande risparmio di memoria
+    all_cell_specific_effects <- matrix(
+      rnorm(N * length(genes_subset), 0, cell_specific_params$cell_specific_noise_sd),
+      nrow = N, ncol = length(genes_subset)
+    )
 
     for (i in seq_along(genes_subset)) {
       g <- genes_subset[i]
 
-      # Aggiungi variabilità cellula-specifica indipendente dal cluster
-      cell_specific_effect <- rnorm(N, 0, cell_specific_params$cell_specific_noise_sd)
+      # Usa il rumore pre-generato
+      cell_specific_effect <- all_cell_specific_effects[, i]
 
     # Calcola medie di espressione di base - versione molto più veloce usando indexing
     base_expr <- all_mean_expr[g, cl]
@@ -1082,15 +1209,26 @@ simulate_spatial_transcriptomics <- function(
     }
 
     } # Fine del ciclo for sui geni di questo chunk
+    
+    # Libera memoria all'interno di ogni worker
+    rm(all_cell_specific_effects)
+    gc()
 
     return(chunk_expression)
-  }) # Fine del future_lapply
+  }, future.scheduling = 1, future.seed = TRUE) # Fine del future_lapply con scheduling ottimizzato
 
   # Combina i risultati dei chunk in una singola matrice di espressione
+  # e libera immediatamente memoria ad ogni iterazione
   for (i in seq_along(gene_chunks)) {
     genes_subset <- gene_chunks[[i]]
     expression_data[, genes_subset] <- expression_chunks[[i]]
+    expression_chunks[[i]] <- NULL  # Libera immediatamente memoria
+    if (i %% 5 == 0) gc()  # Forza garbage collection ogni 5 chunk
   }
+  
+  # Libera memoria finale
+  rm(expression_chunks, gene_chunks, all_mean_expr)
+  gc()
 
   # Funzione helper per normalizzare tra 0 e 1
   scale01 <- function(x) {
