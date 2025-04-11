@@ -1,0 +1,41 @@
+Package: geo.spatialtrans
+Type: Package
+Title: Simulazione di Dati di Trascrittomica Spaziale
+Version: 0.1.0
+Date: 2025-04-11
+Authors@R: 
+    person("Autore", "Principale", email = "autore@example.com", role = c("aut", "cre"))
+Description: Strumenti per la simulazione e l'analisi di dati di trascrittomica 
+    spaziale. Il pacchetto permette di generare dati simulati altamente 
+    configurabili per piattaforme come Visium HD, con controllo preciso su 
+    aspetti biologici e tecnici come correlazione spaziale, dropout e clustering.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    future,
+    future.apply,
+    imager,
+    tidyverse,
+    MASS,
+    cluster,
+    ClusterR,
+    tictoc,
+    gstat,
+    sp,
+    scales,
+    spatstat,
+    spdep,
+    fields,
+    ggplot2,
+    dplyr,
+    tidyr
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    withr
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+VignetteBuilder: knitr
