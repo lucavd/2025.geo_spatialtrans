@@ -23,10 +23,10 @@ create_simulation_plots <- function(
       scale_y_reverse() +
       coord_fixed() +
       theme_minimal() +
-      labs(title = sprintf("Visium HD (%dμm) - Livello difficoltà: %s", 
+      labs(title = sprintf("Visium HD (%dum) - Livello difficoltà: %s", 
                            config$grid_resolution, 
                            difficulty_config$difficulty_level),
-           subtitle = sprintf("Griglia %dμm, %d bin, %d geni (marker/tipo: %d, fold: %.1f)",
+           subtitle = sprintf("Griglia %dum, %d bin, %d geni (marker/tipo: %d, fold: %.1f)",
                              config$grid_resolution, 
                              nrow(cell_df), 
                              config$n_genes,

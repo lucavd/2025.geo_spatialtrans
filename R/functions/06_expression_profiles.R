@@ -141,7 +141,7 @@ generate_expression_profiles <- function(
       cell_df$boundary_dist * (dropout_params$dispersion_range[1] - dropout_params$dispersion_range[2])
   } else {
     # Altrimenti usiamo il metodo originale basato sulla distanza media
-    dispersion_param <- rescale(mean_dist, to = dropout_params$dispersion_range)
+    dispersion_param <- scales::rescale(mean_dist, to = dropout_params$dispersion_range)
   }
   
   # Aggiungi effetto del tipo cellulare sulla dispersione
@@ -216,7 +216,7 @@ generate_expression_profiles <- function(
       (1 - cell_df$boundary_dist) * (dropout_params$dropout_range[2] - dropout_params$dropout_range[1])
   } else {
     # Metodo originale
-    base_dropout <- rescale(mean_dist, to = dropout_params$dropout_range)
+    base_dropout <- scales::rescale(mean_dist, to = dropout_params$dropout_range)
   }
   
   # 5f) Generazione espressione usando Negative Binomial

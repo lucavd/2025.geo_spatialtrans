@@ -12,23 +12,23 @@ prepare_image <- function(image_path, threshold_value = 0.7) {
   }
   
   # Caricamento immagine
-  img <- load.image(image_path)
+  img <- imager::load.image(image_path)
   
   # Gestione canali alpha e conversione a scala di grigi
-  if (spectrum(img) == 4) {
-    img <- rm.alpha(img)
+  if (imager::spectrum(img) == 4) {
+    img <- imager::rm.alpha(img)
   }
-  if (spectrum(img) == 3) {
-    img <- grayscale(img)
+  if (imager::spectrum(img) == 3) {
+    img <- imager::grayscale(img)
   }
   
-  img <- squeeze(img)
+  img <- imager::squeeze(img)
   
   # Converto in array e poi in cimg (x,y,cc,t)
   img_array <- as.array(img)
   w <- nrow(img_array)
   h <- ncol(img_array)
-  img_cimg <- as.cimg(img_array, dims = c(w, h, 1, 1))
+  img_cimg <- imager::as.cimg(img_array, dims = c(w, h, 1, 1))
   
   # Converto in data frame (x, y, value)
   img_df <- as.data.frame(img_cimg) %>%

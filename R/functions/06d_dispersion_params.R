@@ -45,7 +45,7 @@ calculate_dispersion_params <- function(
       # Se mean_dist non è valido, usa un valore costante
       dispersion_param <- rep(mean(dropout_params$dispersion_range), nrow(cell_df))
     } else {
-      dispersion_param <- rescale(mean_dist, to = dropout_params$dispersion_range)
+      dispersion_param <- scales::rescale(mean_dist, to = dropout_params$dispersion_range)
     }
   }
   

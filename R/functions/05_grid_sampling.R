@@ -10,12 +10,12 @@
 #' @param grid_mode Se TRUE utilizza una griglia regolare, altrimenti sampling casuale
 #' @param n_cells Numero di celle da campionare (per grid_mode=FALSE)
 #' @param k_cell_types Numero di tipi cellulari
-#' @param grid_resolution Risoluzione della griglia in μm
+#' @param grid_resolution Risoluzione della griglia in um
 #' @param grid_spacing Spazio tra bin della griglia
 #' @param use_fixed_grid Utilizzo di una griglia di dimensioni fisse
 #' @param fixed_grid_width_mm Larghezza della griglia fissa in mm
 #' @param fixed_grid_height_mm Altezza della griglia fissa in mm
-#' @param pixel_size_um Dimensione di ogni pixel in μm
+#' @param pixel_size_um Dimensione di ogni pixel in um
 #' @param threshold_value Soglia per il thresholding
 #' @param random_seed Seed per riproducibilità
 #' @return Dataframe con le celle/bin campionate
@@ -31,22 +31,22 @@ create_sampling_grid <- function(img_df_thresh, img_array, img_width, img_height
   
   # Se grid_mode è TRUE, crea una griglia regolare
   if (grid_mode) {
-    # Calcola le dimensioni dell'immagine in μm
+    # Calcola le dimensioni dell'immagine in um
     img_width_um <- img_width * pixel_size_um
     img_height_um <- img_height * pixel_size_um
     
     # Determina le dimensioni della griglia e le coordinate
     if (use_fixed_grid) {
       # Usa una griglia fissa con dimensioni standard (6.5mm x 6.5mm)
-      # Converti da mm a μm
-      grid_width_um <- fixed_grid_width_mm * 1000  # 6.5mm = 6500μm
-      grid_height_um <- fixed_grid_height_mm * 1000  # 6.5mm = 6500μm
+      # Converti da mm a um
+      grid_width_um <- fixed_grid_width_mm * 1000  # 6.5mm = 6500um
+      grid_height_um <- fixed_grid_height_mm * 1000  # 6.5mm = 6500um
       
       # Calcola il numero di bin necessari
       n_bins_x <- ceiling(grid_width_um / grid_resolution)
       n_bins_y <- ceiling(grid_height_um / grid_resolution)
       
-      # Crea le coordinate della griglia fissa in μm
+      # Crea le coordinate della griglia fissa in um
       x_coords <- seq(0, grid_width_um - grid_resolution, by = grid_resolution + grid_spacing)
       y_coords <- seq(0, grid_height_um - grid_resolution, by = grid_resolution + grid_spacing)
     } else {

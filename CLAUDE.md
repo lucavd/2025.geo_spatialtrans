@@ -16,8 +16,8 @@ This R package for spatial transcriptomics simulation has been fully modularized
   - `07*_simulation*.R`: Main simulation pipeline (6 modules)
 - `tests/testthat/`: Contains unit tests for all functions
 - `DESCRIPTION`: Package metadata and dependencies
-- `verify_modules.R`: Script to verify modules function correctly
-- `verify_targets.R`: Example targets integration
+- `run_tests.R`: Script to run all tests with proper library loading
+- `_targets.R`: Targets pipeline definition
 
 ## Build/Test Commands
 
@@ -28,9 +28,9 @@ This R package for spatial transcriptomics simulation has been fully modularized
   for (file in sort(files)) { source(file) }
   ```
 
-- Run tests with detailed report:
+- Run tests with proper library loading:
   ```r
-  source("verify_modules.R")
+  source("run_tests.R")
   ```
 
 - Run tests:
@@ -51,18 +51,34 @@ This R package for spatial transcriptomics simulation has been fully modularized
 
 ## Targets Integration
 
-To use with targets:
+The package now includes a functional targets pipeline for spatial transcriptomics simulation.
 
-1. Examine the example in `verify_targets.R`
-2. Run the pipeline:
+1. Run the complete pipeline:
    ```r
    library(targets)
+   library(tidyr)
+   library(dplyr)
+   library(imager)
+   library(ggplot2)
+   library(ClusterR)
    tar_make()
    ```
-3. Visualize pipeline:
+
+2. Visualize the pipeline:
    ```r
    tar_visnetwork()
    ```
+
+3. View generated results in the `results/` directory:
+   - `simulation_report.txt`: Textual report with simulation details
+   - `simulation_plot.png`: Visualization of the simulated data
+
+## Key Features of the Targets Pipeline
+
+- **Modular design**: Each step of the simulation is a separate target
+- **Reproducibility**: Fixed random seeds ensure reproducible results 
+- **Visualization**: Automatic plotting and report generation
+- **Error handling**: Built-in workspace preservation for debugging
 
 ## Next Development Steps
 
@@ -70,10 +86,10 @@ To use with targets:
    - Finish modularizing `analyze_and_compare_clusters.R`
    - Finish modularizing `generate_synthetic_tissue.R`
 
-2. **Implement full targets integration**:
-   - Refine the `_targets.R` file
-   - Add persistent caching
+2. **Extend targets integration**:
+   - Add parameter-based branching for multiple simulations
    - Set up distributed computing options
+   - Add more comprehensive reporting
 
 3. **Add example data and vignettes**:
    - Create demo datasets

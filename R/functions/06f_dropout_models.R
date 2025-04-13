@@ -27,7 +27,7 @@ calculate_dropout_probabilities <- function(
       (1 - cell_df$boundary_dist) * (dropout_params$dropout_range[2] - dropout_params$dropout_range[1])
   } else {
     # Metodo originale basato sulla distanza media
-    base_dropout <- rescale(mean_dist, to = dropout_params$dropout_range)
+    base_dropout <- scales::rescale(mean_dist, to = dropout_params$dropout_range)
   }
   
   return(base_dropout)
