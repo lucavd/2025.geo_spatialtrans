@@ -1,60 +1,38 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-seeds_images.generated2.png_1000_50_3_easy_TRUE|stem||309b5ce3ac9b6cdf|b936da3e9c021fbe|1556584249||t20191.5659298548s||0|qs|local|vector|||||_store_ there is no package called ‘qs2’
-grid_params_with_seeds|object|68145b0f8af2a7bb|||||||||||||||
-grid_params|object|532ef909295217f5|||||||||||||||
-n_replicates|object|9f0cda529028d8d9|||||||||||||||
-random_seeds|object|7e9e47a65f0119f9|||||||||||||||
-difficulty_images.generated2.png_1000_50_3_easy_TRUE_1|stem||dbac246a11c42dba|29c6956c54cd2aef|1996583173||t20191.5673186142s||0|qs|local|vector|||||_store_ there is no package called ‘qs2’
-calculate_dispersion_params|function|786b6cd095099fad|||||||||||||||
-calculate_dropout_probabilities|function|669154fe8f1faf90|||||||||||||||
-calculate_spatial_distances|function|beacd2b48040e284|||||||||||||||
-generate_baseline_expression|function|27cdfbdc7ed6e6bd|||||||||||||||
-generate_expression_matrix|function|7d4d939784bba886|||||||||||||||
-generate_gene_modules|function|35c1b1618e880a4e|||||||||||||||
-generate_hybrid_cells|function|d5a9286c6de34278|||||||||||||||
-generate_library_sizes|function|0df316d95ab5a5f0|||||||||||||||
-generate_spatial_correlation|function|bc746cb07d22733f|||||||||||||||
-initialize_expression_params|function|7d86f96081c58d06|||||||||||||||
-load_simulation_results|function|981de8c44bfe660a|||||||||||||||
-apply_dropout|function|ba648247bc927574|||||||||||||||
-save_simulation_results|function|43fbe8c702113323|||||||||||||||
-sim_params|object|bcb3bcd1be33196c|||||||||||||||
-generate_expression_profiles|function|7dff89c340a54f8b|||||||||||||||
-run_simulation_pipeline|function|6132fb483656023d|||||||||||||||
-simulate_spatial_transcriptomics|function|13f6d2640ac80d1e|||||||||||||||
-baseline_profiles|stem|error|059c172f9891b924|3b1d9cedf24df222|-975983476||t20191.5687110604s||0|null|local|vector|||0.033|first element used of 'length.out' argument|argument must be coercible to non-negative integer
-gene_modules|stem|error|17ddba688327ee77|b4b2c4da88bb9fe0|3934097||t20191.5687128772s||0|null|local|vector|||0.017||argument is of length zero
-spatial_corr|stem|error|02c27fe48af4140d|61ddde0cb9fcab41|-976244329||t20191.5687133814s||0|null|local|vector|||0.025||"could not find function """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""coordinates<-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-spatial_distances|stem|error|6bd7d29ed217270c|d8702d91b73a2186|2055554732||t20191.5687137063s||0|null|local|vector|||0.016||"no applicable method for 'select' applied to an object of class """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""NULL"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-library_sizes|stem|error|e946bfba8449e9f8|5040b1f8bc93cf6d|-662008487||t20191.568714021s||0|null|local|vector|||0.014||invalid arguments
-hybrid_cells|stem|error|4c9439d5d2633980|b086f549becc1f27|53686814||t20191.5687143231s||0|null|local|vector|||0.015||non-numeric matrix extent
-dispersion_params|stem|error|90f263860772ceed|594998fa1a5563e5|-1477500660||t20191.5687146828s||0|null|local|vector|||0.016|dispersion_range deve essere un vettore numerico di lunghezza 2, impostato a c(2.0, 1.0)|invalid 'times' argument
-dropout_probs|stem|error|c129d029f6f68bcc|8858adbcdccc2f3c|-1098484436||t20191.5687148432s||0|null|local|vector|||0.002||invalid 'x' type in 'x && y'
-expression_matrix|stem|error|86f8e7dd94094c6e|fd120f7042cc5d7c|-2212948||t20191.5687156151s||0|null|local|vector|||0.042||invalid first argument
-results|stem|error|4e7ac07533c58237|f1f009865d214ab8|-322906963||t20191.5687160541s||0|qs|local|vector|||||_store_ there is no package called ‘qs2’
-saved_results|stem|error|80a77ba987e8674c|26180b2843065e33|2054254213||t20191.5687173298s||0|null|local|vector|||0.002||a character vector argument expected
-data_check|stem|445854964aee0763|182facf3e5e63f8a|2c530c1562a7fbd1|-1190121623||t20191.5695546928s|s48b|48|rds|local|vector|||0||
-file_check|stem|445854964aee0763|131986b517c884e0|2c530c1562a7fbd1|1989645839||t20191.5695550632s|s48b|48|rds|local|vector|||0||
-hello|stem|2a1fb42c5caa1ce6|b4ce7d7178760ce2|2c530c1562a7fbd1|176656226||t20191.5695555493s|s66b|66|rds|local|vector|||0||
-basic_params|stem|12aa6ad23b54237e|0e249866bf8619c5|6dd918d481e6b5b2|1921339157||t20191.5697902212s|s207b|207|rds|local|vector|||0||
-image_exists|stem|445854964aee0763|aaaa9947be1f29ae|6dd918d481e6b5b2|-1218349549||t20191.5697906032s|s48b|48|rds|local|vector|||0||
-images_dir|stem|445854964aee0763|182facf3e5e63f8a|2c530c1562a7fbd1|1547873773||t20191.5697910314s|s48b|48|rds|local|vector|||0||
-difficulty|stem|7ff1c4241081f4cc|e82c06e55aa5635d|49334cf0427c5753|1560015890||t20191.569968051s|s466b|466|rds|local|vector|||0.018||
-config|stem|e83b7bd73bf7c664|b6b314f5cd68311a|6c9ac1d9aa02fdca|-1931060652||t20191.5699684792s|s328b|328|rds|local|vector|||0.01||
-image_data|stem|ff1bcca89ddd7206|772cca62570fd030|d4e1a68727207a39|-1593955790||t20191.5706452139s|s15006929b|15006929|rds|local|vector|||0.556||
-clustered_data|stem|775aadb339b9a895|88bcc296f07e191a|65cc1b2bf1274361|78831011||t20191.57101658s|s1642183b|1642183|rds|local|vector|||2.399||
-cell_df|stem|c3d854b91f79bd16|8dec09c9d5741aef|81960219656cd09c|-652515443||t20191.5715285061s|s497570b|497570|rds|local|vector|||3.731||
-plots|stem|6e42eff63ae912e2|ea4e122c9a2b7159|1b3ae94749e6ed32|765790996||t20191.5718354257s|s2653314b|2653314|rds|local|vector|||0.026||
-prepare_image|function|fabd84d1f7304ffd
-params|object|7de2b987f9836087
-.Random.seed|object|c755fc858778ee59
-scale01_vec|function|84bc4446e98f114a
-initialize_simulation_config|function|9c5be054e012a323
-create_sampling_grid|function|f31448870dc6c168
+.Random.seed|object|7b0a5cb6bad80506
 create_simulation_plots|function|01e3a8e395046995
-setup_performance|function|5c512bfe72a7c177
 scale01|function|12c33a0f3d0272e0
-cluster_image|function|d2328fba45abcde7
+calculate_dispersion_params|function|786b6cd095099fad
+calculate_dropout_probabilities|function|ade9d765aa2d7953
+calculate_spatial_distances|function|87f4f7ee3619ee54
+generate_baseline_expression|function|622b48f97885861e
+generate_expression_matrix|function|6e69b129b7e2762f
+generate_gene_modules|function|ac6cb46694145de7
+generate_hybrid_cells|function|7df2953d336e9df8
+generate_library_sizes|function|206005e4344902e2
+generate_spatial_correlation|function|bc746cb07d22733f
+initialize_expression_params|function|5628d19c3f936610
 configure_difficulty_level|function|dd9ada5ea64042fe
+prepare_image|function|fabd84d1f7304ffd
+cluster_image|function|d2328fba45abcde7
+create_sampling_grid|function|f31448870dc6c168
+load_simulation_results|function|981de8c44bfe660a
+params|object|661c8f30d90999f6
+initialize_simulation_config|function|9c5be054e012a323
+apply_dropout|function|ba648247bc927574
+controller|object|d920c77ac39ddf90
+scale01_vec|function|84bc4446e98f114a
+save_simulation_results|function|43fbe8c702113323
+setup_performance|function|5c512bfe72a7c177
 generate_and_save_plots|function|e8d7d16ee507712a
-final_report|stem|4963be87fa15248c|17718c6db26946b4|ab084bee46668736|-98219282||t20191.57479361s|s137b|137|rds|local|vector|||0.757||
+generate_expression_profiles|function|5a5b8b6b9c187bc0
+run_simulation_pipeline|function|728565cbfaf75873
+simulate_spatial_transcriptomics|function|5f92da7e50001759
+difficulty|stem|c9247c3b21c09029|e82c06e55aa5635d|647dcf14a2f47fa6|1560015890||t20193.8102378017s|s465b|465|rds|local|vector|||2.379||
+config|stem|5a2d0fee0737a134|b6b314f5cd68311a|e701efbf12c4e15e|-1931060652||t20193.8102399893s|s317b|317|rds|local|vector|||2.29||
+image_data|stem|fed9b6e71e031ac2|772cca62570fd030|5ad951e5c6654d3a|-1593955790||t20193.8102464594s|s1526734b|1526734|rds|local|vector|||0.055||
+clustered_data|stem|11045bf7cd082df5|88bcc296f07e191a|ed9aed91f40923b6|78831011||t20193.8102529064s|s242127b|242127|rds|local|vector|||0.159||
+cell_df|stem|c781db2607af2b8b|8dec09c9d5741aef|e8363632cb02753d|-652515443||t20193.8102610432s|s79312b|79312|rds|local|vector|||0.322||
+expression_profiles|stem|2c9d7d31c373519b|36edccfdb1132e93|658d4bc0c786b2e9|-643979767||t20193.8106043293s|s1065308b|1065308|rds|local|vector|||29.13|marker_overlap_fold deve essere un numero non negativo, impostato a 0.2. dispersion_range deve essere un vettore numerico di lunghezza 2, impostato a c(2.0, 1.0)|
+plots|stem|aaaf4e5663a4d0ac|a1b513c935f307b5|977b2c3235775d1b|765790996||t20193.8106178019s|s2972246b|2972246|rds|local|vector|||0.064||
+final_report|stem|858f4a980a5f6f7a|4d2e523c65b305bc|6c559c26f615bef8|-98219282||t20193.8106292027s|s144b|144|rds|local|vector|||0.449||
