@@ -44,7 +44,13 @@ initialize_expression_params <- function(
     cell_specific_noise_sd = 0.2,
     use_gene_modules = TRUE,
     n_gene_modules = 5,
-    module_correlation = 0.7
+    module_correlation = 0.7,
+    module_hierarchical = FALSE,
+    module_overlap = 0.1,
+    module_size_distribution = "exponential",
+    n_latent_factors = 3,
+    module_network_density = 0.2,
+    latent_factor_strength = 0.8
   ),
   hybrid_params = list(
     use_hybrid_cells = TRUE,

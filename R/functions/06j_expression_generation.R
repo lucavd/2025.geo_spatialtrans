@@ -12,6 +12,8 @@
 #' @param hybrid_matrix Matrice di ibridazione
 #' @param module_noise Matrice con rumore correlato dei moduli
 #' @param gp_noise Vettore con rumore di correlazione spaziale
+#' @param latent_factors Fattori latenti che influenzano i moduli di espressione
+#' @param module_network Rete di interazioni tra i diversi moduli di geni
 #' @param spatial_params Parametri spaziali
 #' @param dropout_params Parametri di dropout
 #' @param cell_specific_params Parametri cellula-specifici
@@ -31,6 +33,8 @@ generate_expression_matrix <- function(
   hybrid_matrix,
   module_noise,
   gp_noise,
+  latent_factors = NULL,
+  module_network = NULL,
   spatial_params = list(
     spatial_noise_intensity = 1.0,
     random_noise_sd = 0.2
@@ -42,7 +46,13 @@ generate_expression_matrix <- function(
   ),
   cell_specific_params = list(
     cell_specific_noise_sd = 0.2,
-    use_gene_modules = TRUE
+    use_gene_modules = TRUE,
+    module_hierarchical = FALSE,
+    module_overlap = 0.1,
+    module_size_distribution = "exponential",
+    n_latent_factors = 3,
+    module_network_density = 0.2,
+    latent_factor_strength = 0.8
   ),
   use_spatial_correlation = TRUE,
   random_seed = 123

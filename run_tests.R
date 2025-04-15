@@ -21,7 +21,7 @@ library(testthat)
 
 # Configura il futuro per la parallelizzazione
 future::plan(future::multisession, workers = 2)
-options(future.globals.maxSize = 50 * 1024^2) # 50 GB
+options(future.globals.maxSize = 100 * 1024^2) # 100 GB
 
 # Carica tutti i file dei moduli
 tic("Caricamento moduli")

@@ -1,0 +1,20 @@
+# Rapporto di Simulazione
+
+Data: 2025-04-13 15:47:41
+Immagine: images/generated2.png
+Numero di celle: 104450
+Tipi cellulari: 3
+Geni: 50
+Livello difficoltà: easy
+
+## Parametri
+- Grid mode: SI
+- Risoluzione griglia: 2 um
+- Random seed: 123
+
+## Statistiche celle
+- Celle totali: 104450
+- Distribuzione tipi cellulari:
+  - 1 : 30990
+  - 2 : 18292
+  - 3 : 55168

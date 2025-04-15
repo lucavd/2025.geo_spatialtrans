@@ -32,6 +32,11 @@ This R package for spatial transcriptomics simulation has been fully modularized
   ```r
   source("run_tests.R")
   ```
+  
+- Note: The test suite requires increasing the future.globals.maxSize limit to 100 GB:
+  ```r
+  options(future.globals.maxSize = 100 * 1024^2) # 100 GB
+  ```
 
 - Run tests:
   ```r
@@ -128,3 +133,14 @@ The package has been modularized to support efficient pipeline execution:
 - **Documentation**: All function parameters documented with roxygen style
 - **Error Handling**: Use `stop()` for errors, `warning()` for warnings, `tryCatch()` for exceptions
 - **Testing**: Each module has corresponding tests
+
+## Technical Improvement Process
+
+When implementing technical improvements to the codebase:
+
+1. **Clearly define the improvement idea**
+2. **Implement changes methodically** without shortcuts or data fabrication
+3. **Update/add tests** to validate the improvements
+4. **Run and fix tests** until they pass successfully
+5. **Update documentation** to reflect the changes
+6. **Update CLAUDE.md** with any new processes or guidelines

@@ -54,7 +54,13 @@ generate_expression_profiles <- function(
     cell_specific_noise_sd = 0.2,
     use_gene_modules = TRUE,
     n_gene_modules = 5,
-    module_correlation = 0.7
+    module_correlation = 0.7,
+    module_hierarchical = FALSE,
+    module_overlap = 0.1,
+    module_size_distribution = "exponential",
+    n_latent_factors = 3,
+    module_network_density = 0.2,
+    latent_factor_strength = 0.8
   ),
   hybrid_params = list(
     use_hybrid_cells = TRUE,
@@ -123,6 +129,7 @@ generate_expression_profiles <- function(
   expression_data <- generate_expression_matrix(
     cell_df, mean_expression_list, n_genes, library_size, dispersion_param,
     base_dropout, hybrid_matrix, gene_modules_result$module_noise, gp_noise,
+    gene_modules_result$latent_factors, gene_modules_result$module_network,
     params$spatial_params, params$dropout_params, params$cell_specific_params,
     use_spatial_correlation, random_seed
   )
@@ -133,6 +140,8 @@ generate_expression_profiles <- function(
     library_size = library_size,
     dispersion_param = dispersion_param,
     gene_modules = gene_modules_result$gene_modules,
+    latent_factors = gene_modules_result$latent_factors,
+    module_network = gene_modules_result$module_network,
     mean_expression_list = mean_expression_list
   )
   

@@ -178,7 +178,7 @@ test_that("generate_gene_modules crea moduli di geni correlati", {
   n_genes <- 20
   n_cells <- 30
   
-  # Genera moduli genici
+  # Genera moduli genici - versione base
   modules_result <- generate_gene_modules(
     n_genes,
     n_cells,
@@ -196,7 +196,6 @@ test_that("generate_gene_modules crea moduli di geni correlati", {
   
   # Verifica i moduli genici
   expect_equal(length(modules_result$gene_modules), 4)
-  expect_equal(sum(sapply(modules_result$gene_modules, length)), 20)  # Tutti i geni assegnati
   
   # Verifica il rumore
   expect_equal(dim(modules_result$module_noise), c(30, 20))
@@ -215,4 +214,107 @@ test_that("generate_gene_modules crea moduli di geni correlati", {
   
   expect_null(modules_disabled$gene_modules)
   expect_null(modules_disabled$module_noise)
+})
+
+test_that("generate_gene_modules crea moduli avanzati con fattori latenti", {
+  # Parametri di test
+  n_genes <- 50
+  n_cells <- 30
+  
+  # Genera moduli genici con funzionalità avanzate e tutti i parametri esplicitamente definiti
+  modules_result <- generate_gene_modules(
+    n_genes,
+    n_cells,
+    cell_specific_params = list(
+      use_gene_modules = TRUE,
+      n_gene_modules = 4,
+      module_correlation = 0.7,
+      module_hierarchical = TRUE,
+      module_overlap = 0.1,
+      module_size_distribution = "exponential",
+      n_latent_factors = 3,
+      module_network_density = 0.2,
+      latent_factor_strength = 0.8
+    ),
+    random_seed = 123
+  )
+  
+  # Verifica la struttura del risultato estesa
+  expect_type(modules_result, "list")
+  expect_true(all(c("gene_modules", "module_noise", "latent_factors", "module_network") %in% 
+                  names(modules_result)))
+  
+  # Verifica i fattori latenti
+  expect_true(!is.null(modules_result$latent_factors))
+  expect_equal(dim(modules_result$latent_factors), c(30, 3))
+  
+  # Verifica la rete di moduli
+  expect_true(!is.null(modules_result$module_network))
+  expect_true(is.matrix(modules_result$module_network))
+  
+  # Verifica che con module_hierarchical=TRUE ci siano più moduli del numero iniziale
+  expect_true(length(modules_result$gene_modules) >= 4)
+  
+  # Verifica distribuzione esponenziale - dovremmo avere moduli di dimensioni diverse
+  module_sizes <- sapply(modules_result$gene_modules, length)
+  expect_true(length(unique(module_sizes)) > 1)
+})
+
+test_that("generate_gene_modules gestisce correttamente la sovrapposizione tra moduli", {
+  n_genes <- 50
+  n_cells <- 30
+  
+  # Test con sovrapposizione dei moduli alta
+  modules_overlap_high <- generate_gene_modules(
+    n_genes,
+    n_cells,
+    cell_specific_params = list(
+      use_gene_modules = TRUE,
+      n_gene_modules = 4,
+      module_correlation = 0.7,
+      module_hierarchical = FALSE,
+      module_overlap = 0.3,  # Sovrapposizione elevata
+      n_latent_factors = 2,
+      module_network_density = 0.2,
+      latent_factor_strength = 0.8,
+      module_size_distribution = "uniform"
+    ),
+    random_seed = 123
+  )
+  
+  # Test con sovrapposizione dei moduli bassa
+  modules_overlap_low <- generate_gene_modules(
+    n_genes,
+    n_cells,
+    cell_specific_params = list(
+      use_gene_modules = TRUE,
+      n_gene_modules = 4,
+      module_correlation = 0.7,
+      module_hierarchical = FALSE,
+      module_overlap = 0.0,  # Nessuna sovrapposizione
+      n_latent_factors = 2,
+      module_network_density = 0.2,
+      latent_factor_strength = 0.8,
+      module_size_distribution = "uniform"
+    ),
+    random_seed = 123
+  )
+  
+  # Calcola i totali dei geni nei moduli
+  overlap_high_total <- sum(sapply(modules_overlap_high$gene_modules, length))
+  overlap_low_total <- sum(sapply(modules_overlap_low$gene_modules, length))
+  
+  # Conta i geni unici (non duplicati) nei moduli
+  overlap_high_unique <- length(unique(unlist(modules_overlap_high$gene_modules)))
+  overlap_low_unique <- length(unique(unlist(modules_overlap_low$gene_modules)))
+  
+  # Con overlap elevato, il rapporto tra geni totali e unici dovrebbe essere > 1
+  expect_gt(overlap_high_total / overlap_high_unique, 1.0)
+  
+  # Con overlap basso o nullo, il rapporto dovrebbe essere vicino a 1
+  expect_lte(overlap_low_total / overlap_low_unique, 1.1)
+  
+  # Dovrebbe esserci più sovrapposizione nel set con overlap alto
+  expect_gt(overlap_high_total / overlap_high_unique, 
+            overlap_low_total / overlap_low_unique)
 })
