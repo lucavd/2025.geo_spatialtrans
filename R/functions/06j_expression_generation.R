@@ -83,7 +83,7 @@ generate_expression_matrix <- function(
   chunk_size <- max(5, ceiling(n_genes/32))
   gene_chunks <- split(seq_len(n_genes), ceiling(seq_len(n_genes)/chunk_size))
   
-  # Usa lapply standard invece di future_lapply (parallelizzazione gestita da crew)
+  # Usa parallelizzazione con future_lapply se disponibile
   expression_chunks <- lapply(gene_chunks, function(genes_subset) {
     # Alloca lo storage per l'espressione di questo chunk
     chunk_expression <- matrix(0, nrow = N, ncol = length(genes_subset))
