@@ -35,9 +35,13 @@ generate_baseline_expression <- function(
     }
     
     # Aggiungi espressione parziale nei cluster adiacenti (overlapping)
-    if (k > 1 && marker_params$marker_overlap_fold > 0) {
-      prev_markers <- ((k-2) * marker_params$marker_genes_per_type + 1):min((k-1) * marker_params$marker_genes_per_type, n_genes)
-      if (length(prev_markers) > 0) {
+    if (k > 1 && !is.null(marker_params$marker_overlap_fold) && marker_params$marker_overlap_fold > 0) {
+      prev_start_idx <- (k-2) * marker_params$marker_genes_per_type + 1
+      prev_end_idx <- min((k-1) * marker_params$marker_genes_per_type, n_genes)
+      
+      # Verifica che l'intervallo sia valido prima di procedere
+      if (prev_start_idx <= prev_end_idx && prev_start_idx <= n_genes) {
+        prev_markers <- prev_start_idx:prev_end_idx
         mu[prev_markers] <- mu[prev_markers] + marker_params$marker_overlap_fold
       }
     }

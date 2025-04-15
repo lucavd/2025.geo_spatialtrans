@@ -83,7 +83,8 @@ generate_expression_matrix <- function(
   chunk_size <- max(5, ceiling(n_genes/32))
   gene_chunks <- split(seq_len(n_genes), ceiling(seq_len(n_genes)/chunk_size))
   
-  expression_chunks <- future_lapply(gene_chunks, function(genes_subset) {
+  # Usa lapply standard invece di future_lapply (parallelizzazione gestita da crew)
+  expression_chunks <- lapply(gene_chunks, function(genes_subset) {
     # Alloca lo storage per l'espressione di questo chunk
     chunk_expression <- matrix(0, nrow = N, ncol = length(genes_subset))
     
@@ -133,10 +134,14 @@ generate_expression_matrix <- function(
       
       # Aggiungi correlazione spaziale se richiesta
       if (use_spatial_correlation && !is.null(gp_noise)) {
-        mu_vals <- mu_vals + spatial_params$spatial_noise_intensity * gp_noise
+        intensity <- ifelse(!is.null(spatial_params$spatial_noise_intensity), 
+                           spatial_params$spatial_noise_intensity, 1.0)
+        mu_vals <- mu_vals + intensity * gp_noise
         
         # Aggiungi noise casuale addizionale per confondere i pattern
-        random_noise <- rnorm(length(mu_vals), 0, spatial_params$random_noise_sd)
+        random_sd <- ifelse(!is.null(spatial_params$random_noise_sd), 
+                           spatial_params$random_noise_sd, 0.2)
+        random_noise <- rnorm(length(mu_vals), 0, random_sd)
         mu_vals <- mu_vals + random_noise
       }
       
@@ -188,7 +193,7 @@ generate_expression_matrix <- function(
     }
     
     return(chunk_expression)
-  }, future.scheduling = 1, future.seed = TRUE)
+  })
   
   # Combina i risultati dei chunk in una singola matrice di espressione
   expression_data <- matrix(0, nrow = N, ncol = n_genes)

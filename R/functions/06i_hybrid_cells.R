@@ -49,12 +49,16 @@ generate_hybrid_cells <- function(
     }
     
     # Limita a max_hybrid_pairs coppie casuali per efficienza
-    if (length(hybrid_pairs) > hybrid_params$max_hybrid_pairs) {
-      hybrid_pairs <- hybrid_pairs[sample(length(hybrid_pairs), hybrid_params$max_hybrid_pairs)]
-    }
-    
-    # Crea una matrice di ibridazione 
-    for (pair in hybrid_pairs) {
+    if (length(hybrid_pairs) > 0) {
+      # Verifica che max_hybrid_pairs sia specificato e limita le coppie
+      max_pairs <- ifelse(!is.null(hybrid_params$max_hybrid_pairs), 
+                         hybrid_params$max_hybrid_pairs, 1000)
+      if (length(hybrid_pairs) > max_pairs) {
+        hybrid_pairs <- hybrid_pairs[sample(length(hybrid_pairs), max_pairs)]
+      }
+      
+      # Crea una matrice di ibridazione
+      for (pair in hybrid_pairs) {
       cell1 <- pair[1]
       cell2 <- pair[2]
       
@@ -62,15 +66,19 @@ generate_hybrid_cells <- function(
       cluster1 <- as.integer(cluster_labels[cell1])
       cluster2 <- as.integer(cluster_labels[cell2])
       
+      # Verifica che hybrid_intensity_range sia specificato e valido
+      int_range <- c(0.2, 0.5)  # Valori di default
+      if (!is.null(hybrid_params$hybrid_intensity_range) && 
+          length(hybrid_params$hybrid_intensity_range) == 2) {
+        int_range <- hybrid_params$hybrid_intensity_range
+      }
+      
       # La cellula 1 è in parte del cluster 2
-      hybrid_matrix[cell1, cluster2] <- runif(1,
-                                            hybrid_params$hybrid_intensity_range[1],
-                                            hybrid_params$hybrid_intensity_range[2])
+      hybrid_matrix[cell1, cluster2] <- runif(1, int_range[1], int_range[2])
       
       # La cellula 2 è in parte del cluster 1
-      hybrid_matrix[cell2, cluster1] <- runif(1,
-                                            hybrid_params$hybrid_intensity_range[1],
-                                            hybrid_params$hybrid_intensity_range[2])
+      hybrid_matrix[cell2, cluster1] <- runif(1, int_range[1], int_range[2])
+      }
     }
   }
   

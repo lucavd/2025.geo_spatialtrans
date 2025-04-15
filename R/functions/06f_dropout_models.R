@@ -21,7 +21,10 @@ calculate_dropout_probabilities <- function(
   )
 ) {
   # Calcola le probabilità di dropout base
-  if (spatial_params$gradient_regions && "boundary_dist" %in% colnames(cell_df) && !all(is.na(cell_df$boundary_dist))) {
+  if (!is.null(spatial_params$gradient_regions) && 
+      spatial_params$gradient_regions && 
+      "boundary_dist" %in% colnames(cell_df) && 
+      !all(is.na(cell_df$boundary_dist))) {
     # Più dropout vicino al confine
     base_dropout <- dropout_params$dropout_range[1] +
       (1 - cell_df$boundary_dist) * (dropout_params$dropout_range[2] - dropout_params$dropout_range[1])

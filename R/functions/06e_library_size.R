@@ -42,7 +42,8 @@ generate_library_sizes <- function(
   library_size <- rlnorm(N, meanlog = log_mean, sdlog = log_sd)
   
   # Aggiungi effetto spaziale sulla dimensione libreria se richiesto
-  if (library_size_params$spatial_effect_on_library > 0) {
+  if (!is.null(library_size_params$spatial_effect_on_library) && 
+      library_size_params$spatial_effect_on_library > 0) {
     # Converti cell_df in oggetto spatial per il GP
     sp_df_lib <- cell_df
     coordinates(sp_df_lib) <- ~ x + y
@@ -66,7 +67,7 @@ generate_library_sizes <- function(
   }
   
   # Aggiungi effetto del tipo cellulare sulla dimensione della libreria
-  if (library_size_params$cell_type_effect) {
+  if (!is.null(library_size_params$cell_type_effect) && library_size_params$cell_type_effect) {
     # Diversi tipi cellulari hanno diversi contenuti di RNA
     cell_type_effect <- numeric(N)
     

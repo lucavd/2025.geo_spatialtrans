@@ -7,7 +7,7 @@
 #' @param chunk_size Dimensione del chunk per parallelizzazione
 #' @param random_seed Seed per riproducibilità
 #' @return Lista con distanze e densità calcolate
-#' @importFrom future.apply future_lapply
+# Utilizziamo lapply standard
 #' @export
 calculate_spatial_distances <- function(
   cell_df,
@@ -32,7 +32,7 @@ calculate_spatial_distances <- function(
   chunks <- split(1:N, ceiling(seq_along(1:N)/chunk_size))
   
   # Calcola la distanza media per ciascuna cellula rispetto alle altre del proprio cluster
-  mean_dist <- future_lapply(chunks, function(chunk_idx) {
+  mean_dist <- lapply(chunks, function(chunk_idx) {
     result <- numeric(length(chunk_idx))
     for (j in seq_along(chunk_idx)) {
       i <- chunk_idx[j]
@@ -41,10 +41,10 @@ calculate_spatial_distances <- function(
       result[j] <- mean(dist_mat[i, same_cluster])
     }
     return(result)
-  }, future.scheduling = 1, future.chunk.size = NULL, future.seed = TRUE) %>% unlist()
+  }) %>% unlist()
   
   # Calcola la densità locale (per il modello di dropout)
-  local_density <- future_lapply(chunks, function(chunk_idx) {
+  local_density <- lapply(chunks, function(chunk_idx) {
     result <- numeric(length(chunk_idx))
     for (j in seq_along(chunk_idx)) {
       i <- chunk_idx[j]
@@ -53,7 +53,7 @@ calculate_spatial_distances <- function(
       result[j] <- mean(row < q)
     }
     return(result)
-  }, future.scheduling = 1, future.chunk.size = NULL, future.seed = TRUE) %>% unlist()
+  }) %>% unlist()
   
   # Restituisci i risultati
   return(list(
