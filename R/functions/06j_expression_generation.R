@@ -62,8 +62,10 @@ generate_expression_matrix <- function(
   
   # Estrai variabili
   N <- nrow(cell_df)
+  # Usa i livelli originali per mappare le medie di espressione
   cluster_labels <- cell_df$intensity_cluster
-  k_cell_types <- length(unique(cluster_labels))
+  # Il numero di tipi cellulari corrisponde alla lunghezza di mean_expression_list
+  k_cell_types <- length(mean_expression_list)
   
   # Identificazione geni stabili (sub-Poissoniani)
   stable_genes <- sample(n_genes, max(1, round(n_genes * 0.1)))  # 10% geni stabili

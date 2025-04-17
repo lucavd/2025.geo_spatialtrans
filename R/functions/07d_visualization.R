@@ -86,9 +86,30 @@ generate_and_save_plots <- function(
     if (!dir.exists(output_dir)) {
       dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
     }
-    
-    # Salva il plot
-    ggplot2::ggsave(output_plot, plot = p, device = "png", dpi = 300)
+    # Calcola l'aspect ratio della griglia spaziale
+    x_range <- range(cell_df$x, na.rm = TRUE)
+    y_range <- range(cell_df$y, na.rm = TRUE)
+    aspect_ratio <- diff(y_range) / diff(x_range)
+    # Dimensione base (inches) per il lato maggiore
+    base_size <- 8
+    if (aspect_ratio >= 1) {
+      height_in <- base_size
+      width_in  <- base_size / aspect_ratio
+    } else {
+      width_in  <- base_size
+      height_in <- base_size * aspect_ratio
+    }
+    # Salva il plot con dimensioni esplicite per evitare ritagli
+    ggplot2::ggsave(
+      filename = output_plot,
+      plot = p,
+      device = "png",
+      dpi = 300,
+      width = width_in,
+      height = height_in,
+      units = "in",
+      bg = "white"
+    )
   }
   
   return(p)

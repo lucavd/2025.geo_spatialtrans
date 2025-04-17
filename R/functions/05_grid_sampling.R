@@ -47,8 +47,19 @@ create_sampling_grid <- function(img_df_thresh, img_array, img_width, img_height
       n_bins_y <- ceiling(grid_height_um / grid_resolution)
       
       # Crea le coordinate della griglia fissa in um
-      x_coords <- seq(0, grid_width_um - grid_resolution, by = grid_resolution + grid_spacing)
-      y_coords <- seq(0, grid_height_um - grid_resolution, by = grid_resolution + grid_spacing)
+      # Aggiungi controlli per evitare parametri invalidi
+      if (grid_width_um <= grid_resolution) {
+        grid_width_um <- grid_resolution * 2  # Forza almeno 2 punti
+      }
+      if (grid_height_um <= grid_resolution) {
+        grid_height_um <- grid_resolution * 2  # Forza almeno 2 punti
+      }
+      
+      # Assicurati che il passo sia positivo
+      step <- max(0.1, grid_resolution + grid_spacing)
+      
+      x_coords <- seq(0, grid_width_um - grid_resolution, by = step)
+      y_coords <- seq(0, grid_height_um - grid_resolution, by = step)
     } else {
       # Usa una griglia che si adatta all'immagine
       grid_width_um <- img_width_um
@@ -59,8 +70,19 @@ create_sampling_grid <- function(img_df_thresh, img_array, img_width, img_height
       n_bins_y <- ceiling(img_height_um / grid_resolution)
       
       # Crea le coordinate della griglia adattata all'immagine in μm
-      x_coords <- seq(0, img_width_um - grid_resolution, by = grid_resolution + grid_spacing)
-      y_coords <- seq(0, img_height_um - grid_resolution, by = grid_resolution + grid_spacing)
+      # Aggiungi controlli per evitare parametri invalidi
+      if (img_width_um <= grid_resolution) {
+        img_width_um <- grid_resolution * 2  # Forza almeno 2 punti
+      }
+      if (img_height_um <= grid_resolution) {
+        img_height_um <- grid_resolution * 2  # Forza almeno 2 punti
+      }
+      
+      # Assicurati che il passo sia positivo
+      step <- max(0.1, grid_resolution + grid_spacing)
+      
+      x_coords <- seq(0, img_width_um - grid_resolution, by = step)
+      y_coords <- seq(0, img_height_um - grid_resolution, by = step)
     }
     
     # Crea un dataframe con tutte le coordinate possibili
@@ -68,44 +90,32 @@ create_sampling_grid <- function(img_df_thresh, img_array, img_width, img_height
     
     # Per la griglia fissa, assicuriamoci che i punti corrispondano all'immagine
     if (use_fixed_grid) {
-      # Calcola l'offset per centrare l'immagine nella griglia, se necessario
-      if (grid_width_um > img_width_um) {
-        offset_x <- (grid_width_um - img_width_um) / 2
-      } else {
-        offset_x <- 0
-      }
+      # Calcola l'offset per centrare l'immagine nella griglia
+      # (se l'immagine è più grande della griglia, centriamo; altrimenti offset a 0)
+      offset_x <- max((img_width_um  - grid_width_um ) / 2, 0)
+      offset_y <- max((img_height_um - grid_height_um) / 2, 0)
       
-      if (grid_height_um > img_height_um) {
-        offset_y <- (grid_height_um - img_height_um) / 2
-      } else {
-        offset_y <- 0
+      # Convert grid coordinates to image coordinates and assign image values
+      rel_x <- grid_points$x + offset_x
+      rel_y <- grid_points$y + offset_y
+      # Mask for points inside the image
+      in_img <- rel_x >= 0 & rel_x < img_width_um & rel_y >= 0 & rel_y < img_height_um
+      # Initialize values (outside -> 1.0 to be filtered)
+      value <- rep(1.0, length(rel_x))
+      if (any(in_img)) {
+        ix <- floor(rel_x[in_img] / pixel_size_um) + 1
+        iy <- floor(rel_y[in_img] / pixel_size_um) + 1
+        ix <- pmin(pmax(ix, 1), img_width)
+        iy <- pmin(pmax(iy, 1), img_height)
+        value[in_img] <- img_array[cbind(ix, iy)]
       }
-      
-      # Assegna a ciascun punto della griglia il valore dell'immagine, 
-      # se il punto è all'interno dell'immagine
-      grid_df <- grid_points %>%
-        rowwise() %>%
-        mutate(
-          # Calcola le coordinate relative all'immagine, considerando l'offset
-          rel_x = x - offset_x,
-          rel_y = y - offset_y,
-          
-          # Controlla se il punto è all'interno dell'immagine
-          is_in_image = (rel_x >= 0 && rel_x < img_width_um && rel_y >= 0 && rel_y < img_height_um),
-          
-          # Se il punto è fuori dall'immagine, assegna un valore superiore alla soglia
-          # altrimenti prendi il valore dall'immagine
-          value = if (is_in_image) {
-            # Converti da coordinate μm a indici di pixel
-            img_x = min(max(round(rel_x / pixel_size_um), 1), img_width)
-            img_y = min(max(round(rel_y / pixel_size_um), 1), img_height)
-            img_array[img_x, img_y]
-          } else {
-            1.0  # Valore superiore alla soglia, sarà filtrato
-          }
-        ) %>%
-        filter(value < threshold_value) %>%  # Applica la soglia
-        ungroup()
+      # Filter by threshold
+      keep <- value < threshold_value
+      grid_df <- data.frame(
+        x = grid_points$x[keep],
+        y = grid_points$y[keep],
+        value = value[keep]
+      )
     } else {
       # Comportamento originale per la griglia adattata all'immagine
       grid_df <- grid_points %>%
@@ -120,20 +130,27 @@ create_sampling_grid <- function(img_df_thresh, img_array, img_width, img_height
         ungroup()
     }
     
-    # Assegna cluster usando i centroidi k-means dell'immagine originale
-    # Trova i centroidi dei cluster
-    cluster_centroids <- sapply(levels(img_df_thresh$intensity_cluster), function(cl) {
-      mean(img_df_thresh$value[img_df_thresh$intensity_cluster == cl])
-    })
-    
-    # Assegna ogni punto griglia al cluster più vicino
-    grid_df <- grid_df %>%
-      mutate(intensity_cluster = factor(apply(outer(value, cluster_centroids, 
-                                               FUN = function(x, y) abs(x - y)),
-                                        1, which.min)))
-    
-    # Questa è la nostra "cell_df" finale
-    cell_df <- grid_df
+      # Assign cluster using k-means centroids of the original image
+      cluster_levels    <- levels(img_df_thresh$intensity_cluster)
+      cluster_centroids <- sapply(cluster_levels, function(cl) {
+        mean(img_df_thresh$value[img_df_thresh$intensity_cluster == cl])
+      })
+      # Find nearest centroid per point (min abs difference)
+      n_pts <- nrow(grid_df)
+      best_idx  <- integer(n_pts)
+      best_dist <- abs(grid_df$value - cluster_centroids[1])
+      best_idx[] <- 1
+      for (j in seq_along(cluster_centroids)[-1]) {
+        d_j <- abs(grid_df$value - cluster_centroids[j])
+        mask <- d_j < best_dist
+        if (any(mask)) {
+          best_dist[mask] <- d_j[mask]
+          best_idx[mask]  <- j
+        }
+      }
+      grid_df$intensity_cluster <- factor(cluster_levels[best_idx], levels = cluster_levels)
+      # Final cell_df
+      cell_df <- grid_df
     
   } else {
     # Modalità campionamento casuale
