@@ -1,6 +1,2 @@
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
-simulations_4.log
-MMM/
+# Ignore generated result RDS files
+results/*.rds
