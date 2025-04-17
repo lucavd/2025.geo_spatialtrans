@@ -1,2 +1,12 @@
+# Ignore RStudio and intermediate files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Ignore logs and build directories
+simulations_4.log
+MMM/
+
 # Ignore generated result RDS files
 results/*.rds
