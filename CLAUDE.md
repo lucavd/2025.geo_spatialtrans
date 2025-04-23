@@ -69,6 +69,11 @@ This R package for spatial transcriptomics simulation has been fully modularized
    - Create demo datasets
    - Write tutorial vignettes
 
+4. **Explore advanced spatial modeling**:
+   - Test multi-scale and hierarchical spatial models
+   - Implement anisotropic and non-stationary patterns
+   - Create composite spatial patterns for realistic tissues
+
 ## Modular Structure Benefits
 
 The package has been modularized to support efficient pipeline execution:
@@ -79,9 +84,11 @@ The package has been modularized to support efficient pipeline execution:
    - `06c_spatial_distances.R`: Distance calculations
    - `06d_dispersion_params.R`: Dispersion parameters
    - `06e_library_size.R`: Library size generation
-   - `06f_dropout_models.R`: Dropout modeling
+   - `06f_dropout_models.R`: Dropout modeling with ambient RNA
    - `06g_gene_modules.R`: Gene module generation
-   - `06h_spatial_correlation.R`: Spatial correlation
+   - `06h_spatial_correlation.R`: Basic spatial correlation
+   - `06h_spatial_correlation_multiscale.R`: Multi-scale correlations
+   - `06h_spatial_correlation_nonstationary.R`: Non-stationary patterns
    - `06i_hybrid_cells.R`: Hybrid cell handling
    - `06j_expression_generation.R`: Matrix generation
    - `06k_expression_profiles_wrapper.R`: Wrapper function

@@ -580,13 +580,14 @@ The framework makes several important contributions to spatial transcriptomics m
 
 ### 8.2 Future Extensions
 
-Having implemented several key biological improvements such as gene co-expression modules and cell-type specific effects, future development of this framework could include:
+Having implemented several key biological improvements such as gene co-expression modules, cell-type specific effects, multi-scale spatial patterns, and non-stationary correlation models, future development of this framework could include:
 1. **Dynamic temporal components** to model developmental processes and cellular responses
 2. **Ligand-receptor interaction modeling** for realistic cell-cell communication networks
-3. **Multi-scale spatial patterns** that capture hierarchical tissue organization
+3. **Fully anisotropic spatial patterns** that capture directional tissue structures like vessels
 4. **Automated parameter inference** from real Visium HD datasets
 5. **Multi-omic integration** for simultaneous simulation of transcriptomic, proteomic, and epigenomic data
 6. **Context-aware simulation** that incorporates histological features from input images
+7. **Enhanced ambient RNA contamination** with spatial diffusion models
 
 ### 8.3 Applications
 
