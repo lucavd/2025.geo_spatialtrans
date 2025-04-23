@@ -2,7 +2,8 @@
 #'
 #' Crea profili di espressione genica per ogni cellula/spot,
 #' incorporando effetti biologici come correlazione spaziale,
-#' dropout, dimensioni diverse delle librerie e clustering di geni.
+#' dropout, dimensioni diverse delle librerie, clustering di geni
+#' e ambient RNA contamination.
 #' Questa è una funzione wrapper che coordina tutti i passaggi.
 #'
 #' @param cell_df Dataframe delle celle con coordinate e cluster
@@ -11,6 +12,7 @@
 #' @param marker_params Parametri dei marker genici
 #' @param spatial_params Parametri spaziali
 #' @param dropout_params Parametri di dropout
+#' @param ambient_params Parametri per RNA ambientale
 #' @param library_size_params Parametri dimensione libreria
 #' @param cell_specific_params Parametri cellula-specifici
 #' @param hybrid_params Parametri cellule ibride
@@ -42,7 +44,20 @@ generate_expression_profiles <- function(
     cell_type_dispersion_effect = 0.2,
     expression_dependent_dropout = TRUE,
     dropout_curve_midpoint = 0.5,
-    dropout_curve_steepness = 5
+    dropout_curve_steepness = 5,
+    use_gene_specific_dropout = TRUE,
+    gene_dropout_variability = 0.3,
+    gc_content_effect = 0.5,
+    length_effect = 0.3,
+    sequence_effect = 0.4,
+    gene_effect_weight = 0.3
+  ),
+  ambient_params = list(
+    use_ambient_rna = FALSE,
+    ambient_contamination_rate = 0.05,
+    ambient_diffusion_distance = 30,
+    tissue_leakage_factor = 0.7,
+    background_noise = 0.1
   ),
   library_size_params = list(
     mean_library_size = 10000,
@@ -77,6 +92,9 @@ generate_expression_profiles <- function(
     library_size_params, cell_specific_params, hybrid_params,
     random_seed
   )
+  
+  # Aggiungi parametri per RNA ambientale
+  params$ambient_params <- ambient_params
   
   # Genera i profili di espressione baseline per ogni tipo cellulare
   mean_expression_list <- generate_baseline_expression(
@@ -127,11 +145,24 @@ generate_expression_profiles <- function(
   
   # Genera la matrice di espressione finale
   expression_data <- generate_expression_matrix(
-    cell_df, mean_expression_list, n_genes, library_size, dispersion_param,
-    base_dropout, hybrid_matrix, gene_modules_result$module_noise, gp_noise,
-    gene_modules_result$latent_factors, gene_modules_result$module_network,
-    params$spatial_params, params$dropout_params, params$cell_specific_params,
-    use_spatial_correlation, random_seed
+    cell_df = cell_df, 
+    mean_expression_list = mean_expression_list, 
+    n_genes = n_genes, 
+    library_size = library_size, 
+    dispersion_param = dispersion_param,
+    base_dropout = base_dropout, 
+    hybrid_matrix = hybrid_matrix, 
+    module_noise = gene_modules_result$module_noise, 
+    gp_noise = gp_noise,
+    latent_factors = gene_modules_result$latent_factors, 
+    module_network = gene_modules_result$module_network,
+    spatial_params = params$spatial_params, 
+    dropout_params = params$dropout_params, 
+    ambient_params = params$ambient_params,
+    cell_specific_params = params$cell_specific_params,
+    use_spatial_correlation = use_spatial_correlation, 
+    dist_mat = spatial_distances$dist_mat,
+    random_seed = random_seed
   )
   
   # Prepara l'output
@@ -142,7 +173,13 @@ generate_expression_profiles <- function(
     gene_modules = gene_modules_result$gene_modules,
     latent_factors = gene_modules_result$latent_factors,
     module_network = gene_modules_result$module_network,
-    mean_expression_list = mean_expression_list
+    mean_expression_list = mean_expression_list,
+    gene_specific_dropout = if (!is.null(params$dropout_params$use_gene_specific_dropout) && 
+                               params$dropout_params$use_gene_specific_dropout) {
+      generate_gene_specific_dropout_factors(
+        n_genes, nrow(cell_df), params$dropout_params, random_seed
+      )
+    } else NULL
   )
   
   return(result)

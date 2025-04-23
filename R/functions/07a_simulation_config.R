@@ -17,6 +17,10 @@
 #' @param use_fixed_grid Usare una griglia fissa con dimensioni predefinite (default: FALSE)
 #' @param fixed_grid_width_mm Larghezza della griglia fissa in mm (default: 6.5)
 #' @param fixed_grid_height_mm Altezza della griglia fissa in mm (default: 6.5)
+#' @param use_ambient_rna Abilitare la contaminazione da RNA ambientale (default: FALSE)
+#' @param ambient_contamination_rate Tasso di contaminazione RNA ambientale (default: 0.05)
+#' @param use_gene_specific_dropout Abilitare il dropout gene-specifico (default: TRUE)
+#' @param gene_dropout_variability Variabilità del dropout gene-specifico (default: 0.3)
 #' @return Lista con la configurazione della simulazione
 #' @export
 initialize_simulation_config <- function(
@@ -34,7 +38,11 @@ initialize_simulation_config <- function(
   grid_spacing = 0,
   use_fixed_grid = FALSE,
   fixed_grid_width_mm = 6.5,
-  fixed_grid_height_mm = 6.5
+  fixed_grid_height_mm = 6.5,
+  use_ambient_rna = FALSE,
+  ambient_contamination_rate = 0.05,
+  use_gene_specific_dropout = TRUE,
+  gene_dropout_variability = 0.3
 ) {
   # Validazione di base
   if (is.null(image_path) || !file.exists(image_path)) {
@@ -50,11 +58,41 @@ initialize_simulation_config <- function(
     threshold_value <- 0.7
   }
   
+  # Verifica parametri di ambient RNA e dropout
+  if (ambient_contamination_rate < 0 || ambient_contamination_rate > 1) {
+    warning("ambient_contamination_rate dovrebbe essere tra 0 e 1, impostato a 0.05")
+    ambient_contamination_rate <- 0.05
+  }
+  
+  if (gene_dropout_variability < 0 || gene_dropout_variability > 1) {
+    warning("gene_dropout_variability dovrebbe essere tra 0 e 1, impostato a 0.3")
+    gene_dropout_variability <- 0.3
+  }
+  
   # Controlla directory di output
   output_dir <- dirname(output_path)
   if (!dir.exists(output_dir)) {
     dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
   }
+  
+  # Crea parametri per ambient RNA
+  ambient_params <- list(
+    use_ambient_rna = use_ambient_rna,
+    ambient_contamination_rate = ambient_contamination_rate,
+    ambient_diffusion_distance = 30,
+    tissue_leakage_factor = 0.7,
+    background_noise = 0.1
+  )
+  
+  # Crea parametri per dropout gene-specifico
+  dropout_gene_specific_params <- list(
+    use_gene_specific_dropout = use_gene_specific_dropout,
+    gene_dropout_variability = gene_dropout_variability,
+    gc_content_effect = 0.5,
+    length_effect = 0.3,
+    sequence_effect = 0.4,
+    gene_effect_weight = 0.3
+  )
   
   # Restituisce la configurazione
   config <- list(
@@ -72,7 +110,9 @@ initialize_simulation_config <- function(
     grid_spacing = grid_spacing,
     use_fixed_grid = use_fixed_grid,
     fixed_grid_width_mm = fixed_grid_width_mm,
-    fixed_grid_height_mm = fixed_grid_height_mm
+    fixed_grid_height_mm = fixed_grid_height_mm,
+    ambient_params = ambient_params,
+    dropout_gene_specific_params = dropout_gene_specific_params
   )
   
   return(config)

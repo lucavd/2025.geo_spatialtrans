@@ -1,7 +1,8 @@
 #' Genera la matrice finale di espressione genica
 #'
 #' Combina tutti i componenti per generare la matrice finale di espressione
-#' con tutti gli effetti biologici e tecnici.
+#' con tutti gli effetti biologici e tecnici, includendo ambient RNA contamination 
+#' e dropout gene-specifico.
 #'
 #' @param cell_df Dataframe delle celle con coordinate e cluster
 #' @param mean_expression_list Lista con le medie di espressione per tipo cellulare
@@ -16,12 +17,15 @@
 #' @param module_network Rete di interazioni tra i diversi moduli di geni
 #' @param spatial_params Parametri spaziali
 #' @param dropout_params Parametri di dropout
+#' @param ambient_params Parametri per RNA ambientale
 #' @param cell_specific_params Parametri cellula-specifici
 #' @param use_spatial_correlation Se usare la correlazione spaziale
+#' @param dist_mat Matrice di distanza tra celle (per ambient RNA)
 #' @param random_seed Seed per riproducibilità
 #' @return Matrice di espressione finale
 #' @importFrom MASS rnbinom
 #' @importFrom future.apply future_lapply
+#' @importFrom stats rbinom rnorm runif
 #' @export
 generate_expression_matrix <- function(
   cell_df,
@@ -42,7 +46,20 @@ generate_expression_matrix <- function(
   dropout_params = list(
     expression_dependent_dropout = TRUE,
     dropout_curve_midpoint = 0.5,
-    dropout_curve_steepness = 5
+    dropout_curve_steepness = 5,
+    use_gene_specific_dropout = TRUE,
+    gene_dropout_variability = 0.3,
+    gc_content_effect = 0.5,
+    length_effect = 0.3,
+    sequence_effect = 0.4,
+    gene_effect_weight = 0.3
+  ),
+  ambient_params = list(
+    use_ambient_rna = FALSE,
+    ambient_contamination_rate = 0.05,
+    ambient_diffusion_distance = 30,
+    tissue_leakage_factor = 0.7,
+    background_noise = 0.1
   ),
   cell_specific_params = list(
     cell_specific_noise_sd = 0.2,
@@ -55,6 +72,7 @@ generate_expression_matrix <- function(
     latent_factor_strength = 0.8
   ),
   use_spatial_correlation = TRUE,
+  dist_mat = NULL,
   random_seed = 123
 ) {
   # Imposta il seed per riproducibilità
@@ -80,6 +98,17 @@ generate_expression_matrix <- function(
   
   # Converti cluster_labels in interi una sola volta
   cl <- as.integer(cluster_labels)
+  
+  # Genera fattori di dropout gene-specifici se richiesto
+  use_gene_specific_dropout <- ifelse(is.null(dropout_params$use_gene_specific_dropout), 
+                                    TRUE, dropout_params$use_gene_specific_dropout)
+  
+  gene_specific_factors <- NULL
+  if (use_gene_specific_dropout) {
+    gene_specific_factors <- generate_gene_specific_dropout_factors(
+      n_genes, N, dropout_params, random_seed
+    )
+  }
   
   # Genera l'espressione genica in chunk
   chunk_size <- max(5, ceiling(n_genes/32))
@@ -163,35 +192,23 @@ generate_expression_matrix <- function(
       # Arrotonda a numeri interi (conteggi)
       chunk_expression[, i] <- round(scaled_counts)
       
-      # Applica dropout in base al modello specificato
-      # Definisci una funzione vettorizzata per normalizzare tra 0 e 1
-      scale01_vec <- function(x) {
-        if (all(x == x[1])) return(rep(0.5, length(x)))
-        (x - min(x)) / (max(x) - min(x))
+      # Estrai fattori gene-specifici per il dropout se disponibili
+      gene_factors <- NULL
+      if (use_gene_specific_dropout && !is.null(gene_specific_factors)) {
+        gene_factors <- list(
+          gene_dropout_factors = gene_specific_factors$gene_dropout_factors[g],
+          dropout_baseline_shift = gene_specific_factors$dropout_baseline_shift[g]
+        )
       }
       
-      if (dropout_params$expression_dependent_dropout) {
-        # Normalizza l'espressione del gene corrente
-        norm_expr <- scale01_vec(chunk_expression[, i])
-        
-        # Calcola la probabilità di dropout con una funzione logistica
-        dropout_prob_expr <- 1 / (1 + exp((norm_expr - dropout_params$dropout_curve_midpoint) *
-                                     dropout_params$dropout_curve_steepness))
-        
-        # Combina con il dropout spaziale base
-        dropout_prob <- 0.7 * dropout_prob_expr + 0.3 * base_dropout
-        
-        # Tronca i valori al range [0,1]
-        dropout_prob <- pmin(pmax(dropout_prob, 0), 1)
-        
-        # Applica dropout
-        zero_idx <- runif(N) < dropout_prob
-        chunk_expression[zero_idx, i] <- 0
-      } else {
-        # Modello di dropout originale (solo spaziale)
-        zero_idx <- runif(N) < base_dropout
-        chunk_expression[zero_idx, i] <- 0
-      }
+      # Applica dropout usando la versione migliorata con supporto gene-specifico
+      chunk_expression[, i] <- apply_dropout(
+        chunk_expression[, i], 
+        base_dropout, 
+        gene_factors,
+        dropout_params, 
+        random_seed + g  # Usa un seed diverso per ogni gene
+      )
     }
     
     return(chunk_expression)
@@ -202,6 +219,22 @@ generate_expression_matrix <- function(
   for (i in seq_along(gene_chunks)) {
     genes_subset <- gene_chunks[[i]]
     expression_data[, genes_subset] <- expression_chunks[[i]]
+  }
+  
+  # Aggiungi contaminazione da RNA ambientale se richiesto
+  use_ambient_rna <- ifelse(is.null(ambient_params$use_ambient_rna), 
+                          FALSE, ambient_params$use_ambient_rna)
+  
+  if (use_ambient_rna) {
+    # Genera la contaminazione da RNA ambientale
+    ambient_contamination <- generate_ambient_rna(
+      cell_df, dist_mat, mean_expression_list, ambient_params, random_seed
+    )
+    
+    # Applica la contaminazione alla matrice di espressione
+    expression_data <- apply_ambient_rna_contamination(
+      expression_data, ambient_contamination, ambient_params
+    )
   }
   
   return(expression_data)
