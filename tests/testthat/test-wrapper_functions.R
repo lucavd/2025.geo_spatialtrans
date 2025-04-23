@@ -47,7 +47,7 @@ test_that("generate_expression_profiles_wrapper coordina correttamente i moduli"
 
 test_that("simulate_spatial_transcriptomics_wrapper integra correttamente i componenti", {
   # Usa l'immagine synthetic_tissue1.png dall'archivio
-  image_path <- "/home/user/2025.geo_spatialtrans/images/synthetic_tissue1.png"
+  image_path <- file.path("..", "..", "images", "synthetic_tissue1.png")
   
   # Verifica che l'immagine esista
   if (!file.exists(image_path)) {
