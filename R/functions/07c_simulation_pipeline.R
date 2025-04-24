@@ -83,7 +83,113 @@ run_simulation_pipeline <- function(
   # Rinomina i cluster
   levels(cell_df$intensity_cluster) <- paste0("cells_", letters[1:config$k_cell_types])
   
-  # 5. Prepara il risultato
+  # 5. Applicazione di moduli biologici aggiuntivi
+  
+  # Inizializza una lista per metadati dei moduli
+  module_metadata <- list()
+  
+  # Calcola la matrice di distanza una volta sola se necessaria
+  dist_mat <- NULL
+  if (config$lr_params$use_lr_interactions || 
+      config$anisotropic_params$use_anisotropic_patterns ||
+      config$micro3d_params$use_3d_microenvironment) {
+    dist_mat <- as.matrix(dist(cell_df[, c("x", "y")]))
+  }
+  
+  # 5.1. Ligand-Receptor Interactions
+  if (config$lr_params$use_lr_interactions) {
+    cat("Applicazione di interazioni ligando-recettore...\n")
+    lr_result <- generate_lr_interactions(
+      cell_df = cell_df,
+      expr_matrix = expression_results$expression,
+      dist_mat = dist_mat,
+      lr_params = config$lr_params,
+      random_seed = config$random_seed
+    )
+    # Aggiorna la matrice di espressione
+    expression_results$expression <- lr_result$expression
+    # Salva metadati
+    module_metadata$lr_interactions <- list(
+      interaction_db = lr_result$interaction_db,
+      signaling_effects = lr_result$signaling_effects
+    )
+  }
+  
+  # 5.2. Temporal Dynamics
+  if (config$temporal_params$use_temporal_dynamics) {
+    cat("Applicazione di dinamiche temporali...\n")
+    temporal_result <- generate_temporal_dynamics(
+      cell_df = cell_df,
+      expr_matrix = expression_results$expression,
+      temporal_params = config$temporal_params,
+      random_seed = config$random_seed
+    )
+    # Aggiorna la matrice di espressione
+    expression_results$expression <- temporal_result$expr_matrix
+    # Salva metadati
+    module_metadata$temporal_dynamics <- list(
+      pseudotime = temporal_result$pseudotime,
+      velocity = temporal_result$velocity,
+      unspliced = temporal_result$unspliced
+    )
+  }
+  
+  # 5.3. Alternative Splicing
+  if (config$splicing_params$use_alternative_splicing) {
+    cat("Applicazione di splicing alternativo...\n")
+    splicing_result <- generate_alternative_splicing(
+      cell_df = cell_df,
+      expr_matrix = expression_results$expression,
+      splicing_params = config$splicing_params,
+      random_seed = config$random_seed
+    )
+    # Aggiorna la matrice di espressione
+    expression_results$expression <- splicing_result$expr_matrix
+    # Salva metadati
+    module_metadata$alternative_splicing <- list(
+      genes_with_variants = splicing_result$genes_with_variants,
+      variant_matrices = splicing_result$variant_matrices
+    )
+  }
+  
+  # 5.4. Anisotropic Patterns
+  if (config$anisotropic_params$use_anisotropic_patterns) {
+    cat("Applicazione di pattern anisotropici...\n")
+    aniso_result <- generate_anisotropic_patterns(
+      cell_df = cell_df,
+      expr_matrix = expression_results$expression,
+      anisotropic_params = config$anisotropic_params,
+      random_seed = config$random_seed
+    )
+    # Aggiorna la matrice di espressione
+    expression_results$expression <- aniso_result$expr_matrix
+    # Salva metadati
+    module_metadata$anisotropic_patterns <- list(
+      structure_mask = aniso_result$structure_mask,
+      distance_matrices = aniso_result$distance_matrices
+    )
+  }
+  
+  # 5.5. 3D Microenvironment
+  if (config$micro3d_params$use_3d_microenvironment) {
+    cat("Applicazione di effetti microambiente 3D...\n")
+    micro3d_result <- generate_3d_microenvironment(
+      cell_df = cell_df,
+      expr_matrix = expression_results$expression,
+      dist_mat = dist_mat,
+      micro3d_params = config$micro3d_params,
+      random_seed = config$random_seed
+    )
+    # Aggiorna la matrice di espressione
+    expression_results$expression <- micro3d_result$expr_matrix
+    # Salva metadati
+    module_metadata$microenvironment_3d <- list(
+      z_positions = micro3d_result$z_positions,
+      layer_assignments = micro3d_result$layer_assignments
+    )
+  }
+  
+  # 6. Prepara il risultato
   result <- list(
     coordinates = cell_df[, c("x", "y")],
     intensity_cluster = cell_df$intensity_cluster,
@@ -92,6 +198,10 @@ run_simulation_pipeline <- function(
     library_size = expression_results$library_size,
     dispersion_param = expression_results$dispersion_param,
     gene_modules = expression_results$gene_modules,
+    
+    # Aggiungi i metadati dei moduli biologici aggiuntivi
+    module_data = module_metadata,
+    
     parameters = list(
       image_path = config$image_path,
       pixel_size_um = config$pixel_size_um,
@@ -111,7 +221,14 @@ run_simulation_pipeline <- function(
       dropout_params = difficulty_config$dropout_params,
       library_size_params = library_size_params,
       hybrid_params = hybrid_params,
-      cell_specific_params = difficulty_config$cell_specific_params
+      cell_specific_params = difficulty_config$cell_specific_params,
+      
+      # Parametri dei nuovi moduli biologici
+      lr_params = config$lr_params,
+      temporal_params = config$temporal_params,
+      splicing_params = config$splicing_params,
+      anisotropic_params = config$anisotropic_params,
+      micro3d_params = config$micro3d_params
     )
   )
   

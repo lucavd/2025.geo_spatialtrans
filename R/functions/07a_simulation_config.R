@@ -94,6 +94,58 @@ initialize_simulation_config <- function(
     gene_effect_weight = 0.3
   )
   
+  # Crea parametri per i nuovi moduli biologici
+  
+  # 1. Ligand-Receptor Interactions
+  lr_params <- list(
+    use_lr_interactions = FALSE,   # Disabilitato di default
+    n_interactions = 20,
+    signal_propagation_mode = "exponential",
+    max_signaling_distance = 40,
+    adjust_method = "multiplicative",
+    signal_amplification = 1.0
+  )
+  
+  # 2. Temporal Dynamics
+  temporal_params <- list(
+    use_temporal_dynamics = FALSE,  # Disabilitato di default
+    pseudotime_mode = "gradient",
+    pseudotime_origin = c(0, 0),
+    temporal_gene_fraction = 0.6,
+    pattern_distribution = c(monotonic = 0.4, transient = 0.3, cyclic = 0.2, bifurcating = 0.1),
+    trajectory_strength = 0.8,
+    include_velocity = TRUE
+  )
+  
+  # 3. Alternative Splicing
+  splicing_params <- list(
+    use_alternative_splicing = FALSE,  # Disabilitato di default
+    splicing_fraction = 0.3,
+    n_splicing_variants = 2,
+    splicing_spatial_pattern = "gradient",
+    splicing_cluster_specific = FALSE,
+    splicing_strength = 0.7
+  )
+  
+  # 4. Anisotropic Patterns
+  anisotropic_params <- list(
+    use_anisotropic_patterns = FALSE,  # Disabilitato di default
+    n_structures = 2,
+    structure_type = "linear",
+    anisotropic_pattern = "gradient",
+    anisotropic_gene_fraction = 0.5,
+    anisotropic_effect_strength = 0.8
+  )
+  
+  # 5. 3D Microenvironment
+  micro3d_params <- list(
+    use_3d_microenvironment = FALSE,  # Disabilitato di default
+    n_layers = 5,
+    layer_specificity = 0.7,
+    projection_noise = 0.2,
+    z_decay_factor = 0.5
+  )
+  
   # Restituisce la configurazione
   config <- list(
     image_path = image_path,
@@ -112,7 +164,14 @@ initialize_simulation_config <- function(
     fixed_grid_width_mm = fixed_grid_width_mm,
     fixed_grid_height_mm = fixed_grid_height_mm,
     ambient_params = ambient_params,
-    dropout_gene_specific_params = dropout_gene_specific_params
+    dropout_gene_specific_params = dropout_gene_specific_params,
+    
+    # Aggiungi nuovi moduli biologici
+    lr_params = lr_params,
+    temporal_params = temporal_params,
+    splicing_params = splicing_params,
+    anisotropic_params = anisotropic_params,
+    micro3d_params = micro3d_params
   )
   
   return(config)
