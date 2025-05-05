@@ -10,3 +10,4 @@ MMM/
 
 # Ignore generated result RDS files
 results/*.rds
+**/.claude/settings.local.json
