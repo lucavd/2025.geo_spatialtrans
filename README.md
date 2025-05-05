@@ -42,7 +42,7 @@ R/functions/
 ├── 03_image_processing.R          # Image loading and preprocessing
 ├── 04_clustering.R                # Clustering algorithms
 ├── 05_grid_sampling.R             # Grid creation and sampling
-├── 06*_expression_profiles*.R     # Expression profile generation (11 modules)
+├── 06*_expression_profiles*.R     # Expression profile generation (16 modules)
 │   ├── 06a_expression_params.R    # Parameter initialization
 │   ├── 06b_expression_baseline.R  # Baseline profiles
 │   ├── 06c_spatial_distances.R    # Distance calculations
@@ -55,7 +55,12 @@ R/functions/
 │   ├── 06h_spatial_correlation_nonstationary.R  # Non-stationary patterns
 │   ├── 06i_hybrid_cells.R         # Hybrid cell handling
 │   ├── 06j_expression_generation.R # Matrix generation
-│   └── 06k_expression_profiles_wrapper.R  # Wrapper function
+│   ├── 06k_expression_profiles_wrapper.R  # Wrapper function
+│   ├── 06l_ligand_receptor_interactions_simple.R  # Cell-cell communication
+│   ├── 06m_temporal_dynamics_simple.R  # Development and RNA velocity
+│   ├── 06n_alternative_splicing_simple.R  # Isoform regulation
+│   ├── 06o_anisotropic_patterns_simple.R  # Directional patterns
+│   └── 06p_3d_microenvironment_simple.R  # Z-axis effects
 ├── 07*_simulation*.R              # Main simulation pipeline (6 modules)
 │   ├── 07a_simulation_config.R    # Configuration
 │   ├── 07b_difficulty_setup.R     # Difficulty parameters
@@ -63,6 +68,8 @@ R/functions/
 │   ├── 07d_visualization.R        # Visualization
 │   ├── 07e_results_handling.R     # Results management
 │   └── 07f_simulate_spatial_transcriptomics_wrapper.R  # Wrapper function
+├── 08*_validation*.R              # Validation and analysis tools
+│   └── 08_validation_plots.R      # Comprehensive validation visualizations
 └── package.R                      # Package definition
 ```
 
@@ -87,13 +94,20 @@ The heart of the framework is the `simulate_spatial_transcriptomics()` function 
    - Spatial correlation structures
    - Technical variation and artifacts
 
-#### 2.2.2 Evaluation Framework
+#### 2.2.2 Evaluation and Validation Framework
 
-The framework provides comprehensive evaluation capabilities for:
+The framework provides comprehensive evaluation and validation capabilities for:
 - Multiple clustering algorithms
 - Quantitative performance metrics
 - Spatial visualization of results
 - Ground-truth comparisons
+- Quality assessment through validation plots:
+  - Spatial expression distribution plots
+  - Mean-variance relationship analysis
+  - Dropout-expression plots
+  - Cluster distance analysis
+  - Expression distribution by gene type
+  - UMAP/t-SNE dimensionality reduction
 
 ## 3. Advanced Spatial Organization Models
 
@@ -1222,7 +1236,69 @@ save_simulation_results(result_ultra, "results/ultra_realistic.rds", save_module
 visualize_simulation_results(result_ultra, output_dir = "results", prefix = "ultra")
 ```
 
-These examples demonstrate the framework's flexibility, from simple use cases to highly complex, multi-module simulations replicating diverse biological and technical characteristics of spatial transcriptomics data.
+### 10.8 Validation Plots: Quality Assessment of Simulated Data
+
+The framework includes comprehensive validation tools to assess the quality and biological realism of simulated data:
+
+```r
+# Run a simulation
+sim_result <- simulate_spatial_transcriptomics(
+  image_path = "images/colon.png",
+  grid_mode = TRUE,
+  grid_resolution = 5,
+  n_genes = 200,
+  k_cell_types = 5,
+  difficulty_level = "medium"
+)
+
+# Generate comprehensive validation plots
+validation_plots <- generate_validation_plots(
+  sim_results = sim_result,
+  marker_genes = NULL,  # Auto-detect marker genes
+  n_markers = 3,        # Use 3 representative markers per cluster
+  output_dir = "plots/validation",
+  file_prefix = "validation",
+  file_format = "png",
+  width = 10,
+  height = 8
+)
+```
+
+The validation module generates the following plots:
+
+1. **Spatial Expression Distribution**: 
+   - Shows representative marker genes for each cell type
+   - Visualizes spatial patterns in expression levels
+   - Enables assessment of spatial coherence and cluster-specific expression
+
+2. **Mean-Variance Relationship**:
+   - Plots the relationship between mean expression and variance
+   - Verifies proper overdispersion modeling (variance > mean)
+   - Identifies marker genes with distinct statistical properties
+
+3. **Dropout vs. Expression**:
+   - Shows the relationship between expression level and dropout rate
+   - Validates realistic dropout modeling where low-expression genes have higher dropout
+   - Confirms proper technical noise simulation
+
+4. **Distance by Cluster Analysis**:
+   - Visualizes spatial relationships within clusters
+   - Shows intra-cluster distance distributions
+   - Evaluates cluster coherence and boundary quality
+
+5. **Expression Distribution by Gene Type**:
+   - Compares expression distributions for different gene categories
+   - Shows differences between marker and non-marker genes
+   - Validates different variance models (sub-Poisson vs. Negative Binomial)
+
+6. **Dimensionality Reduction Visualization**:
+   - Projects cells into UMAP or t-SNE space
+   - Colorizes by cluster to show transcriptional separation
+   - Validates overall data structure and cluster separation
+
+These validation plots serve both as quality control and as educational tools to understand the properties of simulated data, ensuring that it accurately captures the statistical and biological characteristics of real spatial transcriptomics datasets.
+
+The examples in this section demonstrate the framework's flexibility, from simple use cases to highly complex, multi-module simulations replicating diverse biological and technical characteristics of spatial transcriptomics data.
 
 ## 11. Applications
 

@@ -9,6 +9,9 @@ Description: Strumenti per la simulazione e l'analisi di dati di trascrittomica
     spaziale. Il pacchetto permette di generare dati simulati altamente 
     configurabili per piattaforme come Visium HD, con controllo preciso su 
     aspetti biologici e tecnici come correlazione spaziale, dropout e clustering.
+    Include moduli avanzati per ligando-recettore, dinamiche temporali, splicing
+    alternativo, pattern anisotropici, microambienti 3D e strumenti di validazione
+    per garantire la qualità delle simulazioni.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -34,7 +37,10 @@ Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    withr
+    withr,
+    supercells,
+    umap,
+    Rtsne
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3

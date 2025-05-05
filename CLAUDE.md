@@ -92,6 +92,11 @@ The package has been modularized to support efficient pipeline execution:
    - `06i_hybrid_cells.R`: Hybrid cell handling
    - `06j_expression_generation.R`: Matrix generation
    - `06k_expression_profiles_wrapper.R`: Wrapper function
+   - `06l_ligand_receptor_interactions_simple.R`: Ligand-receptor interactions (simplified)
+   - `06m_temporal_dynamics_simple.R`: Temporal dynamics (simplified)
+   - `06n_alternative_splicing_simple.R`: Alternative splicing (simplified)
+   - `06o_anisotropic_patterns_simple.R`: Anisotropic patterns (simplified)
+   - `06p_3d_microenvironment_simple.R`: 3D microenvironment (simplified)
 
 2. **Simulation Pipeline (07*.R files)**:
    - `07a_simulation_config.R`: Configuration
@@ -100,6 +105,9 @@ The package has been modularized to support efficient pipeline execution:
    - `07d_visualization.R`: Visualization
    - `07e_results_handling.R`: Results management
    - `07f_simulate_spatial_transcriptomics_wrapper.R`: Wrapper function
+
+3. **Validation and Analysis (08*.R files)**:
+   - `08_validation_plots.R`: Comprehensive validation plots generation
 
 ## Code Style Guidelines
 
