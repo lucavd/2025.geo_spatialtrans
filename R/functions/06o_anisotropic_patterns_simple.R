@@ -269,7 +269,11 @@ generate_backbone_structures <- function(
           structure_cells[i] <- TRUE
           
           # Salva nodo più vicino per calcoli di distanza
-          attr(structure_cells, "node_info")[i] <- list(
+          # Inizializza l'attributo node_info se non esiste ancora
+          if (is.null(attr(structure_cells, "node_info"))) {
+            attr(structure_cells, "node_info") <- vector("list", n_cells)
+          }
+          attr(structure_cells, "node_info")[[i]] <- list(
             edge = closest_edge,
             t = closest_t
           )
@@ -319,7 +323,7 @@ generate_anisotropic_expression <- function(
   cell_df,
   distance_matrices,
   structure_mask,
-  n_genes,
+  n_genes = NULL,
   expression_params = list(
     anisotropic_pattern = "gradient", 
     anisotropic_gene_fraction = 0.5,
@@ -477,12 +481,24 @@ generate_anisotropic_expression <- function(
     
     # Normalizza il pattern per questo gene
     if (length(struct_cells) > 0) {
-      min_val <- min(expr_patterns[struct_cells, g])
-      max_val <- max(expr_patterns[struct_cells, g])
+      # Verifica se ci sono NA o NaN nei valori
+      pattern_values <- expr_patterns[struct_cells, g]
+      has_na <- any(is.na(pattern_values))
       
-      if (max_val > min_val) {
+      if (has_na) {
+        # Ripara valori NA/NaN
+        expr_patterns[struct_cells, g][is.na(pattern_values)] <- 0.5
+        pattern_values <- expr_patterns[struct_cells, g]
+      }
+      
+      # Procedi con la normalizzazione
+      min_val <- min(pattern_values)
+      max_val <- max(pattern_values)
+      
+      if (!is.na(min_val) && !is.na(max_val) && max_val > min_val) {
         expr_patterns[struct_cells, g] <- (expr_patterns[struct_cells, g] - min_val) / (max_val - min_val)
       } else {
+        # Fallback in caso di problemi con min/max
         expr_patterns[struct_cells, g] <- 0.5
       }
     }
@@ -508,21 +524,23 @@ apply_anisotropic_effects <- function(
   expr_matrix,
   aniso_matrix,
   structure_mask,
-  effect_params = list(
-    anisotropic_effect_type = "multiplicative",
-    anisotropic_effect_strength = 0.8,
-    background_effect_fraction = 0.2
-  )
+  effect_params = NULL
 ) {
-  # Estrai parametri
-  effect_type <- effect_params$anisotropic_effect_type
-  effect_strength <- effect_params$anisotropic_effect_strength
-  background_fraction <- effect_params$background_effect_fraction
-  
-  # Valori predefiniti se non specificati
-  if (is.null(effect_type)) effect_type <- "multiplicative"
-  if (is.null(effect_strength)) effect_strength <- 0.8
-  if (is.null(background_fraction)) background_fraction <- 0.2
+  # Estrai parametri con gestione di NULL
+  if (is.null(effect_params)) {
+    effect_type <- "multiplicative"
+    effect_strength <- 0.8
+    background_fraction <- 0.2
+  } else {
+    effect_type <- effect_params$anisotropic_effect_type
+    effect_strength <- effect_params$anisotropic_effect_strength
+    background_fraction <- effect_params$background_effect_fraction
+    
+    # Valori predefiniti se non specificati
+    if (is.null(effect_type)) effect_type <- "multiplicative"
+    if (is.null(effect_strength)) effect_strength <- 0.8
+    if (is.null(background_fraction)) background_fraction <- 0.2
+  }
   
   # Estrai dimensioni
   n_cells <- nrow(expr_matrix)
@@ -580,22 +598,41 @@ apply_anisotropic_effects <- function(
 generate_anisotropic_patterns <- function(
   cell_df,
   expr_matrix,
-  anisotropic_params = list(
-    use_anisotropic_patterns = TRUE,
-    n_structures = 2,
-    structure_type = "linear",
-    anisotropic_pattern = "gradient",
-    anisotropic_gene_fraction = 0.6,
-    anisotropic_effect_strength = 0.8
-  ),
+  anisotropic_params = NULL,
   random_seed = 42
 ) {
   # Imposta seed per riproducibilità
   set.seed(random_seed)
   
-  # Verifica se i pattern anisotropici sono abilitati
-  use_anisotropic <- anisotropic_params$use_anisotropic_patterns
-  if (is.null(use_anisotropic)) use_anisotropic <- TRUE
+  # Gestione parametri
+  if (is.null(anisotropic_params)) {
+    # Valori predefiniti
+    use_anisotropic <- TRUE
+    n_structures <- 2
+    structure_type <- "linear"
+    anisotropic_pattern <- "gradient"
+    anisotropic_gene_fraction <- 0.6
+    anisotropic_effect_strength <- 0.8
+  } else {
+    # Estrai dai parametri forniti
+    use_anisotropic <- anisotropic_params$use_anisotropic_patterns
+    if (is.null(use_anisotropic)) use_anisotropic <- TRUE
+    
+    n_structures <- anisotropic_params$n_structures
+    if (is.null(n_structures)) n_structures <- 2
+    
+    structure_type <- anisotropic_params$structure_type
+    if (is.null(structure_type)) structure_type <- "linear"
+    
+    anisotropic_pattern <- anisotropic_params$anisotropic_pattern
+    if (is.null(anisotropic_pattern)) anisotropic_pattern <- "gradient"
+    
+    anisotropic_gene_fraction <- anisotropic_params$anisotropic_gene_fraction
+    if (is.null(anisotropic_gene_fraction)) anisotropic_gene_fraction <- 0.6
+    
+    anisotropic_effect_strength <- anisotropic_params$anisotropic_effect_strength
+    if (is.null(anisotropic_effect_strength)) anisotropic_effect_strength <- 0.8
+  }
   
   # Se disabilitati, restituisci valori originali
   if (!use_anisotropic) {
@@ -614,8 +651,8 @@ generate_anisotropic_patterns <- function(
   structures <- generate_backbone_structures(
     cell_df = cell_df,
     structure_params = list(
-      n_structures = anisotropic_params$n_structures,
-      structure_type = anisotropic_params$structure_type,
+      n_structures = n_structures,
+      structure_type = structure_type,
       structure_width = 2,
       structure_length_factor = 0.8
     ),
@@ -633,8 +670,8 @@ generate_anisotropic_patterns <- function(
     structure_mask = structure_mask,
     n_genes = n_genes,
     expression_params = list(
-      anisotropic_pattern = anisotropic_params$anisotropic_pattern,
-      anisotropic_gene_fraction = anisotropic_params$anisotropic_gene_fraction,
+      anisotropic_pattern = anisotropic_pattern,
+      anisotropic_gene_fraction = anisotropic_gene_fraction,
       pattern_smoothness = 0.2
     ),
     random_seed = random_seed
@@ -647,7 +684,7 @@ generate_anisotropic_patterns <- function(
     structure_mask = structure_mask,
     effect_params = list(
       anisotropic_effect_type = "multiplicative",
-      anisotropic_effect_strength = anisotropic_params$anisotropic_effect_strength,
+      anisotropic_effect_strength = anisotropic_effect_strength,
       background_effect_fraction = 0.2
     )
   )
