@@ -119,42 +119,104 @@ spatial_kmeans <- function(img_df_thresh, k_cell_types, spatial_weight = 0.5, ra
 slic_clustering <- function(img_df_thresh, k_cell_types, random_seed = 123) {
   set.seed(random_seed)
   
-  # 1. Verifica disponibilità del pacchetto
-  if (!requireNamespace("supercells", quietly = TRUE)) {
-    warning("Il pacchetto 'supercells' non è disponibile. Utilizzando spatial_kmeans come fallback.")
+  # 1. Verifica disponibilità dei pacchetti necessari
+  if (!requireNamespace("supercells", quietly = TRUE) || 
+      !requireNamespace("terra", quietly = TRUE) ||
+      !requireNamespace("sf", quietly = TRUE)) {
+    warning("I pacchetti 'supercells', 'terra' o 'sf' non sono disponibili. Utilizzando spatial_kmeans come fallback.")
     # Fallback a spatial_kmeans
-    return(spatial_kmeans(img_df_thresh, k_cell_types, spatial_weight = 0.5, random_seed = random_seed))
+    return(spatial_kmeans(img_df_thresh, k_cell_types, spatial_weight = 0.3, random_seed = random_seed))
   } 
   
-  # 2. Conversione del dataframe in matrice immagine
-  img_matrix <- matrix(0, nrow = max(img_df_thresh$y), ncol = max(img_df_thresh$x))
-  for (i in 1:nrow(img_df_thresh)) {
-    img_matrix[img_df_thresh$y[i], img_df_thresh$x[i]] <- img_df_thresh$value[i]
-  }
-  
-  # 3. Applicazione di SLIC
-  n_superpixels <- min(k_cell_types * 10, floor(nrow(img_df_thresh) / 10))
-  superpixels <- supercells::slic(img_matrix, k = n_superpixels)
-  
-  # 4. Creazione di un dataframe con superpixel e coordinate
-  df_with_superpixels <- cbind(img_df_thresh, superpixel = superpixels[cbind(img_df_thresh$y, img_df_thresh$x)])
-  
-  # 5. Calcolo dell'intensità media per superpixel
-  superpixel_intensity <- aggregate(value ~ superpixel, data = df_with_superpixels, mean)
-  
-  # 6. Clustering dei superpixel
-  superpixel_clusters <- kmeans(superpixel_intensity$value, centers = k_cell_types, nstart = 5)
-  
-  # 7. Mappatura dei superpixel ai cluster finali
-  cluster_lookup <- superpixel_clusters$cluster
-  names(cluster_lookup) <- superpixel_intensity$superpixel
-  final_clusters <- cluster_lookup[as.character(df_with_superpixels$superpixel)]
+  # 2. Conversione del dataframe in una griglia raster
+  tryCatch({
+    # Determina le dimensioni dell'immagine
+    width <- max(img_df_thresh$x)
+    height <- max(img_df_thresh$y)
+    
+    # Converti i dati in una matrice
+    # Inizializza una matrice vuota
+    img_matrix <- matrix(NA, nrow = height, ncol = width)
+    
+    # Riempie la matrice con i valori di intensità
+    for (i in 1:nrow(img_df_thresh)) {
+      x <- img_df_thresh$x[i]
+      y <- img_df_thresh$y[i]
+      if (x >= 1 && x <= width && y >= 1 && y <= height) {
+        img_matrix[y, x] <- img_df_thresh$value[i]
+      }
+    }
+    
+    # Converti la matrice in un oggetto SpatRaster (richiesto da supercells)
+    rast <- terra::rast(img_matrix)
+    terra::ext(rast) <- c(0, width, 0, height)  # Imposta l'estensione
+    
+    # Calcola il numero ottimale di superpixel
+    n_superpixels <- min(k_cell_types * 15, floor(nrow(img_df_thresh) / 10))
+    
+    # Usa supercells (SLIC)
+    sc <- supercells::supercells(
+      x = rast,           # Input raster data
+      k = n_superpixels,  # Number of superpixels
+      compactness = 10,   # Controlla la compattezza dei superpixel
+      dist_fun = "euclidean"
+    )
+    
+    # 5. Estrai i valori medi per ogni superpixel
+    # Converti la geometria sf in un dataframe semplice
+    superpixel_data <- sf::st_drop_geometry(sc)
+    
+    # 6. Clustering dei superpixel basato sui valori medi
+    # Estrai la prima banda se ci sono più bande
+    if (ncol(superpixel_data) > 2 && "value" %in% colnames(superpixel_data)) {
+      superpixel_clusters <- kmeans(superpixel_data$value, centers = k_cell_types, nstart = 5)
+    } else {
+      # Usa il primo valore numerico disponibile (oltre a cell)
+      numeric_cols <- sapply(superpixel_data, is.numeric)
+      numeric_cols["cell"] <- FALSE  # Escludi la colonna cell
+      if (sum(numeric_cols) > 0) {
+        first_value_col <- names(numeric_cols)[which(numeric_cols)[1]]
+        superpixel_clusters <- kmeans(superpixel_data[[first_value_col]], centers = k_cell_types, nstart = 5)
+      } else {
+        # Fallback se non ci sono colonne numeriche
+        warning("Nessuna colonna numerica trovata in superpixel_data, usando spatial_kmeans come fallback")
+        result <- spatial_kmeans(img_df_thresh, k_cell_types, spatial_weight = 0.3, random_seed = random_seed)
+        return(result)
+      }
+    }
+    
+    # 7. Crea una mappa per i cluster
+    cluster_lookup <- superpixel_clusters$cluster
+    names(cluster_lookup) <- superpixel_data$cell  # Usa l'ID della cella come chiave
+    
+    # Estrai i centroidi dei superpixel per il nearest neighbor
+    superpixel_centers <- sf::st_coordinates(sf::st_centroid(sc))
+    
+    # Inizializza il vettore dei cluster finali
+    final_clusters <- numeric(nrow(img_df_thresh))
+    
+    # Mappiamo i cluster dai superpixel alle celle originali usando nearest neighbor
+    for (i in 1:nrow(img_df_thresh)) {
+      # Trova il superpixel più vicino a questo punto
+      distances <- sqrt((superpixel_centers[, 1] - img_df_thresh$x[i])^2 + 
+                       (superpixel_centers[, 2] - img_df_thresh$y[i])^2)
+      nearest_superpixel <- which.min(distances)
+      
+      # Assegna il cluster direttamente
+      final_clusters[i] <- superpixel_clusters$cluster[nearest_superpixel]
+    }
+  }, error = function(e) {
+    message("Errore nell'uso di supercells: ", e$message)
+    message("Utilizzando spatial_kmeans come fallback...")
+    result <- spatial_kmeans(img_df_thresh, k_cell_types, spatial_weight = 0.3, random_seed = random_seed)
+    final_clusters <- result$clusters
+  })
   
   # 8. Creazione di un oggetto risultato compatibile con KMeans_rcpp
   result <- list(
     clusters = final_clusters,
-    WCSS_per_cluster = superpixel_clusters$withinss,
-    centroids = superpixel_clusters$centers
+    WCSS_per_cluster = rep(0, k_cell_types),  # Placeholder per withiness
+    centroids = matrix(0, nrow = k_cell_types, ncol = 1)  # Placeholder per centroidi
   )
   
   return(result)

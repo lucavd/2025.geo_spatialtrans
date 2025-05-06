@@ -117,6 +117,9 @@ The package has been modularized to support efficient pipeline execution:
 - **Documentation**: All function parameters documented with roxygen style
 - **Error Handling**: Use `stop()` for errors, `warning()` for warnings, `tryCatch()` for exceptions
 - **Testing**: Each module has corresponding tests
+- **Plots**: All plots must have white backgrounds (not transparent) for consistency and clear visualization
+  - Use `theme(panel.background = element_rect(fill = "white", colour = NA), plot.background = element_rect(fill = "white", colour = NA))` for ggplot2
+  - Set `bg = "white"` in all `ggsave()` calls
 
 ## Technical Improvement Process
 
