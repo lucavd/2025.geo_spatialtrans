@@ -134,8 +134,30 @@ generate_expression_profiles <- function(
     return(result)
   }, future.scheduling = 1, future.chunk.size = NULL, future.seed = TRUE) %>% unlist()
   
+  # 5b1) Calcolo distanza dal confine e cluster vicino se richiesto per gradient regions
+  if (isTRUE(spatial_params$gradient_regions)) {
+    boundary_dist <- numeric(N)
+    neighbor_cluster <- integer(N)
+    for (i in seq_len(N)) {
+      other_idx <- which(cluster_labels != cluster_labels[i])
+      if (length(other_idx) > 0) {
+        dists <- dist_mat[i, other_idx]
+        min_j <- which.min(dists)
+        boundary_dist[i] <- dists[min_j]
+        neighbor_cluster[i] <- as.integer(cluster_labels[other_idx[min_j]])
+      } else {
+        boundary_dist[i] <- 0
+        neighbor_cluster[i] <- as.integer(cluster_labels[i])
+      }
+    }
+    # Normalizza distanza: 0 al confine, 1 a distanza >= gradient_width
+    boundary_dist_norm <- pmin(boundary_dist / spatial_params$gradient_width, 1)
+    cell_df$boundary_dist <- boundary_dist_norm
+    cell_df$neighbor_cluster <- neighbor_cluster
+  }
+  
   # 5c) Impostazione parametri di dispersione in base ai parametri
-  if (spatial_params$gradient_regions && exists("boundary_dist", where = cell_df)) {
+  if (isTRUE(spatial_params$gradient_regions) && "boundary_dist" %in% names(cell_df)) {
     # Se utilizziamo gradienti, facciamo variare la dispersione in base alla distanza dal confine
     dispersion_param <- dropout_params$dispersion_range[2] +
       cell_df$boundary_dist * (dropout_params$dispersion_range[1] - dropout_params$dispersion_range[2])
@@ -210,7 +232,7 @@ generate_expression_profiles <- function(
   }
   
   # 5e) Impostazione probabilità di dropout
-  if (spatial_params$gradient_regions && exists("boundary_dist", where = cell_df)) {
+  if (isTRUE(spatial_params$gradient_regions) && "boundary_dist" %in% names(cell_df)) {
     # Più dropout vicino al confine
     base_dropout <- dropout_params$dropout_range[1] +
       (1 - cell_df$boundary_dist) * (dropout_params$dropout_range[2] - dropout_params$dropout_range[1])
@@ -356,6 +378,12 @@ generate_expression_profiles <- function(
       
       # Calcola medie di espressione di base - versione molto più veloce usando indexing
       base_expr <- all_mean_expr[g, cl]
+      # Applica smoothing di baseline se abilitato gradient regions
+      if (isTRUE(spatial_params$gradient_regions) && "boundary_dist" %in% names(cell_df)) {
+        w <- cell_df$boundary_dist
+        neigh_mu <- all_mean_expr[g, cell_df$neighbor_cluster]
+        base_expr <- w * base_expr + (1 - w) * neigh_mu
+      }
       
       # Applica effetto di ibridazione
       if (hybrid_params$use_hybrid_cells) {

@@ -474,17 +474,20 @@ identify_marker_genes <- function(sim_results, n_markers = 5, min_ratio = 1.5) {
       }
     }
   } else {
-    # Metodo originale per matrici dense
-    expr_t <- t(sim_results$expression)
-    expr_df <- data.frame(expr_t, cluster = sim_results$intensity_cluster)
+    # Metodo originale per matrici dense (celle x geni)
+    expr_df <- data.frame(sim_results$expression, cluster = sim_results$intensity_cluster)
     
+    # Calcolo dell'espressione media per cluster
     mean_expr_by_cluster <- list()
     for (cluster in cell_types) {
-      cluster_cells <- expr_df$cluster == cluster
-      if (sum(cluster_cells) > 0) {
-        cluster_means <- colMeans(expr_df[cluster_cells, -ncol(expr_df), drop = FALSE])
+      # Indici delle celle appartenenti a questo cluster
+      idx_cells <- which(expr_df$cluster == cluster)
+      if (length(idx_cells) > 0) {
+        # Media per gene (colonne tranne l'ultima colonna 'cluster')
+        cluster_means <- colMeans(expr_df[idx_cells, -ncol(expr_df), drop = FALSE])
         mean_expr_by_cluster[[cluster]] <- cluster_means
       } else {
+        # Nessuna cella in questo cluster
         mean_expr_by_cluster[[cluster]] <- rep(0, ncol(expr_df) - 1)
       }
     }
