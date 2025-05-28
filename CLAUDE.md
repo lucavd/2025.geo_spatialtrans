@@ -131,3 +131,8 @@ When implementing technical improvements to the codebase:
 4. **Run and fix tests** until they pass successfully
 5. **Update documentation** to reflect the changes
 6. **Update CLAUDE.md** with any new processes or guidelines
+
+## Workflow Guidelines
+
+- **R Package Installation**:
+  - Do not install R packages. Suggest to the user to install them and then execute the commands

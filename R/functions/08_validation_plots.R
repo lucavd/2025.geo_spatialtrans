@@ -474,8 +474,9 @@ identify_marker_genes <- function(sim_results, n_markers = 5, min_ratio = 1.5) {
       }
     }
   } else {
-    # Metodo originale per matrici dense (celle x geni)
-    expr_df <- data.frame(sim_results$expression, cluster = sim_results$intensity_cluster)
+    # Metodo per matrici dense - trasponendo per ottenere celle x geni
+    expr_transposed <- t(sim_results$expression)
+    expr_df <- data.frame(expr_transposed, cluster = sim_results$intensity_cluster)
     
     # Calcolo dell'espressione media per cluster
     mean_expr_by_cluster <- list()

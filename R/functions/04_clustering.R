@@ -48,7 +48,10 @@ cluster_image <- function(
   # Seleziona il metodo di clustering
   if (clustering_method == "kmeans++") {
     # Metodo kmeans++ originale (solo intensità)
-    km_result <- KMeans_rcpp(
+    if (!requireNamespace("ClusterR", quietly = TRUE)) {
+      stop("Il pacchetto 'ClusterR' è necessario per questa funzione")
+    }
+    km_result <- ClusterR::KMeans_rcpp(
       as.matrix(img_df_thresh$value),
       clusters    = k_cell_types,
       num_init    = 5,
@@ -90,6 +93,9 @@ cluster_image <- function(
 #' @return Lista con i risultati del clustering
 #' @importFrom ClusterR KMeans_rcpp
 spatial_kmeans <- function(img_df_thresh, k_cell_types, spatial_weight = 0.5, random_seed = 123) {
+  if (!requireNamespace("ClusterR", quietly = TRUE)) {
+    stop("Il pacchetto 'ClusterR' è necessario per questa funzione")
+  }
   # 1. Normalizzazione delle caratteristiche
   spatial_coords <- scale(as.matrix(img_df_thresh[, c("x", "y")]))  # Normalizza coordinate
   intensity_vals <- scale(as.matrix(img_df_thresh$value))           # Normalizza intensità
@@ -98,7 +104,7 @@ spatial_kmeans <- function(img_df_thresh, k_cell_types, spatial_weight = 0.5, ra
   combined_features <- cbind(intensity_vals, spatial_coords * spatial_weight)
   
   # 3. Clustering k-means++
-  km_combined <- KMeans_rcpp(
+  km_combined <- ClusterR::KMeans_rcpp(
     combined_features,
     clusters    = k_cell_types,
     num_init    = 5,

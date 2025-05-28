@@ -83,5 +83,10 @@ generate_library_sizes <- function(
     library_size <- library_size * exp(cell_type_effect)
   }
   
+  # Debug: stampa statistiche library size
+  cat("DEBUG - Library size stats: mean =", round(mean(library_size)), 
+      ", median =", round(median(library_size)), 
+      ", range = [", round(min(library_size)), ",", round(max(library_size)), "]\n")
+  
   return(library_size)
 }

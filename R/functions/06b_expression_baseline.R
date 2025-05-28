@@ -25,7 +25,7 @@ generate_baseline_expression <- function(
   # Crea le medie di espressione per ogni cluster
   mean_expression_list <- list()
   for (k in seq_len(k_cell_types)) {
-    mu <- rep(2, n_genes)  # baseline log(7) ~ 2
+    mu <- rep(-1.5, n_genes)  # baseline log(0.22) ~ -1.5 per valori ancora più bassi
     
     # Applicazione dei marker specifici con parametri personalizzati
     start_idx <- (k - 1) * marker_params$marker_genes_per_type + 1

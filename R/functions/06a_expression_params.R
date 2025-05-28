@@ -35,10 +35,10 @@ initialize_expression_params <- function(
     dropout_curve_steepness = 5
   ),
   library_size_params = list(
-    mean_library_size = 10000,
-    library_size_cv = 0.3,
-    spatial_effect_on_library = 0.5,
-    cell_type_effect = TRUE
+    mean_library_size = 500,
+    library_size_cv = 0.15,
+    spatial_effect_on_library = 0.05,
+    cell_type_effect = FALSE
   ),
   cell_specific_params = list(
     cell_specific_noise_sd = 0.2,

@@ -44,7 +44,14 @@ sim_results <- simulate_spatial_transcriptomics(
   fixed_grid_height_mm = 6.5,
   difficulty_level = "medium",
   use_spatial_correlation = TRUE,
-  correlation_method = "grf"
+  correlation_method = "grf",
+  # Parametri per ottenere valori biologicamente realistici
+  library_size_params = list(
+    mean_library_size = 500,       # Drasticamente ridotto per compensare moltiplicatori
+    library_size_cv = 0.15,        # Ulteriormente ridotto
+    spatial_effect_on_library = 0.05, # Ridotto al minimo
+    cell_type_effect = FALSE        # Disabilitato per evitare moltiplicatori
+  )
 )
 toc()
 ## Ensure expression matrix is genes x cells with proper rownames
