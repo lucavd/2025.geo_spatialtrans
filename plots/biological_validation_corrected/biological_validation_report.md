@@ -1,32 +1,32 @@
 # REPORT DI VALIDAZIONE BIOLOGICA
 Data: 2025-05-28
-File simulazione: simple_simulation.rds
+File simulazione: simple_simulation_corrected.rds
 
 ## SOMMARIO ESECUTIVO
 
-- Range UMI: ✗ NON REALISTICO (media: 22952, mediana: 7512)
+- Range UMI: ✓ REALISTICO (media: 2217, mediana: 536)
 
 - Espressione massima: ✗ NON REALISTICO (max: 90085)
 
-- Mediana espressione: ✗ NON REALISTICO (mediana: 0.27)
+- Mediana espressione: ✗ NON REALISTICO (mediana: 0.36)
 
-- Percentuale celle con UMI realistici: 64.2%
+- Percentuale celle con UMI realistici: 32.9%
 
 ## DETTAGLI VALIDAZIONE
 
 ### Range di Espressione
-- UMI totali per cella: 710 - 772652
-- Numero geni altamente espressi (>1000): 1267
+- UMI totali per cella: 0 - 1108956
+- Numero geni altamente espressi (>1000): 660
 
 ### Coerenza Spaziale
 - Cluster analizzati: 10
 
 ### Specificità Marker
-- Analisi marker non disponibile
+- Cluster con marker identificati: 10
 
 ## RACCOMANDAZIONI
 
-- AZIONE: Regolare i parametri di library size per ottenere UMI più realistici
+- Range UMI appropriati per spatial transcriptomics
 
 - AZIONE: Limitare l'espressione massima dei geni più espressi
 

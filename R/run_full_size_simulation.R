@@ -18,7 +18,7 @@ library(gstat)
 library(tictoc)
 
 # Configurazione per la memoria
-options(future.globals.maxSize = 100 * 1024^2)  # 100 GB per simulazioni full-size
+options(future.globals.maxSize = 200 * 1024^2)  # 200 GB per simulazioni full-size con 20k geni
 options(future.rng.onMisuse = "ignore")
 
 ## 3. Parametri di simulazione
@@ -28,7 +28,7 @@ cfg <- initialize_simulation_config(
   image_path          = "images/granuloma.png",
   output_path         = "results/visiumHD_full.rds",
   output_plot         = "results/visiumHD_full.png",
-  n_genes             = 2000,
+  n_genes             = 20000,  # Full-size: numero realistico di geni
   k_cell_types        = 10,
   threshold_value     = 0.7,
   random_seed         = 42,
@@ -42,6 +42,14 @@ cfg <- initialize_simulation_config(
 )
 # Configurazione difficoltà personalizzata invece di "medium" predefinito
 diff_cfg <- configure_difficulty_level("medium")
+
+# Sovrascrivi i parametri di library size con valori biologicamente realistici
+diff_cfg$cell_specific_params$library_size_params <- list(
+  mean_library_size = 8000,      # Biologicamente realistico per Visium HD
+  library_size_cv = 0.3,         # 30% CV tipico per spatial transcriptomics
+  spatial_effect_on_library = 0.1,  # Leggero effetto spaziale
+  cell_type_effect = TRUE          # Effetto del tipo cellulare abilitato
+)
 
 # Personalizzazione dei parametri di correlazione spaziale
 # Modificati per rendere l'espressione genica più naturale e meno strutturata a fasce
@@ -495,4 +503,30 @@ cat("Risultati salvati in:", cfg$output_path, "\n")
 cat("Plot salvati in:", cfg$output_plot, "\n")
 if (validate) {
   cat("Plot di validazione salvati in: plots/validazione/\n")
+}
+
+# 10. Validazione biologica (se richiesto)
+if (validate) {
+  cat("\n=== VALIDAZIONE BIOLOGICA ===\n")
+  
+  # Carica lo script di validazione biologica se esiste
+  if (file.exists("R/biological_validation_report.R")) {
+    source("R/biological_validation_report.R")
+    
+    # Genera report di validazione biologica
+    tic("Validazione biologica")
+    tryCatch({
+      generate_biological_validation_report(
+        sim_results = risultato,
+        output_dir = "plots/biological_validation_full",
+        simulation_name = "Full-size Visium HD"
+      )
+      cat("\nReport di validazione biologica salvato in: plots/biological_validation_full/\n")
+    }, error = function(e) {
+      cat("\nErrore nella validazione biologica:", conditionMessage(e), "\n")
+    })
+    toc()
+  } else {
+    cat("\nScript di validazione biologica non trovato. Saltato.\n")
+  }
 }

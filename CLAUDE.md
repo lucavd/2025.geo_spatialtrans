@@ -109,6 +109,50 @@ The package has been modularized to support efficient pipeline execution:
 3. **Validation and Analysis (08*.R files)**:
    - `08_validation_plots.R`: Comprehensive validation plots generation
 
+## Simulation Scripts
+
+### Simplified Simulation (2000 genes)
+```r
+Rscript R/run_full_simulation_simple.R
+```
+- Uses biologically validated parameters
+- ~2000 genes, ~8000 UMI/cell mean library size
+- Includes biological validation report
+
+### Full-size Simulation (20000 genes)
+```r
+# Quick test first (recommended)
+Rscript R/test_full_size_quick.R
+
+# Full simulation
+Rscript R/run_full_size_optimized.R
+```
+- Biologically realistic: 20k genes, 8k UMI/cell
+- Memory optimized with chunking
+- Full biological validation
+
+### Biological Validation
+```r
+source("R/biological_validation_report.R")
+generate_biological_validation_report(
+  sim_results = readRDS("results/your_simulation.rds"),
+  output_dir = "plots/biological_validation",
+  simulation_name = "Your Simulation"
+)
+```
+
+## Biologically Validated Parameters
+
+Based on extensive testing and validation:
+
+1. **Library Size**: 8000 UMI/cell (mean) with 30% CV
+2. **Gene Expression Distribution**:
+   - 85% low-expressed genes (mu ~ -4.5)
+   - 10% medium-expressed genes (mu ~ -1.5)  
+   - 5% high-expressed genes (mu ~ 0.5)
+3. **Dropout**: 40-60% range for medium difficulty
+4. **Dispersion**: 10.0-5.0 range for negative binomial
+
 ## Code Style Guidelines
 
 - **Indentation**: 2 spaces
