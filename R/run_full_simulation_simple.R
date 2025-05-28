@@ -47,10 +47,10 @@ sim_results <- simulate_spatial_transcriptomics(
   correlation_method = "grf",
   # Parametri per ottenere valori biologicamente realistici
   library_size_params = list(
-    mean_library_size = 500,       # Drasticamente ridotto per compensare moltiplicatori
-    library_size_cv = 0.15,        # Ulteriormente ridotto
-    spatial_effect_on_library = 0.05, # Ridotto al minimo
-    cell_type_effect = FALSE        # Disabilitato per evitare moltiplicatori
+    mean_library_size = 8000,      # Biologicamente realistico per Visium HD
+    library_size_cv = 0.3,         # 30% CV è tipico per spatial transcriptomics
+    spatial_effect_on_library = 0,  # Disabilitato per stabilità
+    cell_type_effect = FALSE        # Disabilitato per ora
   )
 )
 toc()

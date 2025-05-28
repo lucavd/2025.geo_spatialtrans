@@ -4,19 +4,19 @@ File simulazione: simple_simulation.rds
 
 ## SOMMARIO ESECUTIVO
 
-- Range UMI: ✗ NON REALISTICO (media: 18002, mediana: 9902)
+- Range UMI: ✗ NON REALISTICO (media: 19952, mediana: 6310)
 
-- Espressione massima: ✓ REALISTICO (max: 8079)
+- Espressione massima: ✗ NON REALISTICO (max: 78038)
 
-- Mediana espressione: ✗ NON REALISTICO (mediana: 0.25)
+- Mediana espressione: ✗ NON REALISTICO (mediana: 0.24)
 
-- Percentuale celle con UMI realistici: 89.3%
+- Percentuale celle con UMI realistici: 64.1%
 
 ## DETTAGLI VALIDAZIONE
 
 ### Range di Espressione
-- UMI totali per cella: 6649 - 165421
-- Numero geni altamente espressi (>1000): 37
+- UMI totali per cella: 626 - 629951
+- Numero geni altamente espressi (>1000): 1075
 
 ### Coerenza Spaziale
 - Cluster analizzati: 10
@@ -28,7 +28,7 @@ File simulazione: simple_simulation.rds
 
 - AZIONE: Regolare i parametri di library size per ottenere UMI più realistici
 
-- Livelli di espressione massima appropriati
+- AZIONE: Limitare l'espressione massima dei geni più espressi
 
 ## CONCLUSIONI
 

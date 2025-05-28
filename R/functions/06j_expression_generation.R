@@ -177,18 +177,24 @@ generate_expression_matrix <- function(
       }
       
       # Genera conteggi di espressione
+      # Usa un approccio che mantiene scale biologiche realistiche
+      
       if (g %in% stable_genes) {
         # Modello sub-Poisson: Binomiale con p alto e n moderato
         p <- 0.9
-        n_trial <- round(exp(mu_vals)/(1-p))
+        # Scala exp(mu) per frazione di library size dedicata a questo gene
+        lambda <- exp(mu_vals) * library_size / n_genes
+        n_trial <- round(lambda/(1-p))
         raw_counts <- rbinom(N, n_trial, p)
       } else {
         # Negative Binomial con dispersione variabile spazialmente
-        raw_counts <- rnbinom(N, mu = exp(mu_vals), size = dispersion_param)
+        # Scala exp(mu) per frazione di library size dedicata a questo gene
+        lambda <- exp(mu_vals) * library_size / n_genes
+        raw_counts <- rnbinom(N, mu = lambda, size = dispersion_param)
       }
       
-      # Applica l'effetto della dimensione della libreria
-      scaled_counts <- raw_counts * (library_size / mean(library_size))
+      # I conteggi sono già scalati per library size
+      scaled_counts <- raw_counts
       # Arrotonda a numeri interi (conteggi)
       chunk_expression[, i] <- round(scaled_counts)
       

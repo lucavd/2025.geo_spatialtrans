@@ -25,7 +25,31 @@ generate_baseline_expression <- function(
   # Crea le medie di espressione per ogni cluster
   mean_expression_list <- list()
   for (k in seq_len(k_cell_types)) {
-    mu <- rep(-1.5, n_genes)  # baseline log(0.22) ~ -1.5 per valori ancora più bassi
+    # Imposta seed specifico per tipo cellulare per riproducibilità
+    set.seed(random_seed + k)
+    
+    # Genera distribuzione biologicamente realistica dell'espressione genica
+    # 85% geni lowly expressed, 10% medium, 5% highly expressed
+    n_low <- round(n_genes * 0.85)
+    n_med <- round(n_genes * 0.10)
+    n_high <- n_genes - n_low - n_med
+    
+    # Genera valori mu per ciascuna categoria
+    # Ultimo fine-tuning per aumentare mediana espressione mantenendo UMI realistici
+    mu_low <- rnorm(n_low, mean = -4.5, sd = 0.4)   # exp(-4.5) ≈ 0.011
+    mu_med <- rnorm(n_med, mean = -1.5, sd = 0.4)   # exp(-1.5) ≈ 0.22
+    mu_high <- rnorm(n_high, mean = 0.5, sd = 0.3)  # exp(0.5) ≈ 1.65
+    
+    # Applica bounds per evitare valori estremi
+    mu_low <- pmax(mu_low, -7)    # Floor per low expressed
+    mu_med <- pmax(mu_med, -4)    # Floor per medium
+    mu_med <- pmin(mu_med, -1)    # Ceiling per medium
+    mu_high <- pmax(mu_high, -1)  # Floor per high
+    mu_high <- pmin(mu_high, 1.5) # Ceiling per high (evita outliers)
+    
+    # Combina e mescola per distribuzione casuale
+    mu <- c(mu_low, mu_med, mu_high)
+    mu <- sample(mu)  # randomizza l'ordine dei geni
     
     # Applicazione dei marker specifici con parametri personalizzati
     start_idx <- (k - 1) * marker_params$marker_genes_per_type + 1

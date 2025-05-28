@@ -106,18 +106,18 @@ configure_difficulty_level <- function(
   if (is.null(dropout_params$dropout_range)) {
     dropout_params$dropout_range <- switch(
       difficulty_level,
-      "easy" = c(0.1, 0.3),
-      "medium" = c(0.2, 0.5),
-      "hard" = c(0.3, 0.7)
+      "easy" = c(0.5, 0.7),
+      "medium" = c(0.4, 0.6),
+      "hard" = c(0.7, 0.9)
     )
   }
   
   if (is.null(dropout_params$dispersion_range)) {
     dropout_params$dispersion_range <- switch(
       difficulty_level,
-      "easy" = c(3.0, 1.5),
-      "medium" = c(2.0, 1.0),
-      "hard" = c(1.5, 0.8)
+      "easy" = c(15.0, 10.0),
+      "medium" = c(10.0, 5.0),
+      "hard" = c(5.0, 2.0)
     )
   }
   
