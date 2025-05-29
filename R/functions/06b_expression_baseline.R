@@ -29,26 +29,52 @@ generate_baseline_expression <- function(
     set.seed(random_seed + k)
     
     # Genera distribuzione biologicamente realistica dell'espressione genica
-    # 85% geni lowly expressed, 10% medium, 5% highly expressed
-    n_low <- round(n_genes * 0.85)
-    n_med <- round(n_genes * 0.10)
-    n_high <- n_genes - n_low - n_med
-    
-    # Genera valori mu per ciascuna categoria
-    # Ultimo fine-tuning per aumentare mediana espressione mantenendo UMI realistici
-    mu_low <- rnorm(n_low, mean = -4.5, sd = 0.4)   # exp(-4.5) ≈ 0.011
-    mu_med <- rnorm(n_med, mean = -1.5, sd = 0.4)   # exp(-1.5) ≈ 0.22
-    mu_high <- rnorm(n_high, mean = 0.5, sd = 0.3)  # exp(0.5) ≈ 1.65
-    
-    # Applica bounds per evitare valori estremi
-    mu_low <- pmax(mu_low, -7)    # Floor per low expressed
-    mu_med <- pmax(mu_med, -4)    # Floor per medium
-    mu_med <- pmin(mu_med, -1)    # Ceiling per medium
-    mu_high <- pmax(mu_high, -1)  # Floor per high
-    mu_high <- pmin(mu_high, 1.5) # Ceiling per high (evita outliers)
+    # Adattata per simulazioni full-size (20k geni)
+    if (n_genes > 10000) {
+      # Distribuzione per simulazioni full-size
+      # 60% geni non espressi, 30% lowly, 8% medium, 2% highly expressed
+      n_zero <- round(n_genes * 0.60)
+      n_low <- round(n_genes * 0.30)
+      n_med <- round(n_genes * 0.08)
+      n_high <- n_genes - n_zero - n_low - n_med
+      
+      # Genera valori mu per ciascuna categoria
+      mu_zero <- rep(-20, n_zero)                      # Praticamente zero
+      mu_low <- rnorm(n_low, mean = -3, sd = 0.5)      # Bassa espressione
+      mu_med <- rnorm(n_med, mean = 0, sd = 0.4)       # Media espressione  
+      mu_high <- rnorm(n_high, mean = 2, sd = 0.3)     # Alta espressione (housekeeping)
+      
+      # Applica bounds
+      mu_low <- pmax(mu_low, -7)
+      mu_low <- pmin(mu_low, -2)
+      mu_med <- pmax(mu_med, -3)
+      mu_med <- pmin(mu_med, 0.5)
+      mu_high <- pmax(mu_high, 0)
+      mu_high <- pmin(mu_high, 3)
+      
+    } else {
+      # Distribuzione originale per simulazioni semplificate (2k geni)
+      # 85% geni lowly expressed, 10% medium, 5% highly expressed
+      n_zero <- 0  # Nessun gene completamente non espresso
+      n_low <- round(n_genes * 0.85)
+      n_med <- round(n_genes * 0.10)
+      n_high <- n_genes - n_low - n_med
+      
+      mu_zero <- numeric(0)  # Array vuoto
+      mu_low <- rnorm(n_low, mean = -4.5, sd = 0.4)
+      mu_med <- rnorm(n_med, mean = -1.5, sd = 0.4)
+      mu_high <- rnorm(n_high, mean = 0.5, sd = 0.3)
+      
+      # Applica bounds originali
+      mu_low <- pmax(mu_low, -7)
+      mu_med <- pmax(mu_med, -4)
+      mu_med <- pmin(mu_med, -1)
+      mu_high <- pmax(mu_high, -1)
+      mu_high <- pmin(mu_high, 1.5)
+    }
     
     # Combina e mescola per distribuzione casuale
-    mu <- c(mu_low, mu_med, mu_high)
+    mu <- c(mu_zero, mu_low, mu_med, mu_high)
     mu <- sample(mu)  # randomizza l'ordine dei geni
     
     # Applicazione dei marker specifici con parametri personalizzati

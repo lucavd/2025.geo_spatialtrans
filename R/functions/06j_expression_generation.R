@@ -88,6 +88,19 @@ generate_expression_matrix <- function(
   # Identificazione geni stabili (sub-Poissoniani)
   stable_genes <- sample(n_genes, max(1, round(n_genes * 0.1)))  # 10% geni stabili
   
+  # Per simulazioni full-size, conta i geni effettivamente espressi
+  if (n_genes > 10000) {
+    # Trova geni con espressione > -10 in almeno un tipo cellulare
+    expressed_genes_mask <- sapply(1:n_genes, function(g) {
+      any(sapply(mean_expression_list, function(ml) ml[g] > -10))
+    })
+    n_expressed_genes <- sum(expressed_genes_mask)
+    cat("DEBUG - Geni effettivamente espressi:", n_expressed_genes, "su", n_genes, "\n")
+  } else {
+    # Per simulazioni piccole, tutti i geni sono considerati espressi
+    n_expressed_genes <- n_genes
+  }
+  
   # Pre-calcola la matrice di medie di espressione per tipo di cellula e gene
   all_mean_expr <- matrix(0, nrow = n_genes, ncol = k_cell_types)
   for (g in seq_len(n_genes)) {
@@ -183,13 +196,13 @@ generate_expression_matrix <- function(
         # Modello sub-Poisson: Binomiale con p alto e n moderato
         p <- 0.9
         # Scala exp(mu) per frazione di library size dedicata a questo gene
-        lambda <- exp(mu_vals) * library_size / n_genes
+        lambda <- exp(mu_vals) * library_size / n_expressed_genes
         n_trial <- round(lambda/(1-p))
         raw_counts <- rbinom(N, n_trial, p)
       } else {
         # Negative Binomial con dispersione variabile spazialmente
         # Scala exp(mu) per frazione di library size dedicata a questo gene
-        lambda <- exp(mu_vals) * library_size / n_genes
+        lambda <- exp(mu_vals) * library_size / n_expressed_genes
         raw_counts <- rnbinom(N, mu = lambda, size = dispersion_param)
       }
       
