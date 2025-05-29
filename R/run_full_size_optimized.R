@@ -183,14 +183,24 @@ if (nrow(sparse_list[[1]]) == cfg$n_genes) {
 cat("Dimensione matrice finale:", dim(full_expr), "\n")
 toc()
 
-# 7. Statistiche rapide pre-salvataggio
-cat("\n=== STATISTICHE RAPIDE ===\n")
+# 7. Validazione biologica della matrice finale
+cat("\n=== VALIDAZIONE BIOLOGICA MATRICE FINALE ===\n")
+tic("Validazione biologica")
+# Carica la funzione se non già disponibile
+if (!exists("validate_biological_plausibility")) {
+  source("R/functions/06j_expression_generation.R")
+}
+full_expr <- validate_biological_plausibility(full_expr)
+toc()
+
+# 8. Statistiche rapide post-validazione
+cat("\n=== STATISTICHE RAPIDE POST-VALIDAZIONE ===\n")
 umi_sample <- colSums(full_expr[, sample(ncol(full_expr), min(1000, ncol(full_expr)))])
 cat("UMI medio (campione):", round(mean(umi_sample)), "\n")
 cat("UMI mediano (campione):", round(median(umi_sample)), "\n")
 cat("Sparsità:", round(mean(full_expr == 0) * 100, 1), "%\n")
 
-# 8. Salvataggio risultati
+# 9. Salvataggio risultati
 tic("Salvataggio risultati")
 if (is.null(rownames(full_expr))) {
   rownames(full_expr) <- paste0("gene_", seq_len(nrow(full_expr)))
@@ -215,7 +225,7 @@ dir.create(dirname(cfg$output_path), recursive = TRUE, showWarnings = FALSE)
 saveRDS(risultato, cfg$output_path)
 toc()
 
-# 9. Plot principale
+# 10. Plot principale
 tic("Generazione plot principale")
 generate_and_save_plots(
   cell_df = cell_df,
@@ -225,7 +235,7 @@ generate_and_save_plots(
 )
 toc()
 
-# 10. Validazione biologica
+# 11. Validazione biologica report
 if (validate && file.exists("R/biological_validation_report.R")) {
   cat("\n=== VALIDAZIONE BIOLOGICA ===\n")
   source("R/biological_validation_report.R")
@@ -267,7 +277,7 @@ cat("\n=== NOTE BIOLOGICHE ===\n")
 cat("Questa è una simulazione full-size con parametri biologicamente realistici:\n")
 cat("- 20,000 geni (tipico per esperimenti Visium HD)\n")
 cat("- Library size ~8,000 UMI/cella (validato per Visium HD)\n")
-cat("- Distribuzione genica: 50% non-espressi, 35% low, 12% medium, 3% high expression\n")
+cat("- Distribuzione genica: 40% non-espressi, 35% low, 20% medium, 5% high expression\n")
 cat("- Dropout modeling realistico basato su espressione media\n")
 cat("- Correlazione spaziale e variabilità biologica incluse\n")
 
