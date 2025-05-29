@@ -32,20 +32,21 @@ generate_baseline_expression <- function(
     # Adattata per simulazioni full-size (20k geni)
     if (n_genes > 10000) {
       # DEBUG: verifica che la nuova distribuzione sia in uso
-      message("[DEBUG] Using improved gene distribution: 50% non-expressed, 35% low, 12% medium, 3% high")
+      message("[DEBUG] Using improved gene distribution: 40% non-expressed, 35% low, 20% medium, 5% high")
       
       # Distribuzione per simulazioni full-size
-      # 50% geni non espressi, 35% lowly, 12% medium, 3% highly expressed
-      n_zero <- round(n_genes * 0.50)
+      # MIGLIORATA: 40% geni non espressi, 35% lowly, 20% medium, 5% highly expressed
+      # Per aumentare la mediana di espressione
+      n_zero <- round(n_genes * 0.40)
       n_low <- round(n_genes * 0.35)
-      n_med <- round(n_genes * 0.12)
+      n_med <- round(n_genes * 0.20)
       n_high <- n_genes - n_zero - n_low - n_med
       
-      # Genera valori mu per ciascuna categoria (valori aumentati)
+      # Genera valori mu per ciascuna categoria (valori ulteriormente aumentati)
       mu_zero <- rep(-20, n_zero)                      # Praticamente zero
-      mu_low <- rnorm(n_low, mean = -2.5, sd = 0.5)    # Bassa espressione (era -3)
-      mu_med <- rnorm(n_med, mean = 0.5, sd = 0.4)     # Media espressione (era 0)
-      mu_high <- rnorm(n_high, mean = 2.5, sd = 0.3)   # Alta espressione (era 2)
+      mu_low <- rnorm(n_low, mean = -2.0, sd = 0.5)    # Bassa espressione (era -2.5)
+      mu_med <- rnorm(n_med, mean = 1.0, sd = 0.4)     # Media espressione (era 0.5)
+      mu_high <- rnorm(n_high, mean = 3.0, sd = 0.3)   # Alta espressione (era 2.5)
       
       # Applica bounds (aggiornati per i nuovi valori)
       mu_low <- pmax(mu_low, -6)

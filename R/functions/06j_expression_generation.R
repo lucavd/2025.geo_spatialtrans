@@ -197,17 +197,23 @@ generate_expression_matrix <- function(
         p <- 0.9
         # Scala exp(mu) per frazione di library size dedicata a questo gene
         lambda <- exp(mu_vals) * library_size / n_expressed_genes
+        # NUOVO: Limita lambda per evitare valori estremi
+        lambda <- pmin(lambda, 5000)  # Max 5000 UMI per gene (realistico per Visium HD)
         n_trial <- round(lambda/(1-p))
         raw_counts <- rbinom(N, n_trial, p)
       } else {
         # Negative Binomial con dispersione variabile spazialmente
         # Scala exp(mu) per frazione di library size dedicata a questo gene
         lambda <- exp(mu_vals) * library_size / n_expressed_genes
+        # NUOVO: Limita lambda per evitare valori estremi
+        lambda <- pmin(lambda, 5000)  # Max 5000 UMI per gene (realistico per Visium HD)
         raw_counts <- rnbinom(N, mu = lambda, size = dispersion_param)
       }
       
       # I conteggi sono già scalati per library size
       scaled_counts <- raw_counts
+      # NUOVO: Applica cap finale per sicurezza
+      scaled_counts <- pmin(scaled_counts, 10000)  # Assolutamente nessun gene > 10k UMI
       # Arrotonda a numeri interi (conteggi)
       chunk_expression[, i] <- round(scaled_counts)
       
@@ -256,5 +262,64 @@ generate_expression_matrix <- function(
     )
   }
   
+  # NUOVO: Validazione biologica finale
+  # Controlla e corregge eventuali valori biologicamente irrealistici
+  expression_data <- validate_biological_plausibility(expression_data)
+  
   return(expression_data)
+}
+
+#' Valida e corregge la plausibilità biologica dell'espressione
+#'
+#' @param expression_matrix Matrice di espressione sparsa
+#' @return Matrice corretta
+#' @noRd
+validate_biological_plausibility <- function(expression_matrix) {
+  # Parametri biologici realistici
+  max_umi_per_cell <- 50000  # Massimo per Visium HD
+  max_umi_per_gene_per_cell <- 5000  # Nessun gene dovrebbe superare questo
+  
+  # Converti in matrice sparsa se necessario
+  if (!inherits(expression_matrix, "sparseMatrix")) {
+    expression_matrix <- Matrix(expression_matrix, sparse = TRUE)
+  }
+  
+  # 1. Controlla UMI totali per cella
+  cell_totals <- Matrix::colSums(expression_matrix)
+  cells_over_limit <- which(cell_totals > max_umi_per_cell)
+  
+  if (length(cells_over_limit) > 0) {
+    cat(sprintf("Correzione biologica: %d celle con >%d UMI\n", 
+                length(cells_over_limit), max_umi_per_cell))
+    
+    for (cell in cells_over_limit) {
+      # Scala proporzionalmente tutti i geni
+      scale_factor <- max_umi_per_cell / cell_totals[cell]
+      cell_indices <- which(expression_matrix@j == (cell - 1))
+      expression_matrix@x[cell_indices] <- round(
+        expression_matrix@x[cell_indices] * scale_factor
+      )
+    }
+  }
+  
+  # 2. Controlla valori estremi per gene
+  extreme_values <- which(expression_matrix@x > max_umi_per_gene_per_cell)
+  if (length(extreme_values) > 0) {
+    cat(sprintf("Correzione biologica: %d valori >%d UMI per gene\n", 
+                length(extreme_values), max_umi_per_gene_per_cell))
+    expression_matrix@x[extreme_values] <- max_umi_per_gene_per_cell
+  }
+  
+  # 3. Rimuovi valori < 1 dopo le correzioni
+  expression_matrix@x[expression_matrix@x < 1] <- 0
+  expression_matrix <- Matrix::drop0(expression_matrix)
+  
+  # Report finale
+  cat("\nStatistiche post-validazione biologica:\n")
+  cat(sprintf("- Max UMI per valore: %d\n", max(expression_matrix@x)))
+  cat(sprintf("- Max UMI per cella: %d\n", max(Matrix::colSums(expression_matrix))))
+  cat(sprintf("- Mediana UMI per cella: %.0f\n", median(Matrix::colSums(expression_matrix))))
+  cat(sprintf("- Media espressione (non-zero): %.2f\n", mean(expression_matrix@x)))
+  
+  return(expression_matrix)
 }

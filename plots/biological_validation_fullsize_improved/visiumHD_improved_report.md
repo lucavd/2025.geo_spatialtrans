@@ -4,19 +4,19 @@ File simulazione: visiumHD_biological.rds
 
 ## SOMMARIO ESECUTIVO
 
-- Range UMI: ✓ REALISTICO (media: 2218, mediana: 324)
+- Range UMI: ✓ REALISTICO (media: 10147, mediana: 1211)
 
-- Espressione massima: ✗ NON REALISTICO (max: 21165)
+- Espressione massima: ✗ NON REALISTICO (max: 232549)
 
-- Mediana espressione: ✗ NON REALISTICO (mediana: 0.07)
+- Mediana espressione: ✗ NON REALISTICO (mediana: 0.27)
 
-- Percentuale celle con UMI realistici: 24.8%
+- Percentuale celle con UMI realistici: 44.2%
 
 ## DETTAGLI VALIDAZIONE
 
 ### Range di Espressione
-- UMI totali per cella: 0 - 814428
-- Numero geni altamente espressi (>1000): 1350
+- UMI totali per cella: 0 - 4607464
+- Numero geni altamente espressi (>1000): 7966
 
 ### Coerenza Spaziale
 - Cluster analizzati: 10
