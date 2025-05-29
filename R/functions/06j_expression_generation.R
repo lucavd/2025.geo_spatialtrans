@@ -292,11 +292,25 @@ validate_biological_plausibility <- function(expression_matrix) {
     cat(sprintf("Correzione biologica: %d celle con >%d UMI\n", 
                 length(cells_over_limit), max_umi_per_cell))
     
-    for (cell in cells_over_limit) {
-      # Scala proporzionalmente tutti i geni
+    # Processa ogni cella che supera il limite
+    for (i in seq_along(cells_over_limit)) {
+      cell <- cells_over_limit[i]
       scale_factor <- max_umi_per_cell / cell_totals[cell]
-      # Per dgCMatrix, moltiplica direttamente la colonna
-      expression_matrix[, cell] <- round(expression_matrix[, cell] * scale_factor)
+      
+      # Ottieni gli indici dei valori non-zero per questa cella
+      cell_indices <- which(expression_matrix[, cell] != 0)
+      
+      # Scala i valori
+      for (gene in cell_indices) {
+        new_val <- round(expression_matrix[gene, cell] * scale_factor)
+        expression_matrix[gene, cell] <- max(new_val, 1)  # Mantieni almeno 1
+      }
+    }
+    
+    # Verifica che il cap sia stato applicato
+    new_totals <- Matrix::colSums(expression_matrix[, cells_over_limit])
+    if (any(new_totals > max_umi_per_cell * 1.1)) {
+      cat("ATTENZIONE: Alcune celle ancora sopra il limite dopo correzione\n")
     }
   }
   
@@ -313,11 +327,13 @@ validate_biological_plausibility <- function(expression_matrix) {
   expression_matrix <- Matrix::drop0(expression_matrix)
   
   # Report finale
+  final_cell_totals <- Matrix::colSums(expression_matrix)
   cat("\nStatistiche post-validazione biologica:\n")
   cat(sprintf("- Max UMI per valore: %d\n", max(expression_matrix@x)))
-  cat(sprintf("- Max UMI per cella: %d\n", max(Matrix::colSums(expression_matrix))))
-  cat(sprintf("- Mediana UMI per cella: %.0f\n", median(Matrix::colSums(expression_matrix))))
+  cat(sprintf("- Max UMI per cella: %d\n", max(final_cell_totals)))
+  cat(sprintf("- Mediana UMI per cella: %.0f\n", median(final_cell_totals)))
   cat(sprintf("- Media espressione (non-zero): %.2f\n", mean(expression_matrix@x)))
+  cat(sprintf("- Celle con >%dk UMI: %d\n", max_umi_per_cell/1000, sum(final_cell_totals > max_umi_per_cell)))
   
   return(expression_matrix)
 }
