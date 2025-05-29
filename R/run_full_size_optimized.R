@@ -267,7 +267,7 @@ cat("\n=== NOTE BIOLOGICHE ===\n")
 cat("Questa è una simulazione full-size con parametri biologicamente realistici:\n")
 cat("- 20,000 geni (tipico per esperimenti Visium HD)\n")
 cat("- Library size ~8,000 UMI/cella (validato per Visium HD)\n")
-cat("- Distribuzione genica: 85% low, 10% medium, 5% high expression\n")
+cat("- Distribuzione genica: 50% non-espressi, 35% low, 12% medium, 3% high expression\n")
 cat("- Dropout modeling realistico basato su espressione media\n")
 cat("- Correlazione spaziale e variabilità biologica incluse\n")
 

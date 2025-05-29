@@ -31,26 +31,29 @@ generate_baseline_expression <- function(
     # Genera distribuzione biologicamente realistica dell'espressione genica
     # Adattata per simulazioni full-size (20k geni)
     if (n_genes > 10000) {
+      # DEBUG: verifica che la nuova distribuzione sia in uso
+      message("[DEBUG] Using improved gene distribution: 50% non-expressed, 35% low, 12% medium, 3% high")
+      
       # Distribuzione per simulazioni full-size
-      # 60% geni non espressi, 30% lowly, 8% medium, 2% highly expressed
-      n_zero <- round(n_genes * 0.60)
-      n_low <- round(n_genes * 0.30)
-      n_med <- round(n_genes * 0.08)
+      # 50% geni non espressi, 35% lowly, 12% medium, 3% highly expressed
+      n_zero <- round(n_genes * 0.50)
+      n_low <- round(n_genes * 0.35)
+      n_med <- round(n_genes * 0.12)
       n_high <- n_genes - n_zero - n_low - n_med
       
-      # Genera valori mu per ciascuna categoria
+      # Genera valori mu per ciascuna categoria (valori aumentati)
       mu_zero <- rep(-20, n_zero)                      # Praticamente zero
-      mu_low <- rnorm(n_low, mean = -3, sd = 0.5)      # Bassa espressione
-      mu_med <- rnorm(n_med, mean = 0, sd = 0.4)       # Media espressione  
-      mu_high <- rnorm(n_high, mean = 2, sd = 0.3)     # Alta espressione (housekeeping)
+      mu_low <- rnorm(n_low, mean = -2.5, sd = 0.5)    # Bassa espressione (era -3)
+      mu_med <- rnorm(n_med, mean = 0.5, sd = 0.4)     # Media espressione (era 0)
+      mu_high <- rnorm(n_high, mean = 2.5, sd = 0.3)   # Alta espressione (era 2)
       
-      # Applica bounds
-      mu_low <- pmax(mu_low, -7)
-      mu_low <- pmin(mu_low, -2)
-      mu_med <- pmax(mu_med, -3)
-      mu_med <- pmin(mu_med, 0.5)
-      mu_high <- pmax(mu_high, 0)
-      mu_high <- pmin(mu_high, 3)
+      # Applica bounds (aggiornati per i nuovi valori)
+      mu_low <- pmax(mu_low, -6)
+      mu_low <- pmin(mu_low, -1.5)
+      mu_med <- pmax(mu_med, -2)
+      mu_med <- pmin(mu_med, 1.5)
+      mu_high <- pmax(mu_high, 1)
+      mu_high <- pmin(mu_high, 3.5)
       
     } else {
       # Distribuzione originale per simulazioni semplificate (2k geni)
