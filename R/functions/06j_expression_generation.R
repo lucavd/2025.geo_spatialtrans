@@ -295,10 +295,8 @@ validate_biological_plausibility <- function(expression_matrix) {
     for (cell in cells_over_limit) {
       # Scala proporzionalmente tutti i geni
       scale_factor <- max_umi_per_cell / cell_totals[cell]
-      cell_indices <- which(expression_matrix@j == (cell - 1))
-      expression_matrix@x[cell_indices] <- round(
-        expression_matrix@x[cell_indices] * scale_factor
-      )
+      # Per dgCMatrix, moltiplica direttamente la colonna
+      expression_matrix[, cell] <- round(expression_matrix[, cell] * scale_factor)
     }
   }
   
