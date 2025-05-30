@@ -292,20 +292,17 @@ validate_biological_plausibility <- function(expression_matrix) {
     cat(sprintf("Correzione biologica: %d celle con >%d UMI\n", 
                 length(cells_over_limit), max_umi_per_cell))
     
-    # Processa ogni cella che supera il limite
-    for (i in seq_along(cells_over_limit)) {
-      cell <- cells_over_limit[i]
-      scale_factor <- max_umi_per_cell / cell_totals[cell]
-      
-      # Ottieni gli indici dei valori non-zero per questa cella
-      cell_indices <- which(expression_matrix[, cell] != 0)
-      
-      # Scala i valori
-      for (gene in cell_indices) {
-        new_val <- round(expression_matrix[gene, cell] * scale_factor)
-        expression_matrix[gene, cell] <- max(new_val, 1)  # Mantieni almeno 1
-      }
-    }
+    # VETTORIZZAZIONE: Scala tutte le celle sopra il limite in una singola operazione
+    # Calcola i fattori di scala per TUTTE le celle (1 per quelle sotto il limite)
+    scale_factors <- rep(1.0, ncol(expression_matrix))
+    scale_factors[cells_over_limit] <- max_umi_per_cell / cell_totals[cells_over_limit]
+    
+    # Moltiplicazione vettorizzata: ogni colonna per il suo fattore
+    # Questo è molto più veloce del loop
+    expression_matrix <- expression_matrix %*% Matrix::Diagonal(x = scale_factors)
+    
+    # Arrotonda tutti i valori
+    expression_matrix@x <- round(expression_matrix@x)
     
     # Verifica che il cap sia stato applicato
     new_totals <- Matrix::colSums(expression_matrix[, cells_over_limit])
