@@ -1,5 +1,5 @@
 # REPORT DI VALIDAZIONE BIOLOGICA
-Data: 2025-05-29
+Data: 2025-05-30
 File simulazione: simple_simulation.rds
 
 ## SOMMARIO ESECUTIVO
