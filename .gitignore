@@ -12,3 +12,5 @@ MMM/
 results/*.rds
 **/.claude/settings.local.json
 .aider*
+
+.DS_Store
