@@ -3,7 +3,7 @@
 #' @param img_df_thresh Dataframe dei pixel filtrati
 #' @param k_cell_types Numero di tipi cellulari
 #' @param random_seed Seed per riproducibilità
-#' @param clustering_method Metodo di clustering: "spatial_kmeans", "kmeans++", o "slic"
+#' @param clustering_method Metodo di clustering: "spatial_kmeans", "kmeans++", "slic", o "dbscan_graph"
 #' @param spatial_weight Peso della componente spaziale (0-1+)
 #' @param estimate_k Se stimare automaticamente k
 #' @param k_estimation_method Metodo per stimare k: "silhouette" o "elbow"
@@ -73,8 +73,15 @@ cluster_image <- function(
       k_cell_types, 
       random_seed
     )
+  } else if (clustering_method == "dbscan_graph") {
+    # Pipeline consecutiva DBSCAN + Graph clustering
+    km_result <- dbscan_graph_pipeline(
+      img_df_thresh, 
+      k_cell_types, 
+      random_seed
+    )
   } else {
-    stop("Metodo di clustering non riconosciuto. Scegliere tra 'spatial_kmeans', 'kmeans++' o 'slic'.")
+    stop("Metodo di clustering non riconosciuto. Scegliere tra 'spatial_kmeans', 'kmeans++', 'slic' o 'dbscan_graph'.")
   }
   
   # Aggiungo il cluster al dataframe
@@ -299,4 +306,235 @@ estimate_k_silhouette <- function(features, max_k = 20, random_seed = 123) {
   }
   
   return(k_optimal)
+}
+
+#' Esegue clustering con DBSCAN (density-based)
+#'
+#' @param img_df_thresh Dataframe dei pixel filtrati
+#' @param k_cell_types Numero di tipi cellulari finali (usato come target)
+#' @param random_seed Seed per riproducibilità
+#' @param eps_factor Fattore moltiplicativo per la stima automatica di eps (default: 1.4)
+#' @param min_samples Numero minimo di punti per formare un cluster (default: 4)
+#' @return Lista con i risultati del clustering
+#' @importFrom stats median
+dbscan_clustering <- function(img_df_thresh, k_cell_types, random_seed = 123, 
+                              eps_factor = 1.4, min_samples = 4) {
+  set.seed(random_seed)
+  
+  # Verifica disponibilità del pacchetto dbscan
+  if (!requireNamespace("dbscan", quietly = TRUE)) {
+    warning("Il pacchetto 'dbscan' non è disponibile. Utilizzando spatial_kmeans come fallback.")
+    return(spatial_kmeans(img_df_thresh, k_cell_types, spatial_weight = 0.3, random_seed = random_seed))
+  }
+  
+  # Prepara le coordinate spaziali
+  coords <- as.matrix(img_df_thresh[, c("x", "y")])
+  
+  # Stima automatica di eps usando k-distanza
+  auto_eps <- function(X, k, factor = eps_factor) {
+    if (!requireNamespace("dbscan", quietly = TRUE)) {
+      return(0.1)  # fallback value
+    }
+    # Calcola distanze k-NN
+    knn_dists <- dbscan::kNNdist(X, k = k)
+    # Usa la mediana come stima robusta
+    d_med <- median(knn_dists)
+    return(factor * d_med)
+  }
+  
+  # Calcola eps automaticamente
+  eps <- auto_eps(coords, k = min_samples - 1, factor = eps_factor)
+  
+  # Esegui DBSCAN
+  db_result <- dbscan::dbscan(coords, eps = eps, minPts = min_samples)
+  
+  # Gestisci il rumore (label -1) e remappa i cluster
+  clusters <- db_result$cluster
+  
+  # Se ci sono troppe poche celle nei cluster o troppi cluster
+  n_clusters_found <- length(unique(clusters[clusters > 0]))
+  
+  if (n_clusters_found == 0 || n_clusters_found > k_cell_types * 2) {
+    warning("DBSCAN ha prodotto ", n_clusters_found, " cluster. Utilizzando spatial_kmeans come fallback.")
+    return(spatial_kmeans(img_df_thresh, k_cell_types, spatial_weight = 0.3, random_seed = random_seed))
+  }
+  
+  # Riassegna il rumore (cluster -1) al cluster più vicino
+  noise_indices <- which(clusters == -1)
+  if (length(noise_indices) > 0) {
+    valid_clusters <- unique(clusters[clusters > 0])
+    for (noise_idx in noise_indices) {
+      if (length(valid_clusters) > 0) {
+        # Trova il cluster più vicino
+        noise_point <- coords[noise_idx, ]
+        min_dist <- Inf
+        nearest_cluster <- valid_clusters[1]
+        
+        for (vc in valid_clusters) {
+          vc_indices <- which(clusters == vc)
+          vc_centroid <- colMeans(coords[vc_indices, , drop = FALSE])
+          dist <- sqrt(sum((noise_point - vc_centroid)^2))
+          if (dist < min_dist) {
+            min_dist <- dist
+            nearest_cluster <- vc
+          }
+        }
+        clusters[noise_idx] <- nearest_cluster
+      }
+    }
+  }
+  
+  # Rinumera i cluster da 1 a n
+  unique_clusters <- sort(unique(clusters[clusters > 0]))
+  cluster_map <- setNames(seq_along(unique_clusters), unique_clusters)
+  final_clusters <- cluster_map[as.character(clusters)]
+  
+  # Creazione di un oggetto risultato compatibile
+  result <- list(
+    clusters = final_clusters,
+    WCSS_per_cluster = rep(0, length(unique_clusters)),
+    centroids = matrix(0, nrow = length(unique_clusters), ncol = 2)
+  )
+  
+  return(result)
+}
+
+#' Esegue clustering Graph + Louvain per raffinare DBSCAN
+#'
+#' @param dbscan_result Risultato del clustering DBSCAN da raffinare
+#' @param img_df_thresh Dataframe dei pixel filtrati originale
+#' @param k_cell_types Numero di tipi cellulari finali (usato come target)
+#' @param random_seed Seed per riproducibilità
+#' @param k_neighbors Numero di vicini nel grafo k-NN (default: 10)
+#' @param resolution Parametro di risoluzione per Louvain (default: 1.0)
+#' @return Lista con i risultati del clustering raffinato
+graph_refine_clustering <- function(dbscan_result, img_df_thresh, k_cell_types, 
+                                    random_seed = 123, k_neighbors = 10, resolution = 1.0) {
+  set.seed(random_seed)
+  
+  # Verifica disponibilità dei pacchetti necessari
+  if (!requireNamespace("igraph", quietly = TRUE)) {
+    warning("Il pacchetto 'igraph' non è disponibile. Restituendo risultato DBSCAN originale.")
+    return(dbscan_result)
+  }
+  
+  # Prepara le coordinate spaziali
+  coords <- as.matrix(img_df_thresh[, c("x", "y")])
+  n_points <- nrow(coords)
+  dbscan_clusters <- dbscan_result$clusters
+  
+  # Adatta k_neighbors alla dimensione dei dati
+  k_neighbors <- min(k_neighbors, n_points - 1)
+  
+  # Per ogni cluster DBSCAN, applica graph clustering per raffinare
+  final_clusters <- dbscan_clusters
+  cluster_counter <- max(dbscan_clusters)
+  
+  unique_dbscan_clusters <- unique(dbscan_clusters)
+  
+  for (db_cluster in unique_dbscan_clusters) {
+    cluster_indices <- which(dbscan_clusters == db_cluster)
+    
+    # Se il cluster è troppo piccolo, lascialo invariato
+    if (length(cluster_indices) < k_neighbors * 2) {
+      next
+    }
+    
+    # Sottogruppo di coordinate per questo cluster
+    cluster_coords <- coords[cluster_indices, , drop = FALSE]
+    
+    tryCatch({
+      # Costruisci grafo k-NN per questo cluster
+      n_cluster_points <- nrow(cluster_coords)
+      k_local <- min(k_neighbors, n_cluster_points - 1)
+      
+      if (k_local < 2) next
+      
+      # Calcola le distanze locali
+      dist_matrix <- as.matrix(dist(cluster_coords))
+      
+      # Crea matrice di adiacenza (k nearest neighbors)
+      adj_matrix <- matrix(0, nrow = n_cluster_points, ncol = n_cluster_points)
+      
+      for (i in 1:n_cluster_points) {
+        # Trova i k vicini più prossimi (escludendo se stesso)
+        neighbors <- order(dist_matrix[i, ])[2:(k_local + 1)]
+        adj_matrix[i, neighbors] <- 1
+        adj_matrix[neighbors, i] <- 1  # Simmetrico
+      }
+      
+      # Crea grafo igraph
+      g <- igraph::graph_from_adjacency_matrix(adj_matrix, mode = "undirected")
+      
+      # Esegui clustering Louvain
+      communities <- igraph::cluster_louvain(g, resolution = resolution)
+      subclusters <- igraph::membership(communities)
+      
+      # Se il graph clustering ha trovato sottocluster significativi
+      n_subclusters <- length(unique(subclusters))
+      if (n_subclusters > 1 && n_subclusters <= 4) {
+        # Riassegna i cluster con nuovi ID
+        for (subcluster in unique(subclusters)) {
+          subcluster_local_indices <- which(subclusters == subcluster)
+          subcluster_global_indices <- cluster_indices[subcluster_local_indices]
+          
+          if (subcluster == 1) {
+            # Il primo sottocluster mantiene l'ID originale
+            final_clusters[subcluster_global_indices] <- db_cluster
+          } else {
+            # I nuovi sottocluster ottengono nuovi ID
+            cluster_counter <- cluster_counter + 1
+            final_clusters[subcluster_global_indices] <- cluster_counter
+          }
+        }
+      }
+      
+    }, error = function(e) {
+      # In caso di errore, mantieni il cluster originale
+      next
+    })
+  }
+  
+  # Rinumera tutti i cluster da 1 a n per consistenza
+  unique_clusters <- sort(unique(final_clusters))
+  cluster_map <- setNames(seq_along(unique_clusters), unique_clusters)
+  final_clusters <- cluster_map[as.character(final_clusters)]
+  
+  # Creazione di un oggetto risultato compatibile
+  result <- list(
+    clusters = final_clusters,
+    WCSS_per_cluster = rep(0, length(unique_clusters)),
+    centroids = matrix(0, nrow = length(unique_clusters), ncol = 2)
+  )
+  
+  return(result)
+}
+
+#' Pipeline consecutiva DBSCAN + Graph clustering
+#'
+#' @param img_df_thresh Dataframe dei pixel filtrati
+#' @param k_cell_types Numero di tipi cellulari finali
+#' @param random_seed Seed per riproducibilità
+#' @return Lista con i risultati del clustering
+dbscan_graph_pipeline <- function(img_df_thresh, k_cell_types, random_seed = 123) {
+  # Fase 1: DBSCAN per identificare regioni dense
+  dbscan_result <- dbscan_clustering(
+    img_df_thresh, 
+    k_cell_types, 
+    random_seed = random_seed,
+    eps_factor = 1.4,
+    min_samples = 4
+  )
+  
+  # Fase 2: Graph clustering per raffinare
+  final_result <- graph_refine_clustering(
+    dbscan_result,
+    img_df_thresh, 
+    k_cell_types, 
+    random_seed = random_seed,
+    k_neighbors = 10,
+    resolution = 1.0
+  )
+  
+  return(final_result)
 }

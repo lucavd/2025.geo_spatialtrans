@@ -79,7 +79,8 @@ cat("Dimensioni immagine:", img_dat$width, "x", img_dat$height, "pixel\n")
 clust <- cluster_image(
   img_df_thresh = img_dat$img_df_thresh,
   k_cell_types  = cfg$k_cell_types,
-  random_seed   = cfg$random_seed
+  random_seed   = cfg$random_seed,
+  clustering_method = "dbscan_graph"  # Usa pipeline DBSCAN + Graph clustering
 )
 toc()
 
