@@ -711,10 +711,10 @@ plot_distances_by_cluster <- function(sim_results, n_points = 2000,
     }
     
     # Estrai coordinate per questo subset
-    coords <- as.matrix(sim_results$coordinates[idx, ])
+    coords <- as.data.frame(sim_results$coordinates[idx, ])
     
     # Calcola matrice di distanza
-    dist_mat <- fields::rdist(coords)
+    dist_mat <- fields::rdist(as.matrix(coords))
     
     # Calcola distanza media per ogni punto
     mean_dist <- rowMeans(dist_mat)
@@ -871,19 +871,17 @@ plot_expression_distribution <- function(sim_results, marker_genes = NULL,
           # Seleziona solo queste righe della matrice sparsa
           submatrix <- sim_results$expression[cat_idx, , drop = FALSE]
           
-          # Converti a matrice densa (solo per queste righe)
-          dense_submatrix <- as.matrix(submatrix)
-          
-          # Estrai i valori non-zero che soddisfano il criterio
-          counts <- as.vector(dense_submatrix)
-          counts <- counts[counts > 0 & counts <= max_count]
-          
-          if (length(counts) > 0) {
-            df <- data.frame(
-              counts = counts,
-              type = category
-            )
-            plot_data <- rbind(plot_data, df)
+          # Estrai valori per ogni gene (riga) in modo efficiente
+          for (j in seq_len(nrow(submatrix))) {
+            gene_counts <- as.numeric(as.matrix(submatrix[j, , drop = FALSE]))
+            gene_counts <- gene_counts[gene_counts > 0 & gene_counts <= max_count]
+            if (length(gene_counts) > 0) {
+              df <- data.frame(
+                counts = gene_counts,
+                type = category
+              )
+              plot_data <- rbind(plot_data, df)
+            }
           }
         }
       }

@@ -26,6 +26,11 @@ suppressPackageStartupMessages({
 validate_expression_ranges <- function(sim_results) {
   cat("Validazione range di espressione...\n")
   
+  # Verifica che i risultati esistano
+  if (is.null(sim_results$expression)) {
+    stop("Impossibile trovare o generare file di risultati per la validazione")
+  }
+  
   # Range tipici per spatial transcriptomics (basati su dati reali)
   typical_ranges <- list(
     min_expr = 0,
@@ -35,17 +40,31 @@ validate_expression_ranges <- function(sim_results) {
     mean_total_umi = c(1000, 15000) # UMI totali per cella
   )
   
-  # Calcola statistiche di espressione
-  is_sparse <- inherits(sim_results$expression, "sparseMatrix")
-  
-  if (is_sparse) {
-    total_umi_per_cell <- Matrix::colSums(sim_results$expression)
-    gene_means <- Matrix::rowMeans(sim_results$expression)
-    max_expr_per_gene <- apply(sim_results$expression, 1, max)
+  # Calcola statistiche di espressione (sempre su matrice sparsa)
+  if (!inherits(sim_results$expression, "sparseMatrix")) {
+    cat("Conversione della matrice di espressione in formato sparso...\n")
+    sim_results$expression <- Matrix(sim_results$expression, sparse = TRUE)
+  }
+
+  total_umi_per_cell <- Matrix::colSums(sim_results$expression)
+  gene_means         <- Matrix::rowMeans(sim_results$expression)
+
+  # Calcolo efficiente del massimo per gene senza grandi allocazioni
+  sp <- as(sim_results$expression, "TsparseMatrix")
+  max_expr_per_gene <- numeric(nrow(sp))
+  nz_rows <- sp@i + 1
+  nz_vals <- sp@x
+  # Aggiorna il massimo per ciascuna riga usando data.table per efficienza
+  if (!requireNamespace("data.table", quietly = TRUE)) {
+    for (k in seq_along(nz_vals)) {
+      i <- nz_rows[k]
+      v <- nz_vals[k]
+      if (v > max_expr_per_gene[i]) max_expr_per_gene[i] <- v
+    }
   } else {
-    total_umi_per_cell <- colSums(sim_results$expression)
-    gene_means <- rowMeans(sim_results$expression)
-    max_expr_per_gene <- apply(sim_results$expression, 1, max)
+    dt <- data.table::data.table(row = nz_rows, val = nz_vals)
+    max_dt <- dt[, .(val = max(val)), by = row]
+    max_expr_per_gene[max_dt$row] <- max_dt$val
   }
   
   # Metriche di validazione
@@ -84,21 +103,38 @@ validate_spatial_coherence <- function(sim_results) {
     return(NULL)
   }
   
-  coords <- as.matrix(sim_results$coordinates)
+  coords <- as.data.frame(sim_results$coordinates)
   clusters <- sim_results$intensity_cluster
+  
+  # Verifica che ci siano più di un cluster
+  unique_clusters <- unique(clusters)
+  if (length(unique_clusters) <= 1) {
+    cat("Attenzione: trovato solo un cluster, saltando validazione coerenza spaziale\n")
+    return(list(
+      cluster_metrics = list(),
+      inter_cluster_distances = list(),
+      warning = "Single cluster detected"
+    ))
+  }
   
   # Calcola metriche per ogni cluster
   cluster_metrics <- list()
   
-  for (cluster in unique(clusters)) {
+  for (cluster in unique_clusters) {
     cluster_idx <- which(clusters == cluster)
     if (length(cluster_idx) < 3) next
     
     cluster_coords <- coords[cluster_idx, , drop = FALSE]
-    
-    # Calcola distanze intra-cluster
-    dist_mat <- fields::rdist(cluster_coords)
-    mean_intra_dist <- mean(dist_mat[upper.tri(dist_mat)])
+    n_cluster <- nrow(cluster_coords)
+    # Calcola distanze intra-cluster in modo scalabile
+    if (n_cluster > 500) {
+      idx <- sample(n_cluster, min(100, n_cluster))
+      dist_mat <- fields::rdist(as.matrix(cluster_coords[idx, ]))
+      mean_intra_dist <- mean(dist_mat[upper.tri(dist_mat)])
+    } else {
+      dist_mat <- fields::rdist(as.matrix(cluster_coords))
+      mean_intra_dist <- mean(dist_mat[upper.tri(dist_mat)])
+    }
     
     # Calcola compattezza (rapporto area/perimetro)
     if (nrow(cluster_coords) > 2) {
@@ -123,9 +159,10 @@ validate_spatial_coherence <- function(sim_results) {
     )
   }
   
-  # Calcola distanze inter-cluster
+  # Calcola distanze inter-cluster con sampling per memoria
   inter_distances <- list()
   cluster_names <- names(cluster_metrics)
+  max_sample_size <- 1000  # Limita il numero di punti per cluster
   
   for (i in 1:(length(cluster_names) - 1)) {
     for (j in (i + 1):length(cluster_names)) {
@@ -136,6 +173,17 @@ validate_spatial_coherence <- function(sim_results) {
       coords2 <- coords[clusters == c2, , drop = FALSE]
       
       if (nrow(coords1) > 0 && nrow(coords2) > 0) {
+        # Campiona i punti se troppo numerosi
+        if (nrow(coords1) > max_sample_size) {
+          sample_idx1 <- sample(nrow(coords1), max_sample_size)
+          coords1 <- coords1[sample_idx1, , drop = FALSE]
+        }
+        if (nrow(coords2) > max_sample_size) {
+          sample_idx2 <- sample(nrow(coords2), max_sample_size)
+          coords2 <- coords2[sample_idx2, , drop = FALSE]
+        }
+        
+        # Calcola distanze con dataset campionato
         dist_mat <- fields::rdist(coords1, coords2)
         min_inter_dist <- min(dist_mat)
         mean_inter_dist <- mean(dist_mat)
@@ -274,7 +322,7 @@ create_validation_summary_plot <- function(validation_results) {
 #' @param output_dir Directory per salvare il report
 #' @param report_name Nome del report
 #' @return Lista con tutti i risultati di validazione
-generate_biological_validation_report <- function(results_file, output_dir = "plots/biological_validation", 
+generate_biological_validation_report <- function(results_file, output_dir = "R/validation", 
                                                  report_name = "biological_validation") {
   
   # Carica i risultati della simulazione
@@ -299,7 +347,76 @@ generate_biological_validation_report <- function(results_file, output_dir = "pl
   # 2. Validazione coerenza spaziale
   validation_results$spatial_coherence <- validate_spatial_coherence(sim_results)
   
-  # 3. Identifica e valida marker genes
+  # 3. Validazione morfologia dei cluster
+  validate_cluster_morphology <- function(sim_results) {
+    library(ggplot2)
+    library(dplyr)
+    cluster_df <- data.frame(sim_results$coordinates, cluster = sim_results$intensity_cluster)
+    cluster_df$cluster <- as.factor(cluster_df$cluster)
+    # Escludi NA/noise
+    n_noise <- sum(is.na(cluster_df$cluster) | cluster_df$cluster == "noise")
+    cluster_sizes <- table(cluster_df$cluster)
+    small_clusters <- sum(cluster_sizes < 50)
+    # Plot morfologia
+    p_morph <- ggplot(cluster_df, aes(x = x, y = y, color = cluster)) +
+      geom_point(size = 0.8, alpha = 0.7) +
+      facet_wrap(~ cluster, ncol = 4) +
+      theme_minimal() +
+      labs(title = "Morfologia dei cluster (validazione)", x = "x", y = "y") +
+      theme(panel.background = element_rect(fill = "white", colour = NA),
+            plot.background = element_rect(fill = "white", colour = NA))
+    ggsave(file.path(output_dir, paste0(report_name, "_cluster_morphology.png")), p_morph, width = 10, height = 4)
+
+    # Plot silhouette/contorno dei cluster
+    hulls <- cluster_df %>%
+      group_by(cluster) %>%
+      filter(!is.na(cluster)) %>%
+      filter(n() > 2) %>%
+      do({
+        ch = chull(.$x, .$y)
+        data.frame(x = .$x[ch], y = .$y[ch], cluster = .$cluster[1])
+      })
+    p_silhouette <- ggplot(cluster_df, aes(x = x, y = y, color = cluster)) +
+      geom_point(size = 0.5, alpha = 0.5) +
+      geom_polygon(data = hulls, aes(x = x, y = y, color = cluster, group = cluster), fill = NA, size = 1, show.legend = FALSE) +
+      theme_minimal() +
+      labs(title = "Silhouette/contorno dei cluster", x = "x", y = "y") +
+      theme(panel.background = element_rect(fill = "white", colour = NA),
+            plot.background = element_rect(fill = "white", colour = NA))
+    ggsave(file.path(output_dir, paste0(report_name, "_cluster_silhouette.png")), p_silhouette, width = 10, height = 4)
+
+    # Calcola metriche geometriche per ogni cluster
+    shape_metrics <- cluster_df %>%
+      filter(!is.na(cluster)) %>%
+      filter(n() > 2, .by = cluster) %>%
+      group_by(cluster) %>%
+      do({
+        pts <- cbind(.$x, .$y)
+        ch <- chull(pts)
+        hull_pts <- pts[c(ch, ch[1]), ]
+        # Area (shoelace formula)
+        area <- 0.5 * abs(sum(hull_pts[-nrow(hull_pts),1]*hull_pts[-1,2] - hull_pts[-nrow(hull_pts),2]*hull_pts[-1,1]))
+        # Perimetro
+        peri <- sum(sqrt(rowSums((hull_pts[-1,] - hull_pts[-nrow(hull_pts),])^2)))
+        # Eccentricità (PCA axes ratio)
+        pca <- prcomp(pts, center=TRUE, scale.=FALSE)
+        ecc <- pca$sdev[1]/pca$sdev[2]
+        data.frame(area=area, perimeter=peri, eccentricity=ecc, n_cells=nrow(pts))
+      }) %>%
+      ungroup()
+    write.csv(shape_metrics, file.path(output_dir, paste0(report_name, "_cluster_shape_metrics.csv")), row.names=FALSE)
+
+    list(
+      n_noise = n_noise,
+      n_clusters = length(cluster_sizes),
+      small_clusters = small_clusters,
+      cluster_sizes = cluster_sizes,
+      shape_metrics = shape_metrics
+    )
+  }
+  validation_results$cluster_morphology <- validate_cluster_morphology(sim_results)
+  
+  # 4. Identifica e valida marker genes
   marker_genes <- tryCatch({
     identify_marker_genes(sim_results, n_markers = 5, min_ratio = 1.5)
   }, error = function(e) {
@@ -308,7 +425,7 @@ generate_biological_validation_report <- function(results_file, output_dir = "pl
   })
   validation_results$marker_specificity <- validate_marker_specificity(sim_results, marker_genes)
   
-  # 4. Crea plot riassuntivo
+  # 5. Crea plot riassuntivo
   summary_plot <- create_validation_summary_plot(validation_results)
   
   # Salva plot riassuntivo
@@ -318,7 +435,7 @@ generate_biological_validation_report <- function(results_file, output_dir = "pl
     width = 10, height = 6, bg = "white"
   )
   
-  # 5. Genera plot di distribuzione UMI
+  # 6. Genera plot di distribuzione UMI
   umi_data <- data.frame(
     total_umi = if (inherits(sim_results$expression, "sparseMatrix")) {
       Matrix::colSums(sim_results$expression)
@@ -348,7 +465,7 @@ generate_biological_validation_report <- function(results_file, output_dir = "pl
     width = 8, height = 6, bg = "white"
   )
   
-  # 6. Genera report testuale
+  # 7. Genera report testuale
   report_text <- paste(
     "# REPORT DI VALIDAZIONE BIOLOGICA",
     paste("Data:", Sys.Date()),
@@ -388,6 +505,13 @@ generate_biological_validation_report <- function(results_file, output_dir = "pl
       "- Analisi spaziale non disponibile"
     },
     "",
+    "### Morfologia dei Cluster",
+    if (!is.null(validation_results$cluster_morphology)) {
+      paste("- Cluster analizzati:", length(validation_results$cluster_morphology))
+    } else {
+      "- Analisi morfologia non disponibile"
+    },
+    "",
     "### Specificità Marker",
     if (!is.null(validation_results$marker_specificity)) {
       paste("- Cluster con marker identificati:", length(validation_results$marker_specificity))
@@ -407,6 +531,14 @@ generate_biological_validation_report <- function(results_file, output_dir = "pl
       "- AZIONE: Limitare l'espressione massima dei geni più espressi"
     } else {
       "- Livelli di espressione massima appropriati"
+    },
+    "",
+    if (!is.null(validation_results$cluster_morphology)) {
+      if (validation_results$cluster_morphology$n_noise > 0) {
+        "- AZIONE: Verificare la presenza di cluster noise e rimuoverli se necessario"
+      } else {
+        "- Nessun cluster noise rilevato"
+      }
     },
     "",
     "## CONCLUSIONI",
@@ -440,19 +572,7 @@ generate_biological_validation_report <- function(results_file, output_dir = "pl
 # Script principale: esegui validazione se chiamato direttamente
 if (!interactive()) {
   # Cerca il file di risultati più recente
-  results_files <- c(
-    "results/simple_simulation.rds",
-    "results/simulation_results.rds"
-  )
-  
-  results_file <- NULL
-  for (f in results_files) {
-    if (file.exists(f)) {
-      results_file <- f
-      break
-    }
-  }
-  
+  results_file <- "results/simple_simulation.rds"
   if (is.null(results_file)) {
     cat("Nessun file di risultati trovato. Eseguendo prima la simulazione...\n")
     source("R/run_full_simulation_simple.R")

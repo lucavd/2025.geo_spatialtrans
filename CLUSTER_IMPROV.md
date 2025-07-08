@@ -397,16 +397,84 @@ simulate_spatial_transcriptomics <- function(
 }
 ```
 
-## Implementation Priority
+## ✅ IMPLEMENTED: Pipeline Consecutiva DBSCAN + Graph Clustering
 
-1. **Phase 1 (Immediate)**: 
-   - Switch default to SLIC with low compactness
-   - Implement layered structure generator (most requested pattern)
+### Status Implementazione (Gennaio 2025)
 
-2. **Phase 2 (Next Release)**:
-   - Add DBSCAN option
-   - Implement branching patterns
-   - Create infiltrative pattern modifier
+**✅ COMPLETATO - Fase 1**: Pipeline consecutiva DBSCAN + Graph clustering
+- **File implementato**: `R/functions/04_clustering.R`
+- **Funzione principale**: `dbscan_graph_pipeline()`
+- **Integrazione**: `run_full_size_optimized.R` usa `clustering_method = "dbscan_graph"`
+
+### Strategia Consecutiva Implementata
+
+```r
+# Pipeline DBSCAN + Graph - Implementata
+dbscan_graph_pipeline <- function(img_df_thresh, k_cell_types, random_seed = 123) {
+  # Fase 1: DBSCAN per identificare regioni dense
+  dbscan_result <- dbscan_clustering(
+    img_df_thresh, 
+    k_cell_types, 
+    random_seed = random_seed,
+    eps_factor = 1.4,        # Controllo biologico
+    min_samples = 4          # Minima nicchia cellulare
+  )
+  
+  # Fase 2: Graph clustering per raffinare
+  final_result <- graph_refine_clustering(
+    dbscan_result,
+    img_df_thresh, 
+    k_cell_types, 
+    random_seed = random_seed,
+    k_neighbors = 10,        # Vicinato locale
+    resolution = 1.0         # Granularità Louvain
+  )
+  
+  return(final_result)
+}
+```
+
+### Parametri Biologicamente Interpretabili
+
+1. **DBSCAN (Fase 1)**:
+   - `eps_factor = 1.4`: Dimensione regioni dense (40% sopra mediana k-NN)
+   - `min_samples = 4`: Numero minimo di celle per formare un cluster
+
+2. **Graph Clustering (Fase 2)**:
+   - `k_neighbors = 10`: Dimensione microambiente locale
+   - `resolution = 1.0`: Granularità clustering Louvain
+
+### Vantaggi Ottenuti
+
+✅ **Forme irregolari**: DBSCAN trova vasi, ramificazioni, infiltrazioni  
+✅ **Raffinamento topologico**: Graph clustering perfeziona strutture locali  
+✅ **Controllo matematico**: Parametri biologicamente interpretabili  
+✅ **Fallback robusti**: Se un metodo fallisce, usa spatial_kmeans  
+✅ **Drop-in replacement**: Stessa interfaccia di k-means
+
+### Come Usare
+
+```r
+# Nel file di simulazione principale
+clust <- cluster_image(
+  img_df_thresh = img_dat$img_df_thresh,
+  k_cell_types  = cfg$k_cell_types,
+  random_seed   = cfg$random_seed,
+  clustering_method = "dbscan_graph"  # Nuovo metodo
+)
+```
+
+## Implementation Priority - AGGIORNATA
+
+1. **✅ Phase 1 (COMPLETATA)**: 
+   - ✅ Implementata pipeline consecutiva DBSCAN + Graph clustering
+   - ✅ Integrata nel sistema di simulazione principale
+   - ✅ Parametri biologicamente interpretabili
+
+2. **Phase 2 (Prossimi sviluppi)**:
+   - Validazione biologica dei risultati vs k-means
+   - Implementazione Tier 1 (layered, branching patterns) 
+   - Ottimizzazione performance per simulazioni large-scale
 
 3. **Phase 3 (Future)**:
    - Full reaction-diffusion implementation

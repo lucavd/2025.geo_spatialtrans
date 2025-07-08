@@ -72,17 +72,49 @@ diff_cfg$marker_params$strength_sd <- diff_cfg$marker_params$strength_sd * 1.8
 # Flag per validazione (può essere disabilitato per risparmiare memoria)
 validate <- TRUE
 
+# --- NUOVO: flag per immagine sintetica ------------------------------------
+use_synthetic_image <- TRUE   # Imposta a FALSE per usare immagine reale
+synthetic_complexity <- 2     # 1=blob, 2=Voronoi, 3=mix
+
 # 4. Preparazione immagine e clustering
-tic("Preparazione immagine")
-img_dat <- prepare_image(cfg$image_path, cfg$threshold_value)
-cat("Dimensioni immagine:", img_dat$width, "x", img_dat$height, "pixel\n")
+if (use_synthetic_image) {
+  tic("Generazione immagine sintetica")
+  syn <- generate_synthetic_tissue(
+    width_px  = 6800,
+    height_px = 6500,
+    complexity = synthetic_complexity,
+    seed = cfg$random_seed,
+    output_path = "results/synthetic_tissue.png"
+  )
+  # Normalizza valori 0-255 -> 0-1 e prepara dataframe come atteso
+  img_array_norm <- syn$img_matrix / 255
+  img_df <- syn$img_df
+  img_df$value <- img_df$intensity / 255
+  img_df_thresh <- img_df[img_df$value < cfg$threshold_value, c("x", "y", "value")]
+  
+  img_dat <- list(
+    width = 6800,
+    height = 6500,
+    img_df_thresh = img_df_thresh,
+    img_array = img_array_norm
+  )
+  cat("Immagine sintetica salvata in results/synthetic_tissue.png\n")
+  toc()
+} else {
+  tic("Preparazione immagine")
+  img_dat <- prepare_image(cfg$image_path, cfg$threshold_value)
+  cat("Dimensioni immagine:", img_dat$width, "x", img_dat$height, "pixel\n")
+  toc()
+}
+
 clust <- cluster_image(
   img_df_thresh = img_dat$img_df_thresh,
   k_cell_types  = cfg$k_cell_types,
   random_seed   = cfg$random_seed,
   clustering_method = "dbscan_graph"  # Usa pipeline DBSCAN + Graph clustering
 )
-toc()
+# Rimuovi punti senza cluster assegnato (NA)
+clust <- clust[!is.na(clust$intensity_cluster), ]
 
 # 5. Creazione griglia
 tic("Creazione griglia")
@@ -103,6 +135,46 @@ cell_df <- create_sampling_grid(
 )
 cat("Punti generati:", nrow(cell_df), "\n")
 toc()
+
+# --- CLUSTER MORPHOLOGY PLOT (minimal) ---
+cat("Generazione figura di morfologia dei cluster...\n")
+library(ggplot2)
+library(dplyr)
+
+# Calcola distanza media locale per ogni punto (rispetto agli altri punti dello stesso cluster)
+calc_mean_distance <- function(df, n_neighbors = 15) {
+  # Per grandi dataset: calcola solo sui 15 vicini più vicini
+  if (!requireNamespace("FNN", quietly = TRUE)) install.packages("FNN")
+  library(FNN)
+  df <- df %>% mutate(cluster = as.factor(intensity_cluster))
+  df$mean_distance <- NA
+  for (cl in levels(df$cluster)) {
+    idx <- which(df$cluster == cl)
+    if (length(idx) > n_neighbors) {
+      nn <- get.knn(df[idx, c("x", "y")], k = n_neighbors)
+      df$mean_distance[idx] <- rowMeans(nn$nn.dist)
+    } else {
+      df$mean_distance[idx] <- NA
+    }
+  }
+  df
+}
+
+cell_df_plot <- calc_mean_distance(cell_df)
+
+p <- ggplot(cell_df_plot, aes(x = x, y = y, color = mean_distance)) +
+  geom_point(size = 1) +
+  facet_wrap(~ intensity_cluster, ncol = 4) +
+  scale_color_viridis_c(option = "inferno", direction = -1) +
+  theme_minimal() +
+  labs(title = "Morfologia dei cluster (distanza media locale)",
+       x = "x", y = "y", color = "Distanza media") +
+  theme(panel.background = element_rect(fill = "white", colour = NA),
+        plot.background = element_rect(fill = "white", colour = NA))
+
+dir.create("plots", showWarnings = FALSE)
+ggsave("plots/cluster_morphology.png", p, width = 10, height = 4)
+# --- FINE CLUSTER MORPHOLOGY PLOT ---
 
 # 6. Generazione ottimizzata dei profili di espressione
 tic("Generazione espressione con parametri biologici")
@@ -237,41 +309,16 @@ generate_and_save_plots(
 toc()
 
 # 11. Validazione biologica report
-if (validate && file.exists("R/biological_validation_report.R")) {
-  cat("\n=== VALIDAZIONE BIOLOGICA ===\n")
-  source("R/biological_validation_report.R")
-  
-  tic("Validazione biologica")
-  tryCatch({
-    generate_biological_validation_report(
-      sim_results = risultato,
-      output_dir = "plots/biological_validation_fullsize",
-      simulation_name = "Full-size Visium HD (20k genes)"
-    )
-    cat("\nReport di validazione biologica salvato in: plots/biological_validation_fullsize/\n")
-  }, error = function(e) {
-    cat("\nErrore nella validazione biologica:", conditionMessage(e), "\n")
-    cat("Generazione validazione minima...\n")
-    
-    # Validazione minima su campione
-    n_sample <- min(1000, ncol(risultato$expression))
-    sample_idx <- sample(ncol(risultato$expression), n_sample)
-    umi_sample <- colSums(risultato$expression[, sample_idx])
-    
-    cat("\nValidazione su campione di", n_sample, "celle:\n")
-    cat("- UMI medio:", round(mean(umi_sample)), "\n")
-    cat("- UMI mediano:", round(median(umi_sample)), "\n")
-    cat("- Range UMI:", round(min(umi_sample)), "-", round(max(umi_sample)), "\n")
-    cat("- Celle con UMI realistici (1k-15k):", 
-        round(mean(umi_sample >= 1000 & umi_sample <= 15000) * 100, 1), "%\n")
-  })
-  toc()
-}
-
 cat("\n=== SIMULAZIONE FULL-SIZE COMPLETATA ===\n")
 cat("Risultati salvati in:", cfg$output_path, "\n")
 cat("- Numero di geni:", cfg$n_genes, "\n")
 cat("- Numero di celle:", nrow(cell_df), "\n")
+
+# Validazione automatica post-simulazione
+cat("\n=== VALIDAZIONE BIOLOGICA AUTOMATICA ===\n")
+source("R/biological_validation_report.R")
+generate_biological_validation_report(cfg$output_path, output_dir = "R/validation", report_name = "visiumHD_biological")
+cat("\nReport di validazione salvato in: R/validation\n")
 cat("- Library size medio configurato:", diff_cfg$cell_specific_params$library_size_params$mean_library_size, "\n")
 
 cat("\n=== NOTE BIOLOGICHE ===\n")

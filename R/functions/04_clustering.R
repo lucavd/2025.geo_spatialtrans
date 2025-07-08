@@ -354,7 +354,7 @@ dbscan_clustering <- function(img_df_thresh, k_cell_types, random_seed = 123,
   # Se ci sono troppe poche celle nei cluster o troppi cluster
   n_clusters_found <- length(unique(clusters[clusters > 0]))
   
-  if (n_clusters_found == 0 || n_clusters_found > k_cell_types * 2) {
+  if (n_clusters_found == 0 || n_clusters_found > k_cell_types * 5) {  # Più tollerante
     warning("DBSCAN ha prodotto ", n_clusters_found, " cluster. Utilizzando spatial_kmeans come fallback.")
     return(spatial_kmeans(img_df_thresh, k_cell_types, spatial_weight = 0.3, random_seed = random_seed))
   }
@@ -436,63 +436,63 @@ graph_refine_clustering <- function(dbscan_result, img_df_thresh, k_cell_types,
     cluster_indices <- which(dbscan_clusters == db_cluster)
     
     # Se il cluster è troppo piccolo, lascialo invariato
-    if (length(cluster_indices) < k_neighbors * 2) {
+    if (length(cluster_indices) < 100) {  # Soglia fissa per dataset grandi
       next
     }
     
     # Sottogruppo di coordinate per questo cluster
     cluster_coords <- coords[cluster_indices, , drop = FALSE]
     
-    tryCatch({
-      # Costruisci grafo k-NN per questo cluster
-      n_cluster_points <- nrow(cluster_coords)
-      k_local <- min(k_neighbors, n_cluster_points - 1)
-      
-      if (k_local < 2) next
-      
-      # Calcola le distanze locali
-      dist_matrix <- as.matrix(dist(cluster_coords))
-      
-      # Crea matrice di adiacenza (k nearest neighbors)
-      adj_matrix <- matrix(0, nrow = n_cluster_points, ncol = n_cluster_points)
-      
-      for (i in 1:n_cluster_points) {
-        # Trova i k vicini più prossimi (escludendo se stesso)
-        neighbors <- order(dist_matrix[i, ])[2:(k_local + 1)]
-        adj_matrix[i, neighbors] <- 1
-        adj_matrix[neighbors, i] <- 1  # Simmetrico
-      }
-      
-      # Crea grafo igraph
-      g <- igraph::graph_from_adjacency_matrix(adj_matrix, mode = "undirected")
-      
-      # Esegui clustering Louvain
-      communities <- igraph::cluster_louvain(g, resolution = resolution)
-      subclusters <- igraph::membership(communities)
-      
-      # Se il graph clustering ha trovato sottocluster significativi
-      n_subclusters <- length(unique(subclusters))
-      if (n_subclusters > 1 && n_subclusters <= 4) {
-        # Riassegna i cluster con nuovi ID
-        for (subcluster in unique(subclusters)) {
-          subcluster_local_indices <- which(subclusters == subcluster)
-          subcluster_global_indices <- cluster_indices[subcluster_local_indices]
-          
-          if (subcluster == 1) {
-            # Il primo sottocluster mantiene l'ID originale
-            final_clusters[subcluster_global_indices] <- db_cluster
-          } else {
-            # I nuovi sottocluster ottengono nuovi ID
-            cluster_counter <- cluster_counter + 1
-            final_clusters[subcluster_global_indices] <- cluster_counter
+    # Costruisci grafo k-NN per questo cluster
+    n_cluster_points <- nrow(cluster_coords)
+    k_local <- min(k_neighbors, n_cluster_points - 1)
+    
+    if (k_local >= 2) {
+      tryCatch({
+        # Calcola le distanze locali
+        dist_matrix <- as.matrix(dist(cluster_coords))
+        
+        # Crea matrice di adiacenza (k nearest neighbors)
+        adj_matrix <- matrix(0, nrow = n_cluster_points, ncol = n_cluster_points)
+        
+        for (i in 1:n_cluster_points) {
+          # Trova i k vicini più prossimi (escludendo se stesso)
+          neighbors <- order(dist_matrix[i, ])[2:(k_local + 1)]
+          adj_matrix[i, neighbors] <- 1
+          adj_matrix[neighbors, i] <- 1  # Simmetrico
+        }
+        
+        # Crea grafo igraph
+        g <- igraph::graph_from_adjacency_matrix(adj_matrix, mode = "undirected")
+        
+        # Esegui clustering Louvain
+        communities <- igraph::cluster_louvain(g, resolution = resolution)
+        subclusters <- igraph::membership(communities)
+        
+        # Se il graph clustering ha trovato sottocluster significativi
+        n_subclusters <- length(unique(subclusters))
+        if (n_subclusters > 1 && n_subclusters <= 4) {
+          # Riassegna i cluster con nuovi ID
+          for (subcluster in unique(subclusters)) {
+            subcluster_local_indices <- which(subclusters == subcluster)
+            subcluster_global_indices <- cluster_indices[subcluster_local_indices]
+            
+            if (subcluster == 1) {
+              # Il primo sottocluster mantiene l'ID originale
+              final_clusters[subcluster_global_indices] <- db_cluster
+            } else {
+              # I nuovi sottocluster ottengono nuovi ID
+              cluster_counter <- cluster_counter + 1
+              final_clusters[subcluster_global_indices] <- cluster_counter
+            }
           }
         }
-      }
-      
-    }, error = function(e) {
-      # In caso di errore, mantieni il cluster originale
-      next
-    })
+        
+      }, error = function(e) {
+        # In caso di errore, mantieni il cluster originale
+        # Non fare nulla, continua con il prossimo cluster
+      })
+    }
   }
   
   # Rinumera tutti i cluster da 1 a n per consistenza
@@ -522,8 +522,8 @@ dbscan_graph_pipeline <- function(img_df_thresh, k_cell_types, random_seed = 123
     img_df_thresh, 
     k_cell_types, 
     random_seed = random_seed,
-    eps_factor = 1.4,
-    min_samples = 4
+    eps_factor = 3.0,    # Aumentato per regioni più grandi
+    min_samples = 20     # Aumentato per cluster più consistenti
   )
   
   # Fase 2: Graph clustering per raffinare
@@ -532,8 +532,8 @@ dbscan_graph_pipeline <- function(img_df_thresh, k_cell_types, random_seed = 123
     img_df_thresh, 
     k_cell_types, 
     random_seed = random_seed,
-    k_neighbors = 10,
-    resolution = 1.0
+    k_neighbors = 50,    # Aumentato per dataset grandi
+    resolution = 0.5     # Ridotto per meno sottocluster
   )
   
   return(final_result)

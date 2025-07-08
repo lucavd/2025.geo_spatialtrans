@@ -1,0 +1,10 @@
+# Script rapido per analisi cluster dopo la simulazione
+res <- readRDS('results/visiumHD_biological.rds')
+cat("\n--- Distribuzione celle per cluster ---\n")
+print(table(res$intensity_cluster))
+cat("\n--- Dimensioni matrice di espressione ---\n")
+print(dim(res$expression))
+cat("\n--- Range coordinate x/y ---\n")
+print(summary(res$coordinates))
+cat("\n--- Prime 5 righe delle coordinate e cluster ---\n")
+print(head(cbind(res$coordinates, cluster=res$intensity_cluster)))

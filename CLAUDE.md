@@ -54,22 +54,74 @@ This R package for spatial transcriptomics simulation has been fully modularized
   ```
 
 
+## ✅ Clustering Improvements (Gennaio 2025)
+
+### New Clustering Methods Implemented
+
+Il sistema di clustering è stato esteso con metodi biologicamente realistici per sostituire k-means:
+
+#### Pipeline DBSCAN + Graph Clustering
+- **File**: `R/functions/04_clustering.R`
+- **Metodo**: `clustering_method = "dbscan_graph"`
+- **Strategia**: Pipeline consecutiva per forme irregolari biologicamente plausibili
+
+```r
+# Utilizzo nel codice di simulazione
+clust <- cluster_image(
+  img_df_thresh = img_dat$img_df_thresh,
+  k_cell_types  = cfg$k_cell_types,
+  random_seed   = cfg$random_seed,
+  clustering_method = "dbscan_graph"  # Nuovo metodo
+)
+```
+
+#### Parametri Biologicamente Controllabili
+1. **DBSCAN (Fase 1)**: Identifica regioni dense
+   - `eps_factor = 1.4`: Dimensione regioni dense
+   - `min_samples = 4`: Numero minimo di celle per cluster
+
+2. **Graph Clustering (Fase 2)**: Raffina strutture locali
+   - `k_neighbors = 10`: Dimensione microambiente locale
+   - `resolution = 1.0`: Granularità clustering Louvain
+
+#### Vantaggi vs k-means
+- **Forme irregolari**: Trova vasi sanguigni, ramificazioni, infiltrazione immune
+- **Controllo biologico**: Parametri interpretabili biologicamente
+- **Robustezza**: Fallback automatico a spatial_kmeans se necessario
+- **Performance**: Scala a migliaia di punti con O(n log n)
+
+### Metodi di Clustering Disponibili
+- `"spatial_kmeans"`: K-means con peso spaziale (default precedente)
+- `"kmeans++"`: K-means standard migliorato
+- `"slic"`: Superpixel clustering
+- `"dbscan_graph"`: **NUOVO** - Pipeline consecutiva per forme biologiche
+
 ## Next Development Steps
 
-1. **Complete remaining modularization**:
+1. **✅ Advanced Clustering (COMPLETATO)**:
+   - ✅ Implementata pipeline DBSCAN + Graph clustering
+   - ✅ Integrazione con sistema di simulazione esistente
+   - ✅ Parametri biologicamente interpretabili
+
+2. **Validation & Optimization**:
+   - Validazione biologica risultati vs k-means
+   - Performance optimization per large-scale simulations
+   - Sviluppo metriche di validazione automatiche
+
+3. **Complete remaining modularization**:
    - Finish modularizing `analyze_and_compare_clusters.R`
    - Finish modularizing `generate_synthetic_tissue.R`
 
-2. **Implement package infrastructure**:
+4. **Implement package infrastructure**:
    - Complete roxygen documentation
    - Set up proper package namespace
    - Create package installation workflows
 
-3. **Add example data and vignettes**:
+5. **Add example data and vignettes**:
    - Create demo datasets
    - Write tutorial vignettes
 
-4. **Explore advanced spatial modeling**:
+6. **Explore advanced spatial modeling**:
    - Test multi-scale and hierarchical spatial models
    - Implement anisotropic and non-stationary patterns
    - Create composite spatial patterns for realistic tissues
