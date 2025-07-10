@@ -48,12 +48,17 @@ cfg <- initialize_simulation_config(
 
 # Usa configurazione medium con parametri biologici
 diff_cfg <- configure_difficulty_level("medium")
+
+# Imposta i parametri di library size ottimizzati
 diff_cfg$cell_specific_params$library_size_params <- list(
-  mean_library_size = 8000,
-  library_size_cv = 0.3,
+  mean_library_size = 7000,      # Bilanciato: né troppo alto né troppo basso
+  library_size_cv = 0.28,        # CV intermedio per equilibrare variabilità
   spatial_effect_on_library = 0.1,
   cell_type_effect = TRUE
 )
+
+# Copia anche al livello principale per compatibilità con wrapper
+diff_cfg$library_size_params <- diff_cfg$cell_specific_params$library_size_params
 
 # 4. Pipeline rapida
 tic("Test completo")

@@ -80,6 +80,8 @@ generate_expression_matrix <- function(
   
   # Estrai variabili
   N <- nrow(cell_df)
+  # Dimensioni verificate e corrette
+  
   # Usa i livelli originali per mappare le medie di espressione
   cluster_labels <- cell_df$intensity_cluster
   # Il numero di tipi cellulari corrisponde alla lunghezza di mean_expression_list
@@ -111,6 +113,11 @@ generate_expression_matrix <- function(
   
   # Converti cluster_labels in interi una sola volta
   cl <- as.integer(cluster_labels)
+  
+  # Pre-calcola la normalizzazione per library size (ottimizzazione)
+  total_exp_mu_per_cell <- sapply(1:N, function(cell_idx) {
+    sum(exp(all_mean_expr[, cl[cell_idx]]))
+  })
   
   # Genera fattori di dropout gene-specifici se richiesto
   use_gene_specific_dropout <- ifelse(is.null(dropout_params$use_gene_specific_dropout), 
@@ -195,16 +202,16 @@ generate_expression_matrix <- function(
       if (g %in% stable_genes) {
         # Modello sub-Poisson: Binomiale con p alto e n moderato
         p <- 0.9
-        # Scala exp(mu) per frazione di library size dedicata a questo gene
-        lambda <- exp(mu_vals) * library_size / n_expressed_genes
+        # CORREZIONE: Scala exp(mu) usando frazione dell'espressione totale per questo gene
+        lambda <- exp(mu_vals) * library_size / total_exp_mu_per_cell
         # NUOVO: Limita lambda per evitare valori estremi
         lambda <- pmin(lambda, 5000)  # Max 5000 UMI per gene (realistico per Visium HD)
         n_trial <- round(lambda/(1-p))
         raw_counts <- rbinom(N, n_trial, p)
       } else {
         # Negative Binomial con dispersione variabile spazialmente
-        # Scala exp(mu) per frazione di library size dedicata a questo gene
-        lambda <- exp(mu_vals) * library_size / n_expressed_genes
+        # CORREZIONE: Scala exp(mu) usando frazione dell'espressione totale per questo gene
+        lambda <- exp(mu_vals) * library_size / total_exp_mu_per_cell
         # NUOVO: Limita lambda per evitare valori estremi
         lambda <- pmin(lambda, 5000)  # Max 5000 UMI per gene (realistico per Visium HD)
         raw_counts <- rnbinom(N, mu = lambda, size = dispersion_param)
@@ -240,10 +247,11 @@ generate_expression_matrix <- function(
   })
   
   # Combina i risultati dei chunk in una singola matrice di espressione
-  expression_data <- matrix(0, nrow = N, ncol = n_genes)
+  # CORREZIONE: matrice orientata come geni × celle (standard)
+  expression_data <- matrix(0, nrow = n_genes, ncol = N)
   for (i in seq_along(gene_chunks)) {
     genes_subset <- gene_chunks[[i]]
-    expression_data[, genes_subset] <- expression_chunks[[i]]
+    expression_data[genes_subset, ] <- t(expression_chunks[[i]])
   }
   
   # Aggiungi contaminazione da RNA ambientale se richiesto
@@ -262,10 +270,60 @@ generate_expression_matrix <- function(
     )
   }
   
-  # NUOVO: Validazione biologica finale
+  # NUOVO: Post-scaling per garantire library size target
+  # Calcola UMI totali attuali per cella
+  actual_umi_per_cell <- Matrix::colSums(expression_data)
+
+  # DEBUG: Stampa statistiche pre-scaling per grandi dataset
+  cat("DEBUG - Pre-scaling: mean UMI =", round(mean(actual_umi_per_cell)), ", target =", round(mean(library_size)), "\n")
+  cat("DEBUG - actual_umi_per_cell summary:\n"); print(summary(actual_umi_per_cell))
+
+  # Verifica dimensioni (ora corrette)
+  if (length(actual_umi_per_cell) != length(library_size)) {
+    stop("Errore dimensioni: library_size (", length(library_size), ") vs celle (", length(actual_umi_per_cell), ")")
+  }
+
+  # Calcola fattori di scala per raggiungere library size target
+  scale_factors <- library_size / actual_umi_per_cell
+  cat("DEBUG - scale_factors summary (prima del cap):\n"); print(summary(scale_factors))
+
+  # Gestisci celle con actual_umi_per_cell < 1 (evita scaling eccessivo)
+  low_umi_cells <- which(actual_umi_per_cell < 1)
+  if (length(low_umi_cells) > 0) {
+    cat("ATTENZIONE: Celle con UMI < 1 prima dello scaling:", length(low_umi_cells), "\n")
+    actual_umi_per_cell[low_umi_cells] <- 1
+    scale_factors[low_umi_cells] <- library_size[low_umi_cells]
+  }
+
+  # Limita i fattori di scaling a un range ragionevole (più severo)
+  scale_factors <- pmax(scale_factors, 0.1)
+  scale_factors <- pmin(scale_factors, 5)
+  cat("DEBUG - scale_factors summary (dopo il cap):\n"); print(summary(scale_factors))
+
+  # Applica scaling mantenendo la struttura sparsa
+  expression_data <- expression_data %*% Matrix::Diagonal(x = scale_factors)
+
+  # Arrotonda per ottenere counts interi
+  expression_data@x <- round(expression_data@x)
+  expression_data <- Matrix::drop0(expression_data)
+
+  # Report post-scaling (sempre, per debug)
+  final_umi_per_cell <- Matrix::colSums(expression_data)
+  cat("DEBUG - Post-scaling: mean UMI =", round(mean(final_umi_per_cell)), ", target =", round(mean(library_size)), "\n")
+  cat("DEBUG - final_umi_per_cell summary:\n"); print(summary(final_umi_per_cell))
+
+  # NUOVO: Validazione biologica finale (con parametri ottimizzati)
   # Controlla e corregge eventuali valori biologicamente irrealistici
   expression_data <- validate_biological_plausibility(expression_data)
-  
+
+  # FILTRO HARD: azzera tutte le celle con UMI > 50k
+  final_umi_per_cell <- Matrix::colSums(expression_data)
+  cells_over_hard_cap <- which(final_umi_per_cell > 50000)
+  if (length(cells_over_hard_cap) > 0) {
+    cat(sprintf("FILTRO HARD: %d celle con >50k UMI sono state azzerate post-validazione\n", length(cells_over_hard_cap)))
+    expression_data[, cells_over_hard_cap] <- 0
+  }
+
   return(expression_data)
 }
 
@@ -305,7 +363,11 @@ validate_biological_plausibility <- function(expression_matrix) {
     expression_matrix@x <- round(expression_matrix@x)
     
     # Verifica che il cap sia stato applicato
-    new_totals <- Matrix::colSums(expression_matrix[, cells_over_limit])
+    if (length(cells_over_limit) > 1) {
+      new_totals <- Matrix::colSums(expression_matrix[, cells_over_limit, drop = FALSE])
+    } else {
+      new_totals <- sum(expression_matrix[, cells_over_limit, drop = FALSE])
+    }
     if (any(new_totals > max_umi_per_cell * 1.1)) {
       cat("ATTENZIONE: Alcune celle ancora sopra il limite dopo correzione\n")
     }
@@ -329,6 +391,7 @@ validate_biological_plausibility <- function(expression_matrix) {
   cat(sprintf("- Max UMI per valore: %d\n", max(expression_matrix@x)))
   cat(sprintf("- Max UMI per cella: %d\n", max(final_cell_totals)))
   cat(sprintf("- Mediana UMI per cella: %.0f\n", median(final_cell_totals)))
+  cat(sprintf("- Media UMI per cella: %.0f\n", mean(final_cell_totals)))
   cat(sprintf("- Media espressione (non-zero): %.2f\n", mean(expression_matrix@x)))
   cat(sprintf("- Celle con >%dk UMI: %d\n", max_umi_per_cell/1000, sum(final_cell_totals > max_umi_per_cell)))
   

@@ -83,10 +83,15 @@ generate_library_sizes <- function(
     library_size <- library_size * exp(cell_type_effect)
   }
   
-  # Debug: stampa statistiche library size
-  cat("DEBUG - Library size stats: mean =", round(mean(library_size)), 
+  # Applica cap ai valori di library_size per evitare outlier estremi
+  library_size <- pmax(library_size, 1000)
+  library_size <- pmin(library_size, 30000)
+
+  # Debug: stampa statistiche library size dopo il cap
+  cat("DEBUG - Library size (capped) stats: mean =", round(mean(library_size)), 
       ", median =", round(median(library_size)), 
       ", range = [", round(min(library_size)), ",", round(max(library_size)), "]\n")
-  
+  print(summary(library_size))
+
   return(library_size)
 }

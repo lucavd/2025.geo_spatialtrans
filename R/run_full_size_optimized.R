@@ -46,13 +46,16 @@ cfg <- initialize_simulation_config(
 diff_cfg <- configure_difficulty_level("medium")
 
 # Sovrascrivi con parametri biologicamente realistici
-# Library size parameters
+# Library size parameters (ottimizzati per UMI realistici)
 diff_cfg$cell_specific_params$library_size_params <- list(
-  mean_library_size = 8000,      # Validato per Visium HD
-  library_size_cv = 0.3,         # 30% CV tipico
+  mean_library_size = 7000,      # Bilanciato per range realistico
+  library_size_cv = 0.28,        # CV intermedio
   spatial_effect_on_library = 0.1,  # Leggero effetto spaziale
   cell_type_effect = TRUE          # Variazione per tipo cellulare
 )
+
+# Aggiungi al livello principale per compatibilità wrapper
+diff_cfg$library_size_params <- diff_cfg$cell_specific_params$library_size_params
 
 # Dropout parameters ottimizzati
 diff_cfg$dropout_params$dropout_range <- c(0.4, 0.6)  # Range realistico
