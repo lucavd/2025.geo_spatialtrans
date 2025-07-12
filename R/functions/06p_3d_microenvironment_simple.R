@@ -320,7 +320,7 @@ generate_3d_microenvironment <- function(
   return(list(
     expr_matrix = overlap_result$expr_matrix,
     depth_field = depth_field,
-    dist_3d = dist_3d,
+    dist_3d = NULL,
     overlap_matrix = overlap_result$overlap_matrix
   ))
 }

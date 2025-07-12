@@ -887,21 +887,21 @@ plot_expression_distribution <- function(sim_results, marker_genes = NULL,
       }
     } else {
       # Per matrici dense, usa l'approccio originale
-      expr_t <- t(sim_results$expression)
+      # Estrai solo campioni per evitare allocazione di grandi matrici trasposte
       plot_data <- data.frame()
-      
       for (category in category_order) {
         cat_idx <- which(gene_categories == category)
         if (length(cat_idx) > 0) {
-          counts <- as.vector(expr_t[, cat_idx])
-          counts <- counts[counts > 0 & counts <= max_count]
-          
-          if (length(counts) > 0) {
-            df <- data.frame(
-              counts = counts,
-              type = category
-            )
-            plot_data <- rbind(plot_data, df)
+          for (j in cat_idx) {
+            counts <- sim_results$expression[j, ]
+            counts <- counts[counts > 0 & counts <= max_count]
+            if (length(counts) > 0) {
+              df <- data.frame(
+                counts = counts,
+                type = category
+              )
+              plot_data <- rbind(plot_data, df)
+            }
           }
         }
       }

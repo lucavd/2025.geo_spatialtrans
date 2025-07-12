@@ -130,8 +130,8 @@ generate_expression_matrix <- function(
     )
   }
   
-  # Genera l'espressione genica in chunk
-  chunk_size <- max(5, ceiling(n_genes/32))
+  # Genera l'espressione genica in chunk (chunk molto più piccoli per risparmio memoria)
+  chunk_size <- max(2, ceiling(n_genes/128))
   gene_chunks <- split(seq_len(n_genes), ceiling(seq_len(n_genes)/chunk_size))
   
   # Usa parallelizzazione con future_lapply se disponibile
@@ -246,12 +246,14 @@ generate_expression_matrix <- function(
     return(chunk_expression)
   })
   
-  # Combina i risultati dei chunk in una singola matrice di espressione
-  # CORREZIONE: matrice orientata come geni × celle (standard)
-  expression_data <- matrix(0, nrow = n_genes, ncol = N)
+  # Combina i risultati dei chunk in una singola matrice sparse (dgCMatrix)
+  library(Matrix)
+  sparse_chunks <- lapply(expression_chunks, function(chunk) Matrix(chunk, sparse=TRUE))
+  # Crea una matrice sparse vuota
+  expression_data <- Matrix::Matrix(0, nrow = n_genes, ncol = N, sparse = TRUE)
   for (i in seq_along(gene_chunks)) {
     genes_subset <- gene_chunks[[i]]
-    expression_data[genes_subset, ] <- t(expression_chunks[[i]])
+    expression_data[genes_subset, ] <- sparse_chunks[[i]]
   }
   
   # Aggiungi contaminazione da RNA ambientale se richiesto

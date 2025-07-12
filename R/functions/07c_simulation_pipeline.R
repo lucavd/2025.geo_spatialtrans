@@ -88,12 +88,15 @@ run_simulation_pipeline <- function(
   # Inizializza una lista per metadati dei moduli
   module_metadata <- list()
   
-  # Calcola la matrice di distanza una volta sola se necessaria
-  dist_mat <- NULL
+  # Calcola solo statistiche locali se richieste, senza allocare dist_mat
+  mean_dist <- NULL
+  local_density <- NULL
   if (config$lr_params$use_lr_interactions || 
       config$anisotropic_params$use_anisotropic_patterns ||
       config$micro3d_params$use_3d_microenvironment) {
-    dist_mat <- as.matrix(dist(cell_df[, c("x", "y")]))
+    dist_stats <- compute_spatial_distance_stats(cell_df)
+    mean_dist <- dist_stats$mean_dist
+    local_density <- dist_stats$local_density
   }
   
   # 5.1. Ligand-Receptor Interactions

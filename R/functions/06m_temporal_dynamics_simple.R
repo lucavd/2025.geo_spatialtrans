@@ -613,8 +613,9 @@ generate_temporal_dynamics <- function(
   }
   
   # 4. Genera velocità RNA se richiesto
-  velocity <- matrix(0, nrow = n_cells, ncol = n_genes)
-  unspliced <- matrix(0, nrow = n_cells, ncol = n_genes)
+  library(Matrix)
+  velocity <- Matrix(0, nrow = n_cells, ncol = n_genes, sparse = TRUE)
+  unspliced <- Matrix(0, nrow = n_cells, ncol = n_genes, sparse = TRUE)
   
   # Controlla se generare velocità
   include_velocity <- temporal_params$include_velocity

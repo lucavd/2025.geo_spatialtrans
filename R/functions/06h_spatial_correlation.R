@@ -106,15 +106,21 @@ generate_spatial_correlation <- function(
       } else {
         # Versione originale del CAR
         coords <- coordinates(sp_df)
-        dist_mat <- as.matrix(dist(coords))
-        
-        # Crea una matrice di pesi per i vicini
+        # Calcola pesi solo per vicini entro soglia, in modo sparso
+        library(Matrix)
+        N <- nrow(coords)
         threshold_dist <- spatial_params$spatial_range * 0.5
-        W <- (dist_mat <= threshold_dist) * (1 - dist_mat/threshold_dist)
-        diag(W) <- 0
-        
+        i_idx <- c(); j_idx <- c(); x_val <- c()
+        for (i in 1:N) {
+          dists <- sqrt((coords[i,1] - coords[,1])^2 + (coords[i,2] - coords[,2])^2)
+          neighbors <- which(dists <= threshold_dist & dists > 0)
+          i_idx <- c(i_idx, rep(i, length(neighbors)))
+          j_idx <- c(j_idx, neighbors)
+          x_val <- c(x_val, 1 - dists[neighbors]/threshold_dist)
+        }
+        W <- sparseMatrix(i=i_idx, j=j_idx, x=x_val, dims=c(N,N))
         # Normalizza i pesi
-        W <- sweep(W, 1, rowSums(W) + 1e-10, "/")
+        W <- Matrix::Diagonal(x=1/(Matrix::rowSums(W) + 1e-10)) %*% W
         
         # Genera rumore base
         base_noise <- rnorm(nrow(coords))

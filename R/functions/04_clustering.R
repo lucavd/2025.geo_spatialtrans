@@ -149,14 +149,20 @@ slic_clustering <- function(img_df_thresh, k_cell_types, random_seed = 123) {
     
     # Converti i dati in una matrice
     # Inizializza una matrice vuota
-    img_matrix <- matrix(NA, nrow = height, ncol = width)
-    
-    # Riempie la matrice con i valori di intensità
-    for (i in 1:nrow(img_df_thresh)) {
-      x <- img_df_thresh$x[i]
-      y <- img_df_thresh$y[i]
-      if (x >= 1 && x <= width && y >= 1 && y <= height) {
-        img_matrix[y, x] <- img_df_thresh$value[i]
+    # Se l'immagine è troppo grande, crea img_matrix solo per i pixel presenti
+    if (width * height > 1e6) {
+      idx <- (img_df_thresh$y - 1) * width + img_df_thresh$x
+      img_matrix <- rep(NA, width * height)
+      img_matrix[idx] <- img_df_thresh$value
+      img_matrix <- matrix(img_matrix, nrow = height, ncol = width)
+    } else {
+      img_matrix <- matrix(NA, nrow = height, ncol = width)
+      for (i in 1:nrow(img_df_thresh)) {
+        x <- img_df_thresh$x[i]
+        y <- img_df_thresh$y[i]
+        if (x >= 1 && x <= width && y >= 1 && y <= height) {
+          img_matrix[y, x] <- img_df_thresh$value[i]
+        }
       }
     }
     
@@ -537,4 +543,218 @@ dbscan_graph_pipeline <- function(img_df_thresh, k_cell_types, random_seed = 123
   )
   
   return(final_result)
+}
+
+#' Esegue clustering basato su profili di espressione
+#'
+#' @param cell_df Dataframe delle celle con coordinate 
+#' @param n_genes Numero di geni da simulare
+#' @param k_cell_types Numero di tipi cellulari target
+#' @param expression_params Parametri per generazione espressione
+#' @param random_seed Seed per riproducibilità
+#' @param clustering_method Metodo di clustering ("graph", "louvain", "leiden")
+#' @param n_pcs Numero di componenti principali da usare (default: 50)
+#' @param k_neighbors Numero di vicini per costruire il grafo (default: 15)
+#' @param resolution Risoluzione per clustering (default: 0.8)
+#' @return Lista con cluster finali e matrice di espressione
+#' @export
+expression_based_clustering <- function(
+  cell_df,
+  n_genes,
+  k_cell_types,
+  expression_params = NULL,
+  random_seed = 123,
+  clustering_method = "louvain",
+  n_pcs = 50,
+  k_neighbors = 15,
+  resolution = 0.8
+) {
+  set.seed(random_seed)
+  
+  # Assegna cluster iniziali casuali per generare espressione diversificata
+  cell_df$intensity_cluster <- sample(1:k_cell_types, nrow(cell_df), replace = TRUE)
+  
+  # Genera profili di espressione iniziali
+  cat("Generazione profili di espressione per clustering...\n")
+  
+  if (is.null(expression_params)) {
+    # Usa parametri di default semplificati
+    expression_params <- list(
+      marker_params = list(
+        marker_genes_per_type = 20,
+        marker_expression_fold = 2.0,
+        marker_overlap_fold = 0.1
+      ),
+      spatial_params = list(
+        spatial_noise_intensity = 0.8,
+        spatial_range = 25,
+        random_noise_sd = 0.3
+      ),
+      dropout_params = list(
+        dropout_range = c(0.3, 0.5),
+        dispersion_range = c(8.0, 4.0)
+      ),
+      cell_specific_params = list(
+        library_size_params = list(
+          mean_library_size = 5000,
+          library_size_cv = 0.25
+        )
+      )
+    )
+  }
+  
+  # Genera espressione con parametri semplificati
+  expr_result <- generate_expression_profiles(
+    cell_df = cell_df,
+    n_genes = n_genes,
+    k_cell_types = k_cell_types,
+    marker_params = expression_params$marker_params,
+    spatial_params = expression_params$spatial_params,
+    dropout_params = expression_params$dropout_params,
+    cell_specific_params = expression_params$cell_specific_params,
+    use_spatial_correlation = TRUE,
+    correlation_method = "grf",
+    random_seed = random_seed
+  )
+  
+  # Prepara matrice per clustering
+  expr_matrix <- expr_result$expression
+  if (nrow(expr_matrix) != n_genes) {
+    expr_matrix <- t(expr_matrix)
+  }
+  
+  # Normalizzazione log
+  expr_matrix <- expr_matrix + 1  # Pseudo-count
+  expr_matrix <- log2(expr_matrix)
+  
+  # PCA per riduzione dimensionalità
+  cat("Calcolo PCA per riduzione dimensionalità...\n")
+  n_pcs <- min(n_pcs, nrow(expr_matrix) - 1, ncol(expr_matrix) - 1)
+  
+  if (n_pcs > 0) {
+    # Usa SVD per stabilità numerica
+    expr_scaled <- scale(t(expr_matrix))
+    svd_result <- svd(expr_scaled)
+    pca_coords <- svd_result$u[, 1:n_pcs, drop = FALSE] %*% diag(svd_result$d[1:n_pcs], nrow = n_pcs)
+  } else {
+    pca_coords <- t(expr_matrix)
+  }
+  
+  # Clustering basato su espressione
+  cat("Clustering basato su espressione...\n")
+  
+  if (clustering_method == "graph" || clustering_method == "louvain") {
+    # Usa clustering a grafo
+    final_clusters <- expression_graph_clustering(
+      pca_coords, 
+      k_neighbors = k_neighbors, 
+      resolution = resolution, 
+      method = "louvain",
+      random_seed = random_seed
+    )
+  } else if (clustering_method == "leiden") {
+    # Usa clustering Leiden
+    final_clusters <- expression_graph_clustering(
+      pca_coords, 
+      k_neighbors = k_neighbors, 
+      resolution = resolution, 
+      method = "leiden",
+      random_seed = random_seed
+    )
+  } else {
+    # Fallback a k-means su PCA
+    warning("Metodo non riconosciuto, usando k-means su PCA")
+    kmeans_result <- kmeans(pca_coords, centers = k_cell_types, nstart = 10)
+    final_clusters <- kmeans_result$cluster
+  }
+  
+  # Aggiorna cell_df con i cluster finali
+  cell_df$intensity_cluster <- as.factor(final_clusters)
+  
+  cat("Clustering completato. Cluster trovati:", length(unique(final_clusters)), "\n")
+  
+  return(list(
+    cell_df = cell_df,
+    expression_matrix = expr_result$expression,
+    pca_coords = pca_coords,
+    clusters = final_clusters
+  ))
+}
+
+#' Clustering a grafo su spazio di espressione
+#'
+#' @param pca_coords Coordinate PCA
+#' @param k_neighbors Numero di vicini
+#' @param resolution Risoluzione clustering
+#' @param method Metodo ("louvain" o "leiden")
+#' @param random_seed Seed
+#' @return Vettore di cluster
+expression_graph_clustering <- function(pca_coords, k_neighbors = 15, resolution = 0.8, 
+                                       method = "louvain", random_seed = 123) {
+  set.seed(random_seed)
+  
+  # Verifica disponibilità pacchetti
+  if (!requireNamespace("igraph", quietly = TRUE)) {
+    warning("Pacchetto 'igraph' non disponibile. Usando k-means.")
+    kmeans_result <- kmeans(pca_coords, centers = ceiling(nrow(pca_coords) / 100), nstart = 10)
+    return(kmeans_result$cluster)
+  }
+  
+  n_cells <- nrow(pca_coords)
+  k_neighbors <- min(k_neighbors, n_cells - 1)
+  
+  # Costruisci grafo k-NN
+  if (requireNamespace("FNN", quietly = TRUE)) {
+    # Usa FNN per efficienza
+    library(FNN)
+    nn_result <- get.knn(pca_coords, k = k_neighbors)
+    
+    # Costruisci matrice di adiacenza
+    if (requireNamespace("Matrix", quietly = TRUE)) {
+      library(Matrix)
+      adj_matrix <- sparseMatrix(
+        i = rep(1:n_cells, each = k_neighbors),
+        j = as.vector(nn_result$nn.index),
+        x = 1,
+        dims = c(n_cells, n_cells)
+      )
+      
+      # Rendi simmetrico
+      adj_matrix <- adj_matrix + t(adj_matrix)
+      adj_matrix@x[adj_matrix@x > 0] <- 1
+    } else {
+      # Fallback a matrice densa
+      adj_matrix <- matrix(0, nrow = n_cells, ncol = n_cells)
+      for (i in 1:n_cells) {
+        neighbors <- nn_result$nn.index[i, ]
+        adj_matrix[i, neighbors] <- 1
+        adj_matrix[neighbors, i] <- 1
+      }
+    }
+    
+  } else {
+    # Fallback usando distanze euclidee
+    # Calcola solo i k vicini più prossimi per ogni cella senza allocare tutta la matrice
+    adj_matrix <- matrix(0, nrow = n_cells, ncol = n_cells)
+    for (i in 1:n_cells) {
+      dists <- sqrt(rowSums((t(t(pca_coords) - pca_coords[i,]))^2))
+      neighbors <- order(dists)[2:(k_neighbors + 1)]
+      adj_matrix[i, neighbors] <- 1
+      adj_matrix[neighbors, i] <- 1
+    }
+  }
+  
+  # Crea grafo igraph
+  g <- igraph::graph_from_adjacency_matrix(adj_matrix, mode = "undirected")
+  
+  # Applica clustering
+  if (method == "leiden" && requireNamespace("leidenalg", quietly = TRUE)) {
+    # Usa algoritmo Leiden se disponibile
+    communities <- igraph::cluster_leiden(g, resolution_parameter = resolution)
+  } else {
+    # Usa Louvain come default
+    communities <- igraph::cluster_louvain(g, resolution = resolution)
+  }
+  
+  return(igraph::membership(communities))
 }

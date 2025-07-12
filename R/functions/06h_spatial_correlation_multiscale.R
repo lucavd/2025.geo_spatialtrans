@@ -275,13 +275,11 @@ generate_multidomain_correlation <- function(
   
   if (blend_regions) {
     # Calcola distanze dai confini dei domini
-    domain_dists <- matrix(Inf, nrow = N, ncol = n_domains)
-    for (d in 1:n_domains) {
-      domain_cells <- which(domains == d)
-      non_domain_cells <- which(domains != d)
-      
-      # Per ogni cella nel dominio, calcola la distanza minima alle celle fuori dominio
-      if (length(domain_cells) > 0 && length(non_domain_cells) > 0) {
+    domain_dists <- matrix(NA, nrow=N, ncol=n_domains)
+    for (i in 1:N) {
+      for (d in 1:n_domains) {
+        domain_center <- domain_centers[[d]]
+        domain_dists[i, d] <- sqrt((coords[i,1] - domain_center[1])^2 + (coords[i,2] - domain_center[2])^2)
         for (i in domain_cells) {
           domain_dists[i, d] <- min(sqrt(rowSums((coords[non_domain_cells,] - 
                                                  matrix(coords[i,], 

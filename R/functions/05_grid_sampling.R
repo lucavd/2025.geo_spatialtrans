@@ -107,7 +107,11 @@ create_sampling_grid <- function(img_df_thresh, img_array, img_width, img_height
         iy <- floor(rel_y[in_img] / pixel_size_um) + 1
         ix <- pmin(pmax(ix, 1), img_width)
         iy <- pmin(pmax(iy, 1), img_height)
-        value[in_img] <- img_array[cbind(ix, iy)]
+        
+        # Assicurati che gli indici siano nei limiti dell'array reale
+        ix <- pmin(pmax(ix, 1), dim(img_array)[2])
+        iy <- pmin(pmax(iy, 1), dim(img_array)[1])
+        value[in_img] <- img_array[cbind(iy, ix)]
       }
       # Filter by threshold
       keep <- value < threshold_value
@@ -131,22 +135,36 @@ create_sampling_grid <- function(img_df_thresh, img_array, img_width, img_height
     }
     
       # Assign cluster using k-means centroids of the original image
-      cluster_levels    <- levels(img_df_thresh$intensity_cluster)
+      cluster_levels    <- levels(factor(img_df_thresh$intensity_cluster))
       cluster_centroids <- sapply(cluster_levels, function(cl) {
-        mean(img_df_thresh$value[img_df_thresh$intensity_cluster == cl])
+        cl_values <- img_df_thresh$value[img_df_thresh$intensity_cluster == cl]
+        if (length(cl_values) > 0) {
+          mean(cl_values)
+        } else {
+          0.5  # Default fallback value
+        }
       })
+      
+      # Ensure cluster_centroids is properly named
+      names(cluster_centroids) <- cluster_levels
+      
       # Find nearest centroid per point (min abs difference)
       n_pts <- nrow(grid_df)
       best_idx  <- integer(n_pts)
-      best_dist <- abs(grid_df$value - cluster_centroids[1])
-      best_idx[] <- 1
-      for (j in seq_along(cluster_centroids)[-1]) {
-        d_j <- abs(grid_df$value - cluster_centroids[j])
-        mask <- d_j < best_dist
-        if (any(mask)) {
-          best_dist[mask] <- d_j[mask]
-          best_idx[mask]  <- j
+      if (length(cluster_centroids) > 0) {
+        best_dist <- abs(grid_df$value - cluster_centroids[1])
+        best_idx[] <- 1
+        for (j in seq_along(cluster_centroids)[-1]) {
+          d_j <- abs(grid_df$value - cluster_centroids[j])
+          mask <- d_j < best_dist
+          if (any(mask)) {
+            best_dist[mask] <- d_j[mask]
+            best_idx[mask]  <- j
+          }
         }
+      } else {
+        # Fallback if no clusters found
+        best_idx[] <- 1
       }
       grid_df$intensity_cluster <- factor(cluster_levels[best_idx], levels = cluster_levels)
       # Final cell_df

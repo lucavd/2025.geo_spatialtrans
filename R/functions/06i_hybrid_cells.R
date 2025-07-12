@@ -39,7 +39,9 @@ generate_hybrid_cells <- function(
     hybrid_pairs <- list()
     for (i in 1:N) {
       # Trova cellule vicine (tra le 20 più vicine)
-      neighbors <- order(dist_mat[i,])[2:20]
+      # Calcola distanze solo verso le 20 celle più vicine (non tutta la riga)
+      dists <- sqrt((cell_df$x[i] - cell_df$x)^2 + (cell_df$y[i] - cell_df$y)^2)
+      neighbors <- order(dists)[2:20]
       diff_cluster_neighbors <- neighbors[cluster_labels[neighbors] != cluster_labels[i]]
       
       # Se ci sono vicini di cluster diversi, aggiungi alla lista

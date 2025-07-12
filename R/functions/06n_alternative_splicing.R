@@ -418,23 +418,29 @@ generate_splicing_expression <- function(
     stringsAsFactors = FALSE
   )
   
+  # Costruisci all_variants solo per varianti effettivamente presenti, senza rbind massivo
+  all_variants_list <- list()
+  idx <- 1
   for (gene_key in names(splicing_info)) {
     gene_info <- splicing_info[[gene_key]]
     gene_id <- gene_info$gene_id
-    
     for (v in 1:gene_info$n_variants) {
       variant_id <- gene_info$variant_ids[v]
-      all_variants <- rbind(all_variants, data.frame(
+      all_variants_list[[idx]] <- data.frame(
         variant_id = variant_id,
         gene_id = gene_id,
         variant_index = v,
         stringsAsFactors = FALSE
-      ))
+      )
+      idx <- idx + 1
     }
   }
+  all_variants <- do.call(rbind, all_variants_list)
   
   # Crea una matrice per l'espressione di tutte le varianti
-  variant_matrix <- matrix(0, nrow = n_cells, ncol = nrow(all_variants))
+  # Crea variant_matrix come matrice sparsa
+  library(Matrix)
+  variant_matrix <- Matrix(0, nrow = nrow(modified_expression), ncol = nrow(all_variants), sparse = TRUE)
   colnames(variant_matrix) <- all_variants$variant_id
   
   # Riempie la matrice con l'espressione delle varianti

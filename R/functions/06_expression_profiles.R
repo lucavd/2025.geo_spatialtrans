@@ -99,7 +99,16 @@ generate_expression_profiles <- function(
   N <- nrow(cell_df)
   cluster_labels <- cell_df$intensity_cluster
   coords <- cell_df %>% dplyr::select(x, y)
-  dist_mat <- as.matrix(dist(coords))
+  # Calcolo distanze solo per statistiche locali, senza allocare matrice completa
+  mean_dist <- numeric(N)
+  local_density <- numeric(N)
+  for (i in 1:N) {
+    same_cluster <- which(cluster_labels == cluster_labels[i])
+    dists <- sqrt((coords$x[i] - coords$x[same_cluster])^2 + (coords$y[i] - coords$y[same_cluster])^2)
+    mean_dist[i] <- mean(dists)
+    q <- quantile(dists, 0.1)
+    local_density[i] <- mean(dists < q)
+  }
   
   # Calcola la distanza media di ciascuna cellula rispetto alle altre del proprio cluster
   # Versione vettorizzata e ottimizzata
@@ -476,11 +485,13 @@ generate_expression_profiles <- function(
     return(chunk_expression)
   }, future.scheduling = 1, future.seed = TRUE) # Fine del future_lapply
   
-  # Combina i risultati dei chunk in una singola matrice di espressione
-  expression_data <- matrix(0, nrow = N, ncol = n_genes)
+  # Combina i risultati dei chunk in una singola matrice sparse (dgCMatrix)
+  library(Matrix)
+  sparse_chunks <- lapply(expression_chunks, function(chunk) Matrix(chunk, sparse=TRUE))
+  expression_data <- Matrix::Matrix(0, nrow = N, ncol = n_genes, sparse = TRUE)
   for (i in seq_along(gene_chunks)) {
     genes_subset <- gene_chunks[[i]]
-    expression_data[, genes_subset] <- expression_chunks[[i]]
+    expression_data[, genes_subset] <- sparse_chunks[[i]]
   }
   
   # Prepara l'output

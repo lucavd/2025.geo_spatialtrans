@@ -21,7 +21,17 @@ calculate_spatial_distances <- function(
   N <- nrow(cell_df)
   cluster_labels <- cell_df$intensity_cluster
   coords <- cell_df %>% dplyr::select(x, y)
-  dist_mat <- as.matrix(dist(coords))
+  # Calcolo chunked di distanze per evitare allocazione densa
+  # NOTA: dist_mat completo evitato per risparmio memoria
+  mean_dist <- numeric(N)
+  local_density <- numeric(N)
+  for (i in 1:N) {
+    same_cluster <- which(cluster_labels == cluster_labels[i])
+    dists <- sqrt((coords$x[i] - coords$x[same_cluster])^2 + (coords$y[i] - coords$y[same_cluster])^2)
+    mean_dist[i] <- mean(dists)
+    q <- quantile(dists, 0.1)
+    local_density[i] <- mean(dists < q)
+  }
   
   # Calcola la dimensione ottimale del chunk se non fornita
   if (is.null(chunk_size)) {
@@ -31,33 +41,18 @@ calculate_spatial_distances <- function(
   # Dividi in chunks per ottimizzare l'elaborazione
   chunks <- split(1:N, ceiling(seq_along(1:N)/chunk_size))
   
-  # Calcola la distanza media per ciascuna cellula rispetto alle altre del proprio cluster
-  mean_dist <- lapply(chunks, function(chunk_idx) {
-    result <- numeric(length(chunk_idx))
-    for (j in seq_along(chunk_idx)) {
-      i <- chunk_idx[j]
-      cl <- cluster_labels[i]
-      same_cluster <- which(cluster_labels == cl)
-      result[j] <- mean(dist_mat[i, same_cluster])
-    }
-    return(result)
-  }) %>% unlist()
-  
-  # Calcola la densità locale (per il modello di dropout)
-  local_density <- lapply(chunks, function(chunk_idx) {
-    result <- numeric(length(chunk_idx))
-    for (j in seq_along(chunk_idx)) {
-      i <- chunk_idx[j]
-      row <- dist_mat[i,]
-      q <- quantile(row, 0.1)
-      result[j] <- mean(row < q)
-    }
-    return(result)
-  }) %>% unlist()
-  
-  # Restituisci i risultati
+  # Calcola la distanza media e densità locale SENZA dist_mat
+  mean_dist <- numeric(N)
+  local_density <- numeric(N)
+  for (i in 1:N) {
+    same_cluster <- which(cluster_labels == cluster_labels[i])
+    dists <- sqrt((coords$x[i] - coords$x[same_cluster])^2 + (coords$y[i] - coords$y[same_cluster])^2)
+    mean_dist[i] <- mean(dists)
+    q <- quantile(dists, 0.1)
+    local_density[i] <- mean(dists < q)
+  }
+  # Restituisci solo le statistiche
   return(list(
-    dist_mat = dist_mat,
     mean_dist = mean_dist,
     local_density = local_density
   ))

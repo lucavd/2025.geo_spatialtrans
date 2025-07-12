@@ -17,6 +17,14 @@ library(sp)
 library(gstat)
 library(tictoc)
 
+# Librerie aggiuntive per clustering basato su espressione
+if (!requireNamespace("FNN", quietly = TRUE)) {
+  cat("Nota: Pacchetto FNN non disponibile. Performance del clustering potrebbe essere ridotta.\n")
+}
+if (!requireNamespace("igraph", quietly = TRUE)) {
+  cat("Nota: Pacchetto igraph non disponibile. Clustering basato su espressione potrebbe fallire.\n")
+}
+
 # Configurazione per la memoria
 options(future.globals.maxSize = 200 * 1024^2)  # 200 GB per simulazioni full-size
 options(future.rng.onMisuse = "ignore")
@@ -29,10 +37,11 @@ cfg <- initialize_simulation_config(
   image_path          = "images/granuloma.png",
   output_path         = "results/visiumHD_biological.rds",
   output_plot         = "results/visiumHD_biological.png",
-  n_genes             = 20000,     # Numero realistico di geni per Visium HD
-  k_cell_types        = 10,
-  threshold_value     = 0.7,
-  random_seed         = 42,
+  n_genes             = 2000,      # DEBUG: ridotto per testare senza saturare RAM
+  n_cells             = 5000,      # DEBUG: ridotto per testare senza saturare RAM
+  k_cell_types        = 4,         # DEBUG: meno cluster per test rapido
+  threshold_value     = 0.7,       # Threshold per segmentazione
+  random_seed         = 42,        # Seed per riproducibilità
   pixel_size_um       = pixel_size_um,
   grid_mode           = TRUE,
   grid_resolution     = 30,        # Griglia fitta per Visium HD
@@ -79,6 +88,9 @@ validate <- TRUE
 use_synthetic_image <- TRUE   # Imposta a FALSE per usare immagine reale
 synthetic_complexity <- 2     # 1=blob, 2=Voronoi, 3=mix
 
+# --- NUOVO: flag per clustering basato su espressione ---------------------
+use_expression_clustering <- TRUE  # Imposta a FALSE per usare clustering su intensità
+
 # 4. Preparazione immagine e clustering
 if (use_synthetic_image) {
   tic("Generazione immagine sintetica")
@@ -110,34 +122,99 @@ if (use_synthetic_image) {
   toc()
 }
 
-clust <- cluster_image(
-  img_df_thresh = img_dat$img_df_thresh,
-  k_cell_types  = cfg$k_cell_types,
-  random_seed   = cfg$random_seed,
-  clustering_method = "dbscan_graph"  # Usa pipeline DBSCAN + Graph clustering
-)
-# Rimuovi punti senza cluster assegnato (NA)
-clust <- clust[!is.na(clust$intensity_cluster), ]
+if (use_expression_clustering) {
+  # NUOVO APPROCCIO: Clustering basato su espressione
+  cat("=== CLUSTERING BASATO SU ESPRESSIONE ===\n")
+  
+  # 5a. Creazione griglia SENZA clustering preliminare
+  tic("Creazione griglia")
+  # Aggiungi intensity_cluster temporaneo per compatibilità
+  img_df_thresh_with_cluster <- img_dat$img_df_thresh
+  img_df_thresh_with_cluster$intensity_cluster <- 1
+  
+  cell_df <- create_sampling_grid(
+    img_df_thresh         = img_df_thresh_with_cluster,
+    img_array             = img_dat$img_array,
+    img_width             = img_dat$width,
+    img_height            = img_dat$height,
+    grid_mode             = cfg$grid_mode,
+    grid_resolution       = cfg$grid_resolution,
+    grid_spacing          = cfg$grid_spacing,
+    use_fixed_grid        = cfg$use_fixed_grid,
+    fixed_grid_width_mm   = cfg$fixed_grid_width_mm,
+    fixed_grid_height_mm  = cfg$fixed_grid_height_mm,
+    pixel_size_um         = cfg$pixel_size_um,
+    threshold_value       = cfg$threshold_value,
+    random_seed           = cfg$random_seed
+  )
+  cat("Punti generati:", nrow(cell_df), "\n")
+  toc()
+  
+  # 5b. Expression-based clustering
+  tic("Expression-based clustering")
+  
+  # Prepara parametri per expression clustering
+  expression_params <- list(
+    marker_params = diff_cfg$marker_params,
+    spatial_params = diff_cfg$spatial_params,
+    dropout_params = diff_cfg$dropout_params,
+    cell_specific_params = diff_cfg$cell_specific_params
+  )
+  
+  # Applica clustering basato su espressione
+  clustering_result <- expression_based_clustering(
+    cell_df = cell_df,
+    n_genes = cfg$n_genes,
+    k_cell_types = cfg$k_cell_types,
+    expression_params = expression_params,
+    random_seed = cfg$random_seed,
+    clustering_method = "louvain",
+    n_pcs = 50,                    # Ottimizzato per full-size
+    k_neighbors = 15,              # Ottimizzato per full-size
+    resolution = 1.0               # Bilanciato per realismo
+  )
+  
+  # Aggiorna variabili per compatibilità con il resto del pipeline
+  cell_df <- clustering_result$cell_df
+  full_expr <- clustering_result$expression_matrix
+  
+  cat("Clustering basato su espressione completato!\n")
+  cat("- Cluster trovati:", length(unique(cell_df$intensity_cluster)), "\n")
+  toc()
+  
+} else {
+  # APPROCCIO ORIGINALE: Clustering su intensità immagine
+  cat("=== CLUSTERING SU INTENSITÀ IMMAGINE ===\n")
+  
+  clust <- cluster_image(
+    img_df_thresh = img_dat$img_df_thresh,
+    k_cell_types  = cfg$k_cell_types,
+    random_seed   = cfg$random_seed,
+    clustering_method = "dbscan_graph"  # Usa pipeline DBSCAN + Graph clustering
+  )
+  # Rimuovi punti senza cluster assegnato (NA)
+  clust <- clust[!is.na(clust$intensity_cluster), ]
 
-# 5. Creazione griglia
-tic("Creazione griglia")
-cell_df <- create_sampling_grid(
-  img_df_thresh         = clust,
-  img_array             = img_dat$img_array,
-  img_width             = img_dat$width,
-  img_height            = img_dat$height,
-  grid_mode             = cfg$grid_mode,
-  grid_resolution       = cfg$grid_resolution,
-  grid_spacing          = cfg$grid_spacing,
-  use_fixed_grid        = cfg$use_fixed_grid,
-  fixed_grid_width_mm   = cfg$fixed_grid_width_mm,
-  fixed_grid_height_mm  = cfg$fixed_grid_height_mm,
-  pixel_size_um         = cfg$pixel_size_um,
-  threshold_value       = cfg$threshold_value,
-  random_seed           = cfg$random_seed
-)
-cat("Punti generati:", nrow(cell_df), "\n")
-toc()
+  # 5. Creazione griglia
+  tic("Creazione griglia")
+  cell_df <- create_sampling_grid(
+    img_df_thresh         = clust,
+    img_array             = img_dat$img_array,
+    img_width             = img_dat$width,
+    img_height            = img_dat$height,
+    grid_mode             = cfg$grid_mode,
+    grid_resolution       = cfg$grid_resolution,
+    grid_spacing          = cfg$grid_spacing,
+    use_fixed_grid        = cfg$use_fixed_grid,
+    fixed_grid_width_mm   = cfg$fixed_grid_width_mm,
+    fixed_grid_height_mm  = cfg$fixed_grid_height_mm,
+    pixel_size_um         = cfg$pixel_size_um,
+    threshold_value       = cfg$threshold_value,
+    random_seed           = cfg$random_seed
+  )
+  cat("Punti generati:", nrow(cell_df), "\n")
+  toc()
+}
 
 # --- CLUSTER MORPHOLOGY PLOT (minimal) ---
 cat("Generazione figura di morfologia dei cluster...\n")
@@ -180,7 +257,9 @@ ggsave("plots/cluster_morphology.png", p, width = 10, height = 4)
 # --- FINE CLUSTER MORPHOLOGY PLOT ---
 
 # 6. Generazione ottimizzata dei profili di espressione
-tic("Generazione espressione con parametri biologici")
+if (!use_expression_clustering) {
+  # Solo se non abbiamo già generato l'espressione nel clustering
+  tic("Generazione espressione con parametri biologici")
 
 # Dimensione chunk ottimizzata per 20k geni
 chunk_size <- 2000  # Ridotto per gestire più geni
@@ -259,6 +338,12 @@ if (nrow(sparse_list[[1]]) == cfg$n_genes) {
 cat("Dimensione matrice finale:", dim(full_expr), "\n")
 toc()
 
+} else {
+  # Expression già generata nel clustering
+  cat("Espressione già generata durante il clustering basato su espressione\n")
+  cat("Dimensione matrice finale:", dim(full_expr), "\n")
+}
+
 # 7. Validazione biologica della matrice finale
 cat("\n=== VALIDAZIONE BIOLOGICA MATRICE FINALE ===\n")
 tic("Validazione biologica")
@@ -324,6 +409,35 @@ generate_biological_validation_report(cfg$output_path, output_dir = "R/validatio
 cat("\nReport di validazione salvato in: R/validation\n")
 cat("- Library size medio configurato:", diff_cfg$cell_specific_params$library_size_params$mean_library_size, "\n")
 
+# Validazione specifica per clustering basato su espressione
+if (use_expression_clustering) {
+  cat("\n=== VALIDAZIONE CLUSTERING BASATO SU ESPRESSIONE ===\n")
+  source("R/validation/validate_expression_clustering.R")
+  
+  tryCatch({
+    validation_results <- validate_expression_clustering(
+      clustering_result = list(
+        cell_df = cell_df,
+        expression_matrix = full_expr,
+        pca_coords = clustering_result$pca_coords,
+        clusters = cell_df$intensity_cluster
+      ),
+      cell_df = cell_df,
+      output_dir = "R/validation",
+      prefix = "visiumHD_expression_clustering"
+    )
+    
+    cat("- Numero di cluster trovati:", length(unique(cell_df$intensity_cluster)), "\n")
+    cat("- Silhouette score medio:", round(validation_results$silhouette_score$average, 3), "\n")
+    cat("- Coerenza spaziale media:", round(validation_results$spatial_coherence$average, 3), "\n")
+    cat("- Separazione espressione:", round(validation_results$expression_separation$separation_ratio, 3), "\n")
+    cat("Report clustering salvato in: R/validation/visiumHD_expression_clustering_validation_report.md\n")
+    
+  }, error = function(e) {
+    cat("Warning: Validazione clustering fallita:", e$message, "\n")
+  })
+}
+
 cat("\n=== NOTE BIOLOGICHE ===\n")
 cat("Questa è una simulazione full-size con parametri biologicamente realistici:\n")
 cat("- 20,000 geni (tipico per esperimenti Visium HD)\n")
@@ -331,6 +445,19 @@ cat("- Library size ~8,000 UMI/cella (validato per Visium HD)\n")
 cat("- Distribuzione genica: 40% non-espressi, 35% low, 20% medium, 5% high expression\n")
 cat("- Dropout modeling realistico basato su espressione media\n")
 cat("- Correlazione spaziale e variabilità biologica incluse\n")
+
+if (use_expression_clustering) {
+  cat("\n=== VANTAGGI CLUSTERING BASATO SU ESPRESSIONE ===\n")
+  cat("- Cluster derivati da somiglianze biologiche reali nell'espressione genica\n")
+  cat("- Forme irregolari naturalmente emergenti dai pattern di espressione\n")
+  cat("- Validazione quantitativa della qualità biologica dei cluster\n")
+  cat("- Maggiore realismo per benchmarking di metodi di analisi\n")
+  cat("- Approccio più simile ai workflow di analisi reali (Seurat, Scanpy)\n")
+} else {
+  cat("\n=== METODO CLUSTERING INTENSITÀ IMMAGINE ===\n")
+  cat("- Cluster basati su intensità pixel dell'immagine di input\n")
+  cat("- Pipeline DBSCAN + Graph clustering per forme irregolari\n")
+}
 
 if (validate) {
   cat("\nLa validazione biologica verificherà che i risultati siano plausibili.\n")
