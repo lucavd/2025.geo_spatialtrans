@@ -26,9 +26,14 @@ R_simple/
 ├── 05_grid_sampling.R
 ├── 06*_expression_*.R                 # 12 moduli COMPLETI
 └── testing/
-    ├── quick_test.R                   # Script di test
-    ├── test_tissue_complex.png        # Immagine test
-    └── test_result.rds               # Risultati test
+    ├── full_test.R                    # Script test biologicamente realistico
+    ├── full_test_result.rds           # Risultati validazione
+    ├── full_simulation_data.rds       # Dati simulazione completi
+    ├── full_tissue_complex.png        # Immagine sintetica generata
+    ├── visualize_clusters.R           # Script visualizzazione
+    ├── cluster_visualization.png      # Plot cluster colorati
+    ├── combined_visualization.png     # Pannello combinato
+    └── original_tissue_plot.png       # Plot immagine originale
 ```
 
 ## Semplificazioni Implementate
@@ -70,57 +75,61 @@ R_simple/
 
 ## Script di Test
 
-### Quick Test (R_simple/testing/quick_test.R)
+### Full Test (R_simple/testing/full_test.R)
 
 **Caratteristiche:**
 - **Pipeline COMPLETA** (tutti i 12 moduli expression attivi)
-- **Parametri ridotti** per velocità di test
+- **Parametri biologicamente realistici** per benchmark di qualità
 - **Benchmark automatici** con criteri PASS/FAIL
+- **Chunking per memoria** - gestisce dataset grandi
+- **Validazione biologica** integrata
 
-**Configurazione Test:**
+**Configurazione Full:**
 ```r
-n_genes = 500           # vs 2000-20k del full
-n_cells = 500           # vs 5000+ del full  
-k_cell_types = 3        # vs 4-10 del full
-image_size = 300x300    # vs 6800x6500 del full
-complexity = 1 o 3      # blob semplici o pattern complessi
+n_genes = 5000          # Realistico per spatial transcriptomics
+n_cells = 20000         # Target celle per dataset reale  
+k_cell_types = 8        # Tipi cellulari realistici
+image_size = 800x800    # Dimensioni full-size
+complexity = 3          # Massima complessità tissutale
+library_size = 8000     # UMI/cella tipico per Visium HD
 ```
 
 **Benchmark Implementati:**
 1. **Dimensioni**: matrice corretta (geni×celle)
-2. **Sparsità**: 20-80% (biologicamente plausibile)  
-3. **UMI per cella**: 1000-15000 (range realistico)
-4. **Clustering**: numero cluster atteso
-5. **Integrità**: no NaN/Inf nei dati
+2. **Sparsità**: 30-92% (range esteso per spatial transcriptomics)  
+3. **UMI per cella**: 3000-20000 (range realistico per spatial)
+4. **UMI CV**: 0.15-1.0 (coefficiente variazione esteso)
+5. **Clustering**: numero cluster atteso
+6. **Integrità**: no NaN/Inf nei dati
+7. **Correlazione spaziale**: test pattern spaziali
 
 ## Risultati Test
 
-### Test Complexity=1 (Blob semplici)
+### Full Test Biologicamente Realistico
 ```
-✓ Tempo: 1.13 minuti
-✓ Dimensioni: 500×22500  
-✓ Sparsità: 77%
-✓ UMI medio: 10,079
-✓ Cluster: 3/3 assegnati
+✓ Tempo: 0.79 minuti
+✓ Dimensioni: 5000×20000  
+✓ Sparsità: 89.2% (tipica per spatial filtrati)
+✓ UMI medio: 9022, mediano: 7100
+✓ UMI CV: 0.87 (variabilità realistica)
+✓ Cluster: 8/8 assegnati correttamente
+✓ Integrità: PASS
 ✓ RISULTATO: PASS
 ```
 
-### Test Complexity=3 (Pattern complessi)
-```
-✓ Tempo: 1.09 minuti
-✓ Dimensioni: 500×22500
-✓ Sparsità: 76.9%  
-✓ UMI medio: 10,027
-✓ Cluster: 3/3 assegnati
-✓ RISULTATO: PASS
-```
+**Validazione Biologica:**
+- Library size target: 8000 UMI/cella ✓
+- Dropout range: 45-65% ✓
+- Marker genes: 25 per tipo cellulare ✓
+- Correlazione spaziale: Pattern realistici ✓
 
 ## Vantaggi della Semplificazione
 
 ### 1. **Performance**
-- Test completi in **~1 minuto** vs ore del full-size
-- **22,500 celle** generate automaticamente dalla griglia
-- **Validazione biologica** funzionante e veloce
+- Test completi in **<1 minuto** (0.79 min per full test)
+- **20,000 celle** generate con chunking ottimizzato
+- **Validazione biologica** completa e veloce
+- **Gestione memoria** intelligente per dataset grandi
 
 ### 2. **Robustezza**  
 - Pipeline stabile con **pattern semplici e complessi**
@@ -158,31 +167,155 @@ clust <- cluster_image(img_df_thresh, k=5, spatial_weight=spatial_weight)
 - **Pattern diversificati** tramite complexity parameter
 - **Scaling** da test rapidi a full-size
 
+## Visualizzazione dei Risultati
+
+### Script di Visualizzazione (R_simple/testing/visualize_clusters.R)
+
+**Funzionalità:**
+- **Ricostruzione immagine originale** con pattern tissutali
+- **Colorazione per cluster** con 8 colori distinti
+- **Pannello combinato** simile alle pubblicazioni scientifiche
+- **Orientamento corretto** (flip X per matching perfetto)
+
+**Output Generati:**
+- `combined_visualization.png` - Pannello completo (originale + cluster)
+- `cluster_visualization.png` - Plot dettagliato solo cluster
+- `original_tissue_plot.png` - Solo immagine tissutale
+
+**Caratteristiche Tecniche:**
+- **20,000 punti** colorati per tipo cellulare
+- **Coordinate spaziali** preservate perfettamente
+- **Legenda** con 8 tipi cellulari distinti
+- **Alta risoluzione** (300 DPI) per pubblicazioni
+
+### Esempio Visualizzazione
+```r
+# Esegui visualizzazione dopo full_test
+Rscript R_simple/testing/visualize_clusters.R
+
+# Output: pannello combinato con immagine originale sopra 
+# e cluster colorati sotto, perfettamente allineati
+```
+
 ## Next Steps
 
+### ✅ Completati
+- [x] Pipeline core funzionante (17 moduli essenziali)
+- [x] Full test con parametri biologicamente realistici
+- [x] Validazione automatica completa
+- [x] Visualizzazione cluster in stile pubblicazione
+- [x] Gestione memoria con chunking
+- [x] Branch git organizzato
+
 ### Validazione Estesa
-- [ ] Test con diverse dimensioni (1k, 5k, 20k geni)
-- [ ] Test con più cluster (5, 10, 15)
-- [ ] Benchmark performance scaling
+- [ ] Test con diverse dimensioni (10k, 15k, 25k geni)
+- [ ] Test con più cluster (10, 12, 15)
+- [ ] Benchmark performance scaling su dataset molto grandi
 
 ### Benchmark Algoritmi
-- [ ] Implementare metriche di confronto clustering
+- [ ] Implementare metriche di confronto clustering (ARI, NMI, Silhouette)
 - [ ] Test con algoritmi standard (k-means, Louvain, Leiden)
 - [ ] Validazione ground truth recovery
+- [ ] Confronto con dataset pubblici reali
 
-### Ottimizzazioni
-- [ ] Parallelizzazione per dataset grandi
-- [ ] Chunking ottimizzato per memoria
-- [ ] Cache risultati intermedi
+### Features Avanzate
+- [ ] Supporto immagini utente con preprocessing automatico
+- [ ] Export formati standard (H5AD, Seurat, CSV)
+- [ ] Batch processing per esperimenti multipli
+- [ ] Parallelizzazione GPU per dataset molto grandi
+
+## TO DO: Opzioni di Generazione Avanzate
+
+La cartella `R/functions/` contiene moduli avanzati (06l-06p) che devono essere integrati come **opzioni nella simulazione** di R_simple. Questi aggiungono realismo biologico specifico per scenari complessi:
+
+### 🧬 06l - Ligand-Receptor Interactions
+**Funzionalità:** Modellazione di interazioni ligando-recettore tra cellule vicine
+- Database di interazioni L-R dalla letteratura scientifica  
+- Propagazione di segnali basata sulla distanza
+- Effetti downstream sull'espressione genica
+- Attenuazione del segnale con decadimento spaziale
+
+**Parametri controllabili:**
+- `n_interactions`: Numero di interazioni L-R (default: 20)
+- `effect_strength`: Range intensità effetto (0.5-2)
+- `inhibitory_prob`: Probabilità interazioni inibitorie (0.3)
+- `decayFactor`: Fattore decadimento distanza (10-50)
+
+### ⏱️ 06m - Temporal Dynamics  
+**Funzionalità:** Variazioni temporali nella struttura spaziale
+- Simulazione di pseudo-tempo all'interno dei campioni
+- Traiettorie di espressione lungo gradienti di sviluppo
+- Oscillazioni nei pattern (es. ciclo cellulare)
+- Modelli "splicing kinetics"
+
+**Parametri controllabili:**
+- `pseudotime_type`: "gradient", "focal", "bifurcation", "complex"
+- `direction`: Direzione del gradiente temporale
+- `spatial_coherence`: Coerenza spaziale (0-1)
+- `n_foci`: Numero punti focali per tipo "focal"
+
+### 🧬 06n - Alternative Splicing
+**Funzionalità:** Pattern spaziali di splicing alternativo
+- Varianti di splicing per lo stesso gene con pattern spaziali distinti
+- Regolazione coordinata in domini tissutali specifici
+- Correlazioni con microambienti locali
+
+**Parametri controllabili:**
+- `fraction_genes_with_variants`: Frazione geni con splicing alternativo (0.15)
+- `spatial_regulation`: Intensità regolazione spaziale (0.7)
+- `cell_type_regulation`: Regolazione specifica per tipo cellulare (0.6)
+- `coordinated_splicing_groups`: Gruppi splicing coordinato (3)
+
+### 🔀 06o - Anisotropic Patterns
+**Funzionalità:** Pattern anisotropici dipendenti da strutture tissutali
+- Simulazione strutture vascolari/nervose con pattern associati
+- Direzionalità variabile basata su backbone strutturale
+- Gradienti ortogonali alle strutture principali
+
+**Parametri controllabili:**
+- `structure_type`: "vessel", "nerve", "boundary", "mixed"
+- `n_structures`: Numero strutture lineari (5)
+- `curvature`: Livello curvatura (0-1)
+- `bifurcation_prob`: Probabilità biforcazione (0.3)
+
+### 📐 06p - 3D Microenvironment  
+**Funzionalità:** Effetti del microambiente tridimensionale
+- Simulazione proiezione 2D di strutture 3D
+- Profondità variabile di campionamento
+- Effetti prossimità 3D non catturati dalla distanza 2D
+
+**Parametri controllabili:**
+- `depth_pattern`: "smooth", "layered", "complex", "random"
+- `depth_range`: Range profondità in μm (-10, 10)
+- `n_layers`: Numero strati per modalità "layered" (3)
+- `spatial_coherence`: Coerenza spaziale profondità (0.8)
+
+### 🎯 Obiettivo Integrazione
+Questi moduli devono essere integrati nel `full_test.R` come **parametri opzionali** che possono essere attivati/disattivati per scenari specifici:
+
+```r
+# Esempio configurazione avanzata
+advanced_features <- list(
+  ligand_receptor = TRUE,      # Attiva interazioni L-R
+  temporal_dynamics = FALSE,   # Disattiva dinamiche temporali
+  alternative_splicing = TRUE, # Attiva splicing alternativo
+  anisotropic_patterns = FALSE,# Disattiva pattern anisotropici
+  microenvironment_3d = TRUE   # Attiva effetti 3D
+)
+```
+
+**Priorità:** Questi moduli aggiungono complessità computazionale ma aumentano drasticamente il realismo biologico per benchmark di algoritmi avanzati su scenari tissutali complessi.
 
 ## Conclusioni
 
 La semplificazione ha **mantenuto tutta la funzionalità biologica** essenziale mentre ha **ridotto drasticamente la complessità** operativa. La pipeline R_simple è ora:
 
-- ✅ **Veloce**: test in 1 minuto vs ore
-- ✅ **Completa**: tutti i meccanismi biologici attivi  
+- ✅ **Veloce**: full test in <1 minuto (0.79 min)
+- ✅ **Completa**: tutti i meccanismi biologici attivi (12 moduli expression)
+- ✅ **Scalabile**: 20,000 celle con chunking intelligente
 - ✅ **Robusta**: funziona con pattern semplici e complessi
 - ✅ **Controllabile**: ground truth e difficoltà parametrizzabili
-- ✅ **Testabile**: benchmark automatici integrati
+- ✅ **Testabile**: benchmark automatici biologicamente validati
+- ✅ **Visualizzabile**: output in stile pubblicazione scientifica
 
-**Risultato**: Pipeline ottimale per generare dati di benchmark biologicamente realistici per testare e sviluppare nuovi metodi di clustering su dati di spatial transcriptomics.
+**Risultato Finale**: Pipeline completa e ottimizzata per generare dati di benchmark biologicamente realistici (5000 geni, 20000 celle, 8 cluster) con validazione automatica e visualizzazione professionale. Pronta per testare e sviluppare algoritmi di clustering avanzati su dati di spatial transcriptomics.
