@@ -54,11 +54,11 @@ cfg <- list(
   grid_resolution = 40,    # Più denso per full test
   grid_spacing = 0,
   use_fixed_grid = TRUE,
-  fixed_grid_width_mm = 8.0,   # Area più grande 
+  fixed_grid_width_mm = 8.0,   # Area più grande
   fixed_grid_height_mm = 8.0,
-  spatial_engine = "mrf",     # NEW: MRF spatial engine
+  spatial_engine = "image",     # "mrf" or "image" spatial engine
   mrf_beta = 0.6,             # Moderate spatial autocorrelation (more realistic)
-  mrf_complexity = 8,         # Match k_cell_types for biological realism
+  complexity = 3,             # Complexity: image engine (1-3), MRF engine (matches k_cell_types)
   mrf_tissue_structure = list(  # COMPOSITE tissue architecture
     list(type = "vessel", weight = 0.5),   # Vascular structures
     list(type = "gradient", weight = 0.3), # Metabolic gradients
@@ -68,7 +68,7 @@ cfg <- list(
 )
 
 cat("- Geni:", cfg$n_genes, "\n")
-cat("- Celle target:", cfg$n_cells, "\n") 
+cat("- Celle target:", cfg$n_cells, "\n")
 cat("- Cluster:", cfg$k_cell_types, "\n")
 cat("- Area:", cfg$fixed_grid_width_mm, "x", cfg$fixed_grid_height_mm, "mm\n")
 
@@ -121,23 +121,23 @@ if (!is.null(user_image_path)) {
     if (!file.exists(user_image_path)) {
       stop("File immagine non trovato: ", user_image_path)
     }
-    
+
     cat("Caricamento immagine:", user_image_path, "\n")
     img_dat <- prepare_image(user_image_path, cfg$threshold_value)
-    
+
     cat("✓ Immagine caricata:", img_dat$width, "x", img_dat$height, "pixel\n")
     cat("✓ Pixel validi:", nrow(img_dat$img_df_thresh), "\n")
-    
+
     # Verifica se ci sono abbastanza pixel validi
     if (nrow(img_dat$img_df_thresh) < 5000) {
       cat("⚠ WARNING: Pochi pixel validi per full test. Considerare threshold diverso.\n")
     }
-    
+
   }, error = function(e) {
     cat("✗ ERROR caricamento immagine:", e$message, "\n")
     stop("User image loading failed")
   })
-  
+
 } else {
   # MODALITÀ IMMAGINE SINTETICA (full-size)
   cat("\n=== GENERAZIONE IMMAGINE SINTETICA FULL-SIZE ===\n")
@@ -161,7 +161,7 @@ if (!is.null(user_image_path)) {
         fast_mode = TRUE,
         tissue_structure = cfg$mrf_tissue_structure
       )
-      
+
       # Calcola Moran's I sui dati MRF completi (prima del campionamento)
       # Questo è l'approccio corretto per dati con struttura griglia
       compute_moran <- function(df, grid_size) {
@@ -179,25 +179,25 @@ if (!is.null(user_image_path)) {
         I <- (grid_size^2 / w_total) * (num / den)
         return(I)
       }
-      
+
       # Calcola Moran's I sulla griglia completa 200x200
       mrf_moran_i <- compute_moran(mrf_data, cfg$mrf_grid_size[1])
-      
+
       syn <- list(img_matrix = NA, img_df = mrf_data)
     } else {
       syn <- generate_synthetic_tissue(
         width_px = 800,
         height_px = 800,
-        complexity = cfg$mrf_complexity,
+        complexity = cfg$complexity,
         seed = cfg$random_seed,
         engine = cfg$spatial_engine,
         output_path = "R_simple/testing/full_tissue_complex.png"
       )
-      
+
       # Per non-MRF, impostiamo Moran a 0 (verrà calcolato dopo il campionamento)
       mrf_moran_i <- 0
     }
-    
+
     if (cfg$spatial_engine == "mrf") {
       # MRF output has cell_type instead of intensity - convert properly
       img_df_thresh <- syn$img_df
@@ -211,24 +211,24 @@ if (!is.null(user_image_path)) {
       img_df_thresh$value <- img_df_thresh$intensity / 255
       img_df_thresh <- img_df_thresh[, c("x", "y", "value")]
     }
-    
+
     if (cfg$spatial_engine == "mrf") {
       # MRF doesn't generate img_matrix, create dummy array for compatibility
       img_dat <- list(
         width = cfg$mrf_grid_size[1],
-        height = cfg$mrf_grid_size[2], 
+        height = cfg$mrf_grid_size[2],
         img_df_thresh = img_df_thresh,
         img_array = matrix(0.5, nrow = cfg$mrf_grid_size[2], ncol = cfg$mrf_grid_size[1])
       )
     } else {
       img_dat <- list(
         width = 800,
-        height = 800, 
+        height = 800,
         img_df_thresh = img_df_thresh,
         img_array = syn$img_matrix / 255
       )
     }
-    
+
     cat("✓ Immagine full-size creata:", nrow(img_df_thresh), "pixel validi\n")
   }, error = function(e) {
     cat("✗ ERROR immagine:", e$message, "\n")
@@ -252,14 +252,14 @@ tryCatch({
       random_seed = cfg$random_seed,
       spatial_weight = 0.6                    # Bilanciamento spazio-intensità
     )
-    
+
     # Rimuovi NA se presenti
     clust <- clust[!is.na(clust$intensity_cluster), ]
-    
+
     n_clusters_found <- length(unique(clust$intensity_cluster))
     cat("✓ Clustering completato:", n_clusters_found, "cluster trovati\n")
   }
-  
+
   if (n_clusters_found != cfg$k_cell_types) {
     cat("⚠ WARNING: Attesi", cfg$k_cell_types, "cluster, trovati", n_clusters_found, "\n")
   }
@@ -286,34 +286,34 @@ tryCatch({
     threshold_value = cfg$threshold_value,
     random_seed = cfg$random_seed
   )
-  
+
   cat("✓ Griglia high-density creata:", nrow(cell_df), "celle\n")
-  
+
   if (nrow(cell_df) == 0) {
     stop("No cells generated in grid")
   }
-  
+
   # Fix MRF cluster assignment using spatial mapping
   if (cfg$spatial_engine == "mrf") {
     # Map grid cells to original MRF clusters using nearest neighbor
     mrf_data <- syn$img_df  # Original MRF data with cell_type
-    
+
     # For each grid cell, find nearest MRF pixel and assign its cluster
     for (i in 1:nrow(cell_df)) {
       # Find nearest MRF pixel
       distances <- sqrt((mrf_data$x - cell_df$x[i])^2 + (mrf_data$y - cell_df$y[i])^2)
       nearest_idx <- which.min(distances)
       nearest_cell_type <- mrf_data$cell_type[nearest_idx]
-      
+
       # Assign cluster based on MRF cell_type
-      cell_df$intensity_cluster[i] <- factor(paste0("cluster_", nearest_cell_type), 
+      cell_df$intensity_cluster[i] <- factor(paste0("cluster_", nearest_cell_type),
                                            levels = levels(cell_df$intensity_cluster))
     }
-    
+
     n_clusters_preserved <- length(unique(cell_df$intensity_cluster))
     cat("✓ MRF clusters preservati:", n_clusters_preserved, "/", cfg$k_cell_types, "\n")
   }
-  
+
   # Se abbiamo troppe celle, sub-sample per performance
   if (nrow(cell_df) > cfg$n_cells * 2) {
     set.seed(cfg$random_seed)
@@ -321,7 +321,7 @@ tryCatch({
     cell_df <- cell_df[keep_indices, ]
     cat("✓ Sub-sampled to:", nrow(cell_df), "celle per performance\n")
   }
-  
+
 }, error = function(e) {
   cat("✗ ERROR griglia:", e$message, "\n")
   stop("Grid creation failed")
@@ -346,14 +346,14 @@ pb <- txtProgressBar(min = 0, max = n_chunks, style = 3)
 
 for (i in 1:n_chunks) {
   setTxtProgressBar(pb, i)
-  
+
   start_idx <- (i - 1) * chunk_size + 1
   end_idx <- min(i * chunk_size, nrow(cell_df))
   chunk_cells <- cell_df[start_idx:end_idx, ]
-  
+
   # Garbage collection periodico
   if (i %% 3 == 0) gc()
-  
+
   tryCatch({
     expr_result <- generate_expression_profiles(
       cell_df = chunk_cells,
@@ -367,9 +367,9 @@ for (i in 1:n_chunks) {
       correlation_method = "grf",
       random_seed = cfg$random_seed + i
     )
-    
+
     expr_matrix <- expr_result$expression
-    
+
     # Verifica orientamento matrice
     if (nrow(expr_matrix) != cfg$n_genes) {
       if (ncol(expr_matrix) == cfg$n_genes) {
@@ -378,9 +378,9 @@ for (i in 1:n_chunks) {
         stop("Matrix dimensions don't match expected n_genes")
       }
     }
-    
+
     expression_chunks[[i]] <- Matrix(expr_matrix, sparse = TRUE)
-    
+
   }, error = function(e) {
     cat("\n✗ ERROR nel chunk", i, ":", e$message, "\n")
     stop("Expression generation failed in chunk ", i)
@@ -406,10 +406,10 @@ cat("\n=== BENCHMARK E VALIDAZIONI FULL ===\n")
 # Test dimensioni
 genes_ok <- nrow(final_expr) == cfg$n_genes
 cells_ok <- ncol(final_expr) == nrow(cell_df)
-cat("✓ Dimensioni matrice:", ifelse(genes_ok && cells_ok, "PASS", "FAIL"), 
+cat("✓ Dimensioni matrice:", ifelse(genes_ok && cells_ok, "PASS", "FAIL"),
     "(", nrow(final_expr), "x", ncol(final_expr), ")\n")
 
-# Test sparsità  
+# Test sparsità
 sparsity <- mean(final_expr == 0) * 100
 sparsity_ok <- sparsity >= 30 && sparsity <= 92  # Range esteso per spatial transcriptomics
 cat("✓ Sparsità:", round(sparsity, 1), "% -", ifelse(sparsity_ok, "PASS", "FAIL"), "\n")
@@ -419,7 +419,7 @@ umi_per_cell <- colSums(final_expr)
 umi_mean <- mean(umi_per_cell)
 umi_median <- median(umi_per_cell)
 umi_ok <- umi_mean >= 3000 && umi_mean <= 20000  # Range realistico per spatial
-cat("✓ UMI medio:", round(umi_mean), "mediano:", round(umi_median), "-", 
+cat("✓ UMI medio:", round(umi_mean), "mediano:", round(umi_median), "-",
     ifelse(umi_ok, "PASS", "FAIL"), "\n")
 
 # Test distribuzione UMI
@@ -430,7 +430,7 @@ cat("✓ UMI CV:", round(umi_cv, 2), "-", ifelse(umi_cv_ok, "PASS", "FAIL"), "\n
 # Test cluster assignment
 clusters_assigned <- length(unique(cell_df$intensity_cluster))
 cluster_ok <- clusters_assigned == cfg$k_cell_types
-cat("✓ Cluster assegnati:", clusters_assigned, "/", cfg$k_cell_types, "-", 
+cat("✓ Cluster assegnati:", clusters_assigned, "/", cfg$k_cell_types, "-",
     ifelse(cluster_ok, "PASS", "FAIL"), "\n")
 
 # Test integrità dati
@@ -443,7 +443,7 @@ tryCatch({
   # Usa il valore di Moran calcolato precedentemente sui dati MRF completi
   # Questo è stato calcolato subito dopo la generazione MRF usando l'implementazione corretta
   moran_i <- mrf_moran_i
-  
+
   # Implementazione corretta di Moran per griglie (da composite_mrf_test.R)
   compute_moran <- function(df, grid_size) {
     mat <- matrix(df$cell_type, nrow = grid_size, byrow = TRUE)
@@ -460,7 +460,7 @@ tryCatch({
     I <- (grid_size^2 / w_total) * (num / den)
     return(I)
   }
-  
+
   if (moran_i > 0.2) {
     cat("✓ Correlazione spaziale (Moran's I):", round(moran_i, 3), "- PASS\n")
   } else if (moran_i > 0.05) {
@@ -468,14 +468,14 @@ tryCatch({
   } else {
     cat("✓ Correlazione spaziale (Moran's I):", round(moran_i, 3), "- LOW (possibile casualità)\n")
   }
-  
+
 }, error = function(e) {
   cat("✓ Correlazione spaziale: SKIP (errore:", e$message, ")\n")
 })
 
 # 11. RISULTATO FINALE FULL
 cat("\n=== RISULTATO FINALE FULL ===\n")
-all_tests <- c(genes_ok && cells_ok, sparsity_ok, umi_ok, umi_cv_ok, 
+all_tests <- c(genes_ok && cells_ok, sparsity_ok, umi_ok, umi_cv_ok,
                cluster_ok, integrity_ok)
 overall_pass <- all(all_tests)
 
@@ -488,7 +488,7 @@ cat("RISULTATO COMPLESSIVO:", ifelse(overall_pass, "✓ PASS", "✗ FAIL"), "\n"
 
 if (overall_pass) {
   cat("\n🎉 FULL PIPELINE R_SIMPLE BIOLOGICAMENTE VALIDATA!\n")
-  
+
   # Salva risultato completo
   full_result <- list(
     timestamp = Sys.time(),
@@ -514,10 +514,10 @@ if (overall_pass) {
     ),
     status = "PASS"
   )
-  
+
   # Salva risultati e dati
   saveRDS(full_result, "R_simple/testing/full_test_result.rds")
-  
+
   # Salva anche i dati finali per analisi successive
   final_data <- list(
     expression = final_expr,
@@ -526,10 +526,10 @@ if (overall_pass) {
     config = cfg
   )
   saveRDS(final_data, "R_simple/testing/full_simulation_data.rds")
-  
+
   cat("Risultato salvato in: R_simple/testing/full_test_result.rds\n")
   cat("Dati simulazione salvati in: R_simple/testing/full_simulation_data.rds\n")
-  
+
 } else {
   cat("\n❌ ALCUNI TEST FULL FALLITI - CONTROLLARE PIPELINE\n")
   quit(status = 1)
