@@ -24,11 +24,24 @@ simulate_mrf <- function(grid_size = 200,
                          n_iter = 200,
                          seed = 1,
                          fast_mode = TRUE,
-                         tissue_structure = c("uniform", "vessel", "boundary", "gradient"),
+                         tissue_structure = "uniform",
                          interaction_matrix = NULL) {
   if (length(grid_size) == 1L) grid_size <- c(grid_size, grid_size)
   stopifnot(length(grid_size) == 2L, k_cell_types >= 2, n_iter >= 1)
-  tissue_structure <- match.arg(tissue_structure)
+  # Support both single structures and composite structures
+  if (is.character(tissue_structure) && length(tissue_structure) == 1) {
+    # Single structure mode (backward compatibility)
+    valid_structures <- c("uniform", "vessel", "boundary", "gradient")
+    if (!tissue_structure %in% valid_structures) {
+      stop("Invalid tissue_structure. Must be one of: ", paste(valid_structures, collapse=", "))
+    }
+    structure_list <- list(list(type = tissue_structure, weight = 1.0))
+  } else if (is.list(tissue_structure)) {
+    # Composite structure mode: list of structure definitions
+    structure_list <- tissue_structure
+  } else {
+    stop("tissue_structure must be a single string or a list of structure definitions")
+  }
 
   set.seed(seed)
   nx <- grid_size[1]; ny <- grid_size[2]
@@ -39,7 +52,7 @@ simulate_mrf <- function(grid_size = 200,
   }
 
   # Initialize with tissue structure-aware seeding
-  lattice <- initialize_tissue_structure(nx, ny, k_cell_types, tissue_structure, seed)
+  lattice <- initialize_tissue_structure(nx, ny, k_cell_types, structure_list, seed)
 
   # Enhanced neighborhood energy with cell-type specific interactions
   neigh_energy <- function(x, y, label) {
@@ -158,20 +171,53 @@ create_biological_interactions <- function(k_cell_types, seed) {
 #' Initialize tissue with biologically-inspired spatial structure
 #' @param nx,ny Grid dimensions
 #' @param k_cell_types Number of cell types
-#' @param structure Type of tissue structure
+#' @param structure_list List of structure definitions with weights
 #' @param seed Random seed
 #' @return Initial lattice configuration
-initialize_tissue_structure <- function(nx, ny, k_cell_types, structure, seed) {
+initialize_tissue_structure <- function(nx, ny, k_cell_types, structure_list, seed) {
   set.seed(seed + 200)
   
-  if (structure == "uniform") {
-    # Random uniform initialization
-    return(matrix(sample.int(k_cell_types, nx * ny, replace = TRUE), nrow = ny, ncol = nx))
+  # Initialize base lattice
+  lattice <- matrix(1, nrow = ny, ncol = nx)
+  
+  # Apply each structure in sequence, weighted by importance
+  for (struct_def in structure_list) {
+    structure_type <- struct_def$type
+    weight <- struct_def$weight
+    
+    if (structure_type == "uniform") {
+      # Apply uniform randomization with weight
+      n_random <- round(nx * ny * weight * 0.3)  # 30% of weight as randomization
+      random_positions <- sample(nx * ny, n_random)
+      for (pos in random_positions) {
+        row <- ((pos - 1) %% ny) + 1
+        col <- ((pos - 1) %/% ny) + 1
+        lattice[row, col] <- sample.int(k_cell_types, 1)
+      }
+      next
+    }
+    
+    # Create temporary lattice for this structure
+    temp_lattice <- apply_single_structure(nx, ny, k_cell_types, structure_type, seed + as.numeric(charToRaw(structure_type)[1]))
+    
+    # Blend with existing lattice based on weight
+    blend_structures(lattice, temp_lattice, weight)
   }
   
-  lattice <- matrix(1, nrow = ny, ncol = nx)  # start with type 1
+  return(lattice)
+}
+
+#' Apply a single tissue structure to a lattice
+#' @param nx,ny Grid dimensions
+#' @param k_cell_types Number of cell types
+#' @param structure_type Single structure type
+#' @param seed Random seed
+#' @return Lattice with single structure applied
+apply_single_structure <- function(nx, ny, k_cell_types, structure_type, seed) {
+  set.seed(seed)
+  lattice <- matrix(1, nrow = ny, ncol = nx)
   
-  if (structure == "vessel") {
+  if (structure_type == "vessel") {
     # Create vessel-like linear structures
     n_vessels <- max(2, k_cell_types %/% 2)
     for (v in 1:n_vessels) {
@@ -194,7 +240,7 @@ initialize_tissue_structure <- function(nx, ny, k_cell_types, structure, seed) {
         y <- y + sample(c(-1, 0, 1), 1)
       }
     }
-  } else if (structure == "boundary") {
+  } else if (structure_type == "boundary") {
     # Create distinct regions with sharp boundaries
     mid_x <- nx %/% 2
     mid_y <- ny %/% 2
@@ -204,7 +250,7 @@ initialize_tissue_structure <- function(nx, ny, k_cell_types, structure, seed) {
     lattice[(mid_y+1):ny, 1:mid_x] <- 3 %% k_cell_types + 1
     lattice[(mid_y+1):ny, (mid_x+1):nx] <- 4 %% k_cell_types + 1
     
-  } else if (structure == "gradient") {
+  } else if (structure_type == "gradient") {
     # Create spatial gradient of cell types
     for (i in 1:ny) {
       for (j in 1:nx) {
@@ -217,15 +263,26 @@ initialize_tissue_structure <- function(nx, ny, k_cell_types, structure, seed) {
     }
   }
   
-  # Add some noise to break perfect patterns
-  noise_fraction <- 0.1
-  n_noise <- round(nx * ny * noise_fraction)
-  noise_positions <- sample(nx * ny, n_noise)
-  for (pos in noise_positions) {
+  return(lattice)
+}
+
+#' Blend two lattice structures based on weight
+#' @param base_lattice Base lattice to modify
+#' @param new_lattice New structure to blend in
+#' @param weight Weight of new structure (0-1)
+blend_structures <- function(base_lattice, new_lattice, weight) {
+  nx <- ncol(base_lattice)
+  ny <- nrow(base_lattice)
+  
+  # Determine how many pixels to replace based on weight
+  n_replace <- round(nx * ny * weight)
+  replace_positions <- sample(nx * ny, n_replace)
+  
+  for (pos in replace_positions) {
     row <- ((pos - 1) %% ny) + 1
     col <- ((pos - 1) %/% ny) + 1
-    lattice[row, col] <- sample.int(k_cell_types, 1)
+    base_lattice[row, col] <- new_lattice[row, col]
   }
   
-  return(lattice)
+  invisible(NULL)  # Modify in place
 }

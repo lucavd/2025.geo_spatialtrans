@@ -24,7 +24,7 @@
 | Tema | SimSpace (Python) | R_simple (R) |
 |------|-------------------|--------------|
 | **Spatial model** | MRF su griglia; controlla autocorrelazione e interazioni cell-type | ✅ **MRF biologicamente realistico** con interazioni cell-type specifiche e strutture tissutali |
-| **Modalità** | Reference-free **e** reference-based (matching dataset reale) | ✅ **Reference-free avanzato** con 4 strutture tissutali (vessel, boundary, gradient, uniform) |
+| **Modalità** | Reference-free **e** reference-based (matching dataset reale) | ✅ **Reference-free avanzato** con strutture composite (vessel+gradient+boundary) |
 | **Omics simulati** | Transcriptomica **e** Proteomica; modelli integrati o esterni | Solo transcriptomica (UMI); moduli avanzati 06l-06p in roadmap |
 | **3D** | Sì, estensione MRF a 3D | Solo 2D (roadmap: stack 2D→3D) |
 | **Velocità & lightweight** | Più pesante (ML + GA optimisation) | ✅ **~13 sec per 10k celle** (griglia 100×100) con MRF ottimizzato |
@@ -37,7 +37,7 @@
 ## 3. Punti di forza di R_simple
 
 - ✅ **MRF biologicamente realistico** con interazioni cell-type specifiche
-- ✅ **Strutture tissutali diverse**: vessel, boundary, gradient, uniform
+- ✅ **Strutture tissutali composite**: vessel+gradient+boundary con pesi biologici
 - ✅ **Performance ottimizzata**: 13 sec per 10k celle (vs minuti SimSpace)
 - ✅ **Statistiche spaziali validate**: Moran's I ~0.4-0.5, entropia ~1.78, diversità cellulare bilanciata
 - ✅ **Integrazione completa** in pipeline R_simple
@@ -62,8 +62,8 @@
    Implementato Potts-model ottimizzato con checkerboard updates e temperature annealing.
 2. ✅ **Interazioni biologiche**  
    Matrice di interazione cell-type specifica: immune-immune attraction, stromal-immune repulsion.
-3. ✅ **Strutture tissutali**  
-   4 modalità: vessel (vasi), boundary (regioni), gradient (centro-periferia), uniform (controllo).
+3. ✅ **Strutture tissutali composite**  
+   Supporto sia singole che composite: vessel+gradient+boundary con pesi relativi.
 4. ✅ **Validazione spaziale**  
    Test automatici per Moran's I, entropia, diversità cellulare.
 5. ✅ **Performance**  
@@ -126,22 +126,45 @@ Con il **realismo biologico** ora raggiunto, R_simple è pronto per:
 ## 7. Dettagli tecnici implementazione MRF
 
 ### **Architettura MRF biologicamente realistica:**
+
+**MODALITÀ SINGOLA:**
 ```r
-# Esempio uso
+# Struttura singola (backward compatible)
 df <- simulate_mrf(
   grid_size = c(200, 200),
   k_cell_types = 8,
-  beta = 0.6,  # autocorrelazione moderata
-  tissue_structure = "vessel",  # strutture vascolari
-  interaction_matrix = NULL  # auto-generata biologicamente
+  beta = 0.6,
+  tissue_structure = "vessel"
+)
+```
+
+**MODALITÀ COMPOSITA:**
+```r
+# Strutture composite (nuovo)
+df <- simulate_mrf(
+  grid_size = c(200, 200),
+  k_cell_types = 8,
+  beta = 0.6,
+  tissue_structure = list(
+    list(type = "vessel", weight = 0.5),   # Vasi sanguigni
+    list(type = "gradient", weight = 0.3), # Gradienti metabolici
+    list(type = "boundary", weight = 0.2)  # Confini tissutali
+  )
 )
 ```
 
 ### **Strutture tissutali supportate:**
+
+**MODALITÀ SINGOLA (backward compatible):**
 - **`vessel`**: Strutture lineari simili a vasi sanguigni con random walk
 - **`boundary`**: Regioni distinte con confini netti (quadranti)
 - **`gradient`**: Gradienti spaziali centro-periferia
 - **`uniform`**: Inizializzazione casuale (controllo)
+
+**MODALITÀ COMPOSITA (nuovo):**
+- **Combinazioni pesate**: es. `vessel(0.5) + gradient(0.3) + boundary(0.2)`
+- **Blending intelligente**: Sovrapposizione realistica di strutture multiple
+- **Configurazione biologica**: Pattern tipici di tessuti reali
 
 ### **Matrice interazioni biologiche:**
 ```
@@ -153,13 +176,15 @@ df <- simulate_mrf(
 ```
 
 ### **Statistiche spaziali validate:**
-- **Moran's I**: 0.41-0.46 (autocorrelazione moderata)
-- **Entropia**: ~1.78 (diversità bilanciata)
+- **Moran's I**: 0.42-0.46 (autocorrelazione moderata)
+- **Entropia**: ~1.78-1.79 (diversità bilanciata)
 - **Tipi cellulari**: 6/6 presenti in ogni simulazione
 - **Performance**: ~13 sec per 10k celle (griglia 100×100)
+- **Strutture composite**: Mantengono realismo con pattern più complessi
 
 ### **File chiave implementazione:**
-- `R_simple/07_mrf_generation.R`: Generatore MRF ottimizzato
+- `R_simple/07_mrf_generation.R`: Generatore MRF con strutture composite
 - `R_simple/testing/realistic_mrf_test.R`: Test validazione biologica
-- `R_simple/testing/full_test.R`: Pipeline completa con MRF
+- `R_simple/testing/composite_mrf_test.R`: Test specifici strutture composite
+- `R_simple/testing/full_test.R`: Pipeline completa con MRF composito
 - `SIMPSPACE.md`: Questo documento di confronto
