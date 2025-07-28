@@ -19,9 +19,26 @@
 #'                                  output_path = "synthetic.png")
 #' @export
 generate_synthetic_tissue <- function(width_px = 6800, height_px = 6500,
-                                      complexity = 2, seed = 123,
+                                      complexity = 2,
+                                      seed = 123,
+                                      engine = c("image", "mrf"),
                                       output_path = NA) {
   start_time <- Sys.time()
+  engine <- match.arg(engine)
+  if (!exists("simulate_mrf")) {
+    sim_path <- file.path(dirname(sys.frame(1)$ofile %||% ""), "07_mrf_generation.R")
+    if (file.exists(sim_path)) source(sim_path) else source("R_simple/07_mrf_generation.R")
+  }
+  if (engine == "mrf") {
+    cat(sprintf("\n[synthetic_tissue] Generating MRF tissue (grid≈%dx%d)\n",
+                width_px, height_px))
+    df <- simulate_mrf(grid_size = c(width_px, height_px),
+                       k_cell_types = complexity * 2 + 3, # heuristic mapping
+                       beta = 0.6, n_iter = 500, seed = seed)
+    return(list(img_matrix = NA, img_df = df))
+  }
+
+  # legacy image-based engine ----------------------------------------------
   stopifnot(complexity %in% 1:3)
   cat(sprintf("\n[synthetic_tissue] Generating synthetic tissue (%dx%d, complexity=%d)\n",
               width_px, height_px, complexity))

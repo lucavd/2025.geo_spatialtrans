@@ -55,7 +55,12 @@ cfg <- list(
   grid_spacing = 0,
   use_fixed_grid = TRUE,
   fixed_grid_width_mm = 8.0,   # Area più grande 
-  fixed_grid_height_mm = 8.0
+  fixed_grid_height_mm = 8.0,
+  spatial_engine = "mrf",     # NEW: MRF spatial engine
+  mrf_beta = 0.6,             # Moderate spatial autocorrelation (more realistic)
+  mrf_complexity = 8,         # Match k_cell_types for biological realism
+  mrf_tissue_structure = "vessel",  # Vessel-like tissue architecture
+  mrf_grid_size = c(200, 200)     # Larger grid for realistic patterns
 )
 
 cat("- Geni:", cfg$n_genes, "\n")
@@ -132,16 +137,40 @@ if (!is.null(user_image_path)) {
 } else {
   # MODALITÀ IMMAGINE SINTETICA (full-size)
   cat("\n=== GENERAZIONE IMMAGINE SINTETICA FULL-SIZE ===\n")
+  if (cfg$spatial_engine == "mrf") {
+    cat("Engine: MRF (beta=", cfg$mrf_beta, ", structure=", cfg$mrf_tissue_structure, ", grid=", paste(cfg$mrf_grid_size, collapse="x"), ")\n")
+  }
   tryCatch({
-    syn <- generate_synthetic_tissue(
-      width_px = 800,              # Dimensioni realistiche
-      height_px = 800,
-      complexity = 3,              # Massima complessità
-      seed = cfg$random_seed,
-      output_path = "R_simple/testing/full_tissue_complex.png"
-    )
+    if (cfg$spatial_engine == "mrf") {
+      # Direct MRF call with realistic parameters
+      mrf_data <- simulate_mrf(
+        grid_size = cfg$mrf_grid_size,
+        k_cell_types = cfg$k_cell_types,
+        beta = cfg$mrf_beta,
+        n_iter = 300,  # More iterations for convergence
+        seed = cfg$random_seed,
+        fast_mode = TRUE,
+        tissue_structure = cfg$mrf_tissue_structure
+      )
+      syn <- list(img_matrix = NA, img_df = mrf_data)
+    } else {
+      syn <- generate_synthetic_tissue(
+        width_px = 800,
+        height_px = 800,
+        complexity = cfg$mrf_complexity,
+        seed = cfg$random_seed,
+        engine = cfg$spatial_engine,
+        output_path = "R_simple/testing/full_tissue_complex.png"
+      )
+    }
     
-    img_df_thresh <- syn$img_df[syn$img_df$intensity/255 < cfg$threshold_value, ]
+    if (cfg$spatial_engine == "mrf") {
+      # MRF output has cell_type instead of intensity
+      img_df_thresh <- syn$img_df
+      img_df_thresh$intensity <- 0.5  # dummy intensity for compatibility
+    } else {
+      img_df_thresh <- syn$img_df[syn$img_df$intensity/255 < cfg$threshold_value, ]
+    }
     img_df_thresh$value <- img_df_thresh$intensity / 255
     img_df_thresh <- img_df_thresh[, c("x", "y", "value")]
     
