@@ -188,3 +188,98 @@ df <- simulate_mrf(
 - `R_simple/testing/composite_mrf_test.R`: Test specifici strutture composite
 - `R_simple/testing/full_test.R`: Pipeline completa con MRF composito
 - `SIMPSPACE.md`: Questo documento di confronto
+
+---
+
+## 8. Guida al Cambio di Motore Spaziale
+
+### **Motori Spaziali Disponibili:**
+
+R_simple supporta **due motori spaziali** con caratteristiche diverse:
+
+**🔬 MOTORE MRF (Markov Random Field):**
+- **Pattern**: Altamente strutturati con autocorrelazione spaziale forte
+- **Realismo**: Biologicamente realistico con interazioni cell-type specifiche
+- **Moran's I**: ~0.3-0.5 (autocorrelazione moderata-forte)
+- **Uso**: Benchmark clustering avanzati, validazione algoritmi spaziali
+
+**🎨 MOTORE IMAGE (Image-based):**
+- **Pattern**: Biologicamente realistici con strutture tissutali variabili
+- **Realismo**: Pattern naturali simili a tessuti reali
+- **Moran's I**: ~0.4-0.6 (autocorrelazione biologica)
+- **Uso**: Test generalizzazione algoritmi, pattern diversificati
+
+### **Come Cambiare Motore in `full_test.R`:**
+
+**📍 SEZIONE DA MODIFICARE** (linee ~85-95):
+```r
+cfg <- list(
+  # ... altre configurazioni ...
+  
+  # MOTORE SPAZIALE - Scegli uno dei due:
+  spatial_engine = "image",     # ATTUALE: motore image
+  # spatial_engine = "mrf",     # ALTERNATIVA: motore MRF
+  
+  # COMPLEXITY - Adatta al motore scelto:
+  complexity = 3,             # ATTUALE: image complexity (1-3)
+  # complexity = 8,           # ALTERNATIVA: MRF complexity (= k_cell_types)
+  
+  # ... resto configurazione ...
+)
+```
+
+### **⚙️ Parametri Complexity:**
+
+**IMAGE ENGINE:**
+- `complexity = 1`: Solo blob gaussiani (pattern semplice)
+- `complexity = 2`: Patch Voronoi (pattern medio)
+- `complexity = 3`: Mix blob + Voronoi + rumore frattale (pattern complesso)
+
+**MRF ENGINE:**
+- `complexity = k_cell_types`: Deve corrispondere al numero di tipi cellulari
+- Nel file attuale: `k_cell_types = 8`, quindi `complexity = 8`
+
+### **🔄 Esempi Pratici:**
+
+**CONFIGURAZIONE MRF (pattern strutturati):**
+```r
+spatial_engine = "mrf",
+complexity = 8,              # = k_cell_types
+mrf_beta = 0.6,             # Autocorrelazione spaziale
+mrf_tissue_structure = list( # Struttura composita
+  list(type = "vessel", weight = 0.5),
+  list(type = "gradient", weight = 0.3),
+  list(type = "boundary", weight = 0.2)
+)
+```
+
+**CONFIGURAZIONE IMAGE (pattern naturali):**
+```r
+spatial_engine = "image",
+complexity = 3,              # Pattern complesso
+# mrf_beta ignorato per image
+# mrf_tissue_structure ignorato per image
+```
+
+### **📊 Risultati Attesi:**
+
+| Motore | Moran's I | Tempo | Pattern | Uso Ideale |
+|--------|-----------|-------|---------|------------|
+| **MRF** | 0.3-0.5 | ~13 sec | Altamente strutturati | Benchmark clustering avanzati |
+| **Image** | 0.4-0.6 | ~1 min | Biologicamente naturali | Test generalizzazione algoritmi |
+
+### **🎯 Quando Usare Quale Motore:**
+
+**USA MRF quando:**
+- Vuoi pattern con forte autocorrelazione spaziale
+- Testi algoritmi di clustering spaziale avanzati
+- Hai bisogno di interazioni cell-type specifiche
+- Vuoi strutture tissutali composite controllate
+
+**USA IMAGE quando:**
+- Vuoi pattern più naturali e variabili
+- Testi la generalizzazione degli algoritmi
+- Hai bisogno di diversità nei pattern spaziali
+- Vuoi simulare tessuti con complessità variabile
+
+**💡 SUGGERIMENTO**: Entrambi i motori ora producono autocorrelazione spaziale biologicamente realistica. La scelta dipende dal tipo di benchmark che vuoi eseguire!

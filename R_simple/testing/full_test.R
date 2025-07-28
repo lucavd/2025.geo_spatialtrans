@@ -42,6 +42,34 @@ for (lib in required_libs) {
 }
 
 # 3. Configurazione FULL (parametri biologicamente realistici)
+# 
+# ========================================================================
+# ISTRUZIONI PER CAMBIARE MOTORE SPAZIALE
+# ========================================================================
+# 
+# Per passare tra i motori spaziali, modifica questi 2 parametri:
+# 
+# MOTORE MRF (pattern altamente strutturati):
+#   spatial_engine = "mrf"
+#   complexity = 8              # Deve = k_cell_types (8 in questo caso)
+#   Risultato: Moran's I ~0.3-0.5
+# 
+# MOTORE IMAGE (pattern biologicamente realistici):
+#   spatial_engine = "image"
+#   complexity = 3              # 1=semplice, 2=medio, 3=complesso
+#   Risultato: Moran's I ~0.4-0.6
+# 
+# PARAMETRI COMPLEXITY:
+# - Image engine: 1 (blob gaussiani), 2 (patch Voronoi), 3 (mix + rumore)
+# - MRF engine: deve corrispondere a k_cell_types per coerenza biologica
+# 
+# ALTRI PARAMETRI MRF (opzionali):
+# - mrf_beta: autocorrelazione spaziale (0.1-1.0, default 0.6)
+# - mrf_tissue_structure: struttura composita del tessuto
+# - mrf_grid_size: dimensione griglia MRF
+# 
+# ========================================================================
+
 cat("\n=== CONFIGURAZIONE FULL BIOLOGICAMENTE REALISTICA ===\n")
 cfg <- list(
   n_genes = 5000,          # Realistico per spatial transcriptomics
@@ -56,9 +84,15 @@ cfg <- list(
   use_fixed_grid = TRUE,
   fixed_grid_width_mm = 8.0,   # Area più grande
   fixed_grid_height_mm = 8.0,
-  spatial_engine = "image",     # "mrf" or "image" spatial engine
-  mrf_beta = 0.6,             # Moderate spatial autocorrelation (more realistic)
-  complexity = 3,             # Complexity: image engine (1-3), MRF engine (matches k_cell_types)
+  # MOTORE SPAZIALE - Scegli uno dei due:
+  spatial_engine = "image",     # ATTUALE: motore image
+  # spatial_engine = "mrf",     # ALTERNATIVA: motore MRF
+  
+  mrf_beta = 0.6,             # Autocorrelazione spaziale (solo per MRF)
+  
+  # COMPLEXITY - Adatta al motore scelto:
+  complexity = 3,             # ATTUALE: image complexity (1-3)
+  # complexity = 8,           # ALTERNATIVA: MRF complexity (= k_cell_types)
   mrf_tissue_structure = list(  # COMPOSITE tissue architecture
     list(type = "vessel", weight = 0.5),   # Vascular structures
     list(type = "gradient", weight = 0.3), # Metabolic gradients
@@ -194,8 +228,55 @@ if (!is.null(user_image_path)) {
         output_path = "R_simple/testing/full_tissue_complex.png"
       )
 
-      # Per non-MRF, impostiamo Moran a 0 (verrà calcolato dopo il campionamento)
-      mrf_moran_i <- 0
+      # Per image engine, calcoliamo Moran's I sui dati immagine
+      # Usa le intensità dell'immagine come variabile spaziale
+      compute_image_moran <- function(img_df) {
+        # Prendi un campione per efficienza computazionale
+        if (nrow(img_df) > 5000) {
+          set.seed(cfg$random_seed)
+          sample_idx <- sample(nrow(img_df), 5000)
+          img_df <- img_df[sample_idx, ]
+        }
+        
+        # Normalizza intensità per calcolo Moran
+        img_df$norm_intensity <- scale(img_df$intensity)[,1]
+        
+        # Calcola matrice distanze (usa solo subset per performance)
+        n <- nrow(img_df)
+        if (n < 100) return(0)  # troppo pochi dati
+        
+        # Usa distanza euclidea e soglia per definire vicinanza
+        dist_threshold <- quantile(sqrt((img_df$x - mean(img_df$x))^2 + 
+                                       (img_df$y - mean(img_df$y))^2), 0.1)
+        
+        w_total <- 0
+        numerator <- 0
+        mean_intensity <- mean(img_df$norm_intensity)
+        
+        # Calcola Moran's I con approccio efficiente
+        for (i in 1:(n-1)) {
+          for (j in (i+1):n) {
+            dist <- sqrt((img_df$x[i] - img_df$x[j])^2 + (img_df$y[i] - img_df$y[j])^2)
+            if (dist <= dist_threshold) {
+              w <- 1  # peso binario per vicinanza
+              w_total <- w_total + 2  # simmetrico
+              dev_i <- img_df$norm_intensity[i] - mean_intensity
+              dev_j <- img_df$norm_intensity[j] - mean_intensity
+              numerator <- numerator + 2 * w * dev_i * dev_j
+            }
+          }
+        }
+        
+        if (w_total == 0) return(0)
+        
+        denominator <- sum((img_df$norm_intensity - mean_intensity)^2)
+        if (denominator == 0) return(0)
+        
+        moran_i <- (n / w_total) * (numerator / denominator)
+        return(moran_i)
+      }
+      
+      mrf_moran_i <- compute_image_moran(syn$img_df)
     }
 
     if (cfg$spatial_engine == "mrf") {
