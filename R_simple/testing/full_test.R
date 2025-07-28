@@ -85,14 +85,14 @@ cfg <- list(
   fixed_grid_width_mm = 8.0,   # Area più grande
   fixed_grid_height_mm = 8.0,
   # MOTORE SPAZIALE - Scegli uno dei due:
-  spatial_engine = "image",     # ATTUALE: motore image
-  # spatial_engine = "mrf",     # ALTERNATIVA: motore MRF
+  # spatial_engine = "image",     # ALTERNATIVA: motore image
+  spatial_engine = "mrf",     # ATTUALE: motore MRF
   
   mrf_beta = 0.6,             # Autocorrelazione spaziale (solo per MRF)
   
   # COMPLEXITY - Adatta al motore scelto:
-  complexity = 3,             # ATTUALE: image complexity (1-3)
-  # complexity = 8,           # ALTERNATIVA: MRF complexity (= k_cell_types)
+  # complexity = 3,             # ALTERNATIVA: image complexity (1-3)
+  complexity = 8,           # ATTUALE: MRF complexity (= k_cell_types)
   mrf_tissue_structure = list(  # COMPOSITE tissue architecture
     list(type = "vessel", weight = 0.5),   # Vascular structures
     list(type = "gradient", weight = 0.3), # Metabolic gradients
@@ -593,6 +593,12 @@ if (overall_pass) {
       dropout_range = diff_cfg$dropout_params$dropout_range,
       spatial_correlation = "moran_index_computed"
     ),
+    # Aggiungi dati MRF originali se disponibili
+    syn_tissue = if(cfg$spatial_engine == "mrf" && exists("mrf_data")) {
+      list(img_df = mrf_data)
+    } else {
+      syn
+    },
     status = "PASS"
   )
 
