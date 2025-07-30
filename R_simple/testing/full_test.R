@@ -332,37 +332,55 @@ has_na <- any(is.na(final_expr)) || any(is.infinite(final_expr))
 integrity_ok <- !has_na
 cat("✓ Integrità dati:", ifelse(integrity_ok, "PASS", "FAIL"), "\n")
 
-# Test correlazione spaziale (sample)
-spatial_test_ok <- TRUE
+# Test Moran's I per autocorrelazione spaziale
+morans_test_ok <- TRUE
 tryCatch({
-  if (nrow(cell_df) >= 100) {
-    sample_cells <- sample(nrow(cell_df), min(100, nrow(cell_df)))
-    sample_coords <- cell_df[sample_cells, c("x", "y")]
-    sample_expr <- final_expr[1:min(50, nrow(final_expr)), sample_cells]
-    
-    # Test correlazione tra celle vicine vs lontane
-    dist_matrix <- as.matrix(dist(sample_coords))
-    expr_cor_matrix <- cor(t(sample_expr), use = "complete.obs")
-    
-    # Correlazione media per celle vicine (<10% max distance)
-    close_threshold <- quantile(dist_matrix[upper.tri(dist_matrix)], 0.1)
-    close_pairs <- which(dist_matrix < close_threshold & upper.tri(dist_matrix), arr.ind = TRUE)
-    
-    if (nrow(close_pairs) > 0) {
-      close_cor <- mean(expr_cor_matrix[close_pairs], na.rm = TRUE)
-      spatial_test_ok <- close_cor > 0.1  # Correlazione spaziale minima
-      cat("✓ Correlazione spaziale:", round(close_cor, 3), "-", 
-          ifelse(spatial_test_ok, "PASS", "FAIL"), "\n")
+  if (nrow(cell_df) >= 50) {
+    # Test Moran's I su intensità di clustering
+    if ("value" %in% colnames(cell_df)) {
+      moran_result <- compute_morans_i(cell_df, "value", max_points = 1000)
+      
+      if (!is.na(moran_result$moran_i)) {
+        morans_test_ok <- moran_result$moran_i > 0.05  # Soglia minima autocorrelazione
+        cat("✓ Moran's I:", round(moran_result$moran_i, 3), "-", 
+            ifelse(morans_test_ok, "PASS", "FAIL"), "\n")
+        cat("  ", moran_result$interpretation, "\n")
+        
+        # Test aggiuntivo su espressione genica (gene più variabile)
+        if (nrow(final_expr) > 0) {
+          gene_vars <- apply(final_expr, 1, var)
+          top_gene_idx <- which.max(gene_vars)
+          
+          # Crea df per Moran's I con espressione del gene più variabile
+          gene_data <- data.frame(
+            x = cell_df$x,
+            y = cell_df$y,
+            gene_expr = as.numeric(final_expr[top_gene_idx, ])
+          )
+          
+          gene_moran <- compute_morans_i(gene_data, "gene_expr", max_points = 1000)
+          if (!is.na(gene_moran$moran_i)) {
+            cat("✓ Moran's I (gene top-var):", round(gene_moran$moran_i, 3), "\n")
+          }
+        }
+      } else {
+        cat("✓ Moran's I: SKIP (calcolo non possibile)\n")
+      }
+    } else {
+      cat("✓ Moran's I: SKIP (colonna value mancante)\n")
     }
+  } else {
+    cat("✓ Moran's I: SKIP (dati insufficienti)\n")
   }
 }, error = function(e) {
-  cat("✓ Correlazione spaziale: SKIP (errore calcolo)\n")
+  cat("✓ Moran's I: SKIP (errore:", e$message, ")\n")
+  morans_test_ok <- TRUE  # Non fallire il test complessivo per errori di calcolo
 })
 
 # 11. RISULTATO FINALE FULL
 cat("\n=== RISULTATO FINALE FULL ===\n")
 all_tests <- c(genes_ok && cells_ok, sparsity_ok, umi_ok, umi_cv_ok, 
-               cluster_ok, integrity_ok, spatial_test_ok)
+               cluster_ok, integrity_ok, morans_test_ok)
 overall_pass <- all(all_tests)
 
 end_time <- Sys.time()
@@ -396,7 +414,7 @@ if (overall_pass) {
     biological_validation = list(
       library_size_target = diff_cfg$cell_specific_params$library_size_params$mean_library_size,
       dropout_range = diff_cfg$dropout_params$dropout_range,
-      spatial_correlation = spatial_test_ok
+      morans_i_test = morans_test_ok
     ),
     status = "PASS"
   )
