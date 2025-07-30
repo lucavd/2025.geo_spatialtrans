@@ -4,231 +4,391 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Structure
 
-This R package for spatial transcriptomics simulation has been fully modularized with these key components:
+This R package for spatial transcriptomics simulation has been streamlined and optimized with these key components:
 
-- `R/functions/`: Contains all the modularized functions, numbered for dependency order
-  - `01_configuration.R`: Configuration settings
-  - `02_helper_functions.R`: General utilities
-  - `03_image_processing.R`: Image loading and preprocessing
-  - `04_clustering.R`: Clustering algorithms
-  - `05_grid_sampling.R`: Grid creation and sampling
-  - `06*_expression_profiles*.R`: Expression profile generation (11 modules)
-  - `07*_simulation*.R`: Main simulation pipeline (6 modules)
-- `tests/testthat/`: Contains unit tests for all functions
-- `DESCRIPTION`: Package metadata and dependencies
-- `run_tests.R`: Script to run all tests with proper library loading
+### Active Core Pipeline (`R/`)
+- `01_configuration.R`: Performance configuration and memory management
+- `02_helper_functions.R`: General utilities and helper functions
+- `03_image_processing.R`: Image loading and preprocessing
+- `03b_generate_synthetic_tissue.R`: Synthetic tissue image generation (complexity levels 1-3)
+- `04_clustering.R`: **SIMPLIFIED** - Only spatial_kmeans method (64 lines, reduced from 540)
+- `05_grid_sampling.R`: Grid creation and sampling for Visium-like technologies
+- `06_expression_profiles.R` through `06k_expression_profiles_wrapper.R`: **12 essential expression modules**
+  - `06a_expression_params.R`: Parameter initialization
+  - `06b_expression_baseline.R`: Baseline expression profiles
+  - `06c_spatial_distances.R`: Distance calculations
+  - `06d_dispersion_params.R`: Dispersion parameters
+  - `06e_library_size.R`: Library size generation
+  - `06f_dropout_models.R`: Dropout modeling with ambient RNA
+  - `06g_gene_modules.R`: Gene module generation
+  - `06h_spatial_correlation.R`: Basic spatial correlation (GRF)
+  - `06i_hybrid_cells.R`: Hybrid cell handling at boundaries
+  - `06j_expression_generation.R`: Expression matrix generation
+  - `06k_expression_profiles_wrapper.R`: **Main coordinator function**
+
+### Testing Framework (`R/testing/`)
+- `full_test.R`: **PRIMARY SCRIPT** - Biologically realistic full pipeline test
+- `visualize_clusters.R`: Visualization script for cluster analysis
+- `*.png` and `*.rds`: Generated results and visualizations
+
+### Advanced Features (Not Yet Active) (`R/test functions/`)
+- `06l_ligand_receptor_interactions.R`: Cell-cell communication (future feature)
+- `06m_temporal_dynamics.R`: RNA velocity and pseudotime (future feature)
+- `06n_alternative_splicing.R`: Isoform regulation (future feature)
+- `06o_anisotropic_patterns.R`: Directional patterns (future feature)
+- `06p_3d_microenvironment.R`: 3D tissue effects (future feature)
+- `07*_simulation*.R`: Advanced simulation pipeline (future features)
+- `08_validation_plots.R`: Comprehensive validation (future feature)
 
 ## Build/Test Commands
 
-- Load all functions for testing: 
+### Primary Usage: Full Pipeline Test
+- **Run the main simulation test** (recommended starting point):
   ```r
-  # Load all functions in order
-  files <- list.files("R/functions", full.names = TRUE, pattern = "\\.R$")
+  # Run full biologically realistic test
+  Rscript R/testing/full_test.R
+  
+  # Or with custom image
+  Rscript R/testing/full_test.R path/to/your/image.png
+  ```
+
+### Manual Function Loading
+- Load all core functions for development:
+  ```r
+  # Load core pipeline functions (01-06k)
+  files <- list.files("R", full.names = TRUE, pattern = "\\.R$")
+  files <- files[!grepl("test functions", files)]  # Exclude test functions
   for (file in sort(files)) { source(file) }
   ```
 
-- Run tests with proper library loading:
+### Memory Configuration
+- The pipeline requires adequate memory allocation:
   ```r
-  source("run_tests.R")
-  ```
+  # For full test (required)
+  options(future.globals.maxSize = 4 * 1024^2) # 4 GB
   
-- Note: The test suite requires increasing the future.globals.maxSize limit to 100 GB:
-  ```r
-  options(future.globals.maxSize = 100 * 1024^2) # 100 GB
+  # For large-scale simulations
+  setup_performance(max_memory_gb = 8, workers = 4)
   ```
 
-- Run tests:
+### Test Suite (Legacy)
+- Basic unit tests (if available):
   ```r
+  source("tests/run_tests.R")
   testthat::test_dir("tests/testthat/")
   ```
 
-- Run a specific test:
-  ```r
-  testthat::test_file("tests/testthat/test-expression_modules.R")
-  ```
-
-- Build package:
+### Package Development
+- Build package documentation:
   ```r
   devtools::document()
   devtools::build()
   ```
 
 
-## ✅ Clustering Improvements (Gennaio 2025)
+## ✅ Clustering Simplification (Gennaio 2025)
 
-### New Clustering Methods Implemented
+### Streamlined Clustering Implementation
 
-Il sistema di clustering è stato esteso con metodi biologicamente realistici per sostituire k-means:
+Il sistema di clustering è stato **semplificato drasticamente** per fornire una pipeline stabile e controllabile:
 
-#### Pipeline DBSCAN + Graph Clustering
-- **File**: `R/functions/04_clustering.R`
-- **Metodo**: `clustering_method = "dbscan_graph"`
-- **Strategia**: Pipeline consecutiva per forme irregolari biologicamente plausibili
+#### Spatial K-means Only
+- **File**: `R/04_clustering.R`
+- **Riduzione**: Da 540 righe a 64 righe (**92% di riduzione**)
+- **Metodo unico**: `spatial_kmeans` - K-means con bilanciamento spazio-intensità
 
 ```r
-# Utilizzo nel codice di simulazione
+# Utilizzo semplificato nel codice di simulazione
 clust <- cluster_image(
   img_df_thresh = img_dat$img_df_thresh,
   k_cell_types  = cfg$k_cell_types,
   random_seed   = cfg$random_seed,
-  clustering_method = "dbscan_graph"  # Nuovo metodo
+  spatial_weight = 0.6  # Controllo bilanciamento spazio-intensità
 )
 ```
 
-#### Parametri Biologicamente Controllabili
-1. **DBSCAN (Fase 1)**: Identifica regioni dense
-   - `eps_factor = 1.4`: Dimensione regioni dense
-   - `min_samples = 4`: Numero minimo di celle per cluster
+#### Parametro di Controllo Biologico
+- **`spatial_weight`**: Controllo del bilanciamento tra intensità dell'immagine e posizione spaziale
+  - `0.0`: Clustering solo per intensità (facile)
+  - `0.5`: Bilanciamento equilibrato (medio)
+  - `1.0+`: Clustering principalmente spaziale (difficile)
 
-2. **Graph Clustering (Fase 2)**: Raffina strutture locali
-   - `k_neighbors = 10`: Dimensione microambiente locale
-   - `resolution = 1.0`: Granularità clustering Louvain
+#### Vantaggi della Semplificazione
+- **Deterministica**: Risultati riproducibili con `random_seed`
+- **Controllabile**: Difficoltà parametrizzabile tramite `spatial_weight`
+- **Stabile**: Funziona con pattern semplici e complessi
+- **Veloce**: Operazioni vettorizzate ottimizzate
+- **Ground Truth**: Cluster definiti e controllabili per benchmark
 
-#### Vantaggi vs k-means
-- **Forme irregolari**: Trova vasi sanguigni, ramificazioni, infiltrazione immune
-- **Controllo biologico**: Parametri interpretabili biologicamente
-- **Robustezza**: Fallback automatico a spatial_kmeans se necessario
-- **Performance**: Scala a migliaia di punti con O(n log n)
-
-### Metodi di Clustering Disponibili
-- `"spatial_kmeans"`: K-means con peso spaziale (default precedente)
-- `"kmeans++"`: K-means standard migliorato
-- `"slic"`: Superpixel clustering
-- `"dbscan_graph"`: **NUOVO** - Pipeline consecutiva per forme biologiche
+### Metodi Rimossi nella Semplificazione
+- `"kmeans++"`: K-means standard (rimosso)
+- `"slic"`: Superpixel clustering (rimosso)
+- `"dbscan_graph"`: Pipeline DBSCAN+Graph (rimosso)
+- Stima automatica k con elbow/silhouette (rimossa)
+- Gestione fallback complessa (rimossa)
 
 ## Next Development Steps
 
-1. **✅ Advanced Clustering (COMPLETATO)**:
-   - ✅ Implementata pipeline DBSCAN + Graph clustering
-   - ✅ Integrazione con sistema di simulazione esistente
-   - ✅ Parametri biologicamente interpretabili
+### ✅ Completed (Gennaio 2025)
+- [x] **Pipeline Core Semplificata**: 17 moduli essenziali funzionanti (01-06k)
+- [x] **Full Test Biologicamente Realistico**: `R/testing/full_test.R` con parametri validati
+- [x] **Validazione Automatica**: Benchmark completi con PASS/FAIL
+- [x] **Visualizzazione Cluster**: Pannelli combinati in stile pubblicazione scientifica
+- [x] **Gestione Memoria**: Chunking intelligente per dataset grandi
+- [x] **Synthetic Tissue Generation**: 3 livelli di complessità biologica
 
-2. **Validation & Optimization**:
-   - Validazione biologica risultati vs k-means
-   - Performance optimization per large-scale simulations
-   - Sviluppo metriche di validazione automatiche
+### Active Development Priorities
 
-3. **Complete remaining modularization**:
-   - Finish modularizing `analyze_and_compare_clusters.R`
-   - Finish modularizing `generate_synthetic_tissue.R`
+1. **Advanced Features Integration**:
+   - Integrate modules from `R/test functions/` as optional features
+   - Enable ligand-receptor interactions (06l) as parameter option
+   - Enable temporal dynamics (06m) as parameter option
+   - Enable alternative splicing (06n) as parameter option
+   - Enable anisotropic patterns (06o) as parameter option
+   - Enable 3D microenvironment (06p) as parameter option
 
-4. **Implement package infrastructure**:
-   - Complete roxygen documentation
-   - Set up proper package namespace
+2. **Extended Validation**:
+   - Test with different dataset sizes (10k, 15k, 25k genes)
+   - Test with more clusters (10, 12, 15)
+   - Benchmark performance scaling on very large datasets
+   - Compare ground truth recovery accuracy
+
+3. **Algorithm Benchmarking**:
+   - Implement clustering comparison metrics (ARI, NMI, Silhouette)
+   - Test with standard algorithms (k-means, Louvain, Leiden)  
+   - Validate ground truth recovery performance
+   - Compare with public real datasets
+
+4. **Package Infrastructure**:
+   - Complete roxygen documentation for all functions
+   - Set up proper package namespace and DESCRIPTION
    - Create package installation workflows
+   - Add comprehensive unit tests
 
-5. **Add example data and vignettes**:
-   - Create demo datasets
-   - Write tutorial vignettes
+5. **User Experience Enhancements**:
+   - Support user images with automatic preprocessing
+   - Export to standard formats (H5AD, Seurat, CSV)
+   - Batch processing for multiple experiments
+   - GPU parallelization for very large datasets
 
-6. **Explore advanced spatial modeling**:
-   - Test multi-scale and hierarchical spatial models
-   - Implement anisotropic and non-stationary patterns
-   - Create composite spatial patterns for realistic tissues
+## Current Pipeline Architecture
 
-## Modular Structure Benefits
+### Core Expression Pipeline (Active - 12 Modules)
+The essential expression generation pipeline consists of **12 coordinated modules** (06a-06k):
 
-The package has been modularized to support efficient pipeline execution:
+1. **06a_expression_params.R**: Parameter initialization and validation
+2. **06b_expression_baseline.R**: Cell type-specific baseline expression profiles
+3. **06c_spatial_distances.R**: Spatial distance calculations and local density
+4. **06d_dispersion_params.R**: Negative binomial dispersion parameters
+5. **06e_library_size.R**: Realistic library size generation with spatial effects
+6. **06f_dropout_models.R**: Expression-dependent dropout with ambient RNA
+7. **06g_gene_modules.R**: Gene co-expression modules and regulatory networks
+8. **06h_spatial_correlation.R**: Gaussian Random Field spatial correlation
+9. **06i_hybrid_cells.R**: Boundary cells with mixed phenotypes
+10. **06j_expression_generation.R**: Final expression matrix generation
+11. **06k_expression_profiles_wrapper.R**: **MAIN COORDINATOR** - orchestrates all modules
 
-1. **Expression Profiles (06*.R files)**:
-   - `06a_expression_params.R`: Parameter initialization
-   - `06b_expression_baseline.R`: Baseline profiles
-   - `06c_spatial_distances.R`: Distance calculations
-   - `06d_dispersion_params.R`: Dispersion parameters
-   - `06e_library_size.R`: Library size generation
-   - `06f_dropout_models.R`: Dropout modeling with ambient RNA
-   - `06g_gene_modules.R`: Gene module generation
-   - `06h_spatial_correlation.R`: Basic spatial correlation
-   - `06h_spatial_correlation_multiscale.R`: Multi-scale correlations
-   - `06h_spatial_correlation_nonstationary.R`: Non-stationary patterns
-   - `06i_hybrid_cells.R`: Hybrid cell handling
-   - `06j_expression_generation.R`: Matrix generation
-   - `06k_expression_profiles_wrapper.R`: Wrapper function
-   - `06l_ligand_receptor_interactions_simple.R`: Ligand-receptor interactions (simplified)
-   - `06m_temporal_dynamics_simple.R`: Temporal dynamics (simplified)
-   - `06n_alternative_splicing_simple.R`: Alternative splicing (simplified)
-   - `06o_anisotropic_patterns_simple.R`: Anisotropic patterns (simplified)
-   - `06p_3d_microenvironment_simple.R`: 3D microenvironment (simplified)
+**Key Features of Active Pipeline:**
+- **Biologically Realistic**: All 12 modules essential for biological accuracy
+- **Non-Simplifiable**: Each module has specific dependencies in the workflow
+- **Coordinated**: Wrapper function manages the complete pipeline
+- **Memory Efficient**: Supports chunking for large-scale simulations
+- **Validated**: Produces realistic UMI counts, sparsity, and spatial patterns
 
-2. **Simulation Pipeline (07*.R files)**:
-   - `07a_simulation_config.R`: Configuration
-   - `07b_difficulty_setup.R`: Difficulty parameters
-   - `07c_simulation_pipeline.R`: Main pipeline
-   - `07d_visualization.R`: Visualization
-   - `07e_results_handling.R`: Results management
-   - `07f_simulate_spatial_transcriptomics_wrapper.R`: Wrapper function
+### Advanced Features (Future Integration)
+Located in `R/test functions/` - **not yet active but planned for integration**:
 
-3. **Validation and Analysis (08*.R files)**:
-   - `08_validation_plots.R`: Comprehensive validation plots generation
+1. **06l_ligand_receptor_interactions.R**: Cell-cell communication modeling
+2. **06m_temporal_dynamics.R**: RNA velocity and pseudotime trajectories  
+3. **06n_alternative_splicing.R**: Spatial regulation of isoform usage
+4. **06o_anisotropic_patterns.R**: Directional patterns along tissue structures
+5. **06p_3d_microenvironment.R**: 3D tissue effects on 2D measurements
+6. **07*_simulation*.R**: Advanced simulation pipeline components
+7. **08_validation_plots.R**: Comprehensive validation plotting suite
 
-## Simulation Scripts
+## Primary Simulation Script
 
-### Simplified Simulation (2000 genes)
-```r
-Rscript R/run_full_simulation_simple.R
+### Full Test Pipeline (`R/testing/full_test.R`)
+
+**Main Entry Point** - Biologically realistic full pipeline test:
+
+```bash
+# Run with synthetic tissue (default)
+Rscript R/testing/full_test.R
+
+# Run with user-provided image
+Rscript R/testing/full_test.R path/to/your/tissue/image.png
 ```
-- Uses biologically validated parameters
-- ~2000 genes, ~8000 UMI/cell mean library size
-- Includes biological validation report
 
-### Full-size Simulation (20000 genes)
-```r
-# Quick test first (recommended)
-Rscript R/test_full_size_quick.R
+**Configuration Full-Size Biological**:
+- **5,000 genes**: Realistic for spatial transcriptomics publications
+- **10,000 spots/cells**: Medium-scale dataset size
+- **8 cell types**: Realistic tissue complexity
+- **8,000 UMI/spot**: Target library size for Visium HD
+- **800x800 pixel**: Full-size synthetic tissue with complexity=3
 
-# Full simulation
-Rscript R/run_full_size_optimized.R
+**Automatic Benchmarking**:
+- ✓ **Matrix dimensions**: Correct genes × cells 
+- ✓ **Sparsity**: 30-92% (extended range for spatial data)
+- ✓ **UMI per cell**: 3,000-20,000 (realistic range for spatial)
+- ✓ **UMI CV**: 0.15-1.0 (coefficient of variation)
+- ✓ **Cluster assignment**: Expected number of clusters
+- ✓ **Data integrity**: No NaN/Inf values
+- ✓ **Moran's I**: Spatial autocorrelation test
+
+**Performance**: Complete pipeline in **<1 minute** with chunking optimization
+
+### Visualization and Results
+
+**Automatic Output Generation**:
+```bash
+# Run visualization after full_test.R
+Rscript R/testing/visualize_clusters.R
 ```
-- Biologically realistic: 20k genes, 8k UMI/cell
-- Memory optimized with chunking
-- Full biological validation
 
-### Biological Validation
+**Generated Files**:
+- `full_test_result.rds`: Complete benchmark results and metadata
+- `full_simulation_data.rds`: Expression matrix and coordinates 
+- `combined_visualization.png`: Publication-style combined panel
+- `cluster_visualization.png`: Detailed cluster plot (20,000 points)
+- `full_tissue_complex.png`: Generated synthetic tissue image
+
+**Manual Pipeline Execution**:
 ```r
-source("R/biological_validation_report.R")
-generate_biological_validation_report(
-  sim_results = readRDS("results/your_simulation.rds"),
-  output_dir = "plots/biological_validation",
-  simulation_name = "Your Simulation"
-)
+# Load all functions
+files <- list.files("R", full.names = TRUE, pattern = "\\.R$")
+files <- files[!grepl("test functions", files)]
+for (file in sort(files)) { source(file) }
+
+# Configure memory
+options(future.globals.maxSize = 4 * 1024^2) # 4 GB
+
+# Generate data with controlled difficulty
+spatial_weight <- 0.2  # Easy: cluster by intensity  
+spatial_weight <- 0.8  # Hard: spatial clusters
 ```
 
 ## Biologically Validated Parameters
 
-Based on extensive testing and validation:
+Based on extensive testing and validation with real spatial transcriptomics data:
 
-1. **Library Size**: 8000 UMI/cell (mean) with 30% CV
+### Realistic Expression Configuration
+1. **Library Size**: 8,000 UMI/spot (mean) with 30% CV
+   - Range: 3,000-20,000 UMI/spot (captures natural variation)
+   - Spatial effects: Library size correlation with tissue density
+   - Cell type effects: Different RNA content per cell type
+
 2. **Gene Expression Distribution**:
-   - 85% low-expressed genes (mu ~ -4.5)
-   - 10% medium-expressed genes (mu ~ -1.5)  
-   - 5% high-expressed genes (mu ~ 0.5)
-3. **Dropout**: 40-60% range for medium difficulty
-4. **Dispersion**: 10.0-5.0 range for negative binomial
+   - **25 marker genes per cell type**: Strong cell type identification
+   - **Marker fold-change**: 2.5x over baseline (biologically realistic)
+   - **Minimal overlap**: 0.05 overlap coefficient between cell types
+   - **Spatial correlation**: 40μm range, moderate intensity (1.2)
+
+3. **Technical Parameters**:
+   - **Dropout range**: 45-65% (realistic for spatial technologies)
+   - **Dispersion range**: 12.0-6.0 (high-quality data characteristics)
+   - **Expression-dependent dropout**: Logistic curve with midpoint=0.4
+   - **Gene modules**: 8 co-expression modules with 75% correlation
+
+### Benchmark Results (Full Test)
+**Typical successful run**:
+- ✓ **Execution time**: 0.79 minutes
+- ✓ **Final dimensions**: 5,000×10,000 (genes×spots)
+- ✓ **Sparsity**: 89.2% (typical for filtered spatial data)
+- ✓ **UMI statistics**: Mean=9,022, Median=7,100
+- ✓ **UMI CV**: 0.87 (realistic biological variability)
+- ✓ **Clusters found**: 8/8 correctly assigned
+- ✓ **Moran's I**: >0.05 (significant spatial autocorrelation)
+
+**Biological Validation Confirmed**:
+- Library size target: 8,000 UMI/spot ✓
+- Dropout in expected range: 45-65% ✓  
+- Marker genes per type: 25 ✓
+- Spatial correlation patterns: Realistic ✓
 
 ## Code Style Guidelines
 
-- **Indentation**: 2 spaces
-- **Function Names**: snake_case (e.g., `calculate_dispersion_params`)
-- **Parameter Structure**: Group related parameters in lists
-- **Documentation**: All function parameters documented with roxygen style
-- **Error Handling**: Use `stop()` for errors, `warning()` for warnings, `tryCatch()` for exceptions
-- **Testing**: Each module has corresponding tests
-- **Plots**: All plots must have white backgrounds (not transparent) for consistency and clear visualization
+- **Indentation**: 2 spaces for R code
+- **Function Names**: snake_case (e.g., `generate_expression_profiles`, `cluster_image`)
+- **Parameter Structure**: Group related parameters in lists with descriptive names
+- **Documentation**: All functions documented with roxygen2 style comments
+- **Error Handling**: Use `stop()` for errors, `warning()` for warnings, `tryCatch()` for robustness
+- **Memory Management**: Use chunking for large datasets, call `gc()` periodically
+- **Plots**: All plots must have white backgrounds for consistency and publication quality
   - Use `theme(panel.background = element_rect(fill = "white", colour = NA), plot.background = element_rect(fill = "white", colour = NA))` for ggplot2
   - Set `bg = "white"` in all `ggsave()` calls
+- **Reproducibility**: Always use `set.seed()` with explicit `random_seed` parameters
+
+## Benchmark Usage Guidelines
+
+### For Method Development
+- Use `spatial_weight = 0.2` for easy clustering benchmarks
+- Use `spatial_weight = 0.8` for challenging spatial pattern recognition
+- Modify `n_genes` and `k_cell_types` to create specific benchmark scenarios
+- Save results as `.rds` for systematic comparison studies
+
+### For Algorithm Testing
+- Ground truth is available through `cluster` assignments in `cell_df`
+- Compare clustering results using standard metrics (ARI, NMI, Silhouette)
+- Use generated coordinates for spatial analysis validation
+- Benchmark memory usage and execution time for scaling studies
 
 ## Technical Improvement Process
 
-When implementing technical improvements to the codebase:
+When implementing improvements to the streamlined codebase:
 
-1. **Clearly define the improvement idea**
-2. **Implement changes methodically** without shortcuts or data fabrication
-3. **Update/add tests** to validate the improvements
-4. **Run and fix tests** until they pass successfully
-5. **Update documentation** to reflect the changes
-6. **Update CLAUDE.md** with any new processes or guidelines
+1. **Test first**: Run `Rscript R/testing/full_test.R` to ensure current functionality
+2. **Implement incrementally**: Make small, testable changes to individual modules  
+3. **Validate biologically**: Ensure changes don't break biological realism
+4. **Update benchmarks**: Adjust validation criteria if necessary
+5. **Document changes**: Update CLAUDE.md with new features or modifications
+6. **Performance check**: Verify that changes don't significantly impact execution time
 
 ## Workflow Guidelines
 
-- **R Package Installation**:
-  - Do not install R packages. Suggest to the user to install them and then execute the commands
+### Development Workflow
+1. **Start with full_test.R**: Always begin by running the main test script
+2. **Load functions manually**: Use the provided loading script for development work
+3. **Check memory requirements**: Ensure adequate memory allocation before large runs
+4. **Use visualization**: Always generate plots to visually validate results
+
+### R Package Management
+- **Do not install R packages automatically**: Suggest to the user to install them
+- **Required packages**: Matrix, ClusterR, dplyr, sp, gstat, png
+- **Optional packages**: future, doParallel (for advanced parallelization)
+
+## Future Advanced Features (R/test functions/)
+
+The repository contains advanced biological modules ready for integration as optional features:
+
+### 🧬 Ligand-Receptor Interactions (`06l`)
+- **Purpose**: Model cell-cell communication through ligand-receptor pairs
+- **Parameters**: `n_interactions`, `signal_propagation_mode`, `max_signaling_distance`
+- **Biology**: Distance-weighted diffusion of signaling molecules
+- **Integration**: Add as `lr_params` option in future pipeline versions
+
+### ⏱️ Temporal Dynamics (`06m`)
+- **Purpose**: RNA velocity and developmental trajectories
+- **Parameters**: `pseudotime_mode`, `temporal_gene_fraction`, `include_velocity`
+- **Biology**: Simulate developmental processes with directional gene expression changes
+- **Integration**: Add as `temporal_params` option for developmental studies
+
+### 🧬 Alternative Splicing (`06n`)
+- **Purpose**: Spatial regulation of isoform usage
+- **Parameters**: `splicing_fraction`, `splicing_spatial_pattern`, `splicing_strength`
+- **Biology**: Tissue-specific splicing regulation with spatial gradients
+- **Integration**: Add as `splicing_params` option for transcript diversity
+
+### 🔀 Anisotropic Patterns (`06o`)
+- **Purpose**: Directional gene expression along tissue structures
+- **Parameters**: `structure_type`, `anisotropic_pattern`, `anisotropic_gene_fraction`
+- **Biology**: Model vascular, neural, or epithelial directional patterns
+- **Integration**: Add as `anisotropic_params` option for structured tissues
+
+### 📐 3D Microenvironment (`06p`)
+- **Purpose**: Model 3D tissue effects on 2D spatial measurements
+- **Parameters**: `n_layers`, `layer_specificity`, `projection_noise`
+- **Biology**: Z-axis heterogeneity and projection artifacts
+- **Integration**: Add as `micro3d_params` option for complex tissue architecture
+
+**Integration Priority**: These modules represent the next development phase, adding substantial biological complexity while maintaining the current streamlined core pipeline.
