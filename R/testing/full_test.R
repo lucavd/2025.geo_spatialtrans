@@ -1,11 +1,27 @@
 #!/usr/bin/env Rscript
 # Full test script per testing biologicamente realistico con parametri completi
 # Pipeline COMPLETA con parametri full-size per validazione biologica
-# Usage: Rscript full_test.R [image_path]
+# Usage: Rscript full_test.R [image_path] [--random-seed]
+#
+# Opzioni:
+# - [image_path]: path immagine utente (opzionale, default = immagine sintetica)
+# - --random-seed: forza seed casuale per immagine diversa ogni volta
+#
+# NOTA: Per seed casuale permanente, cambiare use_random_seed = TRUE (linea ~66)
 
 # Parse command line arguments
 args <- commandArgs(trailingOnly = TRUE)
-user_image_path <- if (length(args) > 0) args[1] else NULL
+user_image_path <- NULL
+use_random_seed_override <- FALSE
+
+# Parse arguments
+for (arg in args) {
+  if (arg == "--random-seed") {
+    use_random_seed_override <- TRUE
+  } else if (!grepl("^--", arg) && is.null(user_image_path)) {
+    user_image_path <- arg
+  }
+}
 
 cat("=== FULL TEST PIPELINE R_SIMPLE ===\n")
 if (!is.null(user_image_path)) {
@@ -15,9 +31,10 @@ if (!is.null(user_image_path)) {
 }
 start_time <- Sys.time()
 
-# 1. Caricamento funzioni R_simple
-cat("Caricamento funzioni R_simple...\n")
-files <- list.files("R_simple", full.names = TRUE, pattern = "\\.R$")
+# 1. Caricamento funzioni R
+cat("Caricamento funzioni R...\n")
+files <- list.files("R", full.names = TRUE, pattern = "\\.R$")
+files <- files[!grepl("test functions", files)]  # Exclude test functions
 for (f in sort(files)) {
   tryCatch({
     source(f)
@@ -49,6 +66,7 @@ cfg <- list(
   k_cell_types = 8,        # Più tipi cellulari realistici
   threshold_value = 0.7,   # Standard per segmentazione tissutale
   random_seed = 42,
+  use_random_seed = FALSE, # TRUE = seed casuale ogni volta, FALSE = seed fisso (42)
   pixel_size_um = 10,      # 10μm per spot Visium
   grid_mode = TRUE,
   grid_resolution = 40,    # Più denso per full test
@@ -57,6 +75,18 @@ cfg <- list(
   fixed_grid_width_mm = 8.0,   # Area più grande 
   fixed_grid_height_mm = 8.0
 )
+
+# Gestione seed (fisso o casuale)
+# Override da command line ha precedenza sulla configurazione
+if (use_random_seed_override || cfg$use_random_seed) {
+  cfg$random_seed <- sample(1:9999, 1)  # Seed casuale
+  cat("- Seed: CASUALE (", cfg$random_seed, ")\n")
+  if (use_random_seed_override) {
+    cat("  (forzato da --random-seed)\n")
+  }
+} else {
+  cat("- Seed: FISSO (", cfg$random_seed, ")\n")
+}
 
 cat("- Geni:", cfg$n_genes, "\n")
 cat("- Celle target:", cfg$n_cells, "\n") 
@@ -136,9 +166,9 @@ if (!is.null(user_image_path)) {
     syn <- generate_synthetic_tissue(
       width_px = 800,              # Dimensioni realistiche
       height_px = 800,
-      complexity = 3,              # Massima complessità
+      complexity = 4,              # Strutture fibrose (complessità massima)
       seed = cfg$random_seed,
-      output_path = "R_simple/testing/full_tissue_complex.png"
+      output_path = "R/testing/full_tissue_complex.png"
     )
     
     img_df_thresh <- syn$img_df[syn$img_df$intensity/255 < cfg$threshold_value, ]
@@ -420,7 +450,7 @@ if (overall_pass) {
   )
   
   # Salva risultati e dati
-  saveRDS(full_result, "R_simple/testing/full_test_result.rds")
+  saveRDS(full_result, "R/testing/full_test_result.rds")
   
   # Salva anche i dati finali per analisi successive
   final_data <- list(
@@ -429,10 +459,10 @@ if (overall_pass) {
     clusters = cell_df$intensity_cluster,
     config = cfg
   )
-  saveRDS(final_data, "R_simple/testing/full_simulation_data.rds")
+  saveRDS(final_data, "R/testing/full_simulation_data.rds")
   
-  cat("Risultato salvato in: R_simple/testing/full_test_result.rds\n")
-  cat("Dati simulazione salvati in: R_simple/testing/full_simulation_data.rds\n")
+  cat("Risultato salvato in: R/testing/full_test_result.rds\n")
+  cat("Dati simulazione salvati in: R/testing/full_simulation_data.rds\n")
   
 } else {
   cat("\n❌ ALCUNI TEST FULL FALLITI - CONTROLLARE PIPELINE\n")

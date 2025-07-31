@@ -11,12 +11,12 @@ library(dplyr)
 library(RColorBrewer)
 
 # Carica i dati della simulazione
-if (!file.exists("R_simple/testing/full_simulation_data.rds")) {
+if (!file.exists("R/testing/full_simulation_data.rds")) {
   stop("File dati simulazione non trovato. Eseguire prima full_test.R")
 }
 
 cat("Caricamento dati simulazione...\n")
-sim_data <- readRDS("R_simple/testing/full_simulation_data.rds")
+sim_data <- readRDS("R/testing/full_simulation_data.rds")
 
 # Estrai componenti
 coordinates <- sim_data$coordinates
@@ -28,15 +28,15 @@ cat("  - Coordinate:", nrow(coordinates), "punti\n")
 cat("  - Cluster unici:", length(unique(clusters)), "\n")
 
 # Carica immagine originale se disponibile
-img_path <- "R_simple/testing/full_tissue_complex.png"
+img_path <- "R/testing/full_tissue_complex.png"
 if (file.exists(img_path)) {
   cat("Caricamento immagine originale...\n")
   img_array <- readPNG(img_path)
-  
+
   # Converti in dataframe per ggplot
   img_df <- expand.grid(x = 1:dim(img_array)[2], y = 1:dim(img_array)[1])
   img_df$intensity <- as.vector(img_array[nrow(img_array):1, ])
-  
+
   cat("✓ Immagine caricata:", dim(img_array)[2], "x", dim(img_array)[1], "pixel\n")
 } else {
   cat("⚠ Immagine originale non trovata, creo solo plot cluster\n")
@@ -54,7 +54,7 @@ cluster_data <- data.frame(
 n_clusters <- length(unique(clusters))
 if (n_clusters <= 8) {
   # Usa palette specifica per replicare i colori dell'immagine
-  colors <- c("#FF1493", "#00CED1", "#32CD32", "#FFD700", 
+  colors <- c("#FF1493", "#00CED1", "#32CD32", "#FFD700",
               "#FF4500", "#9370DB", "#40E0D0", "#FF69B4")[1:n_clusters]
 } else {
   # Per più cluster, usa palette automatica
@@ -76,9 +76,9 @@ if (!is.null(img_df)) {
       plot.title = element_text(hjust = 0.5, size = 14, face = "bold")
     ) +
     labs(title = "Original Synthetic Tissue")
-  
+
   # Salva plot immagine originale
-  ggsave("R_simple/testing/original_tissue_plot.png", p1, 
+  ggsave("R/testing/original_tissue_plot.png", p1,
          width = 8, height = 6, dpi = 300, bg = "white")
   cat("✓ Plot immagine originale salvato\n")
 }
@@ -104,12 +104,12 @@ p2 <- ggplot(cluster_data, aes(x = x_flipped, y = y, color = cluster)) +
   ) +
   labs(
     title = "Spatial Transcriptomics Clusters",
-    x = "X", 
+    x = "X",
     y = "Y"
   )
 
 # Salva plot cluster
-ggsave("R_simple/testing/cluster_visualization.png", p2, 
+ggsave("R/testing/cluster_visualization.png", p2,
        width = 10, height = 8, dpi = 300, bg = "white")
 cat("✓ Plot cluster colorati salvato\n")
 
@@ -118,20 +118,20 @@ if (!is.null(img_df)) {
   # Crea plot combinato simile all'immagine di riferimento
   library(gridExtra)
   library(grid)
-  
+
   # Aggiusta dimensioni per il pannello
   p1_panel <- p1 + theme(plot.margin = margin(10, 10, 5, 10))
   p2_panel <- p2 + theme(plot.margin = margin(5, 10, 10, 10))
-  
+
   # Combina i plot
   combined_plot <- grid.arrange(
     p1_panel, p2_panel,
     nrow = 2,
     heights = c(1, 1.2)  # Più spazio per il plot con legenda
   )
-  
+
   # Salva plot combinato
-  ggsave("R_simple/testing/combined_visualization.png", combined_plot, 
+  ggsave("R/testing/combined_visualization.png", combined_plot,
          width = 10, height = 12, dpi = 300, bg = "white")
   cat("✓ Plot combinato salvato\n")
 }
