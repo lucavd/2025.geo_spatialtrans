@@ -516,3 +516,70 @@ This framework addresses a critical need in spatial transcriptomics for ground-t
 *Corresponding Author*: Spatial Transcriptomics Simulation Framework  
 *Repository*: https://github.com/lucavd/2025.geo_spatialtrans  
 *Documentation*: /docs/image_gen_explainer.md
+
+## Possibili migliorie
+
+In questa sezione elenchiamo, in modo più discorsivo, le principali aree di miglioramento individuate durante la revisione critica del metodo e del manoscritto. Ogni punto è corredato di motivazione scientifica, impatto atteso e possibili linee d’azione pratiche.
+
+### 1. Allineamento teoria–codice e ground-truth
+Il corpo del manoscritto afferma che i dataset sintetici forniscono etichette di verità a terra per tutti i livelli di complessità, ma lo script restituisce solo la matrice di intensità. Si propone di:
+• includere nel valore di ritorno una matrice `label_matrix` contenente gli ID di regione (blob, patch Voronoi, ecc.);
+• aggiungere esempi di utilizzo (“how-to”) che mostrino come sfruttare tali etichette per calcolare ARI, NMI, Silhouette;
+• documentare, con un breve test empirico, l’errore massimo introdotto dal proxy Manhattan rispetto alla distanza euclidea (bound 0.41 d_E) per dare evidenza sperimentale a quanto riportato nella teoria.
+
+### 2. Materiali & Metodi / Riproducibilità
+Per garantire che i lettori possano rigenerare tutte le figure del paper, è opportuno:
+• creare un file `renv.lock` o un `DESCRIPTION` R-package contenente versioni esatte dei pacchetti usati (e.g. `png`, `pbapply`);
+• fornire uno script `analysis.Rmd` che automatizzi l’esecuzione delle simulazioni, la raccolta di metriche e la produzione delle figure;
+• includere nel manoscritto (o nei materiali supplementari) la versione di R, il commit hash del repository Git e, se possibile, un DOI Zenodo.
+
+### 3. Benchmark quantitativi
+La sezione 4 riporta descrizioni qualitative delle performance; occorre integrare:
+• grafici tempo-di-esecuzione vs risoluzione (1 k→10 k px) per ciascun livello di complessità;
+• profilo di memoria in MB, utile a chi intende riprodurre test su workstation o cluster;
+• analisi comparativa di fractal dimension, edge-density e Moran’s I tra ≥50 immagini sintetiche e un set di sezioni istologiche reali, presentate con box-plot e valori p.
+
+### 4. Limiti attuali e sviluppi futuri
+Oltre alle limitazioni già elencate (2D, risoluzione fissa, pattern statici), suggeriamo di discutere:
+• anisotropie cellulari e variabilità di forma (cellule allungate, poligonali);
+• simulazione di staining colore (H&E, IHC, multiplex) per avvicinarsi alle pipeline di segmentazione reali;
+• estensione 3D e time-lapse per modellare crescita tumorale, wound-healing o sviluppo embrionale.
+
+### 5. Chiarezza espositiva e struttura
+Per migliorare leggibilità e rigore:
+• introdurre un riquadro di notazione che uniformi simboli scalari, vettoriali e matriciali;
+• trasferire le lunghe descrizioni parametriche in tabelle compatte nel main text e spostare dettagli ulteriori nei Supplementary Materials;
+• evitare ripetizioni concettuali tra Abstract, Introduzione e Motivazione, mantenendo un flusso narrativo più lineare.
+
+### 6. Figure, diagrammi e workflow
+Una componente visiva più ricca aiuterà il lettore a comprendere la complessità gerarchica proposta:
+• montaggio 2 × 2 di immagini rappresentative per i quattro livelli (512 × 512 px);
+• diagramma di flusso che evidenzi le funzioni principali e il passaggio di dati tra di esse nello script R;
+• grafici overlay tempo/memoria per ciascun livello, utili a pianificare benchmark su grandi coorti di simulazioni.
+
+Ognuno di questi miglioramenti è relativamente modulare: l’implementazione può avvenire in fasi iterative senza impattare la retro-compatibilità dell’attuale framework.
+
+Di seguito un elenco sintetico di potenziali estensioni e perfezionamenti identificati durante la revisione:
+
+1. **Allineamento teoria–codice**
+   - Restituire matrici di *ground-truth labels* (blob, Voronoi, ecc.) direttamente dal generatore.
+   - Validare sperimentalmente il bound d’errore del proxy Manhattan vs euclideo.
+
+2. **Materiali & Metodi / Riproducibilità**
+   - Specificare versione di R, dipendenze e commit hash; fornire un file `renv.lock`.
+   - Integrare uno script R Markdown (`analysis.Rmd`) che ricrei figure e numeri dell’articolo.
+
+3. **Benchmark quantitativi**
+   - Aggiungere misure di tempo e memoria in funzione della risoluzione e del livello di complessità.
+   - Confrontare fractal dimension, edge-density e Moran’s I tra immagini sintetiche e sezioni reali.
+
+4. **Limiti e futuri sviluppi**
+   - Considerare anisotropie cellulari, variabilità di forma, simulazione cromatica H&E e modelli 3D/time-lapse.
+
+5. **Chiarezza espositiva**
+   - Introdurre un riquadro di notazione e tabelle compatte dei parametri nel testo principale.
+   - Ridurre ripetizioni tra Abstract, Introduction e Motivation.
+
+6. **Figure e diagrammi aggiuntivi**
+   - Inserire un confronto visivo dei quattro livelli di complessità.
+   - Aggiungere diagrammi di flusso delle funzioni e profili di utilizzo risorse.

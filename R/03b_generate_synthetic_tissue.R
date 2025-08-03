@@ -10,6 +10,9 @@
 #' @param complexity Integer in 1:4. 1 = Gaussian blobs, 2 = Voronoi patches,
 #'   3 = mix + fractal noise, 4 = complexity 3 + biological structures.
 #' @param seed Integer. Random seed for reproducibility.
+#' @param return_labels Logical. If TRUE, the function returns a `label_matrix` with integer
+#'   identifiers for ground-truth regions where available (e.g. Voronoi patches). Default `FALSE`.
+#' @details Pixel resolution: **1 pixel ≈ 1 µm** — consistent con typical 10 µm Visium spot size.
 #' @param output_path Character or NA. If not NA, the PNG image is written to
 #'   this path.
 #' @return List with `img_matrix` (height×width numeric) and `img_df`
@@ -20,7 +23,8 @@
 #' @export
 generate_synthetic_tissue <- function(width_px = 6800, height_px = 6500,
                                       complexity = 2, seed = 123,
-                                      output_path = NA) {
+                                      output_path = NA,
+                                      return_labels = FALSE) {
   start_time <- Sys.time()
   stopifnot(complexity %in% 1:4)
   cat(sprintf("\n[synthetic_tissue] Generating synthetic tissue (%dx%d, complexity=%d)\n",
@@ -29,6 +33,7 @@ generate_synthetic_tissue <- function(width_px = 6800, height_px = 6500,
 
   # Base blank image
   img_mat <- matrix(255, nrow = height_px, ncol = width_px) # initialize white
+  label_mat <- if (return_labels) matrix(NA_integer_, nrow = height_px, ncol = width_px) else NULL
 
   if (complexity == 1) {
     ## Gaussian blobs ---------------------------------------------------------
@@ -60,15 +65,23 @@ generate_synthetic_tissue <- function(width_px = 6800, height_px = 6500,
     best_d  <- matrix(Inf, nrow = height_px, ncol = width_px)
     patch_id <- matrix(NA_integer_, nrow = height_px, ncol = width_px)
 
-    for (k in seq_len(n_centers)) {
-      d <- abs(xs - centers[k, "x"]) + abs(ys - centers[k, "y"]) # Manhattan distance as proxy
+    use_pb <- return_labels && requireNamespace("pbapply", quietly = TRUE) && width_px * height_px > 2e7
+    if (use_pb) {
+      pb <- pbapply::startpb(0, n_centers)
+      on.exit(pbapply::closepb(pb), add = TRUE)
+    }
+    for (i in seq_len(n_centers)) {
+      if (use_pb) pbapply::setpb(pb, i)
+
+      d <- abs(xs - centers[i, "x"]) + abs(ys - centers[i, "y"]) # Manhattan distance as proxy
       better <- d < best_d
-      patch_id[better] <- k
+      patch_id[better] <- i
       best_d[better]  <- d[better]
     }
 
     intensities <- sample(seq(50, 200, by = 5), n_centers, replace = TRUE)
     img_mat <- matrix(intensities[patch_id], nrow = height_px)
+    if (return_labels) label_mat <- patch_id
   } else if (complexity == 3) {
     ## Mix: blobs + Voronoi + fractal noise ----------------------------------
     cat("  - Generating mixed pattern (blobs + patches + noise)...\n")
@@ -106,7 +119,13 @@ generate_synthetic_tissue <- function(width_px = 6800, height_px = 6500,
     xs <- matrix(rep(seq_len(width_px), each = height_px), nrow = height_px)
     ys <- matrix(rep(seq_len(height_px), width_px), nrow = height_px)
     
+    use_pb2 <- requireNamespace("pbapply", quietly = TRUE) && width_px * height_px > 2e7
+    if (use_pb2) {
+      pb <- pbapply::startpb(0, n_structures)
+      on.exit(pbapply::closepb(pb), add = TRUE)
+    }
     for (i in seq_len(n_structures)) {
+      if (use_pb2) pbapply::setpb(pb, i)
       # Define 3 control points for gentle Bezier curves (biological vessels)
       p0 <- c(runif(1, width_px * 0.1, width_px * 0.9), 
               runif(1, height_px * 0.1, height_px * 0.9))
@@ -156,5 +175,9 @@ generate_synthetic_tissue <- function(width_px = 6800, height_px = 6500,
   cat(sprintf("[synthetic_tissue] Done in %.1fs. Output df rows: %d\n",
               as.numeric(difftime(end_time, start_time, units = "secs")), nrow(df)))
 
-  list(img_matrix = img_mat, img_df = df)
+    if (return_labels) {
+    list(img_matrix = img_mat, img_df = df, label_matrix = label_mat)
+  } else {
+    list(img_matrix = img_mat, img_df = df)
+  }
 }
