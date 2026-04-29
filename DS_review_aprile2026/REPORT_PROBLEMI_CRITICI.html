@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>REPORT_PROBLEMI_CRITICI</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+  <style type="text/css">body {
+max-width: 900px;
+margin: 0 auto;
+padding: 2rem;
+font-family: system-ui, -apple-system, sans-serif;
+line-height: 1.7;
+color: #1a1a1a;
+}
+h1 {
+color: #1a365d;
+border-bottom: 3px solid #2b6cb0;
+padding-bottom: 0.5rem;
+}
+h2 {
+color: #2b6cb0;
+margin-top: 2.5rem;
+}
+h3 {
+color: #2c5282;
+}
+code {
+background: #f0f4f8;
+padding: 0.15em 0.4em;
+border-radius: 4px;
+font-size: 0.9em;
+}
+pre {
+background: #f0f4f8;
+padding: 1.2rem;
+border-radius: 8px;
+overflow-x: auto;
+border-left: 4px solid #2b6cb0;
+}
+pre code {
+background: none;
+padding: 0;
+}
+table {
+border-collapse: collapse;
+width: 100%;
+margin: 1.5rem 0;
+}
+th, td {
+border: 1px solid #cbd5e0;
+padding: 0.6rem 1rem;
+text-align: left;
+}
+th {
+background: #ebf4ff;
+font-weight: 600;
+}
+tr:nth-child(even) {
+background: #f7fafc;
+}
+nav#TOC {
+background: #f0f4f8;
+padding: 1.5rem;
+border-radius: 8px;
+margin-bottom: 2rem;
+}
+nav#TOC ul {
+list-style: none;
+padding-left: 1rem;
+}
+</style>
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#problemi-critici-e-proposta-di-nuova-architettura-per-il-framework-di-simulazione-visium-hd" id="toc-problemi-critici-e-proposta-di-nuova-architettura-per-il-framework-di-simulazione-visium-hd">Problemi
+Critici e Proposta di Nuova Architettura per il Framework di Simulazione
+Visium HD</a>
+<ul>
+<li><a href="#il-problema-centrale" id="toc-il-problema-centrale">1. Il
+Problema Centrale</a></li>
+<li><a href="#step-1-tessuto-e-cellule" id="toc-step-1-tessuto-e-cellule">2. Step 1 — Tessuto e Cellule</a>
+<ul>
+<li><a href="#cosa-già-esiste-nel-codebase" id="toc-cosa-già-esiste-nel-codebase">2.1 Cosa GIÀ ESISTE nel
+codebase</a></li>
+<li><a href="#cosa-va-implementato" id="toc-cosa-va-implementato">2.2
+Cosa VA IMPLEMENTATO</a></li>
+<li><a href="#output-dello-step-1" id="toc-output-dello-step-1">2.3
+Output dello Step 1</a></li>
+</ul></li>
+<li><a href="#step-2-griglia-visium-hd-e-profili-trascrizionali" id="toc-step-2-griglia-visium-hd-e-profili-trascrizionali">3. Step 2 —
+Griglia Visium HD e Profili Trascrizionali</a>
+<ul>
+<li><a href="#cosa-già-esiste-nel-codebase-1" id="toc-cosa-già-esiste-nel-codebase-1">3.1 Cosa GIÀ ESISTE nel
+codebase</a></li>
+<li><a href="#cosa-va-implementato-1" id="toc-cosa-va-implementato-1">3.2 Cosa VA IMPLEMENTATO</a></li>
+</ul></li>
+<li><a href="#cosa-richiede-reverse-engineering-da-dati-reali" id="toc-cosa-richiede-reverse-engineering-da-dati-reali">4. Cosa
+Richiede Reverse Engineering da Dati Reali</a>
+<ul>
+<li><a href="#variazione-intra-cellulare" id="toc-variazione-intra-cellulare">4.1 Variazione
+intra-cellulare</a></li>
+<li><a href="#effetto-nucleo-vs-citoplasma" id="toc-effetto-nucleo-vs-citoplasma">4.2 Effetto nucleo vs
+citoplasma</a></li>
+<li><a href="#profilo-degli-spot-di-confine-deconvoluzione-ground-truth" id="toc-profilo-degli-spot-di-confine-deconvoluzione-ground-truth">4.3
+Profilo degli spot di confine (deconvoluzione ground truth)</a></li>
+<li><a href="#library-size-a-risoluzione-8µm" id="toc-library-size-a-risoluzione-8µm">4.4 Library size a risoluzione
+8µm</a></li>
+<li><a href="#sparsità-a-risoluzione-8µm" id="toc-sparsità-a-risoluzione-8µm">4.5 Sparsità a risoluzione
+8µm</a></li>
+</ul></li>
+<li><a href="#riepilogo-esiste-vs-da-implementare-vs-da-calibrare" id="toc-riepilogo-esiste-vs-da-implementare-vs-da-calibrare">5.
+Riepilogo: Esiste vs Da Implementare vs Da Calibrare</a>
+<ul>
+<li><a href="#esiste-e-funziona" id="toc-esiste-e-funziona">✅ ESISTE e
+funziona</a></li>
+<li><a href="#da-implementare" id="toc-da-implementare">🔨 DA
+IMPLEMENTARE</a></li>
+<li><a href="#da-calibrare-con-dati-reali-reverse-engineering" id="toc-da-calibrare-con-dati-reali-reverse-engineering">🔬 DA CALIBRARE
+CON DATI REALI (reverse engineering)</a></li>
+</ul></li>
+<li><a href="#ordine-di-implementazione-suggerito" id="toc-ordine-di-implementazione-suggerito">6. Ordine di
+Implementazione Suggerito</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="problemi-critici-e-proposta-di-nuova-architettura-per-il-framework-di-simulazione-visium-hd">Problemi
+Critici e Proposta di Nuova Architettura per il Framework di Simulazione
+Visium HD</h1>
+<p><strong>Data</strong>: Marzo 2025<br />
+<strong>Progetto</strong>: Simulazione Spatial Transcriptomics (Visium
+HD)</p>
+<hr />
+<h2 id="il-problema-centrale">1. Il Problema Centrale</h2>
+<p>Il framework attuale genera profili trascrizionali
+<strong>direttamente per ogni spot</strong> della griglia, trattando
+ciascuno come entità indipendente. In realtà, nel Visium HD gli spot
+sono quadrati di 2×2 µm che coprono un tessuto fatto di
+<strong>cellule</strong> (diametro 15–30 µm). Più spot coprono la stessa
+cellula, e gli spot ai confini cellulari catturano RNA da cellule
+diverse.</p>
+<p>Manca dunque il livello intermedio tra tessuto e griglia: <strong>le
+cellule</strong>.</p>
+<p>La proposta è riorganizzare la simulazione in <strong>due step
+sequenziali</strong>, distinguendo chiaramente ciò che <strong>esiste
+già</strong> nel codebase da ciò che <strong>va implementato ex
+novo</strong>, e identificando i parametri che potranno essere definiti
+solo tramite <strong>reverse engineering da dati reali Visium
+HD</strong>.</p>
+<hr />
+<h2 id="step-1-tessuto-e-cellule">2. Step 1 — Tessuto e Cellule</h2>
+<p>Questo step parte da un’immagine (reale o sintetica) e produce una
+<strong>mappa di cellule</strong> individuali con posizione, dimensione,
+tipo e struttura interna.</p>
+<h3 id="cosa-già-esiste-nel-codebase">2.1 Cosa GIÀ ESISTE nel
+codebase</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Componente</th>
+<th>File</th>
+<th>Cosa fa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Caricamento immagine</td>
+<td><code>03_image_processing.R</code></td>
+<td>Carica PNG, converte in scala di grigi, applica soglia per
+identificare regioni di tessuto</td>
+</tr>
+<tr>
+<td>Generazione tessuto sintetico</td>
+<td><code>03b_generate_synthetic_tissue.R</code></td>
+<td>Genera immagini sintetiche con blob gaussiani, patch Voronoi, noise
+frattale (3 livelli di complessità)</td>
+</tr>
+<tr>
+<td>Clustering regioni</td>
+<td><code>04_clustering.R</code></td>
+<td>K-means spaziale che combina intensità pixel e posizione → assegna
+label di “tipo cellulare” a ciascun pixel</td>
+</tr>
+</tbody>
+</table>
+<p>Questi componenti coprono la parte <strong>macro</strong>: definire
+regioni tissutali e assegnare tipi cellulari alle zone dell’immagine.
+Funzionano e possono essere riutilizzati quasi invariati.</p>
+<h3 id="cosa-va-implementato">2.2 Cosa VA IMPLEMENTATO</h3>
+<h4 id="a.-piazzamento-cellule-dentro-le-regioni-nuovo">A. Piazzamento
+cellule dentro le regioni [NUOVO]</h4>
+<p>Una volta definite le regioni tissutali dal clustering, bisogna
+<strong>popolarle con cellule individuali</strong>. Ogni cellula è
+un’entità con:</p>
+<ul>
+<li><strong>Centro (x, y)</strong> in µm — posizione nel tessuto</li>
+<li><strong>Tipo cellulare</strong> — ereditato dalla regione in cui
+cade, con possibilità di eterogeneità (non tutte le cellule in una
+regione sono dello stesso tipo)</li>
+<li><strong>Struttura interna</strong>: nucleo (zona centrale, raggio
+~3–5 µm) e citoplasma (corona esterna)</li>
+<li><strong>Forma e confini</strong>: definiti dall’algoritmo di
+piazzamento (vedi sotto)</li>
+</ul>
+<h5 id="forma-delle-cellule-e-packing">Forma delle cellule e
+packing</h5>
+<p>La tabella <code>cell_df</code> contiene le proprietà di ciascuna
+cellula, ma <strong>la forma e il grado di addossamento</strong> non
+sono attributi della tabella: sono il <strong>risultato dell’algoritmo
+di piazzamento</strong>. L’approccio raccomandato è la
+<strong>tassellazione di Voronoi con vincoli di densità</strong>:</p>
+<ol type="1">
+<li>Per ogni regione tissutale, generare N centroidi casuali (dove N =
+densità × area regione)</li>
+<li>Applicare tassellazione di Voronoi → ogni centroide genera un
+<strong>poligono irregolare</strong> che rappresenta una cellula</li>
+<li>I poligoni riempiono tutto lo spazio senza gap (cellule naturalmente
+addossate)</li>
+<li>Il “raggio” equivalente si calcola dall’area del poligono:
+<code>radius = sqrt(area/π)</code></li>
+<li>Il nucleo è un cerchio centrato nel centroide del poligono</li>
+<li>Lo spazio extracellulare si modella come zone dell’immagine senza
+centroidi (intensità sotto soglia)</li>
+</ol>
+<p><strong>Perché Voronoi è l’approccio giusto:</strong></p>
+<ul>
+<li>Le cellule epiteliali sono realmente addossate, e Voronoi dà
+poligoni piccoli e compatti in regioni dense</li>
+<li>Le cellule stromali sono più rade, e Voronoi dà poligoni grandi
+(parte del poligono è matrice extracellulare)</li>
+<li>I confini tra poligoni adiacenti sono il luogo naturale dove gli
+spot catturano RNA da due cellule</li>
+<li>La forma irregolare dei poligoni è più realistica di cerchi
+perfetti</li>
+</ul>
+<pre><code>CONCETTO: Voronoi con densità variabile
+
+  ┌───────────── Regione &quot;epitelio&quot; (denso) ──────────────┐
+  │ ┌──┬──┬──┐                                            │
+  │ │●1│●2│●3│  poligoni piccoli, addossati               │
+  │ ├──┼──┼──┤  ~4000-6000 cellule/mm²                   │
+  │ │●4│●5│●6│  ogni ● = centroide, box = poligono Voronoi│
+  │ └──┴──┴──┘                                            │
+  ├───────────── Regione &quot;stroma&quot; (rado) ─────────────────┤
+  │ ┌──────┬────────┐                                     │
+  │ │  ○1  │   ○2   │  poligoni grandi, pochi             │
+  │ │      │        │  ~1000-2000 cellule/mm²             │
+  │ └──────┴────────┘                                     │
+  ├───────────── Confine regioni ─────────────────────────┤
+  │ ┌──┬──┬────┬────┐  mix di tipi al confine             │
+  │ │●7│●8│ ○3 │ ○4 │                                    │
+  │ └──┴──┴────┴────┘                                     │
+  └───────────────────────────────────────────────────────┘</code></pre>
+<p>La <strong>densità cellulare</strong> varia per tipo di regione: -
+Epitelio: denso (~4000–6000 cellule/mm²) → poligoni piccoli - Stroma:
+rado (~1000–2000 cellule/mm²) → poligoni grandi - Regioni necrotiche:
+pochissime cellule intatte - Spazio extracellulare: nessun centroide
+(lumi vascolari, matrice)</p>
+<h4 id="b.-risoluzione-dellimmagine-di-input-chiarimento">B. Risoluzione
+dell’immagine di input [CHIARIMENTO]</h4>
+<p>L’immagine <strong>non deve avere</strong> risoluzione cellulare.
+Serve solo a definire le regioni macro del tessuto. Anche un’immagine a
+bassa risoluzione (200×200 pixel, dove 1 pixel = ~30 µm) è sufficiente
+per distinguere stroma da epitelio.</p>
+<p>Le cellule vengono poi piazzate <strong>computazionalmente</strong>
+all’interno delle regioni, a precisione micrometrica, indipendentemente
+dalla risoluzione dell’immagine di partenza.</p>
+<p>Se in futuro si volessero usare le posizioni reali dei nuclei (da
+un’immagine H&amp;E ad alta risoluzione), si potrebbe usare un tool di
+segmentazione (StarDist, Cellpose) per estrarre i centroidi — ma questo
+è un’estensione futura, non necessaria ora.</p>
+<h3 id="output-dello-step-1">2.3 Output dello Step 1</h3>
+<p>Due strutture dati complementari:</p>
+<p><strong>1. Tabella <code>cell_df</code></strong> — una riga per
+cellula (proprietà scalari):</p>
+<table>
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr>
+<th>cell_id</th>
+<th>x</th>
+<th>y</th>
+<th>eq_radius</th>
+<th>cell_type</th>
+<th>nucleus_r</th>
+<th>region_id</th>
+<th>area_um2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>102.3</td>
+<td>55.7</td>
+<td>10.0</td>
+<td>epithelial</td>
+<td>3.5</td>
+<td>region_1</td>
+<td>314</td>
+</tr>
+<tr>
+<td>2</td>
+<td>115.1</td>
+<td>58.2</td>
+<td>9.5</td>
+<td>epithelial</td>
+<td>3.2</td>
+<td>region_1</td>
+<td>283</td>
+</tr>
+<tr>
+<td>3</td>
+<td>245.0</td>
+<td>300.4</td>
+<td>15.0</td>
+<td>stromal</td>
+<td>4.5</td>
+<td>region_3</td>
+<td>707</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+<p>Dove <code>eq_radius = sqrt(area/π)</code> è il raggio equivalente
+calcolato dall’area del poligono Voronoi.</p>
+<p><strong>2. Lista <code>cell_polygons</code></strong> — i poligoni
+Voronoi (geometria):</p>
+<p>Ogni cellula ha un poligono associato (lista di vertici o oggetto
+<code>sf</code>/<code>sp</code>) che definisce i confini esatti della
+cellula. Questi poligoni vengono usati nello Step 2 per calcolare le
+frazioni di overlap spot–cellula.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Esempio struttura</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cell_polygons[[<span class="dv">1</span>]]  <span class="co"># poligono Voronoi della cellula 1</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># POLYGON((97.1 50.2, 107.5 50.2, 107.5 61.2, 97.1 61.2, 97.1 50.2))</span></span></code></pre></div>
+<hr />
+<h2 id="step-2-griglia-visium-hd-e-profili-trascrizionali">3. Step 2 —
+Griglia Visium HD e Profili Trascrizionali</h2>
+<p>Questo step sovrappone la griglia di spot Visium HD al tessuto
+cellulare, genera i profili trascrizionali per ogni cellula, e poi
+aggrega l’espressione a livello di spot.</p>
+<h3 id="cosa-già-esiste-nel-codebase-1">3.1 Cosa GIÀ ESISTE nel
+codebase</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Componente</th>
+<th>File</th>
+<th>Cosa fa</th>
+<th>Riutilizzabile?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Creazione griglia</td>
+<td><code>05_grid_sampling.R</code></td>
+<td>Genera griglia regolare con risoluzione e dimensioni
+configurabili</td>
+<td>✅ Sì, adattando i parametri a 2/4/8 µm</td>
+</tr>
+<tr>
+<td>Parametri espressione</td>
+<td><code>06a_expression_params.R</code></td>
+<td>Inizializza e valida parametri per la generazione</td>
+<td>✅ Sì, invariato</td>
+</tr>
+<tr>
+<td>Baseline expression</td>
+<td><code>06b_expression_baseline.R</code></td>
+<td>Profili baseline per tipo cellulare con marker genes</td>
+<td>✅ Sì, invariato</td>
+</tr>
+<tr>
+<td>Dispersione NB</td>
+<td><code>06d_dispersion_params.R</code></td>
+<td>Parametri dispersione spazialmente variabili</td>
+<td>✅ Sì, invariato</td>
+</tr>
+<tr>
+<td>Library size</td>
+<td><code>06e_library_size.R</code></td>
+<td>Generazione library size con effetti spaziali</td>
+<td>⚠️ Da adattare: i valori vanno ricalibrati per la risoluzione spot
+(molto più bassi a 8µm)</td>
+</tr>
+<tr>
+<td>Dropout</td>
+<td><code>06f_dropout_models.R</code></td>
+<td>Dropout expression-dependent + ambient RNA</td>
+<td>⚠️ Da adattare: parametri diversi per spot piccoli</td>
+</tr>
+<tr>
+<td>Moduli genici</td>
+<td><code>06g_gene_modules.R</code></td>
+<td>Co-espressione e network regolatori</td>
+<td>✅ Sì, invariato</td>
+</tr>
+<tr>
+<td>Correlazione spaziale (GRF)</td>
+<td><code>06h_spatial_correlation.R</code></td>
+<td>Gaussian Random Field</td>
+<td>⚠️ Da modificare: serve un campo GRF diverso per modulo/gene, non
+uno solo per tutti</td>
+</tr>
+<tr>
+<td>Generazione conteggi</td>
+<td><code>06j_expression_generation.R</code></td>
+<td>Sampling NB + scaling + validazione</td>
+<td>⚠️ Da adattare: va applicato a livello cellula, non spot</td>
+</tr>
+</tbody>
+</table>
+<p><strong>In sintesi</strong>: la maggior parte dei moduli statistici
+(NB, dispersione, dropout, moduli genici) è solida e riutilizzabile. Va
+cambiato il <strong>livello a cui operano</strong> (cellula anziché
+spot) e vanno ricalibrati i parametri per la risoluzione Visium HD.</p>
+<h3 id="cosa-va-implementato-1">3.2 Cosa VA IMPLEMENTATO</h3>
+<h4 id="a.-mapping-spot-cellula-nuovo">A. Mapping spot → cellula
+[NUOVO]</h4>
+<p>Per ogni spot della griglia, calcolare <strong>quali cellule
+copre</strong> e in che <strong>percentuale</strong>:</p>
+<pre><code>CONCETTO: Spot che coprono una singola cellula (cerchio grande)
+         e spot al confine tra due cellule
+
+         Cellula A (tipo epiteliale)    Cellula B (tipo stromale)
+         raggio 10µm                    raggio 15µm
+              ┌──┐
+              │  │ ← spot 2×2 µm, 100% dentro cellula A
+         ┌────────────┐          ┌──────────────────┐
+         │    ┌──┐    │          │                  │
+         │    │Nu│cleo│          │                  │
+         │    └──┘    │          │                  │
+         │         ┌──┼──┐       │                  │
+         │         │60│40│ ← spot al confine: 60% A, 40% B
+         └─────────┼──┼──┘       │                  │
+                   └──┘          │                  │
+                                 └──────────────────┘</code></pre>
+<p>Il risultato è una tabella <strong>many-to-many</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>spot_id</th>
+<th>cell_id</th>
+<th>fraction</th>
+<th>in_nucleus</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>spot_1001</td>
+<td>cell_42</td>
+<td>1.00</td>
+<td>TRUE</td>
+</tr>
+<tr>
+<td>spot_1002</td>
+<td>cell_42</td>
+<td>1.00</td>
+<td>FALSE</td>
+</tr>
+<tr>
+<td>spot_1003</td>
+<td>cell_42</td>
+<td>0.60</td>
+<td>FALSE</td>
+</tr>
+<tr>
+<td>spot_1003</td>
+<td>cell_43</td>
+<td>0.40</td>
+<td>FALSE</td>
+</tr>
+<tr>
+<td>spot_1004</td>
+<td>—</td>
+<td>0.00</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Dove: - <code>fraction</code> = percentuale dell’area dello spot
+coperta dalla cellula - <code>in_nucleus</code> = lo spot cade nella
+zona del nucleo (utile per variazione intra-cellulare) -
+<code>spot_1004</code> non copre nessuna cellula → spazio extracellulare
+→ riceverà solo ambient RNA</p>
+<p>Questa tabella <strong>è il ground truth per la
+deconvoluzione</strong>. Chi sviluppa algoritmi di deconvoluzione dovrà
+ricostruire queste frazioni partendo solo dai conteggi degli spot.</p>
+<h4 id="b.-generazione-profili-trascrizionali-per-cellula-adattamento">B.
+Generazione profili trascrizionali per CELLULA [ADATTAMENTO]</h4>
+<p>I profili vanno generati a livello di <strong>cellula</strong> (non
+di spot):</p>
+<ol type="1">
+<li>Ogni cellula riceve un profilo baseline dal suo tipo cellulare
+(<code>06b</code> — esiste)</li>
+<li>Si aggiungono effetti spaziali tramite GRF (<code>06h</code> —
+esiste, da modificare per generare campi multipli)</li>
+<li>Si aggiungono moduli genici co-espressi (<code>06g</code> —
+esiste)</li>
+<li>Si campiona con NB e dispersione cellula-specifica
+(<code>06d</code>, <code>06j</code> — esistono)</li>
+<li>Si applica library size per cellula (<code>06e</code> — esiste, da
+riscalare)</li>
+</ol>
+<p><strong>Output</strong>: matrice <code>cell_counts</code> (geni ×
+cellule) — questo è il <strong>ground truth cellulare</strong>.</p>
+<h4 id="c.-aggregazione-cellula-spot-nuovo-cuore-del-realismo">C.
+Aggregazione cellula → spot [NUOVO — Cuore del realismo]</h4>
+<p>Per ogni spot della griglia, l’espressione osservata è una
+<strong>miscela pesata</strong> delle cellule che copre:</p>
+<pre><code>spot_counts[spot, gene] = Σ_cellule ( fraction[spot, cellula] × cell_counts[cellula, gene] )
+                        + ambient_rna[spot, gene]
+                        + noise_tecnico_cattura</code></pre>
+<p>Tre scenari:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Esempio</th>
+<th>Cosa produce</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Spot puro</strong></td>
+<td>Spot interamente dentro una cellula</td>
+<td>Profilo di quella cellula + variazione intra-cellulare</td>
+</tr>
+<tr>
+<td><strong>Spot misto</strong></td>
+<td>Spot a cavallo tra cellula A e cellula B</td>
+<td>Mix: 60% profilo A + 40% profilo B → <strong>target
+deconvoluzione</strong></td>
+</tr>
+<tr>
+<td><strong>Spot vuoto</strong></td>
+<td>Spot su spazio extracellulare</td>
+<td>Solo ambient RNA (pochissimi UMI)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="d.-variazione-intra-cellulare-nucleo-vs-membrana-nuovo-da-calibrare">D.
+Variazione intra-cellulare: nucleo vs membrana [NUOVO — Da
+calibrare]</h4>
+<p>Gli spot sulla stessa cellula non avranno profili identici. Oltre al
+noise stocastico di cattura, la <strong>posizione dello spot dentro la
+cellula</strong> influenza quali trascritti vengono catturati:</p>
+<ul>
+<li><strong>Spot sul nucleo</strong>: arricchiti in pre-mRNA, trascritti
+nascenti, RNA nucleari (lncRNA, alcuni snoRNA)</li>
+<li><strong>Spot sul citoplasma</strong>: arricchiti in mRNA maturo in
+traduzione attiva</li>
+<li><strong>Spot alla periferia/membrana</strong>: arricchiti in mRNA
+localizzato (es. trascritti per proteine di membrana, trascritti
+trasportati attivamente)</li>
+</ul>
+<h4 id="e.-binning-2µm-8µm-nuovo-semplice-da-implementare">E. Binning
+2µm → 8µm [NUOVO — Semplice da implementare]</h4>
+<p>Una volta generati i conteggi a livello di spot 2×2 µm, il binning è
+una semplice somma:</p>
+<pre><code>bin_8um[i,j] = Σ spot_2um[4i+a, 4j+b]  per a,b ∈ {0,1,2,3}</code></pre>
+<p>Ogni bin 8×8 µm somma 16 spot nativi. Questo riduce sparsità e
+aumenta la library size per bin, esattamente come fa il software Space
+Ranger di 10x.</p>
+<hr />
+<h2 id="cosa-richiede-reverse-engineering-da-dati-reali">4. Cosa
+Richiede Reverse Engineering da Dati Reali</h2>
+<p>Alcuni parametri del modello <strong>non possono essere definiti
+teoricamente</strong> e richiedono analisi di dati reali Visium HD per
+essere calibrati. Questa è una fase fondamentale che dovrà precedere (o
+accompagnare) il completamento del simulatore.</p>
+<h3 id="variazione-intra-cellulare">4.1 Variazione intra-cellulare</h3>
+<p><strong>Domanda</strong>: Quanto variano i profili trascrizionali tra
+spot che coprono la stessa cellula?</p>
+<p><strong>Come rispondere con dati reali:</strong> 1. Prendere un
+dataset Visium HD reale con H&amp;E ad alta risoluzione 2. Usare un tool
+di segmentazione nucleare (StarDist, Cellpose) sull’H&amp;E per ottenere
+i confini cellulari 3. Mappare gli spot (o bin 8µm) alle cellule
+segmentate 4. Per ogni cellula coperta da ≥ 3 spot: calcolare la
+<strong>correlazione media</strong> tra i profili dei suoi spot 5.
+Confrontare con la correlazione tra spot di cellule diverse dello stesso
+tipo</p>
+<p><strong>Metriche attese:</strong> - Correlazione intra-cellulare:
+alta (ρ ~ 0.7–0.95?) - Correlazione inter-cellulare stesso tipo: media
+(ρ ~ 0.3–0.6?) - Correlazione inter-cellulare tipo diverso: bassa (ρ ~
+0.0–0.2?)</p>
+<p><strong>Parametro da calibrare</strong>:
+<code>intra_cell_variation</code> — la deviazione standard del noise
+aggiunto tra spot della stessa cellula.</p>
+<h3 id="effetto-nucleo-vs-citoplasma">4.2 Effetto nucleo vs
+citoplasma</h3>
+<p><strong>Domanda</strong>: Quali geni sono arricchiti nel nucleo vs
+nel citoplasma, e di quanto?</p>
+<p><strong>Come rispondere con dati reali:</strong> 1. Sullo stesso
+dataset, classificare gli spot come “nucleari” o “citoplasmatici” in
+base alla segmentazione H&amp;E 2. Per ogni gene, confrontare
+l’espressione media tra spot nucleari e citoplasmatici della stessa
+cellula 3. Identificare geni con bias significativo (test di Wilcoxon o
+simile)</p>
+<p><strong>Risultato atteso</strong>: una lista di geni con il loro
+<strong>rapporto nucleo/citoplasma</strong> (nuclear enrichment
+score).</p>
+<p><strong>Nota</strong>: in prima approssimazione, questo effetto può
+essere trascurato e modellato semplicemente come noise aggiuntivo
+intra-cellulare. Il modello nucleo/citoplasma è un raffinamento per una
+fase successiva.</p>
+<h3 id="profilo-degli-spot-di-confine-deconvoluzione-ground-truth">4.3
+Profilo degli spot di confine (deconvoluzione ground truth)</h3>
+<p><strong>Domanda</strong>: Come si comportano realmente gli spot a
+cavallo tra due cellule?</p>
+<p><strong>Come rispondere con dati reali:</strong> 1. Identificare spot
+che cadono sul confine tra due cellule (segmentazione H&amp;E) 2.
+Stimare le frazioni di overlap geometrico 3. Verificare se il profilo
+trascrizionale dello spot è effettivamente un <strong>mix
+lineare</strong> dei profili delle due cellule, o se ci sono deviazioni
+(es. effetti di diffusione RNA, permeabilizzazione asimmetrica)</p>
+<p><strong>Parametri da calibrare:</strong> - Il mixing è lineare? O ci
+sono effetti non-lineari? - C’è diffusione laterale di RNA (spot che
+“vedono” RNA da cellule che non toccano geometricamente)? - Quanto è
+ampio l’effetto di diffusione (in µm)?</p>
+<h3 id="library-size-a-risoluzione-8µm">4.4 Library size a risoluzione
+8µm</h3>
+<p><strong>Domanda</strong>: Quanti UMI cattura un tipico bin 8×8
+µm?</p>
+<p><strong>Come rispondere con dati reali:</strong> 1. Prendere un
+dataset Visium HD pubblico a risoluzione 8µm 2. Calcolare la
+distribuzione di UMI per bin 3. Stratificare per tipo di tessuto (denso
+vs rado)</p>
+<p><strong>Valori attesi</strong> (da letteratura preliminare): - Bin su
+tessuto denso: ~500–3000 UMI - Bin su tessuto rado: ~50–500 UMI - Bin su
+spazio extracellulare: ~0–50 UMI (solo ambient) - Il framework attuale
+usa 8000 UMI/spot che è realistico per Visium classico (55µm) ma troppo
+alto per Visium HD (8µm)</p>
+<h3 id="sparsità-a-risoluzione-8µm">4.5 Sparsità a risoluzione 8µm</h3>
+<p><strong>Domanda</strong>: Quale percentuale di zeri ci si aspetta nei
+bin 8µm?</p>
+<p><strong>Valore atteso</strong>: &gt;95% di zeri (molto più alto del
+~89% attualmente simulato, che è realistico per Visium classico ma non
+per HD a 8µm).</p>
+<hr />
+<h2 id="riepilogo-esiste-vs-da-implementare-vs-da-calibrare">5.
+Riepilogo: Esiste vs Da Implementare vs Da Calibrare</h2>
+<h3 id="esiste-e-funziona">✅ ESISTE e funziona</h3>
+<ul>
+<li>Caricamento e preprocessing immagini</li>
+<li>Generazione tessuto sintetico (regioni macro)</li>
+<li>Clustering regioni in tipi cellulari</li>
+<li>Creazione griglia di spot (da riparametrizzare per 2/8 µm)</li>
+<li>Modelli statistici di espressione: NB, dispersione variabile,
+dropout, moduli genici co-espressi, GRF</li>
+<li>Infrastruttura: chunking, parallelizzazione, matrice sparsa,
+validazione</li>
+</ul>
+<h3 id="da-implementare">🔨 DA IMPLEMENTARE</h3>
+<ul>
+<li><strong>Piazzamento cellule</strong> dentro le regioni
+(Voronoi/circle packing, con nucleo e citoplasma)</li>
+<li><strong>Mapping spot → cellula</strong> (calcolo frazioni di overlap
+geometrico)</li>
+<li><strong>Aggregazione cellula → spot</strong> (mix pesato +
+noise)</li>
+<li><strong>GRF multipli</strong> (un campo per modulo genico, non uno
+solo per tutti)</li>
+<li><strong>Binning 2µm → 8µm</strong> (somma di 4×4 spot)</li>
+<li><strong>Ricalibrazione parametri</strong> per risoluzione HD
+(library size, dropout, sparsità)</li>
+</ul>
+<h3 id="da-calibrare-con-dati-reali-reverse-engineering">🔬 DA CALIBRARE
+CON DATI REALI (reverse engineering)</h3>
+<ul>
+<li><strong>Variazione intra-cellulare</strong> → correlazione tra spot
+della stessa cellula</li>
+<li><strong>Effetto nucleo vs citoplasma</strong> → enrichment score per
+gene</li>
+<li><strong>Linearità del mixing ai confini</strong> → validazione del
+modello di deconvoluzione</li>
+<li><strong>Diffusione laterale RNA</strong> → range in µm</li>
+<li><strong>Library size e sparsità</strong> a risoluzione 8µm →
+distribuzione empirica</li>
+<li><strong>Rapporto spot puri / spot misti / spot vuoti</strong> →
+dipende da densità cellulare e dimensione bin</li>
+</ul>
+<p>Questi parametri definiscono la <strong>differenza tra una
+simulazione plausibile e una simulazione realistica</strong>. La prima
+può essere costruita con stime ragionevoli dalla letteratura; la seconda
+richiede confronto diretto con dati Visium HD reali.</p>
+<hr />
+<h2 id="ordine-di-implementazione-suggerito">6. Ordine di
+Implementazione Suggerito</h2>
+<pre><code>FASE 1 — Architettura base (settimane 1-3)
+├── 1a. Implementare cell layer (Voronoi/packing)
+├── 1b. Implementare spot-cell mapping
+├── 1c. Adattare generazione espressione a livello cellula
+├── 1d. Implementare aggregazione cellula → spot
+└── 1e. Implementare binning 2→8µm
+    Output: pipeline funzionante con parametri stimati
+
+FASE 2 — Reverse engineering (settimane 3-5)
+├── 2a. Ottenere dataset Visium HD pubblico
+├── 2b. Segmentazione cellulare su H&amp;E (StarDist/Cellpose)
+├── 2c. Analisi variazione intra-cellulare
+├── 2d. Analisi spot di confine
+├── 2e. Calibrazione library size e sparsità
+└── 2f. Aggiornamento parametri nel simulatore
+    Output: parametri calibrati su dati reali
+
+FASE 3 — Validazione e raffinamento (settimane 5-7)
+├── 3a. Confronto distribuzioni simulate vs reali
+├── 3b. Test di deconvoluzione su dati simulati
+├── 3c. GRF multipli per modulo genico
+├── 3d. Modello nucleo/citoplasma (se dati lo supportano)
+└── 3e. Benchmark con algoritmi di analisi
+    Output: framework validato, pronto per paper</code></pre>
+</body>
+</html>
