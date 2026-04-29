@@ -1,7 +1,7 @@
 # Step 1 — Cell Layer Design Doc
 
 **Data inizio**: 2026-04-29
-**Stato**: 🟡 In brainstorming (sezioni 1-3 approvate, 4-5 da discutere)
+**Stato**: 🟢 Brainstorming completo, in attesa di review utente prima del planning
 **Autori**: Luca Vedovelli (project owner), Claude (assist), feedback da Daniele
 **Scope**: Solo Step 1 della nuova architettura proposta in `DS_review_aprile2026/REPORT_PROBLEMI_CRITICI.md`. Step 2 (mapping spot↔cellula, aggregazione, binning) sarà oggetto di un design doc separato.
 
@@ -33,7 +33,7 @@ Tracciate cronologicamente; le decisioni RIVISTE sono il risultato del feedback 
 | 2 | **Eterogeneità** = composizione esplicita per cluster. Catalogo `cell_types` separato dai cluster. Ogni cluster ha una `region_composition` (frazioni di tipi che lo popolano). Tipi infiltranti hanno proprietà PROPRIE (raggio nucleo, densità, forma). | ✅ |
 | 3 | **Parametrizzazione** = 2 tabelle layered. (a) `cell_types`: catalogo dei tipi. (b) `region_composition`: mistura per cluster. Defaults dal `tissue_preset`; override fini via `override_cell_types` / `override_composition`. | ✅ |
 | 4 | **Forma nucleo** = cerchio default per ogni tipo, ellisse opt-in per tipo. Forma del territorio emerge dal Voronoi+densità. | ✅ |
-| 5 | **Architettura** = pipeline a fasi separate (5 funzioni: orchestrator + 4 step), allineata allo stile `06a-06k`. | ✅ |
+| 5 | **Architettura** = pipeline a fasi separate (1 orchestrator + 5 step interni: extract_regions → seed_centroids → tessellate_voronoi → derive_cell_geometry → validate_cell_layer), allineata allo stile `06a-06k`. | ✅ |
 | 6 | **Stack tecnico** = `deldir` (Voronoi) + `sf` (clipping/aree/spatial ops) + `polylabelr` (Pole of Inaccessibility per posizionare nuclei). Docker base = `rocker/geospatial`. | ✅ |
 | 7 | **Coesistenza** con pipeline esistente: il vecchio `cell_df` resta. Riconciliazione delegata a Step 2. | ✅ |
 | 8 | **Tissue presets** (livello sopra `cell_types`): 3 preset generici inclusi nel package — `"epithelial"`, `"tumor_microenv"`, `"stromal_rich"`. | ✅ |
@@ -66,7 +66,7 @@ Tracciate cronologicamente; le decisioni RIVISTE sono il risultato del feedback 
 ▲
 
 05_grid_sampling.R                 [invariato — Step 2 lo aggiornerà]
-06a-06k_*.R                        [invariati — Step 2 li agganciaerà]
+06a-06k_*.R                        [invariati — Step 2 li aggancerà]
 ```
 
 ### Test e visualizzazione (R/testing/)
@@ -214,10 +214,12 @@ derive_cell_geometry(centroids, territories, cell_types)
 
 ### 5.1 `extract_regions()`
 1. Da `clust` (pixel + `intensity_cluster`) ricostruisco una matrice etichetta `(img_height, img_width)`.
-2. Per ogni `cluster_id` → matrice binaria → **componenti connesse** (4-vicinato) tramite `mmand::components()` (o algoritmo nativo BFS se evitiamo `mmand`).
+2. Per ogni `cluster_id` → matrice binaria → **componenti connesse** (4-vicinato) tramite BFS nativo R (vedi nota implementativa sotto).
 3. Ogni componente connessa → boundary tracing (Moore) → poligono in **pixel** → conversione in µm via `× pixel_size_um` → `sfc_POLYGON` semplificato (`sf::st_simplify` con `dTolerance ≈ 0.5 µm`) per ridurre il numero di vertici.
-4. Filtro per `area_um2 ≥ min_region_area_um2` (default 100 µm² ≈ 10×10 µm).
+4. Filtro per `area_um2 ≥ min_region_area_um2` (default 100 µm² ≈ 10×10 µm). I pixel che cadevano in regioni escluse vengono **trattati come spazio extracellulare macro** in Step 2 (== zona below threshold del clustering originale): nessun centroide viene piazzato lì e nessun territorio Voronoi le copre.
 5. Output: `region_df` + `region_polygons` (sfc_POLYGON).
+
+> **Implementazione componenti connesse**: usiamo BFS nativo R (queue + visited matrix), non `mmand::components()`. Motivo: evitare una nuova dipendenza (mmand non è già nel codebase) e mantenere il pacchetto più leggero. La performance è sufficiente per immagini fino a ~5000×5000 px.
 
 ### 5.2 `seed_centroids()`
 Per ogni `region_id`:
@@ -254,33 +256,115 @@ Per ogni cellula:
 
 ## 6. Validazione e testing
 
-> 🟡 Da discutere e finalizzare nella Sezione 4 del brainstorming.
+### 6.1 Sanity checks (`04b5_cell_layer_validation.R`)
 
-Bozza di sanity checks (`04b5_cell_layer_validation.R`):
+Eseguiti dopo la pipeline e riportati in `cell_layer$metadata$validation`. Severità con azione:
 
-- **Density check**: `|achieved − target| / target < 0.20` per regione (warning).
-- **No overlap**: somma `territory_area` per regione ≈ area regione (tolleranza < 1%).
-- **No nucleus outside territory**: `st_within(cell_nuclei, cell_territories)` deve essere TRUE per tutte (hard error).
-- **Composition fidelity**: frazioni effettive vs target — warning se scarto > 10% per tipo.
-- **Reproducibility**: stesso seed → stesso output.
+| # | Check | Severità | Azione |
+|---|---|---|---|
+| C1 | `\|achieved_density − target_density\| / target < 0.20` per regione | **WARN** | log + scrivi in metadata, non blocca |
+| C2 | `Σ territory_area` per regione ≈ area regione (tolleranza 1%) | **ERROR** | hard fail: bug Voronoi/clipping |
+| C3 | `st_within(cell_nuclei, cell_territories)` per ogni cellula | **ERROR** | hard fail: bug derive_geometry |
+| C4 | Frazione effettiva tipo vs target — scarto > 10% | **WARN** | log + suggerimento (regione troppo piccola per tipi rari) |
+| C5 | `nucleus_area > 0` per ogni cellula | **ERROR** | hard fail |
+| C6 | `n_cells > 0` per ogni `region_id` con `area_um2 ≥ min_region_area_um2` | **WARN** | log: parametri sbagliati |
+| C7 | `eq_radius` per `cell_type` coerente con il valore atteso | **WARN** | log: 90° percentile dentro `[0.5×, 2.0×]` di `expected_eq_radius` |
+| TEST | `set.seed → output identico` | **TEST** | unit test, non runtime |
 
-Test scripts:
-- `R/testing/test_cell_layer.R` — pipeline end-to-end su tessuto sintetico
-- `R/testing/visualize_cell_layer.R` — pannello visivo
+`expected_eq_radius` (per C7) si deriva dalla `density` **del cell_type** (non dalla densità ponderata della regione), perché il check valuta il singolo tipo a prescindere dal suo contesto regionale:
+```
+expected_eq_radius_um[cell_type] = sqrt(1e6 / (π × density[cell_type]))
+# es. density=5500 → expected ≈ 7.6 µm
+#     density=1500 → expected ≈ 14.6 µm
+```
+**Nota**: in regioni miste i territori Voronoi reali dipendono dalla composizione locale (un linfocita raro in epitelio denso avrà territorio più grande della sua "naturale" densità isolata). Il check C7 è quindi una **WARN soft** — sforare significa che il tipo si trova in un contesto sbagliato di densità, non necessariamente un bug.
+
+### 6.2 Test scripts
+
+```
+R/testing/test_cell_layer.R              [PRIMARY] integrazione end-to-end
+R/testing/test_cell_layer_edge_cases.R   [robustezza]
+R/testing/visualize_cell_layer.R         [visivo]
+```
+
+**`test_cell_layer.R`** — esegue la pipeline su tessuto sintetico e valida:
+
+```r
+syn <- generate_synthetic_tissue(600, 600, complexity = 2, seed = 42)
+clust <- cluster_image(syn$img_df_thresh, k = 4,
+                       random_seed = 42, spatial_weight = 0.6)
+
+cell_layer <- place_cells(
+  clust,
+  tissue_preset = "epithelial",
+  pixel_size_um = 1.0,
+  random_seed   = 42
+)
+
+# Asserzioni:
+#   - n_cells > 1000
+#   - n_regions >= 4
+#   - metadata$validation: tutti C1-C7 PASS o solo WARN
+#   - C2, C3, C5: ERROR = 0 (hard fail conditions)
+#   - Run con stesso seed → stesso n_cells (riproducibilità)
+#   - Run con seed diverso → n_cells in ±5% (stabilità densità)
+```
+
+**`test_cell_layer_edge_cases.R`** — robustezza:
+
+| Caso | Comportamento atteso |
+|---|---|
+| Cluster con `area_um2 < min_region_area_um2` | regione esclusa, log info |
+| `region_composition` con frazioni che non sommano 1.0 | normalizzazione + warning |
+| `cell_type` in composition ma assente dal catalogo | hard error con messaggio puntuale |
+| Tessuto enorme (4000×4000 px) | non crash, < 5 min, RAM < 8 GB |
+| Tessuto con un solo cluster | funziona, una sola regione |
+| `corner_smoothing = 1` con territori piccoli | nessun poligono degenerato (area > 0) |
+| Composizione con `fraction = 0` per un tipo | quel tipo non viene piazzato |
+
+### 6.3 Visualizzazione (`R/testing/visualize_cell_layer.R`)
+
+Pannello a 4 sub-plot, sfondo bianco (vincolo CLAUDE.md):
+
+1. **Regioni del tessuto** — `region_polygons` colorate per `cluster_id`
+2. **Centroidi e tipi cellulari** — punti colorati per `cell_type`, `region_polygons` di sfondo trasparente
+3. **Tassellazione Voronoi** — `cell_territories` con bordi neri, colorati per `cell_type`; nuclei sovrapposti in grigio scuro
+4. **Densità raggiunta** — choropleth: `region_polygons` colorato per `achieved_density / target_density × 100%` (validazione visiva di C1)
+
+Output: `R/testing/cell_layer_panel.png` (1600×1200, `bg = "white"` in `ggsave()`).
+
+Utility funzione esposta:
+```r
+plot_cell_layer(cell_layer, mode = c("voronoi", "types", "density", "regions"))
+```
 
 ---
 
 ## 7. Hand-off a Step 2
 
-> 🟡 Da discutere nella Sezione 4 del brainstorming.
+### 7.1 Strutture dati consumate da Step 2
 
-Lista preliminare di "agganci" che Step 2 troverà pronti:
+| Data | Uso in Step 2 | Sezione del REPORT |
+|---|---|---|
+| `cell_layer$cell_df` | substrato per generazione profili a livello cellula | 3.2.B |
+| `cell_layer$cell_territories` | input geometrico per `st_intersection(spot_grid, ...)` → frazioni di overlap | 3.2.A |
+| `cell_layer$cell_nuclei` | distinzione spot intra-nucleo vs intra-citoplasma → profilo nucleare diverso | 3.2.D |
+| `cell_layer$region_polygons` | maschera per gli "spot extracellulari macro" (solo ambient RNA) | 3.2.C |
+| `cell_df$nucleus_area` / `cytoplasm_area` | variazione intra-cellulare ponderata per area | 3.2.D |
+| `cell_layer$metadata$pixel_size_um` | convenzione spaziale per costruire la spot grid 2 µm | 3.2 |
 
-- `cell_layer$cell_df` come substrato per generazione profili trascrizionali a livello cellulare
-- `cell_layer$cell_territories` + `cell_layer$cell_nuclei` per il mapping spot↔cellula (Sezione 3.2.A del REPORT)
-- `cell_type` (catalogo) come chiave per i parametri di espressione cell-type-specific (06b)
-- `nucleus_area` / `cytoplasm_area` per la variazione intra-cellulare (Sezione 3.2.D del REPORT)
-- `metadata$pixel_size_um` come convenzione spaziale ereditata
+### 7.2 Vincoli su Step 1 (perché Step 2 funzioni)
+
+- `cell_territories` devono essere **VALID** (`sf::st_is_valid()`) e senza self-intersection — `tessellate_voronoi()` chiamerà `sf::st_make_valid()` come passo finale di sicurezza.
+- `cell_nuclei` devono essere **CONTAINED** nei rispettivi territori (già garantito da check C3 di 6.1).
+- Ordine di `cell_id` consistente fra `cell_df`, `cell_territories`, `cell_nuclei` (1..N stesso ordine — già garantito dall'orchestrator).
+- I poligoni `cell_territories` saranno restituiti come `sfc` con bbox calcolato (default di `sf`), così Step 2 può sfruttare l'R-tree di GEOS per `st_intersects` in O(log n) sulla spot grid HD.
+
+### 7.3 Pre-validazioni offerte gratis a Step 2
+
+- **Copertura del tessuto**: % area tessuto coperta da `cell_territories` (≈100% sopra threshold, 0% sotto threshold) — diagnostica per il rate di "spot vuoti" attesi
+- **Distribuzione `eq_radius` per `cell_type`** — per calibrare i profili NB cell-type-specific (06d) e i parametri di library size cell-type-specific (06e)
+- **Conteggi cellule per `region_id`** — per testare ergonomia del mapping `region_id → spot_ids` in Step 2
 
 ---
 
@@ -301,5 +385,5 @@ Lista preliminare di "agganci" che Step 2 troverà pronti:
 | 2026-04-29 | Decisioni 1-7 prese durante prima sessione brainstorming | Luca + Claude |
 | 2026-04-29 | Decisioni 1-3 RIVISTE post-feedback Daniele (Voronoi + nucleo grande, composizione esplicita, catalogo disaccoppiato) | Daniele review |
 | 2026-04-29 | Decisioni 8-9 aggiunte (tissue presets, corner smoothing) | Daniele review |
-| 2026-04-29 | Sezioni 1-3 approvate e consolidate in questo doc | Luca |
-| TBD | Sezione 4-5 (validazione + hand-off Step 2) | brainstorming in corso |
+| 2026-04-29 | Sezioni 1-5 approvate e consolidate in questo doc | Luca |
+| 2026-04-29 | Sezioni 6-7 finalizzate (validazione, testing, visualizzazione, hand-off Step 2) | Luca |
