@@ -267,7 +267,7 @@ Eseguiti dopo la pipeline e riportati in `cell_layer$metadata$validation`. Sever
 | C3 | `st_within(cell_nuclei, cell_territories)` per ogni cellula | **ERROR** | hard fail: bug derive_geometry |
 | C4 | Frazione effettiva tipo vs target — scarto > 10% | **WARN** | log + suggerimento (regione troppo piccola per tipi rari) |
 | C5 | `nucleus_area > 0` per ogni cellula | **ERROR** | hard fail |
-| C6 | `n_cells > 0` per ogni `region_id` con `area_um2 ≥ min_region_area_um2` | **WARN** | log: parametri sbagliati |
+| C6 | `n_cells > 0` per ogni `regio2026-04-29-step1-cell-layer-designn_id` con `area_um2 ≥ min_region_area_um2` | **WARN** | log: parametri sbagliati |
 | C7 | `eq_radius` per `cell_type` coerente con il valore atteso | **WARN** | log: 90° percentile dentro `[0.5×, 2.0×]` di `expected_eq_radius` |
 | TEST | `set.seed → output identico` | **TEST** | unit test, non runtime |
 
