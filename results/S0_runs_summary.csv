@@ -1,0 +1,5 @@
+"run","seed","n_cells","sparsity_pct","umi_mean","umi_median","umi_cv","elapsed_min","md5_data"
+"S0_run1",42,20000,90,8766,6850,0.885,1.56,"5e3ba1f694fe947aee9de32b9b6c82b1"
+"S0_run2",42,20000,90,8766,6850,0.885,1.58,"5e3ba1f694fe947aee9de32b9b6c82b1"
+"S0_seed43",43,20000,89.5,9149,7200,0.873,1.47,"3cc7e8ca524422c9bb7bb451c0ba5639"
+"legacy_visHD",42,180000,86.8,9343,7452,0.847,5.21,NA

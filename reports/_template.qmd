@@ -1,0 +1,40 @@
+---
+title: "<ID> — <titolo>"
+subtitle: "geo_spatialtrans — report di step"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+---
+
+```{r setup}
+# Render dalla root del repo: quarto render reports/<ID>.qmd  (.Rprofile punta renv alla libreria di progetto; S0)
+.libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({library(sf); library(ggplot2); library(dplyr)})
+theme_set(theme_bw(base_size = 11))
+```
+
+# 1. Pre-registrazione
+Attese e soglie scritte **prima** dell'esecuzione. Approvazione di Luca: <data>.
+
+| Check | Attesa | Soglia | Fonte (DOI / script+dataset) |
+|---|---|---|---|
+
+# 2. Check C — correttezza software
+
+# 3. Check B — plausibilità biologica (A1–A6)
+
+# 4. Controprova
+
+# Verdetto
+- Stato: chiuso / chiuso con riserve / non chiuso
+- Riserve: …
+
+# Revisione avversariale
+- Chi/cosa ha ricalcolato: …
+- Discrepanze: …
+
+# Riproducibilità
+Commit: `<sha>` — comando: `Rscript --vanilla R/testing/test_<step>.R`; render: `quarto render reports/<ID>.qmd`

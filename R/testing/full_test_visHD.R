@@ -9,15 +9,27 @@
 #
 # NOTA: Per seed casuale permanente, cambiare use_random_seed = TRUE (linea ~66)
 
+# ---- S0 (2026-09-18): libreria di progetto esplicita (protocollo: Rscript --vanilla + .libPaths()) ----
+# Eseguire dalla root del repo: Rscript --vanilla R/testing/full_test_visHD.R
+# Opzioni aggiunte in S0: --seed=<int> (seed fisso alternativo a 42), --tag=<str> (suffisso dei file di output)
+.project_lib <- file.path(getwd(), "renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+if (dir.exists(.project_lib)) .libPaths(c(.project_lib, .libPaths()))
+
 # Parse command line arguments
 args <- commandArgs(trailingOnly = TRUE)
 user_image_path <- NULL
 use_random_seed_override <- FALSE
+seed_override <- NA_integer_
+out_tag <- "visHD"
 
 # Parse arguments
 for (arg in args) {
   if (arg == "--random-seed") {
     use_random_seed_override <- TRUE
+  } else if (grepl("^--seed=", arg)) {
+    seed_override <- as.integer(sub("^--seed=", "", arg))
+  } else if (grepl("^--tag=", arg)) {
+    out_tag <- sub("^--tag=", "", arg)
   } else if (!grepl("^--", arg) && is.null(user_image_path)) {
     user_image_path <- arg
   }
@@ -84,6 +96,9 @@ if (use_random_seed_override || cfg$use_random_seed) {
   if (use_random_seed_override) {
     cat("  (forzato da --random-seed)\n")
   }
+} else if (!is.na(seed_override)) {
+  cfg$random_seed <- seed_override
+  cat("- Seed: FISSO da --seed (", cfg$random_seed, ")\n")
 } else {
   cat("- Seed: FISSO (", cfg$random_seed, ")\n")
 }
@@ -450,7 +465,8 @@ if (overall_pass) {
   )
 
   # Salva risultati e dati
-  saveRDS(full_result, "R/testing/full_test_result.rds")
+  out_result <- sprintf("R/testing/full_test_result_%s.rds", out_tag)
+  saveRDS(full_result, out_result)
 
   # Salva anche i dati finali per analisi successive
   final_data <- list(
@@ -459,10 +475,12 @@ if (overall_pass) {
     clusters = cell_df$intensity_cluster,
     config = cfg
   )
-  saveRDS(final_data, "R/testing/full_simulation_data.rds")
+  dir.create("results", showWarnings = FALSE)
+  out_data <- sprintf("results/full_simulation_data_%s.rds", out_tag)
+  saveRDS(final_data, out_data)
 
-  cat("Risultato salvato in: R/testing/full_test_result.rds\n")
-  cat("Dati simulazione salvati in: R/testing/full_simulation_data.rds\n")
+  cat("Risultato salvato in:", out_result, "\n")
+  cat("Dati simulazione salvati in:", out_data, "\n")
 
 } else {
   cat("\n❌ ALCUNI TEST FULL FALLITI - CONTROLLARE PIPELINE\n")

@@ -1,7 +1,8 @@
 # Step 1 — Cell Layer Design Doc
 
 **Data inizio**: 2026-04-29
-**Stato**: 🟢 Brainstorming completo, in attesa di review utente prima del planning
+**Versione**: 1.1 (2026-09-18, sessione S0) — incorpora la revisione di Daniele (commenti C-A, C-B), il check C8 e il pannello di 6 archetipi/preset. v1.0 = commit `7836829`.
+**Stato**: 🟢 Design v1.1 — contratto per l'implementazione (sessioni S1.1–S1.6)
 **Autori**: Luca Vedovelli (project owner), Claude (assist), feedback da Daniele
 **Scope**: Solo Step 1 della nuova architettura proposta in `DS_review_aprile2026/REPORT_PROBLEMI_CRITICI.md`. Step 2 (mapping spot↔cellula, aggregazione, binning) sarà oggetto di un design doc separato.
 
@@ -36,8 +37,10 @@ Tracciate cronologicamente; le decisioni RIVISTE sono il risultato del feedback 
 | 5 | **Architettura** = pipeline a fasi separate (1 orchestrator + 5 step interni: extract_regions → seed_centroids → tessellate_voronoi → derive_cell_geometry → validate_cell_layer), allineata allo stile `06a-06k`. | ✅ |
 | 6 | **Stack tecnico** = `deldir` (Voronoi) + `sf` (clipping/aree/spatial ops) + `polylabelr` (Pole of Inaccessibility per posizionare nuclei). Docker base = `rocker/geospatial`. | ✅ |
 | 7 | **Coesistenza** con pipeline esistente: il vecchio `cell_df` resta. Riconciliazione delegata a Step 2. | ✅ |
-| 8 | **Tissue presets** (livello sopra `cell_types`): 3 preset generici inclusi nel package — `"epithelial"`, `"tumor_microenv"`, `"stromal_rich"`. | ✅ |
+| 8 | **Tissue presets** (livello sopra `cell_types`): **6 preset** inclusi nel package, uno per archetipo del pannello A1–A6 (v1.1; erano 3 in v1.0): `"epithelial"` (A1), `"tumor_microenv"` (A2), `"stromal_rich"` (A3), `"lymphoid"` (A4), `"brain_cortex"` (A5), `"columnar_muscle"` (A6, **controllo negativo previsto** per il Voronoi isotropo). I parametri numerici dei preset sono **provvisori** finché non compaiono in `docs/BIO_REFERENCES.md` con fonte (binario R, sessioni R1–R3). | ✅ v1.1 |
 | 9 | **Smossatura angoli** territori Voronoi = parametro `corner_smoothing` opzionale (default 0). Algoritmo Chaikin (corner cutting) o buffer-pos+buffer-neg. | ✅ |
+| 10 | **Scala px→µm obbligatoria (C-A, Daniele)**: `pixel_size_um` **non ha default** in `place_cells()`. O lo fornisce il chiamante (immagini a risoluzione reale: raccomandato 1 px = 1 µm) oppure viene stimato esplicitamente con `estimate_pixel_size(clust, cell_types, ...)`, che ricava la scala dalla dimensione attesa delle cellule del tipo dominante e la scrive in `metadata$pixel_size_um` con `metadata$pixel_size_source = "estimated"` e un WARN. Nuovo check di plausibilità **C8** sull'`eq_radius` mediano. | ✅ v1.1 |
+| 11 | **Diffusione laterale degli mRNA (C-B, Daniele)** è un requisito dello **Step 2** (kernel gaussiano isotropo con parametro `diffusion_sigma_um`, da calibrare su dati reali — binario R5). Per Step 1 non cambia la geometria: `cell_territories` e `cell_nuclei` sono le **sorgenti** del kernel (sez. 7.1). | ✅ v1.1 |
 
 **Refinement futuri esplicitamente rinviati a "Step 1.5":**
 - Nucleo offset rispetto al centroide del territorio
@@ -81,11 +84,15 @@ visualize_cell_layer.R    [NUOVO] pannello: regioni + centroidi + Voronoi + nucl
 | Stadio | Coordinate |
 |---|---|
 | Input `clust` | pixel (output del clustering) |
-| Parametro globale | `pixel_size_um` (default `1.0`) |
+| Parametro globale | `pixel_size_um` — **obbligatorio, senza default** (decisione 10 / C-A). Immagine a risoluzione reale: raccomandato 1 px = 1 µm; altrimenti l'utente lo specifica o chiama `estimate_pixel_size()` |
 | Output `cell_layer` | tutto in **µm** (centroidi, raggi, aree) |
 | Step 2 | erediterà la stessa convenzione |
 
 > ⚠️ Il codebase attuale ha incoerenze (`pixel_size_um=1` in `create_sampling_grid` ma `=10` in `full_test.R`). Step 1 non tocca questi file: il nuovo `place_cells()` riceve `pixel_size_um` esplicitamente dal chiamante.
+
+> **C-A (Daniele, revisione v1.0)**: una volta scelti tessuto e tipi cellulari, la dimensione dello spot Visium HD (2×2 o 8×8 µm) va calcolata **in proporzione al tessuto**, dividendo l'immagine in una griglia proporzionale. Se l'immagine ha risoluzione reale, 1 px = 1 µm; altrimenti l'utente **deve** specificare la scala. Conseguenze: (1) `pixel_size_um` obbligatorio (4.7); (2) `metadata$pixel_size_um` esposto da Step 1 ed ereditato da Step 2, che costruisce la griglia 2 µm da lì; (3) check C8 (6.1).
+
+**Helper `estimate_pixel_size(clust, cell_types, cluster_to_dominant = NULL, method = "nuclear_spacing")`** — stima la scala quando è ignota. Idea: la spaziatura media fra nuclei (o l'eq_radius atteso) del tipo dominante è nota in µm dal catalogo (`sqrt(1e6 / (π × density))`); misurando la stessa grandezza in **pixel** sull'immagine (es. distanza al primo vicino dei massimi locali di intensità nel cluster dominante) il rapporto dà µm/px. Restituisce `list(pixel_size_um, method, n_features, ci)`. Non è mai silenzioso: `place_cells()` lo invoca solo se l'utente passa `pixel_size_um = "estimate"`, e il risultato finisce in `metadata` con un WARN. La sua validazione (recupero di scale note 1, 2, 5, 10 µm/px) è la controprova della sessione S1.5.
 
 ---
 
@@ -101,7 +108,8 @@ cell_layer <- list(
   cell_territories = <sfc_POLYGON>,   # poligoni Voronoi clipped → la cellula
   cell_nuclei      = <sfc_POLYGON>,   # nuclei (cerchio o ellisse)
   metadata         = list(
-    pixel_size_um, n_cells, n_regions,
+    pixel_size_um, pixel_size_source,   # "user" | "estimated" (C-A)
+    n_cells, n_regions,
     tissue_preset_used, corner_smoothing,
     cell_types_resolved, region_composition_resolved,
     random_seed, package_version, timestamp,
@@ -172,29 +180,35 @@ region_composition <- data.frame(
 
 Le frazioni per `cluster_id` devono sommare a 1.0 (validato; il package normalizza con warning se necessario). Default = `fraction = 1.0` per un singolo tipo dominante (omogeneità totale, ground truth pulito); l'utente abilita l'eterogeneità aggiungendo righe.
 
-### 4.6 Tissue presets
+### 4.6 Tissue presets — pannello A1–A6 (v1.1)
 
-| `tissue_preset` | Tipi inclusi | Composizione tipica per cluster |
-|---|---|---|
-| `"epithelial"` | epithelial_dense, stromal_loose, immune_T, immune_B | Cluster epiteliali: ~88% epi + ~5% stromale + ~5% immune. Cluster stromali: ~95% stromale + ~5% immune. |
-| `"tumor_microenv"` | epithelial_tumor, fibroblast_CAF, immune_T, immune_B, stromal_loose | Cluster tumorali: ~70% tumor + ~15% TIL + ~10% CAF + ~5% stromale. Aggressivo su infiltrazione. |
-| `"stromal_rich"` | stromal_dense, fibroblast, immune_T, vascular | Cluster stromali: ~75% stromale + ~10% fibroblast + ~10% vascular + ~5% immune. |
+Il pannello fissato il 2026-09-18 (roadmap §3) entra nel design come **6 preset**, uno per archetipo. Ogni test dello Step 1 gira su tutti e sei (principio di generalità). I tipi elencati e le composizioni "tipiche" sono **ipotesi di partenza**: un preset è dichiarato biologicamente solido solo quando i check B passano contro il dataset reale della sua riga (binario R), e i suoi numeri (densità, `nucleus_to_eq_ratio`) entrano in `docs/BIO_REFERENCES.md` con fonte.
 
-Tre preset generici di proposito — il package non vuole curare un atlante. La via "personalizzazione fine" passa da `override_*`.
+| `tissue_preset` | Archetipo | Tipi inclusi (ipotesi) | Composizione tipica per cluster (ipotesi) | Attesa qualitativa da verificare |
+|---|---|---|---|---|
+| `"epithelial"` | A1 epitelio semplice denso | epithelial_dense, stromal_loose, immune_T, immune_B | epiteliale: ~88% epi + ~5% stromale + ~5% immune; stromale: ~95% stromale + ~5% immune | densità alta, poligoni compatti e regolari |
+| `"tumor_microenv"` | A2 tumore solido con microambiente | epithelial_tumor, fibroblast_CAF, immune_T, immune_B, stromal_loose | tumorale: ~70% tumor + ~15% TIL + ~10% CAF + ~5% stromale | composizione mista, alta variabilità di area |
+| `"stromal_rich"` | A3 stroma lasso / connettivo | stromal_dense, fibroblast, immune_T, vascular | stromale: ~75% stromale + ~10% fibroblast + ~10% vascular + ~5% immune | densità bassa, poligoni grandi, N/C basso |
+| `"lymphoid"` | A4 tessuto linfoide | immune_B, immune_T, fdc (follicular dendritic), macrophage | follicolo: ~80% B + ~15% T + ~5% altro; zona T: ~70% T + ~25% B + ~5% altro | densità molto alta, N/C ≈ 0.8–0.9, poligoni minuscoli |
+| `"brain_cortex"` | A5 cervello (corteccia) | neuron, astrocyte, oligodendrocyte, microglia, vascular | grigia: ~40% neuroni + ~55% glia + ~5% vascolare; bianca: ~90% glia | densità bassa-media, distribuzione **bimodale** delle aree |
+| `"columnar_muscle"` | A6 muscolo / epitelio colonnare | myocyte (o epithelial_columnar), fibroblast, vascular | ~85% miociti + ~10% fibroblast + ~5% vascolare | **controllo negativo previsto**: il Voronoi isotropo non riproduce cellule allungate → i check B su forma (eccentricità) devono **fallire**; quantificare quanto e come → motiva Step 1.5 |
+
+Sei preset di proposito, non un atlante: la personalizzazione fine passa da `override_*`. I tre preset nuovi (A4–A6) sono ammessi nel package solo con i parametri marcati "provvisori" nei metadata (`cell_types_resolved$provisional = TRUE`) finché BIO_REFERENCES non li copre.
 
 ### 4.7 API rivista
 
 ```r
 place_cells(
   clust,                                # output di cluster_image()
-  tissue_preset       = "epithelial",   # "epithelial" | "tumor_microenv" | "stromal_rich"
+  tissue_preset       = "epithelial",   # "epithelial" | "tumor_microenv" | "stromal_rich" |
+                                        # "lymphoid" | "brain_cortex" | "columnar_muscle"  (A1–A6, v1.1)
   cell_types          = NULL,           # NULL → ereditato dal preset
   region_composition  = NULL,           # NULL → ereditato dal preset
   override_cell_types = NULL,           # patch incrementale sul catalogo
   override_composition = NULL,          # patch incrementale sulla composizione
   cluster_to_dominant = NULL,           # mapping esplicito cluster_id → tipo dominante
                                         # se NULL: euristica intensità media + ordine cluster
-  pixel_size_um       = 1.0,
+  pixel_size_um,                        # OBBLIGATORIO (C-A): numero (µm/px) oppure "estimate" → estimate_pixel_size()
   corner_smoothing    = 0,              # 0 = Voronoi puro, > 0 = Chaikin
   min_region_area_um2 = 100,            # regioni più piccole vengono ignorate
   random_seed         = 42,
@@ -202,6 +216,7 @@ place_cells(
 ) -> cell_layer
 
 # step interni (esposti per testabilità):
+estimate_pixel_size(clust, cell_types, cluster_to_dominant = NULL, method = "nuclear_spacing")   # v1.1, C-A
 extract_regions(clust, pixel_size_um, min_region_area_um2)
 seed_centroids(regions, cell_types, region_composition, random_seed)
 tessellate_voronoi(centroids, region_polygons, corner_smoothing)
@@ -267,8 +282,9 @@ Eseguiti dopo la pipeline e riportati in `cell_layer$metadata$validation`. Sever
 | C3 | `st_within(cell_nuclei, cell_territories)` per ogni cellula | **ERROR** | hard fail: bug derive_geometry |
 | C4 | Frazione effettiva tipo vs target — scarto > 10% | **WARN** | log + suggerimento (regione troppo piccola per tipi rari) |
 | C5 | `nucleus_area > 0` per ogni cellula | **ERROR** | hard fail |
-| C6 | `n_cells > 0` per ogni `regio2026-04-29-step1-cell-layer-designn_id` con `area_um2 ≥ min_region_area_um2` | **WARN** | log: parametri sbagliati |
+| C6 | `n_cells > 0` per ogni `region_id` con `area_um2 ≥ min_region_area_um2` | **WARN** | log: parametri sbagliati |
 | C7 | `eq_radius` per `cell_type` coerente con il valore atteso | **WARN** | log: 90° percentile dentro `[0.5×, 2.0×]` di `expected_eq_radius` |
+| C8 | **Plausibilità della scala (C-A, v1.1)**: `eq_radius` mediano delle cellule piazzate dentro un intervallo plausibile per cellule di mammifero; valore **provvisorio** [5, 25] µm dalla revisione di Daniele, da sostituire con l'intervallo per archetipo di `BIO_REFERENCES.md` (R2–R3) | **WARN** (ERROR se `pixel_size_source = "estimated"`) | log: la scala px→µm è probabilmente sbagliata; riportare `pixel_size_um` usato e mediana osservata |
 | TEST | `set.seed → output identico` | **TEST** | unit test, non runtime |
 
 `expected_eq_radius` (per C7) si deriva dalla `density` **del cell_type** (non dalla densità ponderata della regione), perché il check valuta il singolo tipo a prescindere dal suo contesto regionale:
@@ -294,17 +310,18 @@ syn <- generate_synthetic_tissue(600, 600, complexity = 2, seed = 42)
 clust <- cluster_image(syn$img_df_thresh, k = 4,
                        random_seed = 42, spatial_weight = 0.6)
 
+# v1.1: il test gira su TUTTI i 6 preset (A1–A6); qui il caso A1
 cell_layer <- place_cells(
   clust,
   tissue_preset = "epithelial",
-  pixel_size_um = 1.0,
+  pixel_size_um = 1.0,          # esplicito (C-A): nessun default
   random_seed   = 42
 )
 
 # Asserzioni:
 #   - n_cells > 1000
 #   - n_regions >= 4
-#   - metadata$validation: tutti C1-C7 PASS o solo WARN
+#   - metadata$validation: tutti C1-C8 PASS o solo WARN
 #   - C2, C3, C5: ERROR = 0 (hard fail conditions)
 #   - Run con stesso seed → stesso n_cells (riproducibilità)
 #   - Run con seed diverso → n_cells in ±5% (stabilità densità)
@@ -321,6 +338,9 @@ cell_layer <- place_cells(
 | Tessuto con un solo cluster | funziona, una sola regione |
 | `corner_smoothing = 1` con territori piccoli | nessun poligono degenerato (area > 0) |
 | Composizione con `fraction = 0` per un tipo | quel tipo non viene piazzato |
+| `pixel_size_um` omesso | hard error con messaggio puntuale (C-A) |
+| `pixel_size_um = "estimate"` su immagine con scala nota (1, 2, 5, 10 µm/px) | scala recuperata entro ±20%; `pixel_size_source = "estimated"` + WARN (controprova S1.5) |
+| `pixel_size_um` sbagliato di 10× | C8 scatta (WARN/ERROR) |
 
 ### 6.3 Visualizzazione (`R/testing/visualize_cell_layer.R`)
 
@@ -351,12 +371,14 @@ plot_cell_layer(cell_layer, mode = c("voronoi", "types", "density", "regions"))
 | `cell_layer$cell_nuclei` | distinzione spot intra-nucleo vs intra-citoplasma → profilo nucleare diverso | 3.2.D |
 | `cell_layer$region_polygons` | maschera per gli "spot extracellulari macro" (solo ambient RNA) | 3.2.C |
 | `cell_df$nucleus_area` / `cytoplasm_area` | variazione intra-cellulare ponderata per area | 3.2.D |
-| `cell_layer$metadata$pixel_size_um` | convenzione spaziale per costruire la spot grid 2 µm | 3.2 |
+| `cell_layer$metadata$pixel_size_um` (+ `pixel_size_source`) | convenzione spaziale per costruire la spot grid 2 µm **in proporzione al tessuto** (C-A) | 3.2 |
+| `cell_layer$cell_territories` + `cell_nuclei` | **sorgenti del kernel di diffusione laterale degli mRNA** (C-B, v1.1): in Step 2 i conteggi cellulari vengono diffusi con un kernel gaussiano isotropo (`diffusion_sigma_um`, ordine di grandezza atteso di pochi µm, **da stimare** in R5) prima della somma sugli spot | 4.3 |
 
 ### 7.2 Vincoli su Step 1 (perché Step 2 funzioni)
 
 - `cell_territories` devono essere **VALID** (`sf::st_is_valid()`) e senza self-intersection — `tessellate_voronoi()` chiamerà `sf::st_make_valid()` come passo finale di sicurezza.
 - `cell_nuclei` devono essere **CONTAINED** nei rispettivi territori (già garantito da check C3 di 6.1).
+- `metadata$pixel_size_um` deve essere sempre presente e numerico (C-A): Step 2 non ha un proprio default di scala.
 - Ordine di `cell_id` consistente fra `cell_df`, `cell_territories`, `cell_nuclei` (1..N stesso ordine — già garantito dall'orchestrator).
 - I poligoni `cell_territories` saranno restituiti come `sfc` con bbox calcolato (default di `sf`), così Step 2 può sfruttare l'R-tree di GEOS per `st_intersects` in O(log n) sulla spot grid HD.
 
@@ -372,7 +394,7 @@ plot_cell_layer(cell_layer, mode = c("voronoi", "types", "density", "regions"))
 
 - Nucleo offset rispetto al centroide territorio
 - Nucleo irregolare (ellisse o blob organico)
-- Forma anisotropa del territorio (Voronoi pesato per modellare epitelio colonnare)
+- Forma anisotropa del territorio (Voronoi pesato per modellare epitelio colonnare / muscolo) — motivato quantitativamente dal fallimento atteso dei check B su A6 (`"columnar_muscle"`)
 - Eterogeneità ricca: gradienti di transizione + cluster localizzati di infiltrati
 - Ulteriori tissue presets (richiede curatela e validazione biologica)
 
@@ -387,3 +409,5 @@ plot_cell_layer(cell_layer, mode = c("voronoi", "types", "density", "regions"))
 | 2026-04-29 | Decisioni 8-9 aggiunte (tissue presets, corner smoothing) | Daniele review |
 | 2026-04-29 | Sezioni 1-5 approvate e consolidate in questo doc | Luca |
 | 2026-04-29 | Sezioni 6-7 finalizzate (validazione, testing, visualizzazione, hand-off Step 2) | Luca |
+| 2026-04-29 | v1.0 inviata a Daniele per revisione (commit `7836829`) | Luca |
+| 2026-09-18 | **v1.1 (S0)** — C-A: `pixel_size_um` obbligatorio, helper `estimate_pixel_size()`, `metadata$pixel_size_source`, check C8, casi limite sulla scala (decisione 10). C-B: diffusione laterale mRNA come requisito di Step 2, riga in 7.1, vincolo in 7.2 (decisione 11). Pannello A1–A6 → 6 preset in 4.6/4.7 (decisione 8 rivista); test su tutti i preset. Corretto refuso nella riga C6 (nome campo `region_id`). | Daniele (commenti) + Luca + Claude |

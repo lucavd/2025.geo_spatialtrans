@@ -15,3 +15,14 @@ results/*.rds
 
 .DS_Store
 .superpowers/
+
+# S0 (2026-09-18)
+logs/
+results/*.rds
+results/visualizations/
+data/real/*
+!data/real/README.md
+!data/real/checksums.sha256
+reports/*_files/
+reports/.quarto/
+/.quarto/

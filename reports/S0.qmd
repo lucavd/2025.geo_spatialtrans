@@ -1,0 +1,167 @@
+---
+title: "S0 — Infrastruttura server, baseline riproducibile, design v1.1"
+subtitle: "geo_spatialtrans — report di step"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+---
+
+```{r setup, message=FALSE}
+.libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({library(ggplot2); library(dplyr); library(Matrix)})
+kable <- knitr::kable
+theme_set(theme_bw(base_size = 11))
+root <- normalizePath("..")
+rd <- function(...) file.path(root, ...)
+git_sha <- system(sprintf("git -C %s rev-parse --short HEAD", root), intern = TRUE)
+git_branch <- system(sprintf("git -C %s rev-parse --abbrev-ref HEAD", root), intern = TRUE)
+```
+
+Sessione **S0** — 2026-09-18 — branch `` `r git_branch` `` @ `` `r git_sha` `` (il commit di chiusura è quello indicato nella nota di sessione `docs/sessions/2026-09-18_S0.md`). Tutti i numeri di questo report sono letti dai file prodotti da `R/testing/run_S0.sh` (`results/S0_*.csv`, `logs/S0_*.log`); nessun valore è trascritto a mano.
+
+# 1. Pre-registrazione
+
+Attese scritte in chat prima di qualsiasi esecuzione; approvate da Luca il 2026-09-18 ("il resto ok", con la sola correzione sul clone del Mac).
+
+| Check | Attesa | Soglia / esito atteso | Fonte |
+|---|---|---|---|
+| C-S0.1 | Branch `step1-cell-layer` da `dev@7836829`; a fine sessione tree pulito, commit pushato | `git status` vuoto; `origin/step1-cell-layer` = HEAD | roadmap §5 |
+| C-S0.2 | Libreria di progetto da Posit PPM: caricano con `Rscript --vanilla` + `.libPaths()` esplicito i 6 pacchetti Step 1 (sf, deldir, polylabelr, imager, testthat, quarto) + 29 dipendenze della pipeline | PASS = tutti caricano; WARN = ≥1 compilato da sorgente; FAIL = ≥1 non carica. `sf_extSoftVersion()` = GEOS 3.12.1 / GDAL 3.8.4 / PROJ 9.4.0 | procedura MMM |
+| C-S0.3 | `Rscript --vanilla R/testing/full_test.R` (seed 42, config committata) termina con exit 0 sotto R 4.6.1 | 7/7 asserzioni interne PASS (soglie dello script: sparsità 30–92 %, UMI medio 3000–20000, CV 0.15–1.0, 8 cluster, nessun NA, Moran's I > 0.05) | script committato |
+| C-S0.4 | Due run indipendenti con seed 42 | uguaglianza esatta di n_cells, dim matrice, sparsità, UMI medio/mediano/CV e md5 della matrice di espressione salvata | design §6.2 |
+| C-S0.5 | Confronto con gli RDS legacy: **pre-registrato come non riproducibile** | n_cells del run ≠ 180 000; config diversa; legacy conservati in `R/testing/legacy/` | analisi di provenienza (apertura S0) |
+| C-S0.6 | Documenti: ROADMAP, CHANGELOG, BACKLOG, BIO_REFERENCES (solo schema), design v1.1, template report, S0.qmd → HTML, nota di sessione, `renv.lock` per R 4.6.1 | tutti presenti e versionati; `quarto render` exit 0 | skill/roadmap |
+| Controprova 1 | seed 43 | n_cells/sparsità/checksum **diversi** dal run a seed 42 | — |
+| Controprova 2 | script originale (`dev`) senza `.libPaths()` di progetto | **FAIL** su pacchetto mancante | — |
+
+**Check B**: nessuno. S0 non contiene biologia; le soglie interne di `full_test.R` sono valori senza fonte (BACKLOG BL-002) e qui vengono solo *eseguite*, non validate.
+
+**Aggiunta non pre-registrata (dichiarata)**: la libreria è stata costruita in tre passaggi di `tools/setup_r_library.R`: (1) i 35 pacchetti richiesti + dipendenze dichiarate da `install.packages` (127 pacchetti; 37 namespace restavano risolti dalla site-library di sistema); (2) installazione dei 37 namespace (164); (3) chiusura ricorsiva Depends/Imports/LinkingTo dal repository PPM (186), necessaria perché `renv/activate.R` isola la libreria e un namespace caricato pigramente (`labeling`) mancava. Tutti i check sono stati **rieseguiti dopo ogni passaggio**, più una quarta volta dopo la revisione avversariale (con `R_LIBS_SITE` e `R_LIBS_USER` puntati a directory inesistenti, vedi §2.1); i numeri del report si riferiscono all'**ultima esecuzione** (timestamp in `logs/S0_run_all.log`, riportati sotto). Il confronto dei md5 fra i passaggi è in §2.4 come osservazione, non come check approvato.
+
+```{r when}
+cat(grep("^== ", readLines(rd("logs/S0_run_all.log")), value = TRUE), sep = "\n")
+```
+
+# 2. Check C — correttezza software
+
+## 2.1 C-S0.2 — libreria R
+
+```{r lib}
+lib <- read.csv(rd("results/S0_library_check.csv"))
+kable(lib %>% transmute(pacchetto = pkg, set, carica = ifelse(loads, "PASS", "FAIL"), versione = version,
+                        libreria = ifelse(in_project_lib, "progetto", "sistema"), built = built_R))
+```
+
+```{r lib2}
+ns <- read.csv(rd("results/S0_namespace_origin.csv"))
+loglib <- readLines(rd("logs/S0_test_library.log"))
+cat(grep("^\\[(PASS|FAIL)\\] C-S0.2 (sf|tutti|\\.libPaths)", loglib, value = TRUE), sep = "\n")
+cat(grep("^\\[INFO\\] R ", loglib, value = TRUE), sep = "\n")
+cat(sprintf("Namespace caricati (35 pacchetti + dipendenze non-base): %d, di cui dalla libreria di progetto: %d, dal sistema: %d\n",
+            nrow(ns), sum(ns$lib == "project"), sum(ns$lib == "system")))
+setup1 <- readLines(rd("logs/S0_setup_r_library.log")); setup2 <- readLines(rd("logs/S0_setup_r_library_pass2.log")); setup3 <- readLines(rd("logs/S0_setup_r_library_pass3.log"))
+n_lib <- length(list.dirs(rd("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu"), recursive = FALSE))
+cat(sprintf("Pacchetti nella libreria di progetto (directory): %d\n", n_lib))
+cat(sprintf("Installazioni da sorgente (passi 1/2/3): %d / %d / %d; da binario: %d / %d / %d\n",
+            sum(grepl("installing \\*source\\*", setup1)), sum(grepl("installing \\*source\\*", setup2)), sum(grepl("installing \\*source\\*", setup3)),
+            sum(grepl("installing \\*binary\\*", setup1)), sum(grepl("installing \\*binary\\*", setup2)), sum(grepl("installing \\*binary\\*", setup3))))
+```
+
+## 2.2 C-S0.3 / C-S0.4 / C-S0.5 — baseline `full_test.R`
+
+```{r base}
+bc <- read.csv(rd("results/S0_baseline_check.csv"))
+kable(bc)
+```
+
+```{r runs}
+rs <- read.csv(rd("results/S0_runs_summary.csv"))
+kable(rs, caption = "Riassunto dei run (S0_run1/S0_run2 = seed 42 con la config committata; S0_seed43 = controprova 1; legacy_visHD = RDS legacy prodotto da full_test_visHD.R)")
+```
+
+Note (rilievi del revisore): (i) la riproducibilità di C-S0.4 è **identità della matrice di espressione e delle coordinate** (`identical()` e md5 di `results/full_simulation_data_*.rds`), non identità byte-a-byte dei file `full_test_result_*.rds`, che contengono un timestamp; (ii) le mediane UMI grezze sono 6849.5 (seed 42) e 7200.5 (seed 43): lo script le arrotonda con `round()` (half-to-even) a 6850 e 7200. I checksum sono registrati anche nel file tracciato `results/S0_checksums.md5`.
+
+```{r med}
+cat(sprintf("mediana UMI grezza: seed 42 = %.1f; seed 43 = %.1f\n", median(Matrix::colSums(readRDS(rd("results/full_simulation_data_S0_run1.rds"))$expression)), median(Matrix::colSums(readRDS(rd("results/full_simulation_data_S0_seed43.rds"))$expression))))
+cat(readLines(rd("results/S0_checksums.md5")), sep = "\n")
+```
+
+Asserzioni interne di `full_test.R` per run (dal log):
+
+```{r internal}
+for (t in c("run1", "run2", "seed43")) {
+  lg <- readLines(rd(sprintf("logs/S0_full_test_%s.log", t)))
+  cat("==", t, "\n"); cat(grep("PASS|FAIL|Tempo totale", lg, value = TRUE), sep = "\n")
+}
+```
+
+## 2.3 Osservazioni sulla pipeline attuale emerse dai log (non check, vanno in BACKLOG)
+
+```{r obs}
+lg <- readLines(rd("logs/S0_full_test_run1.log"))
+cat(grep("Celle target|Griglia high-density|Sub-sampled|FILTRO HARD|UMI < 1", lg, value = TRUE), sep = "\n")
+```
+
+- La config chiede `n_cells = 10000`, la griglia ne produce 40 000 e la pipeline ne sotto-campiona 20 000 "per performance": il parametro `n_cells` **non** controlla il numero di celle generate (BL-010).
+- Un "FILTRO HARD" azzera le celle con > 50 000 UMI dopo la validazione: un troncamento non documentato della coda della library size (BL-011).
+
+## 2.4 Osservazione: effetto delle sotto-dipendenze sul risultato
+
+```{r pass1}
+rs1 <- read.csv(rd("results/S0_runs_summary_pass1.csv")); rs2 <- read.csv(rd("results/S0_runs_summary_pass2.csv"))
+cmp <- data.frame(run = rs$run, md5_pass1 = rs1$md5_data[match(rs$run, rs1$run)], md5_pass2 = rs2$md5_data[match(rs$run, rs2$run)], md5_pass3 = rs$md5_data)
+cmp$identici <- ifelse(is.na(cmp$md5_pass1), NA, cmp$md5_pass1 == cmp$md5_pass2 & cmp$md5_pass2 == cmp$md5_pass3)
+kable(cmp, caption = "md5 di results/full_simulation_data_<tag>.rds nei tre passaggi di costruzione della libreria (127 → 164 → 186 pacchetti)")
+```
+
+## 2.5 Figura — library size per cella, seed 42 vs seed 43
+
+```{r fig, fig.width=9, fig.height=3.6, dev.args=list(bg="white")}
+d1 <- readRDS(rd("results/full_simulation_data_S0_run1.rds")); d3 <- readRDS(rd("results/full_simulation_data_S0_seed43.rds"))
+umi <- bind_rows(data.frame(seed = "42 (run1)", umi = Matrix::colSums(d1$expression)),
+                 data.frame(seed = "43", umi = Matrix::colSums(d3$expression)))
+p1 <- ggplot(umi, aes(umi, colour = seed)) + geom_density() + scale_x_log10() + labs(x = "UMI per cella (log10)", y = "densità", title = "Library size")
+qq <- data.frame(q42 = quantile(umi$umi[umi$seed != "43"], ppoints(200)), q43 = quantile(umi$umi[umi$seed == "43"], ppoints(200)))
+p2 <- ggplot(qq, aes(q42, q43)) + geom_abline(slope = 1, intercept = 0, colour = "grey60") + geom_point(size = 0.8) + scale_x_log10() + scale_y_log10() + labs(x = "quantili seed 42", y = "quantili seed 43", title = "QQ seed 42 vs 43")
+gridExtra::grid.arrange(p1, p2, ncol = 2)
+```
+
+# 3. Check B — plausibilità biologica (A1–A6)
+
+Nessuno per S0 (dichiarato in pre-registrazione). Il primo check B arriva con S1.2 e richiede R1–R2.
+
+# 4. Controprova
+
+```{r contro}
+cat(grep("Controprova-1", readLines(rd("logs/S0_test_baseline.log")), value = TRUE), sep = "\n")
+c2 <- readLines(rd("logs/S0_controprova2_nolib.log"))
+cat("\nControprova 2 (script dev originale, senza .libPaths() di progetto):\n")
+cat(grep("MISSING|Error|exit=", c2, value = TRUE), sep = "\n")
+```
+
+Interpretazione: (1) con seed 43 la matrice di espressione cambia (md5 e riassunti diversi) mentre n_cells resta 20 000 perché il numero di celle è fissato dalla griglia, non dal seed — la riproducibilità di C-S0.4 non è vacua. (2) Senza la libreria di progetto lo script si ferma su `ClusterR` mancante: la libreria verificata in C-S0.2 è quella effettivamente in uso.
+
+# Verdetto
+
+```{r verdetto}
+n_fail <- sum(bc$esito == "FAIL") + sum(!lib$loads)
+cat(sprintf("Check C: %d asserzioni baseline, %d FAIL; libreria: %d/%d pacchetti caricano.\n", nrow(bc), sum(bc$esito == "FAIL"), sum(lib$loads), nrow(lib)))
+```
+
+- Stato: **chiuso con riserve** (la valutazione finale è nella nota di sessione, dopo la revisione avversariale).
+- Riserve: (a) `renv.lock` rigenerato ma `renv::restore()` da macchina pulita non testato (BL-008); (b) il baseline certifica solo che la pipeline *gira ed è riproducibile*, non che sia biologicamente sensata (BL-002, BL-010, BL-011); (c) i parametri dei preset A4–A6 nel design v1.1 sono ipotesi senza fonte (BL-007).
+
+# Revisione avversariale
+
+Revisore indipendente (sotto-agente senza accesso a questo report, sola lettura sul server) ha ricalcolato dai file primari (RDS, libreria, git, log) 10 affermazioni: md5 delle matrici, riassunti e ricalcolo diretto da `colSums`, legacy, libreria (186 pacchetti, 35 caricano, versioni, GEOS/GDAL/PROJ), `renv.lock`, stato git, contenuto del design v1.1, controprova 2 rieseguita in proprio, osservazioni dai log. **Esito: 10/10 confermate, nessuna discrepanza numerica.** Rilievi non bloccanti accolti prima del commit: isolamento della libreria reso esplicito (`R_LIBS_SITE` e `R_LIBS_USER` inesistenti in `run_S0.sh` — la libreria utente `~/R/.../4.6` contiene 65 pacchetti — e asserzione dedicata in `test_S0_library.R`: `.libPaths()` = libreria di progetto + libreria base); checksum in file tracciato (`results/S0_checksums.md5`); note su passate, mediane `.5` e significato di "riproducibile" in §1–2. Rilievi rinviati a BACKLOG: `full_test.R` sovrascrive il PNG versionato `R/testing/full_tissue_complex.png` (BL-013); comportamento di sessioni R non `--vanilla` con il nuovo `.Rprofile` (documentato in ROADMAP §5).
+
+# Riproducibilità
+
+```bash
+cd ~/2025.geo_spatialtrans && git checkout step1-cell-layer
+bash R/testing/run_S0.sh          # ~7 min: libreria, 3 run di full_test.R, controprove, confronto
+quarto render reports/S0.qmd   # .Rprofile (S0) punta renv alla libreria di progetto
+```
