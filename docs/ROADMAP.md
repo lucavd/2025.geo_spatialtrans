@@ -100,6 +100,7 @@ Il binario R deve stare **davanti** al binario S: R1-R2 prima di S1.2, R3 prima 
 | 2026-09-18 | (S0) Il check S0 "full_test.R riproduce l'RDS esistente" è riformulato: gli RDS legacy non sono riproducibili (prodotti da `full_test_visHD.R` e da un run a seed casuale) → conservati in `R/testing/legacy/`, nuovo baseline `full_test_result_S0.rds` |
 | 2026-09-18 | (S0) Design Step 1 v1.1 = contratto per S1.1–S1.6: decisioni 10 (C-A, `pixel_size_um` obbligatorio, C8) e 11 (C-B, diffusione in Step 2); pannello A1–A6 = 6 preset |
 | 2026-09-18 | (S0) Clone del Mac rimosso; il solo repo di lavoro è `~/2025.geo_spatialtrans` sul server |
+| 2026-09-18 | **Una sessione = una chat.** Ogni step del protocollo si svolge in una chat nuova; a chiusura ci si ferma. Nessuna eccezione |
 
 ## 7. Stato delle sessioni
 
