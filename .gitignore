@@ -22,7 +22,10 @@ results/*.rds
 results/visualizations/
 data/real/*
 !data/real/README.md
-!data/real/checksums.sha256
+!data/real/checksums.md5
+!data/real/inventory.csv
 reports/*_files/
 reports/.quarto/
 /.quarto/
+.venv/
+results/R1/crops/

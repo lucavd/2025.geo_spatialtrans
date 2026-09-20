@@ -1,0 +1,6 @@
+archetype,dataset_id,esito,trascrizione,revisore,data,materiale
+A1,Visium_HD_Mouse_Small_Intestine,confermato,Yes,"Federica Pezzuto (anatomopatologa), riportata da Luca Vedovelli in chat",2026-09-19,"results/R1/crops/<A>_<dataset>_crop{0,1,2}.png + overview"
+A2,Visium_HD_Human_Colon_Cancer,confermato,Yes,"Federica Pezzuto (anatomopatologa), riportata da Luca Vedovelli in chat",2026-09-19,"results/R1/crops/<A>_<dataset>_crop{0,1,2}.png + overview"
+A4,Visium_HD_Human_Lymph_Node_FFPE,confermato; ritaglio 1 non rappresentativo,"Yes, la seconda foto però non è rappresentativa, sembra qualcosa di coagulato, grasso o capsula, comunque sicuramente non linfociti","Federica Pezzuto (anatomopatologa), riportata da Luca Vedovelli in chat",2026-09-19,"results/R1/crops/<A>_<dataset>_crop{0,1,2}.png + overview"
+A5,Visium_HD_6p5mm_Mouse_Brain,confermato,Yes,"Federica Pezzuto (anatomopatologa), riportata da Luca Vedovelli in chat",2026-09-19,"results/R1/crops/<A>_<dataset>_crop{0,1,2}.png + overview"
+A6,Visium_HD_6p5mm_Human_Heart,confermato; cerchi = artefatti di montaggio,"Yes, artefatti in fase di montaggio, basta togliere coprivetrino e rimetterlo e spariscono","Federica Pezzuto (anatomopatologa), riportata da Luca Vedovelli in chat",2026-09-19,"results/R1/crops/<A>_<dataset>_crop{0,1,2}.png + overview"

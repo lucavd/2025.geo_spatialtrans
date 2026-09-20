@@ -1,0 +1,11 @@
+numpy
+pandas
+pyarrow
+tifffile
+imagecodecs
+zarr
+h5py
+scikit-image
+scipy
+matplotlib
+pillow

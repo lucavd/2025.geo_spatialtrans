@@ -1,0 +1,36 @@
+check,dataset_id,value,threshold,status
+C-R1.1,Visium_HD_6p5mm_Human_Heart,8/8 md5 ok,tutti,PASS
+C-R1.1,Visium_HD_6p5mm_Mouse_Brain,8/8 md5 ok,tutti,PASS
+C-R1.1,Visium_HD_Human_Colon_Cancer,8/8 md5 ok,tutti,PASS
+C-R1.1,Visium_HD_Human_Lymph_Node_FFPE,8/8 md5 ok,tutti,PASS
+C-R1.1,Visium_HD_Mouse_Small_Intestine,6/6 md5 ok,tutti,PASS
+C-R1.2a,Visium_HD_Mouse_Small_Intestine,"opens=True shape=(21943, 23618, 3) comp=1 levels=1",immagine apribile,PASS
+C-R1.2b,Visium_HD_Mouse_Small_Intestine,microns_per_pixel=0.27376126715315274,presente,PASS
+B-R1.3,Visium_HD_Mouse_Small_Intestine,0.27376126715315274 µm/px,<=0.5 PASS; <=1 WARN,PASS
+CP-1,Visium_HD_Mouse_Small_Intestine,"pitch=7.3038 px × 0.27376126715315274 = 1.9995 µm (sv ratio 1.0000, rms 0.106 px)",2.00 µm ± 5 %,PASS
+C-R1.2c,Visium_HD_Mouse_Small_Intestine,in_tissue: 1.0000 dentro l'immagine 23618x21943 (tutti i bin: 0.8649; area di cattura stimata 24468x24468 px),>= 0.99 dei bin in_tissue,PASS
+CP-2,Visium_HD_Mouse_Small_Intestine,3 ritagli + overview,verifica visiva di Luca,PENDING
+C-R1.2a,Visium_HD_Human_Colon_Cancer,"opens=True shape=(48740, 75250, 3) comp=1 levels=1",immagine apribile,PASS
+C-R1.2b,Visium_HD_Human_Colon_Cancer,microns_per_pixel=0.2737012522439323,presente,PASS
+B-R1.3,Visium_HD_Human_Colon_Cancer,0.2737012522439323 µm/px,<=0.5 PASS; <=1 WARN,PASS
+CP-1,Visium_HD_Human_Colon_Cancer,"pitch=7.3039 px × 0.2737012522439323 = 1.9991 µm (sv ratio 1.0001, rms 0.259 px)",2.00 µm ± 5 %,PASS
+C-R1.2c,Visium_HD_Human_Colon_Cancer,in_tissue: 0.9964 dentro l'immagine 75250x48740 (tutti i bin: 0.9212; area di cattura stimata 24468x24468 px),>= 0.99 dei bin in_tissue,PASS
+CP-2,Visium_HD_Human_Colon_Cancer,3 ritagli + overview,verifica visiva di Luca,PENDING
+C-R1.2a,Visium_HD_Human_Lymph_Node_FFPE,"opens=True shape=(26128, 28248, 3) comp=1 levels=1",immagine apribile,PASS
+C-R1.2b,Visium_HD_Human_Lymph_Node_FFPE,microns_per_pixel=0.273775031262766,presente,PASS
+B-R1.3,Visium_HD_Human_Lymph_Node_FFPE,0.273775031262766 µm/px,<=0.5 PASS; <=1 WARN,PASS
+CP-1,Visium_HD_Human_Lymph_Node_FFPE,"pitch=7.3051 px × 0.273775031262766 = 2.0000 µm (sv ratio 1.0001, rms 0.218 px)",2.00 µm ± 5 %,PASS
+C-R1.2c,Visium_HD_Human_Lymph_Node_FFPE,in_tissue: 0.9970 dentro l'immagine 28248x26128 (tutti i bin: 0.9657; area di cattura stimata 24472x24472 px),>= 0.99 dei bin in_tissue,PASS
+CP-2,Visium_HD_Human_Lymph_Node_FFPE,3 ritagli + overview,verifica visiva di Luca,PENDING
+C-R1.2a,Visium_HD_6p5mm_Mouse_Brain,"opens=True shape=(22074, 22354, 3) comp=1 levels=1",immagine apribile,PASS
+C-R1.2b,Visium_HD_6p5mm_Mouse_Brain,microns_per_pixel=0.2740235311137736,presente,PASS
+B-R1.3,Visium_HD_6p5mm_Mouse_Brain,0.2740235311137736 µm/px,<=0.5 PASS; <=1 WARN,PASS
+CP-1,Visium_HD_6p5mm_Mouse_Brain,"pitch=7.2978 px × 0.2740235311137736 = 1.9998 µm (sv ratio 1.0000, rms 0.048 px)",2.00 µm ± 5 %,PASS
+C-R1.2c,Visium_HD_6p5mm_Mouse_Brain,in_tissue: 0.9991 dentro l'immagine 22354x22074 (tutti i bin: 0.8190; area di cattura stimata 24448x24448 px),>= 0.99 dei bin in_tissue,PASS
+CP-2,Visium_HD_6p5mm_Mouse_Brain,3 ritagli + overview,verifica visiva di Luca,PENDING
+C-R1.2a,Visium_HD_6p5mm_Human_Heart,"opens=True shape=(49099, 39139, 3) comp=1 levels=1",immagine apribile,PASS
+C-R1.2b,Visium_HD_6p5mm_Human_Heart,microns_per_pixel=0.27381142920421525,presente,PASS
+B-R1.3,Visium_HD_6p5mm_Human_Heart,0.27381142920421525 µm/px,<=0.5 PASS; <=1 WARN,PASS
+CP-1,Visium_HD_6p5mm_Human_Heart,"pitch=7.3059 px × 0.27381142920421525 = 2.0004 µm (sv ratio 1.0001, rms 0.006 px)",2.00 µm ± 5 %,PASS
+C-R1.2c,Visium_HD_6p5mm_Human_Heart,in_tissue: 1.0000 dentro l'immagine 39139x49099 (tutti i bin: 1.0000; area di cattura stimata 24475x24475 px),>= 0.99 dei bin in_tissue,PASS
+CP-2,Visium_HD_6p5mm_Human_Heart,3 ritagli + overview,verifica visiva di Luca,PENDING

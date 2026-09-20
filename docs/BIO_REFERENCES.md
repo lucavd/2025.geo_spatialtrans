@@ -9,6 +9,8 @@ Regola: una riga entra qui solo con **fonte tracciabile**: DOI di un articolo, o
 ## Stato
 - **S0 (2026-09-18)**: schema creato, **nessun valore inserito**. Le ipotesi numeriche presenti nel design doc (densità del catalogo `cell_types`, `nucleus_to_eq_ratio`, intervallo C8 [5, 25] µm) e in `full_test.R` (sparsità, UMI) **non** sono riferimenti: restano ipotesi finché una riga di questa tabella non le copre.
 
+- **R1 (2026-09-19)**: dataset reali disponibili (vedi `data/real/README.md`), **ancora nessun valore biologico**. Unico dato accertato: scala 0.2737–0.2740 µm/px per le 5 immagini (da `scalefactors_json.json`, verificata con la griglia dei bin, `results/R1/R1_scale.csv`).
+
 ## Metriche previste per archetipo (colonne della tabella, da riempire in R2–R5)
 Geometria (R2–R3): densità nucleare (cell/mm²), area nucleare (µm²), distanza al primo vicino (µm), g(r) / Ripley K, area ed eq_radius del territorio Voronoi (µm², µm), rapporto N/C, eccentricità del territorio.
 Espressione (R4–R5): library size a 2 µm e 8 µm (UMI/bin), frazione di bin vuoti, sparsità, UMI nucleo vs citoplasma, `diffusion_sigma_um`.

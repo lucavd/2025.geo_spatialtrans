@@ -1,0 +1,187 @@
+---
+title: "R1 — Inventario e download dei dataset Visium HD di riferimento"
+subtitle: "geo_spatialtrans — report di step (binario R)"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+    fig-width: 10
+---
+
+```{r setup}
+.libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({library(dplyr); library(knitr)})
+root <- normalizePath("..")
+rd <- function(f, ...) read.csv(file.path(root, f), check.names = FALSE, stringsAsFactors = FALSE, ...)
+checks <- rd("results/R1/R1_checks.csv"); scale <- rd("results/R1/R1_scale.csv"); meta <- rd("results/R1/R1_image_metadata.csv")
+md5 <- rd("results/R1/R1_md5.csv"); man <- rd("data/real/inventory/R1_download_manifest.csv"); amap <- rd("data/real/inventory/R1_archetype_map.csv")
+pages <- rd("data/real/inventory/datasets_10x_pages_2026-09-18.csv"); files <- rd("data/real/inventory/files_10x_pages_2026-09-18.csv")
+status <- read.delim(file.path(root, "data/real/inventory/R1_download_status.tsv"), stringsAsFactors = FALSE)
+adv_path <- file.path(root, "results/R1/R1_adversarial_review.csv"); adv <- if (file.exists(adv_path)) rd("results/R1/R1_adversarial_review.csv") else NULL
+```
+
+**Obiettivo unico.** Inventario dei dataset pubblici 10x Visium HD con immagine H&E microscopica; download sul server dei soli file utili a R2–R5; verifica di integrità e di scala; mappa dataset → archetipi A1–A6 con dichiarazione esplicita delle coperture mancanti. Nessun codice del cell layer, nessuna segmentazione.
+
+**Dipendenze:** nessuna. **Branch:** `step1-cell-layer`. **Dati:** `/mnt/micron/geo_spatialtrans/data_real` (symlink `data/real/datasets`).
+
+# 1. Pre-registrazione
+
+Attese scritte prima del download; approvazione di Luca il 2026-09-18 («disco usa micron. Fai una cartella apposita. Confermo R1»; set di 5 dataset / 79.8 GB approvato in chat lo stesso giorno).
+
+| Check | Attesa | Soglia | Fonte |
+|---|---|---|---|
+| C-R1.1 | md5 di ogni file scaricato = md5 pubblicato da 10x | 100 % dei file; un mismatch = riscarico, due = FAIL | pagine dataset 10x (lette da Claude in Chrome, `inventory/files_10x_pages_2026-09-18.csv`) |
+| C-R1.2 | ogni immagine H&E si apre; scala µm/px ricavabile da `scalefactors_json.json` o dai tag TIFF | scala presente per ogni dataset | specifica output Space Ranger |
+| C-R1.3 | `data/real/README.md` con URL, md5, tessuto, preservazione, versione Space Ranger, µm/px, dimensione; dati fuori git | presenti e versionati | roadmap §4 R1 |
+| C-R1.4 | budget disco dichiarato prima del download | ≤ 50 GB (metà dello spazio libero sul disco di sistema) | `df` del 2026-09-18 |
+| B-R1.1 | copertura: ≥ 1 dataset con H&E microscopica per A1, A2, A3, A5 | 4/4 | roadmap §3 |
+| B-R1.2 | A4 e A6: **ci aspettiamo che manchi un dataset dedicato** | esito registrato, non forzato | roadmap §3 |
+| B-R1.3 | risoluzione utile per la segmentazione nucleare: µm/px ≤ 0.5 PASS; 0.5–1 WARN; > 1 FAIL | per dataset | «soglia derivata dal diametro minimo gestito da Cellpose — DOI 10.1038/s41592-020-01018-x **da verificare nel testo**» |
+| Controprova 1 | passo della griglia 2 µm in pixel (da `tissue_positions.parquet`) × µm/px = 2.00 µm | ± 5 % | geometria dei bin Visium HD |
+| Controprova 2 | ritaglio H&E nativo per ogni archetipo: il tessuto è quello dichiarato? | verifica visiva, trascritta | — |
+
+## Deviazioni dalla pre-registrazione (registrate, non corrette)
+
+1. **C-R1.4** — Luca ha spostato i dati sul volume `micron` (3.4 TB liberi) e approvato un set da **79.8 GB** prima del download. Il tetto di 50 GB, riferito al disco di sistema, è stato ridefinito e non violato di nascosto.
+2. **B-R1.2** — previsione **smentita**: esistono dataset dedicati per A4 (`Visium_HD_Human_Lymph_Node_FFPE`, Space Ranger 4.0.1) e A6 (`Visium_HD_6p5mm_Human_Heart`, 4.1.0). È A3 (stroma) a non avere un dataset dedicato.
+3. **B-R1.3** — la fonte indicata **non sostiene la soglia**: il paper di Cellpose riporta che le immagini di training sono ridimensionate a una taglia cellulare comune e che il diametro mediano nel dataset è 30 px, ma non fissa un minimo di µm/px. La soglia 0.5 µm/px resta un'ipotesi di lavoro → BL-015 (test empirico in R2: segmentazione a risoluzione nativa vs sottocampionata).
+
+# 2. Check C — correttezza software
+
+## Inventario
+
+```{r inv}
+inv <- pages %>% count(spaceranger_version, name = "pagine")
+n_ds <- n_distinct(pages$dataset_id); n_pg <- nrow(pages); n_files <- nrow(files); n_md5 <- sum(nchar(files$md5) == 32)
+cat(sprintf("Pagine Visium HD lette: %d (%d dataset_id distinti; 14 dataset compaiono con due elaborazioni Space Ranger). Righe file: %d = %d URL distinti, con md5 pubblicato: %d; contenuti distinti (md5 unici): %d — alcuni input (probe set, immagini) sono condivisi fra pagine.\n", n_pg, n_ds, n_files, n_distinct(files$url_download), n_md5, n_distinct(files$md5)))
+kable(inv, caption = "Pagine per versione di Space Ranger")
+```
+
+```{r micro}
+vs <- grepl("Olympus VS200", pages$microscope_notes, fixed = TRUE)
+cat(sprintf("Pagine con blocco Imaging (Olympus VS200, 20×/0.8 NA): %d/%d. Senza blocco Imaging nel testo: %s.\n", sum(vs), nrow(pages), paste(sprintf("%s (SR %s)", pages$dataset_id[!vs], pages$spaceranger_version[!vs]), collapse = "; ")))
+```
+
+Le due pagine senza blocco Imaging sono quelle di `Visium_HD_Human_Colon_Cancer` (SR 3.0.0 e 4.0.1), cioè il dataset assegnato ad A2/A3: per esso microscopio e obiettivo **non sono dichiarati** in pagina; la scala misurata (0.2737 µm/px, controprova 1) è però identica a quella degli altri quattro, compatibile con lo stesso scanner a 20×. Nessuna pagina 10x riporta la risoluzione in µm/px.
+
+## C-R1.1 — integrità
+
+```{r md5}
+s <- status %>% mutate(GB = bytes / 1e9) %>% group_by(archetype, dataset_id) %>% summarise(file = n(), GB = round(sum(GB), 2), ok = sum(status == "OK"), tentativi_max = max(attempts), .groups = "drop")
+kable(s, caption = "Download (tools/R1_download.sh): md5 ricalcolato dopo il download = md5 pubblicato")
+m <- md5 %>% group_by(dataset_id) %>% summarise(ricalcolo_ok = sum(status == "PASS"), file = n(), .groups = "drop")
+kable(m, caption = "Ricalcolo indipendente in tools/R1_verify.py (md5 su 79.8 GB)")
+cat(sprintf("Totale: %d file, %.2f GB, md5 ok %d/%d (download) e %d/%d (ricalcolo).\n", nrow(status), sum(status$bytes)/1e9, sum(status$status=="OK"), nrow(status), sum(md5$status=="PASS"), nrow(md5)))
+```
+
+## C-R1.2 — immagini e scala
+
+```{r meta}
+mt <- meta %>% select(dataset_id, archetype, microscope_image, shape, dtype, compression, n_levels, is_bigtiff, um_per_px_tifftag, ome_physical_size_x, spaceranger_version_websummary)
+kable(mt, caption = "Immagine microscopica: metadati letti con tifffile. Il tag TIFF XResolution è 96 dpi (= 264.58 µm/px) in tutte: placeholder. L'OME-XML `PhysicalSizeX` è invece presente e corretto (0.27377–0.27381 µm, entro 0.08 % da `scalefactors_json`; rilievo del revisore). `spaceranger_version_websummary`: letta dal web_summary (A6 via stringa più frequente, euristica — BL-023).")
+sc <- scale %>% transmute(dataset_id, archetype, `µm/px (scalefactors)` = round(um_per_px_scalefactors, 5), `bin_size_um` = sf2_bin_size_um, `spot_diameter_fullres (px)` = round(sf2_spot_diameter_fullres, 4),
+  `bin 2 µm` = n_bins_2um, `in_tissue` = n_in_tissue_2um, `in_tissue dentro immagine` = round(frac_in_tissue_bins_inside_image, 4), `tutti i bin dentro immagine` = round(frac_all_bins_inside_image, 4), `area di cattura stimata (px)` = capture_area_px_est)
+kable(sc, caption = "Scala e posizioni (square_002um/spatial). La frazione di tutti i bin dentro l'immagine è < 1 dove l'area di cattura 6.5 mm sporge dal campo acquisito: è attesa, il check usa i bin in_tissue.")
+```
+
+## Tabella dei check
+
+```{r checks}
+ck <- checks %>% filter(check != "CP-2") %>% select(check, dataset_id, value, threshold, status)
+kable(ck, caption = "PASS/WARN/FAIL per asserzione (results/R1/R1_checks.csv)")
+cat("Riepilogo:", paste(names(table(ck$status)), table(ck$status), collapse = ", "), "\n")
+```
+
+C-R1.3: `data/real/README.md`, `checksums.md5`, `inventory/` sono in git; i dati no (`.gitignore`). Ambiente Python di progetto: `tools/setup_python_env.sh` (uv, `tools/requirements.lock`).
+
+# 3. Check B — copertura del pannello e plausibilità dei dataset
+
+```{r map}
+mp <- amap %>% left_join(pages %>% mutate(spaceranger = as.character(spaceranger_version)) %>% select(dataset_id, spaceranger, tissue, species, preservation, release_date, license) %>% distinct(), by = c("dataset_id", "spaceranger"))
+kable(mp %>% select(archetype, dataset_id, spaceranger, tissue, species, preservation, release_date, license), caption = "Mappa dataset → archetipi (decisione R1)")
+```
+
+| Check | Esito | Nota |
+|---|---|---|
+| B-R1.1 (A1, A2, A3, A5 coperti) | **PASS** | A3 coperto solo come regione interna di A2 (stroma/desmoplasia del CRC): nessun dataset 10x è "stroma" |
+| B-R1.2 (A4, A6 senza dataset dedicato) | **smentito** | linfonodo FFPE e cuore FFPE esistono e sono stati scaricati |
+| B-R1.3 (µm/px ≤ 0.5) | PASS 5/5 con **soglia senza fonte** (deviazione 3) | 0.2737–0.2740 µm/px, 20×/0.8 NA |
+
+Note per archetipo (dal manifest): `r paste(sprintf("**%s** %s", amap$archetype, amap$note), collapse = "; ")`.
+
+# 4. Controprova
+
+## Controprova 1 — scala indipendente dalla griglia dei bin
+
+Per ogni dataset si adatta ai minimi quadrati la mappa affine (array_col, array_row) → (pxl_col, pxl_row) su `tissue_positions.parquet` (2 µm); i valori singolari della matrice 2×2 danno il passo della griglia in pixel e la sua anisotropia. Moltiplicato per `microns_per_pixel` deve restituire 2.00 µm.
+
+```{r cp1}
+cp <- scale %>% transmute(dataset_id, archetype, `n bin nel fit` = n_fit, `passo (px)` = round(pitch_px, 4), `sv1/sv2` = round(grid_anisotropy_sv1_sv2, 5), `rms residuo (px)` = round(rms_resid_px, 3), `passo × µm/px (µm)` = round(pitch_um_from_grid, 4), `asse 1 (µm)` = round(pitch_um_axis1, 5), `asse 2 (µm)` = round(pitch_um_axis2, 5), `rotazione (°)` = round(grid_rotation_deg, 3), `scarto da 2.00 µm (%)` = round(100 * (pitch_um_from_grid - 2) / 2, 3))
+kable(cp, caption = "Esito: 5/5 entro ± 5 % (scarto massimo 0.05 %). La scala dichiarata è coerente con la geometria dei bin in tutti i dataset.")
+```
+
+Interpretazione: il residuo rms va da 0.006 px (cuore) a 0.26 px (CRC), quindi le posizioni dei bin sono una griglia affine esatta a meno di arrotondamenti; l'anisotropia ≤ 1.0001 esclude scale diverse sui due assi. Se questa controprova fosse fallita, `microns_per_pixel` non sarebbe stato usabile come scala per Step 1 (C-A).
+
+## Controprova 2 — il tessuto è quello dichiarato?
+
+Tre ritagli di 400 µm a risoluzione nativa per dataset (centroide del tessuto + 2 punti casuali in `in_tissue`, seed 42) e un'overview con i bin `in_tissue` sull'immagine `hires`.
+
+```{r crops, results='asis'}
+for (a in c("A1", "A2", "A4", "A5", "A6")) {
+  fs <- sort(list.files(file.path(root, "results/R1/crops"), pattern = paste0("^", a, "_.*\\.png$"), full.names = TRUE))
+  cat(sprintf("\n\n### %s — %s\n\n", a, sub("_(crop\\d|overview)\\.png$", "", sub(paste0("^", a, "_"), "", basename(fs[1])))))
+  for (f in fs) cat(sprintf("![](../results/R1/crops/%s){width=48%%} ", basename(f)))
+}
+```
+
+`R1_checks.csv` marca CP-2 come `PENDING` per costruzione: è lo stato macchina, la chiusura è umana e sta in `results/R1/R1_cp2_histology.csv` (tabella seguente).
+
+**Revisione istologica (2026-09-19)** — ritagli rivisti da **Federica Pezzuto**, anatomopatologa, tramite Luca:
+
+```{r cp2}
+kable(rd("results/R1/R1_cp2_histology.csv") %>% select(archetype, dataset_id, esito, trascrizione, data), caption = "results/R1/R1_cp2_histology.csv")
+```
+
+Conseguenze: (i) la maschera `in_tissue` di Space Ranger include materiale non parenchimale (grasso/capsula nel linfonodo): i riferimenti R2–R3 vanno stimati su **regioni annotate**, non sull'intera maschera (BL-014, collegato a `extract_regions()` S1.1); (ii) nel cuore le bolle di montaggio vanno mascherate prima della segmentazione (BL-017); (iii) A6 mostra cardiomiociti allungati, coerente con il ruolo di controllo negativo anisotropo per il Voronoi isotropo.
+
+# Verdetto
+
+- **Stato: chiuso con riserve.**
+- Riserve: (1) soglia B-R1.3 senza fonte (BL-015); (2) A3 senza dataset dedicato, da estrarre come regione del CRC (BL-018); (3) A1 disponibile solo con Space Ranger 3.0.0 (niente `segmented_outputs`/`barcode_mappings`), mentre A2, A4, A5, A6 hanno la segmentazione di Space Ranger ≥ 4 — il confronto R2 con la segmentazione 10x non sarà possibile per A1 (BL-019); (4) `in_tissue` ≠ tessuto dell'archetipo (BL-014); (5) dalla revisione avversariale: orientamento array→pixel non uniforme (A6 ruotato di 180°, rotazione fino a 0.75° in A2; BL-020), 0.30–0.36 % dei bin `in_tissue` fuori dall'immagine in A2 e A4 (BL-021), formati immagine eterogenei (A2 con seconda pagina TIFF illeggibile, A4 TIFF classico a strisce; BL-022).
+- Previsione pre-registrata smentita e registrata: B-R1.2.
+
+# Revisione avversariale
+
+```{r adv, results='asis'}
+if (is.null(adv)) cat("*Non ancora eseguita al momento del render.*\n") else {
+  cat(sprintf("Sotto-agente indipendente (contesto pulito, sola lettura sul server, 2026-09-20): %d affermazioni ricalcolate dai file primari con strumenti diversi dall'autore (md5sum completo su 79.84 GB, gdalinfo, mediana delle differenze fra bin adiacenti per il passo della griglia): %d confermate, %d discrepanze.\n\n", nrow(adv), sum(adv$esito == "confermata"), sum(adv$esito != "confermata")))
+  print(kable(adv %>% select(n, affermazione, dichiarato, ricalcolato, esito)))
+}
+```
+
+Rilievi non bloccanti del revisore e disposizione:
+
+| # | Rilievo | Disposizione |
+|---|---|---|
+| 1 | OME-XML `PhysicalSizeX` presente e corretto in tutte le immagini: l'affermazione «metadati immagine non usabili» era troppo forte (solo il tag XResolution è placeholder) | **accolto**: corretti README, CHANGELOG, BL-016 e questo report; `estimate_pixel_size()` potrà leggere l'OME-XML, verificandolo contro la griglia dei bin |
+| 2 | Orientamento array→pixel non uniforme (A6 ruotato di 180°; rotazione ≤ 0.75° in A2) | BL-020 (da documentare prima di R2) |
+| 3 | CP-1 sottocampionava 300 000 bin senza necessità e riportava solo la media geometrica dei due assi; tolleranza ± 5 % lassa rispetto alla precisione ottenuta | **accolto**: fit su tutti i bin e passo per asse in `R1_verify.py` (tabelle di questo report); la soglia pre-registrata non si cambia a posteriori, si annota che lo scarto reale è ≤ 0.05 % |
+| 4 | `R1_checks.csv` marca CP-2 PENDING mentre il README la dà chiusa | **accolto**: `results/R1/R1_cp2_histology.csv` + nota esplicita nel report |
+| 5 | 0.30–0.36 % dei bin `in_tissue` fuori dall'immagine (A2, A4) | BL-021 |
+| 6 | Docstring di `R1_verify.py` dichiarava di scrivere il README (falso); fallback «stringa più frequente» per la versione Space Ranger fragile | **accolto** (docstring corretta); BL-023 |
+| 7 | «46 dataset / 582 file» va letto come 46 pagine / 582 URL / 526 contenuti distinti; confronto md5 per URL, non per nome file | **accolto** nel testo dell'inventario |
+| 8 | Eterogeneità di formato (A2 seconda pagina TIFF illeggibile; A4 TIFF classico a strisce) | BL-022 |
+
+# Riproducibilità
+
+Commit: vedi `docs/sessions/2026-09-18_R1.md`. Comandi:
+
+```bash
+cd ~/2025.geo_spatialtrans
+bash tools/R1_download.sh data/real/inventory/R1_download_manifest.csv /mnt/micron/geo_spatialtrans/data_real /mnt/micron/geo_spatialtrans/data_real/_logs/R1_download_status.tsv
+bash tools/setup_python_env.sh
+bash R/testing/test_R1.sh          # md5 (~15 min) + verifiche; R1_FAST=1 per saltare il md5
+quarto render reports/R1.qmd
+```
