@@ -145,7 +145,9 @@ def main():
         st = "PASS" if (a.skip_md5 or obs == r.md5) else "FAIL"
         md5_rows.append(dict(dataset_id=r.dataset_id, filename=r.filename, expected=r.md5, observed=obs, bytes=f.stat().st_size, status=st))
         print(f"[md5] {st} {r.filename}", flush=True)
-    md5df = pd.DataFrame(md5_rows); md5df.to_csv(out / "R1_md5.csv", index=False)
+    md5df = pd.DataFrame(md5_rows)
+    if not a.skip_md5:
+        md5df.to_csv(out / "R1_md5.csv", index=False)   # in modalita --skip-md5 il file del ricalcolo completo non va sovrascritto
     for ds_id, g in md5df.groupby("dataset_id"):
         checks.append(dict(check="C-R1.1", dataset_id=ds_id, value=f"{(g.status=='PASS').sum()}/{len(g)} md5 ok",
                            threshold="tutti", status="PASS" if (g.status == "PASS").all() else "FAIL"))
