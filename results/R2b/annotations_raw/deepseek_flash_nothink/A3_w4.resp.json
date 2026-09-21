@@ -1,0 +1,28 @@
+{
+ "id": "07733a49-853f-41b2-a511-27251705e750",
+ "object": "chat.completion",
+ "created": 1789986637,
+ "model": "deepseek-flash",
+ "choices": [
+  {
+   "index": 0,
+   "message": {
+    "role": "assistant",
+    "content": "{\n  \"image\": \"A3_w4.png\",\n  \"n_nuclei\": 24,\n  \"points\": [\n    [0.350, 0.030],\n    [0.630, 0.040],\n    [0.310, 0.100],\n    [0.180, 0.160],\n    [0.300, 0.200],\n    [0.740, 0.200],\n    [0.020, 0.520],\n    [0.130, 0.660],\n    [0.270, 0.680],\n    [0.200, 0.800],\n    [0.300, 0.880],\n    [0.560, 0.900],\n    [0.650, 0.920],\n    [0.870, 0.940],\n    [0.480, 0.960],\n    [0.620, 0.980],\n    [0.780, 0.980],\n    [0.900, 0.980],\n    [0.050, 0.980],\n    [0.150, 0.980],\n    [0.250, 0.980],\n    [0.350, 0.980],\n    [0.450, 0.980],\n    [0.550, 0.980]\n  ],\n  \"unreadable_fraction\": 0.0,\n  \"confidence\": \"medium\",\n  \"notes\": \"Many pale nuclei in dense pink stroma; some nuclei at bottom edge partially visible.\"\n}"
+   },
+   "logprobs": null,
+   "finish_reason": "stop"
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 755,
+  "completion_tokens": 336,
+  "total_tokens": 1091,
+  "prompt_tokens_details": {
+   "cached_tokens": 384
+  },
+  "prompt_cache_hit_tokens": 384,
+  "prompt_cache_miss_tokens": 371
+ },
+ "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+}

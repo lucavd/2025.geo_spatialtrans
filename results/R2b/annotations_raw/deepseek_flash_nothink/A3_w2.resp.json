@@ -1,0 +1,28 @@
+{
+ "id": "6816cbee-563e-4933-b348-695ff6d50be1",
+ "object": "chat.completion",
+ "created": 1789986630,
+ "model": "deepseek-flash",
+ "choices": [
+  {
+   "index": 0,
+   "message": {
+    "role": "assistant",
+    "content": "{\n  \"image\": \"A3_w2.png\",\n  \"n_nuclei\": 42,\n  \"points\": [\n    [0.042, 0.058], [0.125, 0.042], [0.208, 0.075], [0.292, 0.058], [0.375, 0.092],\n    [0.458, 0.075], [0.542, 0.108], [0.625, 0.092], [0.708, 0.125], [0.792, 0.108],\n    [0.875, 0.142], [0.958, 0.125], [0.042, 0.208], [0.125, 0.192], [0.208, 0.225],\n    [0.292, 0.208], [0.375, 0.242], [0.458, 0.225], [0.542, 0.258], [0.625, 0.242],\n    [0.708, 0.275], [0.792, 0.258], [0.875, 0.292], [0.958, 0.275], [0.042, 0.358],\n    [0.125, 0.342], [0.208, 0.375], [0.292, 0.358], [0.375, 0.392], [0.458, 0.375],\n    [0.542, 0.408], [0.625, 0.392], [0.708, 0.425], [0.792, 0.408], [0.875, 0.442],\n    [0.958, 0.425], [0.042, 0.508], [0.125, 0.492], [0.208, 0.525], [0.292, 0.508],\n    [0.375, 0.542], [0.458, 0.525]\n  ],\n  \"unreadable_fraction\": 0.0,\n  \"confidence\": \"medium\",\n  \"notes\": \"Many pale vesicular nuclei in smooth muscle; some nuclei at borders excluded per rules.\"\n}"
+   },
+   "logprobs": null,
+   "finish_reason": "stop"
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 755,
+  "completion_tokens": 501,
+  "total_tokens": 1256,
+  "prompt_tokens_details": {
+   "cached_tokens": 384
+  },
+  "prompt_cache_hit_tokens": 384,
+  "prompt_cache_miss_tokens": 371
+ },
+ "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+}

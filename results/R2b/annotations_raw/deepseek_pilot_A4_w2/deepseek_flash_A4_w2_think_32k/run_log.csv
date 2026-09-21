@@ -1,0 +1,2 @@
+win_id,model_requested,model_returned,status,http,n_nuclei,n_points,prompt_tokens,completion_tokens,latency_s,finish_reason,timestamp
+A4_w2,deepseek-flash,deepseek-flash,ok,200,320,320,753,26754,81.0,stop,2026-09-21T12:29:14
