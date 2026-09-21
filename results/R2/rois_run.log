@@ -1,0 +1,31 @@
+A1_r1 mucosa villi+cripte anello esterno inside True cov_in_tissue 0.896
+A1_r2 mucosa anello esterno SW inside True cov_in_tissue 0.754
+A1_r3 mucosa anello esterno S inside True cov_in_tissue 0.92
+A1_r4 mucosa anelli interni inside True cov_in_tissue 0.743
+A1_r5 mucosa anelli interni inside True cov_in_tissue 0.818
+A2_r1 tumore ghiandolare superficiale inside True cov_in_tissue 0.87
+A2_r2 tumore ghiandolare superficiale inside True cov_in_tissue 0.888
+A2_r3 tumore ghiandolare inside True cov_in_tissue 0.713
+A2_r4 nidi tumorali invasivi inside True cov_in_tissue 1.001
+A2_r5 nidi tumorali invasivi inside True cov_in_tissue 1.001
+A3_r1 stroma desmoplastico (cluster 2) inside True cov_in_tissue 1.001
+A3_r2 stroma desmoplastico (cluster 2) inside True cov_in_tissue 1.001
+A3_r3 stroma desmoplastico (cluster 2) inside True cov_in_tissue 1.001
+A3_r4 stroma desmoplastico (cluster 2) inside True cov_in_tissue 1.001
+A3_r5 stroma desmoplastico (cluster 2; margine tumorale in basso) inside True cov_in_tissue 1.001
+A4_f1 follicolo (cluster 5) inside True cov_in_tissue 1.0
+A4_f2 follicolo (cluster 5) inside True cov_in_tissue 1.0
+A4_p1 paracorticale (cluster 2) inside True cov_in_tissue 1.0
+A4_p2 paracorticale (cluster 2) inside True cov_in_tissue 1.0
+A4_p3 paracorticale (cluster 2) inside True cov_in_tissue 1.0
+A5_r1 corteccia dorsale (cluster 1) inside True cov_in_tissue 1.0
+A5_r2 corteccia dorsale (cluster 1) inside True cov_in_tissue 0.933
+A5_r3 corteccia laterale (cluster 1) inside True cov_in_tissue 0.926
+A5_r4 corteccia laterale (cluster 1) inside True cov_in_tissue 0.864
+A5_r5 corteccia dorsale (cluster 1) inside True cov_in_tissue 0.938
+A6_r1 miocardio inside True cov_in_tissue 0.999
+A6_r2 miocardio inside True cov_in_tissue 0.999
+A6_r3 miocardio inside True cov_in_tissue 0.999
+A6_r4 miocardio inside True cov_in_tissue 0.999
+A6_r5 miocardio inside True cov_in_tissue 0.999
+exit=0

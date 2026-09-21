@@ -1,0 +1,144 @@
+match A1_r1 cellpose_rgb vs stardist_he: F1=0.613 dice=0.629 dDens=-0.467
+match A1_r1 cellpose_rgb vs cellpose_hed: F1=0.623 dice=0.636 dDens=+0.238
+match A1_r2 cellpose_rgb vs stardist_he: F1=0.609 dice=0.623 dDens=-0.470
+match A1_r2 cellpose_rgb vs cellpose_hed: F1=0.608 dice=0.638 dDens=+0.236
+match A1_r3 cellpose_rgb vs stardist_he: F1=0.622 dice=0.630 dDens=-0.478
+match A1_r3 cellpose_rgb vs cellpose_hed: F1=0.633 dice=0.643 dDens=+0.188
+match A1_r4 cellpose_rgb vs stardist_he: F1=0.598 dice=0.624 dDens=-0.499
+match A1_r4 cellpose_rgb vs cellpose_hed: F1=0.663 dice=0.657 dDens=+0.164
+match A1_r5 cellpose_rgb vs stardist_he: F1=0.622 dice=0.633 dDens=-0.483
+match A1_r5 cellpose_rgb vs cellpose_hed: F1=0.672 dice=0.670 dDens=+0.128
+match A2_r1 cellpose_rgb vs stardist_he: F1=0.672 dice=0.625 dDens=-0.408
+match A2_r1 cellpose_rgb vs spaceranger: F1=0.651 dice=0.723 dDens=+0.343
+match A2_r1 stardist_he vs spaceranger: F1=0.557 dice=0.534 dDens=+1.271
+match A2_r1 cellpose_rgb vs cellpose_hed: F1=0.824 dice=0.796 dDens=-0.024
+match A2_r2 cellpose_rgb vs stardist_he: F1=0.645 dice=0.600 dDens=-0.464
+match A2_r2 cellpose_rgb vs spaceranger: F1=0.668 dice=0.682 dDens=+0.138
+match A2_r2 stardist_he vs spaceranger: F1=0.584 dice=0.547 dDens=+1.124
+match A2_r2 cellpose_rgb vs cellpose_hed: F1=0.755 dice=0.729 dDens=-0.112
+match A2_r3 cellpose_rgb vs stardist_he: F1=0.710 dice=0.672 dDens=-0.360
+match A2_r3 cellpose_rgb vs spaceranger: F1=0.700 dice=0.726 dDens=+0.174
+match A2_r3 stardist_he vs spaceranger: F1=0.638 dice=0.604 dDens=+0.833
+match A2_r3 cellpose_rgb vs cellpose_hed: F1=0.833 dice=0.807 dDens=+0.013
+match A2_r4 cellpose_rgb vs stardist_he: F1=0.618 dice=0.602 dDens=-0.488
+match A2_r4 cellpose_rgb vs spaceranger: F1=0.679 dice=0.684 dDens=-0.093
+match A2_r4 stardist_he vs spaceranger: F1=0.639 dice=0.610 dDens=+0.771
+match A2_r4 cellpose_rgb vs cellpose_hed: F1=0.775 dice=0.752 dDens=-0.147
+match A2_r5 cellpose_rgb vs stardist_he: F1=0.645 dice=0.605 dDens=-0.469
+match A2_r5 cellpose_rgb vs spaceranger: F1=0.707 dice=0.701 dDens=+0.010
+match A2_r5 stardist_he vs spaceranger: F1=0.629 dice=0.595 dDens=+0.902
+match A2_r5 cellpose_rgb vs cellpose_hed: F1=0.770 dice=0.739 dDens=-0.044
+match A3_r1 cellpose_rgb vs stardist_he: F1=0.687 dice=0.626 dDens=-0.390
+match A3_r1 cellpose_rgb vs spaceranger: F1=0.668 dice=0.693 dDens=+0.243
+match A3_r1 stardist_he vs spaceranger: F1=0.612 dice=0.580 dDens=+1.039
+match A3_r1 cellpose_rgb vs cellpose_hed: F1=0.734 dice=0.719 dDens=+0.117
+match A3_r2 cellpose_rgb vs stardist_he: F1=0.657 dice=0.599 dDens=-0.450
+match A3_r2 cellpose_rgb vs spaceranger: F1=0.663 dice=0.666 dDens=+0.133
+match A3_r2 stardist_he vs spaceranger: F1=0.595 dice=0.574 dDens=+1.060
+match A3_r2 cellpose_rgb vs cellpose_hed: F1=0.696 dice=0.666 dDens=+0.224
+match A3_r3 cellpose_rgb vs stardist_he: F1=0.709 dice=0.636 dDens=-0.367
+match A3_r3 cellpose_rgb vs spaceranger: F1=0.701 dice=0.669 dDens=-0.006
+match A3_r3 stardist_he vs spaceranger: F1=0.697 dice=0.629 dDens=+0.571
+match A3_r3 cellpose_rgb vs cellpose_hed: F1=0.727 dice=0.699 dDens=+0.129
+match A3_r4 cellpose_rgb vs stardist_he: F1=0.771 dice=0.728 dDens=-0.288
+match A3_r4 cellpose_rgb vs spaceranger: F1=0.756 dice=0.725 dDens=+0.040
+match A3_r4 stardist_he vs spaceranger: F1=0.742 dice=0.679 dDens=+0.461
+match A3_r4 cellpose_rgb vs cellpose_hed: F1=0.759 dice=0.728 dDens=+0.124
+match A3_r5 cellpose_rgb vs stardist_he: F1=0.641 dice=0.611 dDens=-0.464
+match A3_r5 cellpose_rgb vs spaceranger: F1=0.692 dice=0.679 dDens=-0.063
+match A3_r5 stardist_he vs spaceranger: F1=0.646 dice=0.607 dDens=+0.749
+match A3_r5 cellpose_rgb vs cellpose_hed: F1=0.729 dice=0.693 dDens=-0.021
+match A4_f1 cellpose_rgb vs stardist_he: F1=0.912 dice=0.855 dDens=-0.128
+match A4_f1 cellpose_rgb vs spaceranger: F1=0.736 dice=0.717 dDens=+0.221
+match A4_f1 stardist_he vs spaceranger: F1=0.781 dice=0.677 dDens=+0.400
+match A4_f1 cellpose_rgb vs cellpose_hed: F1=0.717 dice=0.719 dDens=+0.192
+match A4_f2 cellpose_rgb vs stardist_he: F1=0.927 dice=0.859 dDens=-0.088
+match A4_f2 cellpose_rgb vs spaceranger: F1=0.691 dice=0.694 dDens=+0.223
+match A4_f2 stardist_he vs spaceranger: F1=0.808 dice=0.696 dDens=+0.341
+match A4_f2 cellpose_rgb vs cellpose_hed: F1=0.631 dice=0.675 dDens=+0.187
+match A4_p1 cellpose_rgb vs stardist_he: F1=0.921 dice=0.873 dDens=-0.114
+match A4_p1 cellpose_rgb vs spaceranger: F1=0.692 dice=0.686 dDens=+0.217
+match A4_p1 stardist_he vs spaceranger: F1=0.785 dice=0.679 dDens=+0.374
+match A4_p1 cellpose_rgb vs cellpose_hed: F1=0.444 dice=0.618 dDens=+0.166
+match A4_p2 cellpose_rgb vs stardist_he: F1=0.916 dice=0.857 dDens=-0.116
+match A4_p2 cellpose_rgb vs spaceranger: F1=0.658 dice=0.682 dDens=+0.219
+match A4_p2 stardist_he vs spaceranger: F1=0.786 dice=0.685 dDens=+0.379
+match A4_p2 cellpose_rgb vs cellpose_hed: F1=0.443 dice=0.618 dDens=+0.185
+match A4_p3 cellpose_rgb vs stardist_he: F1=0.933 dice=0.871 dDens=-0.082
+match A4_p3 cellpose_rgb vs spaceranger: F1=0.672 dice=0.681 dDens=+0.195
+match A4_p3 stardist_he vs spaceranger: F1=0.819 dice=0.703 dDens=+0.302
+match A4_p3 cellpose_rgb vs cellpose_hed: F1=0.554 dice=0.631 dDens=+0.186
+match A5_r1 cellpose_rgb vs stardist_he: F1=0.695 dice=0.832 dDens=+0.120
+match A5_r1 cellpose_rgb vs spaceranger: F1=0.630 dice=0.734 dDens=-0.219
+match A5_r1 stardist_he vs spaceranger: F1=0.730 dice=0.747 dDens=-0.302
+match A5_r1 cellpose_rgb vs cellpose_hed: F1=0.610 dice=0.778 dDens=-0.029
+match A5_r2 cellpose_rgb vs stardist_he: F1=0.736 dice=0.802 dDens=+0.268
+match A5_r2 cellpose_rgb vs spaceranger: F1=0.636 dice=0.655 dDens=-0.158
+match A5_r2 stardist_he vs spaceranger: F1=0.692 dice=0.691 dDens=-0.336
+match A5_r2 cellpose_rgb vs cellpose_hed: F1=0.756 dice=0.773 dDens=-0.082
+match A5_r3 cellpose_rgb vs stardist_he: F1=0.702 dice=0.775 dDens=+0.295
+match A5_r3 cellpose_rgb vs spaceranger: F1=0.500 dice=0.485 dDens=-0.422
+match A5_r3 stardist_he vs spaceranger: F1=0.523 dice=0.533 dDens=-0.553
+match A5_r3 cellpose_rgb vs cellpose_hed: F1=0.528 dice=0.551 dDens=-0.302
+match A5_r4 cellpose_rgb vs stardist_he: F1=0.668 dice=0.742 dDens=+0.427
+match A5_r4 cellpose_rgb vs spaceranger: F1=0.569 dice=0.533 dDens=-0.313
+match A5_r4 stardist_he vs spaceranger: F1=0.571 dice=0.573 dDens=-0.519
+match A5_r4 cellpose_rgb vs cellpose_hed: F1=0.663 dice=0.708 dDens=-0.105
+match A5_r5 cellpose_rgb vs stardist_he: F1=0.702 dice=0.808 dDens=+0.272
+match A5_r5 cellpose_rgb vs spaceranger: F1=0.592 dice=0.673 dDens=-0.153
+match A5_r5 stardist_he vs spaceranger: F1=0.685 dice=0.706 dDens=-0.334
+match A5_r5 cellpose_rgb vs cellpose_hed: F1=0.643 dice=0.749 dDens=+0.028
+match A6_r1 cellpose_rgb vs stardist_he: F1=0.547 dice=0.527 dDens=-0.251
+match A6_r1 cellpose_rgb vs spaceranger: F1=0.643 dice=0.679 dDens=+0.007
+match A6_r1 stardist_he vs spaceranger: F1=0.534 dice=0.494 dDens=+0.345
+match A6_r1 cellpose_rgb vs cellpose_hed: F1=0.710 dice=0.557 dDens=-0.105
+match A6_r2 cellpose_rgb vs stardist_he: F1=0.607 dice=0.524 dDens=+0.334
+match A6_r2 cellpose_rgb vs spaceranger: F1=0.539 dice=0.515 dDens=+0.640
+match A6_r2 stardist_he vs spaceranger: F1=0.720 dice=0.660 dDens=+0.229
+match A6_r2 cellpose_rgb vs cellpose_hed: F1=0.713 dice=0.564 dDens=-0.128
+match A6_r3 cellpose_rgb vs stardist_he: F1=0.246 dice=0.162 dDens=+2.179
+match A6_r3 cellpose_rgb vs spaceranger: F1=0.174 dice=0.137 dDens=+2.659
+match A6_r3 stardist_he vs spaceranger: F1=0.741 dice=0.649 dDens=+0.151
+match A6_r3 cellpose_rgb vs cellpose_hed: F1=0.422 dice=0.135 dDens=+0.297
+match A6_r4 cellpose_rgb vs stardist_he: F1=0.559 dice=0.452 dDens=+0.733
+match A6_r4 cellpose_rgb vs spaceranger: F1=0.434 dice=0.417 dDens=+0.992
+match A6_r4 stardist_he vs spaceranger: F1=0.774 dice=0.691 dDens=+0.149
+match A6_r4 cellpose_rgb vs cellpose_hed: F1=0.693 dice=0.472 dDens=+0.231
+match A6_r5 cellpose_rgb vs stardist_he: F1=0.531 dice=0.391 dDens=+0.550
+match A6_r5 cellpose_rgb vs spaceranger: F1=0.435 dice=0.378 dDens=+0.866
+match A6_r5 stardist_he vs spaceranger: F1=0.722 dice=0.628 dDens=+0.204
+match A6_r5 cellpose_rgb vs cellpose_hed: F1=0.584 dice=0.341 dDens=-0.197
+  archetype roi_id        method  n_run1  n_run2  px_run1  px_run2  identical_labels  identical_binary  f1_iou05
+0        A4     f2  cellpose_rgb   20501   20501  4254439  4254439              True              True       1.0
+1        A1     r1  cellpose_rgb    9064    9064  1631397  1631397              True              True       1.0
+2        A4     f2   stardist_he   18625   18625  4369897  4369897              True              True       1.0
+3        A1     r1   stardist_he    4658    4658  1014778  1014778              True              True       1.0
+   archetype              method  scale  n_roi  n_nuclei  density_median   density_min   density_max  area_median   area_min    area_max  eq_diam_median  ecc_median  nn_median_um  nuclear_area_fraction  frac_small  frac_large
+0         A1        cellpose_hed      1      5     46109    12476.659685  11969.879076  13551.168505    19.335870  18.436527   20.010377        4.961773    0.754771      4.428957               0.264787    0.009480    0.000000
+1         A1        cellpose_rgb      1      5     38687    10585.800139  10263.607285  10946.909000    12.928052  12.590799   13.714977        4.057151    0.797006      4.655850               0.152331    0.028098    0.000000
+4         A1  cellpose_rgb_repro      1      1      8739    10946.909000  10946.909000  10946.909000    12.590799  12.590799   12.590799        4.003886    0.787392      4.555255               0.151901    0.035856    0.000000
+5         A1         stardist_he      1      5     20162     5483.459218   5299.943704   5832.338746    14.764211  14.314539   15.588608        4.335709    0.708182      5.735427               0.094358    0.000151    0.000000
+8         A1   stardist_he_repro      1      1      4656     5832.338746   5832.338746   5832.338746    14.314539  14.314539   14.314539        4.269173    0.704385      5.468949               0.095253    0.000215    0.000000
+9         A2        cellpose_hed      1      5     30493     7055.145571   6331.516928   8585.842772    34.309868  30.339512   39.104260        6.609439    0.771946      6.341769               0.279065    0.000990    0.000000
+10        A2        cellpose_rgb      1      5     32721     7900.690294   6622.809785   8794.073977    31.088636  28.279422   32.287234        6.291524    0.792728      6.325051               0.289656    0.002712    0.000000
+13        A2         spaceranger      1      5     36222     9040.892252   6686.401888  11811.411305    31.538110  28.391790   32.062497        6.336842    0.763851      5.987284               0.289689    0.002905    0.000000
+14        A2         stardist_he      1      5     18253     4255.834645   3516.027868   5201.749838    31.687935  27.792491   35.508466        6.351876    0.735776      7.450061               0.149234    0.000000    0.000000
+17        A3        cellpose_hed      1      5     23532     4822.278583   3857.553888   5431.144003    40.153033  36.781976   41.389087        7.150135    0.801324      7.649619               0.222531    0.000485    0.000083
+18        A3        cellpose_rgb      1      5     21298     4300.450100   3152.604824   4925.137725    31.313373  27.717579   33.560744        6.314224    0.813673      7.838003               0.162227    0.002457    0.000000
+21        A3         spaceranger      1      5     22589     4616.560300   3573.153837   5195.336710    31.463198  25.245471   31.987584        6.329312    0.763986      6.813113               0.156166    0.003445    0.000000
+22        A3         stardist_he      1      5     13029     2639.042880   1734.638611   3440.058554    31.912672  28.241966   33.261095        6.374361    0.760407      9.049028               0.094820    0.000000    0.000000
+25        A4        cellpose_hed      1      5    135700    28862.367642  23358.439699  29825.023410    23.984886  22.485830   26.083563        5.526165    0.614142      4.767525               0.735950    0.000812    0.000000
+26        A4        cellpose_rgb      1      5    114773    24366.593504  19603.485475  25548.527559    13.866262  13.491498   14.615790        4.201794    0.608060      4.856650               0.342499    0.005336    0.000000
+29        A4  cellpose_rgb_repro      1      1     20413    20472.520896  20472.520896  20472.520896    14.166073  14.166073   14.166073        4.246976    0.616403      5.034602               0.319546    0.004292    0.000000
+30        A4         spaceranger      1      5    139391    29713.299640  23929.758002  31093.765962    19.937436  19.412767   20.537058        5.038366    0.731792      4.484709               0.598942    0.004973    0.000000
+31        A4         stardist_he      1      5    102697    21543.548738  17092.107490  23077.375561    15.964940  15.665128   16.639514        4.508569    0.598941      5.025738               0.358403    0.000051    0.000000
+34        A4   stardist_he_repro      1      1     18623    18677.301555  18677.301555  18677.301555    16.639514  16.639514   16.639514        4.602835    0.606687      5.161886               0.328483    0.000107    0.000000
+35        A5        cellpose_hed      1      5      3817      848.705231    576.520316   1648.922194    59.170050  52.937671   89.656141        8.679726    0.577562     18.102967               0.072974    0.044969    0.000182
+36        A5        cellpose_rgb      1      5      4142      924.886346    700.320013   1698.523918   100.468942  74.262918  109.779965       11.310218    0.552214     17.989989               0.087488    0.044016    0.000000
+39        A5         spaceranger      1      5      3164      778.475766    477.871284   1327.181278    56.917383  44.490171   65.327339        8.512900    0.620181     19.145688               0.055733    0.001006    0.000000
+40        A5         stardist_he      1      5      5169     1172.474969    999.693454   1902.293165    54.664716  44.039637   68.856517        8.342738    0.615597     16.373999               0.084113    0.000169    0.000000
+43        A6        cellpose_hed      1      5      2669      522.210468    397.493879    811.187499    21.629624  16.156617   26.090499        5.247810    0.816294     14.777696               0.018607    0.011765    0.015776
+44        A6        cellpose_rgb      1      5      2691      630.024521    306.401531    724.253885    18.218366  14.244813   22.416837        4.816258    0.863217     16.198551               0.017887    0.009705    0.020276
+47        A6         spaceranger      1      5      4933     1121.056954    729.666844   1312.278189    23.091591  16.344048   28.302194        5.422281    0.772187     15.224284               0.026654    0.004991    0.000000
+48        A6         stardist_he      1      5      4113      974.067031    542.378470   1141.671295    23.166564  17.768530   31.488533        5.431076    0.813354     15.867551               0.023144    0.000183    0.000000
+A1 r1 ok

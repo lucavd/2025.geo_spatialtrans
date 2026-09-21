@@ -1,0 +1,7 @@
+torch
+torchvision
+cellpose
+shapely
+geopandas
+opencv-python-headless
+scipy

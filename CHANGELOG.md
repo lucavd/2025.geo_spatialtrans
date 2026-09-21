@@ -2,6 +2,23 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## R2 — 2026-09-20/21 — Segmentazione nucleare su H&E e BIO_REFERENCES v1 (geometria) (branch `step1-cell-layer`)
+
+### Ambiente
+- Due venv Python (uv): `.venv` += torch 2.14 (cu130) + Cellpose 4.2.1.1 (`tools/requirements-r2-cellpose.txt` → `requirements-cellpose.lock`); `.venv-stardist` = TensorFlow 2.21 + StarDist 0.9.2 (`requirements-r2-stardist.txt` → `requirements-stardist.lock`). `tools/py_stardist.sh` mette le librerie CUDA del venv nel loader path (senza, TensorFlow non vede la GPU). `tools/setup_python_env.sh` esteso (idempotente).
+- Libreria R: aggiunti `diptest`, `arrow`, `spatstat.random` (`tools/setup_r_library.R`).
+
+### Codice (tutto in `tools/`, dati derivati fuori git su `/mnt/micron/geo_spatialtrans/R2/`)
+- `R2_overview.py` (panoramiche H&E 1/16 + cluster graphclust 8 µm, griglia mm), `R2_rois.py` (30 ROI 1×1 mm da `results/R2/R2_rois.csv`, check C-R2.4, ritagli nativi, miniature), `R2_common.py` (maschera tessuto, maschera bolle BL-017, canale ematossilina, tabella nuclei, cache maschere), `R2_segment_cellpose.py` (Cellpose-SAM `cpsam_v2`, varianti rgb/hed, scale 1/2/4, riprendibile), `R2_segment_stardist.py` (2D_versatile_he, riprendibile), `R2_spaceranger_rois.py` (rasterizzazione poligoni `nucleus_segmentations.geojson` nei ROI + C-R2.5), `R2_metrics.py` (sommari, appaiamento F1@IoU0.5, effetto scala, riproducibilità), `R2_exclusive_check.py` (arbitro: OD ematossilina degli oggetti esclusivi), `R2_consensus.py` (densità di consenso), `R2_export_masks.py`, `R2_spatial.R` (g(r) con envelope CSR, dip test, Clark–Evans), `R2_figures.py` (9 figure), `R2_variant_eval.py` (rivalutazione varianti Cellpose). `R/testing/test_R2.sh` (un comando, PASS/FAIL).
+- Risultati tracciati: `results/R2/*.csv`, `results/R2/spatial/`, `results/R2/figures/`, `results/R2/rois_thumbs/`, `results/R2/variant_eval/`, `results/R2/R2_preregistration.md`. Fuori git: ritagli, label image, `R2_nuclei_all.parquet` (in `results/R2/nuclei/` ignorato se > 50 MB — vedi `.gitignore`).
+
+### Esiti
+- Check C: 4 PASS, 3 WARN (C-R2.5 criterio pre-registrato mal posto, orientamento confermato dal criterio indipendente; C-R2.6 maschera bolle parziale; C-R2.7 14 % di frammenti in A5_r1). Riproducibilità bit-identica.
+- Check B: B-R2.1, B-R2.2, B-R2.3, B-R2.4 **FAIL** (attese non modificate: A4 ≈ 24 500/mm² vs 1 900–6 300; area linfociti 14 µm² vs 20–45; A5 ≈ 1 300 vs 1 900–3 500; ordinamento con A3 > A5); B-R2.5 PASS; B-R2.6 WARN.
+- Controprova: i due segmentatori disaccordano del 12–55 % sulla densità con direzione tessuto-dipendente (CP-R2.1 WARN); risoluzione nativa necessaria (CP-R2.3, BL-015 → BL-029); inibizione a corto raggio in A2–A5 ma non in A1/A6 (CP-R2.4); A3 distinguibile da A2 (CP-R2.5 PASS).
+- Deviazione metodologica documentata: variante Cellpose-ematossilina prima liquidata come «tassellatura», poi rivalutata su richiesta di Luca e riclassificata come segmentazione nucleo+alone (BL-028).
+- `docs/BIO_REFERENCES.md` v1: B-001…B-042 (6 archetipi × 7 metriche), tutte **provvisorie** (BL-024). BACKLOG BL-024…BL-031; chiusi BL-015, BL-020.
+
 ## R1 — 2026-09-18/19 — Inventario e download dei dataset Visium HD di riferimento (branch `step1-cell-layer`)
 
 ### Dati

@@ -1,0 +1,64 @@
+- The project is out-of-sync -- use `renv::status()` for details.
+[31m
+
+processing file: R2.qmd
+[39m1/35           
+2/35 [setup]   
+3/35           
+4/35 [rois]    
+5/35           
+6/35 [repro]   
+7/35           
+8/35 [masks]   
+9/35           
+10/35 [srk]     
+11/35           
+12/35 [checksC] 
+13/35           
+14/35 [dens]    
+15/35           
+16/35 [geom]    
+17/35           
+18/35 [dip]     
+19/35           
+20/35 [checksB] 
+21/35           
+22/35 [nulla]   
+23/35           
+24/35 [match]   
+25/35           
+26/35 [excl]    
+27/35           
+28/35 [scale]   
+29/35           
+30/35 [pcf]     
+31/35           
+32/35 [a3a2]    
+33/35           
+34/35 [checksCP]
+35/35           
+[31moutput file: R2.knit.md
+
+[39m[1mpandoc [22m
+  to: html
+  output-file: R2.html
+  standalone: true
+  embed-resources: true
+  section-divs: true
+  html-math-method: mathjax
+  wrap: none
+  default-image-extension: png
+  toc: true
+  toc-depth: 3
+  
+[1mmetadata[22m
+  document-css: false
+  link-citations: true
+  date-format: long
+  lang: en
+  title: R2 — Segmentazione nucleare su H&E e primi riferimenti geometrici per archetipo
+  subtitle: geo_spatialtrans — report di step (binario R)
+  date: today
+  
+Output created: R2.html
+

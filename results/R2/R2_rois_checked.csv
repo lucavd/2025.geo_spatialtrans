@@ -1,0 +1,31 @@
+archetype,dataset,roi_id,label,x_mm,y_mm,um_per_px,side_px,c0,r0,c1,r1,img_H,img_W,inside_image,cov_bins,cov_in_tissue
+A1,Visium_HD_Mouse_Small_Intestine,r1,mucosa villi+cripte anello esterno,0.55,3.8,0.27376126715315274,3653,183,12054,3836,15707,21943,23618,True,1.0,0.896
+A1,Visium_HD_Mouse_Small_Intestine,r2,mucosa anello esterno SW,1.2,5.3,0.27376126715315274,3653,2557,17533,6210,21186,21943,23618,True,1.001,0.754
+A1,Visium_HD_Mouse_Small_Intestine,r3,mucosa anello esterno S,2.3,5.4,0.27376126715315274,3653,6575,17899,10228,21552,21943,23618,True,1.001,0.92
+A1,Visium_HD_Mouse_Small_Intestine,r4,mucosa anelli interni,1.6,4.5,0.27376126715315274,3653,4018,14611,7671,18264,21943,23618,True,1.001,0.743
+A1,Visium_HD_Mouse_Small_Intestine,r5,mucosa anelli interni,2.6,4.9,0.27376126715315274,3653,7671,16072,11324,19725,21943,23618,True,1.001,0.818
+A2,Visium_HD_Human_Colon_Cancer,r1,tumore ghiandolare superficiale,11.7,1.7,0.2737012522439323,3654,40920,4384,44574,8038,48740,75250,True,1.001,0.87
+A2,Visium_HD_Human_Colon_Cancer,r2,tumore ghiandolare superficiale,13.0,1.6,0.2737012522439323,3654,45670,4019,49324,7673,48740,75250,True,1.001,0.888
+A2,Visium_HD_Human_Colon_Cancer,r3,tumore ghiandolare,14.3,1.8,0.2737012522439323,3654,50420,4750,54074,8404,48740,75250,True,1.001,0.713
+A2,Visium_HD_Human_Colon_Cancer,r4,nidi tumorali invasivi,13.2,4.0,0.2737012522439323,3654,46401,12787,50055,16441,48740,75250,True,1.001,1.001
+A2,Visium_HD_Human_Colon_Cancer,r5,nidi tumorali invasivi,12.3,4.2,0.2737012522439323,3654,43113,13518,46767,17172,48740,75250,True,1.001,1.001
+A3,Visium_HD_Human_Colon_Cancer,r1,stroma desmoplastico (cluster 2),11.9,3.3,0.2737012522439323,3654,41651,10230,45305,13884,48740,75250,True,1.001,1.001
+A3,Visium_HD_Human_Colon_Cancer,r2,stroma desmoplastico (cluster 2),12.5,3.0,0.2737012522439323,3654,43843,9134,47497,12788,48740,75250,True,1.001,1.001
+A3,Visium_HD_Human_Colon_Cancer,r3,stroma desmoplastico (cluster 2),13.7,2.9,0.2737012522439323,3654,48228,8768,51882,12422,48740,75250,True,1.001,1.001
+A3,Visium_HD_Human_Colon_Cancer,r4,stroma desmoplastico (cluster 2),14.1,3.7,0.2737012522439323,3654,49689,11691,53343,15345,48740,75250,True,1.001,1.001
+A3,Visium_HD_Human_Colon_Cancer,r5,stroma desmoplastico (cluster 2; margine tumorale in basso),13.1,3.3,0.2737012522439323,3654,46035,10230,49689,13884,48740,75250,True,1.001,1.001
+A4,Visium_HD_Human_Lymph_Node_FFPE,f1,follicolo (cluster 5),2.15,2.0,0.273775031262766,3653,6027,5479,9680,9132,26128,28248,True,1.0,1.0
+A4,Visium_HD_Human_Lymph_Node_FFPE,f2,follicolo (cluster 5),2.85,3.0,0.273775031262766,3653,8584,9131,12237,12784,26128,28248,True,1.0,1.0
+A4,Visium_HD_Human_Lymph_Node_FFPE,p1,paracorticale (cluster 2),3.2,2.2,0.273775031262766,3653,9862,6209,13515,9862,26128,28248,True,1.0,1.0
+A4,Visium_HD_Human_Lymph_Node_FFPE,p2,paracorticale (cluster 2),3.3,3.3,0.273775031262766,3653,10227,10227,13880,13880,26128,28248,True,1.0,1.0
+A4,Visium_HD_Human_Lymph_Node_FFPE,p3,paracorticale (cluster 2),3.0,3.9,0.273775031262766,3653,9131,12419,12784,16072,26128,28248,True,1.0,1.0
+A5,Visium_HD_6p5mm_Mouse_Brain,r1,corteccia dorsale (cluster 1),2.0,0.85,0.2740235311137736,3649,5474,1277,9123,4926,22074,22354,True,1.0,1.0
+A5,Visium_HD_6p5mm_Mouse_Brain,r2,corteccia dorsale (cluster 1),4.3,1.1,0.2740235311137736,3649,13868,2190,17517,5839,22074,22354,True,1.0,0.933
+A5,Visium_HD_6p5mm_Mouse_Brain,r3,corteccia laterale (cluster 1),5.4,2.5,0.2740235311137736,3649,17882,7299,21531,10948,22074,22354,True,1.0,0.926
+A5,Visium_HD_6p5mm_Mouse_Brain,r4,corteccia laterale (cluster 1),5.5,3.8,0.2740235311137736,3649,18247,12043,21896,15692,22074,22354,True,1.0,0.864
+A5,Visium_HD_6p5mm_Mouse_Brain,r5,corteccia dorsale (cluster 1),3.7,0.85,0.2740235311137736,3649,11678,1277,15327,4926,22074,22354,True,1.0,0.938
+A6,Visium_HD_6p5mm_Human_Heart,r1,miocardio,4.2,4.9,0.27381142920421525,3652,13513,16070,17165,19722,49099,39139,True,0.999,0.999
+A6,Visium_HD_6p5mm_Human_Heart,r2,miocardio,5.7,5.4,0.27381142920421525,3652,18991,17896,22643,21548,49099,39139,True,0.999,0.999
+A6,Visium_HD_6p5mm_Human_Heart,r3,miocardio,7.6,5.6,0.27381142920421525,3652,25930,18626,29582,22278,49099,39139,True,0.999,0.999
+A6,Visium_HD_6p5mm_Human_Heart,r4,miocardio,8.5,7.5,0.27381142920421525,3652,29217,25565,32869,29217,49099,39139,True,0.999,0.999
+A6,Visium_HD_6p5mm_Human_Heart,r5,miocardio,4.4,8.0,0.27381142920421525,3652,14243,27391,17895,31043,49099,39139,True,0.999,0.999

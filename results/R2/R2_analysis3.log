@@ -1,0 +1,256 @@
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+A1 r1 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+A1 r2 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+A1 r3 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+A1 r4 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+A1 r5 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.9s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A2 r1 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.9s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A2 r2 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.9s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A2 r3 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.9s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A2 r4 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.9s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A2 r5 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.9s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A3 r1 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.9s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A3 r2 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.9s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A3 r3 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.9s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A3 r4 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.9s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A3 r5 ok
+   cellpose_rgb vs stardist_he exclusive 1.0s
+   stardist_he vs cellpose_rgb exclusive 1.0s
+   cellpose_rgb vs spaceranger exclusive 0.2s
+   spaceranger vs cellpose_rgb exclusive 1.0s
+   stardist_he vs spaceranger exclusive 0.2s
+   spaceranger vs stardist_he exclusive 0.2s
+A4 f1 ok
+   cellpose_rgb vs stardist_he exclusive 1.0s
+   stardist_he vs cellpose_rgb exclusive 1.0s
+   cellpose_rgb vs spaceranger exclusive 0.2s
+   spaceranger vs cellpose_rgb exclusive 1.0s
+   stardist_he vs spaceranger exclusive 0.2s
+   spaceranger vs stardist_he exclusive 0.2s
+A4 f2 ok
+   cellpose_rgb vs stardist_he exclusive 1.0s
+   stardist_he vs cellpose_rgb exclusive 1.0s
+   cellpose_rgb vs spaceranger exclusive 0.2s
+   spaceranger vs cellpose_rgb exclusive 1.0s
+   stardist_he vs spaceranger exclusive 0.2s
+   spaceranger vs stardist_he exclusive 0.2s
+A4 p1 ok
+   cellpose_rgb vs stardist_he exclusive 1.0s
+   stardist_he vs cellpose_rgb exclusive 1.0s
+   cellpose_rgb vs spaceranger exclusive 0.2s
+   spaceranger vs cellpose_rgb exclusive 1.0s
+   stardist_he vs spaceranger exclusive 0.2s
+   spaceranger vs stardist_he exclusive 0.2s
+A4 p2 ok
+   cellpose_rgb vs stardist_he exclusive 1.0s
+   stardist_he vs cellpose_rgb exclusive 1.0s
+   cellpose_rgb vs spaceranger exclusive 0.2s
+   spaceranger vs cellpose_rgb exclusive 1.0s
+   stardist_he vs spaceranger exclusive 0.2s
+   spaceranger vs stardist_he exclusive 0.2s
+A4 p3 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.8s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A5 r1 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.8s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A5 r2 ok
+   cellpose_rgb vs stardist_he exclusive 0.8s
+   stardist_he vs cellpose_rgb exclusive 0.8s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.8s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A5 r3 ok
+   cellpose_rgb vs stardist_he exclusive 0.8s
+   stardist_he vs cellpose_rgb exclusive 0.8s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.8s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A5 r4 ok
+   cellpose_rgb vs stardist_he exclusive 0.9s
+   stardist_he vs cellpose_rgb exclusive 0.9s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.8s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A5 r5 ok
+   cellpose_rgb vs stardist_he exclusive 0.8s
+   stardist_he vs cellpose_rgb exclusive 0.8s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.8s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A6 r1 ok
+   cellpose_rgb vs stardist_he exclusive 0.8s
+   stardist_he vs cellpose_rgb exclusive 0.8s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.8s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A6 r2 ok
+   cellpose_rgb vs stardist_he exclusive 0.8s
+   stardist_he vs cellpose_rgb exclusive 0.8s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.8s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A6 r3 ok
+   cellpose_rgb vs stardist_he exclusive 0.8s
+   stardist_he vs cellpose_rgb exclusive 0.8s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.8s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A6 r4 ok
+   cellpose_rgb vs stardist_he exclusive 0.8s
+   stardist_he vs cellpose_rgb exclusive 0.8s
+   cellpose_rgb vs spaceranger exclusive 0.1s
+   spaceranger vs cellpose_rgb exclusive 0.8s
+   stardist_he vs spaceranger exclusive 0.1s
+   spaceranger vs stardist_he exclusive 0.1s
+A6 r5 ok
+          method         other        cls archetype       n  frac_of_method  od_in  od_ring  nuclear_evidence
+0   cellpose_rgb   spaceranger  exclusive        A2    9326           0.285  0.038    0.025             0.564
+1   cellpose_rgb   spaceranger  exclusive        A3    5975           0.292  0.026    0.013             0.783
+2   cellpose_rgb   spaceranger  exclusive        A4   27532           0.233  0.096    0.054             0.972
+3   cellpose_rgb   spaceranger  exclusive        A5    2166           0.472  0.002    0.000             0.975
+4   cellpose_rgb   spaceranger  exclusive        A6    1059           0.358  0.026    0.006             0.916
+5   cellpose_rgb   spaceranger    matched        A2   23484           0.715  0.040    0.022             0.877
+6   cellpose_rgb   spaceranger    matched        A3   15370           0.708  0.031    0.011             0.946
+7   cellpose_rgb   spaceranger    matched        A4   87862           0.767  0.092    0.044             0.985
+8   cellpose_rgb   spaceranger    matched        A5    2282           0.528  0.005    0.000             0.992
+9   cellpose_rgb   spaceranger    matched        A6    1724           0.642  0.028    0.005             1.000
+10  cellpose_rgb   stardist_he  exclusive        A1   21409           0.536  0.049    0.022             0.959
+11  cellpose_rgb   stardist_he  exclusive        A2   16063           0.505  0.038    0.024             0.650
+12  cellpose_rgb   stardist_he  exclusive        A3    9356           0.447  0.027    0.014             0.811
+13  cellpose_rgb   stardist_he  exclusive        A4   14850           0.134  0.087    0.052             0.907
+14  cellpose_rgb   stardist_he  exclusive        A5    1066           0.196  0.002    0.000             0.962
+15  cellpose_rgb   stardist_he  exclusive        A6    1026           0.329  0.022    0.005             0.875
+16  cellpose_rgb   stardist_he    matched        A1   18402           0.464  0.053    0.020             0.992
+17  cellpose_rgb   stardist_he    matched        A2   16747           0.495  0.041    0.022             0.928
+18  cellpose_rgb   stardist_he    matched        A3   11989           0.553  0.031    0.010             0.967
+19  cellpose_rgb   stardist_he    matched        A4  100544           0.866  0.093    0.046             0.992
+20  cellpose_rgb   stardist_he    matched        A5    3382           0.804  0.004    0.000             0.993
+21  cellpose_rgb   stardist_he    matched        A6    1757           0.671  0.030    0.005             1.000
+22   spaceranger  cellpose_rgb  exclusive        A2   12850           0.352  0.036    0.023             0.698
+23   spaceranger  cellpose_rgb  exclusive        A3    7294           0.298  0.027    0.012             0.910
+24   spaceranger  cellpose_rgb  exclusive        A4   52233           0.372  0.071    0.041             0.696
+25   spaceranger  cellpose_rgb  exclusive        A5     904           0.304  0.019    0.002             1.000
+26   spaceranger  cellpose_rgb  exclusive        A6    3288           0.663  0.021    0.004             0.988
+27   spaceranger  cellpose_rgb    matched        A2   23484           0.648  0.037    0.022             0.766
+28   spaceranger  cellpose_rgb    matched        A3   15370           0.702  0.028    0.011             0.939
+29   spaceranger  cellpose_rgb    matched        A4   87862           0.628  0.077    0.040             0.936
+30   spaceranger  cellpose_rgb    matched        A5    2282           0.696  0.005    0.001             0.999
+31   spaceranger  cellpose_rgb    matched        A6    1724           0.337  0.023    0.004             1.000
+32   spaceranger   stardist_he  exclusive        A2   19781           0.521  0.036    0.023             0.688
+33   spaceranger   stardist_he  exclusive        A3   10811           0.492  0.027    0.013             0.893
+34   spaceranger   stardist_he  exclusive        A4   43452           0.323  0.068    0.041             0.615
+35   spaceranger   stardist_he  exclusive        A5     417           0.133  0.022    0.004             1.000
+36   spaceranger   stardist_he  exclusive        A6    1714           0.337  0.018    0.004             0.977
+37   spaceranger   stardist_he    matched        A2   16553           0.479  0.038    0.022             0.844
+38   spaceranger   stardist_he    matched        A3   11853           0.508  0.030    0.010             0.955
+39   spaceranger   stardist_he    matched        A4   96643           0.677  0.077    0.040             0.940
+40   spaceranger   stardist_he    matched        A5    2769           0.867  0.005    0.001             0.999
+41   spaceranger   stardist_he    matched        A6    3298           0.663  0.023    0.004             1.000
+42   stardist_he  cellpose_rgb  exclusive        A1    1769           0.087  0.055    0.021             0.953
+43   stardist_he  cellpose_rgb  exclusive        A2    1511           0.087  0.041    0.026             0.756
+44   stardist_he  cellpose_rgb  exclusive        A3    1040           0.081  0.036    0.017             0.879
+45   stardist_he  cellpose_rgb  exclusive        A4    2160           0.022  0.082    0.048             0.913
+46   stardist_he  cellpose_rgb  exclusive        A5    1812           0.350  0.013    0.001             0.985
+47   stardist_he  cellpose_rgb  exclusive        A6    2459           0.559  0.029    0.004             0.967
+48   stardist_he  cellpose_rgb    matched        A1   18402           0.913  0.052    0.021             0.985
+49   stardist_he  cellpose_rgb    matched        A2   16747           0.913  0.041    0.024             0.864
+50   stardist_he  cellpose_rgb    matched        A3   11989           0.919  0.031    0.010             0.938
+51   stardist_he  cellpose_rgb    matched        A4  100544           0.978  0.090    0.044             0.989
+52   stardist_he  cellpose_rgb    matched        A5    3382           0.650  0.004    0.000             0.998
+53   stardist_he  cellpose_rgb    matched        A6    1757           0.441  0.027    0.004             1.000
+54   stardist_he   spaceranger  exclusive        A2    1705           0.087  0.042    0.026             0.728
+55   stardist_he   spaceranger  exclusive        A3    1176           0.084  0.032    0.014             0.838
+56   stardist_he   spaceranger  exclusive        A4    6061           0.061  0.093    0.052             0.973
+57   stardist_he   spaceranger  exclusive        A5    2425           0.429  0.004    0.000             0.986
+58   stardist_he   spaceranger  exclusive        A6     918           0.205  0.034    0.005             0.918
+59   stardist_he   spaceranger    matched        A2   16553           0.913  0.041    0.024             0.864
+60   stardist_he   spaceranger    matched        A3   11853           0.916  0.032    0.010             0.940
+61   stardist_he   spaceranger    matched        A4   96643           0.939  0.089    0.044             0.988
+62   stardist_he   spaceranger    matched        A5    2769           0.571  0.006    0.001             0.999
+63   stardist_he   spaceranger    matched        A6    3298           0.795  0.026    0.004             1.000
+figures ok

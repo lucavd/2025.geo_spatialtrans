@@ -1,0 +1,127 @@
+Audited 28 packages in 6ms
+python env OK 2026.9.15 25.0.1
+Resolved 52 packages in 694ms
+Prepared 41 packages in 1m 04s
+Installed 41 packages in 217ms
+ + cellpose==4.2.1.1
+ + certifi==2026.7.22
+ + cuda-bindings==13.4.2
+ + cuda-pathfinder==1.8.2
+ + cuda-toolkit==13.0.3.0
+ + fastremap==1.20.0
+ + filelock==4.0.1
+ + fill-voids==2.1.2
+ + fsspec==2026.9.0
+ + geopandas==1.1.4
+ + jinja2==3.1.6
+ + markupsafe==3.0.3
+ + mpmath==1.3.0
+ + natsort==8.4.0
+ + nvidia-cublas==13.1.1.3
+ + nvidia-cuda-cupti==13.0.85
+ + nvidia-cuda-nvrtc==13.0.88
+ + nvidia-cuda-runtime==13.0.96
+ + nvidia-cudnn-cu13==9.24.0.43
+ + nvidia-cufft==12.0.0.61
+ + nvidia-cufile==1.15.1.6
+ + nvidia-curand==10.4.0.35
+ + nvidia-cusolver==12.0.4.66
+ + nvidia-cusparse==12.6.3.3
+ + nvidia-cusparselt-cu13==0.8.1
+ + nvidia-nccl-cu13==2.30.7
+ + nvidia-nvjitlink==13.4.92
+ + nvidia-nvshmem-cu13==3.4.5
+ + nvidia-nvtx==13.0.85
+ + opencv-python-headless==5.0.0.93
+ + pyogrio==0.13.0
+ + pyproj==3.8.0
+ + roifile==2026.7.30
+ + segment-anything==1.0
+ + setuptools==84.0.0
+ + shapely==2.1.2
+ + sympy==1.14.0
+ + torch==2.14.0
+ + torchvision==0.29.0
+ + tqdm==4.70.1
+ + triton==3.8.0
+cellpose env OK 4.2.1.1 torch 2.14.0+cu130 cuda True
+Using CPython 3.12.3 interpreter at: /usr/bin/python3.12
+Creating virtual environment at: .venv-stardist
+Activate with: source .venv-stardist/bin/activate
+Using Python 3.12.3 environment at: .venv-stardist
+Resolved 65 packages in 418ms
+Prepared 42 packages in 1m 10s
+Installed 65 packages in 360ms
+ + absl-py==2.5.0
+ + astunparse==1.6.3
+ + certifi==2026.7.22
+ + charset-normalizer==3.5.1
+ + contourpy==1.4.0
+ + csbdeep==0.8.2
+ + cycler==0.12.1
+ + flatbuffers==25.12.19
+ + fonttools==4.65.0
+ + gast==0.7.0
+ + google-pasta==0.2.0
+ + grpcio==1.84.0
+ + h5py==3.14.0
+ + idna==3.20
+ + imagecodecs==2026.8.16
+ + imageio==2.37.4
+ + keras==3.15.1
+ + kiwisolver==1.5.1
+ + lazy-loader==0.5
+ + libclang==18.1.1
+ + llvmlite==0.49.0
+ + markdown-it-py==4.2.0
+ + matplotlib==3.11.2
+ + mdurl==0.1.2
+ + ml-dtypes==0.6.0
+ + namex==0.1.0
+ + networkx==3.6.1
+ + numba==0.67.0
+ + numpy==2.5.3
+ + nvidia-cublas-cu12==12.9.2.10
+ + nvidia-cuda-cupti-cu12==12.9.79
+ + nvidia-cuda-nvcc-cu12==12.9.86
+ + nvidia-cuda-nvrtc-cu12==12.9.86
+ + nvidia-cuda-runtime-cu12==12.9.79
+ + nvidia-cudnn-cu12==9.26.0.51
+ + nvidia-cufft-cu12==11.4.1.4
+ + nvidia-curand-cu12==10.3.10.19
+ + nvidia-cusolver-cu12==11.7.5.82
+ + nvidia-cusparse-cu12==12.5.10.65
+ + nvidia-nccl-cu12==2.31.2
+ + nvidia-nvjitlink-cu12==12.9.86
+ + opt-einsum==3.4.0
+ + optree==0.20.0
+ + packaging==26.3
+ + pandas==3.0.6
+ + pillow==12.3.0
+ + protobuf==7.36.2
+ + pygments==2.21.0
+ + pyparsing==3.3.2
+ + python-dateutil==2.9.0.post0
+ + requests==2.34.2
+ + rich==15.0.0
+ + scikit-image==0.26.0
+ + scipy==1.18.1
+ + setuptools==84.0.0
+ + six==1.17.0
+ + stardist==0.9.2
+ + tensorflow==2.21.0
+ + termcolor==3.3.0
+ + tifffile==2026.9.15
+ + tqdm==4.70.1
+ + typing-extensions==4.16.0
+ + urllib3==2.8.0
+ + wheel==0.48.0
+ + wrapt==2.4.1
+Using Python 3.12.3 environment at: .venv-stardist
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1789916677.237596  283523 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+W0000 00:00:1789916684.128710  283523 gpu_device.cc:2365] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+stardist env OK 0.9.2 tf 2.21.0 gpus 0
+exit=0

@@ -14,7 +14,7 @@ options(
   install.packages.compile.from.source = "never"
 )
 # Set A: richiesti dalla roadmap per Step 1 (S0)
-pk_step1 <- c("sf", "deldir", "polylabelr", "imager", "testthat", "quarto")
+pk_step1 <- c("sf", "deldir", "polylabelr", "imager", "testthat", "quarto", "diptest", "arrow", "spatstat.random")
 # Set B: dipendenze della pipeline attuale (R/*.R, R/testing/*.R, DESCRIPTION Imports/Suggests)
 pk_pipeline <- c("Matrix", "ClusterR", "dplyr", "sp", "gstat", "png", "pbapply",
                  "future", "future.apply", "scales", "RColorBrewer", "ggplot2", "tidyr",

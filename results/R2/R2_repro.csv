@@ -1,0 +1,5 @@
+archetype,roi_id,method,n_run1,n_run2,px_run1,px_run2,identical_labels,identical_binary,f1_iou05
+A4,f2,cellpose_rgb,20501,20501,4254439,4254439,True,True,1.0
+A1,r1,cellpose_rgb,9064,9064,1631397,1631397,True,True,1.0
+A4,f2,stardist_he,18625,18625,4369897,4369897,True,True,1.0
+A1,r1,stardist_he,4658,4658,1014778,1014778,True,True,1.0

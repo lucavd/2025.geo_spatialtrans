@@ -10,7 +10,7 @@
 
 ## 1. Stato (sintesi; dettagli nella v2)
 
-Dopo S0 (2026-09-18): server `~/2025.geo_spatialtrans` su branch `step1-cell-layer` da `dev@7836829`, libreria R di progetto costruita (PPM binari), baseline `full_test.R` riproducibile (seed 42) e verificato; design Step 1 in **v1.1** (decisioni 1–11, check C1–C8, 6 preset A1–A6); nessun `04b*` in `R/`. Clone 2024 archiviato in `~/Projects/_archive/`; clone del Mac rimosso. Dopo R1 (2026-09-19): 5 dataset Visium HD reali su `/mnt/micron/geo_spatialtrans/data_real` (A1, A2/A3, A4, A5, A6; 79.8 GB; scala 0.274 µm/px verificata), inventario in `data/real/`.
+Dopo S0 (2026-09-18): server `~/2025.geo_spatialtrans` su branch `step1-cell-layer` da `dev@7836829`, libreria R di progetto costruita (PPM binari), baseline `full_test.R` riproducibile (seed 42) e verificato; design Step 1 in **v1.1** (decisioni 1–11, check C1–C8, 6 preset A1–A6); nessun `04b*` in `R/`. Clone 2024 archiviato in `~/Projects/_archive/`; clone del Mac rimosso. Dopo R2 (2026-09-21): `docs/BIO_REFERENCES.md` v1 con 42 righe di geometria nucleare per A1–A6 (provvisorie, BL-024), 30 ROI annotati e tre segmentazioni su `/mnt/micron/geo_spatialtrans/R2/`. Dopo R1 (2026-09-19): 5 dataset Visium HD reali su `/mnt/micron/geo_spatialtrans/data_real` (A1, A2/A3, A4, A5, A6; 79.8 GB; scala 0.274 µm/px verificata), inventario in `data/real/`.
 
 ## 2. Impianto della verifica
 
@@ -105,6 +105,10 @@ Il binario R deve stare **davanti** al binario S: R1-R2 prima di S1.2, R3 prima 
 | 2026-09-19 | (R1) I riferimenti biologici R2–R5 si stimano su regioni annotate per archetipo, non sull'intera maschera `in_tissue` |
 | 2026-09-18 | (S0) Design Step 1 v1.1 = contratto per S1.1–S1.6: decisioni 10 (C-A, `pixel_size_um` obbligatorio, C8) e 11 (C-B, diffusione in Step 2); pannello A1–A6 = 6 preset |
 | 2026-09-18 | (S0) Clone del Mac rimosso; il solo repo di lavoro è `~/2025.geo_spatialtrans` sul server |
+| 2026-09-20 | (R2) Riferimenti biologici stimati su **ROI annotati** (5 × 1 mm² per archetipo, tavola approvata in chat), non sull'intera maschera `in_tissue` (BL-014) |
+| 2026-09-20 | (R2) Segmentatore nucleare primario **Cellpose-SAM 4.2 su RGB**; StarDist `2D_versatile_he` secondario; poligoni Space Ranger 4 (StarDist custom) terzo confronto, non indipendente da StarDist. La variante Cellpose su canale ematossilina è una segmentazione nucleo+alone, conservata come esplorativa per R3 (BL-028) |
+| 2026-09-21 | (R2) Ogni valore di densità in BIO_REFERENCES è una stima di **consenso** (appaiati + esclusivi con evidenza di ematossilina) con i due segmentatori come limiti, marcata provvisoria finché non esiste un conteggio manuale (BL-024) |
+| 2026-09-21 | (R2) Segmentazione nucleare solo a **risoluzione nativa** (0.27 µm/px): a 0.55 µm/px l'errore è 5–41 % (Cellpose) o 75–98 % (StarDist); chiude BL-015 |
 | 2026-09-18 | **Una sessione = una chat.** Ogni step del protocollo si svolge in una chat nuova; a chiusura ci si ferma. Nessuna eccezione |
 
 ## 7. Stato delle sessioni
@@ -113,9 +117,10 @@ Il binario R deve stare **davanti** al binario S: R1-R2 prima di S1.2, R3 prima 
 |---|---|---|---|---|
 | S0 | 2026-09-18 | **chiusa con riserve** | `reports/S0.html` | Check C 17/17 + libreria 35/35; controprove PASS; revisione avversariale 10/10 confermate. Riserve: BL-007 (preset A4–A6 senza fonte), BL-008 (restore da zero non testato), BL-010/011 (pipeline attuale: n_cells non rispettato, filtro >50k UMI) |
 | R1 | 2026-09-18/19 | **chiusa con riserve** | `reports/R1.html` | 46 pagine inventariate; 5 dataset / 79.8 GB su micron, md5 38/38; check C 30/30; controprova scala 5/5; istologia confermata (F. Pezzuto). Riserve: BL-014 (in_tissue ≠ archetipo), BL-015 (soglia µm/px senza fonte), BL-018 (A3 senza dataset dedicato), BL-019 (A1 solo SR 3.0.0); revisione avversariale 30/30 confermate, BL-020…BL-023 |
-| R2 | — | prossima | — | segmentazione nucleare su H&E (Cellpose/StarDist, GPU) per archetipo; dipende da R1 (chiusa) |
+| R2 | 2026-09-20/21 | **chiusa con riserve** | `reports/R2.html` | 30 ROI 1 mm² (5/archetipo), 3 segmentatori (Cellpose-SAM RGB, StarDist HE, Space Ranger 4), scale 1/2/4. Check C 4 PASS + 3 WARN; check B: 4 attese numeriche su 6 **smentite** (A4 ≈ 24 500/mm², area linfociti 14 µm², A5 ≈ 1 300/mm², A3 > A5); controprova: i segmentatori disaccordano 12–55 % (direzione tessuto-dipendente) → BIO_REFERENCES v1 (B-001…B-042) **provvisoria** fino a conteggio manuale (BL-024). Revisione avversariale: vedi nota di sessione |
+| R2b | — | proposta | — | conteggio/contorno manuale (Luca/Federica) su finestre 100×100 µm per archetipo → fissa gli intervalli di BIO_REFERENCES e sceglie il segmentatore per R3; dipende da R2 |
 
-**Prossima sessione: R2** (segmentazione nucleare; ambiente Python GPU da creare in `.venv` con `tools/setup_python_env.sh`) oppure **S1.1** (`extract_regions()`), senza dipendenze reciproche. Da S1.2 in avanti nessuno step del binario S parte se il riferimento R corrispondente non è pronto; S1.1 (`extract_regions()`) non ha dipendenze dal binario R e può alternarsi con R1–R2.
+**Prossima sessione**: **R2b** (verità manuale per densità e area nucleare; senza di essa i check B di S1.2–S1.4 poggerebbero su riferimenti con ±50 % di incertezza) oppure **S1.1** (`extract_regions()`, nessuna dipendenza). R3 (Voronoi sui nuclei reali) può usare le maschere R2 già calcolate ma eredita la stessa incertezza.
 
 ## 8. Coordinamento fra sessioni
 

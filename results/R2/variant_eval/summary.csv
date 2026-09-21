@@ -1,0 +1,9 @@
+archetype,roi_id,method,n,area_um2_median_IQR,frac_tissue_covered,frac_obj_nuclear_px_median,frac_obj_with_sd_nucleus,frac_obj_with_ge2_sd_nuclei,frac_obj_with_rgb_nucleus,frac_obj_with_hed_centroid
+A1,r1,test_cp_hed,10970,18 [13–24],0.273,0.7,0.399,0.0,0.745,0.0
+A1,r1,test_cp_hed_d25,10704,18 [13–25],0.272,0.69,0.411,0.0,0.751,0.913
+A1,r1,test_cp_rgb,9064,12 [9–17],0.154,0.99,0.482,0.0,0.0,0.9
+A1,r1,test_sd,4658,14 [11–19],0.096,0.97,0.0,0.0,0.947,0.945
+A4,f2,test_cp_hed,24252,24 [19–30],0.619,0.67,0.765,0.001,0.834,0.0
+A4,f2,test_cp_hed_d25,24025,23 [19–30],0.613,0.68,0.772,0.001,0.84,0.979
+A4,f2,test_cp_rgb,20501,14 [12–17],0.32,0.99,0.894,0.001,0.0,0.985
+A4,f2,test_sd,18625,17 [14–19],0.329,0.95,0.0,0.0,0.984,0.995

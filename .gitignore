@@ -29,3 +29,15 @@ reports/.quarto/
 /.quarto/
 .venv/
 results/R1/crops/
+.venv-stardist/
+# R2: derivati voluminosi (rigenerabili con tools/R2_*.py; ritagli e label image stanno su /mnt/micron/geo_spatialtrans/R2/)
+results/R2/nuclei/
+results/R2/R2_nuclei_all.parquet
+results/R2/overview/*.npy
+results/R2/overview/*.parquet
+results/R2/variant_eval/objects.parquet
+results/R2/tissue_masks/
+results/R2/rois_thumbs/*
+!results/R2/rois_thumbs/*_sheet*.png
+results/R2/test_overlays/
+tools/__pycache__/

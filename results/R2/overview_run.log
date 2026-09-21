@@ -1,0 +1,54 @@
+A1 Visium_HD_Mouse_Small_Intestine Visium_HD_Mouse_Small_Intestine_tissue_image.btf
+  rows 4096/21943
+  rows 8192/21943
+  rows 12288/21943
+  rows 16384/21943
+  rows 20480/21943
+  rows 21936/21943
+  saved; image 21943x23618, um/px 0.27376, clusters 26
+A2 Visium_HD_Human_Colon_Cancer Visium_HD_Human_Colon_Cancer_tissue_image.btf
+  rows 4096/48740
+  rows 8192/48740
+  rows 12288/48740
+  rows 16384/48740
+  rows 20480/48740
+  rows 24576/48740
+  rows 28672/48740
+  rows 32768/48740
+  rows 36864/48740
+  rows 40960/48740
+  rows 45056/48740
+  rows 48736/48740
+  saved; image 48740x75250, um/px 0.27370, clusters 17
+A4 Visium_HD_Human_Lymph_Node_FFPE Visium_HD_Human_Lymph_Node_FFPE_tissue_image.tif
+  rows 4096/26128
+  rows 8192/26128
+  rows 12288/26128
+  rows 16384/26128
+  rows 20480/26128
+  rows 24576/26128
+  rows 26128/26128
+  saved; image 26128x28248, um/px 0.27378, clusters 29
+A5 Visium_HD_6p5mm_Mouse_Brain Visium_HD_6p5mm_Mouse_Brain_tissue_image.btf
+  rows 4096/22074
+  rows 8192/22074
+  rows 12288/22074
+  rows 16384/22074
+  rows 20480/22074
+  rows 22064/22074
+  saved; image 22074x22354, um/px 0.27402, clusters 27
+A6 Visium_HD_6p5mm_Human_Heart Visium_HD_6p5mm_Human_Heart_tissue_image.btf
+  rows 4096/49099
+  rows 8192/49099
+  rows 12288/49099
+  rows 16384/49099
+  rows 20480/49099
+  rows 24576/49099
+  rows 28672/49099
+  rows 32768/49099
+  rows 36864/49099
+  rows 40960/49099
+  rows 45056/49099
+  rows 49088/49099
+  saved; image 49099x39139, um/px 0.27381, clusters 13
+exit=0

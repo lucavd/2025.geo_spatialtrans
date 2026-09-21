@@ -1,0 +1,10 @@
+tensorflow[and-cuda]
+stardist
+csbdeep
+tifffile
+imagecodecs
+scikit-image
+numpy
+scipy
+pandas
+pyarrow
