@@ -237,6 +237,7 @@ def main(primary="Luca"):
                 r[f"area_ratio_manual_over_{meth}"] = (q.area_manual_um2 / q[c]).median(); r[f"n_paired_{meth}"] = len(q)
         rows.append(r)
     summ = pd.DataFrame(rows); summ.to_csv(RES / "R2b_archetype_summary.csv", index=False)
+    if summ.empty: print(f"nessuna finestra dell'annotatore primario '{primary}': sommario per archetipo vuoto"); return
     print(summ[["archetype", "n_manual", "density_manual", "ci_lo", "ci_hi", "consensus_R2_5roi"] + [c for c in summ if c.startswith("recall_") or c.startswith("precision_")]].round(3).to_string())
 
 # ----------------------------------------------------------------------------------------------------- autotest sintetico
