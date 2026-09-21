@@ -1,0 +1,11 @@
+check,result,detail
+C-R2b.3a n_manual = punti dentro finestra e fuori esclusione,PASS,190 vs 190
+C-R2b.3b n_obj = oggetti keep con centroide dentro finestra e fuori esclusione,PASS,209 vs 209
+C-R2b.3c recall recuperato entro 1 %,PASS,0.8632 vs 0.8684
+C-R2b.3d precisione recuperata entro 1 %,PASS,0.7847 vs 0.7895
+C-R2b.3e area netta = finestra - esclusione,PASS,0.068319
+C-R2b.3f appaiamenti tutti dentro maschera (costo 0),PASS,1.000
+C-R2b.3g ramo distanza (<= 3 um): recall = 200/201,PASS,0.9950
+C-R2b.3h assegnazione 1:1: precisione = 1 con un punto doppio,PASS,P=1.0000 tp=200
+C-R2b.3i punti a > 3 um da ogni centroide e fuori maschera: recall = 0,PASS,tp=0 su 193
+C-R2b.3j area del poligono (cerchio r=20 px) entro 0.1 % di pi*r^2,PASS,94.328 um2

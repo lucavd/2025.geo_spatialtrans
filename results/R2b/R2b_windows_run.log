@@ -1,0 +1,25 @@
+A1_w1 r1 side=365px tissue=0.984 bubble=0.0000 tries=1 roundtrip=True nCP=154 nSD=86 nSR=nan exp=115
+A1_w2 r2 side=365px tissue=0.982 bubble=0.0000 tries=3 roundtrip=True nCP=92 nSD=38 nSR=nan exp=108
+A1_w3 r3 side=365px tissue=0.977 bubble=0.0000 tries=1 roundtrip=True nCP=147 nSD=64 nSR=nan exp=109
+A1_w4 r4 side=365px tissue=0.986 bubble=0.0000 tries=2 roundtrip=True nCP=99 nSD=38 nSR=nan exp=109
+A2_w1 r2 side=438px tissue=1.000 bubble=0.0000 tries=1 roundtrip=True nCP=115 nSD=31 nSR=86 exp=97
+A2_w2 r3 side=438px tissue=0.957 bubble=0.0000 tries=2 roundtrip=True nCP=129 nSD=88 nSR=139 exp=108
+A2_w3 r4 side=438px tissue=1.000 bubble=0.0000 tries=1 roundtrip=True nCP=99 nSD=49 nSR=116 exp=85
+A2_w4 r5 side=438px tissue=1.000 bubble=0.0000 tries=1 roundtrip=True nCP=94 nSD=61 nSR=110 exp=79
+A3_w1 r1 side=548px tissue=1.000 bubble=0.0000 tries=1 roundtrip=True nCP=58 nSD=38 nSR=61 exp=91
+A3_w2 r3 side=548px tissue=1.000 bubble=0.0000 tries=1 roundtrip=True nCP=81 nSD=44 nSR=53 exp=93
+A3_w3 r4 side=548px tissue=1.000 bubble=0.0000 tries=1 roundtrip=True nCP=85 nSD=59 nSR=76 exp=103
+A3_w4 r5 side=548px tissue=1.000 bubble=0.0000 tries=1 roundtrip=True nCP=19 nSD=11 nSR=16 exp=93
+A4_w1 f1 side=219px tissue=1.000 bubble=0.0000 tries=1 roundtrip=True nCP=62 nSD=46 nSR=76 exp=71
+A4_w2 p1 side=219px tissue=1.000 bubble=0.0000 tries=1 roundtrip=True nCP=100 nSD=96 nSR=119 exp=92
+A4_w3 p2 side=219px tissue=1.000 bubble=0.0000 tries=1 roundtrip=True nCP=98 nSD=86 nSR=111 exp=88
+A4_w4 p3 side=219px tissue=1.000 bubble=0.0000 tries=1 roundtrip=True nCP=90 nSD=86 nSR=113 exp=92
+A5_w1 r1 side=912px tissue=0.990 bubble=0.0000 tries=5 roundtrip=True nCP=77 nSD=94 nSR=72 exp=146
+A5_w2 r2 side=912px tissue=0.991 bubble=0.0000 tries=2 roundtrip=True nCP=50 nSD=62 nSR=37 exp=70
+A5_w3 r3 side=912px tissue=0.954 bubble=0.0000 tries=1 roundtrip=True nCP=42 nSD=45 nSR=11 exp=64
+A5_w4 r5 side=912px tissue=1.000 bubble=0.0000 tries=1 roundtrip=True nCP=84 nSD=106 nSR=82 exp=90
+A6_w1 r2 side=913px tissue=0.932 bubble=0.0000 tries=18 roundtrip=True nCP=29 nSD=47 nSR=58 exp=60
+A6_w2 r3 side=913px tissue=0.957 bubble=0.0000 tries=7 roundtrip=True nCP=14 nSD=56 nSR=67 exp=65
+A6_w3 r4 side=913px tissue=0.952 bubble=0.0000 tries=37 roundtrip=True nCP=23 nSD=66 nSR=70 exp=81
+A6_w4 r5 side=913px tissue=0.916 bubble=0.0000 tries=1 roundtrip=True nCP=58 nSD=55 nSR=70 exp=73
+{'PASS': 24}

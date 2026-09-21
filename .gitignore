@@ -41,3 +41,6 @@ results/R2/rois_thumbs/*
 !results/R2/rois_thumbs/*_sheet*.png
 results/R2/test_overlays/
 tools/__pycache__/
+
+# R2b: annotatori HTML e finestre fuori git (su /mnt/micron)
+results/R2b/*.html
