@@ -96,12 +96,16 @@ def analyse_window(wj, wrow, rater, label_sets, keep_sets, targets=None):
     pts = pts_all[inside]; pe = in_excl(pts) if len(pts) else np.zeros(0, bool)
     pts_use = pts[~pe]
     area_gross = (side * upp) ** 2 / 1e6; area_net = area_gross - emask.sum() * upp ** 2 / 1e6
+    n_decl = wj.get("n_declared")                                                 # solo annotatori automatici (R2b_import_model)
+    count_only = bool(len(pts_use) == 0 and n_decl)                               # modello con conteggio ma senza posizioni
+    n_manual = int(n_decl) if count_only else len(pts_use)
     row = dict(win_id=wj["win_id"], archetype=wj["archetype"], roi_id=wj["roi_id"], rater=rater, side_um=side * upp, area_gross_mm2=area_gross,
                area_net_mm2=area_net, excl_frac=emask.mean(), n_excl_unreadable=sum(e["type"] == "unreadable" for e in excl),
                n_excl_off=sum(e["type"] != "unreadable" for e in excl), n_points_total=len(pts_all), n_points_in_window=int(inside.sum()),
-               n_points_in_excl=int(pe.sum()), n_manual=len(pts_use), density_manual_net=len(pts_use) / area_net if area_net > 0 else np.nan,
-               density_manual_gross=len(pts) / area_gross, n_polygons=len(wj.get("polygons", [])), done=bool(wj.get("done")), note=wj.get("note", ""))
-    row["ci_lo"], row["ci_hi"] = poisson_ci(len(pts_use), area_net) if area_net > 0 else (np.nan, np.nan)
+               n_points_in_excl=int(pe.sum()), n_manual=n_manual, n_declared=n_decl, count_only=count_only,
+               density_manual_net=n_manual / area_net if area_net > 0 else np.nan,
+               density_manual_gross=(n_manual if count_only else len(pts)) / area_gross, n_polygons=len(wj.get("polygons", [])), done=bool(wj.get("done")), note=wj.get("note", ""))
+    row["ci_lo"], row["ci_hi"] = poisson_ci(n_manual, area_net) if area_net > 0 else (np.nan, np.nan)
     prow = pd.DataFrame({"win_id": wj["win_id"], "rater": rater, "idx": np.arange(len(pts_use)), "x_win_px": pts_use[:, 0], "y_win_px": pts_use[:, 1],
                          "x_um": float(wrow.x0_um) + pts_use[:, 0] * upp, "y_um": float(wrow.y0_um) + pts_use[:, 1] * upp})
     mrows, arows = [], []
@@ -145,17 +149,19 @@ def interrater(points_df, wins):
     for win_id, g in points_df.groupby("win_id"):
         raters = sorted(g.rater.unique())
         if len(raters) < 2: continue
-        upp = float(wins.loc[win_id, "um_per_px"]); area = float(wins.loc[win_id, "side_px"] * upp) ** 2 / 1e6
-        a = g[g.rater == raters[0]][["x_win_px", "y_win_px"]].values; b = g[g.rater == raters[1]][["x_win_px", "y_win_px"]].values
-        r = dict(win_id=win_id, archetype=win_id.split("_")[0], rater_a=raters[0], rater_b=raters[1], n_a=len(a), n_b=len(b),
-                 rel_diff=abs(len(a) - len(b)) / max(1, (len(a) + len(b)) / 2))
-        for dmax in (3.0, 5.0):
-            if len(a) and len(b):
-                d = np.hypot(a[:, None, 0] - b[None, :, 0], a[:, None, 1] - b[None, :, 1]) * upp
-                cost = np.where(d <= dmax, d, BIG); ri, cj = linear_sum_assignment(cost); tp = int((cost[ri, cj] < BIG).sum())
-            else: tp = 0
-            r[f"tp_{dmax:g}um"] = tp; r[f"f1_{dmax:g}um"] = 2 * tp / (len(a) + len(b)) if (len(a) + len(b)) else np.nan
-        rows.append(r)
+        upp = float(wins.loc[win_id, "um_per_px"])
+        for ia in range(len(raters)):
+            for ib in range(ia + 1, len(raters)):
+                a = g[g.rater == raters[ia]][["x_win_px", "y_win_px"]].values; b = g[g.rater == raters[ib]][["x_win_px", "y_win_px"]].values
+                r = dict(win_id=win_id, archetype=win_id.split("_")[0], rater_a=raters[ia], rater_b=raters[ib], n_a=len(a), n_b=len(b),
+                         rel_diff=abs(len(a) - len(b)) / max(1, (len(a) + len(b)) / 2))
+                for dmax in (3.0, 5.0):
+                    if len(a) and len(b):
+                        d = np.hypot(a[:, None, 0] - b[None, :, 0], a[:, None, 1] - b[None, :, 1]) * upp
+                        cost = np.where(d <= dmax, d, BIG); ri, cj = linear_sum_assignment(cost); tp = int((cost[ri, cj] < BIG).sum())
+                    else: tp = 0
+                    r[f"tp_{dmax:g}um"] = tp; r[f"f1_{dmax:g}um"] = 2 * tp / (len(a) + len(b)) if (len(a) + len(b)) else np.nan
+                rows.append(r)
     return pd.DataFrame(rows)
 
 # ----------------------------------------------------------------------------------------------------- pipeline reale
@@ -184,7 +190,7 @@ def main(primary="Luca"):
         for wj in obj["windows"]:
             if (wj["win_id"], rater) in seen: continue                             # file piu' recente vince (ordine alfabetico = data)
             seen.add((wj["win_id"], rater))
-            if wj["n_points_in_window"] == 0 and not wj.get("polygons"): continue  # finestra non ancora annotata
+            if wj["n_points_in_window"] == 0 and not wj.get("polygons") and not wj.get("n_declared"): continue  # non annotata
             wrow = wins.loc[wj["win_id"]]
             sets, keeps = load_label_sets(wj["archetype"], wj["roi_id"], cache)
             row, mrows, prow, arows = analyse_window(wj, wrow, rater, sets, keeps, targets[targets.win_id == wj["win_id"]])
@@ -195,6 +201,14 @@ def main(primary="Luca"):
     man.to_csv(RES / "R2b_manual_windows.csv", index=False); mat.to_csv(RES / "R2b_matching.csv", index=False)
     pts.to_csv(RES / "R2b_points.csv", index=False); areas.to_csv(RES / "R2b_areas.csv", index=False)
     ir = interrater(pts, wins) if len(pts) else pd.DataFrame(); ir.to_csv(RES / "R2b_interrater.csv", index=False)
+    # confronto dei conteggi di ogni annotatore (umano o modello) con il primario, per finestra
+    prim = man[man.rater == primary].set_index("win_id").n_manual
+    cmp_rows = []
+    for _, r in man[man.rater != primary].iterrows():
+        if r.win_id in prim.index:
+            cmp_rows.append(dict(win_id=r.win_id, archetype=r.archetype, rater=r.rater, n_rater=r.n_manual, n_primary=int(prim[r.win_id]),
+                                 rel_err=(r.n_manual - prim[r.win_id]) / prim[r.win_id] if prim[r.win_id] else np.nan, count_only=r.count_only))
+    pd.DataFrame(cmp_rows).to_csv(RES / "R2b_rater_vs_primary.csv", index=False)
     # sommario per archetipo (annotatore primario): densita' pooled su area netta, IC Poisson, media/SD fra finestre, confronto R2
     cons = pd.read_csv(ROOT / "results/R2/R2_consensus_density.csv")
     rows = []
