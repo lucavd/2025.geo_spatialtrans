@@ -228,7 +228,7 @@ def main(primary="Luca"):
         r["common_fn_frac_cp_sd"] = float((~pp[cols].any(axis=1)).mean()) if len(pp) and cols else np.nan
         cols3 = [c for c in pp.columns if c.startswith("match_")]
         r["common_fn_frac_all"] = float((~pp[cols3].any(axis=1)).mean()) if len(pp) and cols3 else np.nan
-        aa = areas[(areas.archetype == arch) & (areas.rater == primary)]
+        aa = areas[(areas.archetype == arch) & (areas.rater == primary)] if len(areas) else pd.DataFrame(columns=["area_manual_um2"])
         r["n_polygons"] = len(aa); r["area_manual_median_um2"] = aa.area_manual_um2.median() if len(aa) else np.nan
         for meth in METHODS:
             c = f"area_{meth}_um2"
