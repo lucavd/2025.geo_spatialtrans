@@ -53,3 +53,9 @@ Ruolo: **annotatori automatici aggiuntivi**, sullo stesso piano di Cellpose/Star
 |---|---|---|
 | CP-R2b.4 | Modello nullo per la localizzazione: per ogni finestra e annotatore (umano o modello), N punti uniformi nel tessuto valido (N = punti dell'annotatore, 20 repliche) appaiati agli stessi oggetti con le stesse regole → F1 nullo. | F1 dell'annotatore > F1 nullo + 0.20 in ogni archetipo; per gli umani atteso F1 ≫ nullo; per i VLM nessuna attesa (misura) |
 Stato al momento della dichiarazione: import GPT-6 Astra (24/24 finestre) eseguito; il modello conta 1.07–2.83 volte i segmentatori; nessun conteggio umano ancora disponibile.
+
+## Controprova aggiunta il 2026-09-21 dopo il conteggio di Luca, prima di calcolarla (obiezione di Luca: «i persi da CP e SD sono le cellule dubbie su cui anche due umani discuterebbero»)
+| id | Test | Attesa / soglia |
+|---|---|---|
+| CP-R2b.5 | Stratificazione del disaccordo per evidenza di ematossilina: per ogni punto manuale, OD del canale ematossilina (Ruifrok) in un disco di raggio 1.5 µm attorno al punto meno OD dell'anello 3–5 µm (stesso arbitro di R2, `R2_exclusive_check.py`). Confronto fra punti appaiati da almeno un segmentatore e punti persi da entrambi (CP e SD). | Attesa (tesi di Luca): OD mediano dei «persi» < OD mediano degli «appaiati» in ≥ 5/6 archetipi, con differenza ≥ 25 % della mediana degli appaiati. Se confermata, il disaccordo sta sugli oggetti pallidi/dubbi e la densità di riferimento va data come intervallo [nuclei evidenti, nuclei totali]. Se smentita (OD simile), i segmentatori perdono nuclei con evidenza di ematossilina pari agli altri. |
+Conseguenza dichiarata per BIO_REFERENCES: la densità per archetipo sarà riportata come **intervallo** — estremo inferiore = nuclei "evidenti" (punti manuali appaiati da almeno un segmentatore su Cellpose/StarDist/SR), estremo superiore = conteggio manuale totale — con il valore di Federica, quando disponibile, come terzo punto.
