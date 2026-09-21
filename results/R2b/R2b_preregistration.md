@@ -36,3 +36,10 @@ Aggiunta dichiarata il 2026-09-21 **prima di qualsiasi annotazione**, dopo aver 
 | CP-R2b.3 | Oggetti fantasma: oggetti Cellpose senza punto manuale entro 3 µm in A5 e A6 | ≥ 15 % in A5, ≥ 30 % in A6 (coerente con BL-032/033); se < 5 % BL-032/033 vanno chiusi come infondati |
 
 Le attese non si modificano dopo il risultato: una discrepanza si scrive nel report e va in BACKLOG o in revisione del design.
+
+## Modifiche di metodo dichiarate il 2026-09-21 prima di qualsiasi annotazione (richiesta di Luca: «la complessità introduce errore»)
+Annotatore **v1.1 — solo conteggio** (documento `R2b_main_v11` / `R2b_rater2_v11`): un solo compito per l'annotatore (click sul centro del nucleo);
+esclusione «illeggibile» disponibile solo nelle finestre A6 (bolle); nessuna croce, nessun contorno, nessun giudizio istologico.
+1. Il giudizio «fuori archetipo» è tolto all'annotatore: Federica Pezzuto risponde sì/no per finestra («tessuto omogeneo dell'archetipo?») sulla tavola delle 24 miniature (`R2b_windows_sheet.png`); le finestre non omogenee (candidata: A3_w2, margine di ghiandola tumorale) si riportano **con e senza** nel sommario.
+2. Area nucleare (B-R2b.5, BL-025): non più poligoni. Eventuale **fase 2** con calibri (2 click asse maggiore + 2 click asse minore) su 5 nuclei per finestra scelti dai bersagli seedati (`R2b_targets.csv`, i primi 5); area manuale = π·a·b/4, confrontata con l'ellisse equivalente dei segmentatori (`major_um`, `minor_um` di regionprops, stessa formula). Attese e soglie di B-R2b.5 immutate. Se la fase 2 non si fa, B-R2b.5 = «non valutata in R2b» e BL-025 resta aperta.
+3. Le attese B-R2b.1–B-R2b.4 e le controprove CP-R2b.1–CP-R2b.3 non cambiano.

@@ -1,7 +1,9 @@
 """tools/R2b_annotator.py — R2b: genera l'annotatore HTML autonomo per la verita' manuale (punti, contorni, esclusioni).
 
 Per ogni finestra di results/R2b/R2b_windows.csv ritaglia dal ROI R2 la finestra + margine di contesto (MARGIN_UM), incorpora il PNG
-in base64 e 10 bersagli (croci) seedati per la scelta non selettiva dei nuclei da contornare (BL-025). L'annotatore non mostra alcuna
+in base64. v1.1 (2026-09-21, richiesta di Luca): SOLO conteggio — un compito per l'annotatore (click sul centro del nucleo);
+esclusione "illeggibile" disponibile solo in A6 (bolle); i 10 bersagli seedati per finestra restano in results/R2b/R2b_targets.csv
+per un'eventuale fase 2 (calibri, BL-025) ma non sono mostrati. L'annotatore non mostra alcuna
 segmentazione (conteggio alla cieca). Il nucleo geometrico e' in tools/R2b_annotator_core.js (testato con node, C-R2b.2).
 Output: /mnt/micron/geo_spatialtrans/R2b/R2b_annotator_<rater>.html (fuori git; artifact in chat) + results/R2b/R2b_targets.csv
 Uso: .venv/bin/python tools/R2b_annotator.py            # tutte le 24 finestre (annotatore principale)
@@ -35,7 +37,7 @@ def targets_for(win_id, side_px, upp, rng):
 def build_doc(rater2=False):
     win = pd.read_csv(RES / "R2b_windows.csv")
     if rater2: win = win[win.rater2].copy()
-    doc = {"doc_id": "R2b_rater2" if rater2 else "R2b_main", "tool_version": "R2b-annotator 1.0", "windows": []}
+    doc = {"doc_id": "R2b_rater2_v11" if rater2 else "R2b_main_v11", "tool_version": "R2b-annotator 1.1", "windows": []}
     trows = []
     for _, r in win.iterrows():
         upp = float(r.um_per_px); m = int(round(MARGIN_UM / upp)); side = int(r.side_px)
@@ -54,7 +56,7 @@ def build_doc(rater2=False):
         doc["windows"].append(dict(win_id=r.win_id, archetype=r.archetype, roi_id=r.roi_id, side_px=side, side_um=float(r.side_um),
                                    margin_px=m, um_per_px=upp, x0_um=float(r.x0_um), y0_um=float(r.y0_um),
                                    img_w=int(img.shape[1]), img_h=int(img.shape[0]),
-                                   targets=[[float(x), float(y)] for x, y in tg],
+                                   targets=[], show_excl=bool(r.archetype == "A6"),
                                    png="data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()))
     if not rater2:
         pd.DataFrame(trows).to_csv(RES / "R2b_targets.csv", index=False)
@@ -79,14 +81,14 @@ HTML = r"""<!DOCTYPE html>
 </style></head><body>
 <div id="side">
  <h3>R2b — conteggio nuclei</h3>
- <div class="small">Documento: __DOCID__ · __NWIN__ finestre · v1.0</div>
+ <div class="small">Documento: __DOCID__ · __NWIN__ finestre · v1.1 (solo conteggio)</div>
  <label>Annotatore: <input type="text" id="rater" placeholder="nome"></label>
  <h3>Modalità</h3>
- <button id="m_points">1 Nuclei</button><button id="m_poly">2 Contorni</button><button id="m_excl">3 Esclusione</button>
- <div id="excl_opts" style="display:none">tipo: <select id="excl_type"><option value="unreadable">illeggibile (bolla/artefatto)</option><option value="off_archetype">fuori archetipo</option></select></div>
- <div><button id="b_undo">Annulla ultimo (Z)</button><button id="b_close">Chiudi poligono (Invio)</button><button id="b_fit">Adatta (F)</button></div>
+ <button id="m_points">1 Nuclei</button><button id="m_excl" style="display:none">2 Zona illeggibile (solo A6)</button>
+ <select id="excl_type" style="display:none"><option value="unreadable">unreadable</option></select>
+ <div><button id="b_undo">Annulla ultimo (Z)</button><button id="b_close" style="display:none">Chiudi zona (Invio)</button><button id="b_fit">Adatta (F)</button></div>
  <div><label><input type="checkbox" id="done"> finestra completata</label></div>
- <textarea id="note" rows="2" placeholder="note sulla finestra (opzionale)"></textarea>
+ <textarea id="note" rows="1" placeholder="nota (opzionale)"></textarea>
  <h3>Finestre</h3><div id="winlist"></div>
  <h3>File</h3>
  <button id="b_export">Esporta JSON</button> <label class="small">Importa: <input type="file" id="f_import" accept=".json"></label>
@@ -94,11 +96,10 @@ HTML = r"""<!DOCTYPE html>
  <details open><summary>Istruzioni</summary>
  <ol class="small">
   <li><b>Riquadro giallo</b> = finestra di conteggio. Fuori dal riquadro c'è solo contesto (sbiancato): non si annota.</li>
-  <li><b>Nuclei (1)</b>: un click sul centro di ogni nucleo il cui centro cade dentro il riquadro. Conta ogni profilo nucleare colorato dall'ematossilina, anche pallido, piccolo o allungato; non contare citoplasma, globuli rossi, pigmento, frammenti senza cromatina. Click su un punto già segnato lo rimuove. I nuclei dentro le zone escluse si possono saltare (in analisi vengono ignorati).</li>
-  <li><b>Contorni (2)</b>: per ciascuna delle 10 <b>croci azzurre</b> traccia il contorno del nucleo più vicino alla croce (click sui vertici, doppio click o <kbd>Invio</kbd> per chiudere, <kbd>Esc</kbd> annulla). Se entro ~10 µm dalla croce non c'è un nucleo, salta la croce. Contorna il bordo esterno della cromatina.</li>
-  <li><b>Esclusione (3)</b>: contorna le zone non giudicabili (bolle, sfocato) come <i>illeggibile</i> e quelle che non appartengono all'archetipo (es. ghiandola tumorale in una finestra di stroma) come <i>fuori archetipo</i>.</li>
-  <li>Navigazione: rotella = zoom sul cursore; trascina con tasto destro/centrale o <kbd>spazio</kbd>+trascina = sposta; <kbd>F</kbd> adatta; <kbd>N</kbd>/<kbd>P</kbd> finestra successiva/precedente; tasto destro dentro un poligono chiuso lo elimina.</li>
-  <li>Segna <i>finestra completata</i> quando hai finito nuclei e contorni. Alla fine: <b>Esporta JSON</b>.</li>
+  <li><b>Un click sul centro di ogni nucleo</b> il cui centro cade dentro il riquadro. Conta ogni profilo nucleare colorato dall'ematossilina, anche pallido, piccolo o allungato; non contare citoplasma, globuli rossi, pigmento. Click su un punto già segnato lo rimuove; <kbd>Z</kbd> annulla l'ultimo.</li>
+  <li><b>Solo in A6</b> compare il pulsante <i>Zona illeggibile</i>: contorna grossolanamente le bolle in cui non riesci a giudicare (click sui vertici, <kbd>Invio</kbd> chiude, <kbd>Esc</kbd> annulla, tasto destro dentro la zona la elimina). I nuclei dentro le zone escluse non vanno contati.</li>
+  <li>Rotella = zoom sul cursore; trascina con tasto destro/centrale (o <kbd>spazio</kbd>+trascina) = sposta; <kbd>F</kbd> adatta; <kbd>N</kbd>/<kbd>P</kbd> finestra successiva/precedente.</li>
+  <li>Spunta <i>finestra completata</i> quando hai finito. Il lavoro si salva da solo nel browser; a ogni pausa <b>Esporta JSON</b> e inviamelo in chat.</li>
  </ol></details>
 </div>
 <div id="main"><canvas id="cv"></canvas></div>
@@ -118,13 +119,13 @@ function load(){ const s = localStorage.getItem(KEY); if(!s) return; try{ const 
 // ---- vista
 function resize(){ cv.width = $("main").clientWidth; cv.height = $("main").clientHeight; draw(); }
 function fit(){ const w = DOC.windows[cur]; view = fitView(w.img_w, w.img_h, cv.width, cv.height); draw(); }
-function setWin(i){ cur = Math.max(0, Math.min(DOC.windows.length-1, i)); draft = []; fit(); syncSide(); }
-function setMode(m){ mode = m; draft = []; ["points","poly","excl"].forEach(k => $("m_"+k).classList.toggle("active", k===m)); $("excl_opts").style.display = m==="excl" ? "block":"none"; draw(); }
+function setWin(i){ cur = Math.max(0, Math.min(DOC.windows.length-1, i)); draft = []; $("m_excl").style.display = DOC.windows[cur].show_excl ? "inline-block":"none"; if (mode==="excl" && !DOC.windows[cur].show_excl) setMode("points"); fit(); syncSide(); }
+function setMode(m){ if (m==="excl" && !DOC.windows[cur].show_excl) m = "points"; mode = m; draft = []; ["points","excl"].forEach(k => $("m_"+k).classList.toggle("active", k===m)); $("b_close").style.display = m==="excl" ? "inline-block":"none"; draw(); }
 function syncSide(){ const a = state[cur]; $("done").checked = a.done; $("note").value = a.note; refreshList(); }
 function refreshList(){
   const L = $("winlist"); L.innerHTML = "";
   DOC.windows.forEach((w,i) => { const a = state[i]; const b = document.createElement("button"); b.className = "win"+(i===cur?" cur":"")+(a.done?" done":"");
-    b.textContent = `${w.win_id} · ${w.side_um} µm · ${countInside(a, w.margin_px, w.side_px)} nuclei · ${a.polygons.length}/10 cont.` + (a.exclusions.length? ` · ${a.exclusions.length} escl.`:"") + (a.done?" ✓":"");
+    b.textContent = `${w.win_id} · ${w.side_um} µm · ${countInside(a, w.margin_px, w.side_px)} nuclei` + (a.exclusions.length? ` · ${a.exclusions.length} zone escl.`:"") + (a.done?" ✓":"");
     b.onclick = () => setWin(i); L.appendChild(b); });
 }
 // ---- disegno
@@ -142,17 +143,12 @@ function draw(){
   a.exclusions.forEach(e => { const u = e.type==="unreadable"; drawPoly(e.pts, u ? "rgba(255,140,0,0.9)" : "rgba(200,0,255,0.9)", u ? "rgba(255,140,0,0.15)" : "rgba(200,0,255,0.12)"); });
   // contorni
   a.polygons.forEach(pg => drawPoly(pg, "#0f0", "rgba(0,255,0,0.12)"));
-  // bersagli
-  const r = 7/view.z;
-  ctx.strokeStyle = "#0ff"; ctx.lineWidth = lw;
-  w.targets.forEach((t,k) => { ctx.beginPath(); ctx.moveTo(t[0]-r,t[1]); ctx.lineTo(t[0]+r,t[1]); ctx.moveTo(t[0],t[1]-r); ctx.lineTo(t[0],t[1]+r); ctx.stroke();
-    ctx.fillStyle = "#0ff"; ctx.font = `${11/view.z}px sans-serif`; ctx.fillText(String(k+1), t[0]+r*0.8, t[1]-r*0.8); });
   // punti
   a.points.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 4/view.z, 0, 2*Math.PI); ctx.fillStyle = insideWindow(p,m,s) ? "rgba(255,0,0,0.85)" : "rgba(255,0,0,0.3)"; ctx.fill(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 1/view.z; ctx.stroke(); });
   // poligono in corso
   if (draft.length){ ctx.strokeStyle = mode==="poly" ? "#0f0" : "#f80"; ctx.lineWidth = lw; ctx.setLineDash([4/view.z, 3/view.z]); ctx.beginPath(); draft.forEach((p,i) => i? ctx.lineTo(p.x,p.y) : ctx.moveTo(p.x,p.y)); if (hover) ctx.lineTo(hover.x, hover.y); ctx.stroke(); ctx.setLineDash([]);
     draft.forEach(p => { ctx.beginPath(); ctx.arc(p.x,p.y,3/view.z,0,2*Math.PI); ctx.fillStyle = "#fff"; ctx.fill(); }); }
-  $("status").textContent = `${w.win_id} (${w.archetype}, ROI ${w.roi_id}) · lato ${w.side_um} µm · zoom ${view.z.toFixed(2)}× · ` + (hover ? `x ${((hover.x-m)*w.um_per_px).toFixed(1)} µm, y ${((hover.y-m)*w.um_per_px).toFixed(1)} µm · ` : "") + `modalità: ${mode==="points"?"nuclei":mode==="poly"?"contorni":"esclusione"}`;
+  $("status").textContent = `${w.win_id} (${w.archetype}, ROI ${w.roi_id}) · lato ${w.side_um} µm · zoom ${view.z.toFixed(2)}× · ` + (hover ? `x ${((hover.x-m)*w.um_per_px).toFixed(1)} µm, y ${((hover.y-m)*w.um_per_px).toFixed(1)} µm · ` : "") + `modalità: ${mode==="points"?"nuclei":"zona illeggibile"}`;
 }
 function drawPoly(pts, stroke, fill){ if (pts.length<2) return; ctx.beginPath(); pts.forEach((p,i) => i? ctx.lineTo(p.x,p.y) : ctx.moveTo(p.x,p.y)); ctx.closePath(); ctx.strokeStyle = stroke; ctx.lineWidth = 1.5/view.z; ctx.stroke(); if (fill){ ctx.fillStyle = fill; ctx.fill(); } }
 // ---- interazione
@@ -165,24 +161,23 @@ cv.addEventListener("mouseup", e => { if (dragging && !moved && !panBtn && e.but
 cv.addEventListener("mouseleave", () => { dragging = false; hover = null; draw(); });
 cv.addEventListener("contextmenu", e => e.preventDefault());
 cv.addEventListener("wheel", e => { e.preventDefault(); view = zoomAt(view, e.offsetX, e.offsetY, Math.pow(1.1, -e.deltaY/100), 0.1, 40); draw(); }, {passive:false});
-cv.addEventListener("dblclick", e => { if (mode!=="points"){ if (draft.length>=2){ const l = draft[draft.length-1], q = draft[draft.length-2]; if (Math.hypot(l.x-q.x,l.y-q.y) < 2/view.z) draft.pop(); } closePoly(); } });
+cv.addEventListener("dblclick", e => { if (mode==="excl"){ if (draft.length>=2){ const l = draft[draft.length-1], q = draft[draft.length-2]; if (Math.hypot(l.x-q.x,l.y-q.y) < 2/view.z) draft.pop(); } closePoly(); } });
 function click(p){ const a = state[cur];
   if (mode==="points"){ const i = nearestIndex(p, a.points, 6/view.z); if (i>=0) a.points.splice(i,1); else a.points.push(p); save(); }
   else draft.push(p); draw(); }
 function rightClick(p){ const a = state[cur]; if (draft.length){ draft = []; draw(); return; }
-  if (mode==="poly"){ const i = a.polygons.findIndex(pg => pointInPoly(p, pg)); if (i>=0){ a.polygons.splice(i,1); save(); } }
   if (mode==="excl"){ const i = a.exclusions.findIndex(e => pointInPoly(p, e.pts)); if (i>=0){ a.exclusions.splice(i,1); save(); } } draw(); }
 function closePoly(){ if (draft.length<3){ return; } const a = state[cur];
-  if (mode==="poly") a.polygons.push(draft); else if (mode==="excl") a.exclusions.push({type: $("excl_type").value, pts: draft});
+  if (mode==="excl") a.exclusions.push({type: "unreadable", pts: draft});
   draft = []; save(); draw(); }
-function undo(){ const a = state[cur]; if (draft.length){ draft.pop(); } else if (mode==="points") a.points.pop(); else if (mode==="poly") a.polygons.pop(); else a.exclusions.pop(); save(); draw(); }
+function undo(){ const a = state[cur]; if (draft.length){ draft.pop(); } else if (mode==="points") a.points.pop(); else a.exclusions.pop(); save(); draw(); }
 document.addEventListener("keydown", e => { if (e.target.tagName==="INPUT" || e.target.tagName==="TEXTAREA") return;
   if (e.code==="Space"){ spaceDown = true; e.preventDefault(); }
-  else if (e.key==="1") setMode("points"); else if (e.key==="2") setMode("poly"); else if (e.key==="3") setMode("excl");
+  else if (e.key==="1") setMode("points"); else if (e.key==="2") setMode("excl");
   else if (e.key==="z"||e.key==="Z") undo(); else if (e.key==="Enter") closePoly(); else if (e.key==="Escape"){ draft=[]; draw(); }
   else if (e.key==="f"||e.key==="F") fit(); else if (e.key==="n"||e.key==="N") setWin(cur+1); else if (e.key==="p"||e.key==="P") setWin(cur-1); });
 document.addEventListener("keyup", e => { if (e.code==="Space") spaceDown = false; });
-$("m_points").onclick = () => setMode("points"); $("m_poly").onclick = () => setMode("poly"); $("m_excl").onclick = () => setMode("excl");
+$("m_points").onclick = () => setMode("points"); $("m_excl").onclick = () => setMode("excl");
 $("b_undo").onclick = undo; $("b_close").onclick = closePoly; $("b_fit").onclick = fit;
 $("done").onchange = () => { state[cur].done = $("done").checked; save(); };
 $("note").onchange = () => { state[cur].note = $("note").value; save(); };
@@ -192,7 +187,7 @@ $("b_export").onclick = () => { const rater = $("rater").value.trim() || "anonim
   a.download = `R2b_annotations_${DOC.doc_id}_${rater.replace(/\s+/g,"_")}_${new Date().toISOString().slice(0,10)}.json`; a.click(); };
 $("f_import").onchange = e => { const f = e.target.files[0]; if(!f) return; const rd = new FileReader(); rd.onload = () => { try { const r = parseImport(DOC, JSON.parse(rd.result)); state = r.state; if (r.rater) $("rater").value = r.rater; save(); syncSide(); draw(); alert(`Importate ${r.n_windows} finestre`); } catch(err){ alert("File non valido: "+err); } }; rd.readAsText(f); };
 window.addEventListener("resize", resize);
-load(); resize(); setMode("points"); setWin(0);
+load(); resize(); setWin(0); setMode("points");
 </script></body></html>
 """
 
