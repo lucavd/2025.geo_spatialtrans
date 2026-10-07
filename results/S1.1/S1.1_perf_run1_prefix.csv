@@ -1,0 +1,3 @@
+id,n_px,n_components,n_regions,elapsed_extract_s,rss_after_load_mb,max_rss_process_mb
+P1_4000_c2_labels,16000000,30,30,30.63,308,5210
+P2_4000_c4_quant4,16000000,54,47,27.66,308,5208
