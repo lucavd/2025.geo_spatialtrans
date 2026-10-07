@@ -13,7 +13,7 @@ Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in 
 - VLM: GPT-6 Astra localizza (F1 5 µm 0.59–0.92) ma sovraconta 10–47 %; deepseek-flash non è un annotatore (thinking: non ripetibile, ×1.2–3.1; no-thinking: conteggi ricorrenti, posizioni al nullo).
 - `docs/BIO_REFERENCES.md` v2: B-043…B-048 (densità come intervallo [evidenti, totale] da due annotatori); B-001/008/015/022/029/036 superate.
 - Deviazioni documentate: finestre a lato adattato (non 100 µm); annotatore ridotto a solo conteggio su richiesta di Luca; area nucleare rinviata; doppia corsa DeepSeek-thinking (usata come ripetibilità); A3_w2 fuori archetipo per giudizio di Claude (la patologa non l'ha valutata).
-- Chiusura: `TBD`.
+- Chiusura: `5164bd3`.
 
 ## R2 — 2026-09-20/21 — Segmentazione nucleare su H&E e BIO_REFERENCES v1 (geometria) (branch `step1-cell-layer`)
 
