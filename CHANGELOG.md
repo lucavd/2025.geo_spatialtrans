@@ -2,6 +2,19 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## R2b — 2026-09-21 → 2026-10-07 — Verità manuale per la densità nucleare (branch `step1-cell-layer`)
+
+### Codice (tutto in `tools/`; dati derivati fuori git su `/mnt/micron/geo_spatialtrans/R2b/`)
+- `R2b_windows.py` (24 finestre seedate a lato adattato, C-R2b.1/4), `R2b_annotator.py` + `R2b_annotator_core.js` (annotatore HTML autonomo alla cieca, v1.1 solo conteggio; core testato con node in `R/testing/test_R2b_core.js`), `R2b_match.py` (appaiamento punto↔oggetto 1:1, inter-rater, sommari; `--selftest` C-R2b.3), `R2b_import_model.py` (VLM → formato annotatore), `R2b_run_vlm.py` (chiamate API OpenAI-compatibili, risposte grezze conservate), `R2b_null_and_figures.py` (CP-R2b.4 nullo dei punti casuali, sovrapposizioni), `R2b_od_strata.py` (CP-R2b.5), `R2b_sheet.py`, `docs_patch_R2b.py`. `R/testing/test_R2b.sh` → `test_R2b.py` (PASS/FAIL dalle tabelle).
+- Tracciati in `results/R2b/`: finestre, bersagli, pre-registrazione (con 6 aggiunte datate), annotazioni (Luca, Federica, 3 VLM) e risposte grezze dei modelli, tutte le tabelle, figure, `R2b_test_results.csv`, `R2b_adversarial_review.csv`, checklist della patologa.
+
+### Esiti
+- Check C 5 PASS + 1 WARN (C-R2b.1b: maschera bolle R2 parziale, BL-040). Check B: B-R2b.1, 2, 3a, 3b **FAIL**, B-R2b.4 PASS, B-R2b.5 non eseguito. Controprove: CP-R2b.1a WARN (Luca–Federica Δ 2.3 % sul totale, ma 6/12 finestre e 4/6 archetipi entro 10 %; A4 13 %), CP-R2b.1b FAIL (F1 3 µm 0.76), CP-R2b.2 FAIL (13–29 % dei nuclei umani persi da Cellpose **e** StarDist), CP-R2b.3 FAIL (Cellpose in A5/A6: recall basso, non precisione bassa → BL-032/033 riformulati), CP-R2b.4 PASS, **CP-R2b.5 PASS 6/6** (i nuclei persi sono più pallidi ma sopra il fondo: classe ambigua reale, tesi di Luca).
+- VLM: GPT-6 Astra localizza (F1 5 µm 0.59–0.92) ma sovraconta 10–47 %; deepseek-flash non è un annotatore (thinking: non ripetibile, ×1.2–3.1; no-thinking: conteggi ricorrenti, posizioni al nullo).
+- `docs/BIO_REFERENCES.md` v2: B-043…B-048 (densità come intervallo [evidenti, totale] da due annotatori); B-001/008/015/022/029/036 superate.
+- Deviazioni documentate: finestre a lato adattato (non 100 µm); annotatore ridotto a solo conteggio su richiesta di Luca; area nucleare rinviata; doppia corsa DeepSeek-thinking (usata come ripetibilità); A3_w2 fuori archetipo per giudizio di Claude (la patologa non l'ha valutata).
+- Chiusura: `TBD`.
+
 ## R2 — 2026-09-20/21 — Segmentazione nucleare su H&E e BIO_REFERENCES v1 (geometria) (branch `step1-cell-layer`)
 
 ### Ambiente

@@ -97,7 +97,7 @@ def analyse_window(wj, wrow, rater, label_sets, keep_sets, targets=None):
     pts_use = pts[~pe]
     area_gross = (side * upp) ** 2 / 1e6; area_net = area_gross - emask.sum() * upp ** 2 / 1e6
     n_decl = wj.get("n_declared")                                                 # solo annotatori automatici (R2b_import_model)
-    count_only = bool(len(pts_use) == 0 and n_decl)                               # modello con conteggio ma senza posizioni
+    count_only = bool(len(pts_use) == 0 and n_decl)                               # count_only: finestra di un VLM con n_nuclei ma senza posizioni -> il conteggio entra in manual_windows, nessun appaiamento (revisione avversariale D2)
     n_manual = int(n_decl) if count_only else len(pts_use)
     row = dict(win_id=wj["win_id"], archetype=wj["archetype"], roi_id=wj["roi_id"], rater=rater, side_um=side * upp, area_gross_mm2=area_gross,
                area_net_mm2=area_net, excl_frac=emask.mean(), n_excl_unreadable=sum(e["type"] == "unreadable" for e in excl),

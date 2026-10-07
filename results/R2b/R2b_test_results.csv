@@ -1,0 +1,22 @@
+section,id,check,result,detail
+C,C-R2b.1a,"24 finestre dentro ROI, tessuto >= 0.90, round-trip pixel-identico",PASS,24/24
+C,C-R2b.1b,"bolle = 0 secondo la maschera R2 (BL-026, parziale): l'annotatore ha escluso bolle in 3 finestre",WARN,"maschera R2 0 % in 24/24; esclusioni manuali: A6_w2 1.2%, A6_w3 1.9%, A6_w4 4.9% (revisore avversariale, discrepanza 1)"
+C,C-R2b.2,"core annotatore (node): round-trip schermo/immagine, zoom, export/import < 0.5 px",PASS,ALL PASS
+C,C-R2b.3,"appaiamento su dati sintetici: recall/precisione entro 1 %, 1:1, esclusioni, area",PASS,10/10
+C,C-R2b.4,riproducibilita' campionamento finestre (md5 identici con lo stesso seed),PASS,24/24
+C,C-R2b.5,"annotazioni umane importate: Luca 24 finestre, Federica 12",PASS,"Luca 2230 punti, Federica 1106 punti"
+B,B-R2b.1,"densita' manuale fra Cellpose e StarDist (+-10 %) sulle stesse finestre, 6/6",FAIL,"2/6; sopra entrambi: A2, A3, A4, A6"
+B,B-R2b.2,consenso R2 entro +-15 % (A1-A4) / +-20 % (A5-A6) dalla densita' manuale,FAIL,3/6; A1 -12%; A2 -24%; A3 +30%; A4 -17%; A5 +15%; A6 +9%
+B,B-R2b.3a,"direzione dei richiami: CP>SD in A1-A3, SD>CP in A5-A6, A4 entrambi >= 0.85",FAIL,"A1:ok, A2:ok, A3:ok, A5:NO, A6:ok, A4:NO"
+B,B-R2b.3b,precisione Cellpose < 0.85 in A5 e < 0.70 in A6 (BL-032/033),FAIL,"A5 0.89, A6 0.82"
+B,B-R2b.4,ordinamento A4 > A1 > A2 > A3 > A5 > A6,PASS,A4 > A1 > A2 > A3 > A5 > A6
+B,B-R2b.5,area nucleare da contorni manuali,N/A,fase 2 (calibri) non eseguita in R2b; BL-025 resta aperta
+CP,CP-R2b.1a,accordo umano Luca-Federica: differenza relativa di conteggio < 10 %,WARN,"totale 2.3% (PASS); per archetipo 5/6 (max 13% A4); per finestra 6/12: PASS solo sul totale (revisore, R5)"
+CP,CP-R2b.1b,accordo umano: F1 punto-punto (3 um) > 0.90,FAIL,F1 3 um 0.76; 5 um 0.84
+CP,CP-R2b.2,punti manuali persi da entrambi CP e SD < 5 % per archetipo,FAIL,A1 17%; A2 25%; A3 29%; A4 13%; A5 20%; A6 19%
+CP,CP-R2b.3,"oggetti Cellpose senza punto manuale: >= 15 % in A5, >= 30 % in A6 (BL-032/033)",FAIL,"A5 11% (nullo 89%), A6 18% (nullo 95%)"
+CP,CP-R2b.4,nullo punti casuali: F1 Luca > F1 nullo + 0.20 per archetipo e metodo,PASS,min guadagno 0.36; 17/17
+CP,CP-R2b.4m,"VLM vs nullo (misura, nessuna attesa)",INFO,deepseek_flash_nothink mediana 0.03; deepseek_flash_think mediana 0.03; gpt6_astra mediana 0.36
+CP,CP-R2b.5,OD ematossilina dei punti persi da CP e SD <= 75 % degli appaiati in >= 5/6 (Luca) — tesi di Luca,PASS,"Luca 6/6 (rapporti 0.60, 0.53, 0.18, 0.46, 0.37, 0.50); Federica 6/6"
+CP,VLM-1,GPT-6 Astra: errore relativo di conteggio mediano < 20 % per archetipo,FAIL,2/6; A1 41%; A2 16%; A3 27%; A4 10%; A5 46%; A6 20%
+CP,VLM-2,VLM: F1 punto-punto (3 um) vs Luca atteso < 0.6,FAIL,deepseek_flash_nothink 0.29; deepseek_flash_think 0.28; gpt6_astra 0.61

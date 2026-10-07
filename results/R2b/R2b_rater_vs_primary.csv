@@ -1,4 +1,16 @@
 win_id,archetype,rater,n_rater,n_primary,rel_err,count_only
+A1_w1,A1,Federica,151,162,-0.06790123456790123,False
+A1_w4,A1,Federica,116,97,0.1958762886597938,False
+A2_w2,A2,Federica,133,135,-0.014814814814814815,False
+A2_w4,A2,Federica,99,106,-0.0660377358490566,False
+A3_w1,A3,Federica,53,60,-0.11666666666666667,False
+A3_w3,A3,Federica,85,78,0.08974358974358974,False
+A4_w2,A4,Federica,104,118,-0.11864406779661017,False
+A4_w4,A4,Federica,97,111,-0.12612612612612611,False
+A5_w2,A5,Federica,54,50,0.08,False
+A5_w4,A5,Federica,94,84,0.11904761904761904,False
+A6_w3,A6,Federica,58,62,-0.06451612903225806,False
+A6_w4,A6,Federica,62,69,-0.10144927536231885,False
 A1_w1,A1,model:deepseek_flash_nothink,147,162,-0.09259259259259259,False
 A1_w2,A1,model:deepseek_flash_nothink,58,95,-0.3894736842105263,False
 A1_w3,A1,model:deepseek_flash_nothink,154,142,0.08450704225352113,False
