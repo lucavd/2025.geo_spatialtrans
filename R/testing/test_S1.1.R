@@ -33,9 +33,12 @@ TOL_SIMPL <- 0.5; MIN_AREA <- 100
 inputs <- read.csv(file.path(RES, "S1.1_inputs.csv"), stringsAsFactors = FALSE)
 inputs <- inputs[inputs$group != "perf", ]          # C11 in tools/S1.1_perf.R
 load_in <- function(id) readRDS(file.path(IN, paste0(id, ".rds")))
+# il warning sullo stride stimato (RA-17) e' atteso sugli input campionati (I6): silenziato solo quello
 er <- function(o, min_area, tol, px = o$pixel_size_um, clust = o$clust)
-  extract_regions(clust, px, min_region_area_um2 = min_area, cluster_col = o$cluster_col,
-                  simplify_tol_um = tol, verbose = FALSE)
+  withCallingHandlers(
+    extract_regions(clust, px, min_region_area_um2 = min_area, cluster_col = o$cluster_col,
+                    simplify_tol_um = tol, verbose = FALSE),
+    warning = function(w) if (grepl("stimato dai dati", conditionMessage(w))) invokeRestart("muffleWarning"))
 
 # griglia indipendente: indici di cella e codici di cluster (0 = fondo)
 indep_grid <- function(o) {
@@ -261,6 +264,30 @@ errs10 <- c(
   non_int    = inherits(try(extract_regions(transform(cl, x = x + 0.5), 1, cluster_col = "intensity_cluster", verbose = FALSE), silent = TRUE), "try-error"))
 add("C10", "adv_corner", "errori espliciti (px mancante, px<=0, colonna mancante, coord. non intere)",
     paste(names(errs10)[errs10], collapse = ","), "4/4", pf(all(errs10)))
+# ---- regressioni dalla revisione avversariale (aggiunte DOPO la revisione, 2026-10-07; non pre-registrate) ----
+warns <- function(expr) { w <- FALSE
+  withCallingHandlers(expr, warning = function(x) { w <<- TRUE; invokeRestart("muffleWarning") }); w }
+d17 <- data.frame(x = c(1, 4), y = c(1, 1), k = 1L)
+w17 <- warns(extract_regions(d17, 8, cluster_col = "k", verbose = FALSE))
+r17 <- extract_regions(d17, 8, cluster_col = "k", stride = 1, verbose = FALSE)
+add("REG-RA17", "(1,1),(4,1) a 8 µm", "stride stimato -> warning; stride = 1 -> 2 componenti da 64 µm², escluse",
+    paste(w17, r17$info$n_components, r17$info$n_regions, paste(r17$excluded_df$area_px_um2, collapse = "/")),
+    "TRUE 2 0 64/64", pf(w17 && r17$info$n_components == 2 && r17$info$n_regions == 0 && all(r17$excluded_df$area_px_um2 == 64)))
+r17b <- extract_regions(data.frame(x = c(1, 3, 5), y = 1, k = 1L), 1, 0, cluster_col = "k", stride = 1,
+                        simplify_tol_um = 0, verbose = FALSE)
+add("REG-RA17", "x = 1,3,5 (stride = 1)", "3 componenti da 1 µm²", paste(r17b$region_df$area_um2, collapse = "/"), "1/1/1",
+    pf(nrow(r17b$region_df) == 3 && all(r17b$region_df$area_um2 == 1)))
+ss6 <- r0_of("I6_syn6800x6500_c2")$rf$info$stride_source
+add("REG-RA17", "I6_syn6800x6500_c2", "stride_source", ss6, "estimated", pf(identical(ss6, "estimated")))
+r18  <- extract_regions(data.frame(x = 1:2, y = 1, k = c("1", "01")), 1, 0, cluster_col = "k", simplify_tol_um = 0, verbose = FALSE)
+r18b <- extract_regions(data.frame(x = 1:2, y = 1, k = factor(c("1", "1.0"))), 1, 0, cluster_col = "k", simplify_tol_um = 0, verbose = FALSE)
+add("REG-RA18", "etichette '1'/'01' e factor '1'/'1.0'", "regioni / cluster distinti",
+    paste(nrow(r18$region_df), length(r18$info$cluster_ids), nrow(r18b$region_df), length(r18b$info$cluster_ids)), "2 2 2 2",
+    pf(nrow(r18$region_df) == 2 && length(r18$info$cluster_ids) == 2 && nrow(r18b$region_df) == 2 && length(r18b$info$cluster_ids) == 2))
+w20 <- warns(extract_regions(data.frame(x = 1:10, y = 1, k = 1L), 0.25, 0, cluster_col = "k", stride = 1, verbose = FALSE))
+w20b <- warns(extract_regions(data.frame(x = 1:10, y = 1, k = 1L), 1, 0, cluster_col = "k", stride = 1, verbose = FALSE))
+add("REG-RA20", "linea 10x1 px a 0.25 µm/px e a 1 µm/px (tol 0.5)", "warning se simplify_tol_um > mezzo pixel; nessuno a 1 µm/px",
+    paste(w20, w20b), "TRUE FALSE", pf(w20 && !w20b))
 # I6 stride atteso
 add("C4b", "I6_syn6800x6500_c2", "stride atteso 6", gp("I6_syn6800x6500_c2")$stride, "6", pf(gp("I6_syn6800x6500_c2")$stride == 6))
 
@@ -296,6 +323,9 @@ tr <- o$truth; tr$patch <- as.numeric(tr$patch)
 mm <- merge(tr, rec, by.x = "patch", by.y = "cluster_id", all = TRUE)
 write.csv(transform(mm, n_components = as.integer(table(z$cluster_id)[as.character(mm$patch)])),
           file.path(RES, "S1.1_cp4_truth.csv"), row.names = FALSE)
+ncomp4 <- as.integer(table(z$cluster_id)[as.character(mm$patch)])
+add("CP-4b", "I5_syn600_c2_labels", "ogni patch e' esattamente 1 componente (aggiunta dopo la revisione: CP-4 da solo e' tautologico, RA-09)",
+    sprintf("%d/%d", sum(ncomp4 == 1), nrow(tr)), sprintf("%d/%d", nrow(tr), nrow(tr)), pf(all(ncomp4 == 1) && nrow(z) == nrow(tr)))
 add("CP-4", "I5_syn600_c2_labels", sprintf("aree delle patch recuperate (%d patch, %d componenti)", nrow(tr), nrow(z)),
     sum(mm$Freq == mm$n_px, na.rm = TRUE), sprintf("%d/%d esatte", nrow(tr), nrow(tr)),
     pf(nrow(mm) == nrow(tr) && all(mm$Freq == mm$n_px)))

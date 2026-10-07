@@ -1,0 +1,272 @@
+---
+title: "S1.1 — extract_regions(): dalla mappa dei cluster alle regioni connesse"
+subtitle: "geo_spatialtrans · binario S · sessione S1.1 (2026-10-07)"
+author: "Claude (esecuzione), Luca Vedovelli (approvazioni)"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    embed-resources: true
+    code-fold: true
+    fig-width: 9
+    theme: cosmo
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+suppressPackageStartupMessages({library(dplyr); library(knitr)})
+R <- "../results/S1.1/"; FIG <- "../results/S1.1/figures/"
+rd <- function(f) read.csv(paste0(R, f), check.names = FALSE, stringsAsFactors = FALSE)
+per <- rd("S1.1_per_input.csv"); tst <- rd("S1.1_test_results.csv"); cp3 <- rd("S1.1_cp3_null.csv")
+cp4 <- rd("S1.1_cp4_truth.csv"); dsc <- rd("S1.1_checkB_descriptive.csv"); mo <- rd("S1.1_cp1_moore.csv")
+ph <- rd("S1.1_cp1_posthoc.csv"); perf <- rd("S1.1_perf.csv"); perf1 <- rd("S1.1_perf_run1_prefix.csv")
+pal <- c(PASS = "#2e7d32", FAIL = "#c62828", WARN = "#ef6c00", `N/A` = "#757575", INFO = "#1565c0")
+badge <- function(x) sprintf('<span style="background:%s;color:white;padding:1px 6px;border-radius:3px">%s</span>', pal[x], x)
+fmt <- function(x, d = 0) formatC(x, format = "f", digits = d, big.mark = " ")
+pct <- function(x, d = 1) paste0(formatC(100 * x, format = "f", digits = d), " %")
+img <- function(f) knitr::include_graphics(paste0(FIG, f))
+```
+
+::: {.callout-note}
+**Verdetto in una riga.** `extract_regions()` è corretta sul pannello di 57 input, comprese 5 sezioni Visium HD reali e 30 ROI A1–A6: area esatta, poligoni validi, componenti identiche a due implementazioni indipendenti (`imager` nel test, `scipy` nel ricalcolo del revisore); C11 in budget. La controprova CP-1 ha **smentito la mia previsione**: il poligono di Moore sui centri sbaglia solo dello 0.7–1.4 % sui sintetici, quindi la tolleranza del 2 % non ha potere su regioni grandi (il check esatto sì). Il revisore ha trovato **due bug** (stride stimato su input sparsi, etichette fuse), ora corretti o segnalati con regressioni; i numeri del pannello non cambiano. Rilievo principale per il design: sulle mappe reali il filtro a 100 µm² tratterebbe come extracellulare dal 2.7 al 27 % del tessuto (A6 cuore ~22 %). Stato: **chiusa con riserve**.
+:::
+
+# 1. Pre-registrazione
+
+Testo integrale in `results/S1.1/S1.1_preregistration.md`, committato (`28a1eec`) **prima** di qualsiasi codice. Approvazione di Luca: «procedi» (2026-10-07).
+
+**Obiettivo unico.** `extract_regions(clust, pixel_size_um, min_region_area_um2)` in `R/04b1_extract_regions.R`: mappa di cluster in pixel → regioni connesse (4-vicinato) come `sfc_POLYGON` in µm + `region_df` (+ `excluded_df`). Niente centroidi, Voronoi o preset.
+
+**Deviazioni dal design v1.1 §5.1, approvate prima del codice.**
+
+1. Contorno sui **lati** dei pixel, non tracciamento di Moore sui centri: il contorno sui centri perde mezzo pixel lungo tutto il perimetro e ignora i buchi. Il Moore letterale è la controprova CP-1.
+2. Semplificazione `st_simplify(dTolerance = 0.5 µm, preserveTopology = TRUE)` come da design, con costo misurato; `simplify_tol_um = 0` = solo vertici collineari.
+3. Rilevamento dello **stride** (`generate_synthetic_tissue()` campiona 1 pixel ogni *s* sopra 1 Mpx).
+4. `min_region_area_um2 = 100` resta il default (senza fonte); se ne misura il costo.
+
+**Chiarimenti di implementazione dichiarati prima di eseguire**: union-find vettorizzato sulle run di riga invece di una BFS per pixel (stessa motivazione del design: nessuna dipendenza nuova; equivalenza verificata da C4 contro `imager::label`); poligono = unione GEOS dei rettangoli delle run; filtro sull'area esatta in pixel; C11 valutato su due griglie 4000×4000.
+
+**Aggiunte dopo i risultati (dichiarate, non pre-registrate).** (a) Analisi **esplorativa** di CP-1 sui ROI reali a 8 µm e sulle sole regioni ≥ 100 µm² (`tools/S1.1_cp1_posthoc.R`), aggiunta dopo il FAIL di CP-1; (b) correzione di un difetto di prestazioni scoperto da C11 (sez. 2.4) e nuova misura; entrambe le misure sono riportate; (c) dopo la revisione avversariale: correzione di due bug (RA-17 stride, RA-18 etichette), tre protezioni (warning su stride stimato e su tolleranza > mezzo pixel, `n_holes` = NA per non-POLYGON), 6 asserzioni nuove (5 regressioni `REG-*` costruite sui casi del revisore + CP-4b). Tutti i numeri di questo report vengono dal codice corretto; sui 57 input del pannello nessun valore è cambiato (verificato colonna per colonna e, indipendentemente, dal revisore in 114/114 esecuzioni, FX-23/24).
+
+| id | Attesa | Soglia |
+|---|---|---|
+| C1 | Σ area (esatta) = n_px·(s·px)² | errore relativo < 1e-9 |
+| C1s | idem, semplificata | ≤ 2 % globale; 95° pct per regione ≤ 2 % (WARN) |
+| C2 | poligoni validi, non vuoti, solo POLYGON | 100 % |
+| C3 | n_regioni ≥ k | sì |
+| C4 | componenti = `imager::label` (4-vicinato) | multinsieme (cluster, n_px) identico |
+| C5 | ritorno al raster | 100 % esatta; ≥ 98 % semplificata |
+| C6 | sovrapposizioni + scoperto | 0 esatta; ≤ 1 % semplificata (WARN) |
+| C7 | filtro esatto; px = 2 → aree ×4, perimetri ×2 | esatto |
+| C8 | ripetizione e righe permutate | identico |
+| C9 | orientamento (pixel (3,5); forma a L) | esatto |
+| C10 | errori espliciti | 4/4 |
+| C11 | 4000×4000 | ≤ 2 min, ≤ 3.2 GB (WARN) |
+| CP-1 | Moore sui centri **fallisce** C1 | 10×10 → 81; \|errore\| > 2 % su I1–I4 |
+| CP-2 | cluster unico; regione sotto soglia | 1 regione; esclusa e in `excluded_df` |
+| CP-3 | nullo spaziale (etichette permutate) sulle 5 mappe reali | n_regioni reale ≪ nullo **e** frazione esclusa reale < nullo, 5/5 |
+| CP-4 | verità nota (I5) | aree delle 30 patch esatte |
+
+**Input (57 + 2 di prestazioni).** 11 avversari; I1–I4 sintetici 600×600 (complessità 1–4, `cluster_image` k = 4); I5 = `label_matrix` (verità nota); I6 6800×6500 (stride 6); 5 mappe graphclust 8 µm intere (A1, A2/A3, A4, A5, A6) + 30 ROI di R2 (5 per archetipo, A3 = ROI stromali del CRC) + 5 nulli; P1/P2 4000×4000. md5 delle sorgenti reali in `S1.1_real_sources_md5.csv`, md5 degli input in `S1.1_inputs.csv`.
+
+# 2. Check C — correttezza software
+
+```{r c-summary}
+tab <- tst %>% mutate(grp = sub("/.*", "", check)) %>% count(check, status) %>%
+  tidyr::pivot_wider(names_from = status, values_from = n, values_fill = 0)
+kable(tab, caption = sprintf("Asserzioni di `R/testing/test_S1.1.R`: %d PASS · %d WARN · %d FAIL su %d (C11 in sez. 2.4).",
+      sum(tst$status == "PASS"), sum(tst$status == "WARN"), sum(tst$status == "FAIL"), nrow(tst)))
+```
+
+## 2.1 Area, validità, componenti (C1–C5, C7, C8)
+
+Su **tutti** i 57 input: area esatta conservata (errore 0, ≤ 1e-9), poligoni validi e solo `POLYGON`, componenti identiche a `imager::label` (52/52 input confrontati; i 5 nulli esclusi per costo, coperti da C1), ritorno al raster pixel-identico (esatto) e ≥ 98 % (semplificato: in realtà 100 % ovunque), filtro esatto, scala esatta, riproducibilità e invarianza all'ordine delle righe (18/18).
+
+```{r c-table}
+show <- per %>% filter(!grepl("^roi_", id)) %>%
+  transmute(input = id, `n pixel` = fmt(n_px), stride, componenti = fmt(n_components),
+            `imager` = ifelse(is.na(n_components_imager), "—", fmt(n_components_imager)),
+            `C1 err` = signif(c1_relerr, 2), `C1s err` = signif(c1s_relerr, 2),
+            `C5 sempl.` = signif(c5_match_simpl, 4),
+            `C6 sempl.` = signif(c6_overlap_simpl + c6_uncovered_simpl, 2),
+            `regioni ≥100` = fmt(n_regions_100), `area esclusa` = pct(frac_area_excluded_100))
+kable(show, caption = "Per input (i 30 ROI sono riassunti nella sez. 3). C6 sempl. = (sovrapposizione + scoperto)/area tessuto.")
+```
+
+```{r fig1, fig.cap="Fig. 1 — Avversari: poligoni esatti (bordo nero) sopra la griglia dei pixel. Ciambella 84 = 100 − 16 con 1 buco; ciambella con isola: 2 regioni; contatto d'angolo: 2 componenti; buco che tocca il guscio in un vertice: POLYGON valido; scacchiera: 2 500 componenti; 9×9 = 81 µm² escluso a 100 µm², 10×10 tenuto."}
+img("S1.1_fig1_adversarial.png")
+```
+
+```{r adv}
+tst %>% filter(check %in% c("ADV", "ADV/CP-2", "C9", "C10") | (check == "C4b" & grepl("I6", input))) %>%
+  transmute(check, input, metrica = metric, valore = value, soglia = threshold, esito = badge(status)) %>%
+  kable(escape = FALSE, caption = "Attese pre-registrate sugli avversari, orientamento (C9) ed errori (C10).")
+```
+
+```{r fig2, fig.cap="Fig. 2 — Sintetici I1–I6: regioni colorate per cluster (grigio = componenti escluse dal filtro; qui quasi assenti)."}
+img("S1.1_fig2_synthetic.png")
+```
+
+## 2.2 Costo della semplificazione (C1s, C5, C6)
+
+Con `dTolerance = 0.5 µm` e `preserveTopology = TRUE` l'area totale non cambia in nessun input (C1s = 0): sulle scale di 1 µm/px i vertici a gradino sono quasi tutti conservati e a 8 µm/px la tolleranza è un sedicesimo di pixel. La semplificazione però **sposta** area: nei sintetici sovrapposizione e scoperto valgono ~1e-4 dell'area di tessuto, e nell'avversario `adv_pinch_hole` (buco che tocca il guscio in un vertice) 1.56 % → **WARN C6** (soglia 1 %). È un costo reale e localizzato nelle tacche larghe un pixel; non tocca le mappe a 8 µm. Il revisore aggiunge tre precisazioni: (RA-21) C1s = 0 non significa geometria intatta: in I2 l'area è invariata ma la differenza simmetrica è 62.5 µm², cioè area spostata per compensazione; (RA-23) la definizione di «scoperto» non conta l'area che la semplificazione aggiunge fuori dal tessuto (sarebbe più corretto usare la differenza simmetrica); (RA-20) con pixel più piccoli della tolleranza la semplificazione distrugge forme sottili (linea 800×1 px a 0.25 µm/px: −50 %). Ora un warning segnala tolleranze maggiori di mezzo pixel effettivo; la scelta di esprimere la tolleranza in pixel è in BL-046.
+
+```{r fig8, fig.cap="Fig. 8 — Costo della semplificazione per input; tratteggio = soglia pre-registrata."}
+img("S1.1_fig8_simplification_cost.png")
+```
+
+## 2.3 Difetti trovati durante lo sviluppo (prima dei numeri di questo report)
+
+1. **Unione «coverage» di GEOS** (`st_union(is_coverage = TRUE)`): sullo smoke test la ciambella risultava con l'area giusta ma **non valida** (3 buchi) e una forma a U diventava `MULTIPOLYGON`. Causa: i rettangoli delle run condividono lati con giunzioni a T, che CoverageUnion non gestisce. Corretto con l'unione normale; C2 e la Fig. 1 ne sono il controllo.
+2. **Criterio di arresto di Jacob** nella variante di Moore (solo controprova): non termina sulle linee larghe 1 px; sostituito con «stessa prima mossa dal pixel di partenza».
+3. **`imager::as.cimg` rifiuta le matrici 1×1** (il banco di prova falliva su `adv_pixel35`): bordo di fondo aggiunto alla griglia nel test; non tocca la funzione.
+
+4. **Revisione avversariale — stride stimato su input sparsi (RA-17).** Input validi a stride 1 ma sparsi venivano letti come campionati: (1,1),(4,1) a 8 µm → stride 3, una regione da 1 152 µm² invece di due bin da 64 µm² esclusi; (1,1),(5001,5001) → 3.2·10⁹ µm². Errore silenzioso, invisibile a C4b (che stima lo stride dagli stessi dati: tautologico). Correzione adottata: **warning** esplicito quando lo stride stimato è > 1 senza essere dichiarato e `info$stride_source`; con `stride = 1` il risultato è corretto. Senza stride dichiarato il risultato su input sparsi resta sbagliato (FX-01/02): rendere lo stride obbligatorio è una decisione di design aperta (BL-042). Nessun falso positivo su 563 sottoinsiemi reali per cluster (FX-27).
+5. **Revisione avversariale — etichette fuse (RA-18).** `as.numeric()` fondeva etichette distinte con lo stesso valore («1»/«01», fattore «1»/«1.0»). Ora gli id numerici si usano solo se la conversione è iniettiva. Effetto collaterale (FX-26): `cluster_id` è intero (non più double) per colonne intere: valori identici, checksum degli RDS di `e7f2562` diversi.
+
+**Potere del test (RA-22).** Il revisore stima che circa 128 delle 710 asserzioni originali non possano fallire per un errore plausibile della funzione o ne condividano il punto cieco: C3 (discende da C7), C4b (due stime dello stride dagli stessi dati), C7 scala (garantita da `polys * px`), CP-4. Le asserzioni con potere reale sono C1, C2, C4 (contro `imager`), C5, C6, C8, C9, C10 e gli avversari. Il conteggio totale va letto con questa riserva.
+
+## 2.4 Prestazioni (C11)
+
+```{r c11}
+both <- bind_rows(mutate(perf1, giro = "1 (prima della correzione)"), mutate(perf, giro = "2 (codice finale)")) %>%
+  transmute(giro, input = id, componenti = n_components, regioni = n_regions, `tempo (s)` = elapsed_extract_s,
+            `RSS dopo il caricamento (MB)` = rss_after_load_mb, `RSS massimo processo (MB)` = max_rss_process_mb,
+            esito = badge(ifelse(elapsed_extract_s <= 120 & max_rss_process_mb <= 3200, "PASS", "WARN")))
+kable(both, escape = FALSE, caption = "C11 su griglie piene 4000×4000 (16 M pixel); budget 2 min / 3.2 GB.")
+```
+
+Il primo giro ha dato **WARN** (5.2 GB, 30 s) e ha rivelato un difetto: il controllo dei duplicati `anyDuplicated()` su un `data.frame` di 16 M righe costruisce 16 M stringhe (≈ 24 s e la maggior parte della memoria) ed era fuori dal cronometro interno (che riportava 6 s). Corretto con una chiave numerica e cronometro dall'ingresso; il secondo giro (codice finale) è **PASS**: `r fmt(max(perf$elapsed_extract_s), 1)` s e `r fmt(max(perf$max_rss_process_mb))` MB. Nota: P2 (complessità 4 quantizzata) ha solo 54 componenti: il caso «frammentato» pre-registrato non è risultato frammentato. **Caso peggiore misurato dal revisore (RA-16):** una mappa 4000² con 4 etichette casuali a 8 µm/px (3.19 M regioni) richiede 863 s e 9.5 GB, cioè ~7× il budget in tempo e ~3× in memoria. Il costo cresce con il numero di poligoni costruiti (~3 700 regioni/s). Sulle sezioni reali a 8 µm (≤ 0.7 M bin) l'output d'uso costa 25 s / 0.43 GB (A6); a 2 µm (~16× i bin) il problema diventerebbe reale (BL-045). Anche la memoria cresce con il riquadro che contiene i pixel, non con il loro numero (RA-24).
+
+# 3. Check B — descrittivo (A1–A6), senza PASS/FAIL
+
+La ROADMAP non prevede check B per S1.1 (macro-regioni, non biologia) e non esistono riferimenti con fonte: la sezione è **descrittiva**, come pre-registrato.
+
+```{r b-table}
+roi <- dsc %>% filter(group == "real_roi") %>% mutate(A = sub("^roi_(A[1-6])_.*", "\\1", id)) %>% group_by(A) %>%
+  summarise(ROI = n(), `regioni ≥100 (med.)` = median(n_regions),
+            `mediana pesata area (µm²)` = fmt(median(area_weighted_median_um2)),
+            `area esclusa med. [min–max]` = sprintf("%s [%s–%s]", pct(median(frac_area_excluded)), pct(min(frac_area_excluded)), pct(max(frac_area_excluded))),
+            `componenti di 1 bin (med.)` = pct(median(frac_components_single_px), 0), cluster = median(n_clusters))
+syn <- dsc %>% filter(group %in% c("syn", "real_full")) %>%
+  transmute(input = id, regioni = fmt(n_regions), `mediana pesata area (µm²)` = fmt(area_weighted_median_um2),
+            `area esclusa` = pct(frac_area_excluded, 2), `componenti di 1 px/bin` = pct(frac_components_single_px, 0), cluster = n_clusters)
+kable(roi, caption = "ROI reali (graphclust 8 µm) per archetipo, 5 ROI × 1 mm².")
+kable(syn, caption = "Sintetici (k-means su intensità, 1 µm/px) e sezioni reali intere.")
+```
+
+```{r fig3, fig.cap="Fig. 3 — Mappe graphclust 8 µm intere: regioni ≥ 100 µm² colorate per cluster."}
+img("S1.1_fig3_real_full.png")
+```
+
+```{r fig4, fig.cap="Fig. 4 — ROI per archetipo (righe A1–A6, 5 ROI ciascuno). Grigio = componenti escluse dal filtro a 100 µm² (bin isolati): evidenti in A6 (cuore)."}
+img("S1.1_fig4_real_roi_by_archetype.png")
+```
+
+```{r fig5, fig.cap="Fig. 5 — (a) Distribuzione delle aree delle regioni pesata per area; (b) frammentazione per archetipo e per sintetico."}
+img("S1.1_fig5a_checkB_ecdf.png"); img("S1.1_fig5b_checkB_fragmentation.png")
+```
+
+**Osservazioni.**
+
+1. **Le mappe sintetiche sono lisce, quelle reali frammentate.** I1–I6 producono 5–30 regioni con ~0 % di area esclusa; i ROI reali 263–2 104 regioni per ROI di 1 mm², con mediane per archetipo del 43–66 % di componenti di un solo bin e il 2.7–27 % di area sotto i 100 µm². Il simulatore, nella sua forma attuale (`cluster_image` con peso spaziale 0.6), non genera la micro-struttura delle mappe di cluster reali.
+2. **A6 (cuore) è l'archetipo più frammentato** (area esclusa mediana `r pct(median(dsc$frac_area_excluded[grepl("^roi_A6", dsc$id)]))`, mediana pesata dell'area ~700 µm²): coerente con l'aspettativa che una mappa isotropa e grossolana descriva male un tessuto anisotropo, ma qui la frammentazione viene dai cluster trascrizionali, non dalla geometria cellulare.
+3. **Il default `min_region_area_um2 = 100` scarta tessuto.** Il design (§5.1, passo 4) tratta le componenti escluse come «spazio extracellulare macro». Sulle mappe reali sono **tessuto** (bin `in_tissue` con un cluster assegnato): con il default, Step 2 tratterebbe come extracellulare il 3–27 % del tessuto. Sui sintetici il problema non si vede perché la frammentazione è quasi nulla.
+4. **Cautela.** Graphclust a 8 µm riflette anche il rumore di campionamento dei bin (poche UMI per bin), non solo regioni istologiche: la frammentazione reale non è una «verità» da imitare. È però l'input che un utente fornirebbe se usasse mappe reali.
+5. **Fondo artificiale in A4 (RA-07).** Le mappe contengono solo i bin con etichetta graphclust. I bin `in_tissue` senza etichetta diventano fondo: 31 (A1), 517 (A2/A3), **62 933 in A4 (17.9 % del tessuto)**, 32 (A5), 1 110 (A6). In A4 questo crea buchi e frammentazione artificiali: la frazione esclusa della sezione intera A4 (15.3 %) e il CP-3 di A4 ne risentono (BL-049).
+
+# 4. Controprove
+
+## CP-1 — Moore sui centri: previsione smentita
+
+```{r cp1}
+tst %>% filter(check == "CP-1") %>% transmute(input, metrica = metric, valore = value, soglia = threshold, esito = badge(status)) %>%
+  kable(escape = FALSE, caption = "CP-1 (pre-registrata): la variante doveva fallire C1 (|errore| > 2 %).")
+```
+
+La previsione era che il contorno sui centri sbagliasse l'area di più del 2 % su I1–I4. **Non è così**: −0.7, −1.4, −1.2, −0.9 %. Sul blob 10×10 l'area è 81 come previsto. L'errore relativo di un contorno sui centri scala come perimetro/area (Fig. 6: i punti seguono la curva del quadrato); I1–I4 hanno 5–19 componenti di decine di migliaia di pixel, per cui l'errore è sotto il 2 %. Conseguenze:
+
+- la tolleranza del 2 % della ROADMAP **non ha potere** contro un errore sistematico di mezzo pixel quando le regioni sono grandi; il criterio che distingue i due metodi è C1 esatto (1e-9), che la variante supera di circa 7 ordini di grandezza (confermato dal revisore, RA-14);
+- **esplorativo, non pre-registrato**: sui ROI reali a 8 µm (regioni piccole) la stessa variante sbaglia da `r pct(min(ph$relerr_all[grepl("^roi", ph$id)]), 0)` a `r pct(max(ph$relerr_all[grepl("^roi", ph$id)]), 0)` (positivo in A4: i buchi ignorati vengono contati come area). Lì il 2 % la intercetterebbe subito.
+
+La scelta del contorno sui lati resta giustificata (errore 0 in ogni condizione), ma il motivo «il 2 % basta a scartare Moore» era sbagliato. Per S1.3–S1.4 (territori cellulari di 50–300 µm² a 1 µm/px, regime della Fig. 6 sotto 10³ pixel) il poligono di Moore sbaglierebbe del 10–26 % (curva del quadrato a 50–300 pixel). Precisazione del revisore (RA-14): il difetto è del **poligono di Moore**, non di qualunque contorno «sui centri»: un contorno a marching squares (livello 0.5, buchi sottratti) sbaglia solo dello 0.0007–0.003 % su I1–I4 e dell'1–20 % sui ROI. Resta approssimato, mentre il contorno sui lati dei pixel è esatto per costruzione.
+
+```{r fig6, fig.cap="Fig. 6 — Errore d'area della variante di Moore per componente (I1–I4 e blob); tratteggio = quadrato."}
+img("S1.1_fig6_cp1_moore.png")
+```
+
+## CP-2 — Cluster unico e regione sotto soglia
+
+`adv_single_cluster`: 1 regione di 8 000 µm² (PASS). `adv_blobs_9_10`: il 9×9 (81 µm²) è in `excluded_df`, il 10×10 (100 µm²) è una regione (PASS; il confronto è `≥`).
+
+## CP-3 — Nullo spaziale
+
+```{r cp3}
+cp3 %>% transmute(dataset, `regioni reale` = fmt(n_regions_real), `regioni nullo` = fmt(n_regions_null),
+                  `rapporto` = round(ratio_regions, 2), `esclusa reale` = pct(frac_excl_real), `esclusa nullo` = pct(frac_excl_null),
+                  `componenti reale` = fmt(n_components_real), `componenti nullo` = fmt(n_components_null)) %>%
+  kable(caption = "Mappe reali vs etichette permutate fra i bin (stessa composizione, seed 20261007).")
+```
+
+**PASS** secondo il criterio scritto (reale < nullo per entrambe le metriche, 5/5), ricalcolato identico dal revisore (RA-03/05). Precisazione: la pre-registrazione diceva «≪» per il numero di regioni senza quantificarlo; il rapporto osservato è solo 1.6–3.0, perché nel nullo molte coppie di bin adiacenti hanno lo stesso cluster per caso e superano i 100 µm². Le metriche che separano nettamente reale e nullo sono la frazione esclusa (5–21 % vs 51–75 %) e il numero di componenti (×2–7).
+
+```{r fig7, fig.cap="Fig. 7 — CP-3: confronto reale/nullo; mappa A1 reale e permutata."}
+img("S1.1_fig7a_cp3_null.png"); img("S1.1_fig7b_cp3_maps_A1.png")
+```
+
+## CP-4 — Verità nota (I5)
+
+Le 30 patch di Voronoi (Manhattan) di I5 sono recuperate con area esatta (30/30; da `r fmt(min(cp4$Freq))` a `r fmt(max(cp4$Freq))` pixel), ciascuna come una sola componente. **Rilievo del revisore (RA-09):** l'asserzione CP-4 come scritta è tautologica (la somma dei pixel per cluster è la stessa per qualunque partizione in componenti). L'informazione non banale, cioè una sola componente per patch, è ora valutata da **CP-4b** (aggiunta dopo la revisione): 30/30 PASS.
+
+# Verdetto
+
+- **Stato: chiusa con riserve.**
+- **Check C**: `r sum(tst$status=="PASS")` PASS, `r sum(tst$status=="WARN")` WARN (C6 su `adv_pinch_hole`), `r sum(tst$status=="FAIL")` FAIL (tutti CP-1) su `r nrow(tst)` asserzioni, con la riserva sul potere di ~128 di esse (RA-22); C11 PASS al giro finale (WARN di memoria al primo giro, difetto corretto).
+- **Check B**: descrittivo, come pre-registrato; nessun PASS/FAIL.
+- **Controprove**: CP-1 FAIL (previsione di grandezza sbagliata, non un difetto della funzione); CP-2, CP-3, CP-4, CP-4b PASS (CP-3 regge sulla frazione esclusa più che sul numero di regioni).
+
+**Riserve (→ `docs/BACKLOG.md`).**
+
+1. **BL-042** — Stride: senza dichiarazione, su input sparsi il risultato resta sbagliato (con warning). Decidere fra stride obbligatorio, stride trasmesso dai metadati di `generate_synthetic_tissue()`, o warning. *Decisione di Luca.*
+2. **BL-043** — Semantica di `min_region_area_um2` (design §5.1, passo 4): sulle mappe reali le componenti escluse sono tessuto (2.7–27 %), non spazio extracellulare. Opzioni: assegnarle alla regione circostante (filtro di maggioranza), o tenerle come regioni. Revisione del design prima di S1.2.
+3. **BL-044** — Le mappe sintetiche (`cluster_image`, k = 4, peso spaziale 0.6) sono lisce (5–30 regioni) rispetto alle mappe di cluster reali (10⁴–10⁵ regioni per sezione). Valutare se il simulatore debba generare micro-struttura, o se la frammentazione reale sia rumore da non imitare.
+4. **BL-045** — Prestazioni con milioni di regioni (RA-16: 863 s, 9.5 GB) e memoria proporzionale al riquadro (RA-24): rilevante per mappe a 2 µm.
+5. **BL-046** — Tolleranza di semplificazione espressa in µm assoluti: a 1 µm/px sposta geometria (C6 WARN, RA-21), sotto il mezzo pixel distrugge forme sottili (RA-20). Esprimerla in pixel o rendere 0 il default; C6 con differenza simmetrica (RA-23).
+6. **BL-047** — CP-1: una tolleranza relativa di area (2 % qui, 1 % per C2 in S1.3) non ha potere contro errori sistematici di bordo su regioni grandi; per S1.3 servono anche check esatti o su regioni piccole.
+7. **BL-048** — Pratica di pre-registrazione: niente «≪» senza numero (RA-05); asserzioni che possano fallire (RA-09, RA-22).
+8. **BL-049** — In A4 il 17.9 % dei bin di tessuto non ha etichetta graphclust (RA-07): fondo artificiale nelle mappe reali.
+
+# Revisione avversariale
+
+Sotto-agente indipendente (2026-10-07), con accesso al server, ai dati sorgente e al codice al commit `e7f2562`, senza usare né `R/04b1_extract_regions.R` né il test per i ricalcoli (Python + `scipy.ndimage.label` a 4-vicinato, Moore e marching squares propri). Esito: **26 rilievi: 13 confermati, 2 discrepanze, 11 rilievi di metodo**. Tutti i numeri riportati sono stati riprodotti, fra cui le componenti di 9 input (9/9, nullo compreso), aree e regioni delle 10 mappe intere, le 5 mappe reali ricostruite dalle sorgenti (md5 10/10), area e validità di tutte le 209 607 componenti di A6, CP-1, CP-4, C11 (3 ripetizioni) e il conteggio delle asserzioni.
+
+- **Discrepanze**: RA-17 (stride stimato su input sparsi) e RA-18 (etichette fuse): accolte, corrette o segnalate (sez. 2.3), con regressioni nel test.
+- **Rilievi accolti nel testo**: RA-05 (CP-3 «≪»), RA-07 (A4), RA-09 (CP-4 tautologico → CP-4b), RA-14 (Moore ≠ qualunque contorno sui centri), RA-16 e RA-24 (prestazioni), RA-20, RA-21 e RA-23 (semplificazione), RA-22 (potere del test), RA-25 (`n_holes`), RA-02 (convenzione d'angolo: l'ultimo blocco campionato può superare il bordo dell'immagine di ≤ s−1 pixel).
+- **Deviazioni dichiarate dal revisore**: il multinsieme completo delle dimensioni è stato confrontato su 1 nullo su 5 (gli altri 4 solo con i conteggi); il primo giro di C11 non è riverificabile perché il codice che lo ha prodotto precede `e7f2562`.
+- **Verifica delle correzioni** (stesso revisore, seconda ripresa): 22 casi avversari e regressione su 57 input × 2 configurazioni, valori identici in 114/114 esecuzioni, warning dove atteso e nessun falso positivo su 563 sottoinsiemi reali. Il ramo RA-25 non è esercitabile con input reali. Dopo il suo rilievo FX-24 (con `>=` il warning sulla tolleranza scattava su ogni chiamata d'uso a 1 µm/px) la soglia è diventata `>`. `results/S1.1/S1.1_adversarial_fixcheck.csv`.
+
+Tabelle complete: `results/S1.1/S1.1_adversarial_review.csv`, `S1.1_adversarial_fixcheck.csv`; script in `results/S1.1/review/`.
+
+```{r rev, eval=file.exists(paste0(R, "S1.1_adversarial_review.csv"))}
+rd("S1.1_adversarial_review.csv") %>% transmute(id, compito = task, affermazione = claim, esito = outcome, nota = note) %>%
+  kable(caption = "Revisione avversariale: 26 rilievi (valori riportati e ricalcolati nel CSV).")
+```
+
+```{r fix, eval=file.exists(paste0(R, "S1.1_adversarial_fixcheck.csv"))}
+rd("S1.1_adversarial_fixcheck.csv") %>% kable(caption = "Verifica delle correzioni (seconda ripresa del revisore).")
+```
+
+# Riproducibilità
+
+```bash
+cd ~/2025.geo_spatialtrans && git checkout <sha di chiusura: vedi docs/sessions/2026-10-07_S1.1.md>
+bash R/testing/run_S1.1.sh                 # input (rilanciabile), 716 asserzioni, C11, figure (~3 min)
+Rscript --vanilla tools/S1.1_cp1_posthoc.R # esplorativo CP-1
+quarto render reports/S1.1.qmd
+```
+
+Input e output derivati fuori git: `/mnt/micron/geo_spatialtrans/S1.1/{inputs,outputs,logs,review}`.

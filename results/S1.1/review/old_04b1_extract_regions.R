@@ -22,8 +22,7 @@
 #' @param simplify_tol_um tolleranza di `sf::st_simplify()` (preserveTopology).
 #'   0 = solo rimozione dei vertici collineari (nessuna perdita di area).
 #' @param stride passo di campionamento dei pixel; `NULL` = rilevato dai dati
-#'   (MCD delle differenze fra coordinate distinte), con warning se > 1: su input
-#'   sparsi la stima e' ambigua, quindi per input non campionati passare `stride = 1`.
+#'   (MCD delle differenze fra coordinate distinte).
 #' @param verbose stampa un riepilogo.
 #' @return lista con `region_df`, `region_polygons` (sfc, µm, senza CRS),
 #'   `excluded_df`, `info`.
@@ -55,12 +54,6 @@ extract_regions <- function(clust,
 
   polys <- .er_component_polygons(runs, cc$comp_of_run, which(keep), grid)
   polys <- polys * px                                  # unita' pixel -> µm
-  if (simplify_tol_um > 0 && simplify_tol_um > e_um / 2) {
-    # con pixel piu' piccoli della tolleranza la semplificazione distrugge forme sottili (RA-20, S1.1);
-    # '>' e non '>=': a 1 µm/px il default del design (0.5 µm) e' esattamente mezzo pixel (FX-24)
-    warning(sprintf("extract_regions(): simplify_tol_um (%g) > mezzo pixel effettivo (%g µm).",
-                    simplify_tol_um, e_um / 2), call. = FALSE)
-  }
   if (simplify_tol_um > 0) {
     polys <- sf::st_simplify(polys, preserveTopology = TRUE,
                              dTolerance = simplify_tol_um)
@@ -74,11 +67,8 @@ extract_regions <- function(clust,
     area_um2     = if (nrow(kc)) as.numeric(sf::st_area(polys)) else numeric(0),
     area_px_um2  = kc$area_px_um2,
     perimeter_um = if (nrow(kc)) as.numeric(sf::st_length(sf::st_boundary(polys))) else numeric(0),
-    n_holes      = if (nrow(kc)) ifelse(sf::st_geometry_type(polys) == "POLYGON", lengths(polys) - 1L, NA_integer_) else integer(0)
+    n_holes      = if (nrow(kc)) lengths(polys) - 1L else integer(0)
   )
-  if (nrow(kc) && any(sf::st_geometry_type(polys) != "POLYGON")) {
-    warning("extract_regions(): geometrie non POLYGON nell'output (n_holes = NA per queste).", call. = FALSE)  # RA-25
-  }
   ec <- comp[!keep, , drop = FALSE]
   excluded_df <- data.frame(
     excluded_id = seq_len(nrow(ec)),
@@ -91,7 +81,6 @@ extract_regions <- function(clust,
   info <- list(
     pixel_size_um       = px,
     stride              = grid$stride,
-    stride_source       = grid$stride_source,
     effective_pixel_um  = e_um,
     min_region_area_um2 = min_region_area_um2,
     simplify_tol_um     = simplify_tol_um,
@@ -178,14 +167,8 @@ extract_regions <- function(clust,
   x <- as.integer(round(clust$x)); y <- as.integer(round(clust$y))
   cl <- clust[[cluster_col]]
   if (is.factor(cl)) cl <- as.character(cl)
-  if (is.numeric(cl)) {
-    cl_val <- cl
-  } else {
-    cl <- as.character(cl)
-    num <- suppressWarnings(as.numeric(cl))
-    # id numerici solo se la conversione e' iniettiva: '1' e '01' restano distinti (RA-18, S1.1)
-    cl_val <- if (!anyNA(num) && length(unique(num)) == length(unique(cl))) num else cl
-  }
+  num <- suppressWarnings(as.numeric(cl))
+  cl_val <- if (!anyNA(num)) num else cl
   cluster_ids <- sort(unique(cl_val))
   code <- match(cl_val, cluster_ids)
 
@@ -198,15 +181,7 @@ extract_regions <- function(clust,
       stop(sprintf("extract_regions(): stride diverso sui due assi (x = %d, y = %d).", sx, sy),
            call. = FALSE)
     } else s <- sx
-    stride_source <- if (s > 1L) "estimated" else "default"
-    if (s > 1L) {
-      # la stima e' ambigua su input sparsi: (1,1),(4,1) a stride 1 sembra stride 3 (RA-17, S1.1)
-      warning(sprintf(paste0("extract_regions(): stride %d stimato dai dati e non dichiarato. ",
-                             "Se l'input non e' campionato passare stride = 1."), s), call. = FALSE)
-    }
-  } else {
-    s <- as.integer(stride); stride_source <- "user"
-  }
+  } else s <- as.integer(stride)
   x0 <- min(x); y0 <- min(y)
   if (any((x - x0) %% s != 0L) || any((y - y0) %% s != 0L)) {
     stop(sprintf("extract_regions(): coordinate non allineate allo stride %d.", s), call. = FALSE)
@@ -215,7 +190,7 @@ extract_regions <- function(clust,
   nx <- max(i); ny <- max(j)
   lab <- matrix(0L, nrow = nx, ncol = ny)
   lab[cbind(i, j)] <- code
-  list(lab = lab, nx = nx, ny = ny, stride = s, stride_source = stride_source, x0 = x0, y0 = y0,
+  list(lab = lab, nx = nx, ny = ny, stride = s, x0 = x0, y0 = y0,
        cluster_ids = cluster_ids, n_pixels = length(x))
 }
 

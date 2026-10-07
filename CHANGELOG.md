@@ -2,6 +2,20 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.1 — 2026-10-07 — `extract_regions()`: dalla mappa dei cluster alle regioni connesse (branch `step1-cell-layer`)
+
+### Codice
+- `R/04b1_extract_regions.R` (nuovo): `extract_regions(clust, pixel_size_um, min_region_area_um2 = 100, cluster_col, simplify_tol_um = 0.5, stride = NULL)` → `region_df`, `region_polygons` (sfc POLYGON in µm), `excluded_df`, `info`. Componenti 4-connesse con union-find vettorizzato sulle run di riga (R base); poligono = unione GEOS dei rettangoli delle run (contorno sui lati dei pixel, area esatta, buchi inclusi); filtro sull'area esatta in pixel; stride rilevato (warning se > 1 e non dichiarato); `pixel_size_um` obbligatorio (C-A).
+- Deviazioni dichiarate dal design §5.1 (approvate da Luca): contorno sui lati invece di Moore sui centri; union-find invece di BFS.
+- `R/testing/test_S1.1.R` (716 asserzioni), `R/testing/run_S1.1.sh` (comando unico, ~3 min), `tools/S1.1_inputs.R` (57 input + 2 di prestazione), `tools/S1.1_moore_variant.R` (CP-1), `tools/S1.1_perf.R` (C11), `tools/S1.1_cp1_posthoc.R` (esplorativo), `tools/S1.1_figures.R`.
+- Difetti trovati e corretti in sessione: CoverageUnion GEOS su rettangoli con giunzioni a T (poligoni non validi); `anyDuplicated()` su data.frame (24 s, ~5 GB su 16 M pixel); dopo la revisione: stride su input sparsi (RA-17, warning), etichette fuse da `as.numeric()` (RA-18), `n_holes` per non-POLYGON (RA-25), warning su tolleranza > mezzo pixel (RA-20/FX-24).
+
+### Risultati (tracciati in `results/S1.1/`; input/output derivati in `/mnt/micron/geo_spatialtrans/S1.1/`)
+- Check C: 711 PASS, 1 WARN (C6 `adv_pinch_hole`, semplificazione), 4 FAIL (CP-1) su 716; C11 8.3 s / 1.3 GB (primo giro 30.6 s / 5.2 GB, WARN, difetto corretto).
+- Check B (descrittivo): sintetici 5–30 regioni, ~0 % escluso; ROI reali 263–2 104 regioni/mm², 2.7–27 % di area < 100 µm² (A6 ~22 %).
+- Controprove: CP-1 FAIL (Moore sui centri −0.7…−1.4 % su I1–I4: previsione smentita; −74…+18 % sui ROI, esplorativo); CP-2, CP-3 (frazione esclusa reale 5–21 % vs nullo 51–75 %), CP-4, CP-4b PASS.
+- Revisione avversariale: 26 rilievi (13 confermati, 2 discrepanze accolte, 11 di metodo) + verifica delle correzioni (114/114 esecuzioni identiche). BACKLOG BL-042…BL-049.
+
 ## R2b — 2026-09-21 → 2026-10-07 — Verità manuale per la densità nucleare (branch `step1-cell-layer`)
 
 ### Codice (tutto in `tools/`; dati derivati fuori git su `/mnt/micron/geo_spatialtrans/R2b/`)
