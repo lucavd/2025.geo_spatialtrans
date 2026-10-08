@@ -152,7 +152,7 @@ if (STAGE %in% c("manual", "all")) {
   pts <- pts[pts$rater == "Luca", ]
   nuc <- read_parquet("results/R2/R2_nuclei_all.parquet", col_select = c("archetype", "roi_id", "method", "scale", "keep", "x_um", "y_um"))
   nuc <- nuc[nuc$scale == 1 & nuc$keep, ]
-  rm_ <- seq(0, 15, 0.5); rk <- c(0, 2, 3, 5)
+  rm_ <- seq(0, 15, 0.5); rk <- seq(0, 15, 0.5)   # K su griglia fine: la g(r) in pool (ratio) esplode a piccolo r con finestre da ~20 nuclei (A3_w4)
   pat <- lapply(seq_len(nrow(win)), function(i) {
     wv <- win[i, ]; a <- ARCH[ARCH$archetype == wv$archetype, ]
     W <- owin(c(wv$x0_um, wv$x0_um + wv$side_um), c(wv$y0_um, wv$y0_um + wv$side_um))

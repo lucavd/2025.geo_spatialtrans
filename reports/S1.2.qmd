@@ -173,10 +173,10 @@ Previsto PASS in ≥ 4/6, A1 e A6 incerti. **Esito 6/6**; A6 è al limite: D(SR4
 
 ![](../results/S1.2/figures/S1.2_fig5_manual.png)
 
-Descrittivo, punti manuali di Luca nelle 24 finestre R2b (pool di 4 finestre, 37–162 punti per finestra) contro i segmentatori nelle stesse finestre. K(r)/(πr²), senza lisciamento:
+Descrittivo: i punti manuali di Luca nelle 24 finestre R2b (37–162 punti per finestra) contro i segmentatori nelle stesse finestre, in pool di 4 finestre per archetipo. La pre-registrazione chiedeva g(r) in pool. La g(r) in pool (`pool()` con `ratio = TRUE`) però esplode a piccolo r quando una finestra ha pochi nuclei: in A3_w4, con 19 nuclei Cellpose, si ottiene un valore di ~1e48 a r = 2.5 µm, perché i denominatori sono quasi nulli. La figura e la tabella usano quindi K(r)/(πr²) in pool, che non è lisciata e ha come denominatore l'area. È una deviazione dichiarata; la g(r) in pool resta in `results/S1.2/S1.2_manual_pcf.csv`.
 
 ```{r}
-x <- mk[!grepl("@", mk$source), ]; x$K_over_pir2 <- round(x$K_over_pir2, 3)
+x <- mk[!grepl("@", mk$source) & mk$r %in% c(2, 3, 5), ]; x$K_over_pir2 <- round(x$K_over_pir2, 3)
 kable(reshape(x, idvar = c("archetype", "source"), timevar = "r", direction = "wide"), row.names = FALSE,
       col.names = c("arch.", "fonte", "r = 2 µm", "r = 3 µm", "r = 5 µm"))
 ```

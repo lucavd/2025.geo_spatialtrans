@@ -186,13 +186,14 @@ p4 <- ggplot(b1, aes(roi_id, dens_seed42)) + geom_rect(aes(xmin = -Inf, xmax = I
   labs(x = "ROI", y = "cellule / mm² di tessuto", colour = NULL, title = "B1b: densita' simulata su mappe graphclust 8 µm (grigio = [evidenti, totale]; × = totale × (1 − esclusa))") + thm
 ggsave(file.path(FIG, "S1.2_fig4_b1b.png"), p4, width = 11, height = 6.5, dpi = 150, bg = "white")
 
-man <- read.csv(file.path(RES, "S1.2_manual_pcf.csv")); man <- man[man$r > 0, ]
+man <- read.csv(file.path(RES, "S1.2_manual_K.csv")); man <- man[!grepl("@", man$source) & man$r > 0, ]
 srcl <- c(manual = "manuale (Luca)", cellpose_rgb = "Cellpose-SAM RGB", stardist_he = "StarDist HE", spaceranger = "Space Ranger 4")
 man$fonte <- srcl[man$source]
-p5 <- ggplot(man, aes(r, g, colour = fonte, linetype = fonte)) + geom_line(linewidth = 0.7) + geom_hline(yintercept = 1, colour = "grey50") + facet_wrap(~archetype, ncol = 3) +
+p5 <- ggplot(man, aes(r, K_over_pir2, colour = fonte, linetype = fonte)) + geom_line(linewidth = 0.7) + geom_hline(yintercept = 1, colour = "grey50") + facet_wrap(~archetype, ncol = 3) +
   scale_colour_manual(values = c("manuale (Luca)" = "black", "Cellpose-SAM RGB" = "#E69F00", "StarDist HE" = "#56B4E9", "Space Ranger 4" = "#CC79A7")) +
   scale_linetype_manual(values = c("manuale (Luca)" = "solid", "Cellpose-SAM RGB" = "solid", "StarDist HE" = "dashed", "Space Ranger 4" = "solid")) +
-  labs(x = "r (µm)", y = "g(r), pool delle 4 finestre R2b", colour = NULL, linetype = NULL, title = "CP-3 descrittivo: punti manuali vs segmentatori nelle stesse finestre (pool)") + thm + theme(legend.position = "bottom")
+  labs(x = "r (µm)", y = "K(r) / (π r²)  (pool delle 4 finestre R2b, senza lisciamento)", colour = NULL, linetype = NULL,
+       title = "CP-3 descrittivo: punti manuali vs segmentatori nelle stesse finestre (1 = CSR; < 1 = deficit cumulato di coppie)") + thm + theme(legend.position = "bottom")
 ggsave(file.path(FIG, "S1.2_fig5_manual.png"), p5, width = 11, height = 6.5, dpi = 150, bg = "white")
 
 # esempio visivo: ritaglio 150 × 150 µm del ROI 1 di ogni archetipo, reale primario vs PD (seed 1)
