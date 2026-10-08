@@ -29,10 +29,11 @@ def pixel_moments(labels, upp, labs):
     x = c * upp; y = r * upp
     n = np.bincount(L, minlength=mx).astype(float)
     sx = np.bincount(L, x, mx); sy = np.bincount(L, y, mx)
-    sxx = np.bincount(L, x * x, mx); syy = np.bincount(L, y * y, mx); sxy = np.bincount(L, x * y, mx)
     with np.errstate(invalid="ignore", divide="ignore"):
         cx = sx / n; cy = sy / n
-        mxx = sxx / n - cx ** 2; myy = syy / n - cy ** 2; mxy = sxy / n - cx * cy
+        # momenti centrati in due passate (C-R3.8: E[x^2] - c^2 perdeva ~1e-4 di eccentricita' sui nuclei isotropi)
+        dx = x - cx[L]; dy = y - cy[L]
+        mxx = np.bincount(L, dx * dx, mx) / n; myy = np.bincount(L, dy * dy, mx) / n; mxy = np.bincount(L, dx * dy, mx) / n
         h = np.sqrt(((mxx - myy) / 2) ** 2 + mxy ** 2); t2 = (mxx + myy) / 2
         l1 = t2 + h; l2 = np.maximum(t2 - h, 0)
         ecc = np.sqrt(np.maximum(1 - l2 / l1, 0)); th = 0.5 * np.arctan2(2 * mxy, mxx - myy)
