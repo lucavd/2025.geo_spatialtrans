@@ -1,0 +1,28 @@
+id,revisore,oggetto,esito,gravita,azione
+RA-code-01..09,code,"n, conservazione, interne, area, eq_r, CV, e_T, N/C su 40 ROI x metodo (implementazione Python indipendente)",confermato (39/40 identici; A6 r3 1 nucleo su un bordo di pixel),bassa,"registrato; nessun verdetto cambia"
+RA-code-02 / RA-code-01,code,convenzione centroide (centro del pixel) vs maschera (lati del pixel): 357 centroidi SR A6 esattamente su un bordo,metodo,bassa,BACKLOG BL-067 (stessa convenzione in S1.3)
+RA-code-10,code,pareggi nel contenimento con centroidi SR quantizzati (A4 p1 0.564814 vs 0.564847),discrepanza,bassa,dichiarato nel report
+RA-code-11 / RA-claims-23,code+claims,p di permutazione = 0,metodo,bassa,report: p < 1/2001
+RA-code-12/13 / RA-claims-17,code+claims,"allineamento territorio-nucleo: non e' un artefatto di convenzione ne' dei centroidi SR (jitter, StarDist)",confermato,—,report §4 CP-2
+RA-code-14 / RA-claims-17,code+claims,orientazione nucleare SR agganciata agli assi (59-65% degli eleggibili entro 5 gradi),metodo,alta,"report: in A4/A6 forma e orientazione nucleare da StarDist; BL-060"
+RA-code-15 / RA-claims-16,code+claims,"meccanismo: volume escluso compatibile ma non dimostrato; alternativa ordine nematico locale; P2 in parte tautologico",metodo,media,"report: CP-2b A1 PASS non letto come palizzata; BL-063 (nullo a ellissi rigide)"
+RA-code-16 / RA-claims-12,code+claims,"A4 dipende dal segmentatore: B-R3.2 FAIL (SR 0.778) -> PASS (StarDist 0.620)",metodo,media,"report riporta entrambi; verdetto pre-registrato (SR) invariato; BL-060"
+RA-code-17/18,code,"CV_loc (banda, leaveoneout) e seed dei nulli",confermato,—,—
+RA-code-19,code,numero di lati: vertici di grado 4 contati diversamente da GEOS (rel 5e-5),discrepanza,bassa,registrato
+RA-code-20,code,maschere A5 912x912 (testo: 913x913),discrepanza (testo),bassa,report: errata nella pre-registrazione; il codice usa ncol
+RA-claims-01..03,claims,"55/55 verdetti ricalcolati identici; regole di decisione conformi; nulli n = osservato, n_failed 0",confermato,—,—
+RA-claims-04,claims,M5 implementa sd al posto della varianza (testo: il contrario),discrepanza,bassa,"report: deviazione di formulazione dichiarata"
+RA-claims-05,claims,C-R3.3c confronta momenti dei pixel (non del poligono) con regionprops,discrepanza,bassa,"report: deviazione dichiarata; coerenza poligono-pixel indiretta via l'angolo analitico (C-R3.3b + C-R3.3c)"
+RA-claims-06,claims,C-R3.4 media normalizzata per 1/lambda (il testo era tautologico),discrepanza,bassa,report: deviazione dichiarata
+RA-claims-07,claims,C-R3.6 non verificabile al momento della revisione,non verificabile,media,"eseguito dopo: 160+1200+48 file md5 identici (R3_test_repro.csv)"
+RA-claims-08,claims,regione CP-4 meno le esclusioni di Luca (solo nel codice),discrepanza,bassa,report: deviazione dichiarata
+RA-claims-09,claims,"B-R3.1 A1: ~55% stimatore della previsione (mediana vs eq_r della media), ~45% selezione delle interne; FAIL regge (4.645 lontano dal bordo)",metodo,media,report §3; BL-065
+RA-claims-10/21,claims,"selezione delle interne non neutra (A5 lambda_loc interne/tutte 0.74-1.07); P3 usa un denominatore con aree tagliate",metodo,alta,"report §3-4; BL-061: S1.3 deve applicare maschera e regola d'interna identiche al simulato"
+RA-claims-11,claims,B-R3.2 previsione costruita su un altro stimatore (rapporto delle mediane),metodo,media,report; BL-065
+RA-claims-13,claims,B-R3.4 per ROI: a maggioranza 2/6 (A5 2/5),metodo,media,report: verdetto pre-registrato (pool) invariato; sensibilita' riportata
+RA-claims-14,claims,CP-1b A4: 22-28% dei primi vicini SR < d* = 4 µm: d* mal specificato sui centroidi SR,metodo,alta,"report; BL-050 aggiornato: non usare d* = 4 in S1.3 senza ristima"
+RA-claims-18,claims,"CP-3 A4: SR 53% artefatto di maschere contigue quantizzate (93-97% a contatto); StarDist 1% limite inferiore",metodo,alta,report: CP-3 misura la convenzione di bordo del segmentatore; BL-062
+RA-claims-19,claims,CP-3 A1 0.152 -> 0.063 con erosione di 1 px,metodo,alta,report: PASS di CP-3 A1 fragile; BL-062
+RA-claims-20,claims,"premessa di P4 sbagliata: i buchi in A5 sono nella maschera di tessuto, non della bolla",bug (analisi post hoc),media,"accolto: P4 riformulato (il ritaglio solo-tessuto non cambia A1-A5); anche la verifica diretta di Claude (maschere A5 identiche) lo mostra"
+RA-claims-22,claims,CP-4: IC95 bootstrap di Delta CV contiene 0 in 6/6,metodo,media,report: CP-4 senza potenza con 4 finestre (BL-041)
+RA-claims-24,claims,B-R3.3c FAIL anche su log/sqrt area,confermato,—,—

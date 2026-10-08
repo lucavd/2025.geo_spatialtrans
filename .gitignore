@@ -44,3 +44,7 @@ tools/__pycache__/
 
 # R2b: annotatori HTML e finestre fuori git (su /mnt/micron)
 results/R2b/*.html
+
+# R3 (2026-10-08)
+results/R3/review/code/cells/
+results/R3/review/code/roi/

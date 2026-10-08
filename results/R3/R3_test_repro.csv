@@ -1,0 +1,4 @@
+"check","case","value","result","note"
+"C-R3.6","real_md5_identical",0,"PASS","160 file confrontati"
+"C-R3.6","null_md5_identical",0,"PASS","1200 file confrontati"
+"C-R3.6","calib_md5_identical",0,"PASS","48 file confrontati"

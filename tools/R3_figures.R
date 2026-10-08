@@ -36,7 +36,7 @@ gen_df$lab <- factor(LAB[gen_df$archetype], LAB)
 p <- ggplot(tiles_df, aes(x, y, group = id)) + geom_polygon(aes(fill = interior), colour = "grey30", linewidth = 0.2) +
   geom_point(data = gen_df, aes(x, y), inherit.aes = FALSE, size = 0.4) +
   scale_fill_manual(values = c(`TRUE` = "#cfe3f3", `FALSE` = "#f3d9cf"), labels = c(`TRUE` = "interna", `FALSE` = "ritagliata"), name = NULL) +
-  scale_y_reverse() + coord_equal() + facet_wrap(~lab, scales = "free", nrow = 2) +
+  scale_y_reverse() + facet_wrap(~lab, scales = "free", nrow = 2) + theme(aspect.ratio = 1) +
   labs(x = "µm (dal centro del ritaglio)", y = "µm", title = "Voronoi sui centroidi nucleari reali (ROI r1 / f1; lato del ritaglio adattato alla densità)") + th
 ggsave(file.path(FIG, "fig1_tiles.png"), p, width = 11, height = 7.5, dpi = 150, bg = "white")
 

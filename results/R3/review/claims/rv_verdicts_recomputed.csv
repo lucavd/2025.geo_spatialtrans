@@ -1,0 +1,55 @@
+id,archetype,statistic,value_recomputed,value_claimed,assertion_recomputed,assertion_claimed,predicted,note,value_match,assert_match
+B-R3.1,A1,eq_r mediano pool interne,4.41640230418338,4.4164,FAIL,FAIL,PASS,,True,True
+B-R3.1,A2,eq_r mediano pool interne,5.468644661413998,5.4686,PASS,PASS,PASS,,True,True
+B-R3.1,A3,eq_r mediano pool interne,7.305592641605221,7.3056,PASS,PASS,PASS,,True,True
+B-R3.1,A4,eq_r mediano pool interne,3.1965617649988736,3.1966,FAIL,FAIL,FAIL,,True,True
+B-R3.1,A5,eq_r mediano pool interne,16.147156113991965,16.147,PASS,PASS,PASS,,True,True
+B-R3.1,A6,eq_r mediano pool interne,15.376840062688519,15.377,PASS,PASS,PASS,,True,True
+B-R3.2,A1,rapporto raggi mediano,0.47130733352308574,0.47131,PASS,PASS,FAIL,,True,True
+B-R3.2,A2,rapporto raggi mediano,0.5965502092776581,0.59655,FAIL,FAIL,PASS,,True,True
+B-R3.2,A3,rapporto raggi mediano,0.44326681137415774,0.44327,PASS,PASS,FAIL,,True,True
+B-R3.2,A4,rapporto raggi mediano,0.7783720966452401,0.77837,FAIL,FAIL,PASS,,True,True
+B-R3.2,A5,rapporto raggi mediano,0.31236793794162354,0.31237,registrato,registrato,registrare,,True,True
+B-R3.2,A6,rapporto raggi mediano,0.16836214167738017,0.16836,registrato,registrato,registrare,,True,True
+B-R3.3a,A4,N/C mediano,0.6058631208394176,0.60586,FAIL,FAIL,FAIL,,True,True
+B-R3.3b,A3,N/C A3 < A1 e < A2,0.19648546606581316,0.19649,PASS,PASS,PASS,A1=0.2221 A2=0.3559,True,True
+B-R3.4,A1,Spearman pool,0.15769479175301224,0.15769,FAIL,FAIL,registrare,"per ROI 0.108..0.228, ROI>=0.3: 0/5",True,True
+B-R3.4,A2,Spearman pool,0.3773660697681391,0.37737,PASS,PASS,registrare,"per ROI 0.325..0.496, ROI>=0.3: 5/5",True,True
+B-R3.4,A3,Spearman pool,0.21313682053868485,0.21314,FAIL,FAIL,registrare,"per ROI 0.072..0.381, ROI>=0.3: 1/5",True,True
+B-R3.4,A4,Spearman pool,0.46880360669789406,0.4688,PASS,PASS,registrare,"per ROI 0.463..0.499, ROI>=0.3: 5/5",True,True
+B-R3.4,A5,Spearman pool,0.36582475650821067,0.36582,PASS,PASS,registrare,"per ROI -0.005..0.591, ROI>=0.3: 2/5",True,True
+B-R3.4,A6,Spearman pool,0.14012067045829887,0.14012,FAIL,FAIL,registrare,"per ROI 0.045..0.161, ROI>=0.3: 0/5",True,True
+B-R3.4,tutti,archetipi sostenuti,3.0,3.0,FAIL,FAIL,PASS,,True,True
+CP-1a,A1,posizione CV_loc,5.0,5.0,registrato,registrato,registrare,"sopra,sopra,sopra,sopra,sopra",True,True
+CP-1b,A1,ROI RSA fuori 10%,5.0,5.0,PASS,PASS,PASS,0.314 0.266 0.323 0.283 0.279,True,True
+CP-1a,A2,posizione CV_loc,5.0,5.0,registrato,registrato,registrare,"sopra,sopra,sopra,sopra,sopra",True,True
+CP-1b,A2,ROI RSA fuori 10%,5.0,5.0,PASS,PASS,PASS,0.219 0.243 0.211 0.431 0.341,True,True
+CP-1a,A3,posizione CV_loc,5.0,5.0,registrato,registrato,registrare,"sopra,sopra,sopra,sopra,sopra",True,True
+CP-1b,A3,ROI RSA fuori 10%,5.0,5.0,PASS,PASS,PASS,0.203 0.254 0.244 0.273 0.353,True,True
+CP-1a,A4,ROI CV_loc sotto CSR,5.0,5.0,PASS,PASS,PASS,"sotto,sotto,sotto,sotto,sotto | CV globale: sotto,sotto,sotto,sotto,sotto",True,True
+CP-1b,A4,ROI RSA entro 10%,0.0,0.0,FAIL,FAIL,PASS,0.195 0.258 0.252 0.276 0.231,True,True
+CP-1a,A5,ROI CV_loc sotto CSR,0.0,0.0,FAIL,FAIL,PASS,"sopra,dentro,dentro,sopra,dentro | CV globale: sopra,sopra,sopra,sopra,dentro",True,True
+CP-1b,A5,ROI RSA entro 10%,2.0,2.0,FAIL,FAIL,PASS,0.295 0.091 0.142 0.386 0.092,True,True
+CP-1a,A6,ROI CV_loc sopra CSR,1.0,1.0,FAIL,FAIL,PASS,"sopra,dentro,dentro,dentro,dentro | CV globale: sopra,dentro,dentro,dentro,dentro",True,True
+CP-1b,A6,ROI RSA entro 10%,4.0,4.0,PASS,PASS,PASS,0.158 0.008 0.004 0.026 0.038,True,True
+CP-2a,A6,ROI d_ecc>=0.05,0.0,0.0,FAIL,FAIL,PASS,,True,True
+CP-2b,A1,ROI dtheta<=35 & p<0.01,5.0,5.0,PASS,PASS,PASS,29.5/0.000/n3372 29.2/0.000/n2704 30.0/0.000/n3384 31.4/0.000/n2818 32.2/0.000/n3342,True,True
+CP-2b,A2,ROI dtheta<=35 & p<0.01,5.0,5.0,registrato,registrato,registrare,26.2/0.000/n2639 26.9/0.000/n2798 25.3/0.000/n2273 23.7/0.000/n2425 28.2/0.000/n2095,True,True
+CP-2b,A3,ROI dtheta<=35 & p<0.01,3.0,3.0,registrato,registrato,registrare,36.4/0.000/n1911 39.1/0.000/n1822 33.3/0.000/n2025 34.4/0.000/n1766 27.0/0.000/n1706,True,True
+CP-2b,A4,ROI dtheta<=35 & p<0.01,5.0,5.0,registrato,registrato,registrare,27.6/0.000/n2685 27.3/0.000/n2597 25.2/0.000/n2895 26.4/0.000/n2846 26.4/0.000/n2675,True,True
+CP-2b,A5,ROI dtheta<=35 & p<0.01,0.0,0.0,registrato,registrato,registrare,44.0/0.284/n81 33.7/0.068/n49 41.9/0.264/n18 32.6/0.049/n19 36.2/0.088/n40,True,True
+CP-2b,A6,ROI dtheta<=35 & p<0.01,0.0,0.0,FAIL,FAIL,PASS,38.0/0.027/n222 37.4/0.220/n219 45.8/0.792/n256 44.8/0.833/n278 36.8/0.323/n308,True,True
+CP-2c,A4,ROI |d_ecc|<0.05,5.0,5.0,PASS,PASS,PASS,,True,True
+CP-3,A1,frazione tagliati >5%,0.1522657334218307,0.15227,PASS,PASS,PASS,NA frac_out=0; >10%: 0.065; >20%: 0.012,True,True
+CP-3,A2,frazione tagliati >5%,0.2749440491699235,0.27494,registrato,registrato,registrare,NA frac_out=0; >10%: 0.142; >20%: 0.043,True,True
+CP-3,A3,frazione tagliati >5%,0.17676742443167626,0.17677,registrato,registrato,registrare,NA frac_out=0; >10%: 0.081; >20%: 0.018,True,True
+CP-3,A4,frazione tagliati >5%,0.5304474508770388,0.53045,registrato,registrato,registrare,NA frac_out=0; >10%: 0.273; >20%: 0.032,True,True
+CP-3,A5,frazione tagliati >5%,0.024860476915271434,0.02486,PASS,PASS,PASS,NA frac_out=0; >10%: 0.006; >20%: 0.000,True,True
+CP-3,A6,frazione tagliati >5%,0.041381456129433725,0.041381,registrato,registrato,registrare,NA frac_out=0; >10%: 0.017; >20%: 0.001,True,True
+CP-4,A1,CV_seg-CV_man pool,-0.04766688223725046,-0.047667,FAIL,FAIL,registrare,per finestra mediana 0.016 (2/4 >0); pool normalizzato per finestra -0.021,True,True
+CP-4,A2,CV_seg-CV_man pool,0.029647023670185957,0.029647,PASS,PASS,registrare,per finestra mediana -0.020 (1/4 >0); pool normalizzato per finestra 0.014,True,True
+CP-4,A3,CV_seg-CV_man pool,0.043700266903426876,0.0437,PASS,PASS,registrare,per finestra mediana -0.093 (1/4 >0); pool normalizzato per finestra -0.070,True,True
+CP-4,A4,CV_seg-CV_man pool,-0.06475204073657226,-0.064752,FAIL,FAIL,registrare,per finestra mediana -0.043 (0/4 >0); pool normalizzato per finestra -0.049,True,True
+CP-4,A5,CV_seg-CV_man pool,0.04236089438719193,0.042361,PASS,PASS,registrare,per finestra mediana 0.084 (3/4 >0); pool normalizzato per finestra 0.058,True,True
+CP-4,A6,CV_seg-CV_man pool,0.018966809010004693,0.018967,PASS,PASS,registrare,per finestra mediana 0.047 (3/4 >0); pool normalizzato per finestra 0.031,True,True
+CP-4,tutti,archetipi CV_seg>CV_man,4.0,4.0,FAIL,FAIL,PASS,per-finestra: 3/6; normalizzato: 3/6,True,True

@@ -1,0 +1,11 @@
+.libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages(library(arrow))
+rois <- read.csv("results/R2/R2_rois_checked.csv"); r <- rois[rois$archetype=="A6" & rois$roi_id=="r3",]
+side <- r$side_px*r$um_per_px; m <- png::readPNG("results/R2/tissue_masks/A6_r3_valid_ds4.png"); px <- side/ncol(m)
+nuc <- read_parquet("results/R2/R2_nuclei_all.parquet"); d <- as.data.frame(nuc[nuc$archetype=="A6"&nuc$roi_id=="r3"&nuc$method=="spaceranger"&nuc$scale==1&nuc$keep,])
+k <- which(d$label==922); print(d[k, c("label","x_um","y_um","area_um2")])
+cat(sprintf("side=%.17g px=%.17g x/px=%.17g y/px=%.17g\n", side, px, d$x_um[k]/px, d$y_um[k]/px))
+ci <- floor(d$x_um[k]/px)+1; ri <- floor(d$y_um[k]/px)+1; cat("ci",ci,"ri",ri," m=",m[ri,ci]," m[ri+-1]:", m[ri-1,ci], m[ri+1,ci], "\n")
+g <- read_parquet("/mnt/micron/geo_spatialtrans/R3/real/A6_r3_spaceranger_gen.parquet"); cat("in gen:", 922 %in% g$label, " n gen", nrow(g), " n keep", nrow(d), "\n")
+roi <- readRDS("/mnt/micron/geo_spatialtrans/R3/real/A6_r3_spaceranger_roi.rds"); print(roi[,c("n_keep","n")])
+cat("file times:\n"); print(file.info(c("results/R2/R2_nuclei_all.parquet","results/R2/tissue_masks/A6_r3_valid_ds4.png","/mnt/micron/geo_spatialtrans/R3/real/A6_r3_spaceranger_gen.parquet"))[,c("mtime","size")])

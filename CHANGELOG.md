@@ -2,6 +2,21 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## R3 — 2026-10-08 — Voronoi sui nuclei reali (branch `step1-cell-layer`)
+
+### Decisioni in apertura (ROADMAP §6)
+- D-R3.1 segmentatore di R2b, sensibilità StarDist in A4/A6; D-R3.2 BL-035 come calibrazione sulle finestre R2b; D-R3.3 R3 prima di S1.3 (Luca, «approvo»).
+
+### Codice (strumenti di riferimento, non pacchetto)
+- `tools/R3_voronoi_metrics.R`: momenti esatti dei poligoni (origine locale), eccentricità/orientazione (definizione regionprops), tassellazione `deldir` ritagliata con `st_crop` + `st_intersection`, celle interne, intensità locale, riassunto — riusabile dai check B di S1.3–S1.4.
+- `tools/R3_run.R` (stadi real, null, calib), `tools/R3_containment.py` (contenimento, momenti nucleari dai pixel, hed), `tools/R3_analysis.R`, `tools/R3_figures.R`, `tools/R3_posthoc.R` (P1–P3), `tools/R3_posthoc_P4.R` + `tools/R3_export_tissue.py` (P4), `R/testing/test_R3.R`, `tools/R3_mutants.sh`, `R/testing/run_R3.sh`.
+- Difetto trovato da C-R3.8 e corretto prima delle analisi: momenti nucleari con E[x²] − c² (ecc ~1e-4 su nuclei isotropi) → due passate (`508a74a`).
+
+### Risultati (`results/R3/`; per cellula, nulli e rerun in `/mnt/micron/geo_spatialtrans/R3*`)
+- Check C 28/28 sintetici, 11/11 reali, mutanti 5/5, C-R3.6 1 408 file md5 identici.
+- Check B 8/14 previsioni confermate; controprove: CP-1 processo omogeneo inadeguato in A1–A3, RSA(d*) troppo regolare in A4; CP-2 A6 isotropo (previsione smentita), allineamento nei tessuti densi; CP-3 dipendente dal segmentatore; CP-4 senza potenza.
+- Revisione avversariale: 2 revisori (code: reimplementazione Python, 40/40 ROI identici; claims: 55/55 verdetti), 44 rilievi, azioni in `results/R3/R3_review_actions.csv`. BIO_REFERENCES B-055…B-090; BACKLOG BL-060…BL-068 (chiuse BL-028, BL-054).
+
 ## S1.2 — 2026-10-08 — `seed_centroids()`: centroidi per regione (branch `step1-cell-layer`)
 
 ### Decisioni in apertura (ROADMAP §6)
