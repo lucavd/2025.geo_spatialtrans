@@ -1,0 +1,6 @@
+mutant,n_fail,detected
+M1,1,TRUE
+M2,1,TRUE
+M3,2,TRUE
+M4,5,TRUE
+M5,5,TRUE
