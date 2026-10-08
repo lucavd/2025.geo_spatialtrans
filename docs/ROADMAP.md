@@ -123,6 +123,10 @@ Il binario R deve stare **davanti** al binario S: R1-R2 prima di S1.2, R3 prima 
 | 2026-10-08 | (R3, D-R3.1) Voronoi sui nuclei reali con il segmentatore di R2b (Cellpose RGB A1, A2, A3, A5; SR4 A4, A6); N/C con lo stesso segmentatore, sensibilità StarDist in A4/A6 (BL-027) — Luca |
 | 2026-10-08 | (R3, D-R3.2) BL-035 in R3: riferimento primario dal segmentatore sui ROI 1 mm², calibrato sui punti manuali delle 24 finestre R2b → intervallo [corretto, segmentatore] — Luca |
 | 2026-10-08 | (R3, BL-060) In A4 e A6: **posizioni** dei nuclei da Space Ranger 4 (decisione R2b), **forma, orientazione e area** nucleare da StarDist `2D_versatile_he` (SR quantizzato sulla griglia 2 µm: orientazione agganciata agli assi, maschere contigue) — Luca («ok») |
+| 2026-10-08 | (S1.3, D-S1.3.1) `tessellate_voronoi()`: Voronoi **per regione** (generatori della regione, ritaglio sulla regione) invece del Voronoi globale ritagliato sulla regione del centroide (design §5.3, che lascia buchi al confine fra regioni) — Luca («approvo») |
+| 2026-10-08 | (S1.3, D-S1.3.2) Frammenti di una cella spezzata dal ritaglio: il pezzo con il generatore resta, gli orfani vanno al territorio della stessa regione con il confine condiviso più lungo; un POLYGON per cellula — Luca («approvo») |
+| 2026-10-08 | (S1.3, D-S1.3.3) Smussatura Chaikin con `n_iter = max(1, round(3·cs))`, cs ∈ [0, 1]; smussato ∩ territorio originale (niente sovrapposizioni), lacune = spazio extracellulare riportato; C2 per cs = 0 — Luca («approvo») |
+| 2026-10-08 | (S1.3) Controprova della riga S1.3 (§4, «A6 eccentricità → fallimento atteso») sostituita da CP-2 (potenza del check di forma): il riferimento A6 è un Voronoi isotropo (BL-064) — Luca («approvo») |
 | 2026-09-18 | **Una sessione = una chat.** Ogni step del protocollo si svolge in una chat nuova; a chiusura ci si ferma. Nessuna eccezione |
 
 ## 7. Stato delle sessioni
