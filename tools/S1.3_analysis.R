@@ -70,6 +70,12 @@ c10s <- read.csv(file.path(RES, "S1.3_c10a_syn.csv"))
 c10 <- rbind(c10r, c10n, c10s[, names(c10r)])
 tg <- tst$geos[tst$geos$check == "C-1" & tst$geos$metric == "max rel |area-Σterr|", ]
 write.csv(c10, file.path(RES, "S1.3_c10a.csv"), row.names = FALSE)
+arb <- rbind(do.call(rbind, lapply(real, function(o) if (nrow(o$arb)) data.frame(set = "real", archetype = o$archetype, roi_id = o$roi_id, model = o$method, o$arb))),
+             do.call(rbind, lapply(nul, function(o) if (!is.null(o$arb) && nrow(o$arb)) data.frame(set = "null", archetype = o$archetype, roi_id = o$roi_id, model = o$model, o$arb))))
+if (is.null(arb)) arb <- data.frame(set = character(0), geos_ok = logical(0), deldir_ok = logical(0), bounded = logical(0))
+write.csv(arb, file.path(RES, "S1.3_c10a_arbitration.csv"), row.names = FALSE)
+n_disc <- nrow(arb) + sum(c10s$n_discord); ok_g <- sum(arb$geos_ok) + sum(c10s$n_geos_ok); ok_d <- sum(arb$deldir_ok) + sum(c10s$n_deldir_ok)
+vr("C10", "arbitro", "A1-A6", "semipiani", "tile discordanti: corretti geos / deldir", sprintf("%d: %d / %d (limitati %d)", n_disc, ok_g, ok_d, sum(arb$bounded)), "-", "INFO")
 c10_ok <- c10$rel_area <= TOL & c10$interior_identical == 1 & c10$frag_identical == 1 & c10$nsides_interior_identical == 1
 vr("C10", "C-10a", "A1-A6", "geos vs deldir", sprintf("insiemi concordi (40 reali + 90 nulli + %d sintetici/avversari)", nrow(c10s)),
    sprintf("%d/%d; max rel area %s", sum(c10_ok), nrow(c10), fmt(max(c10$rel_area))), "100 %", pf(all(c10_ok)), "PASS", all(c10_ok))
@@ -91,6 +97,18 @@ for (md in c("CSR", "RSA", "RSArule")) for (A in paste0("A", 1:6)) for (b in nam
   pr <- if (md == "CSR") NA else pred[[md]][[b]][as.integer(sub("A", "", A))]
   vr("B", b, A, c(CSR = "G1", RSA = "G2", RSArule = "G3")[md], lab[b], sprintf("%d/5 ROI; %+.3f..%+.3f", np, min(d[[b]]), max(d[[b]])), ">= 4/5", out, pr,
      if (is.na(pr)) NA else pr == out)
+}
+# sensibilita' (dichiarata, non pre-registrata): riferimento reale ricalcolato dal pacchetto (stessa regola dei frammenti D-S1.3.2)
+rp <- do.call(rbind, lapply(real, function(o) if (o$method == ARCH$primary[ARCH$archetype == o$archetype]) data.frame(archetype = o$archetype, roi_id = o$roi_id, t(o$geos$summary[key]))))
+ms <- merge(agg, rp, by = c("archetype", "roi_id"), suffixes = c("_sim", "_real"))
+ms$B1 <- ms$median_eq_r_sim / ms$median_eq_r_real - 1; ms$B2 <- ms$cv_sim / ms$cv_real - 1
+ms$B3 <- ms$cv_loc_sim / ms$cv_loc_real - 1; ms$B4 <- ms$median_ecc_T_sim - ms$median_ecc_T_real
+ms$p1 <- abs(ms$B1) <= 0.05; ms$p2 <- abs(ms$B2) <= 0.10; ms$p3 <- abs(ms$B3) <= 0.10; ms$p4 <- abs(ms$B4) < 0.05
+write.csv(ms, file.path(RES, "S1.3_checkB_roi_pkgref.csv"), row.names = FALSE)
+for (md in c("RSA", "RSArule")) for (A in paste0("A", 1:6)) for (b in names(lab)) {
+  d <- ms[ms$archetype == A & ms$model == md, ]; d0 <- mb[mb$archetype == A & mb$model == md, ]
+  o1 <- pf(sum(d[[sub("B", "p", b)]]) >= 4); o0 <- pf(sum(d0[[sub("B", "p", b)]]) >= 4)
+  vr("Bsens", b, A, c(RSA = "G2", RSArule = "G3")[md], paste(lab[b], "(rif. pacchetto)"), sprintf("%d/5 ROI", sum(d[[sub("B", "p", b)]])), ">= 4/5", o1, o0, o1 == o0)
 }
 # previsioni d'ordine per G3 (pre-registrate): CV (B-2, B-3) G3 < G2 in A3, A5, A6; A4 fra G2 e CSR
 for (A in c("A3", "A5", "A6", "A4")) for (cc in c("cv", "cv_loc")) {
@@ -154,13 +172,14 @@ K <- sapply(c("geos", "deldir"), function(b) {
   t <- tst[[b]]; t <- t[t$status != "INFO", ]
   k1 <- all(t$status == "PASS"); k2 <- all(rr$c5_pass[rr$engine == b] & rr$c123_pass[rr$engine == b])
   k3 <- if (b == "geos") all(c123n) else all(c123d)
-  c(K1 = k1, K2 = k2, K3 = k3) })
+  k4 <- (if (b == "geos") ok_g else ok_d) == n_disc        # addendum: escluso il motore che sbaglia un caso verificabile
+  c(K1 = k1, K2 = k2, K3 = k3, K_arb = k4) })
 elig <- colnames(K)[apply(K, 2, all)]
 choice <- if (!length(elig)) NA_character_ else if (length(elig) == 1) elig else {
   if (sum(cperf[elig]) == 1) elig[cperf[elig]] else {
     tot <- rob["total", elig]; if (length(unique(tot)) > 1) elig[which.min(tot)] else {
       tt <- sapply(elig, function(b) pf_$elapsed_s[pf_$backend == b & pf_$n == 449536]); elig[which.min(tt)] } } }
-eng <- data.frame(engine = c("geos", "deldir"), K1 = K["K1", ], K2 = K["K2", ], K3 = K["K3", ], eligible = c("geos", "deldir") %in% elig,
+eng <- data.frame(engine = c("geos", "deldir"), K1 = K["K1", ], K2 = K["K2", ], K3 = K["K3", ], K_arb = K["K_arb", ], eligible = c("geos", "deldir") %in% elig,
                   cperf = cperf, slope = slope, robustness_events = rob["total", ], rob_test = rob["test", ], rob_real = rob["real", ], rob_null = rob["null", ],
                   chosen = c("geos", "deldir") %in% choice)
 write.csv(eng, file.path(RES, "S1.3_engine_choice.csv"), row.names = FALSE)

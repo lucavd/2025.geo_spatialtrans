@@ -91,7 +91,7 @@ if (STAGE %in% c("d1", "all")) {
 }
 
 if (STAGE %in% c("c10", "all")) {          # C-10a sugli ingressi del test (sintetici seed 1-3, avversari seed 1), cella per cella
-  source("tools/S1.3_variants.R")
+  source("tools/S1.3_variants.R"); source("tools/S1.3_arbiter.R")
   EG <- tv_variant(tv_env(), "geos"); ED <- tv_variant(tv_env(), "deldir")
   syn <- c("I1_syn600_c1", "I2_syn600_c2", "I3_syn600_c3", "I4_syn600_c4", "I5_syn600_c2_labels")
   adv <- sub("\\\\.rds$", "", list.files(IN, pattern = "^adv_.*\\\\.rds$"))
@@ -108,12 +108,14 @@ if (STAGE %in% c("c10", "all")) {          # C-10a sugli ingressi del test (sint
     ga <- g$territory_df; da <- d$territory_df
     nsd <- function(t) vapply(t, function(p) nrow(unclass(p)[[1]]) - 1L, 1L)
     k <- !ga$clipped & !da$clipped
+    ab <- arbitrate(g$tiles, d$tiles, cen$x[order(cen$cell_id)], cen$y[order(cen$cell_id)], k)
     data.frame(set = "syn", archetype = "-", roi_id = sprintf("%s_s%d", j$id, j$seed), model = "test",
                rel_area = max(abs(ga$territory_area - da$territory_area) / da$territory_area),
                interior_identical = identical(ga$clipped, da$clipped),
                frag_identical = identical(ga$n_pieces_lost, da$n_pieces_lost) && identical(ga$n_pieces_gained, da$n_pieces_gained),
                nsides_interior_identical = identical(nsd(g$tiles)[k], nsd(d$tiles)[k]),
-               t_geos = g$info$elapsed_s, t_deldir = d$info$elapsed_s, snapped_geos = g$info$n_snapped, snapped_deldir = d$info$n_snapped)
+               t_geos = g$info$elapsed_s, t_deldir = d$info$elapsed_s, snapped_geos = g$info$n_snapped, snapped_deldir = d$info$n_snapped,
+               n_discord = nrow(ab), n_geos_ok = sum(ab$geos_ok), n_deldir_ok = sum(ab$deldir_ok))
   }, mc.cores = NCORES, mc.preschedule = FALSE)
   bad <- vapply(res, function(r) !is.data.frame(r), TRUE); if (any(bad)) stop("c10: errori ", sum(bad), ": ", as.character(res[[which(bad)[1]]]))
   out <- do.call(rbind, res); write.csv(out, file.path(RES, "S1.3_c10a_syn.csv"), row.names = FALSE)

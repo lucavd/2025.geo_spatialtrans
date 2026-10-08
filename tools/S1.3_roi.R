@@ -14,7 +14,7 @@
 .libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
 suppressPackageStartupMessages({ library(sf); library(parallel); library(arrow); library(spatstat.geom); library(spatstat.explore) })
 source("R/04b1_extract_regions.R"); source("R/04b2_seed_centroids.R"); source("R/04b3_tessellate_voronoi.R")
-source("tools/R3_voronoi_metrics.R"); source("tools/S1.3_mutants.R"); source("tools/S1.3_variants.R")
+source("tools/R3_voronoi_metrics.R"); source("tools/S1.3_mutants.R"); source("tools/S1.3_variants.R"); source("tools/S1.3_arbiter.R")
 ENG <- list(geos = tv_variant(tv_env(), "geos"), deldir = tv_variant(tv_env(), "deldir"))
 args <- commandArgs(TRUE); STAGE <- args[1]
 OUT <- if (length(args) > 1) args[2] else "/mnt/micron/geo_spatialtrans/S1.3"
@@ -84,8 +84,12 @@ real_one <- function(A, roi, method) {
                             rel_area_mono = relmax(d$area[mono], ref$area[mono]),
                             n_frag_cells = sum(!mono), rel_sum_area = abs(sum(d$area) - sum(ref$area)) / sum(ref$area),
                             rel_summary = relmax(sumr, sumref)),
-                     cells = d[, c("idx", "area", "interior", "clipped", "n_lost", "n_gained", "nsides", "ecc_T")])
+                     cells = d[, c("idx", "area", "interior", "clipped", "n_lost", "n_gained", "nsides", "ecc_T")], tiles = s$tv$tiles,
+                     summary = sumr)
   }
+  inside <- lengths(st_within(out$geos$tiles, w$frame)) > 0
+  out$arb <- arbitrate(out$geos$tiles, out$deldir$tiles, gen$x, gen$y, inside)
+  out$geos$tiles <- NULL; out$deldir$tiles <- NULL
   g <- out$geos$cells; dl <- out$deldir$cells
   out$c10a <- c(rel_area = relmax(g$area, dl$area), interior_identical = identical(g$interior, dl$interior),
                 frag_identical = identical(g$n_lost, dl$n_lost) && identical(g$n_gained, dl$n_gained),
@@ -144,6 +148,7 @@ null_one <- function(i, model, rp) {
                   nsides_interior_identical = identical(s$df$nsides[s$df$interior], s2$df$nsides[s2$df$interior]),
                   t_geos = s$tv$info$elapsed_s, t_deldir = s2$tv$info$elapsed_s)
     out$c123_deldir <- c123(s2$tv, w, p$x, p$y)
+    out$arb <- arbitrate(s$tv$tiles, s2$tv$tiles, p$x, p$y, lengths(st_within(s$tv$tiles, w$frame)) > 0)
   }
   if (rp <= 2) out$cells <- s$df[, c("x", "y", "area", "interior", "nsides", "ecc_T", "theta_T")]   # B-5: rumore = replica 1 vs 2
   saveRDS(out, f); invisible(NULL)

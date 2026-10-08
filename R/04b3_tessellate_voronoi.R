@@ -258,14 +258,17 @@ tessellate_voronoi <- function(centroids,
   }
   n_frag <- length(orphans); n_re <- 0L; n_snap <- 0L
   if (n_frag) {
+    # riquadri (xmin, ymin, xmax, ymax) calcolati una volta e aggiornati dopo ogni unione (S1.3: prestazioni)
+    bb4 <- function(g) if (sf::st_is_empty(g)) rep(NA_real_, 4) else as.numeric(sf::st_bbox(g))
+    rr <- unique(ridx[vapply(orphans, function(o) o$from, 1L)])
+    bbm <- matrix(NA_real_, n, 4); for (i in which(ridx %in% rr)) bbm[i, ] <- bb4(geoms[[i]])
+    eps <- 1e-7
     pending <- seq_len(n_frag)
     for (pass in 1:10) {
       progress <- FALSE
       for (o in pending) {
-        og <- orphans[[o]]$g; r <- ridx[orphans[[o]]$from]
-        cand <- which(ridx == r)
-        bbs <- sf::st_sfc(lapply(geoms[cand], function(g) if (sf::st_is_empty(g)) sf::st_polygon() else sf::st_as_sfc(sf::st_bbox(g))[[1]]))
-        hit <- cand[lengths(sf::st_intersects(bbs, sf::st_sfc(sf::st_as_sfc(sf::st_bbox(og))[[1]]))) > 0]
+        og <- orphans[[o]]$g; r <- ridx[orphans[[o]]$from]; ob <- bb4(og)
+        hit <- which(ridx == r & bbm[, 1] <= ob[3] + eps & bbm[, 3] >= ob[1] - eps & bbm[, 2] <= ob[4] + eps & bbm[, 4] >= ob[2] - eps)
         if (!length(hit)) next
         ob <- sf::st_boundary(sf::st_sfc(og))
         len <- vapply(hit, function(j) {
@@ -282,7 +285,7 @@ tessellate_voronoi <- function(centroids,
           u <- sf::st_union(sf::st_sfc(geoms[[j]]), sf::st_snap(sf::st_sfc(og), sf::st_sfc(geoms[[j]]), 1e-7))[[1]]
           n_snap <- n_snap + 1L
         }
-        geoms[[j]] <- u
+        geoms[[j]] <- u; bbm[j, ] <- bb4(u)
         gained[j] <- gained[j] + 1L; n_re <- n_re + 1L
         orphans[[o]]$done <- TRUE; progress <- TRUE
       }
