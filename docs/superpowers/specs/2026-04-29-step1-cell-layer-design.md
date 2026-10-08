@@ -239,10 +239,10 @@ derive_cell_geometry(centroids, territories, cell_types)
 ### 5.2 `seed_centroids()`
 Per ogni `region_id`:
 1. Determino la composizione (filtro `region_composition` per `cluster_id`).
-2. Densità target ponderata: `Σ_i fraction_i × density_i`.
+2. Densità target ponderata: `Σ_i fraction_i × density_i`. **[v1.2, S1.2, D3: sostituita da `1 / Σ_i (fraction_i / density_i)` — media armonica; vedi §9]**
 3. Numero target cellule: `n_cells_target = density_pondered × area_mm²`.
 4. **Allocazione per tipo:** ripartisco `n_cells_target` per tipo secondo `fraction_i`, con arrotondamento *largest-remainder* per somma esatta.
-5. **Piazzamento Poisson-disk** (Bridson, O(n)) con `r_min = ⅔ × eq_radius_target` per spaziatura. Esecuzione **per tipo in ordine decrescente di densità** (i tipi rari si infilano nei vuoti residui dei dominanti). Mask di accettazione = `region_polygon`.
+5. **[v1.2, S1.2: RSA a n fissato invece di Bridson, che è massimale; vedi §9]** **Piazzamento Poisson-disk** (Bridson, O(n)) con `r_min = ⅔ × eq_radius_target` per spaziatura. Esecuzione **per tipo in ordine decrescente di densità** (i tipi rari si infilano nei vuoti residui dei dominanti). Mask di accettazione = `region_polygon`.
 6. Output: `centroids` data.frame con `cell_id`, `region_id`, `x`, `y`, `cell_type`, `cluster_id`.
 
 > Razionale Poisson-disk vs jittered grid: distribuzioni naturali (no artifact), spaziatura garantita, tipi rari ottengono territori plausibilmente isolati.
@@ -411,3 +411,4 @@ plot_cell_layer(cell_layer, mode = c("voronoi", "types", "density", "regions"))
 | 2026-04-29 | Sezioni 6-7 finalizzate (validazione, testing, visualizzazione, hand-off Step 2) | Luca |
 | 2026-04-29 | v1.0 inviata a Daniele per revisione (commit `7836829`) | Luca |
 | 2026-09-18 | **v1.1 (S0)** — C-A: `pixel_size_um` obbligatorio, helper `estimate_pixel_size()`, `metadata$pixel_size_source`, check C8, casi limite sulla scala (decisione 10). C-B: diffusione laterale mRNA come requisito di Step 2, riga in 7.1, vincolo in 7.2 (decisione 11). Pannello A1–A6 → 6 preset in 4.6/4.7 (decisione 8 rivista); test su tutti i preset. Corretto refuso nella riga C6 (nome campo `region_id`). | Daniele (commenti) + Luca + Claude |
+| 2026-10-08 | **v1.2 (S1.2, parziale)** — §5.2: densità di miscela armonica (D3); RSA a n fissato invece di Bridson (Bridson satura a ≈ 5× la densità target con d = ⅔·eq_radius); arrotondamento stocastico; distanza minima globale d_ij = (d_i+d_j)/2; `min_dist_um` opzionale. §5.1 passo 4 (BL-043) e stride (BL-042) decisi, da implementare | Luca + Claude |

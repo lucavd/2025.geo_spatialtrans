@@ -114,6 +114,10 @@ Il binario R deve stare **davanti** al binario S: R1-R2 prima di S1.2, R3 prima 
 | 2026-10-07 | (R2b) Annotazione manuale: un solo compito per volta (solo conteggio), alla cieca, finestre a lato adattato alla densità (70–110 nuclei); giudizi istologici separati in checklist per la patologa |
 | 2026-10-07 | (R2b) I VLM generalisti (GPT-6 Astra, deepseek-flash) **non** sono annotatori di riferimento per densità/posizione; al più arbitri sì/no (BL-038) |
 | 2026-10-07 | (S1.1) `extract_regions()`: contorno sui **lati dei pixel** (area esatta, buchi inclusi) invece del tracciamento di Moore sui centri; componenti con union-find su run (R base) invece di BFS; filtro di area sull'area esatta in pixel; `simplify_tol_um` misurato (default 0.5 µm del design) — approvato da Luca («procedi») |
+| 2026-10-08 | (S1.2, BL-042) `extract_regions()`: lo stride viaggia come metadato da generatori/loader; stride stimato > 1 non dichiarato → **errore**. Implementazione in S1.1b o S1.5 — Luca |
+| 2026-10-08 | (S1.2, BL-043) Componenti sotto `min_region_area_um2` assegnate alla regione adiacente con il confine condiviso più lungo; escluse solo se isolate (revisione design §5.1 passo 4). Implementazione in S1.1b o S1.5 — Claude su delega di Luca; da riconfermare se B1b di S1.2 smentisce la previsione |
+| 2026-10-08 | (S1.2, D3) Densità di una regione mista = media **armonica** 1/Σ(f_i/ρ_i) (frazioni per numero di cellule), non Σ f_i·ρ_i (design §5.2 passo 2, §4.3) — Luca |
+| 2026-10-08 | (S1.2) `seed_centroids()`: RSA a n fissato invece di Bridson; arrotondamento stocastico (Bernoulli/Madow); distanza minima globale con d_ij = (d_i+d_j)/2; colonna opzionale `min_dist_um`; preset rinviati a S1.5 — approvato da Luca («approvo») |
 | 2026-09-18 | **Una sessione = una chat.** Ogni step del protocollo si svolge in una chat nuova; a chiusura ci si ferma. Nessuna eccezione |
 
 ## 7. Stato delle sessioni
