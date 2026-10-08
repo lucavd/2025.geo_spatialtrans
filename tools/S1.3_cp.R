@@ -94,7 +94,7 @@ if (STAGE %in% c("c10", "all")) {          # C-10a sugli ingressi del test (sint
   source("tools/S1.3_variants.R"); source("tools/S1.3_arbiter.R")
   EG <- tv_variant(tv_env(), "geos"); ED <- tv_variant(tv_env(), "deldir")
   syn <- c("I1_syn600_c1", "I2_syn600_c2", "I3_syn600_c3", "I4_syn600_c4", "I5_syn600_c2_labels")
-  adv <- sub("\\\\.rds$", "", list.files(IN, pattern = "^adv_.*\\\\.rds$"))
+  adv <- sub("[.]rds$", "", list.files(IN, pattern = "^adv_.*[.]rds$")); stopifnot(length(adv) == 11)
   jobs <- rbind(expand.grid(id = syn, seed = 1:3, stringsAsFactors = FALSE), data.frame(id = adv, seed = 1))
   res <- mclapply(split(jobs, seq_len(nrow(jobs))), function(j) {
     inp <- readRDS(file.path(IN, paste0(j$id, ".rds"))); isadv <- grepl("^adv_", j$id)
@@ -120,4 +120,25 @@ if (STAGE %in% c("c10", "all")) {          # C-10a sugli ingressi del test (sint
   bad <- vapply(res, function(r) !is.data.frame(r), TRUE); if (any(bad)) stop("c10: errori ", sum(bad), ": ", as.character(res[[which(bad)[1]]]))
   out <- do.call(rbind, res); write.csv(out, file.path(RES, "S1.3_c10a_syn.csv"), row.names = FALSE)
   cat(sprintf("C-10a sintetici: %d insiemi, max rel area %.2e\n", nrow(out), max(out$rel_area)))
+}
+
+if (STAGE %in% c("cp2b")) {   # POST HOC (dichiarato, 2026-10-08): CP-2 senza potenza (RSA d* = 2.5 µm ~ Poisson, invariante per affinita');
+  # stessa trasformazione affine su una semina regolare: d tale che eta = rho' * pi d^2 / 4 = 0.4 nel dominio stirato.
+  # Previsione scritta prima del run: eccentricita' mediana monotona in k, Delta >= 0.05 gia' a k <= 1.5.
+  L <- 1000; rho <- 1e6 / 1012.1; ks <- c(1, 1.25, 1.5, 2, 3)
+  jobs <- expand.grid(ki = seq_along(ks), rp = 1:20)
+  res <- mclapply(split(jobs, seq_len(nrow(jobs))), function(j) {
+    k <- ks[j$ki]; seed <- BASE_SEED + 51000 + 100 * j$ki + j$rp; rk <- rho / k / 1e6
+    d <- sqrt(4 * 0.4 / (pi * rk))
+    o <- suppressWarnings(seed_centroids(rect_region(0, 0, k * L, L), data.frame(cell_type = "c", density = rho / k, min_dist_um = d),
+                                         data.frame(cluster_id = 1L, cell_type = "c", fraction = 1), random_seed = seed, verbose = FALSE))
+    cen <- o$centroids; cen$x <- cen$x / k
+    tv <- tessellate_voronoi(cen, rect_region(0, 0, L, L), verbose = FALSE)
+    i <- !tv$territory_df$clipped; sh <- shape_of(tv$cell_territories[i])
+    data.frame(k = k, rep = j$rp, seed = seed, d_um = d, n = nrow(cen), n_failed = o$info$n_failed, n_interior = sum(i),
+               median_ecc_T = median(sh$ecc), frac_near_y = mean(abs(sh$theta) > 3 * pi / 8))
+  }, mc.cores = NCORES, mc.preschedule = FALSE)
+  bad <- vapply(res, function(r) !is.data.frame(r), TRUE); if (any(bad)) stop("cp2b: errori ", sum(bad), ": ", as.character(res[[which(bad)[1]]]))
+  out <- do.call(rbind, res); write.csv(out, file.path(RES, "S1.3_cp2b_posthoc_regular.csv"), row.names = FALSE)
+  print(aggregate(cbind(median_ecc_T, frac_near_y, n_failed) ~ k, out, median))
 }

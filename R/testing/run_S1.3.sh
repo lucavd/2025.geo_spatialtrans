@@ -18,6 +18,7 @@ for st in real null cp3; do
   tail -n 1 "$LOG/roi_$st.log"
 done
 Rscript --vanilla tools/S1.3_cp.R all > "$LOG/cp.log" 2>&1; tail -n 3 "$LOG/cp.log"
+Rscript --vanilla tools/S1.3_cp.R cp2b > "$LOG/cp2b.log" 2>&1; tail -n 7 "$LOG/cp2b.log"      # post hoc dichiarato (CP-2 senza potenza)
 P=results/S1.3/S1.3_perf.csv
 echo "backend,n,elapsed_s,c2_rel,n_multipart,n_snapped,max_rss_mb,status" > "$P"
 for b in geos deldir; do

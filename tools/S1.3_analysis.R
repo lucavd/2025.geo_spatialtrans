@@ -145,6 +145,13 @@ cp2 <- read.csv(file.path(RES, "S1.3_cp2_anisotropy.csv")); a2 <- aggregate(medi
 mono <- all(diff(a2$median_ecc_T) > 0); kmin <- suppressWarnings(min(a2$k[a2$delta >= 0.05]))
 vr("CP", "CP-2", "A6 (densita')", "RSA affine", "eccentricita' monotona in k", paste(sprintf("%.3f", a2$median_ecc_T), collapse = " / "), "monotona", pf(mono), "PASS", mono)
 vr("CP", "CP-2", "A6 (densita')", "RSA affine", "k minimo con Δ >= 0.05", kmin, "<= 1.5", pf(is.finite(kmin) && kmin <= 1.5), "PASS", is.finite(kmin) && kmin <= 1.5)
+if (file.exists(file.path(RES, "S1.3_cp2b_posthoc_regular.csv"))) {     # POST HOC dichiarato
+  c2b <- read.csv(file.path(RES, "S1.3_cp2b_posthoc_regular.csv")); b2 <- aggregate(median_ecc_T ~ k, c2b, median); b2$delta <- b2$median_ecc_T - b2$median_ecc_T[b2$k == 1]
+  kmin2 <- suppressWarnings(min(b2$k[b2$delta >= 0.05]))
+  vr("CP", "CP-2b (post hoc)", "A6 (densita')", "RSA regolare affine", "eccentricita' mediana per k", paste(sprintf("%.3f", b2$median_ecc_T), collapse = " / "), "monotona",
+     pf(all(diff(b2$median_ecc_T) > 0)), "PASS", all(diff(b2$median_ecc_T) > 0))
+  vr("CP", "CP-2b (post hoc)", "A6 (densita')", "RSA regolare affine", "k minimo con Δ >= 0.05", kmin2, "<= 1.5", pf(is.finite(kmin2) && kmin2 <= 1.5), "PASS", is.finite(kmin2) && kmin2 <= 1.5)
+}
 cf <- list.files(file.path(OUT, "cp3"), pattern = "\\.rds$", full.names = TRUE); cp3 <- lapply(cf, readRDS)
 c3 <- do.call(rbind, lapply(cp3, function(o) data.frame(archetype = o$archetype, roi_id = o$roi_id, n = o$n, n_clipped_nonconvex = o$n_clipped_nonconvex,
   ov_contained = o$ov_contained$n, ov_m4 = o$ov_m4$n, ov_m4_not_boundary = o$ov_m4$n_bad, t(o$gap_frac))))
