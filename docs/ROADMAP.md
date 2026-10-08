@@ -49,7 +49,7 @@ Il pannello entra in ogni test dello Step 1 tramite 6 `tissue_preset` (i 3 del d
 **Binario S — Simulatore** (Step 1 → Step 2): implementa il cell layer e poi la griglia HD.
 **Binario R — Riferimenti reali**: costruisce le distribuzioni empiriche contro cui il binario S viene verificato. Parte subito, perché senza riferimenti i check B dello Step 1 non esistono.
 
-Il binario R deve stare **davanti** al binario S: R1-R2 prima di S1.2, R3 prima di S1.4, R4-R5 prima di Step 2.
+Il binario R deve stare **davanti** al binario S: R1-R2 prima di S1.2, R3 prima di S1.3 (decisione 2026-10-08), R4-R5 prima di Step 2.
 
 ### Binario R — sessioni
 
@@ -119,6 +119,9 @@ Il binario R deve stare **davanti** al binario S: R1-R2 prima di S1.2, R3 prima 
 | 2026-10-08 | (S1.2, D3) Densità di una regione mista = media **armonica** 1/Σ(f_i/ρ_i) (frazioni per numero di cellule), non Σ f_i·ρ_i (design §5.2 passo 2, §4.3) — Luca |
 | 2026-10-08 | (S1.2) `seed_centroids()`: RSA a n fissato invece di Bridson; arrotondamento stocastico (Bernoulli/Madow); distanza minima globale con d_ij = (d_i+d_j)/2; colonna opzionale `min_dist_um`; preset rinviati a S1.5 — approvato da Luca («approvo») |
 | 2026-10-08 | (S1.2) D (controprove su g(r)) integrato su r = 0…30 µm come pre-registrato; la variante da 0.5 µm era una deviazione non dichiarata, corretta dopo la revisione avversariale (RA-checkB-07) |
+| 2026-10-08 | (R3, D-R3.3) **R3 prima di S1.3**: la tabella §4 lo richiede per i check B di S1.3; il testo «R3 prima di S1.4» è superato — Luca |
+| 2026-10-08 | (R3, D-R3.1) Voronoi sui nuclei reali con il segmentatore di R2b (Cellpose RGB A1, A2, A3, A5; SR4 A4, A6); N/C con lo stesso segmentatore, sensibilità StarDist in A4/A6 (BL-027) — Luca |
+| 2026-10-08 | (R3, D-R3.2) BL-035 in R3: riferimento primario dal segmentatore sui ROI 1 mm², calibrato sui punti manuali delle 24 finestre R2b → intervallo [corretto, segmentatore] — Luca |
 | 2026-09-18 | **Una sessione = una chat.** Ogni step del protocollo si svolge in una chat nuova; a chiusura ci si ferma. Nessuna eccezione |
 
 ## 7. Stato delle sessioni
