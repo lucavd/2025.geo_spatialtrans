@@ -1,0 +1,5 @@
+check,values
+curve_csv_vs_rds_maxabs,0.0
+sim_models_rows_matched,1020;1020;1020
+D_maxabs_diff,1.2079226507921703e-13
+D_NA_mismatch,0

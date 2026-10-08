@@ -1,0 +1,68 @@
+[A01_multi_s1] 0.13s err='' warn=0 n=307 fail=0
+[A01_multi_s2] 0.65s err='' warn=0 n=305 fail=0
+[A01_multi_s3] 0.07s err='' warn=0 n=306 fail=0
+[A01_multi_s4] 0.05s err='' warn=0 n=306 fail=0
+[A01_multi_s5] 0.08s err='' warn=0 n=306 fail=0
+[A02_near] 0.13s err='' warn=0 n=2247 fail=0
+[A02_far] 0.36s err='' warn=0 n=2247 fail=0
+[A04a_empty_geom] 0.02s err='invalid arguments' warn=0 n=NA fail=NA
+[A04b_zero_area_poly] 0.02s err='' warn=0 n=125 fail=0
+[A04c_only_empty] 0.03s err='vector size cannot be NA' warn=0 n=NA fail=NA
+[A04d_area0_regions] 0.02s err='' warn=0 n=124 fail=0
+[A05a_rid_factor] 0.02s err='' warn=0 n=100 fail=0
+[A05b_rid_char] 0.02s err='' warn=0 n=100 fail=0
+[A05c_rid_double] 0.02s err='' warn=0 n=100 fail=0
+[A05d_rid_big] 0.02s err='' warn=0 n=100 fail=0
+[A05e_rid_factor_revlev] 0.05s err='' warn=0 n=500 fail=0
+[A05f_rid_int_ref] 0.04s err='' warn=0 n=500 fail=0
+[A06a_density_factor] 0.02s err='' warn=0 n=3 fail=0
+[A06b_fraction_factor] 0.08s err='' warn=1 n=1426 fail=0
+[A06c_density_char] 0.94s err='' warn=0 n=13407 fail=0
+[A06d_mindist_factor] 0.03s err='' warn=0 n=270 fail=0
+[A07a_cluster_1e5] 0.00s err='seed_centroids(): cluster senza composizione: 1e+05' warn=0 n=NA fail=NA
+[A07b_cluster_factor_unused] 0.03s err='' warn=0 n=400 fail=0
+[A07c_cluster_int_vs_char] 0.01s err='seed_centroids(): cluster senza composizione: 1' warn=0 n=NA fail=NA
+              lecuyer_state_restored                lecuyer_kind_restored 
+                              "TRUE"                               "TRUE" 
+         output_indep_of_caller_kind              rounding_state_restored 
+                              "TRUE"                               "TRUE" 
+              rounding_kind_restored                 rounding_output_same 
+                              "TRUE"                               "TRUE" 
+                 rounding_n_warnings                            crs_error 
+                                 "1" "st_crs(x) == st_crs(y) is not TRUE" 
+           error_path_state_restored                    seed_1_equals_1.7 
+                              "TRUE"                               "TRUE" 
+                   seed_2pow31_error                   state_after_2pow31 
+                              "TRUE"                               "TRUE" 
+[A10_bigrare_s1] 7.55s err='' warn=1 n=8542 fail=67
+[A10_bigrare_s2] 7.68s err='' warn=1 n=8540 fail=69
+[A10_bigrare_s3] 6.49s err='' warn=1 n=8533 fail=76
+[A10_bigfirst_X3_s1] 0.91s err='' warn=0 n=8609 fail=0
+[A10_bigfirst_X3_s2] 0.95s err='' warn=0 n=8609 fail=0
+[A10_bigfirst_X3_s3] 0.90s err='' warn=0 n=8609 fail=0
+A11_square done
+A11_adjLR done
+A11_adjRL done
+[A12a_strip_1x1000] 7.38s err='' warn=1 n=76 fail=124
+[A12b_strip_rot45] 1200.73s err='' warn=1 n=74 fail=126
+[A13a_area_x10] 0.01s err='' warn=0 n=100 fail=0
+[A15_offset1e8] 0.12s err='' warn=0 n=867 fail=0
+[X0_orig_I1] 0.34s err='' warn=0 n=2991 fail=0
+[X1_dmin_min_I1] 0.50s err='' warn=0 n=2991 fail=0
+[X2_dmin_max_I1] 0.76s err='' warn=0 n=2991 fail=0
+[X3_order_asc_I1] 0.46s err='' warn=0 n=2991 fail=0
+[X4_bernoulli_half_I1] 0.42s err='' warn=0 n=2990 fail=0
+[M1_proj_I1] 0.30s err='' warn=0 n=2991 fail=0
+[M2_proj_I1] 0.42s err='' warn=0 n=2991 fail=0
+[M4_proj_unif] 37.35s err='' warn=0 n=12419 fail=0
+[M4_ref_unif] 0.60s err='' warn=0 n=12419 fail=0
+Warning messages:
+1: In set.seed(seed) : NAs introduced by coercion to integer range
+2: In max(abs(rg$region_df$area_um2 - a_geom)/pmax(a_geom, 1e-12)) :
+  no non-missing arguments to max; returning -Inf
+3: In max(abs(rg$region_df$area_um2 - a_geom)/pmax(a_geom, 1e-12)) :
+  no non-missing arguments to max; returning -Inf
+
+real	25m56.489s
+user	74m0.111s
+sys	0m58.446s

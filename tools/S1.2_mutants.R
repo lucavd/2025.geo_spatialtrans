@@ -25,8 +25,10 @@ sc_mutants <- list(
   M5 = list(.sc_with_seed = function(seed, expr) { set.seed(seed); expr }),
   # M6: densita' di miscela aritmetica (design v1.1) invece di armonica (D3)
   M6 = list(.sc_mix_density = function(fraction, density) sum(fraction * density)),
+  # M7 (post-revisione, RA-code-06): regola fra tipi piu' severa, d_ij = max(d_i, d_j)
+  M7 = list(.sc_pair_dist = function(di, dj) pmax(di, dj)),
   # M4: Bridson (2007, doi:10.1145/1278780.1278807) troncato a n, un tipo, regione rettangolare
-  M4 = list(.sc_place_all = function(tasks, polys, rdf, type_df, max_attempts_factor) {
+  M4 = list(.sc_place_all = function(tasks, polys, rdf, type_df, max_attempts_factor, ...) {
     X <- numeric(0); Y <- numeric(0); TI <- integer(0); RI <- integer(0)
     failed <- integer(nrow(tasks)); atts <- integer(nrow(tasks))
     for (t in seq_len(nrow(tasks))) {

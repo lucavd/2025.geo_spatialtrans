@@ -1,0 +1,21 @@
+id,esito_revisore,azione,dove
+RA-code-06,rilievo di metodo,"aggiunto C-d2 (la regola d_ij non e' piu' severa del dovuto) con input dedicato T1/T3 e mutante M7 (d_ij = max): rilevato",R/testing/test_S1.2.R; tools/S1.2_mutants.R
+RA-code-07,bug,"region_id factor -> errore esplicito; test C-schema",R/04b2_seed_centroids.R
+RA-code-08,bug,"density / min_dist_um / fraction non numerici -> errore esplicito; test C-schema",R/04b2_seed_centroids.R
+RA-code-09,rilievo di metodo,"ordine dei tipi a pari densita' con method = radix (ordine C, indipendente dalla locale); test C-schema",R/04b2_seed_centroids.R
+RA-code-10,rilievo di metodo,"non corretto (cambia il design): BL-055, decisione di Luca prima dei preset S1.5",docs/BACKLOG.md
+RA-code-11,bug,"arresto dopo max_consecutive_rejections = 10 000 proposte interne rifiutate di fila; striscia 1x1000 a 45 gradi ora 34 s (era 1 200 s); test C-sat ruotato",R/04b2_seed_centroids.R
+RA-code-12,discrepanza,"C-sat riportato all'input pre-registrato (1 x 1 000 um); la versione pre-revisione usava 1 x 100 senza dichiararlo",R/testing/test_S1.2.R
+RA-code-14,bug (latente),"warning se la cella della griglia supera 4 d (estensioni enormi); correzione strutturale in BL-057",R/04b2_seed_centroids.R; docs/BACKLOG.md
+RA-code-16,rilievo di metodo,"geometrie vuote -> errore; area_um2 incoerente con st_area (> 1 %) -> warning",R/04b2_seed_centroids.R
+RA-code-19,rilievo di metodo,"effetto di bordo dell'RSA (+10 % entro 1 um dal bordo; asimmetria fra regioni confinanti): BL-056 per S1.3",docs/BACKLOG.md
+RA-code-21,rilievo di metodo,"documentazione di max_attempts_factor e n_attempts corretta",R/04b2_seed_centroids.R
+RA-code-23,rilievo di metodo,"C-in sugli avversari a densita' 2e6/mm2 (adv_L ora 14 centroidi)",R/testing/test_S1.2.R
+RA-checkB-03,rilievo di metodo,"riserva R-4 estesa: il lisciamento attenua il picco anche in A3; BL-053",reports/S1.2.qmd; docs/BACKLOG.md
+RA-checkB-04,confermato con nota,"dichiarato nel report: la tabella g(r) della pre-registrazione riporta Cellpose anche per A4 e A6, dove il riferimento e' SR4",reports/S1.2.qmd
+RA-checkB-07,rilievo di metodo,"corretto: D integrato da r = 0 come pre-registrato (CP-1 4/6, CP-3 6/6); la variante da r = 0.5 resta come sensibilita'",tools/S1.2_analysis.R
+RA-checkB-08/17,rilievo di metodo,"riportato come sensibilita': CP-1 generale e' al limite (4/6 pre-registrato e con banda 0.5x; 3/6 con r da 0.5, banda 2x o banda propria)",reports/S1.2.qmd
+RA-checkB-15,rilievo di metodo,"dichiarato: seed 42 comune a tutti i ROI = numeri casuali comuni; BL-058",reports/S1.2.qmd; docs/BACKLOG.md
+RA-checkB-18,rilievo di metodo,"affermazione ridimensionata a osservazione descrittiva (Spearman 0.60, n = 6); BL-052",reports/S1.2.qmd; docs/BACKLOG.md
+RA-checkB-20,rilievo di metodo,"dichiarato: gli script di analisi sono entrati in git solo con i risultati; pratica in BL-059",reports/S1.2.qmd; docs/BACKLOG.md
+RA-checkB-21,rilievo di metodo,"check B rifatto con il codice corretto: 60/60 unita' di simulazione identiche bit per bit, 58/58 asserzioni comuni identiche, B1b 30/30 (results/S1.2/S1.2_fixcheck.csv)",tools/S1.2_fixcheck.R

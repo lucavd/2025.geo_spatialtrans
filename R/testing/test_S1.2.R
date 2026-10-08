@@ -21,7 +21,11 @@
 #  C-unif: quadrato 1 000 × 1 000 µm, densità A1 12 419, d regola; quadrati 10×10, chisq.test p > 0.001 in ≥ 19/20 seed
 #  C-mix: regione 1 mm², f = .5/.5, ρ = 10 000/1 000 → target 1/(.5/1e4 + .5/1e3) = 1 818.18; n_target ∈ {floor, ceil}
 #  C-seed: identical(centroids, region_df) a parita' di seed; diverso a seed diverso; .Random.seed invariato; assente resta assente
-#  C-sat: striscia 1 × 100 µm, 200 000/mm², min_dist_um 10 → n target 20, al piu' 11 posizionabili: warning, n_failed >= 9, < 60 s
+#  C-sat: striscia 1 × 1 000 µm (pre-registrata; la v. pre-revisione usava 1 × 100, RA-code-12), 200 000/mm², min_dist_um 10
+#         → n target 200, al piu' 101 posizionabili: warning, n_failed >= 99, < 60 s; idem ruotata di 45° (RA-code-11)
+#  Aggiunte dopo la revisione avversariale (dichiarate nel report): C-d2 (la regola d_ij non e' piu' severa del dovuto:
+#         per ogni coppia di tipi con >= 50 coppie entro 1.5 d_ij, min(d / d_ij) <= 1.05; mutante M7 d_ij = max);
+#         C-schema factor/geometria vuota/ordine indipendente dalla locale (RA-code-07/08/09/16); C-in avversari a densita' piu' alta (RA-code-23)
 #  Mutanti: M1 → C-in, M2 → C-d, M3 → C1b, M3b → C4b, M4 → C-unif, M5 → C-seed, M6 → C-mix; ognuno DEVE far fallire il proprio check
 .libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
 suppressPackageStartupMessages({ library(sf); library(parallel); library(spatstat.geom) })
@@ -38,6 +42,7 @@ rec <- function(check, input, metric, value, threshold, status) {
   cat(sprintf("%-5s %-8s %-22s %-28s %s (soglia %s)\n", status, check, input, metric, value, threshold))
 }
 pf <- function(ok) if (isTRUE(ok)) "PASS" else "FAIL"
+num_or_stop <- function(x) { if (any(vapply(x, inherits, TRUE, "try-error"))) stop("errore in un worker: ", as.character(x[[which(vapply(x, inherits, TRUE, "try-error"))[1]]])); unlist(x) }
 
 # ---- input -------------------------------------------------------------------
 ct_test <- data.frame(cell_type = c("T1", "T2", "T3", "T4"), density = c(8000, 3000, 20000, 1000),
@@ -102,8 +107,12 @@ check_dmin <- function(o) {
   thr <- (dt[cp$i] + dt[cp$j]) / 2
   v <- dd < thr - 1e-9
   cross <- cdf$region_id[cp$i] != cdf$region_id[cp$j]
+  tp <- paste(pmin(as.character(cdf$cell_type[cp$i]), as.character(cdf$cell_type[cp$j])),
+              pmax(as.character(cdf$cell_type[cp$i]), as.character(cdf$cell_type[cp$j])), sep = "-")
+  near <- dd < 1.5 * thr
+  rt <- tapply(dd[near] / thr[near], tp[near], min); nt <- tapply(dd[near], tp[near], length)
   list(viol = sum(v), viol_cross = sum(v & cross), n_pairs = length(dd), n_cross = sum(cross),
-       min_ratio = if (length(dd)) min(dd / thr) else NA)
+       min_ratio = if (length(dd)) min(dd / thr) else NA, pair_min_ratio = rt[nt >= 50])
 }
 
 # ---- C1a / C4a / C4c / C-in / C-d su I1–I4 -----------------------------------
@@ -138,15 +147,27 @@ for (id in syn_ids) {
   dm <- check_dmin(o)
   rec("C-d", id, sprintf("violazioni (%d coppie)", dm$n_pairs), dm$viol, "0", pf(dm$viol == 0))
   rec("C-d", id, sprintf("violaz. fra regioni (%d coppie)", dm$n_cross), dm$viol_cross, "0", pf(dm$viol_cross == 0))
+  pr <- dm$pair_min_ratio
+  rec("C-d2", id, sprintf("max_k min(d/d_ij) (%s)", paste(names(pr), collapse = ",")), sprintf("%.4f", max(pr)), "<= 1.05", pf(length(pr) > 0 && max(pr) <= 1.05))
 }
+
+# ---- C-d2: input dedicato, 1 mm², miscela 50/50 T1 (8 000/mm²) e T3 (20 000/mm²): molte coppie fra tipi ----
+reg_mix2 <- list(region_df = data.frame(region_id = 1L, cluster_id = 1L, area_um2 = 1e6),
+                 region_polygons = st_sfc(st_polygon(list(rbind(c(0, 0), c(1000, 0), c(1000, 1000), c(0, 1000), c(0, 0))))))
+run_cd2 <- function(E) E$seed_centroids(reg_mix2, data.frame(cell_type = c("T1", "T3"), density = c(8000, 20000)),
+                                        data.frame(cluster_id = 1, cell_type = c("T1", "T3"), fraction = c(.5, .5)), random_seed = 5, verbose = FALSE)
+dm2 <- check_dmin(run_cd2(E0))
+rec("C-d", "mix 1mm2 T1/T3", sprintf("violazioni (%d coppie)", dm2$n_pairs), dm2$viol, "0", pf(dm2$viol == 0))
+rec("C-d2", "mix 1mm2 T1/T3", sprintf("max_k min(d/d_ij) (%s)", paste(names(dm2$pair_min_ratio), collapse = ",")), sprintf("%.4f", max(dm2$pair_min_ratio)),
+    "<= 1.05", pf(length(dm2$pair_min_ratio) == 3 && max(dm2$pair_min_ratio) <= 1.05))
 
 # ---- C-in su input avversari e reali; C-d su un ROI reale denso ------------
 ct_a <- data.frame(cell_type = "a", density = 12419)
 for (id in c("adv_donut", "adv_donut_island", "adv_L", "roi_A1_r1")) {
   reg <- load_regions(id, min_region_area_um2 = 0)
   comp <- data.frame(cluster_id = unique(as.character(reg$region_df$cluster_id)), cell_type = "a", fraction = 1)
-  dens <- if (grepl("^adv", id)) 2e5 else 12419             # adversari piccoli: densita' alta per avere punti
-  o <- E0$seed_centroids(reg, data.frame(cell_type = "a", density = dens, min_dist_um = if (grepl("^adv", id)) 0.5 else NA),
+  dens <- if (grepl("^adv", id)) 2e6 else 12419             # avversari piccoli: densita' alta per avere molti punti (RA-code-23)
+  o <- E0$seed_centroids(reg, data.frame(cell_type = "a", density = dens, min_dist_um = if (grepl("^adv", id)) 0.2 else NA),
                          comp, random_seed = 42, verbose = FALSE)
   ins <- check_inside(o, reg)
   rec("C-in", id, sprintf("fuori regione (n=%d)", nrow(o$centroids)), sum(!ins), "0", pf(all(ins) && nrow(o$centroids) > 0))
@@ -161,7 +182,7 @@ rec("C-d", "roi_A4_f1", sprintf("violaz. fra regioni (%d)", dm$n_cross), dm$viol
 # ---- C1b: non distorsione su regioni piccole --------------------------------
 run_c1b <- function(E, seeds) {
   reg <- squares(2000, 200)
-  unlist(mclapply(seeds, function(s) E$seed_centroids(reg, data.frame(cell_type = "a5", density = 1185),
+  num_or_stop(mclapply(seeds, function(s) E$seed_centroids(reg, data.frame(cell_type = "a5", density = 1185),
          data.frame(cluster_id = 1, cell_type = "a5", fraction = 1), random_seed = s, verbose = FALSE)$info$n_cells,
          mc.cores = NCORES))
 }
@@ -176,10 +197,12 @@ run_c4b <- function(E, seeds) {
   reg <- squares(2000, 400)
   ctm <- data.frame(cell_type = c("T1", "T2", "T3"), density = c(8000, 3000, 20000))
   cm <- data.frame(cluster_id = 1, cell_type = c("T1", "T2", "T3"), fraction = c(.90, .08, .02))
-  do.call(rbind, mclapply(seeds, function(s) {
+  r <- mclapply(seeds, function(s) {
     o <- E$seed_centroids(reg, ctm, cm, random_seed = s, verbose = FALSE)
     as.numeric(table(factor(o$centroids$cell_type, levels = c("T1", "T2", "T3"))))
-  }, mc.cores = NCORES))
+  }, mc.cores = NCORES)
+  if (any(vapply(r, inherits, TRUE, "try-error"))) stop("errore in un worker C4b")
+  do.call(rbind, r)
 }
 rho_mix <- 1 / sum(c(.90, .08, .02) / c(8000, 3000, 20000))
 lam4 <- 2000 * rho_mix * 400 / 1e6
@@ -197,7 +220,7 @@ rec("C4a", "2000x400um2", "max |n_i - n f_i|", sprintf("%.3f", dev4), "< 1", pf(
 
 # ---- C-unif ------------------------------------------------------------------
 reg_sq <- list(region_df = data.frame(region_id = 1L, cluster_id = 1L, area_um2 = 1e6), region_polygons = st_sfc(sq(0, 0, 1000)))
-run_unif <- function(E, seeds) unlist(mclapply(seeds, function(s) {
+run_unif <- function(E, seeds) num_or_stop(mclapply(seeds, function(s) {
   o <- E$seed_centroids(reg_sq, data.frame(cell_type = "a1", density = 12419), data.frame(cluster_id = 1, cell_type = "a1", fraction = 1),
                         random_seed = s, verbose = FALSE)
   q <- table(factor(pmin(floor(o$centroids$x / 100), 9) + 10 * pmin(floor(o$centroids$y / 100), 9), levels = 0:99))
@@ -235,16 +258,20 @@ rs <- run_seed(E0)
 for (nm in names(rs)) rec("C-seed", "I1", nm, rs[[nm]], "TRUE", pf(rs[[nm]]))
 
 # ---- C-sat -------------------------------------------------------------------
-strip <- list(region_df = data.frame(region_id = 1L, cluster_id = 1L, area_um2 = 100),
-              region_polygons = st_sfc(st_polygon(list(rbind(c(0, 0), c(100, 0), c(100, 1), c(0, 1), c(0, 0))))))
-w <- NULL
-t_sat <- system.time(os <- withCallingHandlers(
-  E0$seed_centroids(strip, data.frame(cell_type = "s", density = 2e5, min_dist_um = 10),
-                    data.frame(cluster_id = 1, cell_type = "s", fraction = 1), random_seed = 1, verbose = FALSE),
-  warning = function(cw) { w <<- conditionMessage(cw); invokeRestart("muffleWarning") }))[["elapsed"]]
-rec("C-sat", "striscia 1x100", "n_target; n_cells; n_failed", sprintf("%d; %d; %d", os$info$n_target, os$info$n_cells, os$info$n_failed),
-    "20; <= 11; >= 9", pf(os$info$n_target == 20 && os$info$n_cells <= 11 && os$info$n_failed >= 9))
-rec("C-sat", "striscia 1x100", "warning emesso; tempo (s)", sprintf("%s; %.1f", !is.null(w), t_sat), "TRUE; < 60", pf(!is.null(w) && t_sat < 60))
+strip_m <- rbind(c(0, 0), c(1000, 0), c(1000, 1), c(0, 1), c(0, 0))
+rot45 <- function(m) m %*% matrix(c(cos(pi / 4), sin(pi / 4), -sin(pi / 4), cos(pi / 4)), 2)
+for (sv in list(list(lab = "striscia 1x1000", m = strip_m), list(lab = "striscia 1x1000 a 45°", m = rot45(strip_m)))) {
+  strip <- list(region_df = data.frame(region_id = 1L, cluster_id = 1L, area_um2 = 1000),
+                region_polygons = st_sfc(st_polygon(list(sv$m))))
+  w <- NULL
+  t_sat <- system.time(os <- withCallingHandlers(
+    E0$seed_centroids(strip, data.frame(cell_type = "s", density = 2e5, min_dist_um = 10),
+                      data.frame(cluster_id = 1, cell_type = "s", fraction = 1), random_seed = 1, verbose = FALSE),
+    warning = function(cw) { w <<- conditionMessage(cw); invokeRestart("muffleWarning") }))[["elapsed"]]
+  rec("C-sat", sv$lab, "n_target; n_cells; n_failed", sprintf("%d; %d; %d", os$info$n_target, os$info$n_cells, os$info$n_failed),
+      "200; <= 101; >= 99", pf(os$info$n_target == 200 && os$info$n_cells <= 101 && os$info$n_failed >= 99))
+  rec("C-sat", sv$lab, "warning emesso; tempo (s)", sprintf("%s; %.1f", !is.null(w), t_sat), "TRUE; < 60", pf(!is.null(w) && t_sat < 60))
+}
 
 # ---- C-schema e input non validi ---------------------------------------------
 o1 <- E0$seed_centroids(syn[[1]], ct_test, comp_for(syn[[1]]$region_df$cluster_id), random_seed = 1, verbose = FALSE)
@@ -270,6 +297,20 @@ on <- withCallingHandlers(E0$seed_centroids(r1, data.frame(cell_type = c("a", "b
                           warning = function(cw) { wn <<- conditionMessage(cw); invokeRestart("muffleWarning") })
 okn <- !is.null(wn) && abs(on$region_df$target_density_weighted - 1 / (.5 / 1000 + .5 / 2000)) < 1e-9
 rec("C-schema", "1mm2", "frazioni .45/.45 -> warning + normalizzate", okn, "TRUE", pf(okn))
+z <- err(E0$seed_centroids(list(region_df = data.frame(region_id = factor(c("2", "1")), cluster_id = 1L, area_um2 = 1e6),
+                                 region_polygons = st_sfc(sq(0, 0, 1000), sq(2000, 0, 1000))), ct_a, data.frame(cluster_id = 1, cell_type = "a", fraction = 1)))
+rec("C-schema", "2 regioni", "region_id factor -> errore (RA-code-07)", z, "TRUE", pf(z))
+z <- err(E0$seed_centroids(r1, data.frame(cell_type = "a", density = factor(12419)), data.frame(cluster_id = 1, cell_type = "a", fraction = 1)))
+rec("C-schema", "1mm2", "density factor -> errore (RA-code-08)", z, "TRUE", pf(z))
+z <- err(E0$seed_centroids(r1, ct_a, data.frame(cluster_id = 1, cell_type = "a", fraction = factor(1))))
+rec("C-schema", "1mm2", "fraction factor -> errore (RA-code-08)", z, "TRUE", pf(z))
+z <- err(E0$seed_centroids(list(region_df = data.frame(region_id = 1L, cluster_id = 1L, area_um2 = 1), region_polygons = st_sfc(st_polygon())),
+                           ct_a, data.frame(cluster_id = 1, cell_type = "a", fraction = 1)))
+rec("C-schema", "vuota", "geometria vuota -> errore (RA-code-16)", z, "TRUE", pf(z))
+ot <- E0$seed_centroids(r1, data.frame(cell_type = c("a", "B"), density = c(1000, 1000)),
+                        data.frame(cluster_id = 1, cell_type = c("a", "B"), fraction = c(.5, .5)), random_seed = 1, verbose = FALSE)
+rec("C-schema", "1mm2", "ordine tipi a pari densita' = ordine C (RA-code-09)", paste(ot$type_df$cell_type, collapse = ","), "B,a",
+    pf(identical(ot$type_df$cell_type, c("B", "a"))))
 empty <- list(region_df = data.frame(region_id = integer(0), cluster_id = integer(0), area_um2 = numeric(0)), region_polygons = st_sfc())
 oe <- tryCatch(E0$seed_centroids(empty, ct_a, data.frame(cluster_id = 1, cell_type = "a", fraction = 1), verbose = FALSE), error = function(e) e)
 rec("C-schema", "vuoto", "0 regioni -> 0 righe senza errore", !inherits(oe, "error") && nrow(oe$centroids) == 0, "TRUE",
@@ -299,6 +340,9 @@ mrec("M3b", "C4b", sprintf("T3 media %.1f vs %.1f", mean(Mm[, 3]), lam4 * .02), 
 pm <- run_unif(sc_mutate(E0, "M4"), 1:20); mrec("M4", "C-unif", sprintf("%d/20 p > 0.001", sum(pm > 0.001)), sum(pm > 0.001) < 19)
 # M5 -> C-seed
 rm5 <- run_seed(sc_mutate(E0, "M5")); mrec("M5", "C-seed", paste(names(rm5), rm5, sep = "=", collapse = " "), !all(rm5))
+# M7 -> C-d2 (input dedicato T1/T3)
+pr7 <- check_dmin(run_cd2(sc_mutate(E0, "M7")))$pair_min_ratio
+mrec("M7", "C-d2", sprintf("max min(d/d_ij) %.3f (%s)", max(pr7), paste(names(pr7), collapse = ",")), max(pr7) > 1.05)
 # M6 -> C-mix
 o6 <- run_mix(sc_mutate(E0, "M6"))
 mrec("M6", "C-mix", sprintf("%.1f", o6$region_df$target_density_weighted), abs(o6$region_df$target_density_weighted - tgt) > 1e-9)

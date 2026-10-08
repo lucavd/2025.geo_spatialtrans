@@ -2,6 +2,23 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.2 — 2026-10-08 — `seed_centroids()`: centroidi per regione (branch `step1-cell-layer`)
+
+### Decisioni in apertura (ROADMAP §6)
+- BL-042: stride dai metadati + errore (Luca); BL-043: componenti sotto soglia alla regione adiacente (Claude su delega; confermata da B1b); D3: densità di miscela armonica 1/Σ(f_i/ρ_i) (Luca). Design v1.2 parziale (§5.2, §9).
+
+### Codice
+- `R/04b2_seed_centroids.R` (nuovo): `seed_centroids(regions, cell_types, region_composition, random_seed = 42, dmin_factor = 2/3, max_attempts_factor = 1000, max_consecutive_rejections = 10000, verbose = TRUE)` → `centroids`, `region_df` (+ target armonico, lambda, n_target, n_cells, n_failed, densità ottenuta), `type_df`, `info`. RSA a n fissato con griglia dei vicini globale (d_ij = (d_i+d_j)/2, anche fra regioni), arrotondamento Bernoulli per regione e Madow per tipo, `min_dist_um` opzionale, stato RNG globale ripristinato.
+- Deviazioni approvate dal design §5.2: RSA invece di Bridson (massimale, ≈ 5× la densità target), arrotondamento stocastico, distanza globale, `min_dist_um`, preset rinviati a S1.5, `n_failed` invece del ciclo infinito.
+- `R/testing/test_S1.2.R` (77 asserzioni, 8 mutanti in `tools/S1.2_mutants.R`), `R/testing/run_S1.2.sh`, `tools/S1.2_perf.R`, `tools/S1.2_checkB.R` (check B e controprove su 30 ROI R2, ~20 000 pattern simulati), `tools/S1.2_analysis.R`, `tools/S1.2_fixcheck.R`.
+- Correzioni dopo la revisione avversariale: factor in ingresso → errore (RA-code-07/08); ordine dei tipi con `radix` (RA-code-09); arresto per saturazione dopo 10 000 rifiuti consecutivi (RA-code-11: striscia ruotata 1 200 s → 17–34 s); validazione di geometrie vuote e area incoerente (RA-code-16); warning di griglia grossolana (RA-code-14); documentazione di `max_attempts_factor` (RA-code-21); C-sat riportato all'input pre-registrato (RA-code-12); C-d2 + M7 (RA-code-06); D di nuovo integrato da r = 0 come pre-registrato (RA-checkB-07).
+
+### Risultati (`results/S1.2/`; simulazioni e log in `/mnt/micron/geo_spatialtrans/S1.2/`)
+- Check C 77/77 PASS, 8/8 mutanti rilevati; C-perf 449 536 punti in 4.6 s, 346 MB.
+- Check B: B1a FAIL in A1, A2, A5 per tolleranza operativa sbagliata (scarto ≤ 2 cellule); B1b PASS A1–A5, FAIL A6 (0/5: semantica di esclusione di S1.1, conferma BL-043); B2 FAIL 6/6 (aggregazione 5–30 µm).
+- Controprove: CP-1 4/6 PASS al limite (A1 0.266 vs 0.25; 3/6 in 3 varianti di sensibilità su 4; previsione smentita in A3); CP-2 regola ⅔·eq_r adeguata solo in A1, A2 (A5 smentito), d* 2.5–4 µm (A5 7); CP-3 6/6 (A6 al limite).
+- Revisione avversariale: 2 revisori, 44 rilievi (23 code: 4 bug, 1 discrepanza; 21 checkB: 13 confermati, 8 di metodo); verifica delle correzioni 60/60 unità di simulazione identiche bit per bit. BACKLOG BL-050…BL-059; BIO_REFERENCES B-049…B-054 (d*, provvisori).
+
 ## S1.1 — 2026-10-07 — `extract_regions()`: dalla mappa dei cluster alle regioni connesse (branch `step1-cell-layer`)
 
 ### Codice

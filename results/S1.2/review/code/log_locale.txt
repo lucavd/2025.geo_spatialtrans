@@ -1,0 +1,2 @@
+[A08_tie_C] 0.07s err='' warn=0 n=800 fail=0
+[A08_tie_enGBUTF8] 0.06s err='' warn=0 n=800 fail=0

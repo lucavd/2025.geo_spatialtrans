@@ -7,9 +7,13 @@ source("R/04b1_extract_regions.R"); source("R/04b2_seed_centroids.R")
 OUT <- "/mnt/micron/geo_spatialtrans/S1.2/checkB"; RES <- "results/S1.2"; FIG <- file.path(RES, "figures")
 dir.create(FIG, showWarnings = FALSE, recursive = TRUE)
 ARCH <- read.csv(file.path(RES, "S1.2_archetype_params.csv"))
-R_GRID <- seq(0, 30, by = 0.5); IR <- which(R_GRID > 0)            # r = 0.5..30
-trap <- function(f) sum((head(f, -1) + tail(f, -1)) / 2 * diff(R_GRID[IR]))
-Dist <- function(a, b) trap((a[IR] - b[IR])^2)
+R_GRID <- seq(0, 30, by = 0.5); IR <- which(R_GRID > 0)            # r in (0, 30] per B2 (pre-registrato)
+# D come pre-registrato: integrale dei trapezi su r = 0..30 (RA-checkB-07: la versione pre-revisione partiva da 0.5,
+# deviazione non necessaria che cambiava l'esito di CP-1); D05 (r = 0.5..30) resta come analisi di sensibilita'.
+I0 <- seq_along(R_GRID)
+trap <- function(f, ii) sum((head(f, -1) + tail(f, -1)) / 2 * diff(R_GRID[ii]))
+Dist   <- function(a, b) { stopifnot(all(is.finite(a)), all(is.finite(b))); trap((a[I0] - b[I0])^2, I0) }
+Dist05 <- function(a, b) trap((a[IR] - b[IR])^2, IR)
 
 real <- readRDS(file.path(OUT, "real_pcf.rds"))
 rkey <- vapply(real, function(z) paste(z$archetype, z$roi_id), "")
@@ -19,6 +23,7 @@ gcols <- grep("^g_", names(sim), value = TRUE); stopifnot(length(gcols) == lengt
 sim$key <- paste(sim$archetype, sim$roi_id)
 G <- as.matrix(sim[, gcols])
 sim$D <- vapply(seq_len(nrow(sim)), function(i) if (sim$reps[i] > 0) Dist(G[i, ], real[[sim$key[i]]]$primary$g) else NA_real_, 0)
+sim$D05 <- vapply(seq_len(nrow(sim)), function(i) if (sim$reps[i] > 0) Dist05(G[i, ], real[[sim$key[i]]]$primary$g) else NA_real_, 0)
 write.csv(sim[, setdiff(names(sim), gcols)], file.path(RES, "S1.2_sim_models.csv"), row.names = FALSE)
 cat(sprintf("[analysis] %d righe modello, %d ROI\n", nrow(sim), length(unique(sim$key))))
 
@@ -124,6 +129,14 @@ for (A in ARCH$archetype) { s <- cp3[cp3$archetype == A, ]
 add("tutti", "CP-3", "archetipi con riferimento discriminante", sprintf("%d/6", sum(p3)), ">= 4/6 (previsione)", ifelse(sum(p3) >= 4, "PASS", "FAIL"), ">= 4/6")
 
 S <- do.call(rbind, summ); write.csv(S, file.path(RES, "S1.2_checkB_summary.csv"), row.names = FALSE)
+# sensibilita' (non pre-registrata): D integrato da r = 0.5
+sens <- do.call(rbind, lapply(ARCH$archetype, function(A) {
+  a <- sim[sim$archetype == A, ]; pdD <- a$D05[a$model == "PD"]; csD <- a$D05[a$model == "CSR"]
+  z <- real[startsWith(rkey, paste0(A, " "))]; dseg <- vapply(z, function(q) Dist05(q$primary$g, q$secondary$g), 0)
+  data.frame(archetype = A, variante = "D da r = 0.5", cp1_wins = sum(pdD < csD), cp1_red = median(1 - pdD / csD),
+             cp1 = sum(pdD < csD) >= 4 && median(1 - pdD / csD) >= 0.25, cp3_ratio = median(dseg) / median(csD), cp3 = median(dseg) < 0.5 * median(csD))
+}))
+write.csv(sens, file.path(RES, "S1.2_CP_sensitivity_r05.csv"), row.names = FALSE)
 print(S[, c("archetype", "check", "value", "status", "predicted")], right = FALSE)
 
 # ---- figure ----------------------------------------------------------------------

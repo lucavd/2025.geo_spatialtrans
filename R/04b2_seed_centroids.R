@@ -22,9 +22,15 @@
 #' @param random_seed seme; lo stato globale del generatore è ripristinato
 #'   all'uscita.
 #' @param dmin_factor fattore della distanza minima di default (design: 2/3).
-#' @param max_attempts_factor proposte massime per (regione, tipo) =
-#'   `max_attempts_factor × n + 1000`; oltre, le cellule mancanti sono
-#'   registrate in `n_failed` con un warning.
+#' @param max_attempts_factor proposte **dentro il poligono** massime per
+#'   (regione, tipo) = `max_attempts_factor × n + 1000`; il compito si ferma
+#'   prima anche dopo `max_consecutive_rejections` proposte interne rifiutate
+#'   di fila (saturazione, RA-11) o dopo 100 blocchi senza proposte interne.
+#'   Le cellule mancanti sono registrate in `n_failed` con un warning.
+#'   `info$n_attempts` conta le proposte interne valutate, non quelle generate
+#'   nel riquadro.
+#' @param max_consecutive_rejections vedi sopra (default 10 000: con
+#'   probabilita' di accettazione >= 1e-3 l'arresto spurio ha probabilita' < e^-10).
 #' @param verbose stampa un riepilogo.
 #' @return lista con `centroids` (data.frame `cell_id, region_id, x, y,
 #'   cell_type, cluster_id`), `region_df` (input + `target_density_weighted`,
@@ -37,6 +43,7 @@ seed_centroids <- function(regions,
                            random_seed = 42,
                            dmin_factor = 2 / 3,
                            max_attempts_factor = 1000,
+                           max_consecutive_rejections = 10000L,
                            verbose = TRUE) {
   t0 <- proc.time()[["elapsed"]]
   a <- .sc_check_args(regions, cell_types, region_composition, random_seed,
@@ -46,7 +53,7 @@ seed_centroids <- function(regions,
   res <- .sc_with_seed(random_seed, {
     plan <- .sc_plan(rdf, type_df, a$composition)
     pl   <- .sc_place_all(plan$tasks, regions$region_polygons, rdf, type_df,
-                          max_attempts_factor)
+                          max_attempts_factor, max_consecutive_rejections)
     list(plan = plan, pl = pl)
   })
   plan <- res$plan; pl <- res$pl
@@ -107,12 +114,23 @@ seed_centroids <- function(regions,
   if (length(regions$region_polygons) != nrow(rdf)) {
     stop("seed_centroids(): region_polygons e region_df hanno lunghezze diverse.", call. = FALSE)
   }
+  if (is.factor(rdf$region_id)) stop("seed_centroids(): region_id e' un factor: passare interi o caratteri (RA-07, S1.2).", call. = FALSE)
   if (anyDuplicated(rdf$region_id)) stop("seed_centroids(): region_id duplicati.", call. = FALSE)
+  if (!is.numeric(rdf$area_um2)) stop("seed_centroids(): area_um2 deve essere numerica.", call. = FALSE)
   if (any(!is.finite(rdf$area_um2)) || any(rdf$area_um2 < 0)) {
     stop("seed_centroids(): area_um2 non valida.", call. = FALSE)
   }
+  if (nrow(rdf)) {
+    if (any(sf::st_is_empty(regions$region_polygons))) stop("seed_centroids(): region_polygons contiene geometrie vuote.", call. = FALSE)
+    a_geom <- as.numeric(sf::st_area(regions$region_polygons))
+    bad_a <- abs(a_geom - rdf$area_um2) > 0.01 * pmax(a_geom, 1e-9) + 1e-6
+    if (any(bad_a)) warning(sprintf("seed_centroids(): area_um2 differisce > 1%% dall'area del poligono in %d regioni (RA-16): lambda usa area_um2.", sum(bad_a)), call. = FALSE)
+  }
   if (!is.data.frame(cell_types) || !all(c("cell_type", "density") %in% names(cell_types))) {
     stop("seed_centroids(): `cell_types` deve avere colonne cell_type e density.", call. = FALSE)
+  }
+  for (nm in intersect(c("density", "min_dist_um"), names(cell_types))) {
+    if (!is.numeric(cell_types[[nm]]) && !all(is.na(cell_types[[nm]]))) stop(sprintf("seed_centroids(): cell_types$%s deve essere numerica (factor/carattere non ammessi, RA-08).", nm), call. = FALSE)
   }
   ct <- data.frame(cell_type = as.character(cell_types$cell_type),
                    density = as.numeric(cell_types$density),
@@ -128,6 +146,7 @@ seed_centroids <- function(regions,
   if (!is.data.frame(region_composition) || !all(c("cluster_id", "cell_type", "fraction") %in% names(region_composition))) {
     stop("seed_centroids(): `region_composition` deve avere colonne cluster_id, cell_type, fraction.", call. = FALSE)
   }
+  if (!is.numeric(region_composition$fraction)) stop("seed_centroids(): fraction deve essere numerica (RA-08).", call. = FALSE)
   comp <- data.frame(cluster_id = as.character(region_composition$cluster_id),
                      cell_type = as.character(region_composition$cell_type),
                      fraction = as.numeric(region_composition$fraction),
@@ -166,7 +185,7 @@ seed_centroids <- function(regions,
 #' @keywords internal
 .sc_type_table <- function(ct, comp, dmin_factor) {
   used <- ct[ct$cell_type %in% comp$cell_type, , drop = FALSE]
-  used <- used[order(-used$density, used$cell_type), , drop = FALSE]
+  used <- used[order(-used$density, used$cell_type, method = "radix"), , drop = FALSE]   # radix = ordine C, indipendente dalla locale (RA-09)
   eq_r <- sqrt(1e6 / (pi * used$density))
   used$eq_radius_target_um <- eq_r
   used$min_dist_source <- ifelse(is.na(used$min_dist_um), "factor", "user")
@@ -257,6 +276,10 @@ seed_centroids <- function(regions,
   out
 }
 
+#' Distanza minima fra due tipi: media delle distanze minime (dischi additivi).
+#' @keywords internal
+.sc_pair_dist <- function(di, dj) (di + dj) * 0.5
+
 #' Scostamenti delle 9 celle del vicinato su una griglia con bordo di 1 cella.
 #' @keywords internal
 .sc_neighbour_offsets <- function(nxp) {
@@ -265,7 +288,8 @@ seed_centroids <- function(regions,
 
 #' RSA globale su tutti i compiti (tipo per densità decrescente, poi regione).
 #' @keywords internal
-.sc_place_all <- function(tasks, polys, rdf, type_df, max_attempts_factor) {
+.sc_place_all <- function(tasks, polys, rdf, type_df, max_attempts_factor,
+                          max_consecutive_rejections = 10000L) {
   ntot <- sum(tasks$n)
   X <- numeric(ntot); Y <- numeric(ntot); D <- numeric(ntot)
   TI <- integer(ntot); RI <- integer(ntot)
@@ -281,6 +305,7 @@ seed_centroids <- function(regions,
     ext <- max(bb_all[["xmax"]] - gx0, bb_all[["ymax"]] - gy0)
     if (hardcore) {
       grid_cell <- max(h, ext / 4000)                 # <= ~16 M celle; cella >= h basta per il vicinato 3x3
+      if (grid_cell > 4 * h) warning(sprintf("seed_centroids(): estensione %.0f µm >> distanza minima %.2f µm: griglia grossolana (cella %.1f µm), memoria e tempo crescono (RA-14).", ext, h, grid_cell), call. = FALSE)
       nx <- as.integer(floor((bb_all[["xmax"]] - gx0) / grid_cell)) + 1L
       ny <- as.integer(floor((bb_all[["ymax"]] - gy0) / grid_cell)) + 1L
       nxp <- nx + 2L; nyp <- ny + 2L
@@ -300,8 +325,8 @@ seed_centroids <- function(regions,
     bw <- bb[["xmax"]] - bb[["xmin"]]; bh <- bb[["ymax"]] - bb[["ymin"]]
     p_acc <- min(1, max(rdf$area_um2[ri] / max(bw * bh, 1e-12), 1e-3))
     max_att <- as.integer(min(max_attempts_factor * n + 1000, .Machine$integer.max - 1))
-    placed <- 0L; att <- 0L; empty_blocks <- 0L
-    while (placed < n && att < max_att && empty_blocks < 100L) {
+    placed <- 0L; att <- 0L; empty_blocks <- 0L; rej_run <- 0L
+    while (placed < n && att < max_att && empty_blocks < 100L && rej_run < max_consecutive_rejections) {
       need <- n - placed
       block <- as.integer(min(max(ceiling(2 * need / p_acc), 64), 1e5))
       cx <- stats::runif(block, bb[["xmin"]], bb[["xmax"]])
@@ -329,10 +354,12 @@ seed_centroids <- function(regions,
           ids <- cellpts[nb, , drop = FALSE]
           ids <- ids[ids > 0L]
           dx <- X[ids] - x; dy <- Y[ids] - y
-          thr <- (dt + D[ids]) * 0.5
+          thr <- .sc_pair_dist(dt, D[ids])
           if (any(dx * dx + dy * dy < thr * thr)) ok <- FALSE
         }
+        if (!ok) rej_run <- rej_run + 1L
         if (ok) {
+          rej_run <- 0L
           k <- k + 1L
           X[k] <- x; Y[k] <- y; D[k] <- dt; TI[k] <- ti; RI[k] <- tasks$region_id[t]
           c1 <- cnt[cid] + 1L
@@ -342,7 +369,7 @@ seed_centroids <- function(regions,
           placed <- placed + 1L
           if (placed == n) break
         }
-        if (att >= max_att) break
+        if (att >= max_att || rej_run >= max_consecutive_rejections) break
       }
     }
     task_failed[t] <- n - placed

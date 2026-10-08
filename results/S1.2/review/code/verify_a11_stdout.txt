@@ -1,0 +1,42 @@
+               config   band_um                 side      n  rel_density      se
+0   square_outer_edge     [0,1)              esterno  10961       1.1021  0.0105
+1   square_outer_edge     [1,2)              esterno  10462       1.0540  0.0103
+2   square_outer_edge     [2,3)              esterno   9980       1.0075  0.0101
+3   square_outer_edge     [3,4)              esterno   9850       0.9963  0.0100
+4   square_outer_edge     [4,5)              esterno   9839       0.9972  0.0101
+5   square_outer_edge   [5,7.5)              esterno  24408       0.9931  0.0064
+6   square_outer_edge  [7.5,10)              esterno  24300       0.9937  0.0064
+7   square_outer_edge   [10,20)              esterno  96369       0.9979  0.0032
+8   square_outer_edge   [20,30)              esterno  94785       1.0022  0.0033
+9          A11b_adjLR     [0,1)  sinistra (riga [1])   2413       1.0812  0.0220
+10         A11b_adjLR     [0,1)    destra (riga [2])   2027       0.9083  0.0202
+11         A11b_adjLR     [1,2)  sinistra (riga [1])   2353       1.0543  0.0217
+12         A11b_adjLR     [1,2)    destra (riga [2])   2091       0.9369  0.0205
+13         A11b_adjLR     [2,3)  sinistra (riga [1])   2319       1.0391  0.0216
+14         A11b_adjLR     [2,3)    destra (riga [2])   2305       1.0328  0.0215
+15         A11b_adjLR     [3,4)  sinistra (riga [1])   2250       1.0082  0.0213
+16         A11b_adjLR     [3,4)    destra (riga [2])   2214       0.9921  0.0211
+17         A11b_adjLR     [4,5)  sinistra (riga [1])   2273       1.0185  0.0214
+18         A11b_adjLR     [4,5)    destra (riga [2])   2138       0.9580  0.0207
+19         A11b_adjLR   [5,7.5)  sinistra (riga [1])   5533       0.9917  0.0133
+20         A11b_adjLR   [5,7.5)    destra (riga [2])   5578       0.9998  0.0134
+21         A11b_adjLR  [7.5,10)  sinistra (riga [1])   5540       0.9930  0.0133
+22         A11b_adjLR  [7.5,10)    destra (riga [2])   5624       1.0080  0.0134
+23         A11b_adjLR   [10,20)  sinistra (riga [1])  22302       0.9993  0.0067
+24         A11b_adjLR   [10,20)    destra (riga [2])  22367       1.0022  0.0067
+25         A11b_adjRL     [0,1)  sinistra (riga [2])   1980       0.8838  0.0199
+26         A11b_adjRL     [0,1)    destra (riga [1])   2481       1.1075  0.0222
+27         A11b_adjRL     [1,2)  sinistra (riga [2])   2090       0.9329  0.0204
+28         A11b_adjRL     [1,2)    destra (riga [1])   2278       1.0169  0.0213
+29         A11b_adjRL     [2,3)  sinistra (riga [2])   2163       0.9655  0.0208
+30         A11b_adjRL     [2,3)    destra (riga [1])   2246       1.0026  0.0212
+31         A11b_adjRL     [3,4)  sinistra (riga [2])   2241       1.0003  0.0211
+32         A11b_adjRL     [3,4)    destra (riga [1])   2187       0.9762  0.0209
+33         A11b_adjRL     [4,5)  sinistra (riga [2])   2223       0.9923  0.0210
+34         A11b_adjRL     [4,5)    destra (riga [1])   2210       0.9865  0.0210
+35         A11b_adjRL   [5,7.5)  sinistra (riga [2])   5628       1.0049  0.0134
+36         A11b_adjRL   [5,7.5)    destra (riga [1])   5537       0.9887  0.0133
+37         A11b_adjRL  [7.5,10)  sinistra (riga [2])   5622       1.0038  0.0134
+38         A11b_adjRL  [7.5,10)    destra (riga [1])   5559       0.9926  0.0133
+39         A11b_adjRL   [10,20)  sinistra (riga [2])  22499       1.0043  0.0067
+40         A11b_adjRL   [10,20)    destra (riga [1])  22355       0.9979  0.0067

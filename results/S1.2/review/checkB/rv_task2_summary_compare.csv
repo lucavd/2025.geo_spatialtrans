@@ -1,0 +1,39 @@
+archetype,check,metric,value,threshold,status,predicted,value_rv,status_rv,extra,value_match,status_match
+A1,B1a,ROI con densita' PD nell'intervallo (20 repliche),2/5,5/5 (coerenza),FAIL,PASS,2/5,FAIL,max cellule oltre tot*area: 1.71; |media-tot|/tot max 1.4e-05,True,True
+A1,B1b,ROI graphclust con densita' nell'intervallo,5/5 (esclusa mediana 0.042),>= 4/5,PASS,PASS,5/5 (esclusa mediana 0.042),PASS,seed42 > atteso in 5/5 ROI,True,True
+A1,B2,"frazione di r in (0,30] dentro l'inviluppo (PD)",0.00,>= 0.80 PASS; 0.50-0.80 WARN,FAIL,FAIL,0.00,FAIL,"per ROI: mediana 0.00, max 0.00",True,True
+A1,CP-1,ROI con D_PD < D_CSR; mediana riduzione,5/5; 0.21,>= 4/5 e >= 0.25,FAIL,sì,5/5; 0.21,FAIL,da r=0: 5/5; 0.27,True,True
+A1,CP-2,D(d_regola)/D(d*); d* (µm),"1.07; d* 2.5 (regola 3.38, nucleo 4.1: 1.27)",<= 1.25 adeguata,PASS,adeguata,"1.07; d* 2.5 (regola 3.38, nucleo 4.1: 1.27)",PASS,"d_max_fattibile=7.0; primo d non fattibile=7.5; D(griglia piu' vicina alla regola, d=3.5)/D*=1.10",True,True
+A1,CP-3,"mediana D(primario, secondario) / mediana D_CSR; D_seg / D_PD",0.07; 0.08,< 0.5,PASS,incerto,0.07; 0.08,PASS,,True,True
+A2,B1a,ROI con densita' PD nell'intervallo (20 repliche),3/5,5/5 (coerenza),FAIL,PASS,3/5,FAIL,max cellule oltre tot*area: 1.42; |media-tot|/tot max 2.8e-05,True,True
+A2,B1b,ROI graphclust con densita' nell'intervallo,5/5 (esclusa mediana 0.066),>= 4/5,PASS,PASS,5/5 (esclusa mediana 0.066),PASS,seed42 > atteso in 4/5 ROI,True,True
+A2,B2,"frazione di r in (0,30] dentro l'inviluppo (PD)",0.00,>= 0.80 PASS; 0.50-0.80 WARN,FAIL,FAIL,0.00,FAIL,"per ROI: mediana 0.02, max 0.02",True,True
+A2,CP-1,ROI con D_PD < D_CSR; mediana riduzione,5/5; 0.54,>= 4/5 e >= 0.25,PASS,sì,5/5; 0.54,PASS,da r=0: 5/5; 0.58,True,True
+A2,CP-2,D(d_regola)/D(d*); d* (µm),"0.99; d* 3.5 (regola 3.98, nucleo 6.3: 1.92)",<= 1.25 adeguata,PASS,adeguata,"0.99; d* 3.5 (regola 3.98, nucleo 6.3: 1.92)",PASS,"d_max_fattibile=8.0; primo d non fattibile=8.5; D(griglia piu' vicina alla regola, d=4.0)/D*=1.00",True,True
+A2,CP-3,"mediana D(primario, secondario) / mediana D_CSR; D_seg / D_PD",0.05; 0.12,< 0.5,PASS,PASS,0.05; 0.12,PASS,,True,True
+A3,B1a,ROI con densita' PD nell'intervallo (20 repliche),5/5,5/5 (coerenza),PASS,PASS,5/5,PASS,max cellule oltre tot*area: 0.89; |media-tot|/tot max 3.1e-05,True,True
+A3,B1b,ROI graphclust con densita' nell'intervallo,5/5 (esclusa mediana 0.050),>= 4/5,PASS,PASS,5/5 (esclusa mediana 0.050),PASS,seed42 > atteso in 5/5 ROI,True,True
+A3,B2,"frazione di r in (0,30] dentro l'inviluppo (PD)",0.02,>= 0.80 PASS; 0.50-0.80 WARN,FAIL,FAIL,0.02,FAIL,"per ROI: mediana 0.02, max 0.02",True,True
+A3,CP-1,ROI con D_PD < D_CSR; mediana riduzione,3/5; 0.03,>= 4/5 e >= 0.25,FAIL,sì,3/5; 0.03,FAIL,da r=0: 3/5; 0.10,True,True
+A3,CP-2,D(d_regola)/D(d*); d* (µm),"1.61; d* 3.5 (regola 6.76, nucleo 6.3: 1.44)",<= 1.25 adeguata,FAIL,non adeguata,"1.61; d* 3.5 (regola 6.76, nucleo 6.3: 1.44)",FAIL,"d_max_fattibile=6.5; primo d non fattibile=7.0; D(griglia piu' vicina alla regola, d=6.5)/D*=1.52",True,True
+A3,CP-3,"mediana D(primario, secondario) / mediana D_CSR; D_seg / D_PD",0.17; 0.18,< 0.5,PASS,PASS,0.17; 0.18,PASS,,True,True
+A4,B1a,ROI con densita' PD nell'intervallo (20 repliche),5/5,5/5 (coerenza),PASS,PASS,5/5,PASS,max cellule oltre tot*area: 0.83; |media-tot|/tot max 4.4e-06,True,True
+A4,B1b,ROI graphclust con densita' nell'intervallo,4/5 (esclusa mediana 0.040),>= 4/5,PASS,PASS (al limite),4/5 (esclusa mediana 0.040),PASS,seed42 > atteso in 5/5 ROI,True,True
+A4,B2,"frazione di r in (0,30] dentro l'inviluppo (PD)",0.10,>= 0.80 PASS; 0.50-0.80 WARN,FAIL,WARN,0.10,FAIL,"per ROI: mediana 0.10, max 0.10",True,True
+A4,CP-1,ROI con D_PD < D_CSR; mediana riduzione,5/5; 0.60,>= 4/5 e >= 0.25,PASS,sì,5/5; 0.60,PASS,da r=0: 5/5; 0.66,True,True
+A4,CP-2,D(d_regola)/D(d*); d* (µm),"5.80; d* 4.0 (regola 2.24, nucleo 4.2: 1.26)",<= 1.25 adeguata,FAIL,non adeguata,"5.80; d* 4.0 (regola 2.24, nucleo 4.2: 1.26)",FAIL,"d_max_fattibile=4.5; primo d non fattibile=5.0; D(griglia piu' vicina alla regola, d=2.0)/D*=6.71",True,True
+A4,CP-3,"mediana D(primario, secondario) / mediana D_CSR; D_seg / D_PD",0.07; 0.19,< 0.5,PASS,PASS,0.07; 0.19,PASS,,True,True
+A5,B1a,ROI con densita' PD nell'intervallo (20 repliche),1/5,5/5 (coerenza),FAIL,PASS,1/5,FAIL,max cellule oltre tot*area: 2.05; |media-tot|/tot max 2.2e-04,True,True
+A5,B1b,ROI graphclust con densita' nell'intervallo,5/5 (esclusa mediana 0.039),>= 4/5,PASS,PASS,5/5 (esclusa mediana 0.039),PASS,seed42 > atteso in 5/5 ROI,True,True
+A5,B2,"frazione di r in (0,30] dentro l'inviluppo (PD)",0.18,>= 0.80 PASS; 0.50-0.80 WARN,FAIL,FAIL,0.18,FAIL,"per ROI: mediana 0.18, max 0.22",True,True
+A5,CP-1,ROI con D_PD < D_CSR; mediana riduzione,4/5; 0.80,>= 4/5 e >= 0.25,PASS,sì,4/5; 0.80,PASS,da r=0: 4/5; 0.82,True,True
+A5,CP-2,D(d_regola)/D(d*); d* (µm),"2.12; d* 7.0 (regola 10.93, nucleo 11.3: 2.31)",<= 1.25 adeguata,FAIL,adeguata,"2.12; d* 7.0 (regola 10.93, nucleo 11.3: 2.31)",FAIL,"d_max_fattibile=15.0; primo d non fattibile=nessuno; D(griglia piu' vicina alla regola, d=11.0)/D*=2.13",True,True
+A5,CP-3,"mediana D(primario, secondario) / mediana D_CSR; D_seg / D_PD",0.11; 0.47,< 0.5,PASS,PASS,0.11; 0.47,PASS,,True,True
+A6,B1a,ROI con densita' PD nell'intervallo (20 repliche),5/5,5/5 (coerenza),PASS,PASS,5/5,PASS,max cellule oltre tot*area: 0.78; |media-tot|/tot max 1.7e-04,True,True
+A6,B1b,ROI graphclust con densita' nell'intervallo,0/5 (esclusa mediana 0.227),>= 4/5,FAIL,FAIL,0/5 (esclusa mediana 0.227),FAIL,seed42 > atteso in 5/5 ROI,True,True
+A6,B2,"frazione di r in (0,30] dentro l'inviluppo (PD)",0.18,>= 0.80 PASS; 0.50-0.80 WARN,FAIL,FAIL,0.18,FAIL,"per ROI: mediana 0.22, max 0.25",True,True
+A6,CP-1,ROI con D_PD < D_CSR; mediana riduzione,0/5; -7.92,>= 4/5 e >= 0.25,FAIL,no,0/5; -7.92,FAIL,da r=0: 0/5; -6.45,True,True
+A6,CP-2,D(d_regola)/D(d*); d* (µm),"40.82; d* 2.5 (regola 11.97, nucleo 4.8: 5.79)",<= 1.25 adeguata,FAIL,non adeguata,"40.82; d* 2.5 (regola 11.97, nucleo 4.8: 5.79)",FAIL,"d_max_fattibile=15.0; primo d non fattibile=nessuno; D(griglia piu' vicina alla regola, d=12.0)/D*=41.25",True,True
+A6,CP-3,"mediana D(primario, secondario) / mediana D_CSR; D_seg / D_PD",0.60; 0.07,< 0.5,FAIL,incerto,0.60; 0.07,FAIL,,True,True
+tutti,CP-1,archetipi in cui PD e' giustificato,3/6,>= 4/6,FAIL,5/6 (no A6),3/6,FAIL,da r=0: 4/6,True,True
+tutti,CP-3,archetipi con riferimento discriminante,5/6,>= 4/6 (previsione),PASS,>= 4/6,5/6,PASS,,True,True

@@ -5,4 +5,5 @@
 "M3b","C4b","T3 media 0.0 vs 114.1",TRUE,"PASS"
 "M4","C-unif","0/20 p > 0.001",TRUE,"PASS"
 "M5","C-seed","same=TRUE differ=TRUE state=FALSE absent=FALSE",TRUE,"PASS"
+"M7","C-d2","max min(d/d_ij) 1.225 (T1-T1,T1-T3,T3-T3)",TRUE,"PASS"
 "M6","C-mix","5500.0",TRUE,"PASS"
