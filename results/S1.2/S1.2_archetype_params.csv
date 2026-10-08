@@ -1,0 +1,7 @@
+"archetype","tot","evid","d_nuc","primary","secondary","eq_r","d_rule"
+"A1",12419,10291,4.1,"cellpose_rgb","stardist_he",5.06269483482484,3.37512988988323
+"A2",8924,7376,6.3,"cellpose_rgb","stardist_he",5.9723504389063,3.98156695927087
+"A3",3100,2311,6.3,"cellpose_rgb","stardist_he",10.1331440553455,6.75542937023034
+"A4",28096,26844,4.2,"spaceranger","stardist_he",3.36591245845073,2.24394163896715
+"A5",1185,953,11.3,"cellpose_rgb","stardist_he",16.3895069391315,10.926337959421
+"A6",988,906,4.8,"spaceranger","stardist_he",17.9492617720543,11.9661745147029
