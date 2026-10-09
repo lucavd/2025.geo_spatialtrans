@@ -38,8 +38,11 @@ tv_mutants <- list(
         geoms[[i]] <- pcs[[own]]; lost[i] <- length(pcs) - 1L
       }
     }
-    list(geoms = geoms, lost = lost, gained = integer(n), n_fragments = sum(lost), n_reassigned = 0L, n_snapped = 0L)
+    list(geoms = geoms, lost = lost, gained = integer(n), n_fragments = sum(lost), n_reassigned = 0L, n_snapped = 0L,
+         n_snap_ok = 0L, n_snap_failed = 0L, n_isolated_cells = 0L)
   }),
+  # M7 (dopo la revisione, RA-code-12): orfano al confine condiviso PIU' CORTO invece che al piu' lungo
+  M7 = list(.tv_pick = function(len, ids, lmin = 1e-6) { ok <- len > lmin; if (!any(ok)) return(NA_integer_); ids[ok & len == min(len[ok])][1] }),
   # M6: region_id sfasato di una posizione (indice della regione sbagliato)
   M6 = list(.tv_region_index = function(region_id, ids) { m <- match(region_id, ids); (m %% length(ids)) + 1L })
 )

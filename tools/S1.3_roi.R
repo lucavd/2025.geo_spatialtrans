@@ -59,7 +59,8 @@ c123 <- function(tv, w, x, y) {
     c2_symdiff = sum(as.numeric(st_area(st_sym_difference(u, st_sfc(w$poly[[1]]))))) / A,
     c3_poly = mean(as.character(st_geometry_type(t)) == "POLYGON"), c3_valid = mean(st_is_valid(t)),
     c3_gen_in_own = mean(vapply(seq_along(own), function(i) i %in% own[[i]], TRUE)),
-    n_multipart = tv$info$n_multipart, n_repaired = tv$info$n_repaired, n_snapped = tv$info$n_snapped, n_fragments = tv$info$n_fragments,
+    n_multipart = tv$info$n_multipart, n_repaired = tv$info$n_repaired, n_snapped = tv$info$n_snapped, n_snap_failed = tv$info$n_snap_failed,
+    n_isolated = tv$info$n_isolated_cells, n_fragments = tv$info$n_fragments,
     n_reassigned = tv$info$n_fragments_reassigned, elapsed_s = tv$info$elapsed_s)
 }
 
@@ -186,8 +187,14 @@ cp3_one <- function(i) {
   s_ok <- tessellate_voronoi(cen, reg, corner_smoothing = 1, verbose = FALSE)
   s_m4 <- E4$tessellate_voronoi(cen, reg, corner_smoothing = 1, verbose = FALSE)
   gaps <- vapply(c(1/3, 2/3, 1), function(cs) sum(tessellate_voronoi(cen, reg, corner_smoothing = cs, verbose = FALSE)$region_check$gap_area) / w$area_um2, 0)
+  # dopo la revisione (RA-claims-09): M4 esce dalla regione? predicato (territorio non contenuto) + area fuori (overlay)
+  rg <- st_sfc(w$poly[[1]]); nw <- lengths(st_within(s_m4$cell_territories, rg)) == 0
+  out_a <- sum(vapply(which(nw), function(q) { d <- st_difference(s_m4$cell_territories[[q]], w$poly[[1]]); if (st_is_empty(d)) 0 else as.numeric(st_area(st_sfc(d))) }, 0))
+  nw_ok <- sum(lengths(st_within(s_ok$cell_territories, rg)) == 0)
   out <- list(archetype = A, roi_id = roi, n = nrow(gen), n_clipped_nonconvex = sum(t0$territory_df$clipped & !convex),
-              ov_contained = overl(s_ok), ov_m4 = overl(s_m4), gap_frac = setNames(gaps, c("cs1/3", "cs2/3", "cs1")))
+              ov_contained = overl(s_ok), ov_m4 = overl(s_m4), gap_frac = setNames(gaps, c("cs1/3", "cs2/3", "cs1")),
+              m4_not_within = sum(nw), m4_area_out = out_a, ok_not_within = nw_ok, smooth_repaired = s_ok$info$n_smooth_repaired,
+              smooth_dropped = s_ok$info$n_smooth_pieces_dropped)
   saveRDS(out, f); invisible(NULL)
 }
 if (STAGE == "cp3") {

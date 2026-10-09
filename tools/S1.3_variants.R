@@ -16,6 +16,13 @@ tv_variants <- list(
     }),
   geos = list()
 )
+# variante "r3rule" (post hoc, RA-claims-11): orfani lasciati al proprio generatore (territori multiparte), come R3
+tv_variants$r3rule <- list(.tv_fragments = function(geoms, x, y, ridx) {
+  n <- length(geoms)
+  list(geoms = geoms, lost = integer(n), gained = integer(n), n_fragments = 0L, n_reassigned = 0L, n_snapped = 0L,
+       n_snap_ok = 0L, n_snap_failed = 0L, n_isolated_cells = 0L)
+})
+
 tv_variant <- function(E, id) {
   if (!id %in% names(tv_variants)) stop("variante sconosciuta: ", id)
   for (nm in names(tv_variants[[id]])) { f <- tv_variants[[id]][[nm]]; environment(f) <- E; assign(nm, f, envir = E) }

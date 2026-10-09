@@ -20,7 +20,7 @@ for (b in names(tst)) {
   for (ck in unique(t$check)) { k <- t$check == ck
     vr("C", ck, "-", b, "asserzioni PASS", sprintf("%d/%d", sum(t$status[k] == "PASS"), sum(k)), "100 %", pf(all(t$status[k] == "PASS"))) }
 }
-target <- list(M1 = "C-3", M2 = "C-1", M3 = "C-1", M4 = c("C-2", "C-7"), M5 = c("C-1", "C-4"), M6 = "C-3")
+target <- list(M1 = "C-3", M2 = "C-1", M3 = "C-1", M4 = "C-7", M5 = c("C-1", "C-4"), M6 = "C-3", M7 = "C-4")   # M4: C-2 si valuta a cs = 0 (RA-code-12c)
 mut <- do.call(rbind, lapply(names(target), function(m) {
   f <- file.path(RES, sprintf("S1.3_test_geos_%s.csv", m))
   if (!file.exists(f)) return(data.frame(mutant = m, target = paste(target[[m]], collapse = "/"), n_fail_target = NA, detected = FALSE))
@@ -28,7 +28,7 @@ mut <- do.call(rbind, lapply(names(target), function(m) {
   data.frame(mutant = m, target = paste(target[[m]], collapse = "/"), n_fail_target = nf, detected = nf > 0)
 }))
 write.csv(mut, file.path(RES, "S1.3_mutants.csv"), row.names = FALSE)
-vr("C", "mutanti", "-", "geos", "rilevati", sprintf("%d/6", sum(mut$detected)), "6/6", pf(all(mut$detected)))
+vr("C", "mutanti", "-", "geos", "rilevati", sprintf("%d/%d", sum(mut$detected), nrow(mut)), sprintf("%d/%d", nrow(mut), nrow(mut)), pf(all(mut$detected)))
 
 # ---- 2. ROI reali: C-5, C-1..3, C-10a -------------------------------------------------------------
 rf <- list.files(file.path(OUT, "real"), pattern = "\\.rds$", full.names = TRUE)
@@ -36,10 +36,12 @@ real <- lapply(rf, readRDS)
 rr <- do.call(rbind, lapply(real, function(o) do.call(rbind, lapply(c("geos", "deldir"), function(b) {
   e <- o[[b]]; data.frame(archetype = o$archetype, roi_id = o$roi_id, method = o$method, engine = b, n = o$n, t(e$c123), t(e$c5))
 }))))
-rr$c5_pass <- rr$interior_identical == 1 & rr$rel_area_interior <= TOL & rr$rel_area_mono <= TOL & rr$rel_sum_area <= TOL & rr$rel_summary <= TOL
+# C-5 secondo il testo pre-registrato (dopo la revisione, RA-claims-06: rel_summary e' una grandezza di C-6, riportata a parte)
+rr$c5_pass <- rr$interior_identical == 1 & rr$rel_area_interior <= TOL & rr$rel_area_mono <= TOL & rr$rel_sum_area <= TOL
 # CORREZIONE dichiarata (allineamento al testo pre-registrato, deviazione 3): nel banco ROI la regione e' MULTIPOLYGON e i territori
 # multiparte (orfani su isole senza generatori) sono ammessi; la prima versione dello script li contava come FAIL.
-rr$c123_pass <- rr$c1 <= TOL & rr$c2_overlap <= TOL & rr$c2_symdiff <= TOL & rr$c3_valid == 1 & rr$c3_gen_in_own == 1 & rr$n_repaired == 0
+rr$c123_pass <- rr$c1 <= TOL & rr$c2_overlap <= TOL & rr$c2_symdiff <= TOL & rr$c3_valid == 1 & rr$c3_gen_in_own == 1 & rr$n_repaired == 0 &
+  rr$n_snap_failed == 0 & rr$n_multipart <= rr$n_isolated      # multiparte solo da orfani isolati (deviazione 3; RA-code-04)
 write.csv(rr, file.path(RES, "S1.3_roi_real.csv"), row.names = FALSE)
 for (b in c("geos", "deldir")) { k <- rr$engine == b
   vr("C", "C-5", "A1-A6", b, "ROI identici a R3 (40)", sprintf("%d/%d; max rel area interne %s", sum(rr$c5_pass[k]), sum(k), fmt(max(rr$rel_area_interior[k]))), "40/40", pf(all(rr$c5_pass[k])))
@@ -61,10 +63,12 @@ m6$worst_col <- cols[apply(sapply(cols, function(cc) abs(m6[[cc]] - m6[[paste0(c
 write.csv(m6[, c("archetype", "roi_id", "model", "rep", "rel", "worst_col")], file.path(RES, "S1.3_c6.csv"), row.names = FALSE)
 vr("C", "C-6", "A1-A6", "geos", "repliche identiche a R3", sprintf("%d/%d (attese 1200); max rel %s", sum(m6$rel <= TOL & m6$n_failed == m6$n_failed.r3), nrow(m6), fmt(max(m6$rel))),
    "1200/1200", pf(nrow(m6) == 1200 && all(m6$rel <= TOL)))
-c123n <- ns$c1 <= TOL & ns$c2_overlap <= TOL & ns$c2_symdiff <= TOL & ns$c3_valid == 1 & ns$c3_gen_in_own == 1 & ns$n_repaired == 0   # multiparte ammessi (dev. 3)
+c123n <- ns$c1 <= TOL & ns$c2_overlap <= TOL & ns$c2_symdiff <= TOL & ns$c3_valid == 1 & ns$c3_gen_in_own == 1 & ns$n_repaired == 0 &
+  ns$n_snap_failed == 0 & ns$n_multipart <= ns$n_isolated   # multiparte solo da orfani isolati (dev. 3)
 vr("C", "C-1..3 nulli", "A1-A6", "geos", "tassellazioni PASS", sprintf("%d/%d", sum(c123n), nrow(ns)), "1800/1800", pf(nrow(ns) == 1800 && all(c123n)))
 dn <- do.call(rbind, lapply(nul, function(o) if (!is.null(o$c123_deldir)) data.frame(t(o$c123_deldir))))
-c123d <- dn$c1 <= TOL & dn$c2_overlap <= TOL & dn$c2_symdiff <= TOL & dn$c3_valid == 1 & dn$c3_gen_in_own == 1 & dn$n_repaired == 0   # multiparte ammessi (dev. 3)
+c123d <- dn$c1 <= TOL & dn$c2_overlap <= TOL & dn$c2_symdiff <= TOL & dn$c3_valid == 1 & dn$c3_gen_in_own == 1 & dn$n_repaired == 0 &
+  dn$n_snap_failed == 0 & dn$n_multipart <= dn$n_isolated
 vr("C", "C-1..3 nulli", "A1-A6", "deldir", "tassellazioni PASS (replica 1)", sprintf("%d/%d", sum(c123d), nrow(dn)), "90/90", pf(nrow(dn) == 90 && all(c123d)))
 c10n <- do.call(rbind, lapply(nul, function(o) if (!is.null(o$c10a)) data.frame(set = "null", archetype = o$archetype, roi_id = o$roi_id, model = o$model, t(o$c10a))))
 c10s <- read.csv(file.path(RES, "S1.3_c10a_syn.csv"))
@@ -95,7 +99,8 @@ pred <- list(RSA = list(B1 = c("FAIL", "FAIL", "FAIL", "FAIL", "FAIL", "PASS"), 
 lab <- c(B1 = "eq_r mediano ±5 %", B2 = "CV globale ±10 %", B3 = "CV locale ±10 %", B4 = "eccentricita' |Δ|<0.05")
 for (md in c("CSR", "RSA", "RSArule")) for (A in paste0("A", 1:6)) for (b in names(lab)) {
   d <- mb[mb$archetype == A & mb$model == md, ]; np <- sum(d[[sub("B", "p", b)]]); out <- pf(np >= 4)
-  pr <- if (md == "CSR") NA else pred[[md]][[b]][as.integer(sub("A", "", A))]
+  pr <- if (md == "CSR") { p0 <- read.csv(file.path(RES, "S1.3_predictions_from_R3.csv")); pp <- p0[p0$archetype == A & p0$model == "CSR", ]   # G1 (RA-claims-07)
+          if (pp[[paste0(b, "_n_pass")]] >= 4) "PASS" else "FAIL" } else pred[[md]][[b]][as.integer(sub("A", "", A))]
   vr("B", b, A, c(CSR = "G1", RSA = "G2", RSArule = "G3")[md], lab[b], sprintf("%d/5 ROI; %+.3f..%+.3f", np, min(d[[b]]), max(d[[b]])), ">= 4/5", out, pr,
      if (is.na(pr)) NA else pr == out)
 }
@@ -155,10 +160,16 @@ if (file.exists(file.path(RES, "S1.3_cp2b_posthoc_regular.csv"))) {     # POST H
 }
 cf <- list.files(file.path(OUT, "cp3"), pattern = "\\.rds$", full.names = TRUE); cp3 <- lapply(cf, readRDS)
 c3 <- do.call(rbind, lapply(cp3, function(o) data.frame(archetype = o$archetype, roi_id = o$roi_id, n = o$n, n_clipped_nonconvex = o$n_clipped_nonconvex,
-  ov_contained = o$ov_contained$n, ov_m4 = o$ov_m4$n, ov_m4_not_boundary = o$ov_m4$n_bad, t(o$gap_frac))))
+  ov_contained = o$ov_contained$n, ov_m4 = o$ov_m4$n, ov_m4_not_boundary = o$ov_m4$n_bad, t(o$gap_frac),
+  m4_not_within = o$m4_not_within, m4_area_out = o$m4_area_out, ok_not_within = o$ok_not_within, smooth_repaired = o$smooth_repaired, smooth_dropped = o$smooth_dropped)))
 write.csv(c3, file.path(RES, "S1.3_cp3.csv"), row.names = FALSE)
 vr("CP", "CP-3", "A1-A6", "Chaikin senza contenimento", "coppie sovrapposte (ROI con > 0)", sprintf("%d (%d/30)", sum(c3$ov_m4), sum(c3$ov_m4 > 0)), "> 0", pf(sum(c3$ov_m4) > 0), "PASS", sum(c3$ov_m4) > 0)
-vr("CP", "CP-3", "A1-A6", "Chaikin senza contenimento", "coppie senza territorio ritagliato non convesso", sum(c3$ov_m4_not_boundary), "0", pf(sum(c3$ov_m4_not_boundary) == 0), "PASS", sum(c3$ov_m4_not_boundary) == 0)
+vr("CP", "CP-3", "A1-A6", "Chaikin senza contenimento", "coppie senza territorio ritagliato non convesso", sum(c3$ov_m4_not_boundary), "0", pf(sum(c3$ov_m4_not_boundary) == 0), "PASS",
+   if (sum(c3$ov_m4) == 0) NA else sum(c3$ov_m4_not_boundary) == 0)       # 0 coppie: non valutabile (RA-claims-10)
+vr("CP", "CP-3 (dopo la revisione)", "A1-A6", "Chaikin senza contenimento", "territori non contenuti nella regione; area fuori (µm²)",
+   sprintf("%d (%d/30 ROI); %.1f", sum(c3$m4_not_within), sum(c3$m4_not_within > 0), sum(c3$m4_area_out)), "descrittivo", "INFO")
+vr("CP", "CP-3 (dopo la revisione)", "A1-A6", "D-S1.3.3", "territori smussati non contenuti; riparazioni; pezzi scartati",
+   sprintf("%d; %d; %d", sum(c3$ok_not_within), sum(c3$smooth_repaired), sum(c3$smooth_dropped)), "0; info; info", pf(sum(c3$ok_not_within) == 0))
 vr("CP", "CP-3", "A1-A6", "D-S1.3.3", "coppie sovrapposte con contenimento", sum(c3$ov_contained), "0", pf(sum(c3$ov_contained) == 0), "PASS", sum(c3$ov_contained) == 0)
 d1 <- read.csv(file.path(RES, "S1.3_d1_boundary.csv"))
 vr("D", "D-1", "A1 (densita')", "RSA regola", "area fascia regione 2 / regione 1 (mediana 20 seed)", sprintf("%.3f", median(d1$ratio_band)), ">= 1.1 (previsione)", "INFO", ">= 1.1", median(d1$ratio_band) >= 1.1)
@@ -187,6 +198,23 @@ choice <- if (!length(elig)) NA_character_ else if (length(elig) == 1) elig else
   if (sum(cperf[elig]) == 1) elig[cperf[elig]] else {
     tot <- rob["total", elig]; if (length(unique(tot)) > 1) elig[which.min(tot)] else {
       tt <- sapply(elig, function(b) pf_$elapsed_s[pf_$backend == b & pf_$n == 449536]); elig[which.min(tt)] } } }
+# robustezza sugli STESSI ingressi (RA-claims-17): test + 40 ROI reali + replica 1 dei 90 nulli; eventi = agganci tentati + riparazioni + multiparte non da orfani isolati
+ns1 <- ns[ns$rep == 1, ]
+rob_same <- c(geos = sum(as.integer(do.call(rbind, strsplit(tst$geos$value[tst$geos$check == "ROB" & grepl("^agganci /", tst$geos$metric)], "/")))) +
+                     sum(rr$n_snapped[rr$engine == "geos"] + rr$n_repaired[rr$engine == "geos"] + pmax(rr$n_multipart[rr$engine == "geos"] - rr$n_isolated[rr$engine == "geos"], 0)) +
+                     sum(ns1$n_snapped + ns1$n_repaired + pmax(ns1$n_multipart - ns1$n_isolated, 0)),
+              deldir = sum(as.integer(do.call(rbind, strsplit(tst$deldir$value[tst$deldir$check == "ROB" & grepl("^agganci /", tst$deldir$metric)], "/")))) +
+                       sum(rr$n_snapped[rr$engine == "deldir"] + rr$n_repaired[rr$engine == "deldir"] + pmax(rr$n_multipart[rr$engine == "deldir"] - rr$n_isolated[rr$engine == "deldir"], 0)) +
+                       sum(dn$n_snapped + dn$n_repaired + pmax(dn$n_multipart - dn$n_isolated, 0)))
+rob["total", ] <- rob_same[colnames(rob)]
+# previsioni dell'addendum C-10 (RA-claims-17)
+r8 <- pf_$elapsed_s[pf_$backend == "deldir" & pf_$n == 80000] / pf_$elapsed_s[pf_$backend == "geos" & pf_$n == 80000]
+vr("C10", "previsione", "-", "-", "entrambi eleggibili", paste(colnames(K)[apply(K, 2, all)], collapse = "+"), "-", if (all(apply(K, 2, all))) "PASS" else "FAIL", "PASS", all(apply(K, 2, all)))
+vr("C10", "previsione", "-", "-", "robustezza: deldir > 0 eventi, GEOS 0 (stessi ingressi)", sprintf("geos %d, deldir %d", rob_same[["geos"]], rob_same[["deldir"]]), "-",
+   if (rob_same[["geos"]] == 0 && rob_same[["deldir"]] > 0) "PASS" else "FAIL", "PASS", rob_same[["geos"]] == 0 && rob_same[["deldir"]] > 0)
+vr("C10", "previsione", "-", "-", "GEOS >= 20x piu' veloce a 8e4", sprintf("%.1fx", r8), ">= 20", pf(r8 >= 20), "PASS", r8 >= 20)
+vr("C10", "previsione", "-", "-", "deldir fallisce C-perf, GEOS lo passa", sprintf("geos %s, deldir %s", cperf[["geos"]], cperf[["deldir"]]), "-", pf(cperf[["geos"]] && !cperf[["deldir"]]), "PASS", cperf[["geos"]] && !cperf[["deldir"]])
+vr("C10", "previsione", "-", "-", "rapporto dei tempi a 449 536 punti", sprintf("%.1fx", pf_$elapsed_s[pf_$backend == "deldir" & pf_$n == 449536] / pf_$elapsed_s[pf_$backend == "geos" & pf_$n == 449536]), "descrittivo", "INFO")
 eng <- data.frame(engine = c("geos", "deldir"), K1 = K["K1", ], K2 = K["K2", ], K3 = K["K3", ], K_arb = K["K_arb", ], eligible = c("geos", "deldir") %in% elig,
                   cperf = cperf, slope = slope, robustness_events = rob["total", ], rob_test = rob["test", ], rob_real = rob["real", ], rob_null = rob["null", ],
                   chosen = c("geos", "deldir") %in% choice)

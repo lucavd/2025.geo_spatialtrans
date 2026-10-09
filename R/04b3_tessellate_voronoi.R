@@ -4,7 +4,8 @@
 #' centroidi della regione (decisione D-S1.3.1, 2026-10-08), ritagliato sulla
 #' regione. Se il ritaglio spezza una cella, il pezzo che contiene il generatore
 #' resta alla cellula e ogni pezzo orfano passa al territorio della stessa
-#' regione con cui condivide il confine più lungo (D-S1.3.2). Con
+#' regione con cui condivide il confine più lungo (D-S1.3.2; confine = tratto condiviso > 1e-6 µm, decisioni
+#' simultanee per passata, a pari merito il `cell_id` minore). Con
 #' `corner_smoothing > 0` ogni territorio è smussato con Chaikin e intersecato
 #' con il territorio non smussato (D-S1.3.3): le lacune sono spazio
 #' extracellulare, riportate in `region_check$gap_area`.
@@ -65,11 +66,11 @@ tessellate_voronoi <- function(centroids,
   fr <- .tv_fragments(geoms, cen$x, cen$y, ridx)
   geoms <- fr$geoms
 
-  smooth_loss <- numeric(n); n_smooth_dropped <- 0L
+  smooth_loss <- numeric(n); n_smooth_dropped <- 0L; n_smooth_repaired <- 0L
   if (n_iter > 0) {
     sm <- .tv_smooth(geoms, cen$x, cen$y, n_iter)
     smooth_loss <- vapply(seq_len(n), function(i) .tv_area(geoms[[i]]) - .tv_area(sm$geoms[[i]]), 0)
-    geoms <- sm$geoms; n_smooth_dropped <- sm$n_dropped
+    geoms <- sm$geoms; n_smooth_dropped <- sm$n_dropped; n_smooth_repaired <- sm$n_repaired
   }
 
   fin <- .tv_finalise(geoms)
@@ -86,8 +87,9 @@ tessellate_voronoi <- function(centroids,
   info <- list(n_cells = n, n_regions = nreg, n_regions_without_cells = sum(n_cells == 0),
                engine = .tv_engine(), corner_smoothing = corner_smoothing, n_iter = n_iter,
                n_fragments = fr$n_fragments, n_fragments_reassigned = fr$n_reassigned, n_snapped = fr$n_snapped,
+               n_snap_ok = fr$n_snap_ok, n_snap_failed = fr$n_snap_failed, n_isolated_cells = fr$n_isolated_cells,
                n_multipart = fin$n_multipart, n_repaired = fin$n_repaired,
-               n_smooth_pieces_dropped = n_smooth_dropped,
+               n_smooth_pieces_dropped = n_smooth_dropped, n_smooth_repaired = n_smooth_repaired,
                elapsed_s = proc.time()[["elapsed"]] - t0)
   if (verbose) {
     message(sprintf("tessellate_voronoi(): %d territori in %d regioni (%s), %d frammenti riassegnati, %d multiparte, %d riparati, %.1f s",
@@ -185,7 +187,7 @@ tessellate_voronoi <- function(centroids,
   v <- sf::st_voronoi(sf::st_multipoint(cbind(x, y)), envelope = env, point_order = TRUE)
   cells <- sf::st_collection_extract(sf::st_sfc(v), "POLYGON")
   if (length(cells) != n) stop("tessellate_voronoi(): GEOS ha restituito ", length(cells), " celle per ", n, " generatori.", call. = FALSE)
-  # le celle GEOS si estendono oltre l'envelope: le si riporta al riquadro, come deldir
+  # le celle GEOS si estendono oltre l'envelope: le si riporta al riquadro rw
   envs <- sf::st_sfc(env)
   inside <- lengths(sf::st_within(cells, envs)) > 0
   if (any(!inside)) {
@@ -256,50 +258,69 @@ tessellate_voronoi <- function(centroids,
     for (j in setdiff(seq_along(pcs), own)) orphans[[length(orphans) + 1]] <- list(g = pcs[[j]], from = i)
     lost[i] <- length(pcs) - 1L
   }
-  n_frag <- length(orphans); n_re <- 0L; n_snap <- 0L
+  n_frag <- length(orphans); n_re <- 0L; n_snap_ok <- 0L; n_snap_fail <- 0L; isolated <- integer(0)
   if (n_frag) {
-    # riquadri (xmin, ymin, xmax, ymax) calcolati una volta e aggiornati dopo ogni unione (S1.3: prestazioni)
     bb4 <- function(g) if (sf::st_is_empty(g)) rep(NA_real_, 4) else as.numeric(sf::st_bbox(g))
     rr <- unique(ridx[vapply(orphans, function(o) o$from, 1L)])
     bbm <- matrix(NA_real_, n, 4); for (i in which(ridx %in% rr)) bbm[i, ] <- bb4(geoms[[i]])
     eps <- 1e-7
     pending <- seq_len(n_frag)
-    for (pass in 1:10) {
-      progress <- FALSE
-      for (o in pending) {
-        og <- orphans[[o]]$g; r <- ridx[orphans[[o]]$from]; ob <- bb4(og)
+    for (pass in 1:50) {
+      # decisioni SIMULTANEE: tutte calcolate sulle geometrie all'inizio della passata (passata 1 = soli pezzi
+      # principali), poi applicate; il risultato non dipende dall'ordine degli orfani (S1.3, RA-code-03)
+      dec <- vapply(pending, function(o) {
+        og <- orphans[[o]]$g; from <- orphans[[o]]$from; r <- ridx[from]; ob <- bb4(og)
         hit <- which(ridx == r & bbm[, 1] <= ob[3] + eps & bbm[, 3] >= ob[1] - eps & bbm[, 2] <= ob[4] + eps & bbm[, 4] >= ob[2] - eps)
-        if (!length(hit)) next
-        ob <- sf::st_boundary(sf::st_sfc(og))
-        len <- vapply(hit, function(j) {
-          # tolleranza 1e-7 µm: i vertici condivisi di due tile deldir differiscono all'ultima cifra (S1.3, prova di fumo)
-          s <- suppressWarnings(sf::st_intersection(ob, sf::st_buffer(sf::st_boundary(sf::st_sfc(geoms[[j]])), 1e-7)))
-          if (!length(s) || all(sf::st_is_empty(s))) return(0)
-          sum(as.numeric(sf::st_length(s)))      # GEOS: punti 0, linee e collezioni = somma delle parti lineari
-        }, 0)
-        if (max(len) <= 0) next
-        j <- hit[which(len == max(len))][1]
+        hit <- setdiff(hit, from)                                   # il donatore non e' un candidato (RA-code-04)
+        if (!length(hit)) return(NA_integer_)
+        .tv_pick(.tv_shared_len(og, geoms[hit]), hit)
+      }, 1L)
+      if (all(is.na(dec))) break
+      for (k in which(!is.na(dec))) {
+        o <- pending[k]; j <- dec[k]; og <- orphans[[o]]$g
         u <- sf::st_union(sf::st_sfc(geoms[[j]]), sf::st_sfc(og))[[1]]
         if (inherits(u, "MULTIPOLYGON") && length(unclass(u)) > 1) {
-          # confini non coincidenti all'ultima cifra (deldir): aggancio dell'orfano entro 1e-7 µm
+          # confini condivisi non annodati (vertici diversi all'ultima cifra): aggancio dell'orfano entro 1e-7 µm
           u <- sf::st_union(sf::st_sfc(geoms[[j]]), sf::st_snap(sf::st_sfc(og), sf::st_sfc(geoms[[j]]), 1e-7))[[1]]
-          n_snap <- n_snap + 1L
+          if (inherits(u, "MULTIPOLYGON") && length(unclass(u)) > 1) n_snap_fail <- n_snap_fail + 1L else n_snap_ok <- n_snap_ok + 1L
         }
         geoms[[j]] <- u; bbm[j, ] <- bb4(u)
         gained[j] <- gained[j] + 1L; n_re <- n_re + 1L
-        orphans[[o]]$done <- TRUE; progress <- TRUE
       }
-      pending <- Filter(function(o) is.null(orphans[[o]]$done), pending)
-      if (!length(pending) || !progress) break
+      pending <- pending[is.na(dec)]
+      if (!length(pending)) break
     }
-    # orfani senza territorio confinante (solo regioni MULTIPOLYGON): restano al generatore
+    # orfani senza territorio confinante (confine > 1e-6 µm): restano al generatore (deviazione 3, solo regioni MULTIPOLYGON)
     for (o in pending) {
       i <- orphans[[o]]$from
       geoms[[i]] <- sf::st_union(sf::st_sfc(geoms[[i]]), sf::st_sfc(orphans[[o]]$g))[[1]]
-      lost[i] <- lost[i] - 1L
+      lost[i] <- lost[i] - 1L; isolated <- c(isolated, i)
     }
   }
-  list(geoms = geoms, lost = lost, gained = gained, n_fragments = n_frag, n_reassigned = n_re, n_snapped = n_snap)
+  list(geoms = geoms, lost = lost, gained = gained, n_fragments = n_frag, n_reassigned = n_re,
+       n_snapped = n_snap_ok + n_snap_fail, n_snap_ok = n_snap_ok, n_snap_failed = n_snap_fail,
+       n_isolated_cells = length(unique(isolated)))
+}
+
+#' Lunghezza del confine condiviso fra un orfano e ciascun territorio candidato: parte del bordo dell'orfano
+#' entro 1e-7 µm dal bordo del candidato (i vertici condivisi possono differire all'ultima cifra, RA-code-11).
+#' @keywords internal
+.tv_shared_len <- function(og, cands) {
+  ob <- sf::st_boundary(sf::st_sfc(og))
+  vapply(cands, function(g) {
+    s <- suppressWarnings(sf::st_intersection(ob, sf::st_buffer(sf::st_boundary(sf::st_sfc(g)), 1e-7)))
+    if (!length(s) || all(sf::st_is_empty(s))) return(0)
+    sum(as.numeric(sf::st_length(s)))      # GEOS: punti 0, linee e collezioni = somma delle parti lineari
+  }, 0)
+}
+
+#' Destinatario di un orfano: confine condiviso piu' lungo, solo se > 1e-6 µm (un contatto in un punto, che col
+#' buffer misura ~2e-7 µm, non e' un confine: RA-code-04); a pari merito l'indice minore (= cell_id minore).
+#' @keywords internal
+.tv_pick <- function(len, ids, lmin = 1e-6) {
+  ok <- len > lmin
+  if (!any(ok)) return(NA_integer_)
+  ids[ok & len == max(len[ok])][1]
 }
 
 #' Chaikin (taglio 1/4–3/4) su un anello chiuso.
@@ -318,24 +339,30 @@ tessellate_voronoi <- function(centroids,
 #' il risultato è in più pezzi resta quello con il generatore (gli altri → lacuna).
 #' @keywords internal
 .tv_smooth <- function(geoms, x, y, n_iter) {
-  n_drop <- 0L
+  n_drop <- 0L; n_rep <- 0L
   out <- lapply(seq_along(geoms), function(i) {
     g <- geoms[[i]]
-    sm <- if (inherits(g, "POLYGON")) sf::st_polygon(lapply(unclass(g), .tv_chaikin_ring, n_iter = n_iter)) else
-      sf::st_multipolygon(lapply(unclass(g), function(p) lapply(p, .tv_chaikin_ring, n_iter = n_iter)))
-    s <- sf::st_sfc(sm)
-    if (!isTRUE(sf::st_is_valid(s))) s <- sf::st_make_valid(s)
-    r <- .tv_polys_only(suppressWarnings(sf::st_intersection(s, sf::st_sfc(g))))
-    if (inherits(r, "MULTIPOLYGON") && length(unclass(r)) > 1) {
-      pcs <- .tv_pieces(r)
-      own <- which(lengths(sf::st_intersects(sf::st_sfc(pcs), sf::st_sfc(sf::st_point(c(x[i], y[i]))))) > 0)
-      if (!length(own)) own <- which.max(vapply(pcs, .tv_area, 0))
-      n_drop <<- n_drop + length(pcs) - 1L
-      r <- pcs[[own[1]]]
-    }
-    r
+    parts <- .tv_pieces(g)
+    pt <- sf::st_sfc(sf::st_point(c(x[i], y[i])))
+    # ogni parte e' smussata e contenuta separatamente: i territori multiparte (deviazione 3) non perdono parti (RA-code-06)
+    sp <- lapply(parts, function(p) {
+      s <- sf::st_sfc(sf::st_polygon(lapply(unclass(p), .tv_chaikin_ring, n_iter = n_iter)))
+      if (!isTRUE(sf::st_is_valid(s))) { s <- sf::st_make_valid(s); n_rep <<- n_rep + 1L }   # contato (RA-code-07)
+      r <- .tv_polys_only(suppressWarnings(sf::st_intersection(s, sf::st_sfc(p))))
+      if (inherits(r, "MULTIPOLYGON") && length(unclass(r)) > 1) {
+        # una parte che la smussatura spezza: resta il pezzo con il generatore, o il piu' grande (regola dichiarata in S1.3)
+        pcs <- .tv_pieces(r)
+        own <- which(lengths(sf::st_intersects(sf::st_sfc(pcs), pt)) > 0)
+        if (!length(own)) own <- which.max(vapply(pcs, .tv_area, 0))
+        n_drop <<- n_drop + length(pcs) - 1L
+        r <- pcs[[own[1]]]
+      }
+      r
+    })
+    sp <- Filter(function(z) !sf::st_is_empty(z), sp)
+    if (length(sp) == 1) sp[[1]] else sf::st_multipolygon(lapply(sp, unclass))
   })
-  list(geoms = out, n_dropped = n_drop)
+  list(geoms = out, n_dropped = n_drop, n_repaired = n_rep)
 }
 
 #' Geometria finale: POLYGON dove possibile, validità controllata (riparazione

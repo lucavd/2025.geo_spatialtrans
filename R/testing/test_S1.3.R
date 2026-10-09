@@ -19,6 +19,9 @@
 #        area > 0; Σ lacune non decrescente in n_iter; area(regione) − area(unione smussati) = Σ lacune (rel. 1e-9)
 #  C-8 : secondo run identico (serialize); righe di centroids permutate → stessi territori per cell_id (identical)
 #  C-9 : errori con messaggio atteso (grepl) per 7 ingressi non validi
+#  Aggiunte dopo la revisione avversariale (RA-code-03/04/12, dichiarate nel report): C-4b regola dei frammenti su
+#    geometrie costruite (due destinatari, contatto puntiforme, catena in due ordini); C-8c rietichettatura dei cell_id;
+#    C-3 anche con 0 agganci falliti; mutante M7 (confine piu' corto) → C-4.
 #  Correzioni dello sviluppo (prima dell'esecuzione ufficiale, dichiarate nel report): C-4 esagonale con interne = punti
 #    del reticolo con 6 vicini (non "non ritagliate"); avversari: 1 centroide (st_point_on_surface) nelle regioni senza cellule.
 .libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
@@ -97,10 +100,11 @@ check_case <- function(id, reg, cen, do_c8 = FALSE) {
   own <- st_intersects(pts, terr)
   gin <- mean(vapply(seq_along(own), function(i) i %in% own[[i]], TRUE))
   ok3 <- all(gt == "POLYGON") && all(st_is_valid(terr)) && !any(st_is_empty(terr)) && identical(td$cell_id, cs$cell_id) &&
-    tv$info$n_multipart == 0 && tv$info$n_repaired == 0
+    tv$info$n_multipart == 0 && tv$info$n_repaired == 0 && tv$info$n_snap_failed == 0
   add("C-3", id, "POLYGON valido, ordine, 0 rip.", sprintf("%s; multi %d; rip %d", paste(unique(gt), collapse = "/"), tv$info$n_multipart, tv$info$n_repaired), "100 %", pf(ok3))
   add("C-3", id, "generatore nel territorio", sprintf("%.6f", gin), "1", pf(gin == 1))
   add("ROB", id, "agganci / multiparte / riparazioni", sprintf("%d/%d/%d", tv$info$n_snapped, tv$info$n_multipart, tv$info$n_repaired), "info", "INFO")
+  add("ROB", id, "agganci falliti / isolati / rip. smussatura", sprintf("%d/%d/-", tv$info$n_snap_failed, tv$info$n_isolated_cells), "info", "INFO")
   # C-7 smussatura
   prev_gap <- -Inf; ok_n <- TRUE; worst_out <- 0; min_a <- Inf; worst_gap <- 0; mono <- TRUE
   for (csv in c(0.1, 1/3, 2/3, 1)) {
@@ -134,6 +138,13 @@ check_case <- function(id, reg, cen, do_c8 = FALSE) {
     set.seed(99); p <- sample.int(nrow(cen)); tv3 <- TV(cen[p, ], reg)
     perm <- identical(unclass(tv3$cell_territories), unclass(tv$cell_territories)) && identical(tv3$territory_df, tv$territory_df)
     add("C-8", id, "invarianza alla permutazione", perm, "TRUE", pf(perm))
+    # C-8c (dopo la revisione, RA-code-12a): cell_id rietichettati rispetto ai punti → il territorio segue il punto
+    cen_r <- cen; cen_r$cell_id <- rev(cen$cell_id); tv4 <- TV(cen_r, reg)
+    m1 <- match(cen$cell_id, tv$territory_df$cell_id); m4 <- match(cen_r$cell_id, tv4$territory_df$cell_id)
+    da <- max(abs(tv$territory_df$territory_area[m1] - tv4$territory_df$territory_area[m4]) / tv$territory_df$territory_area[m1])
+    own4 <- st_intersects(st_sfc(lapply(seq_len(nrow(cen_r)), function(i) st_point(c(cen_r$x[i], cen_r$y[i])))), tv4$cell_territories)
+    gin4 <- mean(vapply(seq_along(own4), function(i) m4[i] %in% own4[[i]], TRUE))
+    add("C-8", id, "rietichettatura: territorio segue il punto", sprintf("max rel area %s; gen %.4f", fmt(da), gin4), "<= 1e-9; 1", pf(da <= TOL && gin4 == 1))
   }
   out
 }
@@ -214,6 +225,30 @@ c4("U", {
   rec("C-4", "U, orfano nel braccio destro", sprintf("max rel area attesa (%.1f, %.1f)", exp_p, exp_q), fmt(e), "<= 1e-9", pf(e <= TOL))
   okf <- tv$info$n_fragments == 1 && tv$info$n_fragments_reassigned == 1 && all(as.character(st_geometry_type(tv$cell_territories)) == "POLYGON")
   rec("C-4", "U, orfano nel braccio destro", "1 frammento riassegnato, POLYGON", sprintf("%d/%d", tv$info$n_fragments_reassigned, tv$info$n_fragments), "1/1", pf(okf))
+})
+
+# ---- C-4b regola dei frammenti su geometrie costruite (dopo la revisione, RA-code-03/04/12) -------------
+FR <- function(geoms, x, y) E$.tv_fragments(geoms, x, y, rep(1L, length(geoms)))
+sqp <- function(x0, y0, x1, y1) sq(x0, y0, x1, y1)
+c4("frammenti", {
+  # (a) due destinatari: confine 2 (cella 2) e 1 (cella 3); cella 4 tocca l'orfano in un solo punto
+  O <- sqp(10, 0, 12, 1)
+  g <- list(st_multipolygon(list(unclass(sqp(0, 0, 1, 1)), unclass(O))), sqp(10, 1, 12, 2), sqp(12, 0, 13, 1), sqp(9, -1, 10, 0))
+  f <- FR(g, c(0.5, 11, 12.5, 9.5), c(0.5, 1.5, 0.5, -0.5)); a <- vapply(f$geoms, function(z) as.numeric(st_area(st_sfc(z))), 0)
+  rec("C-4", "frammenti: due destinatari", "orfano al confine piu' lungo (cella 2)", sprintf("aree %s", paste(a, collapse = "/")), "1/4/1/1", pf(isTRUE(all.equal(a, c(1, 4, 1, 1)))))
+  # (b) solo contatto in un punto: l'orfano resta al donatore (multiparte, deviazione 3)
+  g <- list(st_multipolygon(list(unclass(sqp(0, 0, 1, 1)), unclass(O))), sqp(9, -1, 10, 0), sqp(30, 30, 31, 31))
+  f <- FR(g, c(0.5, 9.5, 30.5), c(0.5, -0.5, 30.5))
+  rec("C-4", "frammenti: contatto puntiforme", "nessuna riassegnazione, 1 isolato", sprintf("riass. %d, isolati %d", f$n_reassigned, f$n_isolated_cells), "0, 1", pf(f$n_reassigned == 0 && f$n_isolated_cells == 1))
+  # (c) catena: O1 confina con la cella B (1) e con O2 (1); O2 confina con O1 (1) e con la cella D (0.5) → O2 a D in entrambi gli ordini
+  O1 <- sqp(10, 0, 11, 1); O2 <- sqp(10, 1, 11, 2)
+  gA <- list(st_multipolygon(list(unclass(sqp(0, 0, 1, 1)), unclass(O1))), sqp(11, 0, 12, 1),
+             st_multipolygon(list(unclass(sqp(20, 0, 21, 1)), unclass(O2))), sqp(9, 1, 10, 1.5))
+  xs <- c(0.5, 11.5, 20.5, 9.5); ys <- c(0.5, 0.5, 0.5, 1.25)
+  fa <- FR(gA, xs, ys); aa <- vapply(fa$geoms, function(z) as.numeric(st_area(st_sfc(z))), 0)
+  p <- 4:1; fb <- FR(gA[p], xs[p], ys[p]); ab <- vapply(fb$geoms, function(z) as.numeric(st_area(st_sfc(z))), 0)[order(p)]
+  rec("C-4", "frammenti: catena, due ordini", "aree identiche; O2 alla cella D", sprintf("%s | %s", paste(aa, collapse = "/"), paste(ab, collapse = "/")), "1/2/1/1.5",
+      pf(isTRUE(all.equal(aa, ab)) && isTRUE(all.equal(aa, c(1, 2, 1, 1.5)))))
 })
 
 # ---- C-9 errori ----------------------------------------------------------------------------------
