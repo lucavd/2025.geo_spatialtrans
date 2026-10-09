@@ -215,7 +215,7 @@ Due revisori indipendenti (sotto-agenti senza accesso alla conversazione), sul c
   - Bug: contatti puntiformi trattati come confine (RA-code-04), regola dell'arbitro non certificata (RA-code-08).
   - Discrepanze: smussatura che scarta parti e ripara senza contare (06/07); agganci quasi mai riparatori (05); design §5.3 non aggiornato (15).
   - Metodo: catene di orfani dipendenti dall'ordine (03); vertici non annodati (11); check senza potenza (12).
-- **Revisore delle affermazioni (21 rilievi).** Ricalcolo indipendente di 188/188 righe dei verdetti, tutte identiche. Rilievi principali:
+- **Revisore delle affermazioni (21 rilievi).** Ricalcolo indipendente dei 188 verdetti: 188/188 con lo stesso esito, 187/188 identici in tutti i campi (l'unica differenza è l'annotazione «vacua» del revisore sulla riga CP-3 n.2, accolta: RA-claims-10). Rilievi principali:
   - la deroga alla regola non era dichiarata (RA-claims-02);
   - «31 volte» era sbagliato, il valore giusto è 131 (05);
   - il riassunto del check B e CP-3 erano sopra-interpretati (08/09);

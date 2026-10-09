@@ -39,7 +39,8 @@ rr <- do.call(rbind, lapply(real, function(o) do.call(rbind, lapply(c("geos", "d
 # C-5 secondo il testo pre-registrato (dopo la revisione, RA-claims-06: rel_summary e' una grandezza di C-6, riportata a parte)
 rr$c5_pass <- rr$interior_identical == 1 & rr$rel_area_interior <= TOL & rr$rel_area_mono <= TOL & rr$rel_sum_area <= TOL
 # CORREZIONE dichiarata (allineamento al testo pre-registrato, deviazione 3): nel banco ROI la regione e' MULTIPOLYGON e i territori
-# multiparte (orfani su isole senza generatori) sono ammessi; la prima versione dello script li contava come FAIL.
+# multiparte (orfani su isole senza generatori) sono ammessi; la prima versione dello script li contava come FAIL
+# (criteri n_multipart == 0 e c3_poly == 1, equivalenti: 15 ROI con poly < 1 = 15 ROI con multiparte; entrambi sostituiti da n_multipart <= n_isolated).
 rr$c123_pass <- rr$c1 <= TOL & rr$c2_overlap <= TOL & rr$c2_symdiff <= TOL & rr$c3_valid == 1 & rr$c3_gen_in_own == 1 & rr$n_repaired == 0 &
   rr$n_snap_failed == 0 & rr$n_multipart <= rr$n_isolated      # multiparte solo da orfani isolati (deviazione 3; RA-code-04)
 write.csv(rr, file.path(RES, "S1.3_roi_real.csv"), row.names = FALSE)
