@@ -1,0 +1,83 @@
+A1 r1 cellpose_rgb 
+interior_identical    n_interior_diff  rel_area_interior      rel_area_mono 
+         0.0000000         12.0000000          0.2666054          0.0000000 
+      n_frag_cells       rel_sum_area        rel_summary 
+       182.0000000          0.0000000          0.1492307 
+                 rel_area        interior_identical            frag_identical 
+             8.069569e-14              1.000000e+00              1.000000e+00 
+nsides_interior_identical                    t_geos                  t_deldir 
+             1.000000e+00              2.585000e+02              2.692400e+02 
+           c1    c2_overlap    c2_symdiff c3_gen_in_own     n_snapped 
+ 1.312449e-15 -1.166621e-15  1.424098e-19  1.000000e+00  0.000000e+00 
+    elapsed_s 
+ 2.585000e+02 
+n_snapped elapsed_s 
+    15.00    269.24 
+t 532.182 
+A4 f1 spaceranger 
+interior_identical    n_interior_diff  rel_area_interior      rel_area_mono 
+        0.00000000         2.00000000         0.00178396         0.00000000 
+      n_frag_cells       rel_sum_area        rel_summary 
+       10.00000000         0.00000000         0.17504788 
+                 rel_area        interior_identical            frag_identical 
+             7.274986e-14              1.000000e+00              1.000000e+00 
+nsides_interior_identical                    t_geos                  t_deldir 
+             0.000000e+00              4.590000e+01              6.491000e+01 
+           c1    c2_overlap    c2_symdiff c3_gen_in_own     n_snapped 
+ 1.175092e-16  0.000000e+00  9.252128e-19  1.000000e+00  0.000000e+00 
+    elapsed_s 
+ 4.590000e+01 
+n_snapped elapsed_s 
+     0.00     64.91 
+t 649.519 
+CSR 
+            n    n_interior frac_interior     mean_area   median_area 
+  8739.000000   7249.000000      0.829500     90.024694     81.892935 
+           cv   median_eq_r  median_ecc_T   mean_nsides    var_nsides 
+     0.535595      5.105618      0.772912      5.934750      1.764920 
+var_norm_area        cv_loc 
+     0.286862      0.522707 
+                 rel_area        interior_identical            frag_identical 
+              1.13668e-06               1.00000e+00               1.00000e+00 
+nsides_interior_identical                    t_geos                  t_deldir 
+              0.00000e+00               1.85192e+02               1.90102e+02 
+RSA 
+            n    n_interior frac_interior     mean_area   median_area 
+  8739.000000   7233.000000      0.827669     89.891499     82.961468 
+           cv   median_eq_r  median_ecc_T   mean_nsides    var_nsides 
+     0.459625      5.138818      0.755443      5.936541      1.501365 
+var_norm_area        cv_loc 
+     0.211255      0.445851 
+                 rel_area        interior_identical            frag_identical 
+             7.114615e-14              1.000000e+00              1.000000e+00 
+nsides_interior_identical                    t_geos                  t_deldir 
+             1.000000e+00              1.999310e+02              2.018210e+02 
+RSArule 
+            n    n_interior frac_interior     mean_area   median_area 
+  8739.000000   7233.000000      0.827669     90.587958     84.056089 
+           cv   median_eq_r  median_ecc_T   mean_nsides    var_nsides 
+     0.417633      5.172609      0.743176      5.940550      1.423733 
+var_norm_area        cv_loc 
+     0.174417      0.408679 
+                 rel_area        interior_identical            frag_identical 
+             8.626693e-14              1.000000e+00              1.000000e+00 
+nsides_interior_identical                    t_geos                  t_deldir 
+             1.000000e+00              1.611560e+02              1.626110e+02 
+   model median_area        cv    cv_loc mean_nsides
+1    CSR    81.85684 0.5355784 0.5226316    5.934300
+21   RSA    82.96020 0.4590255 0.4452663    5.936877
+List of 7
+ $ archetype          : chr "A1"
+ $ roi_id             : chr "r1"
+ $ n                  : int 8739
+ $ n_clipped_nonconvex: int 900
+ $ ov_contained       :List of 2
+  ..$ n    : int 0
+  ..$ n_bad: int 0
+ $ ov_m4              :List of 2
+  ..$ n    : int 0
+  ..$ n_bad: int 0
+ $ gap_frac           : Named num [1:3] 0.0593 0.0743 0.078
+  ..- attr(*, "names")= chr [1:3] "cs1/3" "cs2/3" "cs1"
+NULL
+t 3382.769 

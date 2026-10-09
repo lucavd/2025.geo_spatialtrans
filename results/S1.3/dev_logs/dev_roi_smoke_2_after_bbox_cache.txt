@@ -1,0 +1,18 @@
+t 75.568 
+ n_fragments n_reassigned    n_snapped    elapsed_s 
+     140.000      140.000        0.000       33.644 
+n_snapped elapsed_s 
+   15.000    37.578 
+interior_identical    n_interior_diff  rel_area_interior      rel_area_mono 
+      0.000000e+00       1.200000e+01       2.666054e-01       5.492859e-14 
+      n_frag_cells       rel_sum_area        rel_summary 
+      1.820000e+02       1.458277e-16       1.492307e-01 
+ [1] cell      a_geos    a_deldir  a_hp      ns_geos   ns_deldir ns_hp    
+ [8] min_edge  bounded   geos_ok   deldir_ok
+<0 rows> (or 0-length row.names)
+            n    n_interior frac_interior     mean_area   median_area 
+   8739.00000    7582.00000       0.86760      77.47771      60.00943 
+           cv   median_eq_r  median_ecc_T   mean_nsides    var_nsides 
+      0.84965       4.37054       0.77645       5.91348       1.61262 
+var_norm_area        cv_loc 
+      0.72190       0.70462 

@@ -1,0 +1,5 @@
+misura,valore,fonte
+A1 r1 tessellate_voronoi prima della cache dei riquadri (s),263.2 (tiles 0.4 + clip 32.2 + frammenti 230.5 + finalise 0.1),dev_logs/dev_arbiter_profile.txt
+A1 r1 dopo la cache dei riquadri (s),33.6,dev_logs/dev_roi_smoke_2_after_bbox_cache.txt
+A5 r5 RSA rep 15: Sigma - unione a cascata / incrementale (um2),1359 / 1443,dev_logs/dev_geos_A5r5_union.txt
+I4 s2 regione 5 deldir: area persa dall unione (um2),52.43881,dev_logs/dev_deldir_I4_union_cell.txt

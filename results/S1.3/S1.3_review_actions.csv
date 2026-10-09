@@ -1,0 +1,37 @@
+id,gravita,azione,stato
+RA-code-01,confermato,nessuna,—
+RA-code-02,confermato,nessuna,—
+RA-code-03,metodo,regola precisata: decisioni simultanee per passata (passata 1 contro i soli pezzi principali); test C-4b catena in due ordini,corretto (26baaf0)
+RA-code-04,bug,confine = tratto condiviso > 1e-6 µm (.tv_pick); donatore escluso; multiparte ammessi solo da orfani isolati (info$n_isolated_cells); test C-4b contatto puntiforme,corretto (26baaf0)
+RA-code-05,discrepanza,"agganci riusciti/falliti contati separatamente; dopo la correzione GEOS 1 aggancio sui ROI, 0 falliti",corretto (26baaf0)
+RA-code-06,discrepanza,"smussatura per parte: i territori multiparte non perdono parti; parti spezzate dalla smussatura → pezzo con il generatore (regola dichiarata), contati",corretto (26baaf0)
+RA-code-07,discrepanza,st_make_valid della smussatura contato in info$n_smooth_repaired (24 sui 30 ROI a cs = 1),corretto (26baaf0)
+RA-code-08,bug,arbitro con certificato d_(K+1) > 2·max||v||; lati contati se > 1e-9 µm; arbitrato rieseguito (16/16 GEOS),corretto (26baaf0)
+RA-code-09,discrepanza,lati contati con fusione < 1e-9 µm (BL-075); frase del report corretta,corretto
+RA-code-10,confermato,nessuna (diagnosi confermata in aritmetica razionale),—
+RA-code-11,metodo,vertici non annodati → BL-069 (Step 2: precisione fissa / ritaglio unico) e BL-070,BACKLOG
+RA-code-12,metodo,C-8c rietichettatura; C-4b due destinatari; mutante M7; bersaglio di M4 = C-7; C-8 permutazione dichiarata 'per costruzione',corretto (26baaf0)
+RA-code-13,confermato,nessuna,—
+RA-code-14,confermato,nessuna,—
+RA-code-15,discrepanza,design §5.3 riscritto (v1.3) e commenti del codice aggiornati,corretto (chiusura)
+RA-claims-01,confermato,nessuna,—
+RA-claims-02,discrepanza,"deroga dichiarata in sintesi, deviazione 9, verdetto e ROADMAP §6 (decisione di Luca)",corretto
+RA-claims-03,discrepanza,argomento riformulato: K-2 comune ai motori e non recuperabile; K-3 15/1 800 GEOS (artefatti) vs 14/90 deldir; deldir anche su K-1,corretto
+RA-claims-04,metodo,con lati > 1e-9 µm l'arbitro non trova piu' il caso A4 p2 2304: K_arb GEOS TRUE; intervallo dei lati corretto,corretto
+RA-claims-05,discrepanza,130.7× (deldir sfora il budget di 31×),corretto
+RA-claims-06,metodo,"C-5 allineato al testo (senza rel_summary): GEOS 11/40, esito FAIL invariato",corretto
+RA-claims-07,metodo,previsioni di G1 codificate: 59/62 confermate (G1 A5 B-1 smentita),corretto
+RA-claims-08,discrepanza,sintesi e lettura del check B riscritte per generatore e metrica,corretto
+RA-claims-09,discrepanza,"misurata l'uscita dalla regione con M4: 9 521 territori, 29/30 ROI, 9 531 µm²",corretto
+RA-claims-10,metodo,CP-3 n.2 confirmed = NA (0 coppie),corretto
+RA-claims-11,metodo,"verifica diretta: 50 repliche con la regola R3 → 39/50 identiche, 11 solo lati; codice R3 50/50 (S1.3_review_c6_attribution.csv)",corretto
+RA-claims-12,discrepanza,A1 r5: deldir dipende dal riquadro (152 tile diversi fra due riquadri); GEOS = R3 = arbitro (S1.3_review_A1r5_deldir_rw.csv),corretto
+RA-claims-13,metodo,CP-1 descritto come 'regioni con 3–1 000 cellule (300/335)',corretto
+RA-claims-14,confermato,nessuna,—
+RA-claims-15,metodo,numeri di sviluppo salvati in S1.3_dev_measurements.csv con i log in results/S1.3/dev_logs/,corretto
+RA-claims-16,metodo,conteggi prima/dopo la correzione dell'analisi riportati (deviazione 6),corretto
+RA-claims-17,discrepanza,previsioni dell'addendum codificate (robustezza 'GEOS 0' smentita: 5); robustezza sugli stessi ingressi (5 vs 705),corretto
+RA-claims-18,metodo,risoluzione della copertura dichiarata (~9 µm²/punto); coppia deldir da 36.6 µm² verificata: 0/2 000 punti in entrambe,corretto
+RA-claims-19,discrepanza,commit corretti nella sezione Riproducibilita',corretto
+RA-claims-20,confermato,nessuna,—
+RA-claims-21,metodo,interpretazioni annotate (ordine con ≥ 4/5 ROI; D-1 mediana dei rapporti; aggregato 1.054),corretto

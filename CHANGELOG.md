@@ -2,6 +2,26 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.3 — 2026-10-08/09 — `tessellate_voronoi()`: territori di Voronoi per regione (branch `step1-cell-layer`)
+
+### Decisioni (ROADMAP §6)
+- D-S1.3.1 Voronoi per regione; D-S1.3.2 frammenti orfani al vicino con il confine condiviso piu' lungo; D-S1.3.3 Chaikin contenuto, `n_iter = max(1, round(3·cs))` (Luca, «approvo»). Controprova della roadmap per A6 sostituita (BL-064).
+- **Motore GEOS** (`sf::st_voronoi`, `point_order = TRUE`) invece di deldir (decisione 6 del design): confronto pre-registrato (addendum C-10), regola senza eleggibili per cancelli non discriminanti, decisione di Luca sull'evidenza discriminante. Design v1.3.
+
+### Codice
+- `R/04b3_tessellate_voronoi.R` (nuovo): `tessellate_voronoi(centroids, regions, corner_smoothing = 0, keep_tiles = FALSE, verbose = TRUE)` → `cell_territories`, `territory_df`, `region_check`, `tiles`, `info` (frammenti, agganci, multiparte, riparazioni). Un solo motore (`.tv_engine()`).
+- Test `R/testing/test_S1.3.R` (294 asserzioni, con C-4b e C-8c dopo la revisione), mutanti `tools/S1.3_mutants.R` (7), variante deldir `tools/S1.3_variants.R`, arbitro per semipiani `tools/S1.3_arbiter.R`, banco ROI `tools/S1.3_roi.R`, controprove `tools/S1.3_cp.R`, prestazioni `tools/S1.3_perf.R`, analisi `tools/S1.3_analysis.R`, figure `tools/S1.3_figures.R`, post hoc `tools/S1.3_c2_coverage.R`, `tools/S1.3_c2_pairs_check.R`, controlli della revisione `tools/S1.3_review_checks.R`, previsioni `tools/S1.3_predictions.R`, `R/testing/run_S1.3.sh`.
+- Correzioni dopo la revisione (`26baaf0`): confine dei frammenti > 1e-6 µm e decisioni simultanee (contatti puntiformi, catene), donatore escluso, smussatura per parte con riparazioni contate, arbitro con certificato, C-4b/C-8c/M7.
+- Difetti trovati in sviluppo: lunghezza condivisa nulla e unioni multiparte con deldir (tolleranza 1e-7 µm + aggancio); definizioni del test (esagonale, avversari vuoti); riquadri ricalcolati per ogni orfano (263 → 34 s su A1 r1); regex degli avversari nello stadio C-10a; analisi che contava come FAIL i multiparte ammessi dalla deviazione 3.
+
+### Risultati (`results/S1.3/`; uscite grezze in `/mnt/micron/geo_spatialtrans/S1.3/`)
+- Check C (GEOS) 294/294, mutanti 7/7, C-perf 35.9 s / 1 076 MB; C-5 11/40 e C-6 186/1 200 FAIL (errore di pre-registrazione, BL-074; attribuzione verificata: regola R3 39/50 identiche, 11 solo lati); C-2 su 15/1 800 nulli FAIL da artefatto di `st_union` (copertura per punti 0/2.5 M/0, BL-069/070).
+- Confronto dei motori: arbitro (certificato, lati > 1e-9 µm) 16/16 GEOS vs 0/16 deldir; check C deldir 290/294 (geometria non annodata); eventi di ripiego sugli stessi ingressi 5 vs 705; C-perf deldir 4 691 s / 8 958 MB (130.7×); esponenti 0.93 vs 1.70. Regola dell'addendum: nessun eleggibile → «non chiusa»; chiusura in deroga, decisione di Luca.
+- Check B 59/62 previsioni confermate (G1 23/24, G2 24/24, G3 12/14); CV delle aree fuori tolleranza in A1–A5 per G1–G3 (semina omogenea); G2 passa A6; G3 (regola di default) fallisce anche A6; sensibilita' al riferimento 48/48 identica; nessun verdetto cambiato dopo le correzioni.
+- CP-1 confermata (testo del design: 93.7 % delle regioni con 3–1 000 cellule scoperte > 1 %); CP-2 senza potenza, CP-2b post hoc (Δ ≥ 0.05 da k = 2); CP-3 nessuna sovrapposizione senza contenimento ma 9 521 territori fuori dalla regione (29/30 ROI); D-1 1.071.
+- Revisione avversariale: 2 revisori, 36 rilievi (codice 15: 2 bug, 5 discrepanze, 3 metodo, 5 confermati; affermazioni 21: 9 discrepanze, 9 metodo, 3 confermati); reimplementazione Python 62 121 celle a 5.3e-13; ricalcolo 188/188 verdetti; correzioni in `26baaf0`, azioni in `results/S1.3/S1.3_review_actions.csv`.
+- BACKLOG BL-069…BL-076; chiuse BL-047, BL-056 (misurata), BL-061.
+
 ## R3 — 2026-10-08 — Voronoi sui nuclei reali (branch `step1-cell-layer`)
 
 ### Decisioni in apertura (ROADMAP §6)

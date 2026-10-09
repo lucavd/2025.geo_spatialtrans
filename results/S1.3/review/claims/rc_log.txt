@@ -1,0 +1,100 @@
+rows orig 188 mine 188 merged 188 
+identical all fields: 187  same outcome: 188 
+                                        key value_orig value_mine outcome_orig
+ CP|CP-3|A1-A6|Chaikin senza contenimento#2          0          0         PASS
+ outcome_mine prediction_orig        prediction_mine confirmed_orig
+         PASS            PASS PASS (vacua: 0 coppie)           TRUE
+ confirmed_mine
+           TRUE
+tot_assert_geos = 286/286
+tot_assert_deldir = 282/286
+c6_nofrag = 57/67
+c6_frag = 129/1133
+c6_nofrag_maxrel_nonident = 8.60e-05
+null_geos_fail_criteria = c1=0 c2_overlap=15 c2_symdiff=15 c3_valid=0 gen_in_own=0 repaired=0 multipart>0=456
+null_deldir_fail_criteria = c1=0 c2_overlap=15 c2_symdiff=15 c3_valid=0 gen_in_own=0 repaired=0 multipart>0=22
+null_geos_strict_with_multipart = 1330/1800
+null_deldir_strict_with_multipart = 55/90
+null_n_failed_gt0 = 0
+null_reps_per_roi = 20-20
+rep1_c123_geos_vs_deldir = geos 90/90, deldir 75/90
+c10a_sets = real 40, null 90, syn 26
+c10a_fail_by_set = 5/5/0
+arb_min_edge = 7.43e-15 .. 1.01e+00
+arb_myflags_agree = geos 26/26, deldir 26/26
+arb_geos_wrong = real:A4:p2:spaceranger:2304:22.8107:22.8107:7:6:6
+arb_area_only_wrong_deldir = 16
+cp1_seeds = 5
+cp1_inputs = I1_syn600_c1,I2_syn600_c2,I3_syn600_c3,I4_syn600_c4,I5_syn600_c2_labels
+cp1_ncells_quantiles = 0/18/43/131/426/2659
+cp1_regions_total = 335
+cp1_regions_gt1000 = 15
+cp1_regions_lt3 = 20
+cp1_median_all_ge3 = 0.0867
+cp1_area_quantiles_k = 180/12023/118082
+cp2_delta = 0.0000/-0.0029/-0.0018/0.0020/0.0012
+cp2b_delta = 0.0000/0.0060/0.0212/0.0566/0.0923
+cp2_reps = 20-20
+cp2b_reps = 20-20
+cp3_gap_cs1_range = 0.0689..0.0847
+cp3_gap_monotone = TRUE
+d1 = n=20 median 1.071 min 0.851 max 1.315; pooled ratio mean(band_r2)/mean(band_r1)=1.054; seeds>=1.1: 7
+speedup_by_n = 10000:5.7x 20000:8.9x 40000:14.9x 80000:26.7x 160000:48.0x 449536:130.7x
+coverage_sets =        ;        deldir geos ;   null     15   15 ;   real      5    0 ;   syn      10   10
+coverage_pts_per_case = 1e+05
+pairs_check_rows = 18
+pairs_check_le9e13 = 17
+geos_cov_pairs_by_set = 18/10
+a5r5_cov = geos:RSA rep 15:0.00156325
+ engine    K1    K2 K2_text    K3  Karb rob_test rob_real rob_null n_null_tess
+   geos  TRUE FALSE   FALSE FALSE FALSE        0       91     2816        1800
+ deldir FALSE FALSE   FALSE FALSE FALSE        4      312      619          90
+ snapped_real multipart_real elapsed_roi_range
+           40             51       0.76-38.792
+          261             51      2.393-39.385
+ engine fail_interior_flags fail_rel_area_interior fail_rel_area_mono
+   geos                  26                     27                  2
+ deldir                  26                     26                  1
+ max_rel_area_mono fail_rel_sum fail_rel_summary fail_c1 fail_c2_overlap
+      1.217496e-06            0               31       0               0
+      1.708304e-06            0               28       0               5
+ fail_c2_symdiff fail_c3 multipart_roi c5_pass_text c5_pass_coded
+               0       0            15           11             9
+               5       0            15           12            12
+ c5_pass_if_mono_only
+                   38
+                   39
+[1] ""                                                                                              
+[2] "A3 r2 cellpose_rgb; A4 f1 spaceranger; A4 p1 spaceranger; A4 p3 stardist_he; A6 r3 stardist_he"
+ archetype metric pred_n_pass_R3 pred obs_n_pass  obs confirmed
+        A1     B1              0 FAIL          0 FAIL      TRUE
+        A1     B2              0 FAIL          0 FAIL      TRUE
+        A1     B3              0 FAIL          0 FAIL      TRUE
+        A1     B4              5 PASS          5 PASS      TRUE
+        A2     B1              0 FAIL          0 FAIL      TRUE
+        A2     B2              0 FAIL          0 FAIL      TRUE
+        A2     B3              3 FAIL          3 FAIL      TRUE
+        A2     B4              4 PASS          4 PASS      TRUE
+        A3     B1              0 FAIL          0 FAIL      TRUE
+        A3     B2              0 FAIL          0 FAIL      TRUE
+        A3     B3              0 FAIL          0 FAIL      TRUE
+        A3     B4              5 PASS          5 PASS      TRUE
+        A4     B1              5 PASS          5 PASS      TRUE
+        A4     B2              1 FAIL          1 FAIL      TRUE
+        A4     B3              0 FAIL          0 FAIL      TRUE
+        A4     B4              0 FAIL          0 FAIL      TRUE
+        A5     B1              4 PASS          3 FAIL     FALSE
+        A5     B2              2 FAIL          2 FAIL      TRUE
+        A5     B3              3 FAIL          3 FAIL      TRUE
+        A5     B4              5 PASS          5 PASS      TRUE
+        A6     B1              5 PASS          5 PASS      TRUE
+        A6     B2              4 PASS          4 PASS      TRUE
+        A6     B3              4 PASS          4 PASS      TRUE
+        A6     B4              5 PASS          5 PASS      TRUE
+ mutant target_prereg n_fail_target n_fail_any   checks_failed
+     M1       C-3/C-5            17         21         C-3/C-4
+     M2           C-1            26         59 C-1/C-2/C-7/C-4
+     M3           C-1            19         39     C-1/C-2/C-3
+     M4       C-2/C-7            19         19             C-7
+     M5       C-1/C-4            17         32     C-1/C-2/C-4
+     M6           C-3            36        138 C-1/C-2/C-3/C-7

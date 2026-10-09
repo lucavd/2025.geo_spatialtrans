@@ -1,0 +1,3 @@
+"engine","fail_interior_flags","fail_rel_area_interior","fail_rel_area_mono","max_rel_area_mono","fail_rel_sum","fail_rel_summary","fail_c1","fail_c2_overlap","fail_c2_symdiff","fail_c3","multipart_roi","c5_pass_text","c5_pass_coded","c5_pass_if_mono_only","roi_c123_fail"
+"geos",26,27,2,1.21749636019338e-06,0,31,0,0,0,0,15,11,9,38,""
+"deldir",26,26,1,1.70830411077072e-06,0,28,0,5,5,0,15,12,12,39,"A3 r2 cellpose_rgb; A4 f1 spaceranger; A4 p1 spaceranger; A4 p3 stardist_he; A6 r3 stardist_he"

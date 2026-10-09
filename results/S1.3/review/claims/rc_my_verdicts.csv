@@ -1,0 +1,189 @@
+"section","id","archetype","model","value","outcome","prediction","confirmed"
+"C","C-1","-","geos","26/26","PASS",NA,NA
+"C","C-2","-","geos","52/52","PASS",NA,NA
+"C","C-3","-","geos","52/52","PASS",NA,NA
+"C","C-7","-","geos","130/130","PASS",NA,NA
+"C","C-8","-","geos","10/10","PASS",NA,NA
+"C","C-4","-","geos","9/9","PASS",NA,NA
+"C","C-9","-","geos","7/7","PASS",NA,NA
+"C","C-1","-","deldir","26/26","PASS",NA,NA
+"C","C-2","-","deldir","48/52","FAIL",NA,NA
+"C","C-3","-","deldir","52/52","PASS",NA,NA
+"C","C-7","-","deldir","130/130","PASS",NA,NA
+"C","C-8","-","deldir","10/10","PASS",NA,NA
+"C","C-4","-","deldir","9/9","PASS",NA,NA
+"C","C-9","-","deldir","7/7","PASS",NA,NA
+"C","mutanti","-","geos","6/6","PASS",NA,NA
+"C","C-5","A1-A6","geos","9/40; max rel area interne 7.72e-01","FAIL",NA,NA
+"C","C-1..3 ROI","A1-A6","geos","40/40; max C-1 6.88e-15","PASS",NA,NA
+"C","C-5","A1-A6","deldir","12/40; max rel area interne 7.72e-01","FAIL",NA,NA
+"C","C-1..3 ROI","A1-A6","deldir","35/40; max C-1 2.19e-10","FAIL",NA,NA
+"C","C-6","A1-A6","geos","186/1200 (attese 1200); max rel 3.64e-01","FAIL",NA,NA
+"C","C-1..3 nulli","A1-A6","geos","1785/1800","FAIL",NA,NA
+"C","C-1..3 nulli","A1-A6","deldir","75/90","FAIL",NA,NA
+"C10","arbitro","A1-A6","semipiani","26: 25 / 1 (limitati 26)","INFO",NA,NA
+"C10","C-10a","A1-A6","geos vs deldir","146/156; max rel area 1.71e-06","FAIL","PASS","FALSE"
+"B","B1","A1","G1","0/5 ROI; +0.156..+0.179","FAIL",NA,NA
+"B","B2","A1","G1","0/5 ROI; -0.327..-0.229","FAIL",NA,NA
+"B","B3","A1","G1","0/5 ROI; -0.233..-0.171","FAIL",NA,NA
+"B","B4","A1","G1","5/5 ROI; -0.004..+0.012","PASS",NA,NA
+"B","B1","A2","G1","0/5 ROI; +0.071..+0.199","FAIL",NA,NA
+"B","B2","A2","G1","0/5 ROI; -0.511..-0.132","FAIL",NA,NA
+"B","B3","A2","G1","3/5 ROI; -0.325..-0.048","FAIL",NA,NA
+"B","B4","A2","G1","4/5 ROI; +0.027..+0.050","PASS",NA,NA
+"B","B1","A3","G1","0/5 ROI; +0.074..+0.344","FAIL",NA,NA
+"B","B2","A3","G1","0/5 ROI; -0.594..-0.280","FAIL",NA,NA
+"B","B3","A3","G1","0/5 ROI; -0.269..-0.125","FAIL",NA,NA
+"B","B4","A3","G1","5/5 ROI; +0.016..+0.043","PASS",NA,NA
+"B","B1","A4","G1","5/5 ROI; -0.018..+0.023","PASS",NA,NA
+"B","B2","A4","G1","1/5 ROI; +0.037..+0.811","FAIL",NA,NA
+"B","B3","A4","G1","0/5 ROI; +0.656..+1.079","FAIL",NA,NA
+"B","B4","A4","G1","0/5 ROI; +0.119..+0.151","FAIL",NA,NA
+"B","B1","A5","G1","3/5 ROI; -0.040..+0.091","FAIL",NA,NA
+"B","B2","A5","G1","2/5 ROI; -0.299..-0.047","FAIL",NA,NA
+"B","B3","A5","G1","3/5 ROI; -0.319..+0.013","FAIL",NA,NA
+"B","B4","A5","G1","5/5 ROI; +0.001..+0.020","PASS",NA,NA
+"B","B1","A6","G1","5/5 ROI; +0.001..+0.044","PASS",NA,NA
+"B","B2","A6","G1","4/5 ROI; -0.162..+0.034","PASS",NA,NA
+"B","B3","A6","G1","4/5 ROI; -0.160..+0.035","PASS",NA,NA
+"B","B4","A6","G1","5/5 ROI; -0.015..+0.001","PASS",NA,NA
+"B","B1","A1","G2","0/5 ROI; +0.171..+0.191","FAIL","FAIL","TRUE"
+"B","B2","A1","G2","0/5 ROI; -0.406..-0.320","FAIL","FAIL","TRUE"
+"B","B3","A1","G2","0/5 ROI; -0.323..-0.266","FAIL","FAIL","TRUE"
+"B","B4","A1","G2","5/5 ROI; -0.019..-0.004","PASS","PASS","TRUE"
+"B","B1","A2","G2","0/5 ROI; +0.084..+0.211","FAIL","FAIL","TRUE"
+"B","B2","A2","G2","0/5 ROI; -0.587..-0.273","FAIL","FAIL","TRUE"
+"B","B3","A2","G2","0/5 ROI; -0.430..-0.210","FAIL","FAIL","TRUE"
+"B","B4","A2","G2","5/5 ROI; +0.004..+0.029","PASS","PASS","TRUE"
+"B","B1","A3","G2","0/5 ROI; +0.080..+0.354","FAIL","FAIL","TRUE"
+"B","B2","A3","G2","0/5 ROI; -0.639..-0.347","FAIL","FAIL","TRUE"
+"B","B3","A3","G2","0/5 ROI; -0.353..-0.203","FAIL","FAIL","TRUE"
+"B","B4","A3","G2","5/5 ROI; +0.006..+0.030","PASS","PASS","TRUE"
+"B","B1","A4","G2","3/5 ROI; +0.021..+0.059","FAIL","FAIL","TRUE"
+"B","B2","A4","G2","0/5 ROI; -0.537..-0.341","FAIL","FAIL","TRUE"
+"B","B3","A4","G2","0/5 ROI; -0.276..-0.195","FAIL","FAIL","TRUE"
+"B","B4","A4","G2","5/5 ROI; +0.006..+0.020","PASS","PASS","TRUE"
+"B","B1","A5","G2","3/5 ROI; -0.027..+0.116","FAIL","FAIL","TRUE"
+"B","B2","A5","G2","0/5 ROI; -0.370..-0.139","FAIL","FAIL","TRUE"
+"B","B3","A5","G2","2/5 ROI; -0.385..-0.082","FAIL","FAIL","TRUE"
+"B","B4","A5","G2","5/5 ROI; -0.010..+0.006","PASS","PASS","TRUE"
+"B","B1","A6","G2","5/5 ROI; +0.007..+0.043","PASS","PASS","TRUE"
+"B","B2","A6","G2","4/5 ROI; -0.161..+0.004","PASS","PASS","TRUE"
+"B","B3","A6","G2","4/5 ROI; -0.156..+0.006","PASS","PASS","TRUE"
+"B","B4","A6","G2","5/5 ROI; -0.025..-0.002","PASS","PASS","TRUE"
+"B","B1","A1","G3","0/5 ROI; +0.181..+0.205","FAIL","FAIL","TRUE"
+"B","B2","A1","G3","0/5 ROI; -0.475..-0.408","FAIL",NA,NA
+"B","B3","A1","G3","0/5 ROI; -0.411..-0.363","FAIL",NA,NA
+"B","B4","A1","G3","5/5 ROI; -0.037..-0.021","PASS",NA,NA
+"B","B1","A2","G3","0/5 ROI; +0.088..+0.216","FAIL","FAIL","TRUE"
+"B","B2","A2","G3","0/5 ROI; -0.621..-0.332","FAIL",NA,NA
+"B","B3","A2","G3","0/5 ROI; -0.477..-0.263","FAIL",NA,NA
+"B","B4","A2","G3","5/5 ROI; -0.007..+0.018","PASS",NA,NA
+"B","B1","A3","G3","0/5 ROI; +0.088..+0.364","FAIL",NA,NA
+"B","B2","A3","G3","0/5 ROI; -0.687..-0.449","FAIL",NA,NA
+"B","B3","A3","G3","0/5 ROI; -0.438..-0.329","FAIL",NA,NA
+"B","B4","A3","G3","5/5 ROI; -0.019..+0.012","PASS",NA,NA
+"B","B1","A4","G3","5/5 ROI; -0.006..+0.037","PASS",NA,NA
+"B","B2","A4","G3","0/5 ROI; -0.203..+0.403","FAIL",NA,NA
+"B","B3","A4","G3","0/5 ROI; +0.273..+0.610","FAIL",NA,NA
+"B","B4","A4","G3","0/5 ROI; +0.086..+0.119","FAIL",NA,NA
+"B","B1","A5","G3","3/5 ROI; -0.012..+0.130","FAIL",NA,NA
+"B","B2","A5","G3","0/5 ROI; -0.472..-0.279","FAIL",NA,NA
+"B","B3","A5","G3","0/5 ROI; -0.487..-0.232","FAIL",NA,NA
+"B","B4","A5","G3","5/5 ROI; -0.035..-0.015","PASS","FAIL","FALSE"
+"B","B1","A6","G3","2/5 ROI; +0.027..+0.087","FAIL",NA,NA
+"B","B2","A6","G3","0/5 ROI; -0.367..-0.215","FAIL","FAIL","TRUE"
+"B","B3","A6","G3","0/5 ROI; -0.369..-0.209","FAIL","FAIL","TRUE"
+"B","B4","A6","G3","4/5 ROI; -0.056..-0.033","PASS","FAIL","FALSE"
+"Bsens","B1","A1","G2","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B2","A1","G2","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B3","A1","G2","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B4","A1","G2","5/5 ROI","PASS","PASS","TRUE"
+"Bsens","B1","A2","G2","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B2","A2","G2","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B3","A2","G2","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B4","A2","G2","5/5 ROI","PASS","PASS","TRUE"
+"Bsens","B1","A3","G2","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B2","A3","G2","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B3","A3","G2","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B4","A3","G2","5/5 ROI","PASS","PASS","TRUE"
+"Bsens","B1","A4","G2","3/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B2","A4","G2","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B3","A4","G2","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B4","A4","G2","5/5 ROI","PASS","PASS","TRUE"
+"Bsens","B1","A5","G2","3/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B2","A5","G2","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B3","A5","G2","2/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B4","A5","G2","5/5 ROI","PASS","PASS","TRUE"
+"Bsens","B1","A6","G2","5/5 ROI","PASS","PASS","TRUE"
+"Bsens","B2","A6","G2","4/5 ROI","PASS","PASS","TRUE"
+"Bsens","B3","A6","G2","4/5 ROI","PASS","PASS","TRUE"
+"Bsens","B4","A6","G2","5/5 ROI","PASS","PASS","TRUE"
+"Bsens","B1","A1","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B2","A1","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B3","A1","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B4","A1","G3","5/5 ROI","PASS","PASS","TRUE"
+"Bsens","B1","A2","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B2","A2","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B3","A2","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B4","A2","G3","5/5 ROI","PASS","PASS","TRUE"
+"Bsens","B1","A3","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B2","A3","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B3","A3","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B4","A3","G3","5/5 ROI","PASS","PASS","TRUE"
+"Bsens","B1","A4","G3","5/5 ROI","PASS","PASS","TRUE"
+"Bsens","B2","A4","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B3","A4","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B4","A4","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B1","A5","G3","3/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B2","A5","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B3","A5","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B4","A5","G3","5/5 ROI","PASS","PASS","TRUE"
+"Bsens","B1","A6","G3","2/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B2","A6","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B3","A6","G3","0/5 ROI","FAIL","FAIL","TRUE"
+"Bsens","B4","A6","G3","4/5 ROI","PASS","PASS","TRUE"
+"B","ordine cv","A3","G3","5/5 ROI","PASS","PASS","TRUE"
+"B","ordine cv_loc","A3","G3","5/5 ROI","PASS","PASS","TRUE"
+"B","ordine cv","A5","G3","5/5 ROI","PASS","PASS","TRUE"
+"B","ordine cv_loc","A5","G3","5/5 ROI","PASS","PASS","TRUE"
+"B","ordine cv","A6","G3","5/5 ROI","PASS","PASS","TRUE"
+"B","ordine cv_loc","A6","G3","5/5 ROI","PASS","PASS","TRUE"
+"B","ordine cv","A4","G3","5/5 ROI","PASS","PASS","TRUE"
+"B","ordine cv_loc","A4","G3","5/5 ROI","PASS","PASS","TRUE"
+"B","B-5","A1","G1","0.103 (0.004)","INFO",NA,NA
+"B","B-5","A1","G2","0.134 (0.006)","INFO",NA,NA
+"B","B-5","A1","G3","0.176 (0.003)","INFO",NA,NA
+"B","B-5","A2","G1","0.104 (0.007)","INFO",NA,NA
+"B","B-5","A2","G2","0.163 (0.004)","INFO",NA,NA
+"B","B-5","A2","G3","0.191 (0.005)","INFO",NA,NA
+"B","B-5","A3","G1","0.179 (0.008)","INFO",NA,NA
+"B","B-5","A3","G2","0.214 (0.005)","INFO",NA,NA
+"B","B-5","A3","G3","0.274 (0.007)","INFO",NA,NA
+"B","B-5","A4","G1","0.195 (0.003)","INFO",NA,NA
+"B","B-5","A4","G2","0.117 (0.002)","INFO",NA,NA
+"B","B-5","A4","G3","0.110 (0.002)","INFO",NA,NA
+"B","B-5","A5","G1","0.041 (0.020)","INFO",NA,NA
+"B","B-5","A5","G2","0.083 (0.019)","INFO",NA,NA
+"B","B-5","A5","G3","0.134 (0.042)","INFO",NA,NA
+"B","B-5","A6","G1","0.018 (0.018)","INFO",NA,NA
+"B","B-5","A6","G2","0.026 (0.023)","INFO",NA,NA
+"B","B-5","A6","G3","0.102 (0.018)","INFO",NA,NA
+"CP","CP-1","sintetici","testo del design","0.937 (n=300); mediana 0.0943","PASS","PASS","TRUE"
+"CP","CP-1","sintetici","D-S1.3.1","0","PASS","PASS","TRUE"
+"CP","CP-2","A6 (densita')","RSA affine","0.770 / 0.767 / 0.768 / 0.772 / 0.771","FAIL","PASS","FALSE"
+"CP","CP-2","A6 (densita')","RSA affine","Inf","FAIL","PASS","FALSE"
+"CP","CP-2b (post hoc)","A6 (densita')","RSA regolare affine","0.624 / 0.630 / 0.646 / 0.681 / 0.717","PASS","PASS","TRUE"
+"CP","CP-2b (post hoc)","A6 (densita')","RSA regolare affine","2","FAIL","PASS","FALSE"
+"CP","CP-3","A1-A6","Chaikin senza contenimento","0 (0/30)","FAIL","PASS","FALSE"
+"CP","CP-3","A1-A6","Chaikin senza contenimento","0","PASS","PASS (vacua: 0 coppie)","TRUE"
+"CP","CP-3","A1-A6","D-S1.3.3","0","PASS","PASS","TRUE"
+"D","D-1","A1 (densita')","RSA regola","1.071","INFO",">= 1.1","FALSE"
+"D","D-3","sintetici","-","-0.78","INFO",NA,NA
+"C","C-perf","-","geos","35.9 s, 1076 MB (ok)","PASS",NA,NA
+"C10","C-10c","-","geos","0.93","INFO","≈ 1",NA
+"C","C-perf","-","deldir","4690.7 s, 8958 MB (ok)","FAIL",NA,NA
+"C10","C-10c","-","deldir","1.70","INFO","≈ 2",NA
+"C10","scelta","-","",NA,"FAIL","geos","FALSE"
+"C","C-2 copertura (post hoc)","A1-A6 + I4","geos","0/2500000/0; 28 coppie; 3.40e+02 um2 (25 casi)","PASS",NA,NA
+"C","C-2 copertura (post hoc)","A1-A6 + I4","deldir","0/3000000/0; 29229 coppie; 3.66e+01 um2 (30 casi)","PASS",NA,NA

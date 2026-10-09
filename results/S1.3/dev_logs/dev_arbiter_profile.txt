@@ -1,0 +1,9 @@
+tile discordanti (dentro il ROI): 2 di 8467 ; max rel 1.13668e-06 
+        cell   a_geos a_deldir     a_hp ns_geos ns_deldir ns_hp ns_hp_1e9
+pt.3523 3523  18.3214  18.3214  18.3214       6         5     6         6
+pt.4691 4691 127.3809 127.3809 127.3809       8         7     8         8
+        min_edge_hp    err_geos  err_deldir
+pt.3523 7.66729e-06 1.97788e-14 1.13668e-06
+pt.4691 7.66729e-06 7.58621e-15 1.27028e-08
+controllo su 200 tile concordi: max err geos 0.8648374 
+profilo A1 r1: tiles 0.4 s, clip 32.2 s (1182 ritagliati), frammenti 230.5 s (140), finalise 0.1 s; vertici maschera 8552

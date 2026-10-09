@@ -1,0 +1,2 @@
+1987 convesso: True  area 766 esatta: 340.4272592178421  area 1987 esatta: 522.8233514130587
+area ESATTA dell'intersezione 766 ∩ 1987 (µm²): 1.1886465455079e-14  vertici: 3

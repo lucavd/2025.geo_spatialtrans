@@ -1,0 +1,6 @@
+GEOS A5 r5 RSA rep15: 100000 0 100000 0 
+  area dei territori fuori dalla regione: 0 um2
+geos I4 s2 regione 5: 100000 0 100000 0 
+   coppie sovrapposte 1 ; area sovrapposta totale 4.223684e-15 ; max 4.223684e-15 
+deldir I4 s2 regione 5: 100000 0 100000 0 
+   coppie sovrapposte 639 ; area sovrapposta totale 9.819315e-12 ; max 2.273737e-13 

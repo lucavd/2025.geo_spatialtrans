@@ -1,0 +1,35 @@
+     archetype roi_id   model rep n_fragments n_reassigned n_snapped
+1475        A5     r5     RSA  15          88           88         0
+1237        A5     r1     RSA  17         307          307         0
+1673        A6     r3 RSArule  13          19           19         0
+723         A3     r3     CSR   3           1            1         0
+814         A3     r4     RSA  14           1            1         0
+652         A3     r1 RSArule  12           3            3         0
+690         A3     r2     RSA  10          12           11         1
+60          A1     r1 RSArule  20          80           80         0
+110         A1     r2 RSArule  10         100          100         0
+82          A1     r2     RSA   2         105          105         0
+542         A2     r5     CSR   2           6            6         0
+1133        A4     p2 RSArule  13           9            9         0
+1182        A4     p3 RSArule   2           0            0         0
+960         A4     f1 RSArule  20           8            8         0
+1155        A4     p3     CSR  15           0            0         0
+     n_multipart   c2_overlap   c2_symdiff
+1475           0 1.563250e-03 1.563250e-03
+1237           0 7.209335e-04 7.209335e-04
+1673           0 3.898383e-04 3.898383e-04
+723            0 3.405421e-04 3.405421e-04
+814            0 2.254384e-04 2.254384e-04
+652            0 2.241139e-04 2.241139e-04
+690            1 2.129237e-04 2.129237e-04
+60             0 1.487386e-04 1.487386e-04
+110            0 1.318324e-04 1.318324e-04
+82             0 9.229645e-05 9.229645e-05
+542            0 6.281234e-05 6.281234e-05
+1133           0 4.319196e-05 4.319196e-05
+1182           0 4.077426e-05 4.077426e-05
+960            0 2.998328e-05 2.998328e-05
+1155           0 2.104052e-05 2.104052e-05
+snap nei nulli senza FAIL C-2: 1133 su 1785 nulli
+A5 r5 RSA rep 15: coppie con interni sovrapposti 0; area sovrapposta totale 0 um2 (rel 0); max coppia 0
+Σ − unione: cascata 1359, incrementale 1443 um2; Σ − area regione 1.51e-09

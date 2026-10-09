@@ -1,7 +1,7 @@
 ---
 title: "S1.3 — `tessellate_voronoi()`: territori di Voronoi per regione"
 subtitle: "geo_spatialtrans — report di step (binario S)"
-date: 2026-10-08
+date: 2026-10-09
 format:
   html:
     toc: true
@@ -23,27 +23,32 @@ k <- function(d, digits = 3) knitr::kable(d, digits = digits, row.names = FALSE)
 V <- rd("S1.3_verdicts.csv")
 ```
 
-**Obiettivo unico.** `tessellate_voronoi()` in `R/04b3_tessellate_voronoi.R` (design §5.3): dai centroidi di `seed_centroids()` ai territori cellulari, cioè Voronoi per regione ritagliato sulla regione, frammenti riassegnati e smussatura opzionale. Nuclei, preset e orchestratore restano fuori.
+**Obiettivo unico.** `tessellate_voronoi()` in `R/04b3_tessellate_voronoi.R` (design §5.3): dai centroidi di `seed_centroids()` ai territori cellulari, cioè Voronoi per regione ritagliato sulla regione, frammenti riassegnati e smussatura opzionale. Nuclei, preset e orchestratore restano fuori. Tutti i numeri qui sotto vengono dal codice finale (commit della chiusura), rieseguito dopo la revisione avversariale.
 
 **Sintesi.**
 
 - **Software (C).**
-  - Sugli ingressi sintetici e avversari: 286/286 asserzioni; 6/6 mutanti rilevati.
+  - Sugli ingressi sintetici e avversari: 294/294 asserzioni (C-1…C-4b, C-7…C-9); 7/7 mutanti rilevati.
   - C-perf: 449 536 punti in 35.9 s e 1 076 MB, entro il budget di 150 s e 4 GB.
-  - C-5 e C-6 (identità con le tabelle di R3) **falliscono**. La causa è un errore della mia pre-registrazione: la riassegnazione dei frammenti (D-S1.3.2) cambia anche le celle interne che ricevono un frammento, e R3 era calcolato con `deldir`, che sbaglia i tile con lati cortissimi.
-- **Motore.** Il confronto pre-registrato (addendum C-10) non ha prodotto una scelta automatica: i cancelli K-2 e K-3 sono caduti per entrambi i motori, per cause indipendenti dal motore. Tutte le misure che discriminano favoriscono GEOS:
-  - arbitro per semipiani: 25/26 tile corretti con GEOS, 1/26 con `deldir`;
-  - geometria annodata contro geometria non annodata;
-  - C-perf: 31 volte più veloce.
-
-  **Luca ha scelto GEOS** (ROADMAP §6, revisione della decisione 6 del design).
-- **Biologia (B).** 36/38 previsioni confermate. Le aree dei territori simulati falliscono in A1–A5 per qualunque generatore omogeneo, come previsto dai nulli di R3: il limite sta a monte, in `seed_centroids()` (BL-051/068). In A6 passano. L'eccentricità passa ovunque, A6 compreso, ma questo non è prova di fedeltà di forma (BL-064).
+  - Sui 40 ROI reali C-1/C-2/C-3 passano in 40/40.
+  - **C-5 (11/40) e C-6 (186/1 200) falliscono.** È un errore della mia pre-registrazione: avevo previsto un'identità con R3, ma R3 non riassegnava i frammenti ed era calcolato con `deldir`. L'attribuzione è verificata: con la regola dei frammenti di R3, 39/50 repliche tornano identiche e le altre 11 differiscono solo nel conteggio dei lati.
+- **Motore.**
+  - La regola pre-registrata dell'addendum C-10 non dichiara eleggibile nessuno dei due motori, e per il suo punto 4 prescrive **«S1.3 non chiusa»**. GEOS cade su K-2 (C-5) e su K-3 (15/1 800 FAIL di C-2, artefatti dell'unione GEOS); `deldir` cade su K-1, K-2, K-3 e sull'arbitro.
+  - Tutte le misure che discriminano favoriscono GEOS:
+    - arbitro per semipiani: 16/16 tile discordanti corretti con GEOS, 0/16 con `deldir`;
+    - eventi di ripiego sugli stessi ingressi: 5 contro 705;
+    - C-perf: 131 volte più veloce.
+  - **Luca ha scelto GEOS e ha deciso di chiudere la sessione in deroga alla regola** (ROADMAP §6).
+- **Biologia (B).** 59/62 previsioni confermate.
+  - Il CV delle aree dei territori (B-2, B-3) è fuori tolleranza in A1–A5 per tutti e tre i generatori omogenei. È un limite della semina (BL-051/068), non della tassellazione.
+  - Con RSA(d\*) (G2) l'A6 passa tutte le metriche e l'eccentricità passa in 6/6 archetipi. Non è prova di fedeltà di forma (BL-064, BL-073).
+  - La regola di default ⅔·eq_r (G3) fallisce anche in A6.
 - **Controprove.**
-  - CP-1 confermata: il testo del design (Voronoi globale) lascia scoperta in mediana il 9.4 % di una regione piccola; la soluzione per regione, 0.
-  - CP-2 senza potenza (errore di disegno del controllo positivo). Il post hoc CP-2b mostra che il check di forma vede un'anisotropia solo da 2:1.
-  - CP-3: Chaikin senza contenimento non crea sovrapposizioni ma uscite dalla regione.
-- **Scoperta laterale.** Su questi territori le operazioni di sovrapposizione di GEOS (`st_union`, `st_intersection`) possono dare in silenzio risultati sbagliati, mentre i predicati restano corretti: è un rischio diretto per lo Step 2 (BL-069).
-- **Verdetto:** chiusa con riserve.
+  - CP-1 confermata: il Voronoi globale del testo del design lascia scoperta più dell'1 % dell'area nel 93.7 % delle regioni con 3–1 000 cellule.
+  - CP-2 senza potenza, per un errore di disegno. Il post hoc CP-2b mostra che il check di forma vede un'anisotropia solo da 2:1.
+  - CP-3: senza contenimento, Chaikin non sovrappone i territori ma li fa uscire dalla regione (9 521 territori in 29/30 ROI).
+- **Scoperta laterale.** Su questi territori le operazioni di sovrapposizione di GEOS (`st_union`, `st_intersection`) danno in silenzio risultati sbagliati, mentre i predicati restano corretti. La causa: i vertici condivisi differiscono all'ultima cifra. È un rischio diretto per lo Step 2 (BL-069).
+- **Verdetto:** chiusa con riserve, **in deroga** alla regola dell'addendum (decisione di Luca).
 
 # 1. Pre-registrazione
 
@@ -53,53 +58,63 @@ Approvata da Luca in chat il 2026-10-08 («approvo», scelte (a) su D-S1.3.1…D
 
 | id | Decisione | Motivo |
 |---|---|---|
-| D-S1.3.1 | Voronoi **per regione** | Il testo del design (Voronoi globale ritagliato sulla regione del centroide) lascia scoperte le zone di confine fra regioni: verificato in CP-1 |
-| D-S1.3.2 | Frammento orfano → territorio della stessa regione con il confine condiviso più lungo | Area conservata, un POLYGON per cellula |
+| D-S1.3.1 | Voronoi **per regione** | Il testo del design (Voronoi globale ritagliato sulla regione del centroide) lascia scoperte le zone di confine: CP-1 |
+| D-S1.3.2 | Frammento orfano → territorio della stessa regione con il confine condiviso più lungo | Area conservata, un POLYGON per cellula. Precisata dopo la revisione: confine = tratto condiviso > 1e-6 µm, decisioni simultanee per passata, a pari merito il `cell_id` minore |
 | D-S1.3.3 | Chaikin ∩ territorio originale; `n_iter = max(1, round(3·cs))` | Niente sovrapposizioni; con la formula del design cs < 1/6 non smussava |
 
-**Addendum C-10** (`results/S1.3/S1.3_preregistration_addendum_C10.md`, commit `4ec1912`, scritto prima del confronto). Il benchmark esplorativo ha mostrato che `deldir` 2.0.4 scala come n², quindi il budget di C-perf era irraggiungibile. Luca: «un solo motore… confronto oggettivo, scegli tu le metriche, fatto il confronto documentiamo la scelta». Metriche (fissate da Claude su delega): cancelli di correttezza K-1…K-3, concordanza con arbitrato, robustezza, prestazioni; regola di scelta fissata prima.
+**Addendum C-10** (`results/S1.3/S1.3_preregistration_addendum_C10.md`, commit `4ec1912`, scritto prima del confronto). Il benchmark esplorativo ha mostrato che `deldir` 2.0.4 scala come n². Luca ha chiesto un solo motore, scelto con un confronto oggettivo di cui io fissassi le metriche, e la scelta documentata. Regola: cancelli K-1…K-3 e arbitro; poi C-perf, robustezza, tempo. **Punto 4: nessun eleggibile → S1.3 non chiusa.**
 
-**Deviazioni e correzioni dichiarate** (BL-059). Tutte avvenute prima dell'esecuzione ufficiale, salvo dove indicato.
+**Deviazioni e correzioni dichiarate** (BL-059).
 
-1. Prova di fumo su I2, prima dell'addendum: due difetti di `deldir` nella riassegnazione dei frammenti (tolleranza 1e-7 µm sulla lunghezza condivisa, aggancio solo se l'unione resta multiparte).
-2. Test C-4: per l'esagonale, «interne» = punti del reticolo con 6 vicini, non «non ritagliate». Avversari: 1 centroide nelle regioni rimaste vuote.
-3. Prestazioni: nella riassegnazione dei frammenti i riquadri sono calcolati una volta sola (A1 r1: da 263 a 34 s). Stessi risultati.
-4. Arbitro per semipiani per C-10a; riferimento reale ricalcolato dal pacchetto come sensibilità del check B.
-5. *Dopo l'esecuzione ufficiale:* lo stadio C-10a sintetico aveva una regex sbagliata (0 avversari trovati), corretta e rieseguita.
-6. *Dopo l'esecuzione ufficiale:* lo script d'analisi contava come FAIL i territori multiparte nel banco ROI, che la deviazione 3 pre-registrata ammette. L'analisi è stata allineata al testo.
-7. *Post hoc dichiarati:* CP-2b (controllo positivo con semina regolare); verifica di copertura per punti e controllo delle coppie sui casi con C-2 fallito.
+1. *Prova di fumo su I2, prima dell'addendum:* due difetti di `deldir` nella riassegnazione dei frammenti (tolleranza 1e-7 µm sulla lunghezza condivisa; aggancio se l'unione resta multiparte).
+2. *Test C-4, prima del run:* per l'esagonale, «interne» = punti del reticolo con 6 vicini. Avversari: 1 centroide nelle regioni rimaste vuote.
+3. *Prestazioni, prima del run:* i riquadri della riassegnazione dei frammenti sono calcolati una volta sola. A1 r1 passa da 263.2 a 33.6 s (`S1.3_dev_measurements.csv`), con gli stessi risultati.
+4. *Prima del run:* arbitro per semipiani per C-10a; riferimento reale ricalcolato dal pacchetto come sensibilità del check B.
+5. *Dopo il run:* corretta la regex degli avversari nello stadio C-10a sintetico.
+6. *Dopo il run:* l'analisi contava come FAIL i territori multiparte del banco ROI, che la deviazione 3 ammette. Prima della correzione: ROI 25/40 per entrambi i motori, nulli GEOS 1 330/1 800, nulli `deldir` 55/90. Ora i multiparte sono ammessi solo se dovuti a orfani isolati.
+7. *Post hoc:* CP-2b; copertura per punti e controllo con i predicati sui casi con C-2 fallito.
+8. **Dopo la revisione avversariale.** Correzioni del codice:
+   - frammenti: contatti puntiformi esclusi, decisioni simultanee, donatore escluso;
+   - smussatura: per parte, riparazioni contate;
+   - arbitro: certificato;
+   - nuovi check C-4b e C-8c, e mutante M7.
+
+   Correzioni dell'analisi:
+   - C-5 come da testo, senza il criterio sul riassunto;
+   - previsioni di G1 codificate;
+   - CP-3 n.2 non valutabile;
+   - robustezza sugli stessi ingressi;
+   - previsioni dell'addendum codificate.
+
+   Tutto rieseguito tranne le prestazioni. Il quadrato di C-perf non genera frammenti, quindi il percorso di codice modificato non viene esercitato e le misure restano quelle del run pre-revisione. Le uscite pre-revisione sono in `/mnt/micron/geo_spatialtrans/S1.3_prereview/` e in `results/S1.3/*_prereview.csv`. Nessun verdetto del check B è cambiato.
+9. **Deroga (Luca, 2026-10-09).** La regola dell'addendum prescriveva «non chiusa»; Luca ha deciso «chiusa con riserve» e GEOS, dopo aver visto i risultati e la revisione. È una decisione del responsabile, non un esito della regola.
 
 # 2. Check C — correttezza software
 
 ```{r checkC}
-cc <- V[V$section %in% c("C", "C10") & !V$id %in% c("C-10c", "scelta"), c("id", "model", "metric", "value", "threshold", "outcome")]
+cc <- V[V$section %in% c("C", "C10") & !V$id %in% c("C-10c", "scelta", "previsione"), c("id", "model", "metric", "value", "threshold", "outcome")]
 names(cc) <- c("check", "motore", "metrica", "valore", "soglia", "esito"); k(cc)
-```
-
-```{r mutants}
 k(rd("S1.3_mutants.csv"))
 ```
 
 **Lettura.**
 
-- **Ingressi sintetici e avversari.** Con GEOS ogni asserzione passa. La variante `deldir` fallisce C-2 in 4 asserzioni su I4: le aree tornano, ma l'unione dei territori è più piccola della regione di 3–4·10⁻⁴. La diagnosi: 639 coppie di tile `deldir` con interni sovrapposti per strisce di circa 1e-12 µm² (lati condivisi non coincidenti all'ultima cifra), contro 1 coppia con GEOS. Su questa geometria non annodata l'unione GEOS perde una cella intera (52.4 µm²).
-- **C-5 e C-6 falliscono per un errore della pre-registrazione, non del codice.** Avevo scritto «le interne sono identiche a R3». Ma il territorio che riceve un frammento orfano può essere interno, e allora la sua area cresce. Fra le repliche nulle senza frammenti, 57/67 sono identiche a R3. Le altre 10, e lo scarto di 1.2e-6 sulle celle non coinvolte dei ROI reali, sono i tile con lati cortissimi che `deldir`, usato da R3, sbaglia (vedi l'arbitro).
-- **C-2 sui nulli GEOS (15/1 800 FAIL) è un falso allarme dello strumento di misura.** Le verifiche:
-  - copertura per punti: su 2.5 milioni di punti, 0 scoperti e 0 coperti due volte;
-  - coppie: 27 coppie su 28 hanno sovrapposizione ≤ 9e-13 µm²;
-  - l'unica coppia «da 340 µm²» (A3 r3 CSR rep 3) è un poligono restituito per errore da `st_intersection`: dei 2 000 punti campionati in quell'intersezione, tutti stanno in una sola delle due celle.
-
-  Nel caso peggiore (A5 r5) Σ aree = area della regione entro 1.5e-9 µm², mentre l'unione «a cascata» perde 1 359 µm² e quella incrementale 1 443 µm². → BL-069, BL-070.
+- **Ingressi sintetici e avversari.** Con GEOS ogni asserzione passa. C-4b controlla la regola dei frammenti su geometrie costruite a mano: confine 2 contro 1, contatto in un solo punto, catena di orfani valutata in due ordini. C-8c controlla che, rietichettando i `cell_id`, il territorio segua il punto. M7 (orfano al confine più corto) è rilevato da C-4b. Avvertenza: C-8 «permutazione» passa per costruzione, perché la funzione ordina i centroidi.
+- **`deldir` fallisce C-2 in 4 asserzioni su I4.** I suoi lati condivisi non coincidono all'ultima cifra: 639 coppie di tile hanno interni sovrapposti per strisce di circa 1e-12 µm², contro 1 coppia con GEOS. Su questa geometria non annodata l'unione GEOS perde una cella intera (52.4 µm², `S1.3_dev_measurements.csv`).
+- **C-5 e C-6: errore della pre-registrazione (BL-074).** Avevo scritto «le interne sono identiche a R3». Ma il territorio che *riceve* un frammento può essere interno, e allora la sua area cresce. La verifica diretta (`S1.3_review_c6_attribution.csv`): 50 repliche (40 con frammenti, più le 10 senza frammenti ma non identiche) ritassellate con la regola di R3 tornano identiche a R3 in 39/50 casi; le altre 11 differiscono solo nella media o nella varianza del numero di lati. Con il codice di R3 (`deldir`) le 50 tornano identiche in 50/50. Il residuo sulle celle senza frammenti dei ROI reali (A1 r5) nasce dalla dipendenza di `deldir` dal riquadro di calcolo: 152 tile cambiano area fra due riquadri (`S1.3_review_A1r5_deldir_rw.csv`), mentre GEOS coincide con R3 e con l'arbitro.
+- **C-2 sui nulli GEOS (15/1 800 FAIL): falso allarme dello strumento.** Su 2.5 milioni di punti, 0 sono scoperti e 0 coperti due volte. La risoluzione è di circa 9 µm² per punto, sufficiente per le perdite osservate (fino a 1 359 µm²) ma non per strisce di 1e-12 µm². Delle 28 coppie con interni sovrapposti, 27 hanno sovrapposizione ≤ 9e-13 µm². L'unica coppia «da 340 µm²» (A3 r3 CSR rep 3, celle 766 e 1987) è un poligono sbagliato restituito da `st_intersection`: dei 2 000 punti campionati in quell'intersezione, tutti stanno in una sola cella. Il revisore ha confermato in aritmetica razionale un'intersezione vera di 1.2e-14 µm². Lo stesso vale per la coppia `deldir` da 36.6 µm² (0/2 000 punti in entrambe). → BL-069, BL-070.
 
 ```{r coverage}
 cv <- rd("S1.3_c2_coverage.csv"); k(aggregate(cbind(casi = 1, punti_0 = cov0, punti_1 = cov1, punti_2 = cov2, coppie = n_pairs, area_coppie = ov_area) ~ set + engine, cv, sum), 3)
 k(rd("S1.3_c2_overlap_pairs_check.csv")[, c("case", "i", "j", "area", "n_pts", "in_both", "in_i", "in_j")], 3)
+k(rd("S1.3_review_deldir_pair_check.csv"), 3)
 ```
 
 ## Confronto dei motori (C-10)
 
 ```{r engines}
-e <- rd("S1.3_engine_choice.csv"); k(e[, c("engine", "K1", "K2", "K3", "K_arb", "eligible", "cperf", "slope")], 2)
+e <- rd("S1.3_engine_choice.csv"); k(e[, c("engine", "K1", "K2", "K3", "K_arb", "eligible", "cperf", "slope", "robustness_events")], 2)
+k(V[V$id == "previsione", c("metric", "value", "outcome", "prediction", "confirmed")])
 k(rd("S1.3_perf.csv"), 3)
 k(rd("S1.3_c10a_arbitration.csv")[, c("set", "archetype", "roi_id", "model", "cell", "a_geos", "a_deldir", "a_hp", "ns_geos", "ns_deldir", "ns_hp", "min_edge", "geos_ok", "deldir_ok")], 8)
 ```
@@ -108,11 +123,11 @@ k(rd("S1.3_c10a_arbitration.csv")[, c("set", "archetype", "roi_id", "model", "ce
 
 **Lettura.**
 
-- **Concordanza.** Le 26 discordanze di C-10a stanno tutte su configurazioni quasi cocircolari, con un lato fra 1e-14 e 2e-5 µm. L'arbitro per semipiani in R puro, indipendente da entrambe le librerie, dà ragione a GEOS in 25 casi su 26. Nell'unico caso contrario (A4 p2, cella 2304) le aree coincidono e cambia solo il conteggio dei lati su un vertice degenere: in A4 i centroidi Space Ranger sono quantizzati sulla griglia a 2 µm (BL-075).
-- **Agganci di ripiego.** 0 con GEOS e 4 con `deldir` sugli ingressi di `extract_regions()`. Nel banco ROI, dove la regione è una maschera MULTIPOLYGON a gradini di pixel, servono anche a GEOS: 40 contro 261 sui 40 ROI reali.
-- **Esponenti di scala:** 0.93 per GEOS, 1.70 per `deldir`.
-- **Regola dell'addendum.** Nessun motore eleggibile, perché K-2 (C-5) e K-3 (C-2 tramite unione) falliscono per entrambi per le ragioni sopra.
-- **Decisione di Luca (2026-10-08): GEOS.** `deldir` resta solo in `tools/S1.3_variants.R`.
+- **Concordanza.** C-10a è FAIL (146/156 insiemi concordi), contro la previsione PASS. Le discordanze stanno tutte su configurazioni quasi cocircolari con un lato cortissimo, che `deldir` elimina. L'arbitro per semipiani è indipendente da entrambe le librerie, ed è stato corretto dopo la revisione con un certificato sulla distanza; contando come lati solo i segmenti > 1e-9 µm (BL-075), dà ragione a GEOS in 16/16 tile discordanti. La reimplementazione Qhull del revisore conferma le aree GEOS in 26/26 righe della versione pre-revisione.
+- **Robustezza sugli stessi ingressi** (test, 40 ROI reali, replica 1 dei 90 nulli): 5 eventi di ripiego con GEOS, tutti agganci riusciti; 705 con `deldir`. La previsione «GEOS 0» è smentita.
+- **Prestazioni:** a 449 536 punti GEOS è 130.7 volte più veloce (35.9 s contro 4 690.7 s; `deldir` sfora il budget di 31 volte). Esponenti di scala 0.93 e 1.70.
+- **Regola dell'addendum.** Nessun eleggibile → «non chiusa». GEOS cade su K-2 (C-5: errore di pre-registrazione, comune ai due motori) e su K-3 (C-2 misurato con l'unione: 15/1 800 tassellazioni GEOS, tutte falsi allarmi; 14/90 con `deldir` sulla sola replica 1). Neppure un C-5 ristretto alle celle senza frammenti sarebbe passato: gli scarti residui contro R3 di 1.2e-6 sono errori di `deldir` dentro R3.
+- **Decisione di Luca (2026-10-08/09): GEOS**, in deroga alla regola.
 
 # 3. Check B — plausibilità biologica (A1–A6)
 
@@ -123,7 +138,7 @@ b <- V[V$section == "B" & V$id %in% c("B1", "B2", "B3", "B4"), ]
 w <- reshape(b[, c("id", "archetype", "model", "outcome")], idvar = c("archetype", "model"), timevar = "id", direction = "wide")
 names(w) <- sub("outcome.", "", names(w)); k(w[order(w$model, w$archetype), ])
 pr <- V[V$section == "B" & !is.na(V$prediction) & V$prediction != "", c("id", "archetype", "model", "value", "outcome", "prediction", "confirmed")]
-k(pr)
+cat(sprintf("Previsioni: %d, confermate %d\n", nrow(pr), sum(pr$confirmed == "TRUE"))); k(pr[pr$confirmed != "TRUE", ])
 ```
 
 ![Check B per ROI: scarto simulato vs reale; banda verde = tolleranza pre-registrata.](../results/S1.3/figures/fig3_checkB.png)
@@ -139,10 +154,12 @@ sens <- V[V$section == "Bsens", ]; cat(sprintf("Sensibilita' (riferimento ricalc
 
 **Lettura.**
 
-- **G2 (24/24 previsioni confermate).** L'eq_r mediano simulato è troppo grande in A1–A3 (+8…+35 %), e il CV globale e locale troppo basso in A1–A5 (−14…−64 %). Un processo omogeneo per regione non riproduce l'eterogeneità delle aree reali (BL-051/068): il limite sta nella semina, non nella tassellazione. In A6 G2 passa tutte le metriche, e la KS D sta al livello del rumore (0.026 contro 0.023).
-- **G3 (regola di default, BL-050).** È più regolare di G2 in A3, A5 e A6 (8/8 previsioni d'ordine confermate) e **fallisce A6**, dove G2 passa. È un dato in più contro la regola ⅔·eq_r come default. Smentite le 2 previsioni di FAIL sull'eccentricità in A5 e A6: Δ = −0.035 e −0.056…−0.033.
+- **CV delle aree (B-2, B-3).** Fuori tolleranza in A1–A5 per G1, G2 e G3, con l'unica eccezione di B-3 in A5, dove 2/5 ROI di G2 stanno entro ±10 %. Con G2 il CV globale è più basso del reale del 14–64 %, il CV locale dell'8–43 %. Un processo omogeneo per regione non riproduce l'eterogeneità delle aree reali (BL-051/068): il limite sta nella semina, non nella tassellazione.
+- **eq_r mediano (B-1).** Troppo grande in A1–A3 con tutti i generatori (+7…+36 %). In A4 passa con G1 e G3.
+- **A6.** G2 passa tutte le metriche, con KS D al livello del rumore (0.026 contro 0.023). G3 fallisce B-1, B-2 e B-3: è un dato in più contro la regola ⅔·eq_r come default (BL-050).
+- **Eccentricità (B-4).** Entro tolleranza ovunque con G2. G1 e G3 falliscono in A4. Smentite 2 previsioni di FAIL di G3 (A5, A6: Δ fra −0.056 e −0.015) e 1 previsione PASS di G1 (A5 B-1, 3/5 ROI).
 - **A4.** La varianza del numero di lati reale (0.86) è riprodotta da G2 (0.85), non da G3 (1.40) né da CSR (1.77): l'impaccamento dei linfociti è regolare a corto raggio. Il CV delle aree resta però troppo basso con G2.
-- **Sensibilità.** Con il riferimento ricalcolato dal pacchetto, cioè con la stessa regola dei frammenti del simulato, i verdetti sono identici in 48/48 righe. La convenzione dei frammenti sposta però i valori di riferimento: in A1 r1 il CV globale passa da 0.79 (R3) a 0.85 (BL-071).
+- **Sensibilità.** Con il riferimento ricalcolato dal pacchetto, cioè con la stessa regola dei frammenti del simulato, i verdetti sono identici in 48/48 righe. La convenzione però sposta i valori di riferimento: in A1 r1 il CV globale passa da 0.79 (R3) a 0.85 (BL-071).
 
 # 4. Controprova
 
@@ -154,51 +171,74 @@ k(V[V$section %in% c("CP", "D"), c("id", "model", "metric", "value", "threshold"
 
 ![CP-1: frazione di area scoperta per regione, testo del design vs D-S1.3.1 (I1–I5, 5 seed).](../results/S1.3/figures/fig4_cp1.png)
 
-Con il Voronoi globale ritagliato sulla regione del proprio centroide, il 93.7 % delle 300 regioni con 3–1 000 cellule resta scoperto per più dell'1 % (mediana 9.4 %). Con il Voronoi per regione nessuna regione supera 1e-9. D-S1.3.1 è sostenuta dai dati.
+Con il Voronoi globale ritagliato sulla regione del proprio centroide, il 93.7 % delle regioni con 3–1 000 cellule (300 su 335) resta scoperto per più dell'1 % (mediana 9.4 %). Con il Voronoi per regione nessuna regione supera 1e-9.
 
 ## CP-2 — potenza del check di forma (smentita; post hoc CP-2b)
 
 ![CP-2: eccentricità mediana in funzione dell'anisotropia imposta k (semina RSA d\* = 2.5 µm).](../results/S1.3/figures/fig5_cp2.png)
 
-CP-2 era mal costruito. Alla densità di A6, con d\* = 2.5 µm e una spaziatura di circa 32 µm, la semina è quasi un processo di Poisson, e una trasformazione affine di un processo di Poisson resta Poisson isotropo: l'eccentricità resta 0.767–0.772 per k = 1…3. Con una semina regolare (CP-2b, η = 0.4, post hoc dichiarato) l'eccentricità cresce in modo monotono (0.624 → 0.717), ma supera Δ = 0.05 solo da k = 2.
+CP-2 era mal costruito. Alla densità di A6, con d\* = 2.5 µm e una spaziatura di circa 32 µm, la semina è quasi un processo di Poisson, e una trasformazione affine di un processo di Poisson resta Poisson isotropo: l'eccentricità resta 0.767–0.772 per k = 1…3. Con una semina regolare (CP-2b, η = 0.4, post hoc) l'eccentricità cresce in modo monotono (0.624 → 0.717), ma supera Δ = 0.05 solo da k = 2.
 
-L'eccentricità del territorio di Voronoi è quindi una misura di forma debole: non vede anisotropie di posizione sotto circa 2:1, e non le vede affatto se le posizioni sono poco strutturate. Questo rafforza BL-064 (BL-073).
+L'eccentricità del territorio è quindi una misura di forma debole (BL-073).
 
 ## CP-3 — smussatura
 
 ![Smussatura di Chaikin su un ritaglio A1 (cs = 0, 1/3, 1).](../results/S1.3/figures/fig7_smoothing.png)
 
-Senza contenimento, Chaikin non crea sovrapposizioni fra territori in nessuno dei 30 ROI (previsione smentita). I vertici concavi stanno sul bordo della maschera, quindi la smussatura spinge il territorio *fuori dalla regione*. Questo difetto lo intercetta C-7: il mutante M4 fa fallire 19 asserzioni. Con il contenimento, 0 sovrapposizioni. Le lacune a cs = 1 valgono 6.9–8.5 % dell'area per archetipo (mediana dei ROI), quasi indipendenti dal tessuto: descrittivo, senza riferimento biologico.
+- **Senza contenimento:** nessuna sovrapposizione fra territori in nessuno dei 30 ROI (previsione smentita; la seconda previsione non è valutabile, perché non ci sono coppie). Misurato dopo la revisione: 9 521 territori smussati escono dalla regione (29/30 ROI, 9 531 µm²). Il difetto di M4 è l'uscita dalla regione, intercettata da C-7 nei test.
+- **Con contenimento:** 0 territori fuori dalla regione, 0 sovrapposizioni; 24 anelli di Chaikin riparati e 150 pezzi scartati (parti spezzate dalla smussatura), ora contati.
+- **Lacune a cs = 1:** 6.3–8.5 % dell'area per ROI, quasi indipendenti dal tessuto. Descrittivo, senza riferimento biologico.
 
 ## Descrittivi
 
-- **D-1 (BL-056).** Rapporto fra le aree dei territori al confine fra due regioni, seconda piazzata / prima: mediana 1.071 (min 0.85, max 1.32; 20 seed). Il valore previsto ≥ 1.1 è smentito: l'effetto di bordo dell'RSA sui territori è piccolo.
+- **D-1 (BL-056).** Rapporto fra le aree dei territori al confine fra due regioni, seconda piazzata / prima: mediana 1.071 (min 0.85, max 1.32; 20 seed). Il valore previsto ≥ 1.1 è smentito.
 - **D-3.** La frazione di celle ritagliate cala con l'area della regione (Spearman −0.78).
 
 # Verdetto
 
-**Chiusa con riserve.**
+**Chiusa con riserve, in deroga.** La regola dell'addendum (punto 4) prescriveva «non chiusa». Luca ha deciso di chiudere scegliendo GEOS, dopo aver visto risultati e revisione.
 
 Riserve:
 
-1. C-5 e C-6 FAIL, per l'errore di pre-registrazione descritto in §2 (BL-074).
-2. Le operazioni di sovrapposizione GEOS sono inaffidabili su questi territori: va gestito prima dello Step 2 (BL-069), e i check di partizione vanno misurati con predicati o copertura per punti, non con l'unione (BL-070).
-3. I riferimenti R3 sono stati calcolati con un'altra regola dei frammenti (BL-071).
+1. C-5 e C-6 FAIL per l'errore di pre-registrazione descritto in §2 (BL-074).
+2. Le operazioni di sovrapposizione GEOS sono inaffidabili su questi territori, perché i vertici condivisi non sono annodati. Va gestito prima dello Step 2 (BL-069), e i check di partizione vanno misurati con predicati o copertura per punti (BL-070).
+3. I riferimenti R3 sono calcolati con un'altra regola dei frammenti (BL-071).
 4. Il check di forma è debole (BL-073; BL-064 resta aperta).
 5. Prestazioni del ritaglio su maschere a gradini di pixel: 0.8–39 s per ROI (BL-072).
-6. Le metriche di area falliscono in A1–A5 per la semina (BL-051/068) e la regola di default fallisce A6 (BL-050).
+6. CV delle aree fuori tolleranza in A1–A5 per la semina omogenea (BL-051/068); la regola di default fallisce anche A6 (BL-050).
 
 # Revisione avversariale
 
-Vedi la sezione aggiunta dopo la revisione.
+Due revisori indipendenti (sotto-agenti senza accesso alla conversazione), sul commit `37e68ad`. Uscite in `results/S1.3/review/{code,claims}/`.
+
+- **Revisore del codice (15 rilievi).** Reimplementazione in Python (tile Qhull + Sutherland–Hodgman, senza GEOS): 62 121 celle non coinvolte nei frammenti, in 12 casi, identiche entro 5.3e-13. Il caso C-2 A3 r3 è verificato in aritmetica razionale.
+  - Bug: contatti puntiformi trattati come confine (RA-code-04), regola dell'arbitro non certificata (RA-code-08).
+  - Discrepanze: smussatura che scarta parti e ripara senza contare (06/07); agganci quasi mai riparatori (05); design §5.3 non aggiornato (15).
+  - Metodo: catene di orfani dipendenti dall'ordine (03); vertici non annodati (11); check senza potenza (12).
+- **Revisore delle affermazioni (21 rilievi).** Ricalcolo indipendente di 188/188 righe dei verdetti, tutte identiche. Rilievi principali:
+  - la deroga alla regola non era dichiarata (RA-claims-02);
+  - «31 volte» era sbagliato, il valore giusto è 131 (05);
+  - il riassunto del check B e CP-3 erano sopra-interpretati (08/09);
+  - le previsioni di G1 non erano codificate (07);
+  - l'attribuzione di C-6 era inferita (11);
+  - tre numeri non stavano in nessun file (15);
+  - era citato il commit sbagliato (19).
+
+```{r review}
+ra <- rbind(data.frame(revisore = "codice", read.csv(file.path(RES, "review/code/findings.csv"), check.names = FALSE)),
+            data.frame(revisore = "affermazioni", read.csv(file.path(RES, "review/claims/findings.csv"), check.names = FALSE)))
+k(as.data.frame(table(revisore = ra$revisore, gravita = ra[[3]])))
+k(rd("S1.3_review_actions.csv"))
+```
 
 # Riproducibilità
 
-Commit dello stato eseguito: `72126a5` (script); risultati e report nel commit di chiusura.
+Run pre-revisione: commit `72126a5`; analisi pre-revisione: `37e68ad`; codice finale e riesecuzione: `26baaf0`; risultati, report e documenti: commit di chiusura.
 
 ```bash
 cd ~/2025.geo_spatialtrans
-bash R/testing/run_S1.3.sh                         # check C, mutanti, ROI, CP, prestazioni, analisi (~5 h; deldir 449 536 punti ~78 min)
-Rscript --vanilla tools/S1.3_c2_coverage.R && Rscript --vanilla tools/S1.3_c2_pairs_check.R && Rscript --vanilla tools/S1.3_analysis.R   # post hoc dichiarati
+bash R/testing/run_S1.3.sh      # check C, 7 mutanti, ROI, CP, prestazioni, analisi (~5 h; deldir 449 536 punti ~78 min)
+Rscript --vanilla tools/S1.3_review_checks.R /mnt/micron/geo_spatialtrans/S1.3_prereview     # controlli chiesti dalla revisione
+Rscript --vanilla tools/S1.3_c2_coverage.R && Rscript --vanilla tools/S1.3_c2_pairs_check.R && Rscript --vanilla tools/S1.3_analysis.R
 Rscript --vanilla tools/S1.3_figures.R && quarto render reports/S1.3.qmd
 ```

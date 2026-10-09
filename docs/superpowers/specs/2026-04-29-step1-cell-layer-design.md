@@ -248,11 +248,14 @@ Per ogni `region_id`:
 > Razionale Poisson-disk vs jittered grid: distribuzioni naturali (no artifact), spaziatura garantita, tipi rari ottengono territori plausibilmente isolati.
 
 ### 5.3 `tessellate_voronoi()`
-1. `deldir::deldir()` su tutti i centroidi (globali).
-2. Per ogni cellula, estraggo il poligono Voronoi (`deldir::tile.list`).
-3. **Clipping** con `sf::st_intersection(voronoi_poly, region_polygons[centroidi$region_id])`. Le cellule sui bordi del tessuto si tagliano correttamente.
-4. **Smussatura** (se `corner_smoothing > 0`): Chaikin corner cutting con `n_iter = round(corner_smoothing × 3)` iterazioni (1, 2 o 3).
-5. Output: `cell_territories` (sfc_POLYGON) + `territory_area`.
+*(v1.3, S1.3, 2026-10-08/09 — testo riscritto; le versioni precedenti sono nella storia git)*
+Firma: `tessellate_voronoi(centroids, regions, corner_smoothing = 0, keep_tiles = FALSE, verbose = TRUE)`, con `regions` = output di `extract_regions()`.
+1. **Per ogni regione** (D-S1.3.1): diagramma di Voronoi dei soli centroidi della regione con GEOS (`sf::st_voronoi`, `point_order = TRUE`; decisione 6 rivista), nel riquadro della regione allargato di max(1 µm, 10 % del lato); 1 centroide → territorio = regione.
+2. **Ritaglio**: solo i tile non contenuti nella regione vengono intersecati con la regione (ritagliata localmente al riquadro del tile).
+3. **Frammenti** (D-S1.3.2): se il ritaglio spezza una cella, il pezzo con il generatore resta; ogni pezzo orfano va al territorio della stessa regione con il confine condiviso più lungo (tratto > 1e-6 µm, misurato entro 1e-7 µm; decisioni simultanee per passata, la prima contro i soli pezzi principali; a pari merito il `cell_id` minore; il donatore non è candidato). Un orfano senza confine (solo regioni MULTIPOLYGON) resta al generatore.
+4. **Smussatura** (D-S1.3.3, se `corner_smoothing > 0`): Chaikin (taglio 1/4–3/4) con `n_iter = max(1, round(3 × cs))`, cs ∈ (0, 1], su ogni parte del territorio, intersecato con la parte originale; se una parte si spezza resta il pezzo con il generatore. Le lacune sono spazio extracellulare (`region_check$gap_area`).
+5. Output: `cell_territories` (ordine di `cell_id`), `territory_df`, `region_check`, `tiles` (opzionale), `info` (frammenti, agganci, isolati, riparazioni). `st_make_valid()` solo come ultima risorsa, contato.
+> Avvertenza (BL-069): i vertici condivisi possono differire all'ultima cifra; le operazioni di sovrapposizione GEOS su questi territori (unione, intersezione) possono dare risultati sbagliati — usare predicati o una precisione fissa.
 
 ### 5.4 `derive_cell_geometry()`
 Per ogni cellula:

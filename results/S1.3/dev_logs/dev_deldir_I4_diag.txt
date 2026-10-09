@@ -1,0 +1,42 @@
+seed 2 : celle con |Δarea| > 1e-6: 0 
+  cell region    a_geos  a_deldir tile_geos tile_deldir clipped lost_g gained_g
+1 3420      4 1587.3097 1587.3097  2369.403    2369.403    TRUE      0        0
+2 3375      4 1797.5672 1797.5672  2652.699    2652.699    TRUE      0        0
+3 3280      3  549.6374  549.6374  5274.219    5274.219    TRUE      0        0
+4 3377      4 1182.9102 1182.9102  3862.030    3862.030    TRUE      0        0
+5 3392      4 1932.5343 1932.5343  1932.534    1932.534   FALSE      0        0
+  lost_d gained_d
+1      0        0
+2      0        0
+3      0        0
+4      0        0
+5      0        0
+regione 4 celle 132 area 118082 
+geos : Σ-unione -5.820766e-11 ; unione Δ regione 7.851497e-13 
+deldir : Σ-unione -4.365575e-11 ; unione Δ regione 1.160417e-11 
+tile discordanti nella regione: 0 ; geos corretti 0 ; deldir corretti 0 
+ [1] cell      a_geos    a_deldir  a_hp      ns_geos   ns_deldir ns_hp    
+ [8] min_edge  bounded   geos_ok   deldir_ok
+<0 rows> (or 0-length row.names)
+coppie di tile deldir con interni sovrapposti: 35 
+seed 3 : celle con |Δarea| > 1e-6: 0 
+  cell region    a_geos  a_deldir tile_geos tile_deldir clipped lost_g gained_g
+1 3349      4 1327.5022 1327.5022 2900.9648   2900.9648    TRUE      0        0
+2 3352      4 1538.3785 1538.3785 1765.0358   1765.0358    TRUE      0        0
+3 3390      4  730.9652  730.9652  730.9652    730.9652   FALSE      0        0
+4 3414      4 1448.3247 1448.3247 1448.3247   1448.3247   FALSE      0        0
+5 3208      3  518.1922  518.1922  519.5750    519.5750    TRUE      0        0
+  lost_d gained_d
+1      0        0
+2      0        0
+3      0        0
+4      0        0
+5      0        0
+regione 4 celle 131 area 118082 
+geos : Σ-unione 1.455192e-11 ; unione Δ regione 1.973977e-13 
+deldir : Σ-unione 0 ; unione Δ regione 8.452623e-12 
+tile discordanti nella regione: 0 ; geos corretti 0 ; deldir corretti 0 
+ [1] cell      a_geos    a_deldir  a_hp      ns_geos   ns_deldir ns_hp    
+ [8] min_edge  bounded   geos_ok   deldir_ok
+<0 rows> (or 0-length row.names)
+coppie di tile deldir con interni sovrapposti: 27 

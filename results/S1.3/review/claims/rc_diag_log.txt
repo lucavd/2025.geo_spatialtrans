@@ -1,0 +1,102 @@
+== C-5 dalle celle (geos) vs vettore memorizzato
+interior_identical concordi: 40 /40; n_interior_diff concordi: 40 ; max|rel_area_interior mia-mem|: 0 ; max|rel_area_mono mia-mem|: 0 ; max|rel_summary mia-mem|: 2.997602e-15 ; max mio riassunto vs memorizzato: 0 
+ROI con flag d'interna diversi su celle SENZA frammenti: 0 ; celle: 0 ; su celle con frammenti: 142 
+ROI con aree diverse su interne senza frammenti (>1e-9): 2 ; max 1.217496e-06 
+ archetype roi_id       method my_rel_area_mono my_rel_area_interior_mono
+        A1     r5 cellpose_rgb     1.217496e-06              1.217496e-06
+        A4     p3  spaceranger     6.695379e-08              6.695379e-08
+ n_interior_diff_mono nsides_eq_int_mono max_abs_decc_int_mono
+                    0          0.9996932          1.231741e-06
+                    0          0.9999322          4.093297e-08
+nsides identici sulle interne senza frammenti: min frazione 0.9996932 ; max |Δecc| 1.231741e-06 
+ROI con rel_summary > 1e-9 ma C-5 testo PASS:
+ archetype roi_id      method  rel_summary
+        A4     p1 spaceranger 1.094373e-05
+        A4     p2 spaceranger 1.659240e-04
+deldir ROI con rel_area_mono > 1e-9:
+ archetype roi_id       method rel_area_mono n_snapped
+        A1     r5 cellpose_rgb  1.708304e-06         7
+geos ROI con rel_area_mono > 1e-9:
+ archetype roi_id       method rel_area_mono n_snapped
+        A1     r5 cellpose_rgb  1.217496e-06         0
+        A4     p3  spaceranger  6.695379e-08         0
+arbitro: discordanze per ROI reale:
+
+         null A1 r1 CSR      null A3 r1 RSArule          null A3 r3 RSA 
+                      2                       2                       2 
+         null A4 p3 RSA      null A4 p3 RSArule real A1 r5 cellpose_rgb 
+                      2                       2                       4 
+ real A4 f1 spaceranger  real A4 p1 spaceranger  real A4 p2 spaceranger 
+                      2                       2                       6 
+ real A4 p3 spaceranger 
+                      2 
+arbitro, min_edge > 2e-5:
+  set archetype roi_id        model cell   a_geos a_deldir     a_hp ns_geos
+ real        A1     r5 cellpose_rgb 7107 32.62558 32.62554 32.62558       6
+ real        A1     r5 cellpose_rgb 7158 25.02070 25.02065 25.02070       6
+ real        A4     p2  spaceranger 2304 22.81070 22.81070 22.81070       7
+ ns_deldir ns_hp     min_edge geos_ok deldir_ok
+         5     6 2.320289e-05    TRUE     FALSE
+         5     6 2.320289e-05    TRUE     FALSE
+         6     6 1.013823e+00   FALSE      TRUE
+quantili min_edge: 7.43e-15 6.34e-06 2.13e-05 2.32e-05 1.01 
+== C-6: repliche senza frammenti NON identiche ( 10 )
+ archetype roi_id model rep n_fragments          rel       worst ident
+        A3     r3   RSA   5           0 8.244023e-05 mean_nsides FALSE
+        A4     p1   RSA  15           0 1.098648e-05 mean_nsides FALSE
+        A4     p1   RSA   8           0 8.595406e-05  var_nsides FALSE
+        A4     p3   CSR  14           0 3.885337e-05  var_nsides FALSE
+        A4     p3   CSR  19           0 3.827048e-05  var_nsides FALSE
+        A4     p3   CSR   2           0 7.697923e-05  var_nsides FALSE
+        A4     p3   CSR   5           0 3.745790e-05  var_nsides FALSE
+        A4     p3   RSA   1           0 1.134166e-05 mean_nsides FALSE
+        A4     p3   RSA  14           0 1.133928e-05 mean_nsides FALSE
+        A4     p3   RSA   3           0 8.459854e-05  var_nsides FALSE
+di queste, con replica 1 (arbitrata): 1 
+con frammenti: worst col tab
+
+       cv_loc frac_interior     mean_area   mean_nsides   median_area 
+            5           166            24             6            49 
+ median_ecc_T    n_interior var_norm_area    var_nsides 
+            3           183           487            81 
+== A5 r5: area della regione e C-1
+area_poly 869069.8 ; c1 rel 1.741401e-15 -> abs 1.513399e-09 ; c2_union rel 0.00156325 -> abs 1358.573 ; c2_overlap 0.00156325 c2_symdiff 0.00156325 ->abs 1358.573 
+== nulli geos con C-2 FAIL: elenco
+ archetype roi_id   model rep   c2_overlap   c2_symdiff n_multipart
+        A1     r1 RSArule  20 1.487386e-04 1.487386e-04           0
+        A1     r2     RSA   2 9.229645e-05 9.229645e-05           0
+        A1     r2 RSArule  10 1.318324e-04 1.318324e-04           0
+        A2     r5     CSR   2 6.281234e-05 6.281234e-05           0
+        A3     r1 RSArule  12 2.241139e-04 2.241139e-04           0
+        A3     r2     RSA  10 2.129237e-04 2.129237e-04           1
+        A3     r3     CSR   3 3.405421e-04 3.405421e-04           0
+        A3     r4     RSA  14 2.254384e-04 2.254384e-04           0
+        A4     f1 RSArule  20 2.998328e-05 2.998328e-05           0
+        A4     p2 RSArule  13 4.319196e-05 4.319196e-05           0
+        A4     p3     CSR  15 2.104052e-05 2.104052e-05           0
+        A4     p3 RSArule   2 4.077426e-05 4.077426e-05           0
+        A5     r1     RSA  17 7.209335e-04 7.209335e-04           0
+        A5     r5     RSA  15 1.563250e-03 1.563250e-03           0
+        A6     r3 RSArule  13 3.898383e-04 3.898383e-04           0
+== checkB: B3 G2 A5 range e numero ROI entro 10 %
+A1 RSA B2 -0.406..-0.320 B3 -0.323..-0.266 n|B3|<=.1: 0 
+A2 RSA B2 -0.587..-0.273 B3 -0.430..-0.210 n|B3|<=.1: 0 
+A3 RSA B2 -0.639..-0.347 B3 -0.353..-0.203 n|B3|<=.1: 0 
+A4 RSA B2 -0.537..-0.341 B3 -0.276..-0.195 n|B3|<=.1: 0 
+A5 RSA B2 -0.370..-0.139 B3 -0.385..-0.082 n|B3|<=.1: 2 
+ archetype   model          D     D_noise var_nsides_real var_nsides_sim
+        A4     CSR 0.19482922 0.002668709       0.8639524      1.7735569
+        A4     RSA 0.11719338 0.002305938       0.8639524      0.8519435
+        A4 RSArule 0.10993854 0.001704863       0.8639524      1.4003875
+        A6     CSR 0.01802605 0.018039222       1.6909137      1.6811316
+        A6     RSA 0.02556891 0.022506806       1.6909137      1.7279518
+        A6 RSArule 0.10234112 0.017743297       1.6909137      1.3960258
+ check    input                   metric    value
+   C-2 I4_c4_s2  max rel sovrapposizioni 3.95e-04
+   C-2 I4_c4_s2 max rel unione Δ regione 3.95e-04
+   C-2 I4_c4_s3  max rel sovrapposizioni 2.75e-04
+   C-2 I4_c4_s3 max rel unione Δ regione 2.75e-04
+M4 FAIL metrics:
+
+max rel area fuori dall'orig. 
+                           19 
