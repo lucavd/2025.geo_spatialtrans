@@ -1,0 +1,189 @@
+"section","id","archetype","model","metric","value","threshold","outcome","prediction","confirmed"
+"C","C-1","-","geos","asserzioni PASS","26/26","100 %","PASS",NA,NA
+"C","C-2","-","geos","asserzioni PASS","52/52","100 %","PASS",NA,NA
+"C","C-3","-","geos","asserzioni PASS","52/52","100 %","PASS",NA,NA
+"C","C-7","-","geos","asserzioni PASS","130/130","100 %","PASS",NA,NA
+"C","C-8","-","geos","asserzioni PASS","10/10","100 %","PASS",NA,NA
+"C","C-4","-","geos","asserzioni PASS","9/9","100 %","PASS",NA,NA
+"C","C-9","-","geos","asserzioni PASS","7/7","100 %","PASS",NA,NA
+"C","C-1","-","deldir","asserzioni PASS","26/26","100 %","PASS",NA,NA
+"C","C-2","-","deldir","asserzioni PASS","48/52","100 %","FAIL",NA,NA
+"C","C-3","-","deldir","asserzioni PASS","52/52","100 %","PASS",NA,NA
+"C","C-7","-","deldir","asserzioni PASS","130/130","100 %","PASS",NA,NA
+"C","C-8","-","deldir","asserzioni PASS","10/10","100 %","PASS",NA,NA
+"C","C-4","-","deldir","asserzioni PASS","9/9","100 %","PASS",NA,NA
+"C","C-9","-","deldir","asserzioni PASS","7/7","100 %","PASS",NA,NA
+"C","mutanti","-","geos","rilevati","6/6","6/6","PASS",NA,NA
+"C","C-5","A1-A6","geos","ROI identici a R3 (40)","9/40; max rel area interne 7.72e-01","40/40","FAIL",NA,NA
+"C","C-1..3 ROI","A1-A6","geos","ROI con C-1/C-2/C-3 PASS","40/40; max C-1 6.88e-15","40/40","PASS",NA,NA
+"C","C-5","A1-A6","deldir","ROI identici a R3 (40)","12/40; max rel area interne 7.72e-01","40/40","FAIL",NA,NA
+"C","C-1..3 ROI","A1-A6","deldir","ROI con C-1/C-2/C-3 PASS","35/40; max C-1 2.19e-10","40/40","FAIL",NA,NA
+"C","C-6","A1-A6","geos","repliche identiche a R3","186/1200 (attese 1200); max rel 3.64e-01","1200/1200","FAIL",NA,NA
+"C","C-1..3 nulli","A1-A6","geos","tassellazioni PASS","1785/1800","1800/1800","FAIL",NA,NA
+"C","C-1..3 nulli","A1-A6","deldir","tassellazioni PASS (replica 1)","75/90","90/90","FAIL",NA,NA
+"C10","arbitro","A1-A6","semipiani","tile discordanti: corretti geos / deldir","26: 25 / 1 (limitati 26)","-","INFO",NA,NA
+"C10","C-10a","A1-A6","geos vs deldir","insiemi concordi (40 reali + 90 nulli + 26 sintetici/avversari)","146/156; max rel area 1.71e-06","100 %","FAIL","PASS","FALSE"
+"B","B1","A1","G1","eq_r mediano ±5 %","0/5 ROI; +0.156..+0.179",">= 4/5","FAIL",NA,NA
+"B","B2","A1","G1","CV globale ±10 %","0/5 ROI; -0.327..-0.229",">= 4/5","FAIL",NA,NA
+"B","B3","A1","G1","CV locale ±10 %","0/5 ROI; -0.233..-0.171",">= 4/5","FAIL",NA,NA
+"B","B4","A1","G1","eccentricita' |Δ|<0.05","5/5 ROI; -0.004..+0.012",">= 4/5","PASS",NA,NA
+"B","B1","A2","G1","eq_r mediano ±5 %","0/5 ROI; +0.071..+0.199",">= 4/5","FAIL",NA,NA
+"B","B2","A2","G1","CV globale ±10 %","0/5 ROI; -0.511..-0.132",">= 4/5","FAIL",NA,NA
+"B","B3","A2","G1","CV locale ±10 %","3/5 ROI; -0.325..-0.048",">= 4/5","FAIL",NA,NA
+"B","B4","A2","G1","eccentricita' |Δ|<0.05","4/5 ROI; +0.027..+0.050",">= 4/5","PASS",NA,NA
+"B","B1","A3","G1","eq_r mediano ±5 %","0/5 ROI; +0.074..+0.344",">= 4/5","FAIL",NA,NA
+"B","B2","A3","G1","CV globale ±10 %","0/5 ROI; -0.594..-0.280",">= 4/5","FAIL",NA,NA
+"B","B3","A3","G1","CV locale ±10 %","0/5 ROI; -0.269..-0.125",">= 4/5","FAIL",NA,NA
+"B","B4","A3","G1","eccentricita' |Δ|<0.05","5/5 ROI; +0.016..+0.043",">= 4/5","PASS",NA,NA
+"B","B1","A4","G1","eq_r mediano ±5 %","5/5 ROI; -0.018..+0.023",">= 4/5","PASS",NA,NA
+"B","B2","A4","G1","CV globale ±10 %","1/5 ROI; +0.037..+0.811",">= 4/5","FAIL",NA,NA
+"B","B3","A4","G1","CV locale ±10 %","0/5 ROI; +0.656..+1.079",">= 4/5","FAIL",NA,NA
+"B","B4","A4","G1","eccentricita' |Δ|<0.05","0/5 ROI; +0.119..+0.151",">= 4/5","FAIL",NA,NA
+"B","B1","A5","G1","eq_r mediano ±5 %","3/5 ROI; -0.040..+0.091",">= 4/5","FAIL",NA,NA
+"B","B2","A5","G1","CV globale ±10 %","2/5 ROI; -0.299..-0.047",">= 4/5","FAIL",NA,NA
+"B","B3","A5","G1","CV locale ±10 %","3/5 ROI; -0.319..+0.013",">= 4/5","FAIL",NA,NA
+"B","B4","A5","G1","eccentricita' |Δ|<0.05","5/5 ROI; +0.001..+0.020",">= 4/5","PASS",NA,NA
+"B","B1","A6","G1","eq_r mediano ±5 %","5/5 ROI; +0.001..+0.044",">= 4/5","PASS",NA,NA
+"B","B2","A6","G1","CV globale ±10 %","4/5 ROI; -0.162..+0.034",">= 4/5","PASS",NA,NA
+"B","B3","A6","G1","CV locale ±10 %","4/5 ROI; -0.160..+0.035",">= 4/5","PASS",NA,NA
+"B","B4","A6","G1","eccentricita' |Δ|<0.05","5/5 ROI; -0.015..+0.001",">= 4/5","PASS",NA,NA
+"B","B1","A1","G2","eq_r mediano ±5 %","0/5 ROI; +0.171..+0.191",">= 4/5","FAIL","FAIL","TRUE"
+"B","B2","A1","G2","CV globale ±10 %","0/5 ROI; -0.406..-0.320",">= 4/5","FAIL","FAIL","TRUE"
+"B","B3","A1","G2","CV locale ±10 %","0/5 ROI; -0.323..-0.266",">= 4/5","FAIL","FAIL","TRUE"
+"B","B4","A1","G2","eccentricita' |Δ|<0.05","5/5 ROI; -0.019..-0.004",">= 4/5","PASS","PASS","TRUE"
+"B","B1","A2","G2","eq_r mediano ±5 %","0/5 ROI; +0.084..+0.211",">= 4/5","FAIL","FAIL","TRUE"
+"B","B2","A2","G2","CV globale ±10 %","0/5 ROI; -0.587..-0.273",">= 4/5","FAIL","FAIL","TRUE"
+"B","B3","A2","G2","CV locale ±10 %","0/5 ROI; -0.430..-0.210",">= 4/5","FAIL","FAIL","TRUE"
+"B","B4","A2","G2","eccentricita' |Δ|<0.05","5/5 ROI; +0.004..+0.029",">= 4/5","PASS","PASS","TRUE"
+"B","B1","A3","G2","eq_r mediano ±5 %","0/5 ROI; +0.080..+0.354",">= 4/5","FAIL","FAIL","TRUE"
+"B","B2","A3","G2","CV globale ±10 %","0/5 ROI; -0.639..-0.347",">= 4/5","FAIL","FAIL","TRUE"
+"B","B3","A3","G2","CV locale ±10 %","0/5 ROI; -0.353..-0.203",">= 4/5","FAIL","FAIL","TRUE"
+"B","B4","A3","G2","eccentricita' |Δ|<0.05","5/5 ROI; +0.006..+0.030",">= 4/5","PASS","PASS","TRUE"
+"B","B1","A4","G2","eq_r mediano ±5 %","3/5 ROI; +0.021..+0.059",">= 4/5","FAIL","FAIL","TRUE"
+"B","B2","A4","G2","CV globale ±10 %","0/5 ROI; -0.537..-0.341",">= 4/5","FAIL","FAIL","TRUE"
+"B","B3","A4","G2","CV locale ±10 %","0/5 ROI; -0.276..-0.195",">= 4/5","FAIL","FAIL","TRUE"
+"B","B4","A4","G2","eccentricita' |Δ|<0.05","5/5 ROI; +0.006..+0.020",">= 4/5","PASS","PASS","TRUE"
+"B","B1","A5","G2","eq_r mediano ±5 %","3/5 ROI; -0.027..+0.116",">= 4/5","FAIL","FAIL","TRUE"
+"B","B2","A5","G2","CV globale ±10 %","0/5 ROI; -0.370..-0.139",">= 4/5","FAIL","FAIL","TRUE"
+"B","B3","A5","G2","CV locale ±10 %","2/5 ROI; -0.385..-0.082",">= 4/5","FAIL","FAIL","TRUE"
+"B","B4","A5","G2","eccentricita' |Δ|<0.05","5/5 ROI; -0.010..+0.006",">= 4/5","PASS","PASS","TRUE"
+"B","B1","A6","G2","eq_r mediano ±5 %","5/5 ROI; +0.007..+0.043",">= 4/5","PASS","PASS","TRUE"
+"B","B2","A6","G2","CV globale ±10 %","4/5 ROI; -0.161..+0.004",">= 4/5","PASS","PASS","TRUE"
+"B","B3","A6","G2","CV locale ±10 %","4/5 ROI; -0.156..+0.006",">= 4/5","PASS","PASS","TRUE"
+"B","B4","A6","G2","eccentricita' |Δ|<0.05","5/5 ROI; -0.025..-0.002",">= 4/5","PASS","PASS","TRUE"
+"B","B1","A1","G3","eq_r mediano ±5 %","0/5 ROI; +0.181..+0.205",">= 4/5","FAIL","FAIL","TRUE"
+"B","B2","A1","G3","CV globale ±10 %","0/5 ROI; -0.475..-0.408",">= 4/5","FAIL",NA,NA
+"B","B3","A1","G3","CV locale ±10 %","0/5 ROI; -0.411..-0.363",">= 4/5","FAIL",NA,NA
+"B","B4","A1","G3","eccentricita' |Δ|<0.05","5/5 ROI; -0.037..-0.021",">= 4/5","PASS",NA,NA
+"B","B1","A2","G3","eq_r mediano ±5 %","0/5 ROI; +0.088..+0.216",">= 4/5","FAIL","FAIL","TRUE"
+"B","B2","A2","G3","CV globale ±10 %","0/5 ROI; -0.621..-0.332",">= 4/5","FAIL",NA,NA
+"B","B3","A2","G3","CV locale ±10 %","0/5 ROI; -0.477..-0.263",">= 4/5","FAIL",NA,NA
+"B","B4","A2","G3","eccentricita' |Δ|<0.05","5/5 ROI; -0.007..+0.018",">= 4/5","PASS",NA,NA
+"B","B1","A3","G3","eq_r mediano ±5 %","0/5 ROI; +0.088..+0.364",">= 4/5","FAIL",NA,NA
+"B","B2","A3","G3","CV globale ±10 %","0/5 ROI; -0.687..-0.449",">= 4/5","FAIL",NA,NA
+"B","B3","A3","G3","CV locale ±10 %","0/5 ROI; -0.438..-0.329",">= 4/5","FAIL",NA,NA
+"B","B4","A3","G3","eccentricita' |Δ|<0.05","5/5 ROI; -0.019..+0.012",">= 4/5","PASS",NA,NA
+"B","B1","A4","G3","eq_r mediano ±5 %","5/5 ROI; -0.006..+0.037",">= 4/5","PASS",NA,NA
+"B","B2","A4","G3","CV globale ±10 %","0/5 ROI; -0.203..+0.403",">= 4/5","FAIL",NA,NA
+"B","B3","A4","G3","CV locale ±10 %","0/5 ROI; +0.273..+0.610",">= 4/5","FAIL",NA,NA
+"B","B4","A4","G3","eccentricita' |Δ|<0.05","0/5 ROI; +0.086..+0.119",">= 4/5","FAIL",NA,NA
+"B","B1","A5","G3","eq_r mediano ±5 %","3/5 ROI; -0.012..+0.130",">= 4/5","FAIL",NA,NA
+"B","B2","A5","G3","CV globale ±10 %","0/5 ROI; -0.472..-0.279",">= 4/5","FAIL",NA,NA
+"B","B3","A5","G3","CV locale ±10 %","0/5 ROI; -0.487..-0.232",">= 4/5","FAIL",NA,NA
+"B","B4","A5","G3","eccentricita' |Δ|<0.05","5/5 ROI; -0.035..-0.015",">= 4/5","PASS","FAIL","FALSE"
+"B","B1","A6","G3","eq_r mediano ±5 %","2/5 ROI; +0.027..+0.087",">= 4/5","FAIL",NA,NA
+"B","B2","A6","G3","CV globale ±10 %","0/5 ROI; -0.367..-0.215",">= 4/5","FAIL","FAIL","TRUE"
+"B","B3","A6","G3","CV locale ±10 %","0/5 ROI; -0.369..-0.209",">= 4/5","FAIL","FAIL","TRUE"
+"B","B4","A6","G3","eccentricita' |Δ|<0.05","4/5 ROI; -0.056..-0.033",">= 4/5","PASS","FAIL","FALSE"
+"Bsens","B1","A1","G2","eq_r mediano ±5 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B2","A1","G2","CV globale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B3","A1","G2","CV locale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B4","A1","G2","eccentricita' |Δ|<0.05 (rif. pacchetto)","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B1","A2","G2","eq_r mediano ±5 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B2","A2","G2","CV globale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B3","A2","G2","CV locale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B4","A2","G2","eccentricita' |Δ|<0.05 (rif. pacchetto)","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B1","A3","G2","eq_r mediano ±5 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B2","A3","G2","CV globale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B3","A3","G2","CV locale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B4","A3","G2","eccentricita' |Δ|<0.05 (rif. pacchetto)","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B1","A4","G2","eq_r mediano ±5 % (rif. pacchetto)","3/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B2","A4","G2","CV globale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B3","A4","G2","CV locale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B4","A4","G2","eccentricita' |Δ|<0.05 (rif. pacchetto)","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B1","A5","G2","eq_r mediano ±5 % (rif. pacchetto)","3/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B2","A5","G2","CV globale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B3","A5","G2","CV locale ±10 % (rif. pacchetto)","2/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B4","A5","G2","eccentricita' |Δ|<0.05 (rif. pacchetto)","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B1","A6","G2","eq_r mediano ±5 % (rif. pacchetto)","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B2","A6","G2","CV globale ±10 % (rif. pacchetto)","4/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B3","A6","G2","CV locale ±10 % (rif. pacchetto)","4/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B4","A6","G2","eccentricita' |Δ|<0.05 (rif. pacchetto)","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B1","A1","G3","eq_r mediano ±5 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B2","A1","G3","CV globale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B3","A1","G3","CV locale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B4","A1","G3","eccentricita' |Δ|<0.05 (rif. pacchetto)","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B1","A2","G3","eq_r mediano ±5 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B2","A2","G3","CV globale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B3","A2","G3","CV locale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B4","A2","G3","eccentricita' |Δ|<0.05 (rif. pacchetto)","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B1","A3","G3","eq_r mediano ±5 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B2","A3","G3","CV globale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B3","A3","G3","CV locale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B4","A3","G3","eccentricita' |Δ|<0.05 (rif. pacchetto)","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B1","A4","G3","eq_r mediano ±5 % (rif. pacchetto)","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B2","A4","G3","CV globale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B3","A4","G3","CV locale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B4","A4","G3","eccentricita' |Δ|<0.05 (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B1","A5","G3","eq_r mediano ±5 % (rif. pacchetto)","3/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B2","A5","G3","CV globale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B3","A5","G3","CV locale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B4","A5","G3","eccentricita' |Δ|<0.05 (rif. pacchetto)","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"Bsens","B1","A6","G3","eq_r mediano ±5 % (rif. pacchetto)","2/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B2","A6","G3","CV globale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B3","A6","G3","CV locale ±10 % (rif. pacchetto)","0/5 ROI",">= 4/5","FAIL","FAIL","TRUE"
+"Bsens","B4","A6","G3","eccentricita' |Δ|<0.05 (rif. pacchetto)","4/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"B","ordine cv","A3","G3","G3 < G2","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"B","ordine cv_loc","A3","G3","G3 < G2","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"B","ordine cv","A5","G3","G3 < G2","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"B","ordine cv_loc","A5","G3","G3 < G2","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"B","ordine cv","A6","G3","G3 < G2","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"B","ordine cv_loc","A6","G3","G3 < G2","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"B","ordine cv","A4","G3","G3 fra G2 e CSR","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"B","ordine cv_loc","A4","G3","G3 fra G2 e CSR","5/5 ROI",">= 4/5","PASS","PASS","TRUE"
+"B","B-5","A1","G1","KS D (rumore)","0.103 (0.004)","descrittivo","INFO",NA,NA
+"B","B-5","A1","G2","KS D (rumore)","0.134 (0.006)","descrittivo","INFO",NA,NA
+"B","B-5","A1","G3","KS D (rumore)","0.176 (0.003)","descrittivo","INFO",NA,NA
+"B","B-5","A2","G1","KS D (rumore)","0.104 (0.007)","descrittivo","INFO",NA,NA
+"B","B-5","A2","G2","KS D (rumore)","0.163 (0.004)","descrittivo","INFO",NA,NA
+"B","B-5","A2","G3","KS D (rumore)","0.191 (0.005)","descrittivo","INFO",NA,NA
+"B","B-5","A3","G1","KS D (rumore)","0.179 (0.008)","descrittivo","INFO",NA,NA
+"B","B-5","A3","G2","KS D (rumore)","0.214 (0.005)","descrittivo","INFO",NA,NA
+"B","B-5","A3","G3","KS D (rumore)","0.274 (0.007)","descrittivo","INFO",NA,NA
+"B","B-5","A4","G1","KS D (rumore)","0.195 (0.003)","descrittivo","INFO",NA,NA
+"B","B-5","A4","G2","KS D (rumore)","0.117 (0.002)","descrittivo","INFO",NA,NA
+"B","B-5","A4","G3","KS D (rumore)","0.110 (0.002)","descrittivo","INFO",NA,NA
+"B","B-5","A5","G1","KS D (rumore)","0.041 (0.020)","descrittivo","INFO",NA,NA
+"B","B-5","A5","G2","KS D (rumore)","0.083 (0.019)","descrittivo","INFO",NA,NA
+"B","B-5","A5","G3","KS D (rumore)","0.134 (0.042)","descrittivo","INFO",NA,NA
+"B","B-5","A6","G1","KS D (rumore)","0.018 (0.018)","descrittivo","INFO",NA,NA
+"B","B-5","A6","G2","KS D (rumore)","0.026 (0.023)","descrittivo","INFO",NA,NA
+"B","B-5","A6","G3","KS D (rumore)","0.102 (0.018)","descrittivo","INFO",NA,NA
+"CP","CP-1","sintetici","testo del design","frazione regioni (3<=n<=1000) scoperte > 1 %","0.937 (n=300); mediana 0.0943",">= 0.5","PASS","PASS","TRUE"
+"CP","CP-1","sintetici","D-S1.3.1","regioni scoperte > 1e-9","0","0","PASS","PASS","TRUE"
+"CP","CP-2","A6 (densita')","RSA affine","eccentricita' monotona in k","0.770 / 0.767 / 0.768 / 0.772 / 0.771","monotona","FAIL","PASS","FALSE"
+"CP","CP-2","A6 (densita')","RSA affine","k minimo con Δ >= 0.05","Inf","<= 1.5","FAIL","PASS","FALSE"
+"CP","CP-2b (post hoc)","A6 (densita')","RSA regolare affine","eccentricita' mediana per k","0.624 / 0.630 / 0.646 / 0.681 / 0.717","monotona","PASS","PASS","TRUE"
+"CP","CP-2b (post hoc)","A6 (densita')","RSA regolare affine","k minimo con Δ >= 0.05","2","<= 1.5","FAIL","PASS","FALSE"
+"CP","CP-3","A1-A6","Chaikin senza contenimento","coppie sovrapposte (ROI con > 0)","0 (0/30)","> 0","FAIL","PASS","FALSE"
+"CP","CP-3","A1-A6","Chaikin senza contenimento","coppie senza territorio ritagliato non convesso","0","0","PASS","PASS","TRUE"
+"CP","CP-3","A1-A6","D-S1.3.3","coppie sovrapposte con contenimento","0","0","PASS","PASS","TRUE"
+"D","D-1","A1 (densita')","RSA regola","area fascia regione 2 / regione 1 (mediana 20 seed)","1.071",">= 1.1 (previsione)","INFO",">= 1.1","FALSE"
+"D","D-3","sintetici","-","frazione ritagliate: Spearman con log area regione","-0.78","descrittivo","INFO",NA,NA
+"C","C-perf","-","geos","449 536 punti: s, MB","35.9 s, 1076 MB (ok)","<= 150 s, <= 4096 MB","PASS",NA,NA
+"C10","C-10c","-","geos","esponente di scala (1e4-1.6e5)","0.93","descrittivo","INFO","≈ 1",NA
+"C","C-perf","-","deldir","449 536 punti: s, MB","4690.7 s, 8958 MB (ok)","<= 150 s, <= 4096 MB","FAIL",NA,NA
+"C10","C-10c","-","deldir","esponente di scala (1e4-1.6e5)","1.70","descrittivo","INFO","≈ 2",NA
+"C10","scelta","-","","motore del pacchetto (regola dell'addendum)",NA,"-","FAIL","geos","FALSE"
+"C","C-2 copertura (post hoc)","A1-A6 + I4","geos","punti coperti 0/1/≥2; coppie sovrapposte; area","0/2500000/0; 28 coppie; 3.40e+02 um2 (25 casi)","0 / tutti / 0","PASS",NA,NA
+"C","C-2 copertura (post hoc)","A1-A6 + I4","deldir","punti coperti 0/1/≥2; coppie sovrapposte; area","0/3000000/0; 29229 coppie; 3.66e+01 um2 (30 casi)","0 / tutti / 0","PASS",NA,NA

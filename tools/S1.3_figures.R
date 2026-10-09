@@ -30,13 +30,14 @@ tiles <- do.call(rbind, lapply(names(PRIM), function(A) {
     p <- pts[[g]]; inr <- lengths(st_intersects(st_as_sf(p, coords = c("x", "y")), reg$region_polygons)) > 0; p <- p[inr, ]
     if (nrow(p) < 3) return(NULL)
     tv <- tessellate_voronoi(data.frame(cell_id = seq_len(nrow(p)), region_id = 1L, x = p$x, y = p$y), reg, verbose = FALSE)
-    co <- st_coordinates(tv$cell_territories)
-    data.frame(archetype = LAB[[A]], gen = GEN[[g]], id = paste(co[, "L2"], co[, "L1"]), x = co[, "X"] - cx, y = co[, "Y"] - cy)
+    co <- st_coordinates(st_cast(tv$cell_territories, "MULTIPOLYGON"))       # territori misti POLYGON/MULTIPOLYGON (regione MULTIPOLYGON)
+    data.frame(archetype = LAB[[A]], gen = GEN[[g]], id = paste(co[, "L3"], co[, "L2"], co[, "L1"]), x = co[, "X"] - cx, y = co[, "Y"] - cy)
   }))
 }))
 tiles$gen <- factor(tiles$gen, GEN[c("real", "RSA", "RSArule")]); tiles$archetype <- factor(tiles$archetype, LAB)
 p1 <- ggplot(tiles, aes(x, y, group = id)) + geom_polygon(fill = "grey95", colour = "grey20", linewidth = 0.15) +
-  facet_grid(gen ~ archetype, scales = "free") + coord_equal() + scale_y_reverse() + labs(x = "µm", y = "µm") + th
+  facet_wrap(~ gen + archetype, nrow = 3, scales = "free", labeller = function(l) label_value(l, multi_line = FALSE)) +
+  scale_y_reverse() + labs(x = "µm", y = "µm") + th + theme(aspect.ratio = 1)   # ritagli quadrati, scale proprie per pannello
 save(p1, "fig1_tessellations.png", 13, 7)
 
 # fig2: QQ delle aree normalizzate (interne, replica 1, pool dei 5 ROI) — reale (pacchetto) vs G1–G3
@@ -100,7 +101,7 @@ g <- as.data.frame(read_parquet(file.path(R3, "real", "A1_r1_cellpose_rgb_gen.pa
 g <- g[lengths(st_intersects(st_as_sf(g, coords = c("x", "y")), reg$region_polygons)) > 0, ]
 sm <- do.call(rbind, lapply(c(0, 1/3, 1), function(cs) {
   tv <- tessellate_voronoi(data.frame(cell_id = seq_len(nrow(g)), region_id = 1L, x = g$x, y = g$y), reg, corner_smoothing = cs, verbose = FALSE)
-  co <- st_coordinates(tv$cell_territories); data.frame(cs = sprintf("corner_smoothing = %.2f (n_iter %d)", cs, tv$info$n_iter), id = paste(co[, "L2"], co[, "L1"]), x = co[, "X"], y = co[, "Y"])
+  co <- st_coordinates(st_cast(tv$cell_territories, "MULTIPOLYGON")); data.frame(cs = sprintf("corner_smoothing = %.2f (n_iter %d)", cs, tv$info$n_iter), id = paste(co[, "L3"], co[, "L2"], co[, "L1"]), x = co[, "X"], y = co[, "Y"])
 }))
 p7 <- ggplot(sm, aes(x, y, group = id)) + geom_polygon(fill = "#F3E9D2", colour = "grey20", linewidth = 0.2) + facet_wrap(~cs) + coord_equal() + scale_y_reverse() + labs(x = "µm", y = "µm") + th
 save(p7, "fig7_smoothing.png", 11, 4)

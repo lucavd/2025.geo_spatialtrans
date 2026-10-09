@@ -37,8 +37,9 @@ rr <- do.call(rbind, lapply(real, function(o) do.call(rbind, lapply(c("geos", "d
   e <- o[[b]]; data.frame(archetype = o$archetype, roi_id = o$roi_id, method = o$method, engine = b, n = o$n, t(e$c123), t(e$c5))
 }))))
 rr$c5_pass <- rr$interior_identical == 1 & rr$rel_area_interior <= TOL & rr$rel_area_mono <= TOL & rr$rel_sum_area <= TOL & rr$rel_summary <= TOL
-rr$c123_pass <- rr$c1 <= TOL & rr$c2_overlap <= TOL & rr$c2_symdiff <= TOL & rr$c3_poly == 1 & rr$c3_valid == 1 & rr$c3_gen_in_own == 1 &
-  rr$n_multipart == 0 & rr$n_repaired == 0
+# CORREZIONE dichiarata (allineamento al testo pre-registrato, deviazione 3): nel banco ROI la regione e' MULTIPOLYGON e i territori
+# multiparte (orfani su isole senza generatori) sono ammessi; la prima versione dello script li contava come FAIL.
+rr$c123_pass <- rr$c1 <= TOL & rr$c2_overlap <= TOL & rr$c2_symdiff <= TOL & rr$c3_valid == 1 & rr$c3_gen_in_own == 1 & rr$n_repaired == 0
 write.csv(rr, file.path(RES, "S1.3_roi_real.csv"), row.names = FALSE)
 for (b in c("geos", "deldir")) { k <- rr$engine == b
   vr("C", "C-5", "A1-A6", b, "ROI identici a R3 (40)", sprintf("%d/%d; max rel area interne %s", sum(rr$c5_pass[k]), sum(k), fmt(max(rr$rel_area_interior[k]))), "40/40", pf(all(rr$c5_pass[k])))
@@ -60,10 +61,10 @@ m6$worst_col <- cols[apply(sapply(cols, function(cc) abs(m6[[cc]] - m6[[paste0(c
 write.csv(m6[, c("archetype", "roi_id", "model", "rep", "rel", "worst_col")], file.path(RES, "S1.3_c6.csv"), row.names = FALSE)
 vr("C", "C-6", "A1-A6", "geos", "repliche identiche a R3", sprintf("%d/%d (attese 1200); max rel %s", sum(m6$rel <= TOL & m6$n_failed == m6$n_failed.r3), nrow(m6), fmt(max(m6$rel))),
    "1200/1200", pf(nrow(m6) == 1200 && all(m6$rel <= TOL)))
-c123n <- ns$c1 <= TOL & ns$c2_overlap <= TOL & ns$c2_symdiff <= TOL & ns$c3_poly == 1 & ns$c3_valid == 1 & ns$c3_gen_in_own == 1 & ns$n_multipart == 0 & ns$n_repaired == 0
+c123n <- ns$c1 <= TOL & ns$c2_overlap <= TOL & ns$c2_symdiff <= TOL & ns$c3_valid == 1 & ns$c3_gen_in_own == 1 & ns$n_repaired == 0   # multiparte ammessi (dev. 3)
 vr("C", "C-1..3 nulli", "A1-A6", "geos", "tassellazioni PASS", sprintf("%d/%d", sum(c123n), nrow(ns)), "1800/1800", pf(nrow(ns) == 1800 && all(c123n)))
 dn <- do.call(rbind, lapply(nul, function(o) if (!is.null(o$c123_deldir)) data.frame(t(o$c123_deldir))))
-c123d <- dn$c1 <= TOL & dn$c2_overlap <= TOL & dn$c2_symdiff <= TOL & dn$c3_poly == 1 & dn$c3_valid == 1 & dn$c3_gen_in_own == 1 & dn$n_multipart == 0 & dn$n_repaired == 0
+c123d <- dn$c1 <= TOL & dn$c2_overlap <= TOL & dn$c2_symdiff <= TOL & dn$c3_valid == 1 & dn$c3_gen_in_own == 1 & dn$n_repaired == 0   # multiparte ammessi (dev. 3)
 vr("C", "C-1..3 nulli", "A1-A6", "deldir", "tassellazioni PASS (replica 1)", sprintf("%d/%d", sum(c123d), nrow(dn)), "90/90", pf(nrow(dn) == 90 && all(c123d)))
 c10n <- do.call(rbind, lapply(nul, function(o) if (!is.null(o$c10a)) data.frame(set = "null", archetype = o$archetype, roi_id = o$roi_id, model = o$model, t(o$c10a))))
 c10s <- read.csv(file.path(RES, "S1.3_c10a_syn.csv"))
@@ -192,6 +193,13 @@ eng <- data.frame(engine = c("geos", "deldir"), K1 = K["K1", ], K2 = K["K2", ], 
 write.csv(eng, file.path(RES, "S1.3_engine_choice.csv"), row.names = FALSE)
 vr("C10", "scelta", "-", paste(elig, collapse = "+"), "motore del pacchetto (regola dell'addendum)", choice, "-", if (is.na(choice)) "FAIL" else "INFO", "geos", identical(choice, "geos"))
 
+# POST HOC dichiarato: copertura per punti sui casi con C-2 (unione) fallito
+if (file.exists(file.path(RES, "S1.3_c2_coverage.csv"))) {
+  cv <- read.csv(file.path(RES, "S1.3_c2_coverage.csv"))
+  for (e in c("geos", "deldir")) { d <- cv[cv$engine == e, ]
+    vr("C", "C-2 copertura (post hoc)", "A1-A6 + I4", e, "punti coperti 0/1/≥2; coppie sovrapposte; area",
+       sprintf("%d/%d/%d; %d coppie; %.2e um2 (%d casi)", sum(d$cov0), sum(d$cov1), sum(d$cov2), sum(d$n_pairs), sum(d$ov_area), nrow(d)), "0 / tutti / 0", pf(sum(d$cov0) == 0 && sum(d$cov2) == 0)) }
+}
 VV <- do.call(rbind, V); write.csv(VV, file.path(RES, "S1.3_verdicts.csv"), row.names = FALSE)
 print(eng, row.names = FALSE)
 print(VV[VV$section != "B" | VV$id != "B-5", c("section", "id", "archetype", "model", "value", "outcome", "prediction", "confirmed")], row.names = FALSE)

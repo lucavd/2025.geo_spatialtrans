@@ -127,6 +127,7 @@ Il binario R deve stare **davanti** al binario S: R1-R2 prima di S1.2, R3 prima 
 | 2026-10-08 | (S1.3, D-S1.3.2) Frammenti di una cella spezzata dal ritaglio: il pezzo con il generatore resta, gli orfani vanno al territorio della stessa regione con il confine condiviso più lungo; un POLYGON per cellula — Luca («approvo») |
 | 2026-10-08 | (S1.3, D-S1.3.3) Smussatura Chaikin con `n_iter = max(1, round(3·cs))`, cs ∈ [0, 1]; smussato ∩ territorio originale (niente sovrapposizioni), lacune = spazio extracellulare riportato; C2 per cs = 0 — Luca («approvo») |
 | 2026-10-08 | (S1.3) Controprova della riga S1.3 (§4, «A6 eccentricità → fallimento atteso») sostituita da CP-2 (potenza del check di forma): il riferimento A6 è un Voronoi isotropo (BL-064) — Luca («approvo») |
+| 2026-10-08 | (S1.3, C-10) **Motore di Voronoi unico = GEOS** (`sf::st_voronoi`, `point_order = TRUE`), revisione della decisione 6 del design (deldir). La regola dell'addendum C-10 non ha prodotto la scelta (K-2/K-3 falliti per entrambi i motori per cause indipendenti dal motore); evidenza discriminante: arbitro per semipiani 25/26 GEOS vs 1/26 deldir, check C 286/286 vs 282/286 (C-2: geometria deldir non annodata), C-perf 35.9 s / 1.1 GB vs 4 691 s / 9.0 GB. deldir resta solo in `tools/S1.3_variants.R` e negli strumenti R3 — Luca («GEOS»), su richiesta «un solo motore, confronto oggettivo, documentiamo la scelta» |
 | 2026-09-18 | **Una sessione = una chat.** Ogni step del protocollo si svolge in una chat nuova; a chiusura ci si ferma. Nessuna eccezione |
 
 ## 7. Stato delle sessioni

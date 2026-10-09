@@ -1,0 +1,3 @@
+"engine","K1","K2","K3","K_arb","eligible","cperf","slope","robustness_events","rob_test","rob_real","rob_null","chosen"
+"geos",TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,0.925306481185787,2907,0,91,2816,FALSE
+"deldir",FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,1.69874665451722,935,4,312,619,FALSE
