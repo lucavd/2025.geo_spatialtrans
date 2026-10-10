@@ -153,8 +153,11 @@ el <- sapply(VS, function(v) c(C1 = c1[[v]] == 0, C2 = c2[[v]] == 0, C3 = c3["fa
                                 C4 = c4["inv", v] == 0 && c4["empty", v] == 0 && c4["n_bad", v] == 0 && c4["types", v] == 0,
                                 C5 = c5[[v]] == 0, C6 = c6[[v]] == 0, Cunit = cu["pass", v] == cu["n", v], CP2 = cp2f[[v]] == 0))
 tt <- sapply(VS, function(v) sum(tab$t_build[tab$variant == v] + tab$t_union[tab$variant == v]))
-dec <- data.frame(variant = VS, t(el), eligible = apply(el, 2, all), deps = c("sf", "codice nostro", "geos + libgeos (GEOS 3.11.1)"), time_build_union_s = tt)
-choice <- if (any(dec$eligible)) dec$variant[dec$eligible][1] else "P0"
+# CORREZIONE dopo il run (2026-10-10): etichette delle dipendenze sfasate e ordine di preferenza V1, V2, V3 invece del
+# pre-registrato V1 -> V3 -> V2; con una sola variante eleggibile la scelta non cambia.
+dec <- data.frame(variant = VS, t(el), eligible = apply(el, 2, all), deps = c(V1 = "sf", V2 = "geos + libgeos (GEOS 3.11.1)", V3 = "codice nostro")[VS], time_build_union_s = tt)
+pref <- c("V1", "V3", "V2"); elig <- pref[pref %in% dec$variant[dec$eligible]]
+choice <- if (length(elig)) elig[1] else "P0"
 dec$chosen <- dec$variant == choice
 write.csv(dec, file.path(RES, "S1.3b_decision.csv"), row.names = FALSE)
 vr("DEC", "regola", paste(dec$variant[dec$eligible], collapse = "+"), "variante scelta (ordine V1, V3, V2; nessuna → P0)", choice, "-", "INFO")
