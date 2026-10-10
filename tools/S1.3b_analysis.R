@@ -106,7 +106,8 @@ vr("CP", "CP-1b", "766/1987", "placebo con errore intatto (|area − V0| <= 0.01
 ok1c <- k2$cp1c_rel_ov <= 1e-9 && k2$cp1c_rel_symd <= 1e-9
 vr("CP", "CP-1c", "A5 r5 RSA 15", "unione dopo V3: |ov|/A, symd/A (V0 deficit µm²)", sprintf("%s, %s (%.1f)", fe(k2$cp1c_rel_ov), fe(k2$cp1c_rel_symd), k2$union_deficit_v0), "<= 1e-9", pf(ok1c), "<= 1e-9", ok1c)
 cf <- list.files(file.path(OUTB, "cp2"), pattern = "\\.rds$", full.names = TRUE); c2r <- lapply(cf, readRDS); stopifnot(length(c2r) == 60)
-ct <- do.call(rbind, lapply(c2r, function(o) cbind(archetype = o$archetype, roi_id = o$roi_id, model = o$model, rep = o$rep, A = o$A, sumP = o$sumP, o$rows)))
+ct <- do.call(rbind, lapply(c2r, function(o) { if (is.null(o$rows$error)) o$rows$error <- NA_character_
+  cbind(archetype = o$archetype, roi_id = o$roi_id, model = o$model, rep = o$rep, A = o$A, sumP = o$sumP, o$rows) }))
 ct$fail <- ifelse(ct$variant == "V0", abs(ct$ov) > 1e-9 * ct$A + sqrt(2) * ct$delta * ct$sumP | ct$symd > 1e-9 * ct$A + sqrt(2) * ct$delta * ct$sumP,
                   abs(ct$ov) > ct$tau | ct$symd > ct$tau)
 if (is.null(ct$error)) ct$error <- NA_character_
