@@ -109,7 +109,11 @@ cf <- list.files(file.path(OUTB, "cp2"), pattern = "\\.rds$", full.names = TRUE)
 ct <- do.call(rbind, lapply(c2r, function(o) cbind(archetype = o$archetype, roi_id = o$roi_id, model = o$model, rep = o$rep, A = o$A, sumP = o$sumP, o$rows)))
 ct$fail <- ifelse(ct$variant == "V0", abs(ct$ov) > 1e-9 * ct$A + sqrt(2) * ct$delta * ct$sumP | ct$symd > 1e-9 * ct$A + sqrt(2) * ct$delta * ct$sumP,
                   abs(ct$ov) > ct$tau | ct$symd > ct$tau)
+if (is.null(ct$error)) ct$error <- NA_character_
+ct$fail[is.na(ct$fail) | !is.na(ct$error)] <- TRUE        # POST HOC dichiarato (2026-10-10, prima di vedere la variante): eccezione GEOS = FAIL
 write.csv(ct, file.path(RES, "S1.3b_cp2.csv"), row.names = FALSE)
+for (v in c("V0", VS)) vr("CP", "CP-2 eccezioni", v, "eccezioni GEOS (per δ = 1e-12 / 1e-10 / 1e-8)",
+  paste(tapply(!is.na(ct$error[ct$variant == v]), ct$delta[ct$variant == v], sum), collapse = " / "), "descrittivo (contano come FAIL)", "INFO")
 r0 <- tapply(ct$fail[ct$variant == "V0"], ct$delta[ct$variant == "V0"], mean)
 vr("CP", "CP-2", "V0", "frequenza FAIL per δ = 1e-12 / 1e-10 / 1e-8 (basale 0.0083)", paste(sprintf("%.3f", r0), collapse = " / "), "> 0.0083 ad almeno un δ", pf(any(r0 > 15 / 1800)), "> basale", any(r0 > 15 / 1800))
 cp2f <- sapply(VS, function(v) sum(ct$fail[ct$variant == v]))

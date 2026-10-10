@@ -195,10 +195,12 @@ cp2_one <- function(j) {
   for (dl in c(1e-12, 1e-10, 1e-8)) {
     tp <- s3b_perturb(G$terr, dl, SEL_SEED + 7 * job_index(i, j$model, j$rep) + round(-log10(dl)))
     n_inv <- sum(!st_is_valid(tp))
-    for (v in c("V0", "V1", "V2", "V3")) {
-      V <- s3b_variant(tp, G$reg, v); m <- s3b_measure(V, P, Preg, pts = NULL, full = FALSE)
-      out$rows[[length(out$rows) + 1]] <- data.frame(delta = dl, variant = v, n_invalid_input = n_inv, ov = m$ov, symd = m$symd, tau = m$tau,
-                                                       n_pairs = m$n_pairs, n_pairs_over = m$n_pairs_over, pair_max = if (m$n_pairs) max(m$pairs$area) else 0)
+    for (v in c("V0", "V1", "V2", "V3")) {   # eccezione GEOS registrata (post hoc, dichiarato: conta come FAIL della variante)
+      m <- tryCatch({ V <- s3b_variant(tp, G$reg, v); s3b_measure(V, P, Preg, pts = NULL, full = FALSE) }, error = function(e) conditionMessage(e))
+      out$rows[[length(out$rows) + 1]] <- if (is.character(m))
+        data.frame(delta = dl, variant = v, n_invalid_input = n_inv, ov = NA, symd = NA, tau = NA, n_pairs = NA, n_pairs_over = NA, pair_max = NA, error = substr(m, 1, 200))
+      else data.frame(delta = dl, variant = v, n_invalid_input = n_inv, ov = m$ov, symd = m$symd, tau = m$tau,
+                      n_pairs = m$n_pairs, n_pairs_over = m$n_pairs_over, pair_max = if (m$n_pairs) max(m$pairs$area) else 0, error = NA_character_)
     }
   }
   out$rows <- do.call(rbind, out$rows); saveRDS(out, f); NULL
