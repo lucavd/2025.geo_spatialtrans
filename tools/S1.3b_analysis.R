@@ -95,6 +95,7 @@ vr("C", "mutanti", "-", "rilevati (M1 C-5, M2 C-1/C-2, M3 C-1/C-2)", sprintf("%d
 
 # ---- controprove --------------------------------------------------------------------------------------------------
 cp <- readRDS(file.path(OUTB, "cp1", "cp1.rds")); k1 <- cp$case1; k2 <- cp$case2
+k2$cp1c_rel_symd <- sum(k2$cp1c_rel_symd); k2$symd_v0 <- sum(k2$symd_v0)   # differenza simmetrica vuota: sf restituisce lunghezza 0 = area 0
 h1 <- k1$d0_info[["n_pairs_cross_diff"]] + k1$d0_info[["n_tjunction"]]
 vr("CP", "D-0", "766/1987", "vertici condivisi diversi; giunzioni a T; identici; max d", sprintf("%d; %d; %d; %s", k1$d0_info[["n_pairs_cross_diff"]], k1$d0_info[["n_tjunction"]],
    k1$d0_info[["n_pairs_cross_identical"]], fe(k1$d0_info[["d_max"]])), ">= 1 (diversi o T)", pf(h1 >= 1), ">= 1", h1 >= 1)
