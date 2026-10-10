@@ -102,8 +102,8 @@ vr("CP", "D-0", "766/1987", "vertici condivisi diversi; giunzioni a T; identici;
 vr("CP", "D-0", "A5 r5 RSA 15", "vertici condivisi diversi; giunzioni a T; identici; sul bordo regione", sprintf("%d; %d; %d; %d/%d", k2$d0_info[["n_pairs_cross_diff"]], k2$d0_info[["n_tjunction"]],
    k2$d0_info[["n_pairs_cross_identical"]], sum(k2$diff_on_region_boundary), length(k2$diff_on_region_boundary)), "descrittivo", "INFO")
 vr("CP", "CP-1a", "766/1987", "area intersezione dopo annodamento (V0)", sprintf("%s (V0 %.4f)", fe(k1$a_cp1a), k1$a_v0), "<= 1e-6", pf(k1$a_cp1a <= 1e-6), "<= 1e-6", k1$a_cp1a <= 1e-6)
-npl <- sum(abs(k1$placebo$area - k1$a_v0) <= 0.01)
-vr("CP", "CP-1b", "766/1987", "placebo con errore intatto (|area − V0| <= 0.01)", sprintf("%d/20 (spost. %d, ins. %d+%d)", npl, k1$placebo$moved[1], k1$placebo$ins1[1], k1$placebo$ins2[1]), ">= 19/20", pf(npl >= 19), ">= 19/20", npl >= 19)
+npl <- sum(abs(k1$placebo$area - k1$a_v0) <= 0.01 & k1$placebo$n_changed > 0)   # RC-01: conta solo i placebo che cambiano davvero coordinate
+vr("CP", "CP-1b", "766/1987", "placebo (stessi ulp, coordinate cambiate) con errore intatto", sprintf("%d/20 (spost. %d di %d ulp; seed con coordinate cambiate %d/20)", npl, k1$placebo$moved[1], k1$placebo$k_ulp[1], sum(k1$placebo$n_changed > 0)), ">= 19/20", pf(npl >= 19), ">= 19/20", npl >= 19)
 ok1c <- k2$cp1c_rel_ov <= 1e-9 && k2$cp1c_rel_symd <= 1e-9
 vr("CP", "CP-1c", "A5 r5 RSA 15", "unione dopo V3: |ov|/A, symd/A (V0 deficit µm²)", sprintf("%s, %s (%.1f)", fe(k2$cp1c_rel_ov), fe(k2$cp1c_rel_symd), k2$union_deficit_v0), "<= 1e-9", pf(ok1c), "<= 1e-9", ok1c)
 cf <- list.files(file.path(OUTB, "cp2"), pattern = "\\.rds$", full.names = TRUE); c2r <- lapply(cf, readRDS); stopifnot(length(c2r) == 60)
@@ -117,7 +117,9 @@ write.csv(ct, file.path(RES, "S1.3b_cp2.csv"), row.names = FALSE)
 for (v in c("V0", VS)) vr("CP", "CP-2 eccezioni", v, "eccezioni GEOS (per δ = 1e-12 / 1e-10 / 1e-8)",
   paste(tapply(!is.na(ct$error[ct$variant == v]), ct$delta[ct$variant == v], sum), collapse = " / "), "descrittivo (contano come FAIL)", "INFO")
 r0 <- tapply(ct$fail[ct$variant == "V0"], ct$delta[ct$variant == "V0"], mean)
-vr("CP", "CP-2", "V0", "frequenza FAIL per δ = 1e-12 / 1e-10 / 1e-8 (basale 0.0083)", paste(sprintf("%.3f", r0), collapse = " / "), "> 0.0083 ad almeno un δ", pf(any(r0 > 15 / 1800)), "> basale", any(r0 > 15 / 1800))
+rs0 <- tapply(ct$fail[ct$variant == "V0"] & is.na(ct$error[ct$variant == "V0"]), ct$delta[ct$variant == "V0"], mean)   # RC-02: definizione pre-registrata
+vr("CP", "CP-2", "V0", "frequenza FAIL silenziosi (pre-registrata) per δ = 1e-12 / 1e-10 / 1e-8 (basale 0.0083)", paste(sprintf("%.3f", rs0), collapse = " / "), "> 0.0083 ad almeno un δ", pf(any(rs0 > 15 / 1800)), "> basale", any(rs0 > 15 / 1800))
+vr("CP", "CP-2 (post hoc)", "V0", "frequenza FAIL con eccezione = FAIL", paste(sprintf("%.3f", r0), collapse = " / "), "> 0.0083", "INFO")
 cp2f <- sapply(VS, function(v) sum(ct$fail[ct$variant == v]))
 for (v in VS) vr("CP", "CP-2", v, "FAIL su 60 x 3 δ (per δ)", sprintf("%d (%s)", cp2f[[v]], paste(tapply(ct$fail[ct$variant == v], ct$delta[ct$variant == v], sum), collapse = "/")), "0", pf(cp2f[[v]] == 0), "0", cp2f[[v]] == 0)
 vr("CP", "CP-2", "-", "input perturbati invalidi (per δ)", paste(tapply(ct$n_invalid_input[ct$variant == "V0"], ct$delta[ct$variant == "V0"], sum), collapse = "/"), "descrittivo", "INFO")

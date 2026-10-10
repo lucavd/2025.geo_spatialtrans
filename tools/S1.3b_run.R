@@ -155,6 +155,9 @@ if (STAGE == "cp1") {
   d_reg <- if (any(cr)) as.numeric(st_distance(st_sfc(lapply(fu$I[cr], function(k) st_point(c(v12$x[k], v12$y[k])))), st_boundary(G$reg))) else numeric(0)
   a_1a <- sum(as.numeric(st_area(st_intersection(st_sfc(d0$geoms[[1]]), st_sfc(d0$geoms[[2]])))))
   k_move <- d0$info[["n_moved"]]; amp <- d0$d
+  ulp0 <- function(z) 2^(floor(log2(abs(z))) - 52)
+  mv0 <- which(v12$g[fu$I] != v12$g[fu$J] & fu$d > 0)      # coppia di vertici diversi: spostamento in ulp della coordinata
+  k_ulp <- if (length(mv0)) max(round(abs(v12$x[fu$I[mv0]] - v12$x[fu$J[mv0]]) / ulp0(v12$x[fu$I[mv0]])), round(abs(v12$y[fu$I[mv0]] - v12$y[fu$J[mv0]]) / ulp0(v12$y[fu$I[mv0]]))) else 0
   k_ins1 <- sum(d0$tj_g == 1); k_ins2 <- sum(d0$tj_g == 2)
   ns2 <- nonshared_vertices(t2, t1, 1e-6); ns1 <- nonshared_vertices(t1, t2, 1e-6)
   ins <- function(df, far, k) { n <- nrow(df); nx <- c(2:n, 1); ok <- which(far & far[nx]); if (!k || !length(ok)) return(df[0, ])
@@ -163,10 +166,15 @@ if (STAGE == "cp1") {
   placebo <- do.call(rbind, lapply(1:20, function(sd) {
     set.seed(SEL_SEED + 100 + sd)
     vv <- ns2$v; cand <- which(ns2$far); km <- min(k_move, length(cand)); mv <- if (km) cand[sample.int(length(cand), km)] else integer(0)
-    if (km) { th <- runif(km, 0, 2 * pi); am <- rep_len(if (length(amp)) amp else 0, km); vv$x[mv] <- vv$x[mv] + am * cos(th); vv$y[mv] <- vv$y[mv] + am * sin(th) }
+    # CORREZIONE dopo la revisione (RC-01): la versione pre-run sommava 8.9e-16 µm a coordinate ~1e3 (ulp 1.1e-13) -> nessuna coordinata
+    # cambiava (placebo nullo). Ora: stesso numero di ulp dello spostamento di CP-1a, nella coordinata e col segno casuali; si conta n_changed.
+    ulp <- function(z) 2^(floor(log2(abs(z))) - 52)
+    if (km) { cc <- sample(c("x", "y"), km, TRUE); sg <- sample(c(-1, 1), km, TRUE)
+      for (q in seq_len(km)) { vv[[cc[q]]][mv[q]] <- vv[[cc[q]]][mv[q]] + sg[q] * k_ulp * ulp(vv[[cc[q]]][mv[q]]) } }
+    n_changed <- sum(vv$x != ns2$v$x | vv$y != ns2$v$y)
     n2 <- rbind(vv, ins(ns2$v, ns2$far, k_ins2)); n1 <- rbind(ns1$v, ins(ns1$v, ns1$far, k_ins1))
     g2p <- s3b_rebuild(n2, class(t2)[2])$geoms[[1]]; g1p <- s3b_rebuild(n1, class(t1)[2])$geoms[[1]]
-    data.frame(seed = sd, moved = km, ins1 = k_ins1, ins2 = k_ins2, area = sum(as.numeric(st_area(st_intersection(st_sfc(g1p), st_sfc(g2p))))),
+    data.frame(seed = sd, moved = km, k_ulp = k_ulp, n_changed = n_changed, ins1 = k_ins1, ins2 = k_ins2, area = sum(as.numeric(st_area(st_intersection(st_sfc(g1p), st_sfc(g2p))))),
                valid = all(st_is_valid(st_sfc(g1p, g2p))))
   }))
   case1 <- list(a_v0 = a_v0, relate = rel, d0_info = d0$info, d0_d = d0$d, d0_dtj = d0$d_tj, d0_tj_g = d0$tj_g, diff_dist_to_region = d_reg,
