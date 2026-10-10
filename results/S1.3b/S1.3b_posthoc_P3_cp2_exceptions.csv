@@ -1,0 +1,4 @@
+"delta","n","exception","invalid_input","both","silent_fail"
+1e-12,60,3,3,3,0
+1e-10,60,5,5,5,0
+1e-08,60,6,6,6,0

@@ -1,0 +1,6 @@
+"mutant","case","target","n_fail"
+"M1","A1 r1 CSR 1","C-5",8662
+"M2","A3 r3 CSR 3","C-1/C-2",2
+"M3","A3 r3 CSR 3","C-1/C-2",2
+"M2","A5 r5 RSA 15","C-1/C-2",1
+"M3","A5 r5 RSA 15","C-1/C-2",1

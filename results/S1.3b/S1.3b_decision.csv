@@ -1,0 +1,4 @@
+"variant","C1","C2","C3","C4","C5","C6","Cunit","CP2","eligible","deps","time_build_union_s","chosen"
+"V1",TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,"sf",744.288999999997,FALSE
+"V2",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"geos + libgeos (GEOS 3.11.1)",1185.769,TRUE
+"V3",TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,"codice nostro",10601.895,FALSE

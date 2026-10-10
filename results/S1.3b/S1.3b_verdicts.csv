@@ -1,0 +1,61 @@
+"section","id","variant","metric","value","threshold","outcome","prediction","confirmed"
+"C","C-0","V0","nulli riprodotti (n, c1, c2 ≤ 1e-12)","1800/1800","1800/1800","PASS","1800/1800","TRUE"
+"C","C-0","V0","nulli con C-2 > 1e-9 (stessi di S1.3)","15 (S1.3: 15; identici: TRUE)","15, stessi","PASS","15","TRUE"
+"C","C-1","V0","nulli con |ov| o symd > 1e-9·A","15","descrittivo","INFO",NA,NA
+"C","C-1","V0g","nulli con |ov| o symd > 1e-9·A","15","descrittivo","INFO",NA,NA
+"C","C-1","V1","nulli oltre tau; max |ov|/tau, max symd/tau","0; 2.45e-08; 0.00e+00","0","PASS","0","TRUE"
+"C","C-1","V2","nulli oltre tau; max |ov|/tau, max symd/tau","0; 2.03e-08; 2.94e-06","0","PASS","0","TRUE"
+"C","C-1","V3","nulli oltre tau; max |ov|/tau, max symd/tau","0; 2.18e-07; 0.00e+00","0","PASS","0","TRUE"
+"C","C-2","V0","coppie oltre 1e-6·(Pi+Pj) (nulli)","10 (A1 r3 RSArule 8; A2 r4 RSA 12; A2 r5 RSArule 19; A3 r3 CSR 3; A3 r3 CSR 5; A3 r3 RSA 8; A3 r5 RSArule 2; A5 r2 CSR 16; A6 r2 CSR 2; A6 r5 RSArule 19)","1 (A3 r3 CSR 3)","FAIL","1","FALSE"
+"C","C-2","V0g","coppie oltre 1e-6·(Pi+Pj) (nulli)","10 (A1 r3 RSArule 8; A2 r4 RSA 12; A2 r5 RSArule 19; A3 r3 CSR 3; A3 r3 CSR 5; A3 r3 RSA 8; A3 r5 RSArule 2; A5 r2 CSR 16; A6 r2 CSR 2; A6 r5 RSArule 19)","1 (A3 r3 CSR 3)","INFO",NA,NA
+"C","C-2","V1","coppie oltre tau_ij","0","0","PASS","0","TRUE"
+"C","C-2","V2","coppie oltre tau_ij","0","0","PASS","0","TRUE"
+"C","C-2","V3","coppie oltre tau_ij","0","0","PASS","0","TRUE"
+"C","C-3","V0","anomalie di copertura (lontane dal bordo / totale)","0 / 0","descrittivo","INFO",NA,NA
+"C","C-3","V1","anomalie lontane > 1e-5 µm / totale (max distanza)","0 / 1 (3.95e-08)","0 / <= 50","PASS","0 / <= 50","TRUE"
+"C","C-3","V2","anomalie lontane > 1e-5 µm / totale (max distanza)","0 / 1 (3.95e-08)","0 / <= 50","PASS","0 / <= 50","TRUE"
+"C","C-3","V3","anomalie lontane > 1e-5 µm / totale (max distanza)","0 / 0 (0.00e+00)","0 / <= 50","PASS","0 / <= 50","TRUE"
+"C","C-4","V1","invalide; vuote; n diverso; tipi cambiati","2; 0; 0; 0","0 (invalide: WARN)","WARN","conteggio",NA
+"C","C-4","V2","invalide; vuote; n diverso; tipi cambiati","0; 0; 0; 0","0; 0; 0; 0","PASS","0","TRUE"
+"C","C-4","V3","invalide; vuote; n diverso; tipi cambiati","2; 0; 0; 0","0; 0; 0; 0","FAIL","0","FALSE"
+"C","C-5","V1","celle con |Δa| > g·P_i (max rapporto)","0 (4.62e-01)","0","PASS","0","TRUE"
+"C","C-5","V2","celle con |Δa| > g·P_i (max rapporto)","0 (4.62e-01)","0","PASS","0","TRUE"
+"C","C-5","V3","celle con |Δa| > g·P_i (max rapporto)","0 (1.23e-01)","0","PASS","0","TRUE"
+"C","C-unit","V1","asserzioni PASS","21/21","100 %","PASS","100 %","TRUE"
+"C","C-unit","V2","asserzioni PASS","21/21","100 %","PASS","100 %","TRUE"
+"C","C-unit","V3","asserzioni PASS","23/23","100 %","PASS","100 %","TRUE"
+"C","C-6","V0","violazioni celle + bin (30 nulli); max |Δ| cella, bin","0 + 0; 4.77e-11, 5.68e-13","nessuna previsione","INFO",NA,NA
+"C","C-6","V1","violazioni celle + bin (30 nulli); max |Δ| cella, bin","0 + 0; 5.32e-11, 5.40e-13","0","PASS","0","TRUE"
+"C","C-6","V2","violazioni celle + bin (30 nulli); max |Δ| cella, bin","0 + 0; 2.36e-05, 1.33e-15","0","PASS","0","TRUE"
+"C","C-6","V3","violazioni celle + bin (30 nulli); max |Δ| cella, bin","0 + 0; 4.77e-11, 5.97e-13","0","PASS","0","TRUE"
+"C","mutanti","-","rilevati (M1 C-5, M2 C-1/C-2, M3 C-1/C-2)","3/3 (M1 TRUE, M2 TRUE, M3 TRUE)","3/3","PASS","3/3","TRUE"
+"CP","D-0","766/1987","vertici condivisi diversi; giunzioni a T; identici; max d","1; 0; 1; 8.88e-16",">= 1 (diversi o T)","PASS",">= 1","TRUE"
+"CP","D-0","A5 r5 RSA 15","vertici condivisi diversi; giunzioni a T; identici; sul bordo regione","1; 616; 14598; 1/1","descrittivo","INFO",NA,NA
+"CP","CP-1a","766/1987","area intersezione dopo annodamento (V0)","0.00e+00 (V0 340.4273)","<= 1e-6","PASS","<= 1e-6","TRUE"
+"CP","CP-1b","766/1987","placebo con errore intatto (|area − V0| <= 0.01)","20/20 (spost. 1, ins. 0+0)",">= 19/20","PASS",">= 19/20","TRUE"
+"CP","CP-1c","A5 r5 RSA 15","unione dopo V3: |ov|/A, symd/A (V0 deficit µm²)","1.74e-15, 0.00e+00 (1358.6)","<= 1e-9","PASS","<= 1e-9","TRUE"
+"CP","CP-2 eccezioni","V0","eccezioni GEOS (per δ = 1e-12 / 1e-10 / 1e-8)","3 / 5 / 6","descrittivo (contano come FAIL)","INFO",NA,NA
+"CP","CP-2 eccezioni","V1","eccezioni GEOS (per δ = 1e-12 / 1e-10 / 1e-8)","0 / 0 / 0","descrittivo (contano come FAIL)","INFO",NA,NA
+"CP","CP-2 eccezioni","V2","eccezioni GEOS (per δ = 1e-12 / 1e-10 / 1e-8)","0 / 0 / 0","descrittivo (contano come FAIL)","INFO",NA,NA
+"CP","CP-2 eccezioni","V3","eccezioni GEOS (per δ = 1e-12 / 1e-10 / 1e-8)","0 / 0 / 0","descrittivo (contano come FAIL)","INFO",NA,NA
+"CP","CP-2","V0","frequenza FAIL per δ = 1e-12 / 1e-10 / 1e-8 (basale 0.0083)","0.050 / 0.083 / 0.100","> 0.0083 ad almeno un δ","PASS","> basale","TRUE"
+"CP","CP-2","V1","FAIL su 60 x 3 δ (per δ)","0 (0/0/0)","0","PASS","0","TRUE"
+"CP","CP-2","V2","FAIL su 60 x 3 δ (per δ)","0 (0/0/0)","0","PASS","0","TRUE"
+"CP","CP-2","V3","FAIL su 60 x 3 δ (per δ)","0 (0/0/0)","0","PASS","0","TRUE"
+"CP","CP-2","-","input perturbati invalidi (per δ)","3/5/7","descrittivo","INFO",NA,NA
+"CP","CP-3","V0","FAIL vs PASS: n celle","6457 vs 4884 (p 0.26)","descrittivo","INFO",NA,NA
+"CP","CP-3","V0","FAIL vs PASS: buchi della regione","9 vs 34 (p 0.16)","descrittivo","INFO",NA,NA
+"CP","CP-3","V0","FAIL vs PASS: vertici della regione","934 vs 5475 (p 0.15)","descrittivo","INFO",NA,NA
+"CP","CP-3","V0","FAIL vs PASS: V3 vertici condivisi diversi","3 vs 2 (p 0.0024)","descrittivo","INFO",NA,NA
+"CP","CP-3","V0","FAIL vs PASS: V3 giunzioni a T","627 vs 690 (p 0.37)","descrittivo","INFO",NA,NA
+"B","B-1","V1","nulli con celle (a >= 1 µm²) oltre 1e-6 relativo; max","32 (39 celle); 1.68e-06","0","FAIL","0","FALSE"
+"B","B-1","V2","nulli con celle (a >= 1 µm²) oltre 1e-6 relativo; max","32 (39 celle); 1.68e-06","0","FAIL","0","FALSE"
+"B","B-1","V3","nulli con celle (a >= 1 µm²) oltre 1e-6 relativo; max","0 (0 celle); 8.43e-09","0","PASS","0","TRUE"
+"B","B-2","V1","max variazione relativa: mediana area, CV, mediana eq_r, frazione interne","2.01e-07, 4.74e-09, 1.01e-07, 0.00e+00","<= 1e-6","PASS","<= 1e-6","TRUE"
+"B","B-2","V2","max variazione relativa: mediana area, CV, mediana eq_r, frazione interne","2.01e-07, 4.74e-09, 1.01e-07, 0.00e+00","<= 1e-6","PASS","<= 1e-6","TRUE"
+"B","B-2","V3","max variazione relativa: mediana area, CV, mediana eq_r, frazione interne","0.00e+00, 3.59e-12, 0.00e+00, 0.00e+00","<= 1e-6","PASS","<= 1e-6","TRUE"
+"B","B-2 controllo","V0","verdetti S1.3 riprodotti (tutte le righe)","TRUE (195 righe)","identici","PASS","identici","TRUE"
+"B","B-2","V1","previsioni B invariate (esito); righe B con valore identico","62/62; 98/98","62/62","PASS","62/62","TRUE"
+"B","B-2","V2","previsioni B invariate (esito); righe B con valore identico","62/62; 98/98","62/62","PASS","62/62","TRUE"
+"B","B-2","V3","previsioni B invariate (esito); righe B con valore identico","62/62; 98/98","62/62","PASS","62/62","TRUE"
+"DEC","regola","V2","variante scelta (ordine V1, V3, V2; nessuna → P0)","V2","-","INFO",NA,NA

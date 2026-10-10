@@ -1,0 +1,5 @@
+"archetype","roi_id","model","rep","variant","cell","reason","valid_v0","area_v0","n_vert_v0","n_vert_v","clipped","min_edge_v0"
+"A1","r4","RSArule",13,"V1",1655,"Ring Self-intersection[0.470645 185.113291]",TRUE,222.107854070865,26,26,TRUE,0.0271498501065834
+"A1","r4","RSArule",13,"V3",1655,"Ring Self-intersection[0.470644711226197 185.113290915519]",TRUE,222.107854070865,26,26,TRUE,0.0271498501065834
+"A5","r1","CSR",12,"V1",6,"Ring Self-intersection[215.177821 999.911865]",TRUE,1468.20052275422,148,148,TRUE,0.25493768651836
+"A5","r1","CSR",12,"V3",6,"Ring Self-intersection[215.177821176371 999.91186503416]",TRUE,1468.20052275422,148,148,TRUE,0.25493768651836

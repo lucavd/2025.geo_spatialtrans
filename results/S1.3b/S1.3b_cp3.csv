@@ -1,0 +1,6 @@
+"feature","median_fail","median_pass","p_wilcox"
+"n celle",6457,4884,0.260226841778464
+"buchi della regione",9,34,0.159064011382184
+"vertici della regione",934,5475,0.146443866931611
+"V3 vertici condivisi diversi",3,2,0.00235261663152995
+"V3 giunzioni a T",627,690,0.365642653321729

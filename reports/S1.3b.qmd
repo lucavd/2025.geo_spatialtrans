@@ -1,0 +1,168 @@
+---
+title: "S1.3b — BL-069: operazioni di sovrapposizione GEOS sui territori"
+subtitle: "geo_spatialtrans — report di step"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+---
+
+```{r setup}
+#| include: false
+.libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({ library(knitr) })
+R <- "../results/S1.3b"; if (!dir.exists(R)) R <- "results/S1.3b"
+V <- read.csv(file.path(R, "S1.3b_verdicts.csv")); tab <- read.csv(file.path(R, "S1.3b_null_table.csv"))
+dec <- read.csv(file.path(R, "S1.3b_decision.csv")); p1 <- read.csv(file.path(R, "S1.3b_posthoc_P1_pairs_v0.csv"))
+p2 <- read.csv(file.path(R, "S1.3b_posthoc_P2_invalid.csv")); p3 <- read.csv(file.path(R, "S1.3b_posthoc_P3_cp2_exceptions.csv"))
+cp3 <- read.csv(file.path(R, "S1.3b_cp3.csv")); grid <- read.csv(file.path(R, "S1.3b_grid.csv"))
+show <- function(sec, ids = NULL) { d <- V[V$section %in% sec & (is.null(ids) | V$id %in% ids), c("id", "variant", "metric", "value", "threshold", "outcome")]
+  kable(d, row.names = FALSE, col.names = c("check", "variante", "misura", "valore", "soglia", "esito")) }
+t0 <- tab[tab$variant == "V0", ]
+```
+
+**Obiettivo unico** (perimetro scelto da Luca il 2026-10-10: «S1.3b = solo BL-069»): stabilire la causa degli errori silenziosi di `st_union` / `st_intersection` sui territori di `tessellate_voronoi()` e scegliere, con una regola fissata prima del run, come rendere affidabili queste operazioni.
+
+**Sintesi.**
+
+1. **Causa.** Gli errori nascono da confini condivisi in cui un vertice differisce di 1–4 ulp (4e-16…2e-15 µm), sempre fra due celle ritagliate dalla regione, con il vertice sul bordo della regione. Annodare quel solo vertice elimina l'errore; spostare della stessa quantità un vertice non condiviso no (20/20).
+2. **Frequenza.** Sui 1 800 nulli di S1.3 (`r format(sum(t0$n), big.mark = " ")` celle) il grezzo sbaglia l'unione in 15 nulli e l'intersezione di coppia in 10 coppie di 10 nulli. Solo 1 di questi 10 nulli era visto dal check d'unione di S1.3. Ogni intersezione sbagliata restituisce un poligono di 66–845 µm².
+3. **Step 2.** L'intersezione cella × griglia di 2 µm non ha mostrato errori nel grezzo su 30 nulli, compresi i 15 falliti. È un'assenza osservata su 30 nulli, non una prova di assenza.
+4. **Decisione (regola pre-registrata).** È eleggibile solo **V2**, lo snap-rounding nativo di GEOS a griglia 1e-6 µm (pacchetto `geos`). V1 (arrotondamento sf) e V3 (annodamento nostro) sono esclusi da C-4: 2 celle diventano invalide quando due vertici dello stesso anello coincidono.
+5. **Biologia.** I 62 verdetti B di S1.3 non cambiano con nessuna variante.
+
+# 1. Pre-registrazione
+
+Testo integrale: `results/S1.3b/S1.3b_preregistration.md`, commit `d96fea1`, approvato da Luca il 2026-10-10 («vai») prima di qualsiasi codice. Script del run committati prima del run (`11a8695`). Note di sviluppo e definizioni operative dichiarate prima del run: `results/S1.3b/S1.3b_dev_notes.md`.
+
+| Variante | Cosa fa |
+|---|---|
+| V0 | grezzo, come S1.3 (sf 1.1.3 + GEOS 3.12.1) |
+| V0g | grezzo con il pacchetto `geos` (GEOS 3.11.1): controllo di versione |
+| V1 | arrotondamento di sf a g = 1e-6 µm (`st_set_precision`, materializzato), su territori e regione |
+| V2 | snap-rounding GEOS a g = 1e-6 µm (`geos_set_precision`, `*_prec`) |
+| V3 | annodamento esplicito: vertici entro 1e-7 µm fusi, giunzioni a T inserite |
+
+Tolleranza derivata: τ = g·(P_regione + ΣP_territori), con τ_i = g·P_i per cella. **H1**: gli errori nascono da confini condivisi non annodati.
+
+**Regola di decisione.** Una variante è eleggibile se passa C-1…C-6, C-unit e CP-2, e C-4 senza geometrie invalide. Fra le eleggibili si preferisce quella con meno dipendenze nuove (V1, poi V3, poi V2). Se nessuna è eleggibile, la decisione è P0: niente overlay, solo predicati.
+
+**Deviazioni e definizioni dichiarate**:
+
+| quando | voce |
+|---|---|
+| sviluppo, prima del run | B-1 a 1e-6 relativo è incompatibile con τ_i per celle piccole: **errore di pre-registrazione**, soglia mantenuta |
+| sviluppo, prima del run | C-2 per V0/V0g con τ_ij = 1e-6·(P_i+P_j); con g = 0 ogni residuo di 1e-13 µm² conterebbe |
+| sviluppo, prima del run | CP-2, FAIL di V0 = soglia di S1.3 (1e-9·A) + √2·δ·ΣP |
+| dopo l'interruzione di 8/60 job CP-2, prima di vedere quale variante | **post hoc**: un'eccezione GEOS conta come FAIL della variante |
+| dopo il run | correzioni dell'analisi: ordine di preferenza V1→V3→V2 ed etichette (la scelta non cambia); differenza simmetrica vuota = area 0 |
+| dopo il run | analisi post hoc P1–P3 (sezione 5) |
+
+Difetti del codice trovati e corretti in sviluppo, prima del run: i nomi di lista in `s3b_rebuild()`, il predicato non preparato in C-6, e gli indici double in `factor()` (l'indice 100000 diventava "1e+05" e falsava C-6 in tutte le varianti).
+
+# 2. Check C — correttezza
+
+```{r}
+show("C")
+```
+
+**Lettura.**
+
+- **C-0** riproduce esattamente S1.3: 1 800/1 800 nulli e gli stessi 15 falliti.
+- **C-2 V0 smentisce la previsione.** Le coppie sbagliate sono 10, non solo 766/1987 (sezione 5, P1).
+- **C-4.** Sotto V1 e V3 due celle diventano invalide (P2), quindi le due varianti non sono eleggibili. V2 non ne ha.
+- **C-6.** Nessuna violazione, nemmeno nel grezzo.
+- **Mutanti.** I mutanti mostrano che C-1, C-2 e C-5 hanno potenza.
+
+![Errori di sovrapposizione per variante e archetipo](../results/S1.3b/figures/S1.3b_fig1_errori_per_variante.png)
+
+![C-5: spostamento d'area per cella / tolleranza](../results/S1.3b/figures/S1.3b_fig3_c5.png)
+
+```{r}
+g6 <- aggregate(cbind(cell_viol, bin_viol, n_pieces) ~ variant + set, grid, sum)
+g6m <- aggregate(cbind(cell_max, bin_max) ~ variant + set, grid, max)
+kable(merge(g6, g6m), caption = "C-6: griglia 2 µm su 15 nulli falliti + 15 che passano")
+```
+
+# 3. Check B — invarianza biologica (A1–A6)
+
+```{r}
+show("B")
+```
+
+Le aree delle varianti, ripassate nello script d'analisi di S1.3 non modificato, lasciano invariate tutte le 62 previsioni B e tutte le 98 righe B. Il braccio V0 riproduce le 195 righe di S1.3. B-1 fallisce per V1 e V2 (39 celle in 32 nulli, massimo 1.68e-6) per l'errore di pre-registrazione dichiarato prima del run: la tolleranza per cella τ_i ammette fino a ~4e-6 relativo su celle di 1 µm². **Limite**: la forma (ecc_T, n lati) in S1.3 viene dai tile non ritagliati, che le varianti non toccano.
+
+# 4. Controprova
+
+```{r}
+show("CP")
+```
+
+![La coppia 766/1987 (A3 r3 CSR 3)](../results/S1.3b/figures/S1.3b_fig2_coppia_766_1987.png)
+
+![CP-2](../results/S1.3b/figures/S1.3b_fig4_cp2.png)
+
+**Lettura.**
+
+- **D-0.** Sulle due celle 766 e 1987 i vertici condivisi sono due, uno identico e uno diverso di 8.9e-16 µm. Quest'ultimo sta sul bordo della regione, e non ci sono giunzioni a T.
+- **CP-1a / CP-1b.** Annodare quel solo vertice porta l'intersezione da 340.43 µm² a 0. Il placebo, cioè lo stesso spostamento su un vertice non condiviso, lascia l'errore intatto in 20/20 casi. Su questo caso la causa è isolata.
+- **CP-1c.** Annodato con V3, A5 r5 rep 15 passa da −1 358.6 µm² a un errore relativo di 1.7e-15.
+- **CP-3.** I nulli falliti hanno più vertici condivisi diversi (mediana 3 vs 2, p = 0.0024), non più giunzioni a T (p = 0.37).
+- **CP-2: «PASS» formale, non informativo.** Tutti i FAIL di V0 sono eccezioni GEOS su input resi invalidi dalla perturbazione (P3), e gli errori silenziosi sono 0. Con un basale atteso di 0.5 errori su 60 nulli, la prova non aveva potenza per H1. V1–V3 non hanno avuto né FAIL né eccezioni.
+
+# 5. Analisi post hoc (dichiarate dopo il run)
+
+**P1 — le 10 coppie di V0.**
+
+```{r}
+kable(p1[, c("archetype", "roi_id", "model", "rep", "i", "j", "area_v0", "area_i", "area_j", "union_fail_v0", "in_both", "in_i_only", "d0_diff", "d0_tj", "d0_dmax", "area_v2")], digits = 3, row.names = FALSE)
+```
+
+In 10/10 coppie la firma è la stessa:
+
+- 0/2 000 punti dell'intersezione dichiarata stanno in entrambe le celle;
+- c'è un solo vertice condiviso diverso, di 1–4 ulp;
+- non ci sono giunzioni a T;
+- entrambe le celle sono ritagliate;
+- l'area V2 è 0.
+
+Il check d'unione di S1.3 ne vedeva 1 su 10. **`st_relate` dà interni sovrapposti (`212111212`) in tutte e 10.** Il controllo di questo valore con aritmetica esatta è nella revisione avversariale.
+
+**P2 — geometrie invalide di V1 e V3.**
+
+```{r}
+kable(p2[, c("archetype", "roi_id", "model", "rep", "variant", "cell", "reason", "valid_v0", "area_v0", "min_edge_v0")], row.names = FALSE)
+```
+
+**P3 — CP-2: eccezioni di V0 e input invalidi.**
+
+```{r}
+kable(p3, row.names = FALSE)
+```
+
+# 6. Decisione
+
+```{r}
+kable(dec, row.names = FALSE)
+```
+
+Per la regola pre-registrata la variante è **V2**: snap-rounding GEOS a 1e-6 µm, eseguito con `geos::geos_set_precision()` e le operazioni `*_prec`. Il costo è una dipendenza nuova che porta con sé una seconda versione di GEOS (3.11.1, accanto alla 3.12.1 di sf). V0g mostra che GEOS 3.11.1 in virgola mobile sbaglia esattamente come la 3.12.1 (15 unioni, 10 coppie): la correzione viene dal modello di precisione, non dalla versione. Dove applicarla, nel contratto d'uscita di `tessellate_voronoi()` o al momento dell'overlay in Step 2 / `04b5`, è una decisione di Luca (vedi Verdetto).
+
+# Verdetto
+VERDETTO_PLACEHOLDER
+
+# Revisione avversariale
+REVIEW_PLACEHOLDER
+
+# Riproducibilità
+
+```bash
+cd ~/2025.geo_spatialtrans && git checkout <sha di chiusura>
+export R_LIBS_SITE=/nonexistent R_LIBS_USER=/nonexistent
+Rscript --vanilla R/testing/test_S1.3b.R
+for st in md5 null grid cp1 cp2 mutants; do Rscript --vanilla tools/S1.3b_run.R $st; done   # ~45 min su 40 core
+Rscript --vanilla tools/S1.3b_b2.R && Rscript --vanilla tools/S1.3b_analysis.R && Rscript --vanilla tools/S1.3b_posthoc.R
+Rscript --vanilla tools/S1.3b_figures.R && quarto render reports/S1.3b.qmd
+```
