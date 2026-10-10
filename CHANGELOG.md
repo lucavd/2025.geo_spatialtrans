@@ -7,6 +7,7 @@ Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in 
 ### Decisioni (ROADMAP §6)
 - D-S1.3.1 Voronoi per regione; D-S1.3.2 frammenti orfani al vicino con il confine condiviso piu' lungo; D-S1.3.3 Chaikin contenuto, `n_iter = max(1, round(3·cs))` (Luca, «approvo»). Controprova della roadmap per A6 sostituita (BL-064).
 - **Motore GEOS** (`sf::st_voronoi`, `point_order = TRUE`) invece di deldir (decisione 6 del design): confronto pre-registrato (addendum C-10), regola senza eleggibili per cancelli non discriminanti, decisione di Luca sull'evidenza discriminante. Design v1.3.
+- Dopo la chiusura: registrata **BL-077** (spazio extracellulare intra-regione assente per costruzione, decisione 1 del design); ordine di S1.4: BL-069 → BL-077 → `derive_cell_geometry()`.
 
 ### Codice
 - `R/04b3_tessellate_voronoi.R` (nuovo): `tessellate_voronoi(centroids, regions, corner_smoothing = 0, keep_tiles = FALSE, verbose = TRUE)` → `cell_territories`, `territory_df`, `region_check`, `tiles`, `info` (frammenti, agganci, multiparte, riparazioni). Un solo motore (`.tv_engine()`).
