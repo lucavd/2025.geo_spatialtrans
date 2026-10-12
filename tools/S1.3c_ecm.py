@@ -23,6 +23,7 @@ T_MED = {"A1": 61.3, "A2": 94.0, "A3": 167.7, "A4": 32.1, "A5": 819.1, "A6": 742
 PRIMARY = {"A1": ("cellpose_rgb", "cellpose_rgb"), "A2": ("cellpose_rgb", "cellpose_rgb"),
            "A3": ("cellpose_rgb", "cellpose_rgb"), "A4": ("spaceranger", "stardist_he"),
            "A5": ("cellpose_rgb", "cellpose_rgb"), "A6": ("spaceranger", "stardist_he")}   # (territori, maschera)
+VARIANTS = ("primary", "sens_seg", "sens_allgenes")   # primaria: geni comuni + segmentatore primario
 SENS = {"A1": "stardist_he", "A2": "stardist_he", "A3": "stardist_he", "A4": "cellpose_rgb",
         "A5": "stardist_he", "A6": "cellpose_rgb"}
 E_THR, BA_A, BA_B, LARGE_FRAC = 0.05, 0.75, 0.65, 0.50
@@ -100,18 +101,25 @@ def rois_table():
 def sq2(ds): return DATA / ds / "binned_outputs_x/binned_outputs/square_002um"
 
 def load_dataset_bins(ds, log):
-    """Tabella dei bin del dataset: barcode, in_tissue, array_row/col, pixel, UMI grezzi (join per barcode)."""
+    """Tabella dei bin del dataset: barcode, in_tissue, array_row/col, pixel, UMI grezzi (join per barcode).
+    umi_all = tutte le feature Gene Expression della grezza (pre-registrato); umi_com = solo i geni presenti nella
+    matrice filtrata (primaria per decisione di Luca, 2026-10-12, dopo C-3 e prima di ogni risultato su phi/E)."""
     pos = pd.read_parquet(sq2(ds) / "spatial/tissue_positions.parquet")
+    with h5py.File(sq2(ds) / "filtered_feature_bc_matrix.h5") as f:
+        fid = set(f["matrix"]["features"]["id"][:].astype(str))
     with h5py.File(sq2(ds) / "raw_feature_bc_matrix.h5") as f:
-        m = f["matrix"]; ft = m["features"]["feature_type"][:].astype(str)
-        keep = ft == "Gene Expression"
+        m = f["matrix"]; ft = m["features"]["feature_type"][:].astype(str); rid = m["features"]["id"][:].astype(str)
+        keep = ft == "Gene Expression"; com = keep & np.isin(rid, list(fid))
         log[f"{ds}_feature_types"] = {t: int((ft == t).sum()) for t in np.unique(ft)}
-        tot = umi_totals(m["indptr"][:], m["data"][:], m["indices"][:] if not keep.all() else None, keep)
+        log[f"{ds}_n_genes_all"] = int(keep.sum()); log[f"{ds}_n_genes_com"] = int(com.sum())
+        ind = m["indices"][:]; dat = m["data"][:]; ip = m["indptr"][:]
+        tot = umi_totals(ip, dat, ind if not keep.all() else None, keep)
+        totc = umi_totals(ip, dat, ind, com)
         bc = m["barcodes"][:].astype(str)
-    u = pd.DataFrame({"barcode": bc, "umi": tot})
+    u = pd.DataFrame({"barcode": bc, "umi_all": tot, "umi_com": totc})
     b = pos.merge(u, on="barcode", how="left", validate="one_to_one")
-    log[f"{ds}_n_bins"] = int(len(b)); log[f"{ds}_n_umi_missing"] = int(b.umi.isna().sum())
-    b["umi"] = b.umi.fillna(0).astype(np.int64)
+    log[f"{ds}_n_bins"] = int(len(b)); log[f"{ds}_n_umi_missing"] = int(b.umi_all.isna().sum())
+    for c in ("umi_all", "umi_com"): b[c] = b[c].fillna(0).astype(np.int64)
     return b
 
 def check_filtered(ds, b):
@@ -121,12 +129,15 @@ def check_filtered(ds, b):
         tot = umi_totals(m["indptr"][:], m["data"][:], m["indices"][:] if not keep.all() else None, keep)
         bc = m["barcodes"][:].astype(str)
     fdf = pd.DataFrame({"barcode": bc, "umi_f": tot})
-    j = b[b.in_tissue == 1][["barcode", "umi"]].merge(fdf, on="barcode", how="outer", indicator=True)
+    j = b[b.in_tissue == 1][["barcode", "umi_all", "umi_com"]].merge(fdf, on="barcode", how="outer", indicator=True)
+    both = bool((j._merge == "both").all())
     return {"n_in_tissue": int((b.in_tissue == 1).sum()), "n_filtered": int(len(fdf)),
             "n_only_one_side": int((j._merge != "both").sum()),
-            "n_diff": int((j.umi != j.umi_f).sum()), "identical": bool((j._merge == "both").all() and (j.umi == j.umi_f).all())}
+            "prereg_all_genes": {"n_diff": int((j.umi_all != j.umi_f).sum()), "identical": both and bool((j.umi_all == j.umi_f).all())},
+            "common_genes": {"n_diff": int((j.umi_com != j.umi_f).sum()), "identical": both and bool((j.umi_com == j.umi_f).all())},
+            "frac_umi_excluded_genes_in_tissue": float(1 - j.umi_com.sum() / j.umi_all.sum())}
 
-def background_thresholds(b):
+def background_thresholds(b, col="umi"):
     """Soglia di vuoto per k: q95 dei totali delle finestre di sfondo (tutti bin in_tissue=0 a >= 50 um dal tessuto)."""
     R, C = b.array_row.max() + 1, b.array_col.max() + 1
     T = np.zeros((R, C), bool); T[b.array_row, b.array_col] = b.in_tissue.values == 1
@@ -136,7 +147,7 @@ def background_thresholds(b):
     out = {}
     for k in KS:
         wr, wc = window_ids(b.array_row.values, b.array_col.values, k)
-        g = window_table(wr, wc, b.umi.values, okb, k)
+        g = window_table(wr, wc, b[col].values, okb, k)
         g = g[g.complete]
         out[k] = {"thr": float(np.percentile(g.total, BG_Q)) if len(g) else float("nan"), "n_windows": int(len(g)),
                   "mean": float(g.total.mean()) if len(g) else float("nan"), "frac_zero": float((g.total == 0).mean()) if len(g) else float("nan")}
@@ -219,16 +230,17 @@ def load_roi_context(r, b, mask_method):
     return s, valid4, px4, np.asarray(vb), nm, dmap, dnuc
 
 def roi_stage_one(args):
-    r, ds_npz, thr_all, variant = args
+    r, ds_npz, bg, variant = args
     A, roi = r.archetype, r.roi_id
-    terr_m, mask_m = PRIMARY[A] if variant == "primary" else (SENS[A], SENS[A])
+    terr_m, mask_m = (SENS[A], SENS[A]) if variant == "sens_seg" else PRIMARY[A]
+    gs = "all" if variant == "sens_allgenes" else "com"; thr_all = bg[gs]
     f_out = OUT / "roi" / f"{A}_{roi}_{variant}.json"
     if f_out.exists(): return str(f_out)
-    b = pd.read_parquet(ds_npz)
+    b = pd.read_parquet(ds_npz); b["umi"] = b["umi_" + gs]
     s, valid4, px4, vb, nm, dmap, dnuc = load_roi_context(r, b, mask_m)
     gx, gy, gsrc = generators(A, roi, terr_m, valid4, px4)
     terr = cKDTree(np.c_[gx, gy]).query(np.c_[s.x.values, s.y.values])[1]
-    res = {"archetype": A, "roi_id": roi, "variant": variant, "territories": terr_m, "mask": mask_m, "gen_source": gsrc,
+    res = {"archetype": A, "roi_id": roi, "variant": variant, "geneset": gs, "territories": terr_m, "mask": mask_m, "gen_source": gsrc,
            "n_gen": int(len(gx)), "n_bins_roi": int(len(s)), "n_bins_valid": int(vb.sum()),
            "n_bins_expected_C1": float(r.cov_bins * (r.side_um / 2.0) ** 2)}
     # C-4 (una volta, sui bin validi)
@@ -306,12 +318,12 @@ def roi_extras(r, s, vb, nm, dmap, dnuc, terr, thr_all, A):
 
 # ------------------------------------------------------------------------------------- controlli sintetici C-5
 def ctrl_one(args):
-    r, ds_npz, thr_all = args
+    r, ds_npz, bg = args
     A, roi = r.archetype, r.roi_id
     f_out = OUT / "ctrl" / f"{A}_{roi}_C5.json"
     if f_out.exists(): return str(f_out)
-    terr_m, mask_m = PRIMARY[A]; k = 3; thr = thr_all["3"]["thr"]
-    b = pd.read_parquet(ds_npz)
+    terr_m, mask_m = PRIMARY[A]; k = 3; thr = bg["com"]["3"]["thr"]
+    b = pd.read_parquet(ds_npz); b["umi"] = b["umi_com"]
     s, valid4, px4, vb, nm, dmap, dnuc = load_roi_context(r, b, mask_m)
     gx, gy, _ = generators(A, roi, terr_m, valid4, px4)
     terr = cKDTree(np.c_[gx, gy]).query(np.c_[s.x.values, s.y.values])[1]
@@ -353,17 +365,21 @@ def stage_umi():
         f_thr = OUT / "bins" / f"{ds}_bg.json"
         if f_thr.exists() and all((OUT / "bins" / f"{ds}_roi_bins.parquet").exists() for _ in [0]): continue
         b = load_dataset_bins(ds, log)
-        c3 = check_filtered(ds, b); bg = background_thresholds(b)
+        c3 = check_filtered(ds, b)
+        bg = {gs: background_thresholds(b, col) for gs, col in (("com", "umi_com"), ("all", "umi_all"))}
         # bin di tutti i ROI del dataset (con margine nullo) -> un parquet per dataset
         keep = np.zeros(len(b), bool)
         for _, r in g.iterrows():
             keep |= ((b.pxl_col_in_fullres >= r.c0) & (b.pxl_col_in_fullres < r.c0 + r.side_px) &
                      (b.pxl_row_in_fullres >= r.r0) & (b.pxl_row_in_fullres < r.r0 + r.side_px)).values
         b[keep].to_parquet(OUT / "bins" / f"{ds}_roi_bins.parquet", index=False)
-        json.dump({"C3": c3, "bg": {str(k): v for k, v in bg.items()}, "log": {k: v for k, v in log.items() if k.startswith(ds)},
-                   "umi_total_dataset": int(b.umi.sum()), "umi_in_tissue": int(b.umi[b.in_tissue == 1].sum())},
+        json.dump({"C3": c3, "bg": {gs: {str(k): v for k, v in d.items()} for gs, d in bg.items()},
+                   "log": {k: v for k, v in log.items() if k.startswith(ds)},
+                   "umi_total_dataset": {c: int(b[c].sum()) for c in ("umi_all", "umi_com")},
+                   "umi_in_tissue": {c: int(b[c][b.in_tissue == 1].sum()) for c in ("umi_all", "umi_com")}},
                   open(f_thr, "w"), indent=1, default=float)
-        print(ds, "C3", c3["identical"], "bg", {k: (v["thr"], v["n_windows"]) for k, v in bg.items()}, flush=True)
+        print(ds, "C3", c3["prereg_all_genes"]["identical"], c3["common_genes"]["identical"],
+              "bg", {gs: {k: (v["thr"], v["n_windows"]) for k, v in d.items()} for gs, d in bg.items()}, flush=True)
 
 def stage_roi(ncores=15):
     from multiprocessing import Pool
@@ -371,7 +387,7 @@ def stage_roi(ncores=15):
     rois = rois_table(); tasks = []
     for i, r in rois.iterrows():
         bg = json.load(open(OUT / "bins" / f"{r.dataset}_bg.json"))["bg"]
-        for v in ("primary", "sens"):
+        for v in VARIANTS:
             tasks.append((r, OUT / "bins" / f"{r.dataset}_roi_bins.parquet", bg, v))
     with Pool(ncores) as p:
         for f in p.imap_unordered(roi_stage_one, tasks): print("ok", f, flush=True)
