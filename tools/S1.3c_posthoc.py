@@ -17,8 +17,8 @@ def ctx(r):
 
 def lumen_bins(r, s):
     z = np.load(E.R2M / f"{r.archetype}_{r.roi_id}_masks.npz"); t4, b4 = z["tissue_ds4"], z["bubble_ds4"]
-    px4 = r.side_um / t4.shape[1]
-    yy = np.clip((s.y / px4).astype(int), 0, t4.shape[0] - 1); xx = np.clip((s.x / px4).astype(int), 0, t4.shape[1] - 1)
+    px4 = 4.0 * r.um_per_px                     # RC-2
+    yy = E.ds4_index(s.ri.values, t4.shape[0]); xx = E.ds4_index(s.ci.values, t4.shape[1])
     dt = ndimage.distance_transform_edt(~t4) * px4
     lum = (~t4[yy, xx]) & (~b4[yy, xx]) & (s.in_tissue.values == 1); tis = t4[yy, xx] & (~b4[yy, xx])
     return lum, tis, dt[yy, xx], t4, px4
@@ -82,7 +82,7 @@ def ph3_one(r):
         rng = np.random.default_rng(20261012); inside = np.zeros(len(s), bool)
         while (inside & vb).sum() < f * vb.sum():
             cx, cy = rng.uniform(0, r.side_um, 2)
-            if not valid4[min(int(cy / px4), valid4.shape[0] - 1), min(int(cx / px4), valid4.shape[1] - 1)]: continue
+            if not valid4[min(int(cy / r.um_per_px) // 4, valid4.shape[0] - 1), min(int(cx / r.um_per_px) // 4, valid4.shape[1] - 1)]: continue
             inside[tree.query_ball_point([cx, cy], R)] = True
         zB = vb & inside
         for typ, z in (("A", zA), ("B", zB)):

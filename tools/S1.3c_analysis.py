@@ -14,11 +14,14 @@ def load_roi():
     rows, extra = [], []
     for f in sorted(glob.glob(str(OUT / "roi" / "*.json"))):
         d = json.load(open(f))
+        c2 = d.get("by_k_c2shift", {})
         for k, v in d["by_k"].items():
-            rows.append({"archetype": d["archetype"], "roi_id": d["roi_id"], "variant": d["variant"], "geneset": d["geneset"],
+            vs = c2.get(k, v)     # M-02: con C-2 FAIL le grandezze basate su d_nuc usano lo spostamento ottimo
+            rows.append({"C2_shift_applied": bool(d.get("C2_shift_applied", False)), "BA_c2": vs["BA"], "r_star_c2": vs["r_star"],
+                         "R_profile_c2": vs["R_profile"], "R_null_c2": vs["R_null"], "verdict_roi_c2": vs["verdict_roi"],"archetype": d["archetype"], "roi_id": d["roi_id"], "variant": d["variant"], "geneset": d["geneset"],
                          "territories": d["territories"], "mask": d["mask"], "n_gen": d["n_gen"], **{kk: v[kk] for kk in
                          ("k", "s_um", "thr", "n_tissue_windows", "n_empty", "phi_obs", "phi_null", "phi_null_min", "phi_null_max",
-                          "E", "r_star", "BA", "empty_area", "large_area", "n_comp", "large_frac", "R_profile", "verdict_roi")}})
+                          "E", "r_star", "BA", "empty_area", "large_area", "n_comp", "large_frac", "R_profile", "R_null", "verdict_roi")}})
         if d["variant"] == "primary": extra.append(d)
     return pd.DataFrame(rows), extra
 
@@ -38,14 +41,15 @@ def ctrl_status():
 def archetype_table(R, c5):
     rows = []
     for (v, k, A), g in R.groupby(["variant", "k", "archetype"]):
-        Em, BAm = float(g.E.median()), float(g.BA.median())
+        bac = g.BA_c2 if v == "primary" else g.BA          # pre-registrato: spostamento ottimo dove C-2 FAIL (solo primaria)
+        Em, BAm = float(g.E.median()), float(bac.median())   # mediana sui ROI con BA definita (M-14: dichiarato)
         lf = float(g.large_area.sum() / g.empty_area.sum()) if g.empty_area.sum() > 0 else float("nan")
         raw = E.verdict(Em, BAm, lf)
         c = c5.get(A, {}); shape_ok = bool(c.get("C5b_pass", False) and c.get("C5c_pass", False))
         final = raw if (raw == "nessuno" or shape_ok) else "non determinabile (solo E)"
         rows.append({"variant": v, "k": k, "s_um": 2 * k, "archetype": A, "n_roi": len(g), "E_median": Em, "E_min": g.E.min(), "E_max": g.E.max(),
-                     "phi_obs_median": g.phi_obs.median(), "phi_null_median": g.phi_null.median(), "BA_median": BAm,
-                     "large_frac_pooled": lf, "r_star_median": g.r_star.median(), "R_profile_median": g.R_profile.median(),
+                     "phi_obs_median": g.phi_obs.median(), "phi_null_median": g.phi_null.median(), "BA_median": BAm, "n_BA_defined": int(bac.notna().sum()), "BA_median_noshift": float(g.BA.median()),
+                     "large_frac_pooled": lf, "r_star_median": g.r_star.median(), "R_profile_median": float((g.R_profile_c2 if v == "primary" else g.R_profile).median()), "R_profile_median_noshift": float(g.R_profile.median()), "R_null_median": float((g.R_null_c2 if v == "primary" else g.R_null).median()),
                      "verdict_rule": raw, "C5_shape_valid": shape_ok, "verdict": final})
     return pd.DataFrame(rows)
 
@@ -79,8 +83,10 @@ def check_c(extra, c5):
 def predictions(AT):
     p = AT[(AT.variant == "primary") & (AT.k == 3)].set_index("archetype")
     e = p.E_median; v = p.verdict; vr = p.verdict_rule
+    tie = bool((e.drop("A4") <= e["A4"]).any())             # M-16: «la piu' bassa» con parita' = non valutabile
     rows = [
-        ("P1", "A4 E piu' bassa del pannello e E(A4) < 0.05", f"E(A4) {e['A4']:.4f}; min altri {e.drop('A4').min():.4f}", (e["A4"] <= e.min()) and e["A4"] < 0.05),
+        ("P1", "A4 E piu' bassa del pannello e E(A4) < 0.05", f"E(A4) {e['A4']:.4f}; min altri {e.drop('A4').min():.4f}" + (" (parita')" if tie else ""),
+         None if tie else bool((e["A4"] < e.drop("A4").min()) and e["A4"] < 0.05)),
         ("P2", "E(A3) >= 0.05 con verdetto B", f"E(A3) {e['A3']:.4f}; verdetto {v['A3']} (regola: {vr['A3']})", (e["A3"] >= 0.05) and v["A3"] == "B"),
         ("P3", "E(A1) <= E(A2) < E(A3)", f"{e['A1']:.4f} / {e['A2']:.4f} / {e['A3']:.4f}", (e["A1"] <= e["A2"]) and (e["A2"] < e["A3"])),
         ("P4", "A5: A piu' probabile di B", f"verdetto {v['A5']} (regola: {vr['A5']})", None if v["A5"] not in ("A", "B") else v["A5"] == "A"),
@@ -93,11 +99,14 @@ def controprove(extra, R, AT):
     P = R[R.variant == "primary"].set_index(["archetype", "roi_id", "k"])
     for d in extra:
         A, roi = d["archetype"], d["roi_id"]
+        key = "CP1_c2shift" if d.get("C2_shift_applied", False) else "CP1"     # M-02
         for k in ("3", "5"):
-            ba_r = P.loc[(A, roi, int(k)), "BA"]; ba_p = d["CP1"][k]["BA"]; Rp = d["CP1_R_profile"]
-            ok = (0.9 <= Rp <= 1.1) and (ba_p < ba_r)
-            rows.append({"cp": "CP-1", "archetype": A, "roi_id": roi, "k": int(k), "R_real": P.loc[(A, roi, int(k)), "R_profile"], "R_placebo": Rp,
-                         "BA_real": ba_r, "BA_placebo": ba_p, "shift_um": d["CP1_shift_um"], "frac_changed": d["CP1_frac_changed"], "pass": ok})
+            ba_r = P.loc[(A, roi, int(k)), "BA_c2"]; ba_p = d[key][k]["BA"]; Rp = d[f"{key}_R_profile"]
+            ok = cp1_pass(Rp, ba_p, ba_r)                                      # M-01: booleano Python
+            rows.append({"cp": "CP-1", "archetype": A, "roi_id": roi, "k": int(k), "c2_shift": key != "CP1",
+                         "R_real": P.loc[(A, roi, int(k)), "R_profile_c2"], "R_placebo": Rp,
+                         "BA_real": ba_r, "BA_placebo": ba_p, "shift_um": d[f"{key}_shift_um"], "frac_changed": d[f"{key}_frac_changed"],
+                         "R_placebo_in_band": bool(0.9 <= Rp <= 1.1), "BA_defined": bool(np.isfinite(ba_r) and np.isfinite(ba_p)), "pass": ok})
             rows.append({"cp": "CP-2", "archetype": A, "roi_id": roi, "k": int(k), "n_windows": d["CP2"][k]["n_windows"], "n_empty": d["CP2"][k]["n_empty"]})
     cp = pd.DataFrame(rows)
     summ = []
@@ -106,8 +115,9 @@ def controprove(extra, R, AT):
             c1 = cp[(cp.cp == "CP-1") & (cp.archetype == A) & (cp.k == k)]
             c2 = cp[(cp.cp == "CP-2") & (cp.archetype == A) & (cp.k == k)]
             nw, ne = int(c2.n_windows.sum()), int(c2.n_empty.sum())
-            summ.append({"cp": "CP-1", "archetype": A, "k": k, "value": f"{int(c1['pass'].sum())}/{len(c1)} ROI; R placebo {c1.R_placebo.median():.3f} (reale {c1.R_real.median():.3f}); BA placebo {c1.BA_placebo.median():.3f} (reale {c1.BA_real.median():.3f})",
-                         "status": "PASS" if c1["pass"].all() else ("WARN" if c1["pass"].mean() >= 0.6 else "FAIL")})
+            npass = int(c1["pass"].astype(bool).sum()); nband = int(c1["R_placebo_in_band"].astype(bool).sum()); nba = int(c1["BA_defined"].astype(bool).sum())
+            summ.append({"cp": "CP-1", "archetype": A, "k": k, "value": f"{npass}/{len(c1)} ROI (R placebo in banda {nband}/{len(c1)}; BA definita {nba}/{len(c1)}); R placebo {c1.R_placebo.median():.3f} (reale {c1.R_real.median():.3f}); BA placebo {c1.BA_placebo.median():.3f} (reale {c1.BA_real.median():.3f})",
+                         "status": f"PASS {npass}/{len(c1)}" if npass == len(c1) else f"FAIL ({npass}/{len(c1)} ROI)"})
             summ.append({"cp": "CP-2", "archetype": A, "k": k, "value": f"{ne}/{nw} finestre vuote ({(ne/nw if nw else float('nan')):.3f})",
                          "status": "non valutabile" if nw < 20 else ("PASS" if ne / nw >= 0.90 else "FAIL")})
         a6 = AT[(AT.variant == "primary") & (AT.archetype == A)].set_index("k")
@@ -116,8 +126,31 @@ def controprove(extra, R, AT):
                      "status": "PASS" if same else "FAIL"})
     return cp, pd.DataFrame(summ)
 
+def cp1_pass(Rp, ba_p, ba_r):
+    """CP-1 per ROI (prereg. §8): R placebo in [0.9, 1.1] E BA placebo < BA reale; BA non definita -> False."""
+    return bool((0.9 <= Rp <= 1.1) and np.isfinite(ba_p) and np.isfinite(ba_r) and (ba_p < ba_r))
+
 def he_table(extra):
     return pd.DataFrame([{"archetype": d["archetype"], "roi_id": d["roi_id"], **{f"frac_d>{k}um": v for k, v in d["HE_frac_beyond"].items()}} for d in extra])
+
+if __name__ == "__main__" and len(sys_argv) > 1 and sys_argv[1] == "--test":
+    NP = NF = 0
+    def ck(n, c):
+        global NP, NF; print(("PASS " if c else "FAIL ") + n); NP += bool(c); NF += (not c)
+    ck("A1 cp1_pass tipo bool", type(cp1_pass(np.float64(1.0), np.float64(0.5), np.float64(0.6))) is bool)
+    s = pd.Series([cp1_pass(1.0, 0.5, 0.6), cp1_pass(1.0, 0.5, 0.6), cp1_pass(0.5, 0.5, 0.6)], dtype=object)
+    ck("A2 conteggio 2/3 su colonna object (M-01)", int(s.astype(bool).sum()) == 2)
+    ck("A3 BA NaN -> False", cp1_pass(1.0, float("nan"), 0.6) is False)
+    ck("A4 R fuori banda -> False", cp1_pass(0.8, 0.5, 0.6) is False)
+    T = pd.DataFrame({"variant": ["primary"] * 5, "k": [3] * 5, "archetype": ["A1"] * 5, "E": [0.06, 0.07, 0.08, 0.06, 0.07],
+                      "BA": [0.5] * 5, "R_null": [1.0] * 5, "R_null_c2": [1.0] * 5, "BA_c2": [0.8, 0.8, 0.8, np.nan, 0.8], "phi_obs": [0.1] * 5, "phi_null": [0.03] * 5,
+                      "large_area": [1.0] * 5, "empty_area": [2.0] * 5, "r_star": [3.0] * 5, "R_profile": [0.8] * 5, "R_profile_c2": [0.7] * 5})
+    a = archetype_table(T, {"A1": {"C5b_pass": True, "C5c_pass": True}})
+    ck("A5 regola usa BA con spostamento (A)", a.verdict.iloc[0] == "A"); ck("A6 n BA definite 4", a.n_BA_defined.iloc[0] == 4)
+    a2 = archetype_table(T, {"A1": {"C5b_pass": False, "C5c_pass": True}})
+    ck("A7 C-5 fallito -> non determinabile", a2.verdict.iloc[0].startswith("non determinabile"))
+    T2 = T.assign(E=0.01); ck("A8 E < 0.05 -> nessuno", archetype_table(T2, {}).verdict.iloc[0] == "nessuno")
+    print(f"\n{NP} PASS, {NF} FAIL"); sys.exit(1 if NF else 0)
 
 if __name__ == "__main__":
     R, extra = load_roi(); c5 = ctrl_status()

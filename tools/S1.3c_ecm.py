@@ -166,7 +166,7 @@ def generators(A, roi, method, valid, px4):
         g = pd.read_parquet(f, columns=["x", "y"]); return g.x.values, g.y.values, "R3"
     nuc = pd.read_parquet(ROOT / "results/R2/R2_nuclei_all.parquet", columns=["archetype", "roi_id", "method", "scale", "keep", "x_um", "y_um"])
     d = nuc[(nuc.archetype == A) & (nuc.roi_id == roi) & (nuc.method == method) & (nuc.scale == 1) & nuc.keep]
-    ci = np.floor(d.x_um.values / px4).astype(int); ri = np.floor(d.y_um.values / px4).astype(int)
+    ci = np.floor(d.x_um.values / px4).astype(int); ri = np.floor(d.y_um.values / px4).astype(int)   # px4 = 4 px nativi (RC-2)
     ok = (ci >= 0) & (ri >= 0) & (ci < valid.shape[1]) & (ri < valid.shape[0])
     ok[ok] = valid[ri[ok], ci[ok]]
     return d.x_um.values[ok], d.y_um.values[ok], "R2_keep_in_valid"
@@ -198,11 +198,12 @@ def analyse(s, valid_b, dnuc, terr, thr, k, A, rng_seed=1):
     empty = (gt.total.values <= thr)
     phi_obs = float(empty.mean())
     # nullo
-    idx = np.where(valid_b)[0]; phis = []
+    idx = np.where(valid_b)[0]; phis = []; rnull = []
     for p in range(1, NPERM + 1):
         u2 = umi.copy(); u2[idx] = permute_within(terr[idx], umi[idx], np.random.default_rng(p))
         g2 = window_table(wr, wc, u2, valid_b, k); g2 = g2[g2.complete]
         phis.append(float((g2.total.values <= thr).mean()))
+        rnull.append(profile_ratio(dnuc[valid_b], u2[valid_b].astype(float)))   # M-05 (revisione): R atteso dal simulatore attuale
     phi_null = float(np.mean(phis))
     # modello A
     dmin = pd.DataFrame({"wr": wr, "wc": wc, "d": dnuc}).groupby(["wr", "wc"], sort=True).d.min().reset_index()
@@ -214,7 +215,7 @@ def analyse(s, valid_b, dnuc, terr, thr, k, A, rng_seed=1):
             "phi_obs": phi_obs, "phi_null": phi_null, "phi_null_min": float(min(phis)), "phi_null_max": float(max(phis)),
             "E": E, "r_star": r_star, "BA": ba, "empty_area": a_empty, "large_area": a_large, "n_comp": ncomp,
             "large_frac": a_large / a_empty if a_empty > 0 else float("nan"),
-            "R_profile": profile_ratio(dnuc[valid_b], umi[valid_b].astype(float)),
+            "R_profile": profile_ratio(dnuc[valid_b], umi[valid_b].astype(float)), "R_null": float(np.nanmean(rnull)),
             "verdict_roi": verdict(E, ba, a_large / a_empty if a_empty > 0 else float("nan"))}, gt.assign(is_empty=empty, dmin=dmin)
 
 def load_roi_context(r, b, mask_method):
@@ -222,12 +223,22 @@ def load_roi_context(r, b, mask_method):
     s = roi_bins(b, r)
     valid4 = imread(ROOT / f"results/R2/tissue_masks/{A}_{roi}_valid_ds4.png") > 127
     if valid4.ndim == 3: valid4 = valid4[..., 0]
-    px4 = r.side_um / valid4.shape[1]
-    vb = valid4[np.clip((s.y / px4).astype(int), 0, valid4.shape[0] - 1), np.clip((s.x / px4).astype(int), 0, valid4.shape[1] - 1)]
+    px4 = 4.0 * r.um_per_px            # RC-2 (revisione): un pixel ds4 = 4 pixel nativi (R2: np.repeat x4), non side_um/913
+    vb = valid4[ds4_index(s.ri.values, valid4.shape[0]), ds4_index(s.ci.values, valid4.shape[1])]
     nm = nuc_mask(A, roi, mask_method)
     dmap = ndimage.distance_transform_edt(~nm) * r.um_per_px
     dnuc = dmap[s.ri.values, s.ci.values]
     return s, valid4, px4, np.asarray(vb), nm, dmap, dnuc
+
+def ds4_index(native_idx, n):
+    """Indice ds4 di un pixel nativo (convenzione floor, RC-6): floor(i / 4), con clip all'ultimo pixel ds4."""
+    return np.clip(np.asarray(native_idx) // 4, 0, n - 1)
+
+def sample_shift(dmap, ri, ci, dx_um, dy_um, upp):
+    """d_nuc campionata in (ri + dy, ci + dx) (spostamento ottimo di C-2), con clip ai bordi del ROI."""
+    r = np.clip(np.round(ri + dy_um / upp).astype(int), 0, dmap.shape[0] - 1)
+    c = np.clip(np.round(ci + dx_um / upp).astype(int), 0, dmap.shape[1] - 1)
+    return dmap[r, c]
 
 def roi_stage_one(args):
     r, ds_npz, bg, variant = args
@@ -256,15 +267,23 @@ def roi_stage_one(args):
         if variant == "primary":
             gt.to_parquet(OUT / "roi" / f"{A}_{roi}_{variant}_k{k}_windows.parquet", index=False)
     if variant == "primary":
-        res.update(roi_extras(r, s, vb, nm, dmap, dnuc, terr, thr_all, A))
+        c2 = c2_registration(r, s, vb, nm); res.update(c2)
+        res.update(roi_extras(r, s, vb, nm, dmap, dnuc, terr, thr_all, A, (0, 0), "CP1"))
+        # M-02 (revisione): prereg. C-2 «con FAIL: dichiarato e si usa lo spostamento ottimo» per le grandezze basate su d_nuc
+        res["C2_shift_applied"] = bool(c2["C2_max_abs_shift_bins"] > 2)
+        if res["C2_shift_applied"]:
+            sh = (c2["C2_best_dx_um"], c2["C2_best_dy_um"])
+            dn2 = sample_shift(dmap, s.ri.values, s.ci.values, sh[0], sh[1], r.um_per_px)
+            res["by_k_c2shift"] = {str(k): analyse(s, vb, dn2, terr, thr_all[str(k)]["thr"], k, A)[0] for k in KS}
+            res.update(roi_extras(r, s, vb, nm, dmap, dn2, terr, thr_all, A, sh, "CP1_c2shift", only_cp1=True))
         prof = pd.DataFrame({"d": dnuc[vb], "umi": s.umi.values[vb]})
         prof["d_bin"] = np.floor(prof.d).clip(upper=20)
         prof.groupby("d_bin").umi.agg(["mean", "size"]).reset_index().to_parquet(OUT / "roi" / f"{A}_{roi}_profile.parquet", index=False)
     f_out.write_text(json.dumps(res, indent=1, default=float))
     return str(f_out)
 
-def roi_extras(r, s, vb, nm, dmap, dnuc, terr, thr_all, A):
-    """C-2 registrazione, CP-1 placebo, CP-2 vuoto vero, descrittivo H&E."""
+def c2_registration(r, s, vb, nm):
+    """C-2: spostamento (dx, dy) che massimizza |corr| fra frazione nucleare del bin e UMI."""
     out = {}
     upp = r.um_per_px; h = int(round(1.0 / upp)); u = s.umi.values.astype(float)
     best = None; surf = []
@@ -278,16 +297,21 @@ def roi_extras(r, s, vb, nm, dmap, dnuc, terr, thr_all, A):
     out["C2_best_dx_um"], out["C2_best_dy_um"], out["C2_best_corr"] = best
     out["C2_corr_at_0"] = [c for dx, dy, c in surf if dx == 0 and dy == 0][0]
     out["C2_max_abs_shift_bins"] = int(max(abs(best[0]), abs(best[1])) // 2)
-    # CP-1 placebo
+    return out
+
+def roi_extras(r, s, vb, nm, dmap, dnuc, terr, thr_all, A, shift=(0, 0), key="CP1", only_cp1=False):
+    """CP-1 placebo (d_nuc campionata con lo spostamento 'shift'), CP-2 vuoto vero, descrittivo H&E."""
+    out = {}
+    upp = r.um_per_px; u = s.umi.values.astype(float)
     rng = np.random.default_rng(20261013 + int(r.name))
     ang = rng.uniform(0, 2 * np.pi); mod = rng.uniform(30, 60)
     dy_px, dx_px = int(round(mod * np.sin(ang) / upp)), int(round(mod * np.cos(ang) / upp))
     nm_p = np.roll(nm, (dy_px, dx_px), axis=(0, 1))
-    d_p = (ndimage.distance_transform_edt(~nm_p) * upp)[s.ri.values, s.ci.values]
+    d_p = sample_shift(ndimage.distance_transform_edt(~nm_p) * upp, s.ri.values, s.ci.values, shift[0], shift[1], upp)
     changed = float((d_p[vb] != dnuc[vb]).mean())
-    out["CP1_shift_um"] = float(np.hypot(dy_px, dx_px) * upp); out["CP1_frac_changed"] = changed
+    out[f"{key}_shift_um"] = float(np.hypot(dy_px, dx_px) * upp); out[f"{key}_frac_changed"] = changed
     assert changed > 0.5, "CP-1: il placebo non ha cambiato d_nuc"
-    out["CP1"] = {}
+    out[key] = {}
     for k in KS:
         wr, wc = window_ids(s.array_row.values, s.array_col.values, k)
         g = window_table(wr, wc, s.umi.values, vb, k); gt = g[g.complete]
@@ -295,12 +319,12 @@ def roi_extras(r, s, vb, nm, dmap, dnuc, terr, thr_all, A):
         dm = pd.DataFrame({"wr": wr, "wc": wc, "d": d_p}).groupby(["wr", "wc"], sort=True).d.min().reset_index()
         dm = gt[["wr", "wc"]].merge(dm, on=["wr", "wc"], how="left").d.values
         rs, ba = fit_model_a(dm, empty)
-        out["CP1"][str(k)] = {"r_star": rs, "BA": ba}
-    out["CP1_R_profile"] = profile_ratio(d_p[vb], u[vb])
+        out[key][str(k)] = {"r_star": rs, "BA": ba}
+    out[f"{key}_R_profile"] = profile_ratio(d_p[vb], u[vb])
+    if only_cp1: return out
     # CP-2: finestre fuori tessuto R2 (non bolle) ma in_tissue = 1
     z = np.load(R2M / f"{r.archetype}_{r.roi_id}_masks.npz"); t4, b4 = z["tissue_ds4"], z["bubble_ds4"]
-    px4 = r.side_um / t4.shape[1]
-    yy = np.clip((s.y / px4).astype(int), 0, t4.shape[0] - 1); xx = np.clip((s.x / px4).astype(int), 0, t4.shape[1] - 1)
+    yy = ds4_index(s.ri.values, t4.shape[0]); xx = ds4_index(s.ci.values, t4.shape[1])
     okv = (~t4[yy, xx]) & (~b4[yy, xx]) & (s.in_tissue.values == 1)
     out["CP2"] = {}
     for k in KS:
@@ -310,9 +334,8 @@ def roi_extras(r, s, vb, nm, dmap, dnuc, terr, thr_all, A):
     # descrittivo H&E sulla griglia ds4 (valida)
     valid4 = imread(ROOT / f"results/R2/tissue_masks/{r.archetype}_{r.roi_id}_valid_ds4.png") > 127
     if valid4.ndim == 3: valid4 = valid4[..., 0]
-    f = r.side_px / valid4.shape[0]
     ii, jj = np.nonzero(valid4)
-    dv = dmap[np.clip(((ii + 0.5) * f).astype(int), 0, r.side_px - 1), np.clip(((jj + 0.5) * f).astype(int), 0, r.side_px - 1)]
+    dv = dmap[np.clip(ii * 4 + 2, 0, r.side_px - 1), np.clip(jj * 4 + 2, 0, r.side_px - 1)]
     out["HE_frac_beyond"] = {str(d): float((dv > d).mean()) for d in (2, 4, 6, 8)}
     return out
 
@@ -339,7 +362,7 @@ def ctrl_one(args):
     tree = cKDTree(np.c_[s.x.values, s.y.values]); inside = np.zeros(len(s), bool); n_disc = 0
     while (inside & vb).sum() < 0.10 * vb.sum():
         cx, cy = rng.uniform(0, r.side_um, 2)
-        if not valid4[min(int(cy / px4), valid4.shape[0] - 1), min(int(cx / px4), valid4.shape[1] - 1)]: continue
+        if not valid4[min(int(cy / r.um_per_px) // 4, valid4.shape[0] - 1), min(int(cx / r.um_per_px) // 4, valid4.shape[1] - 1)]: continue
         inside[tree.query_ball_point([cx, cy], R)] = True; n_disc += 1
     zB = vb & inside
     sB = s.copy(); sB.loc[zB, "umi"] = 0
