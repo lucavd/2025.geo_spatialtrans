@@ -17,7 +17,7 @@ Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in 
 - Grezzo: `st_union` perde celle intere (15 nulli); `st_intersection` restituisce una cella intera in ≥ 11 coppie (10 a sovrapposizione, 9 invisibili al check d'unione; 1 a lacuna trovata dalla revisione); intersezione esatta = schegge 2e-15–2.4e-14 µm² (aritmetica razionale): sbagliano le operazioni, non la geometria. GEOS 3.11.1/3.12.1/3.14.1 identici; griglia 1e-6 elimina 11/11.
 - Condizione: vertice condiviso di due celle ritagliate, sul bordo della regione, diverso di 1–4 ulp (CP-1a, fusione-senza-T 15/15, test inverso 24/40 vs 0/80); non sufficiente (83 % dei nulli che passano) né specifica (**CP-1b FAIL** 18/20 dopo la correzione).
 - CP-2: V0 0/180 errori silenziosi (non confermata, potenza 0.395; eccezioni solo su input invalidi); V1–V3 0 FAIL. C-6 cella × bin 2 µm: 0 errori nemmeno nel grezzo (39 nulli con la revisione). B-2: 62/62 previsioni B di S1.3 invariate; B-1 FAIL V1/V2 (errore di pre-registrazione dichiarato prima del run).
-- Revisione avversariale: 2 revisori (ricalcolo indipendente 44 grandezze, aritmetica esatta, terzo GEOS), 24 rilievi (1 bug, 4 discrepanze, 9 metodo, 10 confermati); azioni in `results/S1.3b/S1.3b_review_actions.csv`.
+- Revisione avversariale: 2 revisori (ricalcolo indipendente 44 grandezze, aritmetica esatta, terzo GEOS), 24 rilievi (1 bug, 4 discrepanze, 8 metodo, 11 confermati); azioni in `results/S1.3b/S1.3b_review_actions.csv`.
 - BACKLOG BL-078…BL-083; BL-069 decisa.
 
 ## S1.3 — 2026-10-08/09 — `tessellate_voronoi()`: territori di Voronoi per regione (branch `step1-cell-layer`)
