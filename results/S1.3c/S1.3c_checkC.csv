@@ -1,0 +1,139 @@
+check,unit,value,status
+C-1,A1_r1,250152 / 250025 (+0.05 %),PASS
+C-2,A1_r1,"(4, 6) um, r 0.189 (a 0: 0.136)",FAIL
+C-4,A1_r1,"conservati True, mutante viola True",PASS
+C-1,A1_r2,250140 / 250275 (-0.05 %),PASS
+C-2,A1_r2,"(-2, -2) um, r 0.184 (a 0: 0.145)",PASS
+C-4,A1_r2,"conservati True, mutante viola True",PASS
+C-1,A1_r3,250183 / 250275 (-0.04 %),PASS
+C-2,A1_r3,"(-2, -2) um, r 0.198 (a 0: 0.173)",PASS
+C-4,A1_r3,"conservati True, mutante viola True",PASS
+C-1,A1_r4,250158 / 250275 (-0.05 %),PASS
+C-2,A1_r4,"(8, 0) um, r 0.188 (a 0: 0.159)",FAIL
+C-4,A1_r4,"conservati True, mutante viola True",PASS
+C-1,A1_r5,250165 / 250275 (-0.04 %),PASS
+C-2,A1_r5,"(-2, -2) um, r 0.166 (a 0: 0.143)",PASS
+C-4,A1_r5,"conservati True, mutante viola True",PASS
+C-1,A2_r1,250243 / 250302 (-0.02 %),PASS
+C-2,A2_r1,"(6, 4) um, r 0.102 (a 0: -0.021)",FAIL
+C-4,A2_r1,"conservati True, mutante viola True",PASS
+C-1,A2_r2,250259 / 250302 (-0.02 %),PASS
+C-2,A2_r2,"(6, -6) um, r 0.090 (a 0: -0.008)",FAIL
+C-4,A2_r2,"conservati True, mutante viola True",PASS
+C-1,A2_r3,250286 / 250302 (-0.01 %),PASS
+C-2,A2_r3,"(0, -8) um, r 0.099 (a 0: 0.002)",FAIL
+C-4,A2_r3,"conservati True, mutante viola True",PASS
+C-1,A2_r4,250248 / 250302 (-0.02 %),PASS
+C-2,A2_r4,"(6, -4) um, r 0.162 (a 0: 0.049)",FAIL
+C-4,A2_r4,"conservati True, mutante viola True",PASS
+C-1,A2_r5,250238 / 250302 (-0.03 %),PASS
+C-2,A2_r5,"(2, -6) um, r 0.197 (a 0: 0.107)",FAIL
+C-4,A2_r5,"conservati True, mutante viola True",PASS
+C-1,A3_r1,250229 / 250302 (-0.03 %),PASS
+C-2,A3_r1,"(6, -4) um, r 0.180 (a 0: 0.116)",FAIL
+C-4,A3_r1,"conservati True, mutante viola True",PASS
+C-1,A3_r2,250243 / 250302 (-0.02 %),PASS
+C-2,A3_r2,"(-4, 0) um, r 0.158 (a 0: 0.125)",WARN
+C-4,A3_r2,"conservati True, mutante viola True",PASS
+C-1,A3_r3,250261 / 250302 (-0.02 %),PASS
+C-2,A3_r3,"(6, 2) um, r 0.183 (a 0: 0.119)",FAIL
+C-4,A3_r3,"conservati True, mutante viola True",PASS
+C-1,A3_r4,250267 / 250302 (-0.01 %),PASS
+C-2,A3_r4,"(-4, 4) um, r 0.217 (a 0: 0.169)",WARN
+C-4,A3_r4,"conservati True, mutante viola True",PASS
+C-1,A3_r5,250253 / 250302 (-0.02 %),PASS
+C-2,A3_r5,"(8, 2) um, r 0.283 (a 0: 0.203)",FAIL
+C-4,A3_r5,"conservati True, mutante viola True",PASS
+C-1,A4_f1,250082 / 250050 (+0.01 %),PASS
+C-2,A4_f1,"(0, 0) um, r -0.153 (a 0: -0.153)",PASS
+C-4,A4_f1,"conservati True, mutante viola True",PASS
+C-1,A4_f2,250027 / 250050 (-0.01 %),PASS
+C-2,A4_f2,"(0, 0) um, r -0.172 (a 0: -0.172)",PASS
+C-4,A4_f2,"conservati True, mutante viola True",PASS
+C-1,A4_p1,250092 / 250050 (+0.02 %),PASS
+C-2,A4_p1,"(0, 0) um, r -0.187 (a 0: -0.187)",PASS
+C-4,A4_p1,"conservati True, mutante viola True",PASS
+C-1,A4_p2,250080 / 250050 (+0.01 %),PASS
+C-2,A4_p2,"(0, 0) um, r -0.202 (a 0: -0.202)",PASS
+C-4,A4_p2,"conservati True, mutante viola True",PASS
+C-1,A4_p3,250000 / 250050 (-0.02 %),PASS
+C-2,A4_p3,"(0, 0) um, r -0.231 (a 0: -0.231)",PASS
+C-4,A4_p3,"conservati True, mutante viola True",PASS
+C-1,A5_r1,250018 / 249956 (+0.02 %),PASS
+C-2,A5_r1,"(0, 0) um, r 0.367 (a 0: 0.367)",PASS
+C-4,A5_r1,"conservati True, mutante viola True",PASS
+C-1,A5_r2,250000 / 249956 (+0.02 %),PASS
+C-2,A5_r2,"(2, -2) um, r 0.395 (a 0: 0.378)",PASS
+C-4,A5_r2,"conservati True, mutante viola True",PASS
+C-1,A5_r3,250004 / 249956 (+0.02 %),PASS
+C-2,A5_r3,"(4, 0) um, r 0.411 (a 0: 0.382)",WARN
+C-4,A5_r3,"conservati True, mutante viola True",PASS
+C-1,A5_r4,250020 / 249956 (+0.03 %),PASS
+C-2,A5_r4,"(4, 0) um, r 0.381 (a 0: 0.353)",WARN
+C-4,A5_r4,"conservati True, mutante viola True",PASS
+C-1,A5_r5,250002 / 249956 (+0.02 %),PASS
+C-2,A5_r5,"(2, -2) um, r 0.410 (a 0: 0.399)",PASS
+C-4,A5_r5,"conservati True, mutante viola True",PASS
+C-1,A6_r1,249873 / 249730 (+0.06 %),PASS
+C-2,A6_r1,"(0, 0) um, r 0.163 (a 0: 0.163)",PASS
+C-4,A6_r1,"conservati True, mutante viola True",PASS
+C-1,A6_r2,249869 / 249730 (+0.06 %),PASS
+C-2,A6_r2,"(0, 0) um, r 0.251 (a 0: 0.251)",PASS
+C-4,A6_r2,"conservati True, mutante viola True",PASS
+C-1,A6_r3,249867 / 249730 (+0.05 %),PASS
+C-2,A6_r3,"(0, 0) um, r 0.200 (a 0: 0.200)",PASS
+C-4,A6_r3,"conservati True, mutante viola True",PASS
+C-1,A6_r4,249875 / 249730 (+0.06 %),PASS
+C-2,A6_r4,"(-2, 0) um, r 0.281 (a 0: 0.262)",PASS
+C-4,A6_r4,"conservati True, mutante viola True",PASS
+C-1,A6_r5,249874 / 249730 (+0.06 %),PASS
+C-2,A6_r5,"(0, 0) um, r 0.202 (a 0: 0.202)",PASS
+C-4,A6_r5,"conservati True, mutante viola True",PASS
+"C-3 (pre-registrato, tutti i geni)",Visium_HD_6p5mm_Human_Heart,bin diversi 2043438 / 10615406,FAIL
+"C-3 (geni comuni, primaria)",Visium_HD_6p5mm_Human_Heart,bin diversi 0; UMI dei geni esclusi 5.15 %,PASS
+"sfondo (com, k=3)",Visium_HD_6p5mm_Human_Heart,"soglia 5 UMI, 33390 finestre, media 1.99",PASS
+"sfondo (com, k=5)",Visium_HD_6p5mm_Human_Heart,"soglia 11 UMI, 11780 finestre, media 5.43",PASS
+"sfondo (all, k=3)",Visium_HD_6p5mm_Human_Heart,"soglia 5 UMI, 33390 finestre, media 2.07",PASS
+"sfondo (all, k=5)",Visium_HD_6p5mm_Human_Heart,"soglia 12 UMI, 11780 finestre, media 5.65",PASS
+"C-3 (pre-registrato, tutti i geni)",Visium_HD_6p5mm_Mouse_Brain,bin diversi 196172 / 6343031,FAIL
+"C-3 (geni comuni, primaria)",Visium_HD_6p5mm_Mouse_Brain,bin diversi 0; UMI dei geni esclusi 0.10 %,PASS
+"sfondo (com, k=3)",Visium_HD_6p5mm_Mouse_Brain,"soglia 10 UMI, 466521 finestre, media 3.70",PASS
+"sfondo (com, k=5)",Visium_HD_6p5mm_Mouse_Brain,"soglia 26 UMI, 167325 finestre, media 10.20",PASS
+"sfondo (all, k=3)",Visium_HD_6p5mm_Mouse_Brain,"soglia 10 UMI, 466521 finestre, media 3.70",PASS
+"sfondo (all, k=5)",Visium_HD_6p5mm_Mouse_Brain,"soglia 26 UMI, 167325 finestre, media 10.21",PASS
+"C-3 (pre-registrato, tutti i geni)",Visium_HD_Human_Colon_Cancer,bin diversi 2707020 / 8176117,FAIL
+"C-3 (geni comuni, primaria)",Visium_HD_Human_Colon_Cancer,bin diversi 0; UMI dei geni esclusi 1.91 %,PASS
+"sfondo (com, k=3)",Visium_HD_Human_Colon_Cancer,"soglia 15 UMI, 228961 finestre, media 4.03",PASS
+"sfondo (com, k=5)",Visium_HD_Human_Colon_Cancer,"soglia 42 UMI, 81330 finestre, media 11.18",PASS
+"sfondo (all, k=3)",Visium_HD_Human_Colon_Cancer,"soglia 15 UMI, 228961 finestre, media 4.11",PASS
+"sfondo (all, k=5)",Visium_HD_Human_Colon_Cancer,"soglia 43 UMI, 81330 finestre, media 11.42",PASS
+"C-3 (pre-registrato, tutti i geni)",Visium_HD_Human_Lymph_Node_FFPE,bin diversi 408027 / 5482441,FAIL
+"C-3 (geni comuni, primaria)",Visium_HD_Human_Lymph_Node_FFPE,bin diversi 0; UMI dei geni esclusi 1.83 %,PASS
+"sfondo (com, k=3)",Visium_HD_Human_Lymph_Node_FFPE,"soglia 2 UMI, 471420 finestre, media 0.38",PASS
+"sfondo (com, k=5)",Visium_HD_Human_Lymph_Node_FFPE,"soglia 4 UMI, 168102 finestre, media 1.06",PASS
+"sfondo (all, k=3)",Visium_HD_Human_Lymph_Node_FFPE,"soglia 2 UMI, 471420 finestre, media 0.39",PASS
+"sfondo (all, k=5)",Visium_HD_Human_Lymph_Node_FFPE,"soglia 4 UMI, 168102 finestre, media 1.08",PASS
+"C-3 (pre-registrato, tutti i geni)",Visium_HD_Mouse_Small_Intestine,bin diversi 1592446 / 5479660,FAIL
+"C-3 (geni comuni, primaria)",Visium_HD_Mouse_Small_Intestine,bin diversi 0; UMI dei geni esclusi 7.62 %,PASS
+"sfondo (com, k=3)",Visium_HD_Mouse_Small_Intestine,"soglia 5 UMI, 483562 finestre, media 1.77",PASS
+"sfondo (com, k=5)",Visium_HD_Mouse_Small_Intestine,"soglia 12 UMI, 173182 finestre, media 4.87",PASS
+"sfondo (all, k=3)",Visium_HD_Mouse_Small_Intestine,"soglia 5 UMI, 483562 finestre, media 1.91",PASS
+"sfondo (all, k=5)",Visium_HD_Mouse_Small_Intestine,"soglia 13 UMI, 173182 finestre, media 5.24",PASS
+C-5a,A1_r1,delta 1054 = 993 + 61; geometrica 0.047,PASS
+C-5b (tipo A),A1_r1,"E 0.049, BA 0.983, grandi 0.93 -> nessuno",FAIL
+C-5c (tipo B),A1_r1,"E 0.043, BA 0.501, grandi 0.95 -> nessuno",FAIL
+C-5a,A2_r1,delta 1174 = 1111 + 63; geometrica 0.056,PASS
+C-5b (tipo A),A2_r1,"E 0.039, BA 0.965, grandi 0.88 -> nessuno",FAIL
+C-5c (tipo B),A2_r1,"E 0.050, BA 0.536, grandi 0.95 -> B",PASS
+C-5a,A3_r1,delta 1989 = 1729 + 260; geometrica 0.063,PASS
+C-5b (tipo A),A3_r1,"E 0.069, BA 0.851, grandi 0.90 -> A",PASS
+C-5c (tipo B),A3_r1,"E 0.060, BA 0.528, grandi 0.97 -> B",PASS
+C-5a,A4_f1,delta 858 = 823 + 35; geometrica 0.030,PASS
+C-5b (tipo A),A4_f1,"E 0.016, BA 0.974, grandi 1.00 -> nessuno",FAIL
+C-5c (tipo B),A4_f1,"E 0.029, BA 0.602, grandi 1.00 -> nessuno",FAIL
+C-5a,A5_r1,delta 1627 = 1614 + 13; geometrica 0.087,PASS
+C-5b (tipo A),A5_r1,"E 0.059, BA 0.988, grandi 0.46 -> A",PASS
+C-5c (tipo B),A5_r1,"E 0.057, BA 0.495, grandi 0.97 -> B",PASS
+C-5a,A6_r1,delta 2142 = 2002 + 140; geometrica 0.082,PASS
+C-5b (tipo A),A6_r1,"E 0.070, BA 0.950, grandi 0.86 -> A",PASS
+C-5c (tipo B),A6_r1,"E 0.069, BA 0.490, grandi 0.91 -> B",PASS

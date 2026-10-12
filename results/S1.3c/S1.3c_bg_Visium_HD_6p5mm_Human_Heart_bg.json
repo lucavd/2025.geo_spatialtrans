@@ -1,0 +1,63 @@
+{
+ "C3": {
+  "n_in_tissue": 10615406,
+  "n_filtered": 10615406,
+  "n_only_one_side": 0,
+  "prereg_all_genes": {
+   "n_diff": 2043438,
+   "identical": false
+  },
+  "common_genes": {
+   "n_diff": 0,
+   "identical": true
+  },
+  "frac_umi_excluded_genes_in_tissue": 0.051537617377114486
+ },
+ "bg": {
+  "com": {
+   "3": {
+    "thr": 5.0,
+    "n_windows": 33390,
+    "mean": 1.9911350703803534,
+    "frac_zero": 0.28565438754118
+   },
+   "5": {
+    "thr": 11.0,
+    "n_windows": 11780,
+    "mean": 5.431324278438031,
+    "frac_zero": 0.05415959252971138
+   }
+  },
+  "all": {
+   "3": {
+    "thr": 5.0,
+    "n_windows": 33390,
+    "mean": 2.0707696915244087,
+    "frac_zero": 0.27139862234201856
+   },
+   "5": {
+    "thr": 12.0,
+    "n_windows": 11780,
+    "mean": 5.651528013582343,
+    "frac_zero": 0.04787775891341256
+   }
+  }
+ },
+ "log": {
+  "Visium_HD_6p5mm_Human_Heart_feature_types": {
+   "Gene Expression": 37082
+  },
+  "Visium_HD_6p5mm_Human_Heart_n_genes_all": 37082,
+  "Visium_HD_6p5mm_Human_Heart_n_genes_com": 18085,
+  "Visium_HD_6p5mm_Human_Heart_n_bins": 11222500,
+  "Visium_HD_6p5mm_Human_Heart_n_umi_missing": 0
+ },
+ "umi_total_dataset": {
+  "umi_all": 48156326,
+  "umi_com": 45679334
+ },
+ "umi_in_tissue": {
+  "umi_all": 47759736,
+  "umi_com": 45298313
+ }
+}

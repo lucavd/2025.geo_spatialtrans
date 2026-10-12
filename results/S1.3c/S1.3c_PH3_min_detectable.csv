@@ -1,0 +1,12 @@
+archetype,type,f_min_detectable
+A1,A,0.2
+A1,B,0.2
+A2,A,0.2
+A2,B,0.1
+A3,A,0.1
+A3,B,0.1
+A4,B,0.2
+A5,A,0.1
+A5,B,0.1
+A6,A,0.1
+A6,B,0.1

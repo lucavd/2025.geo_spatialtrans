@@ -1,0 +1,63 @@
+{
+ "C3": {
+  "n_in_tissue": 6343031,
+  "n_filtered": 6343031,
+  "n_only_one_side": 0,
+  "prereg_all_genes": {
+   "n_diff": 196172,
+   "identical": false
+  },
+  "common_genes": {
+   "n_diff": 0,
+   "identical": true
+  },
+  "frac_umi_excluded_genes_in_tissue": 0.0009622507802339308
+ },
+ "bg": {
+  "com": {
+   "3": {
+    "thr": 10.0,
+    "n_windows": 466521,
+    "mean": 3.699743419910358,
+    "frac_zero": 0.11790037318791652
+   },
+   "5": {
+    "thr": 26.0,
+    "n_windows": 167325,
+    "mean": 10.198583594800537,
+    "frac_zero": 0.01638727028238458
+   }
+  },
+  "all": {
+   "3": {
+    "thr": 10.0,
+    "n_windows": 466521,
+    "mean": 3.703576044808272,
+    "frac_zero": 0.11772031698465878
+   },
+   "5": {
+    "thr": 26.0,
+    "n_windows": 167325,
+    "mean": 10.20918571642014,
+    "frac_zero": 0.01634543552965785
+   }
+  }
+ },
+ "log": {
+  "Visium_HD_6p5mm_Mouse_Brain_feature_types": {
+   "Gene Expression": 33715
+  },
+  "Visium_HD_6p5mm_Mouse_Brain_n_genes_all": 33715,
+  "Visium_HD_6p5mm_Mouse_Brain_n_genes_com": 19070,
+  "Visium_HD_6p5mm_Mouse_Brain_n_bins": 11222500,
+  "Visium_HD_6p5mm_Mouse_Brain_n_umi_missing": 0
+ },
+ "umi_total_dataset": {
+  "umi_all": 214723964,
+  "umi_com": 214517133
+ },
+ "umi_in_tissue": {
+  "umi_all": 210920068,
+  "umi_com": 210717110
+ }
+}

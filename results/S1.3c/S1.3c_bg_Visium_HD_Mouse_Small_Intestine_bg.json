@@ -1,0 +1,63 @@
+{
+ "C3": {
+  "n_in_tissue": 5479660,
+  "n_filtered": 5479660,
+  "n_only_one_side": 0,
+  "prereg_all_genes": {
+   "n_diff": 1592446,
+   "identical": false
+  },
+  "common_genes": {
+   "n_diff": 0,
+   "identical": true
+  },
+  "frac_umi_excluded_genes_in_tissue": 0.07619423643195755
+ },
+ "bg": {
+  "com": {
+   "3": {
+    "thr": 5.0,
+    "n_windows": 483562,
+    "mean": 1.7696076201190334,
+    "frac_zero": 0.254567149610598
+   },
+   "5": {
+    "thr": 12.0,
+    "n_windows": 173182,
+    "mean": 4.868109849753439,
+    "frac_zero": 0.04691018697093231
+   }
+  },
+  "all": {
+   "3": {
+    "thr": 5.0,
+    "n_windows": 483562,
+    "mean": 1.9054392197898098,
+    "frac_zero": 0.2328098568539298
+   },
+   "5": {
+    "thr": 13.0,
+    "n_windows": 173182,
+    "mean": 5.242727304223303,
+    "frac_zero": 0.038733817602291234
+   }
+  }
+ },
+ "log": {
+  "Visium_HD_Mouse_Small_Intestine_feature_types": {
+   "Gene Expression": 32285
+  },
+  "Visium_HD_Mouse_Small_Intestine_n_genes_all": 32285,
+  "Visium_HD_Mouse_Small_Intestine_n_genes_com": 19059,
+  "Visium_HD_Mouse_Small_Intestine_n_bins": 11222500,
+  "Visium_HD_Mouse_Small_Intestine_n_umi_missing": 4111129
+ },
+ "umi_total_dataset": {
+  "umi_all": 152016563,
+  "umi_com": 140573095
+ },
+ "umi_in_tissue": {
+  "umi_all": 148501101,
+  "umi_com": 137186173
+ }
+}

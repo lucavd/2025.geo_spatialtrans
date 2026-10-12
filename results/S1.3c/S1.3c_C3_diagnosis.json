@@ -1,0 +1,37 @@
+{
+ "Visium_HD_Mouse_Small_Intestine": {
+  "n_common": 19059,
+  "identical_common": true,
+  "n_diff_common": 0,
+  "frac_umi_excluded_genes": 0.07619423643195755,
+  "frac_bins_with_excluded": 0.29061036633659754
+ },
+ "Visium_HD_Human_Colon_Cancer": {
+  "n_common": 18132,
+  "identical_common": true,
+  "n_diff_common": 0,
+  "frac_umi_excluded_genes": 0.019111402568926517,
+  "frac_bins_with_excluded": 0.3310887062893058
+ },
+ "Visium_HD_Human_Lymph_Node_FFPE": {
+  "n_common": 18132,
+  "identical_common": true,
+  "n_diff_common": 0,
+  "frac_umi_excluded_genes": 0.018299538420561534,
+  "frac_bins_with_excluded": 0.07442433033023065
+ },
+ "Visium_HD_6p5mm_Mouse_Brain": {
+  "n_common": 19070,
+  "identical_common": true,
+  "n_diff_common": 0,
+  "frac_umi_excluded_genes": 0.0009622507802339308,
+  "frac_bins_with_excluded": 0.030927170307066133
+ },
+ "Visium_HD_6p5mm_Human_Heart": {
+  "n_common": 18085,
+  "identical_common": true,
+  "n_diff_common": 0,
+  "frac_umi_excluded_genes": 0.051537617377114486,
+  "frac_bins_with_excluded": 0.19249739482408867
+ }
+}
