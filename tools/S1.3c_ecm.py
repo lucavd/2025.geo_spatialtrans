@@ -215,7 +215,7 @@ def analyse(s, valid_b, dnuc, terr, thr, k, A, rng_seed=1):
             "E": E, "r_star": r_star, "BA": ba, "empty_area": a_empty, "large_area": a_large, "n_comp": ncomp,
             "large_frac": a_large / a_empty if a_empty > 0 else float("nan"),
             "R_profile": profile_ratio(dnuc[valid_b], umi[valid_b].astype(float)),
-            "verdict_roi": verdict(E, ba, a_large / a_empty if a_empty > 0 else float("nan"))}, gt.assign(empty=empty, dmin=dmin)
+            "verdict_roi": verdict(E, ba, a_large / a_empty if a_empty > 0 else float("nan"))}, gt.assign(is_empty=empty, dmin=dmin)
 
 def load_roi_context(r, b, mask_method):
     A, roi = r.archetype, r.roi_id
@@ -348,12 +348,14 @@ def ctrl_one(args):
     # (a) bilancio esatto su (c)
     wr, wc = window_ids(s.array_row.values, s.array_col.values, k)
     zz = pd.DataFrame({"wr": wr, "wc": wc, "z": zB.astype(int)}).groupby(["wr", "wc"], sort=True).z.sum().reset_index()
-    m = gt0[["wr", "wc", "empty"]].merge(zz, on=["wr", "wc"], how="left").merge(gtB[["wr", "wc", "empty"]].rename(columns={"empty": "empty_B"}), on=["wr", "wc"])
-    full = int(((m.z == k * k) & ~m.empty).sum())
-    partial = int(((m.z > 0) & (m.z < k * k) & ~m.empty & m.empty_B).sum())
-    delta = int(m.empty_B.sum() - m.empty.sum())
+    m = gt0[["wr", "wc", "is_empty"]].merge(zz, on=["wr", "wc"], how="left").merge(
+        gtB[["wr", "wc", "is_empty"]].rename(columns={"is_empty": "is_empty_B"}), on=["wr", "wc"])
+    e0, eB = m["is_empty"].values, m["is_empty_B"].values; z = m["z"].values
+    full = int(((z == k * k) & ~e0).sum())
+    partial = int(((z > 0) & (z < k * k) & ~e0 & eB).sum())
+    delta = int(eB.sum() - e0.sum())
     res["C5a"] = {"delta_empty": delta, "full_geom": full, "partial_fallen": partial, "exact": delta == full + partial,
-                  "geom_frac": full / len(m), "other_changes": int((m.empty & ~m.empty_B).sum())}
+                  "geom_frac": full / len(m), "other_changes": int((e0 & ~eB).sum())}
     f_out.write_text(json.dumps(res, indent=1, default=float))
     return str(f_out)
 
