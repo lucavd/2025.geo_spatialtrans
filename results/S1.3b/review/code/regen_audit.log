@@ -1,0 +1,190 @@
+
+== A1 r3 RSArule 8  3780/5886  clipped TRUE,TRUE  ident 1 diff 1  a0 99.3963  a_fix 0  a_fix_rev 0  n_far_j 2
+                 xi yi                 xj yj ulp_x ulp_y            d
+ 1.3418164502873986  0 1.3418164502873982  0     2     0 4.440892e-16
+ dist_reg_i dist_reg_j i_is_regvertex j_is_regvertex
+          0          0          FALSE          FALSE
+placebo ufficiale-like: coord changed in 9/20 seeds (sum changed 9); area intact (|d|<=0.01) 15/20; coord mag max 14.2
+placebo ulp: coord changed 20/20; area intact 20/20; area==0 0/20; valid 20/20
+inverse (1 ulp on identical shared vertex):
+ k dist_reg     area
+ 1 8.971514 99.39627
+           n_bins       n_pieces_v0      cell_viol_v0       cell_max_v0 
+        2.510e+05         3.170e+05         0.000e+00         4.746e-12 
+pair_cells_max_v0        bin_max_v0      bin_over_1e9       n_pieces_v2 
+        2.842e-14         3.979e-13         0.000e+00         3.170e+05 
+     cell_viol_v2       cell_max_v2        bin_max_v2          total_v0 
+        0.000e+00         8.352e-06         1.332e-15         0.000e+00 
+         total_v2 
+        0.000e+00 
+
+== A2 r4 RSA 12  1884/5121  clipped TRUE,TRUE  ident 1 diff 1  a0 65.7719  a_fix 0  a_fix_rev 0  n_far_j 4
+ xi                 yi xj                 yj ulp_x ulp_y            d
+  0 2.3750703242232047  0 2.3750703242232052     0     1 4.440892e-16
+ dist_reg_i dist_reg_j i_is_regvertex j_is_regvertex
+          0          0          FALSE          FALSE
+placebo ufficiale-like: coord changed in 15/20 seeds (sum changed 15); area intact (|d|<=0.01) 20/20; coord mag max 18.7
+placebo ulp: coord changed 20/20; area intact 20/20; area==0 0/20; valid 20/20
+inverse (1 ulp on identical shared vertex):
+ k dist_reg         area
+ 1 9.873094 7.105427e-15
+           n_bins       n_pieces_v0      cell_viol_v0       cell_max_v0 
+        2.510e+05         3.586e+05         0.000e+00         1.071e-11 
+pair_cells_max_v0        bin_max_v0      bin_over_1e9       n_pieces_v2 
+        1.421e-14         5.045e-13         0.000e+00         3.586e+05 
+     cell_viol_v2       cell_max_v2        bin_max_v2          total_v0 
+        0.000e+00         1.114e-05         1.332e-15         0.000e+00 
+         total_v2 
+        0.000e+00 
+
+== A2 r5 RSArule 19  1103/1714  clipped TRUE,TRUE  ident 1 diff 1  a0 65.7041  a_fix 0  a_fix_rev 0  n_far_j 4
+                xi                 yi                 xj                 yj
+ 2.341940078927883 1000.1043756993286 2.3419400789278835 1000.1043756993286
+ ulp_x ulp_y            d dist_reg_i dist_reg_j i_is_regvertex j_is_regvertex
+     1     0 4.440892e-16          0          0          FALSE          FALSE
+placebo ufficiale-like: coord changed in 15/20 seeds (sum changed 15); area intact (|d|<=0.01) 20/20; coord mag max 1000.1
+placebo ulp: coord changed 20/20; area intact 20/20; area==0 0/20; valid 20/20
+inverse (1 ulp on identical shared vertex):
+ k dist_reg         area
+ 1 7.826528 4.156675e-13
+           n_bins       n_pieces_v0      cell_viol_v0       cell_max_v0 
+        2.510e+05         3.511e+05         0.000e+00         7.844e-12 
+pair_cells_max_v0        bin_max_v0      bin_over_1e9       n_pieces_v2 
+        7.105e-14         4.547e-13         0.000e+00         3.511e+05 
+     cell_viol_v2       cell_max_v2        bin_max_v2          total_v0 
+        0.000e+00         1.215e-05         8.882e-16         0.000e+00 
+         total_v2 
+        0.000e+00 
+
+== A3 r3 CSR 3  766/1987  clipped TRUE,TRUE  ident 1 diff 1  a0 340.4273  a_fix 0  a_fix_rev 0  n_far_j 3
+                 xi                 yi                 xj                yj
+ 1000.1043756993286 2.8415467620687549 1000.1043756993286 2.841546762068754
+ ulp_x ulp_y            d dist_reg_i dist_reg_j i_is_regvertex j_is_regvertex
+     0     2 8.881784e-16          0          0          FALSE          FALSE
+placebo ufficiale-like: coord changed in 0/20 seeds (sum changed 0); area intact (|d|<=0.01) 20/20; coord mag max 1000.1
+placebo ulp: coord changed 20/20; area intact 20/20; area==0 0/20; valid 20/20
+inverse (1 ulp on identical shared vertex):
+ k dist_reg area
+ 1 18.85435    0
+           n_bins       n_pieces_v0      cell_viol_v0       cell_max_v0 
+        2.510e+05         3.377e+05         0.000e+00         5.969e-12 
+pair_cells_max_v0        bin_max_v0      bin_over_1e9       n_pieces_v2 
+        1.705e-12         3.695e-13         0.000e+00         3.377e+05 
+     cell_viol_v2       cell_max_v2        bin_max_v2          total_v0 
+        0.000e+00         1.142e-05         8.882e-16         0.000e+00 
+         total_v2 
+        0.000e+00 
+
+== A3 r3 CSR 5  3479/4200  clipped TRUE,TRUE  ident 1 diff 1  a0 140.7162  a_fix 0  a_fix_rev 0  n_far_j 3
+                 xi yi                xj yj ulp_x ulp_y            d dist_reg_i
+ 3.0198272058300124  0 3.019827205830012  0     1     0 4.440892e-16          0
+ dist_reg_j i_is_regvertex j_is_regvertex
+          0          FALSE          FALSE
+placebo ufficiale-like: coord changed in 7/20 seeds (sum changed 7); area intact (|d|<=0.01) 17/20; coord mag max 28.8
+placebo ulp: coord changed 20/20; area intact 20/20; area==0 0/20; valid 20/20
+inverse (1 ulp on identical shared vertex):
+ k dist_reg         area
+ 1 8.796118 2.131628e-14
+           n_bins       n_pieces_v0      cell_viol_v0       cell_max_v0 
+        2.510e+05         3.374e+05         0.000e+00         7.162e-12 
+pair_cells_max_v0        bin_max_v0      bin_over_1e9       n_pieces_v2 
+        2.842e-14         3.872e-13         0.000e+00         3.374e+05 
+     cell_viol_v2       cell_max_v2        bin_max_v2          total_v0 
+        0.000e+00         1.447e-05         8.882e-16         0.000e+00 
+         total_v2 
+        0.000e+00 
+
+== A3 r3 RSA 8  929/2686  clipped TRUE,TRUE  ident 1 diff 1  a0 223.8405  a_fix 0  a_fix_rev 0  n_far_j 4
+                 xi                 yi                 xj                 yj
+ 1000.1043756993286 2.5956147139405843 1000.1043756993286 2.5956147139405839
+ ulp_x ulp_y            d dist_reg_i dist_reg_j i_is_regvertex j_is_regvertex
+     0     1 4.440892e-16          0          0          FALSE          FALSE
+placebo ufficiale-like: coord changed in 0/20 seeds (sum changed 0); area intact (|d|<=0.01) 20/20; coord mag max 1000.1
+placebo ulp: coord changed 20/20; area intact 20/20; area==0 0/20; valid 20/20
+inverse (1 ulp on identical shared vertex):
+ k dist_reg area
+ 1 11.76114    0
+           n_bins       n_pieces_v0      cell_viol_v0       cell_max_v0 
+        2.510e+05         3.377e+05         0.000e+00         5.400e-12 
+pair_cells_max_v0        bin_max_v0      bin_over_1e9       n_pieces_v2 
+        2.558e-12         4.761e-13         0.000e+00         3.377e+05 
+     cell_viol_v2       cell_max_v2        bin_max_v2          total_v0 
+        0.000e+00         1.384e-05         8.882e-16         0.000e+00 
+         total_v2 
+        0.000e+00 
+
+== A3 r5 RSArule 2  705/2172  clipped TRUE,TRUE  ident 1 diff 1  a0 351.5129  a_fix 0  a_fix_rev 0  n_far_j 3
+ xi                 yi xj                 yj ulp_x ulp_y            d
+  0 7.4642663572119545  0 7.4642663572119554     0     1 8.881784e-16
+ dist_reg_i dist_reg_j i_is_regvertex j_is_regvertex
+          0          0          FALSE          FALSE
+placebo ufficiale-like: coord changed in 12/20 seeds (sum changed 12); area intact (|d|<=0.01) 20/20; coord mag max 32.2
+placebo ulp: coord changed 20/20; area intact 20/20; area==0 0/20; valid 20/20
+inverse (1 ulp on identical shared vertex):
+ k dist_reg     area
+ 1 18.69385 351.5129
+           n_bins       n_pieces_v0      cell_viol_v0       cell_max_v0 
+        2.510e+05         3.409e+05         0.000e+00         5.457e-12 
+pair_cells_max_v0        bin_max_v0      bin_over_1e9       n_pieces_v2 
+        5.684e-14         4.547e-13         0.000e+00         3.409e+05 
+     cell_viol_v2       cell_max_v2        bin_max_v2          total_v0 
+        0.000e+00         1.112e-05         8.882e-16         0.000e+00 
+         total_v2 
+        0.000e+00 
+
+== A5 r2 CSR 16  197/335  clipped TRUE,TRUE  ident 1 diff 1  a0 635.4801  a_fix 0  a_fix_rev 0  n_far_j 4
+ xi                 yi xj                 yj ulp_x ulp_y            d
+  0 8.6970287107538837  0 8.6970287107538855     0     1 1.776357e-15
+ dist_reg_i dist_reg_j i_is_regvertex j_is_regvertex
+          0          0          FALSE          FALSE
+placebo ufficiale-like: coord changed in 11/20 seeds (sum changed 11); area intact (|d|<=0.01) 20/20; coord mag max 67.3
+placebo ulp: coord changed 20/20; area intact 20/20; area==0 0/20; valid 20/20
+inverse (1 ulp on identical shared vertex):
+ k dist_reg         area
+ 1 24.19084 5.684342e-14
+           n_bins       n_pieces_v0      cell_viol_v0       cell_max_v0 
+        2.500e+05         2.453e+05         0.000e+00         4.411e-11 
+pair_cells_max_v0        bin_max_v0      bin_over_1e9       n_pieces_v2 
+        0.000e+00         4.547e-13         0.000e+00         2.453e+05 
+     cell_viol_v2       cell_max_v2        bin_max_v2          total_v0 
+        0.000e+00         2.192e-05         1.332e-15         0.000e+00 
+         total_v2 
+        0.000e+00 
+
+== A6 r2 CSR 2  365/408  clipped TRUE,TRUE  ident 1 diff 1  a0 695.6145  a_fix 0  a_fix_rev 0  n_far_j 3
+                 xi yi                 xj yj ulp_x ulp_y            d
+ 3.5958479537267074  0 3.5958479537267056  0     4     0 1.776357e-15
+ dist_reg_i dist_reg_j i_is_regvertex j_is_regvertex
+          0          0          FALSE          FALSE
+placebo ufficiale-like: coord changed in 10/20 seeds (sum changed 10); area intact (|d|<=0.01) 17/20; coord mag max 73.6
+placebo ulp: coord changed 20/20; area intact 20/20; area==0 0/20; valid 20/20
+inverse (1 ulp on identical shared vertex):
+ k dist_reg         area
+ 1 25.03918 7.105427e-14
+           n_bins       n_pieces_v0      cell_viol_v0       cell_max_v0 
+        2.500e+05         2.641e+05         0.000e+00         2.842e-11 
+pair_cells_max_v0        bin_max_v0      bin_over_1e9       n_pieces_v2 
+        2.274e-13         4.547e-13         0.000e+00         2.641e+05 
+     cell_viol_v2       cell_max_v2        bin_max_v2          total_v0 
+        0.000e+00         1.652e-05         1.332e-15         0.000e+00 
+         total_v2 
+        0.000e+00 
+
+== A6 r5 RSArule 19  640/917  clipped TRUE,TRUE  ident 1 diff 1  a0 844.8192  a_fix 0  a_fix_rev 0  n_far_j 3
+ xi                 yi xj                 yj ulp_x ulp_y            d
+  0 9.0211986809534181  0 9.0211986809534199     0     1 1.776357e-15
+ dist_reg_i dist_reg_j i_is_regvertex j_is_regvertex
+          0          0          FALSE          FALSE
+placebo ufficiale-like: coord changed in 12/20 seeds (sum changed 12); area intact (|d|<=0.01) 20/20; coord mag max 46.8
+placebo ulp: coord changed 20/20; area intact 20/20; area==0 0/20; valid 20/20
+inverse (1 ulp on identical shared vertex):
+ k dist_reg         area
+ 1 26.97554 1.705303e-13
+           n_bins       n_pieces_v0      cell_viol_v0       cell_max_v0 
+        2.500e+05         2.687e+05         0.000e+00         3.797e-11 
+pair_cells_max_v0        bin_max_v0      bin_over_1e9       n_pieces_v2 
+        2.274e-13         4.547e-13         0.000e+00         2.687e+05 
+     cell_viol_v2       cell_max_v2        bin_max_v2          total_v0 
+        0.000e+00         1.462e-05         8.882e-16         0.000e+00 
+         total_v2 
+        0.000e+00 

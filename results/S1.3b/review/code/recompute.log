@@ -1,0 +1,51 @@
+null files: 1800
+read errors: 0
+rows 9000; per variant: V0 1800 V0g 1800 V1 1800 V2 1800 V3 1800
+C-0: matched 1800; n equal 1800; |dc1|<=1e-12 1800; |dc2|<=1e-12 1800; |dsd|<=1e-12 1800; max|dc1| 4.73e-30 max|dc2| 1.73e-18
+C-0: S1.3 fails 15; S1.3b V0 fails (signed) 15 (abs) 15; identical sets TRUE / TRUE
+C-0 fail list: A1 r1 RSArule 20; A1 r2 RSA 2; A1 r2 RSArule 10; A2 r5 CSR 2; A3 r1 RSArule 12; A3 r2 RSA 10; A3 r3 CSR 3; A3 r4 RSA 14; A4 f1 RSArule 20; A4 p2 RSArule 13; A4 p3 CSR 15; A4 p3 RSArule 2; A5 r1 RSA 17; A5 r5 RSA 15; A6 r3 RSArule 13
+V0 ov sign among fails: ov>0 15 ov<0 0; symd-only 0
+C-1 V0: nulls |ov| or symd > 1e-9 A: 15
+C-1 V0g: nulls |ov| or symd > 1e-9 A: 15
+C-1 V0g same set as V0: TRUE
+C-1 V1: over tau 0; max|ov|/tau 2.45e-08; max symd/tau 0; tau_file==tau_me TRUE (max rel diff 0)
+C-1 V2: over tau 0; max|ov|/tau 2.03e-08; max symd/tau 2.94e-06; tau_file==tau_me TRUE (max rel diff 0)
+C-1 V3: over tau 0; max|ov|/tau 2.18e-07; max symd/tau 0; tau_file==tau_me TRUE (max rel diff 0)
+C-2 V0: pairs over 10 (tau_ij field 1526) in 10 nulls; nulls: A1 r3 RSArule 8; A2 r4 RSA 12; A2 r5 RSArule 19; A3 r3 CSR 3; A3 r3 CSR 5; A3 r3 RSA 8; A3 r5 RSArule 2; A5 r2 CSR 16; A6 r2 CSR 2; A6 r5 RSArule 19
+C-2 V0g: pairs over 10 (tau_ij field 1744) in 10 nulls; nulls: A1 r3 RSArule 8; A2 r4 RSA 12; A2 r5 RSArule 19; A3 r3 CSR 3; A3 r3 CSR 5; A3 r3 RSA 8; A3 r5 RSArule 2; A5 r2 CSR 16; A6 r2 CSR 2; A6 r5 RSArule 19
+C-2 V1: pairs over 0 (tau_ij field 0) in 0 nulls; nulls: 
+C-2 V2: pairs over 0 (tau_ij field 0) in 0 nulls; nulls: 
+C-2 V3: pairs over 0 (tau_ij field 0) in 0 nulls; nulls: 
+C-2 V0 pairs: A1 r3 RSArule 8 3780/5886 99.3963 | A2 r4 RSA 12 1884/5121 65.7719 | A2 r5 RSArule 19 1103/1714 65.7041 | A3 r3 CSR 3 766/1987 340.427 | A3 r3 CSR 5 3479/4200 140.716 | A3 r3 RSA 8 929/2686 223.841 | A3 r5 RSArule 2 705/2172 351.513 | A5 r2 CSR 16 197/335 635.48 | A6 r2 CSR 2 365/408 695.615 | A6 r5 RSArule 19 640/917 844.819
+C-2 V0g same pairs as V0: TRUE
+C-2 V0 pair nulls also union-failing: 1 of 10
+C-2 V0 total predicate pairs (2********) over all nulls 1788; nulls with >=1 predicate pair 1108
+C-2 V1 predicate pairs total 0; max pair area 0
+C-2 V2 predicate pairs total 0; max pair area 0
+C-2 V3 predicate pairs total 0; max pair area 0
+C-3 V0: pts 1.8e+08; anom 0; far 0; dmax 0; cov0 0; cov2 0; NA 0
+C-3 V1: pts 1.8e+08; anom 1; far 0; dmax 3.95e-08; cov0 1; cov2 0; NA 0
+C-3 V2: pts 1.8e+08; anom 1; far 0; dmax 3.95e-08; cov0 1; cov2 0; NA 0
+C-3 V3: pts 1.8e+08; anom 0; far 0; dmax 0; cov0 0; cov2 0; NA 0
+C-4 V1: invalid 2 (nulls 2: A1 r4 RSArule 13; A5 r1 CSR 12); empty 0; n differs 0; collapsed 0; types changed 0
+C-4 V2: invalid 0 (nulls 0: ); empty 0; n differs 0; collapsed 0; types changed 0
+C-4 V3: invalid 2 (nulls 2: A1 r4 RSArule 13; A5 r1 CSR 12); empty 0; n differs 0; collapsed 0; types changed 0
+C-5 V1: cells over 0; max ratio 0.462; max abs 9.39e-05
+C-5 V2: cells over 0; max ratio 0.462; max abs 9.39e-05
+C-5 V3: cells over 0; max ratio 0.123; max abs 3.1e-07
+B-1 V1: nulls 32; cells 39; max rel 1.68e-06; cells checked 14469748
+B-1 V2: nulls 32; cells 39; max rel 1.68e-06; cells checked 14469748
+B-1 V3: nulls 0; cells 0; max rel 8.43e-09; cells checked 14469748
+B-2 V1: med_area 2.01e-07, cv 4.74e-09, med_eqr 1.01e-07, frac_int 0, cv_loc 4.97e-09, ecc 0; interior flips 0
+B-2 V2: med_area 2.01e-07, cv 4.74e-09, med_eqr 1.01e-07, frac_int 0, cv_loc 4.97e-09, ecc 0; interior flips 0
+B-2 V3: med_area 0, cv 3.59e-12, med_eqr 0, frac_int 0, cv_loc 3.94e-12, ecc 0; interior flips 0
+time V1 build+union 744.3 s
+time V2 build+union 1185.8 s
+time V3 build+union 10601.9 s
+CP-3 n: median fail 6457 pass 4884 p 0.26
+CP-3 holes: median fail 9 pass 34 p 0.16
+CP-3 regv: median fail 934 pass 5475 p 0.15
+CP-3 i_diff: median fail 3 pass 2 p 0.0024
+CP-3 i_tj: median fail 627 pass 690 p 0.37
+CP-3 V3 n_pairs_cross_diff among fails: 2,3,3,2,4,5,2,4,7,4,4,2,2,1,4
+CP-3 V3 i_diff == 0 among pass: 300 of 1785; >=3 among pass 604

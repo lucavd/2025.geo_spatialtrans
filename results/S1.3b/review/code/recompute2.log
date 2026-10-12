@@ -1,0 +1,80 @@
+grid files 30
+grid sets: fail 15 pass 15; fail set == S1.3 fails: TRUE
+grid pass per archetype: A1 3 A2 3 A3 2 A4 2 A5 3 A6 2
+grid pass set overlaps S1.3 fails: 0
+pair-error nulls (C-2 V0) covered by C-6 grid: 1 of 10 (A3 r3 CSR 3)
+C-6 V0: cell_viol 0 bin_viol 0; max cell 4.77e-11; max bin 5.68e-13; pieces 10027780; n_bnd 168193; time 920 s
+C-6 V1: cell_viol 0 bin_viol 0; max cell 5.32e-11; max bin 5.4e-13; pieces 10027780; n_bnd 168193; time 878 s
+C-6 V2: cell_viol 0 bin_viol 0; max cell 2.36e-05; max bin 1.33e-15; pieces 10027780; n_bnd 168193; time 534 s
+C-6 V3: cell_viol 0 bin_viol 0; max cell 4.77e-11; max bin 5.97e-13; pieces 10027780; n_bnd 168193; time 883 s
+C-6 V0 vs V2 pieces identical counts: 30/30
+  mutant         case  target n_fail
+1     M1  A1 r1 CSR 1     C-5   8662
+2     M2  A3 r3 CSR 3 C-1/C-2      2
+3     M3  A3 r3 CSR 3 C-1/C-2      2
+4     M2 A5 r5 RSA 15 C-1/C-2      1
+5     M3 A5 r5 RSA 15 C-1/C-2      1
+CP-1: a_v0 340.427259 relate 212111212 a_cp1a 0 clipped TRUE,TRUE types POLYGON,POLYGON
+             n_vertices           n_pairs_cross n_pairs_cross_identical 
+           1.000000e+01            2.000000e+00            1.000000e+00 
+     n_pairs_cross_diff                 n_moved           n_moved_geoms 
+           1.000000e+00            1.000000e+00            1.000000e+00 
+            n_tjunction         n_rings_dropped                   d_max 
+           0.000000e+00            0.000000e+00            8.881784e-16 
+d0_d: 8.88178419700125e-16; d0_dtj: ; diff_dist_to_region: 0
+placebo: n_far1 3 n_far2 3; areas range 340.427259..340.427259; |area - a_v0| <= 0.01: 20/20; valid all TRUE; moved 1
+placebo areas identical to a_v0 bitwise: 20/20; max |diff| 0
+CP-1c: union_deficit_v0 1358.5733 symd_v0 1358.57333515677; cp1c_rel_ov 1.74e-15 cp1c_rel_symd  (len 0)
+             n_vertices           n_pairs_cross n_pairs_cross_identical 
+           2.453400e+04            1.459900e+04            1.459800e+04 
+     n_pairs_cross_diff                 n_moved           n_moved_geoms 
+           1.000000e+00            1.000000e+00            1.000000e+00 
+            n_tjunction         n_rings_dropped                   d_max 
+           6.160000e+02            0.000000e+00            8.881784e-16 
+             n_vertices           n_pairs_cross n_pairs_cross_identical 
+           2.453400e+04            1.459900e+04            1.459800e+04 
+     n_pairs_cross_diff                 n_moved           n_moved_geoms 
+           1.000000e+00            1.000000e+00            1.000000e+00 
+            n_tjunction         n_rings_dropped                   d_max 
+           6.160000e+02            0.000000e+00            8.881784e-16 
+diff_on_region_boundary: TRUE
+cp2 files 60
+cp2 selection 60, files match TRUE, in S1.3 fail set 0, per arch 10,10,10,10,10,10, overlap pair-error nulls 1
+CP-2 V0: per delta (1e-12/1e-10/1e-8) n 60/60/60; exceptions 3/5/6; silent fails 0/0/0; fail rate post hoc 0.050/0.083/0.100; silent rate 0.000/0.000/0.000; pairs_over silent 995779/1022519/1020110
+CP-2 V1: per delta (1e-12/1e-10/1e-8) n 60/60/60; exceptions 0/0/0; silent fails 0/0/0; fail rate post hoc 0.000/0.000/0.000; silent rate 0.000/0.000/0.000; pairs_over silent 0/0/0
+CP-2 V2: per delta (1e-12/1e-10/1e-8) n 60/60/60; exceptions 0/0/0; silent fails 0/0/0; fail rate post hoc 0.000/0.000/0.000; silent rate 0.000/0.000/0.000; pairs_over silent 0/0/0
+CP-2 V3: per delta (1e-12/1e-10/1e-8) n 60/60/60; exceptions 0/0/0; silent fails 0/0/0; fail rate post hoc 0.000/0.000/0.000; silent rate 0.000/0.000/0.000; pairs_over silent 0/0/0
+CP-2 V0 exceptions with invalid input: 14 of 14; invalid inputs total 3/5/6
+CP-2 V0 max |ov|/thr and symd/thr among non-exception rows: 0.0862 0.109
+CP-2 V0 max |ov|/(1e-9 A) among non-exception rows (S1.3 threshold only): 0.947
+CP-2 V0 error messages: TopologyException: side location conflict at 975.79118407575368 276.29143638401956. This c || TopologyException: side location conflict at 264.23109591024479 202.8329989326657. This ca || TopologyException: side location conflict at 52.626940264923377 276.29143639108224. This c || TopologyException: side location conflict at 785.29117895759157 391.00272090353582. This c || TopologyException: side location conflict at 785.29117895589491 391.00272091083906. This c || TopologyException: side location conflict at 902.4824706570937 129.23899458438979. This ca || TopologyException: side location conflict at 902.48247064876387 129.23899459055798. This c || TopologyException: side location conflict at 751.33856173634581 490.67008113402994. This c || TopologyException: side location conflict at 751.33856173088122 490.67008113143612. This c || TopologyException: side location conflict at 669.19513297510127 877.29181917030496. This c || TopologyException: side location conflict at 669.1951329750832 877.29181917031792. This ca || TopologyException: side location conflict at 751.33856173636707 490.67008113395349. This c || TopologyException: side location conflict at 751.33856173626793 490.67008113395377. This c || TopologyException: side location conflict at 669.19513298377399 877.29181916673701. This c
+CP-2 V1 max |ov|/tau 0.00264 max symd/tau 0.00397
+CP-2 V2 max |ov|/tau 0.00218 max symd/tau 0.00341
+CP-2 V3 max |ov|/tau 2.26e-07 max symd/tau 0
+CP-2 V0 verdict with post hoc rule: TRUE; without (exceptions excluded or not FAIL): FALSE
+binomial P(X>=1 | n=60, p=15/1800) = 0.395; P(X>=1 | n=180) = 0.778
+S1.3 verdict rows 195; B rows 98; B predictions (confirmed non NA) 62
+B-2 V0: rows 195 keys same TRUE; all cols identical TRUE; B outcome same 98/98; B pred confirmed same 62/62; B value same 98/98; non-B rows identical 97/97
+B-2 V1: rows 195 keys same TRUE; all cols identical FALSE; B outcome same 98/98; B pred confirmed same 62/62; B value same 98/98; non-B rows identical 96/97
+B-2 V2: rows 195 keys same TRUE; all cols identical FALSE; B outcome same 98/98; B pred confirmed same 62/62; B value same 98/98; non-B rows identical 96/97
+B-2 V3: rows 195 keys same TRUE; all cols identical TRUE; B outcome same 98/98; B pred confirmed same 62/62; B value same 98/98; non-B rows identical 97/97
+B-2 inputs: summary identical to S1.3 original (per variant): 1800/0/0/1798
+B-2 inputs: summary identical to S1.3b res[[v]]: 1800/1800/1800/1800; cells areas identical: 180/180/180/180
+B-2 V1: max |ΔB| per metric B1 4.03e-08, B2 1.5e-09, B3 2.1e-09, B4 0
+B-2 V2: max |ΔB| per metric B1 4.03e-08, B2 1.5e-09, B3 2.1e-09, B4 0
+B-2 V3: max |ΔB| per metric B1 0, B2 0, B3 0, B4 0
+B-2 V0 min margin | |B| - thr | over all ROI x model: B1 0.00564, B2 0.0198, B3 0.00716, B4 1.53e-05
+B-2 order predictions: min |G3 - G2 (or CSR)| margin 0.0402 (relative ~ 0.0848)
+            V1 V2 V3
+C1           1  1  1
+C2           1  1  1
+C3           1  1  1
+C4           0  1  0
+C5           1  1  1
+C6           1  1  1
+Cunit        1  1  1
+CP2_posthoc  1  1  1
+CP2_silent   1  1  1
+Cunit_n     21 21 23
+eligible (order V1,V3,V2): V2; choice V2
+sensitivity: eligible ignoring C-4 invalid: V1,V3,V2

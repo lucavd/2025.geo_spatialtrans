@@ -1,0 +1,6 @@
+A5 r1 CSR 12 6 type POLYGON rings 2 nvert 146 
+  min non-adjacent vertex distance 0: (195.15823681587767, 986.09828189307041) ring 1/1 vs (195.15823681587767, 986.09828189307041) ring 1/2; dist to region boundary 0
+  V1 reason: Ring Self-intersection[215.177821 999.911865] 
+A1 r4 RSArule 13 1655 type POLYGON rings 1 nvert 25 
+  min non-adjacent vertex distance 5.55e-17: (0.4706447112261975, 185.11329091551909) ring 1/1 vs (0.47064471122619755, 185.11329091551909) ring 1/1; dist to region boundary 0
+  V1 reason: Ring Self-intersection[0.470645 185.113291] 

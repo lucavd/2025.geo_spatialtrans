@@ -1,0 +1,3 @@
+coppie 2591 con vertice condiviso diverso (<1e-6, !=0): 1
+coppie con intersezione shapely > 1e-6*(Pi+Pj): 1
+  ('c00071', 'c00175', 'FF2F01212', 1442.8427778340326, 0.0, 1)

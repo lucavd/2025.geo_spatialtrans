@@ -1,0 +1,21 @@
+hex != decimale: 0
+A1_r3_RSArule_08 3780 5886 conv True True id/diff 1 1 | exact 3.1900775768454675e-15 True True | sf II ok True | sf_inter==i False in_j 3.1900775768454675e-15 | shp 99.39626819556138 212111212 0.0 0.0 FF2F11212
+   diff ulp 2 0 dist 4.440892098500626e-16 vi_in_j on vj_in_i on dreg 0.0 0.0 True True
+A2_r4_RSA_12 1884 5121 conv True True id/diff 1 1 | exact 2.1922671904115587e-15 True True | sf II ok True | sf_inter==i False in_j 2.1922671904115587e-15 | shp 65.77188507393956 212111212 0.0 0.0 FF2F11212
+   diff ulp 0 1 dist 4.440892098500626e-16 vi_in_j on vj_in_i on dreg 0.0 0.0 True True
+A2_r5_RSArule_19 1103 1714 conv True True id/diff 1 1 | exact 2.06004528247201e-15 True True | sf II ok True | sf_inter==i False in_j 2.06004528247201e-15 | shp 65.7040555391807 212111212 0.0 0.0 FF2F11212
+   diff ulp 1 0 dist 4.440892098500626e-16 vi_in_j on vj_in_i on dreg 0.0 0.0 True True
+A3_r3_CSR_03 766 1987 conv True True id/diff 1 1 | exact 1.1886465455079e-14 True True | sf II ok True | sf_inter==i False in_j 1.1886465455079e-14 | shp 340.42725921784216 212111212 0.0 0.0 FF2F11212
+   diff ulp 0 2 dist 8.881784197001252e-16 vi_in_j on vj_in_i on dreg 0.0 0.0 True True
+A3_r3_CSR_05 3479 4200 conv True True id/diff 1 1 | exact 3.956536964602202e-15 True True | sf II ok True | sf_inter==i False in_j 3.956536964602202e-15 | shp 140.7161999664755 212111212 0.0 0.0 FF2F11212
+   diff ulp 1 0 dist 4.440892098500626e-16 vi_in_j on vj_in_i on dreg 0.0 0.0 True True
+A3_r3_RSA_08 929 2686 conv True True id/diff 1 1 | exact 5.0613904449440515e-15 True True | sf II ok True | sf_inter==i False in_j 5.0613904449440515e-15 | shp 223.8405096188537 212111212 0.0 0.0 FF2F11212
+   diff ulp 0 1 dist 4.440892098500626e-16 vi_in_j on vj_in_i on dreg 0.0 0.0 True True
+A3_r5_RSArule_02 705 2172 conv True True id/diff 1 1 | exact 8.301738327240684e-15 True True | sf II ok True | sf_inter==i False in_j 8.301738327240684e-15 | shp 351.51290256662634 212111212 0.0 0.0 FF2F11212
+   diff ulp 0 1 dist 8.881784197001252e-16 vi_in_j on vj_in_i on dreg 0.0 0.0 True True
+A5_r2_CSR_16 197 335 conv True True id/diff 1 1 | exact 2.1485777782806207e-14 True True | sf II ok True | sf_inter==i False in_j 2.1485777782806207e-14 | shp 635.4801063861905 212111212 0.0 0.0 FF2F11212
+   diff ulp 0 1 dist 1.7763568394002505e-15 vi_in_j on vj_in_i on dreg 0.0 0.0 True True
+A6_r2_CSR_02 365 408 conv True True id/diff 1 1 | exact 2.2239254996310722e-14 True True | sf II ok True | sf_inter==i False in_j 2.2239254996310722e-14 | shp 695.6145263398628 212111212 0.0 0.0 FF2F11212
+   diff ulp 4 0 dist 1.7763568394002505e-15 vi_in_j on vj_in_i on dreg 0.0 0.0 True True
+A6_r5_RSArule_19 640 917 conv True True id/diff 1 1 | exact 2.3959093277443376e-14 True True | sf II ok True | sf_inter==i False in_j 2.3959093277443376e-14 | shp 844.8192261862523 212111212 0.0 0.0 FF2F11212
+   diff ulp 0 1 dist 1.7763568394002505e-15 vi_in_j on vj_in_i on dreg 0.0 0.0 True True

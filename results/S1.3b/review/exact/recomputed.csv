@@ -1,0 +1,14 @@
+quantity,report_value,recomputed_value,match
+st_relate II=2 nelle 10 coppie P1 corretto?,"212111212 in 10/10, controllo esatto demandato alla revisione",corretto 10/10: area esatta dell'intersezione 2.06e-15–2.40e-14 µm² (>0),True
+area dichiarata da st_intersection V0 = area di una cella,area_v0 = area_i (10/10),"geometria ⊂ i, area esatta identica ad area_i in 10/10; CSV uguale come stringa in 9/10 (A3 r3 RSA 8: rel 8.9e-15)",True
+errore di st_intersection (sovrastima),intersezione dichiarata 66–845 µm²,65.704–844.819 µm² sopra il vero (fattore 3e16–1e17),True
+ulp del vertice condiviso diverso,1–4 ulp (4e-16…2e-15 µm),"ulp max(x,y) = 2,1,1,2,1,1,1,1,4,1; distanze 4.44e-16–1.78e-15 µm",True
+d0_dmax per coppia (CSV),"4.44e-16 ×5, 8.88e-16 ×2 (A3 r3 CSR 3, A3 r5 RSArule 2), 1.78e-15 ×3",identiche in 10/10 (distanza esatta),True
+d0_ident / d0_diff,1 / 1 in 10/10,1 identico / 1 diverso in 10/10,True
+vertice diverso sul bordo della regione,si' (tolleranza 1e-6),"si', distanza razionale esattamente 0 per entrambe le copie, 10/10 e 71/175",True
+D-0 766/1987: vertice diverso,8.9e-16 µm,8.881784197001252e-16 µm (2 ulp in y),True
+numero di coppie con st_intersection sbagliata nei nulli V0,10,">= 11 nei soli 11 nulli esaminati (10 P1 + 71/175 di A5 r5 RSA 15, invisibile a C-2 perche' II=F)",False
+GEOS 3.14.1 (shapely 2.2.0) in virgola mobile,non testato,errore identico in 10/10 + 71/175,True
+grid_size 1e-6,V2 area 0 (area_v2 nel CSV),shapely grid 1e-6: area 0 in 10/10; set_precision -> relate FF2F11212,True
+A5 r5 RSA 15: deficit di st_union,1 358.6 µm² (riportato con segno −),"+1358.5733 µm² = area esatta della cella 71, persa per intero",True
+A5 r5 RSA 15: somma aree − area regione,(non dichiarato; CP-1c |ov|/A dopo V3 = 1.7e-15),esatto −1.68e-14 µm² (rel −1.9e-20); 0 sovrapposizioni esatte su 2591 coppie,True

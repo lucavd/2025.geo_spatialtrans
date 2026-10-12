@@ -32,13 +32,14 @@
 "CP","D-0","766/1987","vertici condivisi diversi; giunzioni a T; identici; max d","1; 0; 1; 8.88e-16",">= 1 (diversi o T)","PASS",">= 1","TRUE"
 "CP","D-0","A5 r5 RSA 15","vertici condivisi diversi; giunzioni a T; identici; sul bordo regione","1; 616; 14598; 1/1","descrittivo","INFO",NA,NA
 "CP","CP-1a","766/1987","area intersezione dopo annodamento (V0)","0.00e+00 (V0 340.4273)","<= 1e-6","PASS","<= 1e-6","TRUE"
-"CP","CP-1b","766/1987","placebo con errore intatto (|area − V0| <= 0.01)","20/20 (spost. 1, ins. 0+0)",">= 19/20","PASS",">= 19/20","TRUE"
+"CP","CP-1b","766/1987","placebo (stessi ulp, coordinate cambiate) con errore intatto","18/20 (spost. 1 di 2 ulp; seed con coordinate cambiate 20/20)",">= 19/20","FAIL",">= 19/20","FALSE"
 "CP","CP-1c","A5 r5 RSA 15","unione dopo V3: |ov|/A, symd/A (V0 deficit µm²)","1.74e-15, 0.00e+00 (1358.6)","<= 1e-9","PASS","<= 1e-9","TRUE"
 "CP","CP-2 eccezioni","V0","eccezioni GEOS (per δ = 1e-12 / 1e-10 / 1e-8)","3 / 5 / 6","descrittivo (contano come FAIL)","INFO",NA,NA
 "CP","CP-2 eccezioni","V1","eccezioni GEOS (per δ = 1e-12 / 1e-10 / 1e-8)","0 / 0 / 0","descrittivo (contano come FAIL)","INFO",NA,NA
 "CP","CP-2 eccezioni","V2","eccezioni GEOS (per δ = 1e-12 / 1e-10 / 1e-8)","0 / 0 / 0","descrittivo (contano come FAIL)","INFO",NA,NA
 "CP","CP-2 eccezioni","V3","eccezioni GEOS (per δ = 1e-12 / 1e-10 / 1e-8)","0 / 0 / 0","descrittivo (contano come FAIL)","INFO",NA,NA
-"CP","CP-2","V0","frequenza FAIL per δ = 1e-12 / 1e-10 / 1e-8 (basale 0.0083)","0.050 / 0.083 / 0.100","> 0.0083 ad almeno un δ","PASS","> basale","TRUE"
+"CP","CP-2","V0","frequenza FAIL silenziosi (pre-registrata) per δ = 1e-12 / 1e-10 / 1e-8 (basale 0.0083)","0.000 / 0.000 / 0.000","> 0.0083 ad almeno un δ","FAIL","> basale","FALSE"
+"CP","CP-2 (post hoc)","V0","frequenza FAIL con eccezione = FAIL","0.050 / 0.083 / 0.100","> 0.0083","INFO",NA,NA
 "CP","CP-2","V1","FAIL su 60 x 3 δ (per δ)","0 (0/0/0)","0","PASS","0","TRUE"
 "CP","CP-2","V2","FAIL su 60 x 3 δ (per δ)","0 (0/0/0)","0","PASS","0","TRUE"
 "CP","CP-2","V3","FAIL su 60 x 3 δ (per δ)","0 (0/0/0)","0","PASS","0","TRUE"

@@ -1,0 +1,25 @@
+id,revisore,gravita,rilievo,azione,stato
+RC-01,code,bug,"placebo CP-1b nullo: 8.9e-16 sommato a coordinate ~1e3 (ulp 1.1e-13), 0/20 coordinate cambiate","placebo in ulp della coordinata con conteggio delle coordinate cambiate (e10194f); cp1 rieseguito: 18/20 < 19/20 -> CP-1b FAIL",corretto e rieseguito
+RC-02,code,discrepanza,"CP-2 V0 PASS solo con la regola post hoc; definizione pre-registrata 0/180; regola scritta dopo che null/grid/cp1 erano su disco","verdetto CP-2 V0 con la definizione pre-registrata (FAIL, non confermata); riga post hoc INFO; testo: CP-2 senza potenza (0.395)",corretto
+RC-03,code,metodo,"'la causa e' isolata' piu' forte dell'evidenza","riformulato: condizione necessaria osservata e innesco riproducibile, non sufficiente ne' specifica; meccanismo GEOS non identificato",corretto nel report
+RC-04,code,confermato,"fusione dei soli vertici diversi (senza T) corregge 15/15 unioni; d_max unioni fino a 1.14e-13",aggiunto al report (controprova della revisione); unita' corrette,integrato
+RC-05,code,metodo,"C-6 copriva 1/10 nulli con coppia sbagliata; nessun controllo positivo; solo 2 µm","testo: nessun errore osservato (39 nulli, ~13 M intersezioni con l'estensione della revisione); controllo positivo e 8 µm -> BACKLOG",corretto nel report + BACKLOG
+RC-06,code,metodo,"decisione dipende solo da C-4 (2 celle su 14 469 893); senza C-4 sarebbe V1",dichiarato nel report e nella decisione in ROADMAP,integrato
+RC-07,code,confermato,"meccanismo invalidita' verificato per A1 r4 RSArule 13 cella 1655, non per A5 r1 CSR 12 cella 6",report: verificato in 1 dei 2 casi,integrato
+RC-08,code,metodo,"C-3: V0 e' una partizione corretta alla risoluzione dei punti; sbagliano le operazioni",riga di lettura aggiunta,integrato
+RC-09,code,confermato,"B-2: worktree a 4935c28 senza impatto; valori identici alla precisione di stampa; margine min 0.0056 vs Δ 4.0e-8",precisato nel report,integrato
+RC-10,code,confermato,"tutti i valori numerici del CSV dei verdetti ricalcolati identici",nessuna,confermato
+RC-11,code,metodo,"st_intersection restituisce l'intera cella i (10/10; 36/36 nel test inverso)",firma aggiunta al report,integrato
+RC-12,code,metodo,"V0g: coppie individuate con predicati sf (GEOS 3.12.1), solo unione/area in 3.11.1",precisato,integrato
+RC-13,code,metodo,"CP-2 V1-V3: tau ~70 volte lo spostamento ammesso a δ = 1e-8",riga di lettura,integrato
+RC-14,code,confermato,"correzione post run dell'ordine V1->V3->V2 dichiarata",nessuna,confermato
+X1,exact,confermato,"st_relate II=2 corretto in 10/10: schegge reali 2.1e-15-2.4e-14 µm²",report: interni sovrapposti reali (sub-tolleranza di 10 ordini); BL-069 corretta (S1.3 diceva predicati corretti: vero per II),integrato
+X2,exact,confermato,"st_intersection = cella i intera; sovrastima 65.7-844.8 µm²",nessuna,confermato
+X3,exact,metodo,"configurazione a lacuna (71/175 in A5 r5 RSA 15): intersezione esatta 0, st_intersection = cella 175 intera; invisibile a C-2 -> coppie sbagliate >= 11","report: '>= 11'; C-2 esteso a tutte le coppie che si toccano e a entrambi gli ordini -> BACKLOG (BL-070)",integrato + BACKLOG
+X4,exact,discrepanza,"errore dipende dall'ordine degli argomenti (j,i corretto in 8/10)",dichiarato nel report; BACKLOG (controllo simmetrico),integrato + BACKLOG
+X5,exact,confermato,"GEOS 3.14.1 ripete l'errore; grid_size 1e-6 lo elimina in 11/11",report,integrato
+X6,exact,confermato,"area V0 = area della cella i in aritmetica esatta",nessuna,confermato
+X7,exact,confermato,"1 vertice identico + 1 diverso (1-4 ulp), entrambe le copie esattamente sul bordo della regione, 10/10",nessuna,confermato
+X8,exact,confermato,"A5 r5 RSA 15 partizione entro 1.7e-14 µm²; deficit st_union = cella 71 intera (1358.5733 µm²)",report,integrato
+X9,exact,discrepanza,"segno del deficit (-1 358.6 nel testo, +1358.6 nei dati)",corretto: 'unione piu' piccola di 1 358.6 µm²',corretto
+X10,exact,discrepanza,"st_relate B/B non esatta su 71/175 (FF2F11212 vs esatto ...0...)",report: neanche i predicati GEOS sono esatti in queste configurazioni (II corretta),integrato

@@ -1,0 +1,10 @@
+A1_r3_RSArule_08 triangolo(a,vi,vj) == intersezione esatta: True 3.19e-15 lato condiviso 16.267
+A2_r4_RSA_12 triangolo(a,vi,vj) == intersezione esatta: True 2.192e-15 lato condiviso 13.784
+A2_r5_RSArule_19 triangolo(a,vi,vj) == intersezione esatta: True 2.06e-15 lato condiviso 10.778
+A3_r3_CSR_03 triangolo(a,vi,vj) == intersezione esatta: True 1.189e-14 lato condiviso 31.190
+A3_r3_CSR_05 triangolo(a,vi,vj) == intersezione esatta: True 3.957e-15 lato condiviso 18.732
+A3_r3_RSA_08 triangolo(a,vi,vj) == intersezione esatta: True 5.061e-15 lato condiviso 24.568
+A3_r5_RSArule_02 triangolo(a,vi,vj) == intersezione esatta: True 8.302e-15 lato condiviso 24.525
+A5_r2_CSR_16 triangolo(a,vi,vj) == intersezione esatta: True 2.149e-14 lato condiviso 35.936
+A6_r2_CSR_02 triangolo(a,vi,vj) == intersezione esatta: True 2.224e-14 lato condiviso 37.153
+A6_r5_RSArule_19 triangolo(a,vi,vj) == intersezione esatta: True 2.396e-14 lato condiviso 39.186

@@ -1,0 +1,9 @@
+n celle 929 vertici regione 9418 parti/anelli 1 [120]
+area regione esatta 869069.77094766789  sf 869069.77094766614  w 869069.77094766614
+somma aree esatta 869069.77094766789  sf 869069.77094766765
+somma - regione (esatto) = -1.68195e-14  rel -1.94e-20
+coppie che si toccano 2591 con area esatta > 0: 0 somma 0.0 max 0.0 t 8.7
+celle vicine al bordo 325 con area fuori regione != 0: 0 somma fuori 0 t 694.8
+lacune esatte (regione - somma + sovrapposizioni, al netto di fuori regione) = 1.68195e-14
+shapely unary_union area 867711.19761250948 deficit 1358.57 valid True
+shapely: celle non coperte dall'unione [('c00071', 1358.5733351567744, 0.0)]
