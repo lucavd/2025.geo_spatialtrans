@@ -67,18 +67,27 @@ chf <- file.path(OUTD, "checks", c("arbiter_check_N.json", "arbiter_check_U.json
 ach <- if (length(chf)) { tt <- lapply(chf, function(f) fromJSON(f)$totals); Reduce(function(a, b) mapply(`+`, a, b, SIMPLIFY = FALSE), tt) } else NULL
 mut_ok <- !is.null(mut) && all(mut$detected) && !is.null(ach) && ach$cp4_mutant[1] == ach$cp4_mutant[2]
 
+# ---- uscite geometriche invalide (clausola «0 invalide non riparate» della regola 1; correzione D-1, vedi dev_notes) -------
+VF <- if (file.exists(file.path(OUTD, "checks", "validity_F1F3.csv"))) read.csv(file.path(OUTD, "checks", "validity_F1F3.csv")) else NULL
+O1$n_invalid_out <- NA_real_
+if (!is.null(VF)) { k <- O1$cand %in% c("F1", "F3"); O1$n_invalid_out[k] <- VF$n_invalid_F1F3[match(O1$key[k], VF$key)] }
+k <- O1$cand == "F2"; O1$n_invalid_out[k] <- O1$still_invalid[k]
+k <- O1$cand == "F4" & O1$applicable %in% TRUE; O1$n_invalid_out[k] <- C5$n_invalid[match(O1$key[k], C5$key)]
+O1$n_invalid_out[O1$cand %in% c("V0", "F5")] <- 0          # V0: uscita = ingresso (ingressi invalidi esclusi); F5: nessuna geometria sf
+inv_by <- function(cd, sets) { d <- O1[O1$cand == cd & O1$set %in% sets & O1$valid_input & O1$applicable %in% TRUE, ]; c(n = sum(d$n_invalid_out, na.rm = TRUE), na = sum(is.na(d$n_invalid_out))) }
+
 # ---- eleggibilità ----------------------------------------------------------------------------------------------------
 ELIG_SETS <- c("N", "U1", "U2", "U3", "U4", "U5", "S")       # K è dentro N; H solo dopo la decisione
 elig_row <- function(op, cd) {
   if (op == "O1") { d <- O1[O1$cand == cd & O1$applicable %in% TRUE, ]
     main <- d[d$set %in% ELIG_SETS & d$valid_input, ]; cp <- d[d$set %in% c("CP1T", "CP1P") & d$valid_input, ]
     n_silent <- sum(main$silent %in% TRUE); n_exc <- sum(main$n_exceptions > 0, na.rm = TRUE) + sum(is.na(main$n_exceptions) & main$fail %in% TRUE)
-    n_cov <- sum(main$cov_fail); n_inv <- if (cd == "F2") sum(main$still_invalid > 0, na.rm = TRUE) else 0
+    n_cov <- sum(main$cov_fail); iv <- inv_by(cd, c(ELIG_SETS, "CP1T", "CP1P")); n_inv <- iv[["n"]] + iv[["na"]]   # celle invalide (NA = non calcolato: conta)
     n_cp <- sum(cp$fail_eff); n_main <- nrow(main); hasS <- any(main$set == "S")
     ok_main <- sum(main$fail_eff) == 0
-  } else { d <- O2[O2$cand == cd & O2$op == op, ]
+  } else { d <- O2[O2$cand == cd & O2$op == op, ]; iv <- if (cd %in% c("F1", "F2", "F3", "F4")) inv_by(cd, c(ELIG_SETS, "CP1T", "CP1P")) else c(n = 0, na = 0)
     main <- d[d$set %in% ELIG_SETS & d$valid_input, ]; cp <- d[d$set %in% c("CP1T", "CP1P") & d$valid_input, ]
-    n_silent <- sum(main$silent %in% TRUE); n_exc <- sum(main$exception %in% TRUE); n_cov <- 0; n_inv <- 0; n_cp <- sum(cp$fail %in% TRUE)
+    n_silent <- sum(main$silent %in% TRUE); n_exc <- sum(main$exception %in% TRUE); n_cov <- 0; n_inv <- iv[["n"]] + iv[["na"]]; n_cp <- sum(cp$fail %in% TRUE)
     n_main <- nrow(main); hasS <- any(main$set == "S"); ok_main <- sum(main$fail %in% TRUE) == 0 }
   data.frame(op = op, cand = cd, n_cases = n_main, has_S = hasS, n_silent = n_silent, n_exceptions = n_exc, n_cov_fail = n_cov, n_still_invalid = n_inv,
              n_cp1 = nrow(cp), n_cp1_fail = n_cp, mutants_ok = mut_ok,
