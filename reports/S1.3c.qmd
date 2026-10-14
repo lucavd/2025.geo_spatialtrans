@@ -25,6 +25,7 @@ g6 <- function(a, col) P6[[col]][P6$archetype == a]
 Emax <- max(RO$E); PH3$rec <- PH3$E / PH3$f_zeroed; rec <- aggregate(rec ~ archetype + type + f_target, PH3, median)
 x <- merge(PH1p[PH1p$band == "16-32", ], PH1[, c("archetype", "roi_id", "umi_bg_far_per_bin")]); x$ratio <- x$umi_mean / x$umi_bg_far_per_bin
 x14 <- x[x$archetype %in% c("A1", "A2", "A3", "A4") & is.finite(x$ratio), ]; xm <- aggregate(ratio ~ archetype, x14, median)
+xa <- aggregate(ratio ~ archetype, x[is.finite(x$ratio), ], median); g56 <- function(a) f2(xa$ratio[xa$archetype == a])
 fig <- function(f) file.path(R, "figures", f)
 nC6 <- 196
 ```
@@ -153,7 +154,7 @@ a <- aggregate(cbind(umi_tissue_mean, umi_lumen_mean, umi_bg_far_per_bin, lumen_
 kable(a, row.names = FALSE, col.names = c("arch.", "UMI/bin tessuto", "UMI/bin «lume»", "UMI/bin vetro ≥ 50 µm", "frazione del ROI «lume»"))
 ```
 
-A 16–32 µm dal bordo i lumi di A1–A4 stanno `r f2(min(xm$ratio))`–`r f2(max(xm$ratio))` volte sopra il vetro lontano (mediane per archetipo; ROI `r f2(min(x14$ratio))`–`r f2(max(x14$ratio))`). Il revisore ha verificato due cose (M-10; `results/S1.3c/review/method/out/lumen_vs_exterior_profile.csv`):
+A 16–32 µm dal bordo i lumi di A1–A4 stanno `r f2(min(xm$ratio))`–`r f2(max(xm$ratio))` volte sopra il vetro lontano (mediane per archetipo; ROI `r f2(min(x14$ratio))`–`r f2(max(x14$ratio))`). Negli altri due archetipi il rapporto non misura un vuoto vero: in A5 vale `r g56("A5")` (il «lume» è neuropilo escluso dalla maschera); in A6 vale `r g56("A6")`, cioè i vuoti veri di r3–r5 scendono **sotto** il livello del vetro lontano, ed è per questo che CP-2 in A6 regge in parte (0.45–0.52 di finestre vuote). Il revisore ha verificato due cose (M-10; `results/S1.3c/review/method/out/lumen_vs_exterior_profile.csv`):
 - il vetro **esterno** alla stessa distanza dal tessuto ha anch'esso UMI sopra il vetro lontano, quindi c'è una coda lunga di diffusione che la soglia pre-registrata esclude per costruzione;
 - i lumi, circondati dal tessuto, ne ricevono di più.
 
