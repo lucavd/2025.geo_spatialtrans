@@ -6,7 +6,7 @@
 Scuola di specializzazione in Statistica medica · supervisore: Luca Vedovelli
 Branch: `thesis/expression-sources` del repository `lucavd/2025.geo_spatialtrans`
 Periodo: **19 ottobre – 31 dicembre 2026**, a tempo pieno. Il 31/12/2026 la tesi è **scritta e consegnata** a Luca.
-Versione del protocollo: 1.2 (2026-10-14)
+Versione del protocollo: 1.3 (2026-10-14)
 
 ---
 
@@ -51,6 +51,8 @@ Il risultato serve al progetto principale: deciderà quale fonte di profili user
 | 2026-10-14 | Account Synthesize Bio personale di Pierangela; la richiesta di permesso di pubblicazione la invia lei, con Luca in copia |
 | 2026-10-14 | Branch `thesis/expression-sources` con push riservato; nessun merge in altri branch durante la tesi |
 | 2026-10-14 | Si lavora sul server, con un utente proprio (`pierangela`, non amministratore), un clone proprio in `/mnt/micron/geo_spatialtrans/tesi_pp1209/repo` e un token GitHub personale |
+| 2026-10-14 | Fino all'arrivo della VPN si lavora sul PC con un clone parziale del branch. I percorsi dei dati si leggono da `TESI_DATA`; i dati si scaricano solo da script con md5 e non si copiano mai dal PC al server |
+| 2026-10-14 | Piano di riserva: se la VPN non c'è entro venerdì 30/10, l'ADEMP si approva con un pilota su CPU (RCTD, CARD, NNLS). Il numero di repliche per cell2location si fissa nei primi giorni sul server, con un emendamento datato scritto **prima** di qualsiasi risultato |
 | 2026-10-14 | Regola di taglio in caso di ritardo: si toglie prima SPOTlight, poi il braccio G, poi il tessuto cervello. Non si tagliano mai i bracci E, P, M, C− ed E′ né i tessuti colon e linfoide |
 
 ## 3. Regole di lavoro (non negoziabili)
@@ -67,26 +69,148 @@ Il risultato serve al progetto principale: deciderà quale fonte di profili user
 
 ### 4.1 Repository e branch
 - Repository: `https://github.com/lucavd/2025.geo_spatialtrans`.
-- Il tuo branch è `thesis/expression-sources`, nato da `dev`. **Puoi fare push solo su questo branch** (dettagli nella sezione 4.2). Gli altri branch sono protetti: non puoi aggiornarli né fare merge.
+- Il tuo branch è `thesis/expression-sources`, nato da `dev`. **Puoi fare push solo su questo branch** (dettagli nelle sezioni 4.2 e 4.3). Gli altri branch sono protetti: non puoi aggiornarli né fare merge.
 - **Tutto il tuo lavoro sta nella cartella `thesis/`.** Non modificare file fuori da `thesis/`: il resto del repository è il simulatore principale e ti serve al massimo come lettura.
 - A fine tesi Luca valuterà, in una revisione dedicata, cosa portare nel progetto principale.
 
-### 4.2 Sul server (lesexp-server)
+### 4.2 Prima della VPN: lavorare dal tuo PC
 
-**Accesso.** Entri con l'utente `pierangela` (non amministratore) via `ssh pierangela@10.241.73.111`, dalla rete dell'università o in VPN. Al primo accesso cambia la password con `passwd`.
+Il server è raggiungibile solo dalla rete dell'università o in VPN. Finché non hai la VPN lavori sul tuo PC. Le settimane 1 e 2 si fanno quasi per intero da lì. Il server diventa indispensabile per cell2location (GPU), per i dataset completi e per le repliche Monte Carlo, cioè dalla settimana 3.
+
+L'obiettivo è che il giorno del passaggio al server tu non debba cambiare nulla nel codice. Per questo ci sono tre regole:
+- i percorsi dei dati **non** si scrivono mai nel codice: si leggono da una variabile d'ambiente;
+- i dati si scaricano **solo** da script, con checksum, e non si copiano mai dal PC al server;
+- fai push almeno a fine giornata, così il lavoro esiste sempre su GitHub.
+
+#### Passo 1 — Installare gli strumenti (una volta)
+
+| Strumento | Windows | macOS | Verifica (nel terminale) |
+|---|---|---|---|
+| git | "Git for Windows" da git-scm.com (opzioni di default; include Git Bash e Git Credential Manager) | `xcode-select --install` | `git --version` |
+| R 4.6 | da cran.r-project.org; su Windows anche **Rtools** della stessa versione | da cran.r-project.org (scegli Apple Silicon o Intel) | `R --version` |
+| Editor | RStudio oppure Positron | idem | — |
+| Quarto | da quarto.org | idem | `quarto --version` |
+
+Per "terminale" si intende Git Bash su Windows e l'app Terminale su macOS. Python e cell2location non servono sul PC: si installano sul server.
+
+#### Passo 2 — Token GitHub personale (una volta)
+
+Il token è la password che git usa per scrivere sul repository a nome tuo.
+1. GitHub → foto del profilo → **Settings** → **Developer settings** → **Personal access tokens** → **Tokens (classic)** → **Generate new token (classic)**.
+2. Note: `tesi geo_spatialtrans`. Expiration: **31/01/2027**. Scope: spunta **solo `public_repo`**.
+3. Copia il token e conservalo in un password manager. GitHub non te lo mostrerà più. Non scriverlo in file del repository, in email o in chat.
+
+È lo stesso token che userai sul server.
+
+#### Passo 3 — Configurare git (una volta, nel terminale)
+
+```
+git config --global user.name "Nome Cognome"
+git config --global user.email "<l'email del tuo account GitHub>"
+```
+
+Sul PC le credenziali le salva il portachiavi del sistema: Git Credential Manager su Windows, Portachiavi su macOS. Non usare `credential.helper store`, che le salva in chiaro.
+
+#### Passo 4 — Clonare il tuo branch (una volta)
+
+Scegli una cartella di lavoro, per esempio `~/tesi`:
+
+```
+mkdir -p ~/tesi && cd ~/tesi
+git clone --filter=blob:none -b thesis/expression-sources --single-branch \
+    https://github.com/lucavd/2025.geo_spatialtrans.git repo
+cd repo
+git status        # deve dire: On branch thesis/expression-sources
+```
+
+`--filter=blob:none` evita di scaricare tutta la storia del progetto (circa 1 GB): i file vecchi vengono presi solo se servono.
+
+Al primo `git push` si apre una finestra di login di GitHub, oppure ti viene chiesta una password. Come utente metti `pp1209` e come password il token.
+
+#### Passo 5 — Cartella dei dati e variabile `TESI_DATA` (una volta)
+
+1. Crea una cartella **fuori** dal repository, per esempio `~/tesi/data`, con le sottocartelle `raw`, `derived`, `sim`.
+2. In R esegui `usethis::edit_r_environ()` (prima, se serve, `install.packages("usethis")`). Si apre il file `.Renviron` personale. Aggiungi una riga con il percorso assoluto, salva e riavvia R:
+   ```
+   TESI_DATA=/Users/<tu>/tesi/data          # macOS
+   TESI_DATA=C:/Users/<tu>/tesi/data        # Windows (barre in avanti)
+   ```
+3. In R verifica che `Sys.getenv("TESI_DATA")` stampi il percorso.
+
+Nello stesso `.Renviron` andrà poi anche la chiave API di Synthesize Bio. È un file personale, fuori dal repository: non finisce mai su GitHub.
+
+**In ogni script** i percorsi si costruiscono così:
+
+```r
+data_dir <- Sys.getenv("TESI_DATA")
+stopifnot("TESI_DATA non impostata" = nzchar(data_dir), dir.exists(data_dir))
+raw_dir  <- file.path(data_dir, "raw")
+```
+
+Mai `setwd()` e mai percorsi come `C:/Users/...` dentro il codice.
+
+#### Passo 6 — Progetto R e pacchetti (una volta, poi quando aggiungi pacchetti)
+
+1. In RStudio o Positron apri come progetto la cartella `repo/thesis/` (non `repo/`).
+2. Nella console:
+   ```r
+   install.packages(c("renv", "BiocManager"))
+   renv::init(bare = TRUE)   # crea thesis/renv/ e renv.lock, libreria del progetto vuota
+   ```
+3. Installa i pacchetti man mano che ti servono (`install.packages()`, oppure `BiocManager::install()` per Bioconductor). Dopo ogni installazione esegui `renv::snapshot()`. Il file `renv.lock` va in git: è l'elenco esatto delle versioni, e il server lo userà per ricostruire lo stesso ambiente.
+4. I pacchetti dei metodi di deconvoluzione (spacexr per RCTD, CARD) si installano da GitHub. Se l'installazione sul PC dà problemi, non perderci tempo: li sistemiamo insieme sul server.
+
+#### Passo 7 — Download con checksum
+
+Lo script `scripts/01_download.R`:
+- scarica ogni file in `file.path(raw_dir, ...)`;
+- calcola l'md5 con `tools::md5sum()`;
+- scrive (o confronta, se esiste già) `thesis/data_manifest.csv`, con colonne `file, url, bytes, md5, data_download`.
+
+Il manifest va in git, i dati no: `thesis/.gitignore` li esclude già. Sul PC scarica solo ciò che serve per le settimane 1–2. Se un dataset è troppo grande per il portatile, prendi un sottoinsieme di donatori e scrivi nel manifest quale.
+
+#### Passo 8 — La giornata tipo con git
+
+```
+git pull                      # all'inizio: prendi l'ultima versione dal tuo branch
+# ... lavori ...
+git status                    # cosa hai cambiato
+git add thesis/               # aggiungi solo file dentro thesis/
+git commit -m "T1: inventario dataset colon e linfoide"
+git push                      # almeno a fine giornata
+```
+
+- Il messaggio di commit comincia con l'identificativo della sessione (T1, T2, …) e dice cosa è cambiato.
+- Non fare commit di dati, file `.rds`/`.h5ad` o della chiave API. Prima di ogni commit `git status` deve mostrare solo codice e testi.
+- Se `git push` viene rifiutato per le "repository rules", stai cercando di scrivere fuori dal tuo branch, oppure di riscrivere la storia (force push). Fermati e scrivi a Luca.
+- Se git segnala un conflitto e non è chiaro cosa fare, non forzare: scrivi a Luca.
+
+#### Passo 9 — Il giorno in cui arriva la VPN
+
+1. `ssh pierangela@10.241.73.111` (password che ti dà Luca; la cambi con `passwd` se vuoi).
+2. Configura git come al passo 3, ma con `git config --global credential.helper store` (sul server è l'unico portachiavi disponibile) e poi `chmod 600 ~/.git-credentials` dopo il primo push.
+3. Clona come al passo 4, nella cartella `/mnt/micron/geo_spatialtrans/tesi_pp1209/repo`.
+4. Nel `~/.Renviron` del server scrivi `TESI_DATA=/mnt/micron/geo_spatialtrans/tesi_pp1209/data` (con `nano ~/.Renviron`).
+5. Nel progetto R: `renv::restore()` ricostruisce i pacchetti dal `renv.lock`. Gli script vanno lanciati con `Rscript --vanilla` e `.libPaths()` esplicito in testa: il primo lo facciamo insieme.
+6. Rilancia `Rscript --vanilla scripts/01_download.R` e controlla che gli md5 coincidano con il manifest. **Non copiare i dati dal PC.** Il confronto dei checksum è la prima prova che la pipeline è riproducibile.
+7. Da quel momento lavori sul server. Il clone del PC resta utile per scrivere, ma prima di lavorarci fai sempre `git pull`.
+
+### 4.3 Sul server (lesexp-server) — dal giorno in cui hai la VPN
+
+**Accesso.** Entri con l'utente `pierangela` (non amministratore) via `ssh pierangela@10.241.73.111`, dalla rete dell'università o in VPN. La password te la dà Luca; se vuoi la cambi con `passwd`.
 
 **La tua cartella** è `/mnt/micron/geo_spatialtrans/tesi_pp1209/`. È tua; appartiene al gruppo `geotesi`, condiviso con Luca, che così può leggerla per le revisioni. Contiene:
 - `repo/` — il tuo clone del repository (lo crei tu, vedi sotto);
 - `data/raw/` (scaricati, sola lettura), `data/derived/`, `data/sim/` (output delle simulazioni). Sono fuori da git.
 
-**Primo giorno — clone e credenziale GitHub:**
+**Primo giorno sul server — clone e credenziale GitHub** (è il passo 9 della sezione 4.2, qui in dettaglio):
 1. Su GitHub (account `pp1209`) crea un *personal access token (classic)* con il solo scope `public_repo` e scadenza 31/01/2027. È la tua credenziale: non usare mai credenziali di altri.
 2. Sul server:
    ```
    git config --global user.name "Pierangela ..."
    git config --global user.email "<la tua email GitHub>"
    git config --global credential.helper store
-   git clone -b thesis/expression-sources --single-branch \
+   git clone --filter=blob:none -b thesis/expression-sources --single-branch \
        https://github.com/lucavd/2025.geo_spatialtrans.git \
        /mnt/micron/geo_spatialtrans/tesi_pp1209/repo
    ```
@@ -108,12 +232,14 @@ Se un push viene rifiutato con un messaggio sulle "repository rules", è questo 
 - **Claude Code** è installato nella tua home (`~/.local/bin/claude`) con l'installer nativo: si aggiorna da solo e, se serve, lo aggiorni o lo reinstalli tu senza privilegi (`claude update`, oppure di nuovo `curl -fsSL https://claude.ai/install.sh | bash`). Al primo avvio stampa un link da aprire nel browser del tuo PC per l'accesso. Le regole della sezione 3 valgono anche per il codice scritto con il suo aiuto: lo rileggi, lo testi e la revisione avversariale ricalcola i numeri.
 - I job lunghi scrivono su percorsi stabili e devono poter ripartire da dove si sono fermati: il server a volte perde la rete. Per i job che devono sopravvivere alla chiusura di ssh usa `tmux`.
 
-### 4.3 Struttura della cartella `thesis/`
+### 4.4 Struttura della cartella `thesis/`
 ```
 thesis/
   PROTOCOLLO.md          questo documento
   DECISIONS.md           decisioni datate
   BACKLOG.md             idee e problemi rimandati
+  data_manifest.csv      file scaricati: url, bytes, md5, data (i dati no)
+  renv.lock, renv/       ambiente R del progetto (la libreria è esclusa da git)
   protocol/ADEMP.md      protocollo pre-registrato (settimana 2)
   R/                     funzioni (una responsabilità per file)
   scripts/               pipeline numerate: 01_download.R, 02_split.R, ...
@@ -189,8 +315,8 @@ Ogni riga dice cosa consegni e quando è "fatta". La tesi si scrive **mentre si 
 
 | Sett. | Date | Sessione | Lavoro | Prodotto ed è "fatta" quando… |
 |---|---|---|---|---|
-| 1 | 19–23 ott | **T1 Avvio** | Mezza giornata con Luca su server, git e il tuo clone. Letture (sezione 10). Account Synthesize Bio e mail di richiesta (sezione 9). Inventario dei dataset scRNA pubblici per i tre tessuti, con almeno 2 donatori indipendenti ciascuno; verifica delle licenze | `thesis/data_inventory.csv` (dataset, DOI/URL, donatori, tipi cellulari annotati, tecnologia, data di deposito). Uno script di prova gira dal tuo clone sul server. Bozza di 2–3 pagine dell'introduzione |
-| 2 | 26–30 ott | **T2 Protocollo** | Download e split per donatore. Pilota dichiarato (i suoi numeri non entrano nei risultati) per misurare tempi, costo GPU di cell2location e variabilità. **Esito del gate G0 entro venerdì 30/10.** Scrittura dell'ADEMP | `thesis/protocol/ADEMP.md` **approvato da Luca con la data**: ipotesi, soglie, livelli dei fattori, numero di repliche giustificato con l'errore standard Monte Carlo. Esito di G0 in DECISIONS. Il capitolo Metodi è in bozza (è l'ADEMP riscritto) |
+| 1 | 19–23 ott | **T1 Avvio** | Mezza giornata con Luca su git, R e il tuo clone sul PC (sezione 4.2); il server appena c'è la VPN. Letture (sezione 10). Account Synthesize Bio e mail di richiesta (sezione 9). Inventario dei dataset scRNA pubblici per i tre tessuti, con almeno 2 donatori indipendenti ciascuno; verifica delle licenze | `thesis/data_inventory.csv` (dataset, DOI/URL, donatori, tipi cellulari annotati, tecnologia, data di deposito). Uno script di prova gira dal tuo clone e legge i percorsi da `TESI_DATA`. Bozza di 2–3 pagine dell'introduzione |
+| 2 | 26–30 ott | **T2 Protocollo** | Download e split per donatore. Pilota dichiarato (i suoi numeri non entrano nei risultati) per misurare tempi, costo GPU di cell2location e variabilità. Senza VPN il pilota gira sul PC per RCTD, CARD e NNLS, e cell2location si misura nei primi giorni sul server (vedi DECISIONS). **Esito del gate G0 entro venerdì 30/10.** Scrittura dell'ADEMP | `thesis/protocol/ADEMP.md` **approvato da Luca con la data**: ipotesi, soglie, livelli dei fattori, numero di repliche giustificato con l'errore standard Monte Carlo. Esito di G0 in DECISIONS. Il capitolo Metodi è in bozza (è l'ADEMP riscritto) |
 | 3–4 | 2–13 nov | **T3 Obiettivo 1** | Costruzione delle matrici μ per E, P, M, (G), C−, E′; misure di fedeltà contro l'held-out nei tre tessuti | Report `T3.html` a 4 sezioni con revisione avversariale. Bozza della sezione Risultati 1 |
 | 5–6 | 16–27 nov | **T4 Simulazione** | Generatore degli pseudo-spot e àncora reale; test (conservazione dei conteggi, composizioni vere salvate, split rispettato). Lancio delle repliche | Report `T4.html`: check di correttezza superati, controprova C− sul generatore. Repliche complete su disco |
 | 7–8 | 30 nov–11 dic | **T5 Obiettivo 2** | Deconvoluzione con i 4 metodi su tutte le repliche (cell2location sulla GPU); misure di prestazione, classifiche, concordanza con l'àncora | Report `T5.html` con revisione avversariale. Bozza della sezione Risultati 2 |
