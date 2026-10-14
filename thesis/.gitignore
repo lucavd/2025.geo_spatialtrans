@@ -1,0 +1,11 @@
+# tesi: niente dati, ambienti o segreti in git
+.venv*/
+renv/library/
+*.rds
+*.parquet
+*.h5ad
+*.h5
+data/
+synthesize_log/**/*.rds
+synthesize_log/**/*.parquet
+.Renviron
