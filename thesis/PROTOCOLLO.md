@@ -6,7 +6,7 @@
 Scuola di specializzazione in Statistica medica · supervisore: Luca Vedovelli
 Branch: `thesis/expression-sources` del repository `lucavd/2025.geo_spatialtrans`
 Periodo: **19 ottobre – 31 dicembre 2026**, a tempo pieno. Il 31/12/2026 la tesi è **scritta e consegnata** a Luca.
-Versione del protocollo: 1.0 (2026-10-14)
+Versione del protocollo: 1.1 (2026-10-14)
 
 ---
 
@@ -50,6 +50,7 @@ Il risultato serve al progetto principale: deciderà quale fonte di profili user
 | 2026-10-14 | Split dei dati sempre per donatore o campione, mai per cellula |
 | 2026-10-14 | Account Synthesize Bio personale di Pierangela; la richiesta di permesso di pubblicazione la invia lei, con Luca in copia |
 | 2026-10-14 | Branch `thesis/expression-sources` con push riservato; nessun merge in altri branch durante la tesi |
+| 2026-10-14 | Si lavora sul server, con un utente proprio (`pierangela`, non amministratore), un clone proprio in `/mnt/micron/geo_spatialtrans/tesi_pp1209/repo` e un token GitHub personale |
 | 2026-10-14 | Regola di taglio in caso di ritardo: si toglie prima SPOTlight, poi il braccio G, poi il tessuto cervello. Non si tagliano mai i bracci E, P, M, C− ed E′ né i tessuti colon e linfoide |
 
 ## 3. Regole di lavoro (non negoziabili)
@@ -66,17 +67,45 @@ Il risultato serve al progetto principale: deciderà quale fonte di profili user
 
 ### 4.1 Repository e branch
 - Repository: `https://github.com/lucavd/2025.geo_spatialtrans`.
-- Il tuo branch è `thesis/expression-sources`, nato da `dev`. **Puoi fare push solo su questo branch.** Gli altri branch sono protetti: non puoi aggiornarli né fare merge.
+- Il tuo branch è `thesis/expression-sources`, nato da `dev`. **Puoi fare push solo su questo branch** (dettagli nella sezione 4.2). Gli altri branch sono protetti: non puoi aggiornarli né fare merge.
 - **Tutto il tuo lavoro sta nella cartella `thesis/`.** Non modificare file fuori da `thesis/`: il resto del repository è il simulatore principale e ti serve al massimo come lettura.
 - A fine tesi Luca valuterà, in una revisione dedicata, cosa portare nel progetto principale.
 
 ### 4.2 Sul server (lesexp-server)
-- Worktree del branch: `/mnt/micron/geo_spatialtrans/tesi_pp1209/repo`.
-- Dati (fuori da git): `/mnt/micron/geo_spatialtrans/tesi_pp1209/data/` con le sottocartelle `raw/` (scaricati, sola lettura), `derived/` e `sim/` (output delle simulazioni).
-- Il server è condiviso. Usa al massimo **32 core** e lancia i job con `nice`. La GPU (RTX 4090) si usa per cell2location: prenota con Luca gli slot nelle settimane 5–8.
+
+**Accesso.** Entri con l'utente `pierangela` (non amministratore) via `ssh pierangela@10.241.73.111`, dalla rete dell'università o in VPN. Al primo accesso cambia la password con `passwd`.
+
+**La tua cartella** è `/mnt/micron/geo_spatialtrans/tesi_pp1209/`. È tua; appartiene al gruppo `geotesi`, condiviso con Luca, che così può leggerla per le revisioni. Contiene:
+- `repo/` — il tuo clone del repository (lo crei tu, vedi sotto);
+- `data/raw/` (scaricati, sola lettura), `data/derived/`, `data/sim/` (output delle simulazioni). Sono fuori da git.
+
+**Primo giorno — clone e credenziale GitHub:**
+1. Su GitHub (account `pp1209`) crea un *personal access token (classic)* con il solo scope `public_repo` e scadenza 31/01/2027. È la tua credenziale: non usare mai credenziali di altri.
+2. Sul server:
+   ```
+   git config --global user.name "Pierangela ..."
+   git config --global user.email "<la tua email GitHub>"
+   git config --global credential.helper store
+   git clone -b thesis/expression-sources --single-branch \
+       https://github.com/lucavd/2025.geo_spatialtrans.git \
+       /mnt/micron/geo_spatialtrans/tesi_pp1209/repo
+   ```
+   Al primo `git push` inserisci `pp1209` come utente e il token come password.
+3. Verifica che il file delle credenziali sia privato: `chmod 600 ~/.git-credentials`.
+
+**Cosa ti impedisce GitHub (è voluto):**
+- push su qualunque branch diverso da `thesis/expression-sources`, creazione di nuovi branch, merge di pull request;
+- force push e cancellazione del tuo branch: la storia non si riscrive;
+- tag diversi da `tesi-*`.
+
+Se un push viene rifiutato con un messaggio sulle "repository rules", è questo meccanismo: non cercare di aggirarlo, scrivi a Luca.
+
+**Altro:**
+- Dati reali del progetto principale: `/mnt/micron/geo_spatialtrans/data_real/`, in sola lettura.
+- Il server è condiviso. I tuoi processi hanno un tetto di **32 core**; lancia i job lunghi con `nice`. La GPU (RTX 4090) si usa per cell2location: prenota con Luca gli slot nelle settimane 5–8.
 - R 4.6 con pacchetti da Posit Package Manager (binari, nessuna compilazione). Gli script si lanciano con `Rscript --vanilla` e `.libPaths()` esplicito in testa, con la libreria della tesi in `thesis/renv/`.
-- Python per cell2location: ambiente `uv` dedicato in `thesis/.venv-c2l/`, separato da quello del progetto principale.
-- I job lunghi scrivono su percorsi stabili e devono poter ripartire da dove si sono fermati: il server a volte perde la rete.
+- Python per cell2location: installa `uv` nella tua home (`curl -LsSf https://astral.sh/uv/install.sh | sh`) e crea un ambiente dedicato in `thesis/.venv-c2l/`.
+- I job lunghi scrivono su percorsi stabili e devono poter ripartire da dove si sono fermati: il server a volte perde la rete. Per i job che devono sopravvivere alla chiusura di ssh usa `tmux`.
 
 ### 4.3 Struttura della cartella `thesis/`
 ```
@@ -159,7 +188,7 @@ Ogni riga dice cosa consegni e quando è "fatta". La tesi si scrive **mentre si 
 
 | Sett. | Date | Sessione | Lavoro | Prodotto ed è "fatta" quando… |
 |---|---|---|---|---|
-| 1 | 19–23 ott | **T1 Avvio** | Mezza giornata con Luca su server, git e worktree. Letture (sezione 10). Account Synthesize Bio e mail di richiesta (sezione 9). Inventario dei dataset scRNA pubblici per i tre tessuti, con almeno 2 donatori indipendenti ciascuno; verifica delle licenze | `thesis/data_inventory.csv` (dataset, DOI/URL, donatori, tipi cellulari annotati, tecnologia, data di deposito). Uno script di prova gira dal worktree. Bozza di 2–3 pagine dell'introduzione |
+| 1 | 19–23 ott | **T1 Avvio** | Mezza giornata con Luca su server, git e il tuo clone. Letture (sezione 10). Account Synthesize Bio e mail di richiesta (sezione 9). Inventario dei dataset scRNA pubblici per i tre tessuti, con almeno 2 donatori indipendenti ciascuno; verifica delle licenze | `thesis/data_inventory.csv` (dataset, DOI/URL, donatori, tipi cellulari annotati, tecnologia, data di deposito). Uno script di prova gira dal tuo clone sul server. Bozza di 2–3 pagine dell'introduzione |
 | 2 | 26–30 ott | **T2 Protocollo** | Download e split per donatore. Pilota dichiarato (i suoi numeri non entrano nei risultati) per misurare tempi, costo GPU di cell2location e variabilità. **Esito del gate G0 entro venerdì 30/10.** Scrittura dell'ADEMP | `thesis/protocol/ADEMP.md` **approvato da Luca con la data**: ipotesi, soglie, livelli dei fattori, numero di repliche giustificato con l'errore standard Monte Carlo. Esito di G0 in DECISIONS. Il capitolo Metodi è in bozza (è l'ADEMP riscritto) |
 | 3–4 | 2–13 nov | **T3 Obiettivo 1** | Costruzione delle matrici μ per E, P, M, (G), C−, E′; misure di fedeltà contro l'held-out nei tre tessuti | Report `T3.html` a 4 sezioni con revisione avversariale. Bozza della sezione Risultati 1 |
 | 5–6 | 16–27 nov | **T4 Simulazione** | Generatore degli pseudo-spot e àncora reale; test (conservazione dei conteggi, composizioni vere salvate, split rispettato). Lancio delle repliche | Report `T4.html`: check di correttezza superati, controprova C− sul generatore. Repliche complete su disco |

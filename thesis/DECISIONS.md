@@ -13,4 +13,5 @@ Una decisione vale solo se è scritta qui, con la data. Si aggiunge in fondo, no
 | 2026-10-14 | Split per donatore o campione, mai per cellula | Luca |
 | 2026-10-14 | Account Synthesize Bio personale di Pierangela; richiesta di permesso inviata da lei, Luca in copia | Luca |
 | 2026-10-14 | Branch dedicato con push riservato; nessun merge durante la tesi | Luca |
+| 2026-10-14 | Lavoro sul server con utente proprio (`pierangela`, non admin), clone proprio in `/mnt/micron/geo_spatialtrans/tesi_pp1209/repo`, token GitHub personale (classic, scope `public_repo`) | Luca |
 | 2026-10-14 | Regola di taglio: SPOTlight → braccio G → tessuto cervello; mai E, P, M, C−, E′, colon, linfoide | Luca |
