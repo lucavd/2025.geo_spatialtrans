@@ -6,7 +6,7 @@
 Scuola di specializzazione in Statistica medica · supervisore: Luca Vedovelli
 Branch: `thesis/expression-sources` del repository `lucavd/2025.geo_spatialtrans`
 Periodo: **19 ottobre – 31 dicembre 2026**, a tempo pieno. Il 31/12/2026 la tesi è **scritta e consegnata** a Luca.
-Versione del protocollo: 1.1 (2026-10-14)
+Versione del protocollo: 1.2 (2026-10-14)
 
 ---
 
@@ -105,6 +105,7 @@ Se un push viene rifiutato con un messaggio sulle "repository rules", è questo 
 - Il server è condiviso. I tuoi processi hanno un tetto di **32 core**; lancia i job lunghi con `nice`. La GPU (RTX 4090) si usa per cell2location: prenota con Luca gli slot nelle settimane 5–8.
 - R 4.6 con pacchetti da Posit Package Manager (binari, nessuna compilazione). Gli script si lanciano con `Rscript --vanilla` e `.libPaths()` esplicito in testa, con la libreria della tesi in `thesis/renv/`.
 - Python per cell2location: installa `uv` nella tua home (`curl -LsSf https://astral.sh/uv/install.sh | sh`) e crea un ambiente dedicato in `thesis/.venv-c2l/`.
+- **Claude Code** è installato nella tua home (`~/.local/bin/claude`) con l'installer nativo: si aggiorna da solo e, se serve, lo aggiorni o lo reinstalli tu senza privilegi (`claude update`, oppure di nuovo `curl -fsSL https://claude.ai/install.sh | bash`). Al primo avvio stampa un link da aprire nel browser del tuo PC per l'accesso. Le regole della sezione 3 valgono anche per il codice scritto con il suo aiuto: lo rileggi, lo testi e la revisione avversariale ricalcola i numeri.
 - I job lunghi scrivono su percorsi stabili e devono poter ripartire da dove si sono fermati: il server a volte perde la rete. Per i job che devono sopravvivere alla chiusura di ssh usa `tmux`.
 
 ### 4.3 Struttura della cartella `thesis/`
