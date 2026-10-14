@@ -1,0 +1,3 @@
+/home/user/2025.geo_spatialtrans/results/S1.3c/review/method/rev_method.py:118: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  rho = float(stats.spearmanr(u[m], eos[m])[0]) if m.sum() > 50 else np.nan
+done mask

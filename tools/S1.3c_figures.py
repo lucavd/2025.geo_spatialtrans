@@ -65,16 +65,17 @@ fig.tight_layout(rect=(0, 0, 1, 0.95)); fig.savefig(FIGD / "F3_profilo_lumi.png"
 import json
 fig, axes = plt.subplots(1, 6, figsize=(10, 2.5), sharey=True)
 for ax, A in zip(axes, ARCH):
-    Rs, Rp = [], []
+    Rs, Rn, Rp = [], [], []
     for f in sorted(glob.glob(str(OUT / "roi" / f"{A}_*_profile.parquet"))):
         p = pd.read_parquet(f); base = p[p.d_bin < 2].eval("mean*size").sum() / p[p.d_bin < 2]["size"].sum()
         ax.plot(p.d_bin + 0.5, p["mean"] / base, color=FOC, lw=0.8, alpha=0.7)
         roi = Path(f).name.split("_")[1]; d = json.load(open(OUT / "roi" / f"{A}_{roi}_primary.json"))
-        Rs.append(d["by_k"]["3"]["R_profile"]); Rp.append(d["CP1_R_profile"])
+        bk = d["by_k"]["3"]; key = "CP1"        # coerente con le curve: senza spostamento C-2 (A5, A6: nessuno spostamento applicato)
+        Rs.append(bk["R_profile"]); Rn.append(bk["R_null"]); Rp.append(d[f"{key}_R_profile"])
     ax.axhline(1, color=GREY, lw=0.7, ls=":")
-    ax.text(0.97, 0.95, f"R reale {np.median(Rs):.2f}\nR placebo {np.median(Rp):.2f}", transform=ax.transAxes, ha="right", va="top", fontsize=6)
+    ax.text(0.97, 0.95, f"R osservato {np.median(Rs):.2f}\nR nullo {np.median(Rn):.2f}\nR placebo {np.median(Rp):.2f}", transform=ax.transAxes, ha="right", va="top", fontsize=6)
     ax.set_title(NAME[A], loc="left"); ax.set_xlabel("distanza dal nucleo (µm)"); ax.set_xlim(0, 20)
-axes[0].set_ylabel("UMI per bin / UMI a 0–2 µm")
-fig.suptitle("Gli UMI calano con la distanza dal nucleo in A1, A5, A6 e il placebo li appiattisce; in A3 calano anche col placebo (simulatore attuale: 1; n = 5 ROI)", x=0.01, ha="left", fontsize=8)
+axes[0].set_ylabel("UMI per bin / UMI a 0–2 µm\n(spostamento C-2 non applicato)")
+fig.suptitle("Solo in A5 e A6 gli UMI calano con la distanza dal nucleo più di quanto preveda il simulatore attuale (R nullo); n = 5 ROI, una linea per ROI", x=0.01, ha="left", fontsize=8)
 fig.tight_layout(); fig.savefig(FIGD / "F4_profilo_nucleo.png", dpi=200); plt.close(fig)
 print("figure ok", sorted(p.name for p in FIGD.iterdir()))

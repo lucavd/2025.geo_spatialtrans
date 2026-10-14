@@ -1,6 +1,6 @@
 id,previsione,osservato,esito
-P1,A4 E piu' bassa del pannello e E(A4) < 0.05,E(A4) 0.0000; min altri 0.0000,PASS
-P2,E(A3) >= 0.05 con verdetto B,E(A3) 0.0069; verdetto nessuno (regola: nessuno),FAIL
-P3,E(A1) <= E(A2) < E(A3),0.0000 / 0.0031 / 0.0069,PASS
+P1,A4 E piu' bassa del pannello e E(A4) < 0.05,E(A4) 0.0000; min altri 0.0000 (parita'),non valutabile
+P2,E(A3) >= 0.05 con verdetto B,E(A3) 0.0070; verdetto nessuno (regola: nessuno),FAIL
+P3,E(A1) <= E(A2) < E(A3),0.0000 / 0.0031 / 0.0070,PASS
 P4,A5: A piu' probabile di B,verdetto nessuno (regola: nessuno),non valutabile
 P5,"E(A6) < 0.05, nessun B",E(A6) 0.0234; verdetto nessuno,PASS

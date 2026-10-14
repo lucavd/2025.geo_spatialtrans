@@ -1,6 +1,6 @@
 check,unit,value,status
 C-1,A1_r1,250152 / 250025 (+0.05 %),PASS
-C-2,A1_r1,"(4, 6) um, r 0.189 (a 0: 0.136)",FAIL
+C-2,A1_r1,"(4, 6) um, r 0.189 (a 0: 0.135)",FAIL
 C-4,A1_r1,"conservati True, mutante viola True",PASS
 C-1,A1_r2,250140 / 250275 (-0.05 %),PASS
 C-2,A1_r2,"(-2, -2) um, r 0.184 (a 0: 0.145)",PASS
@@ -12,13 +12,13 @@ C-1,A1_r4,250158 / 250275 (-0.05 %),PASS
 C-2,A1_r4,"(8, 0) um, r 0.188 (a 0: 0.159)",FAIL
 C-4,A1_r4,"conservati True, mutante viola True",PASS
 C-1,A1_r5,250165 / 250275 (-0.04 %),PASS
-C-2,A1_r5,"(-2, -2) um, r 0.166 (a 0: 0.143)",PASS
+C-2,A1_r5,"(-2, -2) um, r 0.166 (a 0: 0.142)",PASS
 C-4,A1_r5,"conservati True, mutante viola True",PASS
 C-1,A2_r1,250243 / 250302 (-0.02 %),PASS
 C-2,A2_r1,"(6, 4) um, r 0.102 (a 0: -0.021)",FAIL
 C-4,A2_r1,"conservati True, mutante viola True",PASS
 C-1,A2_r2,250259 / 250302 (-0.02 %),PASS
-C-2,A2_r2,"(6, -6) um, r 0.090 (a 0: -0.008)",FAIL
+C-2,A2_r2,"(6, -6) um, r 0.089 (a 0: -0.008)",FAIL
 C-4,A2_r2,"conservati True, mutante viola True",PASS
 C-1,A2_r3,250286 / 250302 (-0.01 %),PASS
 C-2,A2_r3,"(0, -8) um, r 0.099 (a 0: 0.002)",FAIL
@@ -119,21 +119,21 @@ C-4,A6_r5,"conservati True, mutante viola True",PASS
 "sfondo (com, k=5)",Visium_HD_Mouse_Small_Intestine,"soglia 12 UMI, 173182 finestre, media 4.87",PASS
 "sfondo (all, k=3)",Visium_HD_Mouse_Small_Intestine,"soglia 5 UMI, 483562 finestre, media 1.91",PASS
 "sfondo (all, k=5)",Visium_HD_Mouse_Small_Intestine,"soglia 13 UMI, 173182 finestre, media 5.24",PASS
-C-5a,A1_r1,delta 1054 = 993 + 61; geometrica 0.047,PASS
-C-5b (tipo A),A1_r1,"E 0.049, BA 0.983, grandi 0.93 -> nessuno",FAIL
+C-5a,A1_r1,delta 1057 = 996 + 61; geometrica 0.047,PASS
+C-5b (tipo A),A1_r1,"E 0.049, BA 0.982, grandi 0.93 -> nessuno",FAIL
 C-5c (tipo B),A1_r1,"E 0.043, BA 0.501, grandi 0.95 -> nessuno",FAIL
-C-5a,A2_r1,delta 1174 = 1111 + 63; geometrica 0.056,PASS
-C-5b (tipo A),A2_r1,"E 0.039, BA 0.965, grandi 0.88 -> nessuno",FAIL
-C-5c (tipo B),A2_r1,"E 0.050, BA 0.536, grandi 0.95 -> B",PASS
+C-5a,A2_r1,delta 1168 = 1107 + 61; geometrica 0.056,PASS
+C-5b (tipo A),A2_r1,"E 0.038, BA 0.965, grandi 0.87 -> nessuno",FAIL
+C-5c (tipo B),A2_r1,"E 0.050, BA 0.535, grandi 0.94 -> nessuno",FAIL
 C-5a,A3_r1,delta 1989 = 1729 + 260; geometrica 0.063,PASS
 C-5b (tipo A),A3_r1,"E 0.069, BA 0.851, grandi 0.90 -> A",PASS
 C-5c (tipo B),A3_r1,"E 0.060, BA 0.528, grandi 0.97 -> B",PASS
-C-5a,A4_f1,delta 858 = 823 + 35; geometrica 0.030,PASS
+C-5a,A4_f1,delta 857 = 822 + 35; geometrica 0.030,PASS
 C-5b (tipo A),A4_f1,"E 0.016, BA 0.974, grandi 1.00 -> nessuno",FAIL
 C-5c (tipo B),A4_f1,"E 0.029, BA 0.602, grandi 1.00 -> nessuno",FAIL
-C-5a,A5_r1,delta 1627 = 1614 + 13; geometrica 0.087,PASS
-C-5b (tipo A),A5_r1,"E 0.059, BA 0.988, grandi 0.46 -> A",PASS
-C-5c (tipo B),A5_r1,"E 0.057, BA 0.495, grandi 0.97 -> B",PASS
+C-5a,A5_r1,delta 1628 = 1614 + 14; geometrica 0.087,PASS
+C-5b (tipo A),A5_r1,"E 0.058, BA 0.988, grandi 0.47 -> A",PASS
+C-5c (tipo B),A5_r1,"E 0.056, BA 0.495, grandi 0.97 -> B",PASS
 C-5a,A6_r1,delta 2142 = 2002 + 140; geometrica 0.082,PASS
 C-5b (tipo A),A6_r1,"E 0.070, BA 0.950, grandi 0.86 -> A",PASS
 C-5c (tipo B),A6_r1,"E 0.069, BA 0.490, grandi 0.91 -> B",PASS

@@ -1,5 +1,5 @@
 ---
-title: "S1.3c — BL-077: spazio extracellulare intra-regione dai conteggi a 2 µm"
+title: "S1.3c — BL-077: c'è matrice fra le cellule? Misura dai conteggi a 2 µm"
 subtitle: "geo_spatialtrans — report di step"
 date: today
 format:
@@ -18,44 +18,48 @@ rd <- function(f) read.csv(file.path(R, f), check.names = FALSE)
 AT <- rd("S1.3c_archetype.csv"); CC <- rd("S1.3c_checkC.csv"); PR <- rd("S1.3c_predictions.csv"); CP <- rd("S1.3c_controprove.csv")
 C5 <- rd("S1.3c_C5.csv"); PH1 <- rd("S1.3c_PH1_levels.csv"); PH1p <- rd("S1.3c_PH1_profile.csv"); PH2 <- rd("S1.3c_PH2_summary.csv")
 PH3 <- rd("S1.3c_PH3_calibration.csv"); PH3m <- rd("S1.3c_PH3_min_detectable.csv"); HE <- rd("S1.3c_he.csv"); RO <- rd("S1.3c_roi.csv")
-f3 <- function(x) formatC(x, format = "f", digits = 3); f4 <- function(x) formatC(x, format = "f", digits = 4)
+RA <- rd("S1.3c_review_actions.csv")
+f2 <- function(x) formatC(x, format = "f", digits = 2); f3 <- function(x) formatC(x, format = "f", digits = 3); f4 <- function(x) formatC(x, format = "f", digits = 4)
 P6 <- AT[AT$variant == "primary" & AT$k == 3, ]; P10 <- AT[AT$variant == "primary" & AT$k == 5, ]
-Emax <- max(RO$E[RO$variant == "primary" & RO$k == 3])
-PH3$rec <- PH3$E / PH3$f_zeroed; rec <- aggregate(rec ~ archetype + type + f_target, PH3, median)
+g6 <- function(a, col) P6[[col]][P6$archetype == a]
+Emax <- max(RO$E); PH3$rec <- PH3$E / PH3$f_zeroed; rec <- aggregate(rec ~ archetype + type + f_target, PH3, median)
+x <- merge(PH1p[PH1p$band == "16-32", ], PH1[, c("archetype", "roi_id", "umi_bg_far_per_bin")]); x$ratio <- x$umi_mean / x$umi_bg_far_per_bin
+x14 <- x[x$archetype %in% c("A1", "A2", "A3", "A4") & is.finite(x$ratio), ]; xm <- aggregate(ratio ~ archetype, x14, median)
 fig <- function(f) file.path(R, "figures", f)
-nC6 <- as.integer(readLines(file.path(R, "S1.3c_C6_n_files.txt"))); dC6 <- length(readLines(file.path(R, "S1.3c_C6_md5_diff.txt")))
+nC6 <- 196
 ```
 
-**Obiettivo unico** (ordine deciso da Luca il 2026-10-12: S1.3c → S1.3d → S1.4): misurare sui 30 ROI di R2 quanto tessuto **dentro** le regioni è privo di trascritti alla scala del simulatore e se il vuoto è un bordo del corpo cellulare dentro il territorio (A) o chiazze acellulari (B), per una raccomandazione A/B/C sulla decisione 1 del design (BL-077). Decide Luca.
+# Sintesi
 
-**Sintesi.**
+**Domanda** (BL-077). Il simulatore assume che ogni punto di una regione di tessuto appartenga a una cellula: la cellula è il suo territorio di Voronoi, senza matrice fra le cellule (decisione 1 del design). Ci sono, nei dati reali, zone di tessuto senza cellule? E se sì, stanno attorno a ogni cellula (A: corpo cellulare più piccolo del territorio) o a chiazze (B: generatori acellulari)?
 
-1. **Risultato pre-registrato.** L'eccesso di finestre di 6 µm vuote rispetto al simulatore attuale (E) è sotto la soglia 0.05 in tutti i 30 ROI (massimo `r f3(Emax)`, A6) e in tutte le varianti (s = 10 µm, altro segmentatore, tutti i geni). La regola produce formalmente **C** («lasciare e dichiarare il limite») in tutti gli archetipi.
-2. **La controprova dice che la misura non vede il bersaglio.** Nei lumi veri dentro il contorno del tessuto (A1–A4) i bin non scendono mai al livello dello sfondo lontano: spillover dal bordo per ~10 µm, poi un plateau 4–13 volte sopra lo sfondo lontano a 16–32 µm dal bordo (CP-2 FAIL, PH-1). In A5 e A6 i «lumi» di CP-2 sono in gran parte **tessuto pallido escluso dalla maschera R2** (neuropilo, citoplasma dei cardiomiociti; PH-4).
-3. **Potenza.** Anche con vuoto sintetico perfetto (bin azzerati, senza diffusione) E recupera dal 10 % (A4) al 97 % (A6) della frazione inserita; la frazione minima rilevabile con E ≥ 0.05 è 10–20 % dell'area (> 30 % per il vuoto di tipo A in A4) (PH-3). Un E ≈ 0 esclude quindi solo un vuoto perfetto e ampio, che il plateau osservato nei lumi rende comunque irraggiungibile.
-4. **Il criterio di forma funziona** dove il vuoto è rilevato (C-5b/c: BA 0.85–0.99 sul vuoto A, 0.49–0.60 sul B), ma nei dati reali non entra in gioco.
-5. **Il segnale netto è un gradiente, non un vuoto.** Gli UMI per bin calano con la distanza dal nucleo in A1, A5, A6 (R = `r f3(P6$R_profile_median[P6$archetype=="A1"])`, `r f3(P6$R_profile_median[P6$archetype=="A5"])`, `r f3(P6$R_profile_median[P6$archetype=="A6"])`); il placebo li riporta vicino a 1. Il simulatore attuale (densità uniforme nel territorio) predice R ≈ 1. È un'osservazione su cui la regola non decide: va a S1.4 (BACKLOG).
+**Metodo.** Sui 30 ROI di R2 (5 per archetipo A1–A6) si contano le finestre di 6 µm di tessuto con tanti UMI quanti il vetro lontano dalla sezione, e si confrontano con quante ne produce il simulatore attuale sugli stessi nuclei (permutazione dei bin dentro ogni territorio). L'eccesso è E.
+
+**Risultati.**
+
+1. **Nessuna zona vuota rilevata.** E < 0.05 in tutti i 30 ROI e in tutte le varianti (massimo `r f3(Emax)`). La regola pre-registrata dà formalmente C («lasciare e dichiarare il limite»).
+2. **Ma la misura è cieca.** (a) Nei lumi veri (A1–A4) i bin non scendono al livello del vetro lontano: a 16–32 µm dal bordo del tessuto restano `r f2(min(xm$ratio))`–`r f2(max(xm$ratio))` volte sopra (mediane per archetipo); il revisore ha mostrato che la stessa coda lunga c'è anche sul vetro fuori dalla sezione (diffusione), e che la soglia «vetro ≥ 50 µm» la esclude per costruzione. (b) Anche un vuoto sintetico **perfetto** è recuperato solo in parte: E rileva vuoti ≥ 10–20 % dell'area (A4 tipo A: nemmeno al 30 %). Quindi «nessuna zona vuota» **non** significa «nessuna matrice»: con i soli conteggi a 2 µm la matrice fra le cellule non è distinguibile.
+3. **Risultato positivo inatteso: l'RNA è concentrato vicino al nucleo in A5 (cervello) e A6 (cuore).** Il rapporto R fra UMI a 4–8 µm e UMI sul nucleo vale `r f2(g6("A5","R_profile_median"))` e `r f2(g6("A6","R_profile_median"))`, contro `r f2(g6("A5","R_null_median"))` e `r f2(g6("A6","R_null_median"))` previsti dal simulatore attuale; nuclei traslati a caso lo riportano vicino a 1, e (revisione) resiste lontano dai bordi. In A1–A3 il calo osservato è già prodotto dal simulatore attuale (forma dei territori e bordi).
+4. **Difetto a monte.** La maschera di tessuto di R2 scarta tessuto pallido ma vero: neuropilo in A5 (luminosità > 0.97, ~12 % del ROI) e parte del miocardio in A6 (2 ROI su 5). Tocca anche le densità per area di R2/R3 in A5/A6.
+
+**Conseguenze.** La decisione 1 resta in vigore per difetto, non per evidenza; BL-077 resta aperta e richiede un'altra misura (istologia annotata, o un modello della diffusione da R5). Il gradiente nucleo → periferia va in S1.4 (`derive_cell_geometry()`). **Stato: non chiusa** — la domanda non trova risposta con questi dati; tutto il lavoro e il motivo sono documentati.
 
 # 1. Pre-registrazione
 
-Testo: `results/S1.3c/S1.3c_preregistration.md` (commit `f341f71`), approvato da Luca il 2026-10-12 («va bene»), con la correzione del criterio di forma e le definizioni operative approvate prima del run («Approvo la correzione»). Definizioni operative più specifiche, prova su A4 f1, decisione sui geni e dichiarazione delle post hoc: `results/S1.3c/S1.3c_dev_notes.md`, tutte con data e posizione rispetto al run.
+Testo: `results/S1.3c/S1.3c_preregistration.md` (commit `f341f71`, approvato da Luca il 2026-10-12, «va bene»; correzione del criterio di forma approvata prima del run, «Approvo la correzione»). Definizioni operative, deviazioni e post hoc, con data e posizione rispetto al run: `results/S1.3c/S1.3c_dev_notes.md`.
 
 | Elemento | Attesa / regola | Fonte |
 |---|---|---|
-| Misura | φ_obs = frazione di finestre s×s (s = 6; sensibilità 10 µm) di tessuto valido con UMI ≤ q95 delle finestre di sfondo (≥ 50 µm fuori tessuto) | prereg. §3 |
+| Misura | φ_obs = frazione di finestre 6×6 µm (sensibilità 10) di tessuto valido con UMI ≤ q95 delle finestre di vetro a ≥ 50 µm dal tessuto | prereg. §3 |
 | Nullo | permutazione dei bin dentro il territorio R3 (20 seed) → φ_null; E = φ_obs − φ_null | prereg. §3 |
-| Regola | E < 0.05 → nessuno; altrimenti A se BA ≥ 0.75; B se BA < 0.65 e ≥ 50 % dell'area vuota in componenti > territorio mediano; altrimenti indeterminato; nessun E ≥ 0.05 → C | prereg. §4–5 (0.05 = convenzione) |
-| P1 | A4 E più bassa e < 0.05 | B-046, B-077 |
-| P2 | E(A3) ≥ 0.05, verdetto B | B-045, B-067 |
-| P3 | E(A1) ≤ E(A2) < E(A3) | B-043 > B-044 > B-045 |
-| P4 | A5: A più probabile di B | neuropilo = processi cellulari |
-| P5 | E(A6) < 0.05, nessun B | fiducia bassa |
+| Regola | E < 0.05 → nessuno; altrimenti A (BA ≥ 0.75), B (BA < 0.65 e ≥ 50 % del vuoto in componenti > territorio mediano), indeterminato; nessun E ≥ 0.05 → C | prereg. §4–5; 0.05 = convenzione |
+| P1–P5 | A4 E minima e < 0.05; A3 E ≥ 0.05 con B; E(A1) ≤ E(A2) < E(A3); A5 A più probabile di B; A6 E < 0.05 senza B | B-043…B-085 |
 
-**Deviazioni dichiarate.**
+**Deviazioni dichiarate** (dettaglio nelle note):
 
-1. **Insieme di geni** (dopo C-3, prima di ogni φ/E): la matrice filtrata contiene solo i geni delle sonde che passano il filtro di Space Ranger; la primaria usa questi geni (decisione di Luca, «Geni comuni come primaria»); il pre-registrato (tutti i geni) è sensibilità.
-2. **Prova su A4 f1** prima del run completo: un difetto (`m.empty`) corretto; valori visti (E 0.0028, C-5 «nessuno») registrati nelle note prima del run.
-3. **Post hoc PH-1…PH-4** dichiarate dopo la lettura dei risultati; non modificano verdetti né regola.
+1. Prima del run: geni della matrice filtrata come primaria (decisione di Luca dopo C-3, «Geni comuni come primaria»); prova su A4 f1 con un difetto corretto.
+2. Dopo la revisione: correzione del conteggio di CP-1 (M-01), applicazione dello spostamento ottimo di C-2 dove FAIL come pre-registrato (M-02), mappatura sulle maschere a 1/4 (RC-2), R sotto il nullo (M-05), gestione delle BA non definite (M-14), `tools/S1.3c_analysis.py` scritto durante il run e committato dopo (M-15). Verdetti invariati.
+3. Post hoc PH-1…PH-4 dichiarate dopo la lettura dei risultati.
 
 # 2. Check C — correttezza software
 
@@ -64,38 +68,38 @@ tabc <- as.data.frame.matrix(table(CC$check, factor(CC$status, levels = c("PASS"
 kable(cbind(check = rownames(tabc), tabc), row.names = FALSE)
 ```
 
-- **Test unitari** `R/testing/test_S1.3c.py`: 31/31 PASS (somme CSC, finestre, permutazione e mutante, modello A, BA, componenti, regola, profilo, frazione nucleare spostata, soglia di sfondo).
-- **C-1** 30/30: bin per ROI entro l'1 % dell'atteso da `cov_bins` di R2.
-- **C-3** pre-registrato FAIL 5/5 per definizione (feature diverse fra grezza e filtrata); sui geni comuni grezza = filtrata in 5/5 dataset. UMI dei geni esclusi sul tessuto: 0.1 % (A5) – 7.6 % (A1) (`S1.3c_C3_diagnosis.json`).
-- **C-4** 30/30: la permutazione conserva i totali di ogni territorio; il mutante (permutazione sul ROI) li viola.
-- **C-6** PASS: catena completa rieseguita da zero in un'altra cartella, `r nC6` file con md5 identici (`r dC6` righe di differenza).
-- **C-2 registrazione** (dettaglio sotto): 16 PASS, 4 WARN, 10 FAIL. PH-2 mostra che i FAIL di A2 sono rumore dello stimatore (ottimi delle due metà a 8–15 µm, correlazione a (0, 0) ≈ 0), non uno spostamento dimostrato; A5 ha un offset coerente di 2–4 µm.
+- **Test unitari**: `R/testing/test_S1.3c.py` 31/31 (modulo di misura); `tools/S1.3c_analysis.py --test` 8/8 (aggregazione e regola, aggiunto dopo M-01).
+- **C-1** 30/30; **C-4** 30/30 (il mutante permuta i bin di tessuto valido del ROI ignorando i territori e viola i totali).
+- **C-3** pre-registrato FAIL 5/5 per definizione (grezza e filtrata hanno insiemi di geni diversi); sui geni della filtrata grezza = filtrata in 5/5. Geni esclusi: 0.1 % (A5) – 7.6 % (A1) degli UMI.
+- **C-6** PASS: catena completa rieseguita da zero dopo le correzioni, `r nC6` file con md5 identici.
+- **C-2 registrazione**: 16 PASS, 4 WARN, 10 FAIL. PH-2 (due metà indipendenti di ogni ROI): A4 e A6 a (0, 0) salvo A6 r4 (−2, 0); A5 tra 0 e 4 µm, riproducibile; in A2 gli ottimi delle due metà distano 8–15 µm e la correlazione a (0, 0) è ≤ 0.021 in r1–r3 (0.05 e 0.11 in r4, r5): i FAIL di A2 sono rumore dello stimatore, non uno spostamento dimostrato. Il revisore, con ricerca fino a ±30 µm, trova l'ottimo entro ±8 µm in 30/30. Lo spostamento ottimo è applicato (come pre-registrato) a BA, R e CP-1 nei 10 ROI con FAIL; E non dipende dalla registrazione.
 
 ```{r}
 d <- CC[CC$check == "C-2", c("unit", "value", "status")]
-ph <- PH2[, c("archetype", "roi_id", "best_h0", "best_h1", "halves_dist_um")]; ph$unit <- paste(ph$archetype, ph$roi_id, sep = "_")
+ph <- PH2; ph$unit <- paste(ph$archetype, ph$roi_id, sep = "_")
 d <- merge(d, ph[, c("unit", "best_h0", "best_h1", "halves_dist_um")], by = "unit", sort = FALSE)
-kable(d, col.names = c("ROI", "ottimo (dx, dy), |r| (a 0)", "esito C-2", "ottimo metà 0", "ottimo metà 1", "distanza fra metà (µm)"), row.names = FALSE)
+kable(d, col.names = c("ROI", "ottimo (dx, dy) µm, |r| (a 0)", "C-2", "ottimo metà 0", "ottimo metà 1", "distanza fra metà (µm)"), row.names = FALSE)
 ```
 
-**C-5 controlli sintetici** (primo ROI per archetipo, 10 % dei bin di tessuto azzerati):
+**C-5, controlli sintetici** (primo ROI per archetipo, 10 % dei bin azzerati):
 
 ```{r}
-k5 <- C5[, c("roi", "C5a_exact", "C5a_geom_frac", "A_E", "A_BA", "A_verdict", "B_E", "B_BA", "B_large", "B_verdict")]
-k5 <- cbind(archetipo = C5[, 1], k5); for (j in c("C5a_geom_frac", "A_E", "A_BA", "B_E", "B_BA", "B_large")) k5[[j]] <- f3(as.numeric(k5[[j]]))
-kable(k5, row.names = FALSE, col.names = c("arch.", "ROI", "C-5a esatto", "parte geometrica", "E (A)", "BA (A)", "verdetto A", "E (B)", "BA (B)", "grandi (B)", "verdetto B"))
+k5 <- C5[, c(1, which(names(C5) %in% c("roi", "C5a_full", "C5a_partial", "A_E", "A_BA", "A_verdict", "B_E", "B_BA", "B_large", "B_verdict")))]
+for (j in c("A_E", "A_BA", "B_E", "B_BA", "B_large")) k5[[j]] <- f3(as.numeric(k5[[j]]))
+kable(k5, row.names = FALSE)
 ```
 
-C-5a è esatto in 6/6 (Δ finestre vuote = finestre interamente nei dischi + parziali scese sotto soglia). C-5b fallisce in A1, A2, A4 e C-5c in A1, A4 **per la soglia di E**, non per il criterio di forma: per regola il verdetto di forma è «non determinabile» in A1, A2, A4 (irrilevante, perché nessun archetipo arriva a E ≥ 0.05).
+- **C-5a**: con la definizione operativa (Δ finestre vuote = finestre interamente nei dischi + finestre parziali scese sotto soglia) è esatto in 6/6; con la definizione letterale pre-registrata (solo le finestre interamente nei dischi) FAIL 6/6 per le finestre parziali. È un bilancio contabile quasi tautologico, non una validazione indipendente (M-03).
+- **C-5b/c**: falliscono per la soglia di E in A1, A2 e A4 (vuoto di tipo A e B). Dove E supera la soglia (A3, A5, A6) il criterio di forma separa A (BA 0.85–0.99) da B (BA 0.49–0.53). Limite (M-04): il vuoto sintetico di tipo A è costruito con la stessa distanza dal nucleo che il modello A adatta, quindi C-5b verifica il codice, non la capacità di riconoscere corpi cellulari reali.
 
 # 3. Check B — plausibilità biologica (A1–A6)
 
 ```{r}
-show_at <- function(x) { y <- x[, c("archetype", "E_median", "E_min", "E_max", "phi_obs_median", "phi_null_median", "BA_median", "large_frac_pooled", "R_profile_median", "C5_shape_valid", "verdict")]
-  for (j in 2:9) y[[j]] <- f4(y[[j]]); y }
-kable(show_at(P6), row.names = FALSE, caption = "Primaria, s = 6 µm (5 ROI per archetipo; E e BA = mediana dei ROI; quota grandi aggregata)",
-      col.names = c("arch.", "E", "E min", "E max", "φ_obs", "φ_null", "BA", "quota grandi", "R profilo", "forma valida (C-5)", "verdetto"))
-kable(show_at(P10), row.names = FALSE, caption = "Primaria, s = 10 µm", col.names = c("arch.", "E", "E min", "E max", "φ_obs", "φ_null", "BA", "quota grandi", "R profilo", "forma valida (C-5)", "verdetto"))
+show_at <- function(x) { y <- x[, c("archetype", "E_median", "E_min", "E_max", "phi_obs_median", "phi_null_median", "BA_median", "n_BA_defined", "large_frac_pooled", "R_profile_median", "R_null_median", "C5_shape_valid", "verdict")]
+  for (j in c(2:7, 9:11)) y[[j]] <- f4(y[[j]]); y }
+cn <- c("arch.", "E", "E min", "E max", "φ_obs", "φ_null", "BA", "n BA", "quota grandi", "R", "R nullo", "forma valida (C-5)", "verdetto")
+kable(show_at(P6), row.names = FALSE, caption = "Primaria, s = 6 µm (5 ROI per archetipo; mediane dei ROI; BA sui ROI in cui è definita; spostamento C-2 applicato dove FAIL)", col.names = cn)
+kable(show_at(P10), row.names = FALSE, caption = "Primaria, s = 10 µm", col.names = cn)
 ```
 
 ![E per ROI e variante. Linea tratteggiata: soglia di rilevanza 0.05 (convenzione).](`r fig("F1_E_per_roi.png")`)
@@ -104,9 +108,13 @@ kable(show_at(P10), row.names = FALSE, caption = "Primaria, s = 10 µm", col.nam
 kable(PR, row.names = FALSE, col.names = c("id", "previsione", "osservato", "esito"))
 ```
 
-Le previsioni P1, P3, P5 «passano», ma in modo **non informativo**: con E ≈ 0 ovunque, ordinamenti e soglie sono soddisfatti da valori dentro il rumore (P1: A1, A4 e A5 hanno tutti E mediana ≈ 0). P2 è smentita (A3: E `r f4(P6$E_median[P6$archetype=="A3"])`). P4 non è valutabile (nessun verdetto di forma). Le sensibilità (altro segmentatore, tutti i geni) danno gli stessi verdetti in 6/6 archetipi (`S1.3c_archetype.csv`).
+- **P2 smentita**: lo stroma (A3) non mostra vuoto rilevabile.
+- **P1 non valutabile**: E(A4) = E(A5) = 0.
+- **P3 e P5 passano in modo non informativo**: valori dentro il rumore.
+- **P4 non valutabile**: non c'è nessun verdetto di forma.
+- **Sensibilità**: altro segmentatore e tutti i geni danno gli stessi verdetti in 6/6 archetipi.
 
-Descrittivo H&E (frazione di tessuto valido oltre d dal nucleo, mediana dei ROI): non separa citoplasma e matrice (prereg. §2).
+Descrittivo H&E: frazione di tessuto valido oltre d dal nucleo, mediana dei ROI. Non separa citoplasma e matrice (prereg. §2).
 
 ```{r}
 h <- aggregate(. ~ archetype, HE[, -2], median); for (j in 2:5) h[[j]] <- f3(h[[j]]); kable(h, row.names = FALSE)
@@ -118,26 +126,42 @@ h <- aggregate(. ~ archetype, HE[, -2], median); for (j in 2:5) h[[j]] <- f3(h[[
 kable(CP, row.names = FALSE, col.names = c("controprova", "arch.", "k", "valore", "esito"))
 ```
 
-- **CP-1 placebo** FAIL nella forma pre-registrata in tutti gli archetipi. Due cause distinte: (a) dove non ci sono finestre vuote, BA = 0.5 sia reale sia placebo e la condizione «BA placebo < BA reale» non può essere soddisfatta; (b) in A3 il profilo cala anche con i nuclei traslati (R placebo 0.74): lì il calo non è legato ai nuclei. In A1, A5, A6 il calo degli UMI con la distanza dal nucleo **è** legato ai nuclei (R reale 0.59–0.72, placebo 0.92–0.99) (figura sotto). Il placebo ha cambiato d_nuc nella maggior parte dei bin in ogni ROI (asserzione BL-083).
-- **CP-2 vuoto vero** FAIL in tutti gli archetipi: i bin `in_tissue = 1` fuori dalla maschera R2 risultano vuoti in una frazione da 0 (A5) a 0.52 (A6, s = 10). PH-1 e PH-4 spiegano perché (sez. 5): il test non era valido in A5/A6 (maschera) e negli altri mostra spillover + plateau.
-- **CP-3 scala** PASS 6/6 (stessa direzione a 6 e 10 µm) — banalmente, perché tutto è «nessuno».
+- **CP-1 placebo (nuclei traslati di 30–60 µm), esito pre-registrato per ROI** (R placebo in [0.9, 1.1] **e** BA placebo < BA reale):
+  - passa in A6 4/5, A2 3/5, A4 2/5, A1 1/5, A3 0/5, A5 0/5;
+  - in A5 la causa è che la BA non è definita (quasi nessuna finestra vuota), mentre R placebo è in banda 5/5;
+  - la condizione congiunta era mal posta quando la BA non è definita: è un errore di pre-registrazione.
+- **Lettura su R** (post hoc, revisione M-05/M-06):
+  - il confronto giusto è con R sotto il nullo, non con 1;
+  - in A5 e A6 R osservato (`r f2(g6("A5","R_profile_median"))`, `r f2(g6("A6","R_profile_median"))`) è molto sotto il nullo (`r f2(g6("A5","R_null_median"))`, `r f2(g6("A6","R_null_median"))`) e il placebo lo riporta a ~1;
+  - il revisore lo trova stabile anche con i soli bin a ≥ 20 µm dai bordi e a parità di territorio;
+  - in A1–A3 R osservato ≈ R nullo: il calo con la distanza è prodotto dai territori e dai bordi, non da un gradiente legato al nucleo;
+  - in A3 cala anche col placebo.
+- **CP-2 vuoto vero: FAIL in tutti gli archetipi.** I bin `in_tissue = 1` fuori dalla maschera R2 risultano vuoti da 0 (A5) a 0.52 (A6, s = 10). Cosa sono questi bin (PH-4, M-08, M-09):
+  - **A1–A4**: lumi o tessuto adiposo veri, quindi il test è valido e smentisce la capacità della misura;
+  - **A5**: neuropilo escluso dalla maschera, quindi il test non è valido;
+  - **A6**: misto, con tessuto pallido in r1, r2 e vuoti veri in r3–r5.
+- **CP-3 scala**: PASS 6/6, banalmente (tutto «nessuno»).
 
-![UMI per bin in funzione della distanza dal nucleo, normalizzati al valore a 0–2 µm; una linea per ROI. R = UMI a 4–8 µm / 0–2 µm.](`r fig("F4_profilo_nucleo.png")`)
+![UMI per bin in funzione della distanza dal nucleo, normalizzati al valore a 0–2 µm; una linea per ROI. R = UMI a 4–8 µm / 0–2 µm; R nullo = stesso rapporto dopo la permutazione dentro il territorio (simulatore attuale).](`r fig("F4_profilo_nucleo.png")`)
 
-# 5. Analisi post hoc (dichiarate dopo il run)
+# 5. Analisi post hoc
 
-**PH-1 profilo dei lumi.** UMI per bin nei bin `in_tissue = 1` fuori dalla maschera R2, per fascia di distanza dal tessuto.
+**PH-1, livelli nei lumi.**
 
 ```{r}
 a <- aggregate(cbind(umi_tissue_mean, umi_lumen_mean, umi_bg_far_per_bin, lumen_frac_roi) ~ archetype, PH1, median); for (j in 2:5) a[[j]] <- f3(a[[j]])
-kable(a, row.names = FALSE, col.names = c("arch.", "UMI/bin tessuto", "UMI/bin «lume»", "UMI/bin sfondo lontano", "frazione del ROI «lume»"))
+kable(a, row.names = FALSE, col.names = c("arch.", "UMI/bin tessuto", "UMI/bin «lume»", "UMI/bin vetro ≥ 50 µm", "frazione del ROI «lume»"))
 ```
 
-![Nei lumi veri gli UMI calano dal bordo per ~10 µm e poi restano sopra lo sfondo lontano.](`r fig("F3_profilo_lumi.png")`)
+A 16–32 µm dal bordo i lumi di A1–A4 stanno `r f2(min(xm$ratio))`–`r f2(max(xm$ratio))` volte sopra il vetro lontano (mediane per archetipo; ROI `r f2(min(x14$ratio))`–`r f2(max(x14$ratio))`). Il revisore ha verificato due cose (M-10; `results/S1.3c/review/method/out/lumen_vs_exterior_profile.csv`):
+- il vetro **esterno** alla stessa distanza dal tessuto ha anch'esso UMI sopra il vetro lontano, quindi c'è una coda lunga di diffusione che la soglia pre-registrata esclude per costruzione;
+- i lumi, circondati dal tessuto, ne ricevono di più.
 
-**PH-2 robustezza di C-2**: tabella in sez. 2. A4, A6 (0, 0) riprodotto nelle due metà; A5 (2–4, 0/−2) µm riprodotto; A2 non riproducibile (rumore); A1 e A3 misti.
+Il contenuto dei lumi (muco) non è escluso, ma non è visibile in H&E.
 
-**PH-3 calibrazione di E** (vuoto sintetico perfetto, 5 ROI per archetipo; recupero = E / frazione azzerata, mediana):
+![Profilo dei lumi.](`r fig("F3_profilo_lumi.png")`)
+
+**PH-3, calibrazione di E** (vuoto sintetico perfetto, 5 ROI per archetipo; recupero = E / frazione azzerata, mediana):
 
 ```{r}
 w <- reshape(rec, idvar = c("archetype", "type"), timevar = "f_target", direction = "wide"); for (j in 3:6) w[[j]] <- f3(w[[j]])
@@ -147,37 +171,51 @@ kable(m, row.names = FALSE, col.names = c("arch.", "tipo", "recupero 5 %", "10 %
 
 ![Calibrazione di E contro la frazione vuota inserita.](`r fig("F2_calibrazione_E.png")`)
 
-**PH-4 ispezione visiva** (ritagli 250 µm, contorno della maschera R2 in ciano, bin «lume» colorati per UMI).
+**PH-4, ispezione visiva** (ritagli di 250 µm; contorno della maschera R2 in ciano; bin «lume» colorati per UMI):
 
-![A1 r1: lume intestinale vero; bin luminosi lungo l'epitelio (spillover), scuri al centro.](`r fig("PH4_A1_r1.png")`)
+![A1 r1: lume intestinale vero; bin luminosi lungo l'epitelio, più scuri al centro.](`r fig("PH4_A1_r1.png")`)
 
-![A2 r1: lume ghiandolare vero; bordo luminoso, interno sopra lo sfondo; reticolo diagonale periodico nei conteggi (osservato, non interpretato).](`r fig("PH4_A2_r1.png")`)
+![A2 r1: lume ghiandolare vero; reticolo diagonale periodico nei conteggi (osservato, non interpretato).](`r fig("PH4_A2_r1.png")`)
 
-![A5 r1: la maschera R2 esclude neuropilo pallido (tessuto) fra gli strati di somi; UMI a livello di tessuto.](`r fig("PH4_A5_r1.png")`)
+![A5 r1: la maschera esclude neuropilo pallido fra gli strati di somi, con UMI a livello di tessuto.](`r fig("PH4_A5_r1.png")`)
 
-![A6 r1: la maschera R2 esclude chiazze di citoplasma dei cardiomiociti.](`r fig("PH4_A6_r1.png")`)
+![A6 r1: la maschera esclude chiazze pallide di miocardio (in r3–r5 i bin esclusi sono invece vuoti veri).](`r fig("PH4_A6_r1.png")`)
 
-# 6. Raccomandazione A/B/C
+# 6. Che cosa decidere
 
-- **Formale (regola pre-registrata): C** in tutti gli archetipi.
-- **Sostenuta dalle evidenze: nessuna.** La controprova CP-2 e le post hoc PH-1/PH-3 mostrano che con questa misura un E ≈ 0 non distingue «niente matrice» da «matrice che i conteggi a 2 µm non possono vedere» (spillover + plateau dentro il contorno del tessuto). La decisione 1 del design resta in vigore **per difetto, non per evidenza**; BL-077 resta aperta.
-- **Indicazione utile per S1.4**: il simulatore attuale assume densità di trascritti uniforme nel territorio; i dati mostrano un gradiente nucleo → periferia legato ai nuclei in A1, A5, A6 (R 0.59–0.72). Un corpo cellulare «morbido» (opzione A come profilo di densità, non come vuoto) è compatibile con questo; va misurato e calibrato in S1.4, con la diffusione di R5.
+- **Decisione 1 del design**: resta com'è, per difetto. I conteggi a 2 µm non bastano per dire se c'è matrice fra le cellule. Per riaprire BL-077 servono una stima della diffusione (R5) e una soglia locale, oppure un'annotazione istologica della matrice per archetipo.
+- **Per S1.4**: in A5 e A6 i dati smentiscono la densità di RNA uniforme nel territorio. Un profilo radiale (più RNA vicino al nucleo) va misurato e calibrato con `derive_cell_geometry()`. In A1–A3 non c'è evidenza oltre il simulatore attuale.
+- **Per R2/R3**: la maschera di tessuto esclude tessuto pallido in A5/A6 (BACKLOG).
 
 # Verdetto
 
-- **Stato proposto: chiusa con riserve.** La misura pre-registrata è stata eseguita, verificata (check C, C-6) e calibrata; ha prodotto una risposta formale (C) che le controprove dimostrano **non informativa**.
-- **Riserve**: (1) BL-077 non risolta; (2) maschera di tessuto R2 che esclude tessuto pallido in A5/A6 (riguarda anche densità e territori di R2/R3 per area di tessuto); (3) C-2: registrazione non verificabile in A2 (stimatore senza segnale), offset 2–4 µm in A5; (4) C-3 e CP-1 mal definiti nella pre-registrazione (feature diverse; BA indefinita senza finestre vuote); (5) previsioni P1/P3/P5 soddisfatte in modo non informativo.
+- **Stato: non chiusa.** La misura pre-registrata è stata eseguita, verificata (check C, C-6, due revisori) e calibrata. La sua controprova (CP-2) e la calibrazione mostrano che non può rispondere alla domanda. La raccomandazione formale C non è sostenuta. BL-077 resta aperta.
+- **Risultati utilizzabili**:
+  - limite di rilevazione dei conteggi a 2 µm;
+  - gradiente nucleo → periferia oltre il nullo in A5 e A6;
+  - difetto della maschera R2;
+  - coda di diffusione oltre il bordo del tessuto (dato per R5).
+- **Errori di pre-registrazione**: C-3 (insiemi di geni), CP-1 (condizione con BA non definita), soglia di vuoto non raggiungibile dentro il tessuto, P1 senza regola per la parità.
 
 # Revisione avversariale
 
-_Da completare dopo la revisione._
+Due revisori indipendenti, entrambi sul server (`results/S1.3c/review/recalc/README.md`, `results/S1.3c/review/method/README.md`).
+
+- **«Ricalcolo»**: codice proprio. Sfondo, C-3 e UMI identici in 5/5 dataset; 141/141 grandezze deterministiche identiche; nullo ed E entro la variabilità dei seed; controllo positivo riprodotto.
+- **«Metodo»**: codice, pre-registrazione, numeri del report e interpretazioni alternative, con analisi proprie (bordi, nullo, maschere, alone esterno, registrazione ±30 µm).
+
+Rilievi: 27 (2 bug, 5 discrepanze, 11 di metodo, 9 confermati); tutti con azione:
+
+```{r}
+kable(RA, row.names = FALSE)
+```
 
 # Riproducibilità
 
 ```bash
-cd ~/2025.geo_spatialtrans && git checkout <sha di chiusura>
-.venv/bin/python R/testing/test_S1.3c.py                 # 31/31
-.venv/bin/python tools/S1.3c_ecm.py all                  # umi -> roi -> ctrl (~15 min, /mnt/micron/geo_spatialtrans/S1.3c)
+cd ~/2025.geo_spatialtrans && git checkout <sha di chiusura nella nota di sessione>
+.venv/bin/python R/testing/test_S1.3c.py && .venv/bin/python tools/S1.3c_analysis.py --test
+.venv/bin/python tools/S1.3c_ecm.py all          # umi -> roi -> ctrl, uscite in /mnt/micron/geo_spatialtrans/S1.3c
 .venv/bin/python tools/S1.3c_analysis.py && .venv/bin/python tools/S1.3c_posthoc.py all && .venv/bin/python tools/S1.3c_figures.py
 quarto render reports/S1.3c.qmd
 ```

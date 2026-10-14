@@ -2,6 +2,23 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.3c — 2026-10-12/14 — BL-077: spazio extracellulare intra-regione dai conteggi a 2 µm (branch `step1-cell-layer`) — **non chiusa**
+
+### Decisioni (ROADMAP §6)
+- UMI per bin sui geni della matrice filtrata (Luca, dopo C-3); stato «non chiusa» (BL-077 aperta, decisione 1 in vigore per difetto).
+
+### Codice
+- `tools/S1.3c_ecm.py` (stadi umi/roi/ctrl: UMI per bin, soglie di sfondo, finestre, nullo per permutazione nel territorio, modello A e BA, componenti, C-2, CP-1, CP-2, controlli sintetici C-5), `tools/S1.3c_analysis.py` (regola, tabelle; `--test` 8/8), `tools/S1.3c_posthoc.py` (PH-1…PH-4), `tools/S1.3c_figures.py`, `R/testing/test_S1.3c.py` (31/31), `reports/S1.3c.qmd`.
+- Difetti: in sviluppo `m.empty` (pandas) → `is_empty`; dalla revisione M-01 (conteggio CP-1 con `numpy.bool_`), RC-2 (mappatura sulle maschere ds4), M-02 (spostamento ottimo di C-2 non applicato come pre-registrato); aggiunto R sotto il nullo (M-05). Catena rieseguita, verdetti invariati.
+
+### Risultati (`results/S1.3c/`; grezzi in `/mnt/micron/geo_spatialtrans/S1.3c/`)
+- E < 0.05 in 30/30 ROI (max 0.0294 primaria, 0.0333 sensibilità) → C formale; P2 FAIL, P1/P4 non valutabili, P3/P5 non informativi.
+- CP-2 FAIL 6/6: i lumi veri non scendono al livello del vetro lontano (mediane 4.4–10.9× a 16–32 µm dal bordo); coda di diffusione anche sul vetro esterno (revisione). PH-3: recupero di E 10–97 % di un vuoto perfetto; minimo rilevabile 10–20 % (A4 tipo A > 30 %).
+- CP-1 pre-registrato: A6 4/5, A2 3/5, A4 2/5, A1 1/5, A3 0/5, A5 0/5 (BA non definita). R: A5 0.59 e A6 0.63 contro il nullo 0.90 e 0.98; A1–A3 R ≈ nullo.
+- C-2: 16 PASS / 4 WARN / 10 FAIL; PH-2: A2 non riproducibile fra metà (rumore), A5 0–4 µm riproducibile.
+- Maschera R2: esclude neuropilo in A5 (luminosità > 0.97, ~12 % del ROI) e miocardio pallido in A6 r1–r2.
+- Revisione avversariale: «Ricalcolo» (141/141 identici) e «Metodo»; 27 rilievi, azioni in `results/S1.3c/S1.3c_review_actions.csv`. BACKLOG BL-085…BL-090; BL-077 aggiornata.
+
 ## S1.3b — 2026-10-10/12 — BL-069: operazioni di sovrapposizione GEOS sui territori (branch `step1-cell-layer`)
 
 ### Decisioni (ROADMAP §6)

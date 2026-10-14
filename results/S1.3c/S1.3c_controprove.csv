@@ -1,31 +1,31 @@
 cp,archetype,k,value,status
-CP-1,A1,3.0,1/5 ROI; R placebo 0.919 (reale 0.720); BA placebo 0.500 (reale 0.500),FAIL
-CP-2,A1,3.0,271/7022 finestre vuote (0.039),FAIL
-CP-1,A1,5.0,0/5 ROI; R placebo 0.919 (reale 0.720); BA placebo nan (reale nan),FAIL
-CP-2,A1,5.0,18/1683 finestre vuote (0.011),FAIL
+CP-1,A1,3.0,1/5 ROI (R placebo in banda 3/5; BA definita 3/5); R placebo 0.964 (reale 0.697); BA placebo 0.500 (reale 0.500),FAIL (1/5 ROI)
+CP-2,A1,3.0,271/7042 finestre vuote (0.038),FAIL
+CP-1,A1,5.0,0/5 ROI (R placebo in banda 3/5; BA definita 0/5); R placebo 0.964 (reale 0.697); BA placebo nan (reale nan),FAIL (0/5 ROI)
+CP-2,A1,5.0,18/1685 finestre vuote (0.011),FAIL
 CP-3,A1,,s6: E 0.0000 nessuno; s10: E 0.0000 nessuno,PASS
-CP-1,A2,3.0,1/5 ROI; R placebo 0.971 (reale 0.899); BA placebo 0.530 (reale 0.625),FAIL
-CP-2,A2,3.0,1005/4603 finestre vuote (0.218),FAIL
-CP-1,A2,5.0,1/5 ROI; R placebo 0.971 (reale 0.899); BA placebo 0.499 (reale 0.666),FAIL
-CP-2,A2,5.0,287/1326 finestre vuote (0.216),FAIL
-CP-3,A2,,s6: E 0.0031 nessuno; s10: E 0.0015 nessuno,PASS
-CP-1,A3,3.0,0/5 ROI; R placebo 0.737 (reale 0.689); BA placebo 0.502 (reale 0.545),FAIL
-CP-2,A3,3.0,74/434 finestre vuote (0.171),FAIL
-CP-1,A3,5.0,0/5 ROI; R placebo 0.737 (reale 0.689); BA placebo 0.499 (reale 0.512),FAIL
-CP-2,A3,5.0,18/103 finestre vuote (0.175),FAIL
-CP-3,A3,,s6: E 0.0069 nessuno; s10: E 0.0033 nessuno,PASS
-CP-1,A4,3.0,1/5 ROI; R placebo 1.015 (reale 1.086); BA placebo 0.643 (reale 0.792),FAIL
-CP-2,A4,3.0,131/325 finestre vuote (0.403),FAIL
-CP-1,A4,5.0,1/5 ROI; R placebo 1.015 (reale 1.086); BA placebo 0.620 (reale 0.693),FAIL
-CP-2,A4,5.0,23/72 finestre vuote (0.319),FAIL
+CP-1,A2,3.0,3/5 ROI (R placebo in banda 3/5; BA definita 5/5); R placebo 0.966 (reale 0.851); BA placebo 0.538 (reale 0.617),FAIL (3/5 ROI)
+CP-2,A2,3.0,1002/4601 finestre vuote (0.218),FAIL
+CP-1,A2,5.0,3/5 ROI (R placebo in banda 3/5; BA definita 5/5); R placebo 0.966 (reale 0.851); BA placebo 0.499 (reale 0.590),FAIL (3/5 ROI)
+CP-2,A2,5.0,286/1314 finestre vuote (0.218),FAIL
+CP-3,A2,,s6: E 0.0031 nessuno; s10: E 0.0014 nessuno,PASS
+CP-1,A3,3.0,0/5 ROI (R placebo in banda 0/5; BA definita 5/5); R placebo 0.754 (reale 0.666); BA placebo 0.504 (reale 0.545),FAIL (0/5 ROI)
+CP-2,A3,3.0,73/433 finestre vuote (0.169),FAIL
+CP-1,A3,5.0,0/5 ROI (R placebo in banda 0/5; BA definita 5/5); R placebo 0.754 (reale 0.666); BA placebo 0.499 (reale 0.534),FAIL (0/5 ROI)
+CP-2,A3,5.0,17/105 finestre vuote (0.162),FAIL
+CP-3,A3,,s6: E 0.0070 nessuno; s10: E 0.0033 nessuno,PASS
+CP-1,A4,3.0,2/5 ROI (R placebo in banda 3/5; BA definita 2/5); R placebo 1.015 (reale 1.086); BA placebo 0.641 (reale 0.794),FAIL (2/5 ROI)
+CP-2,A4,3.0,123/321 finestre vuote (0.383),FAIL
+CP-1,A4,5.0,1/5 ROI (R placebo in banda 3/5; BA definita 2/5); R placebo 1.015 (reale 1.086); BA placebo 0.620 (reale 0.685),FAIL (1/5 ROI)
+CP-2,A4,5.0,22/72 finestre vuote (0.306),FAIL
 CP-3,A4,,s6: E 0.0000 nessuno; s10: E 0.0000 nessuno,PASS
-CP-1,A5,3.0,0/5 ROI; R placebo 0.953 (reale 0.587); BA placebo 0.541 (reale 0.500),FAIL
-CP-2,A5,3.0,1/13165 finestre vuote (0.000),FAIL
-CP-1,A5,5.0,0/5 ROI; R placebo 0.953 (reale 0.587); BA placebo 0.500 (reale 0.500),FAIL
-CP-2,A5,5.0,0/2886 finestre vuote (0.000),FAIL
+CP-1,A5,3.0,0/5 ROI (R placebo in banda 5/5; BA definita 2/5); R placebo 0.953 (reale 0.587); BA placebo 0.541 (reale 0.500),FAIL (0/5 ROI)
+CP-2,A5,3.0,1/13147 finestre vuote (0.000),FAIL
+CP-1,A5,5.0,0/5 ROI (R placebo in banda 5/5; BA definita 1/5); R placebo 0.953 (reale 0.587); BA placebo 0.500 (reale 0.500),FAIL (0/5 ROI)
+CP-2,A5,5.0,0/2871 finestre vuote (0.000),FAIL
 CP-3,A5,,s6: E 0.0000 nessuno; s10: E 0.0000 nessuno,PASS
-CP-1,A6,3.0,1/5 ROI; R placebo 0.987 (reale 0.626); BA placebo 0.529 (reale 0.555),FAIL
+CP-1,A6,3.0,4/5 ROI (R placebo in banda 5/5; BA definita 5/5); R placebo 0.987 (reale 0.626); BA placebo 0.529 (reale 0.555),FAIL (4/5 ROI)
 CP-2,A6,3.0,2281/5101 finestre vuote (0.447),FAIL
-CP-1,A6,5.0,1/5 ROI; R placebo 0.987 (reale 0.626); BA placebo 0.516 (reale 0.553),FAIL
+CP-1,A6,5.0,4/5 ROI (R placebo in banda 5/5; BA definita 5/5); R placebo 0.987 (reale 0.626); BA placebo 0.516 (reale 0.553),FAIL (4/5 ROI)
 CP-2,A6,5.0,533/1033 finestre vuote (0.516),FAIL
 CP-3,A6,,s6: E 0.0234 nessuno; s10: E 0.0108 nessuno,PASS

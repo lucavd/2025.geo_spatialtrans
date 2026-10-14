@@ -1,0 +1,140 @@
+# S1.3c — revisione avversariale «Metodo»
+
+Revisore: sotto-agente «Metodo» (2026-10-12). Repo in sola lettura su `step1-cell-layer` @ `5fa0294`; tutto ciò che è scritto sta in questa cartella. Nessun commit.
+
+## Sintesi
+
+Revisione «Metodo» di S1.3c. Le pipeline di misura (ecm.py), E ricalcolato in modo indipendente e quasi tutti i numeri del report reggono. Il bug principale sta nell'aggregazione (M-01): il conteggio del CP-1 si ferma a 1. A6 supera il CP-1 pre-registrato in 4/5 ROI e A2 in 3/5, non è «FAIL ovunque». Deviazione non dichiarata (M-02): con C-2 FAIL non si usa lo spostamento ottimo pre-registrato. Interpretazioni: il gradiente legato ai nuclei è confermato in A5 e A6 (resiste a bordi e composizione dei territori). In A1 è smentito: il nullo dà già R 0.72–0.76 e a parità di territorio, lontano dai bordi, R ≈ 0.97–1.00. Quindi «il simulatore attuale predice R ≈ 1» è falso (M-05). La maschera R2 esclude tessuto pallido in A5 (per luminosità > 0.97); in A6 solo in 2/5 ROI (M-08, M-09). CP-2: coda di diffusione presente anche sul vetro esterno; la registrazione è esclusa. Stato: C formale corretta; «chiusa con riserve» generoso: una controprova pre-registrata ha smentito la misura (M-17).
+
+Conteggio rilievi: bug 1, discrepanza 5, metodo 9, confermato 5.
+
+## Ambito e riduzioni
+
+- Rilievo (a): R ricalcolato su **tutti i 30 ROI**, non solo A1 r1, A5 r1, A6 r1. Distanza dal bordo = trasformata di distanza della maschera valida R2 (ds4), più ≥ 20 µm dal bordo del ROI.
+- Rilievo (b)/(c): statistiche dei pixel sulla griglia 1/4 (≈ 1.1 µm), valori mediani; nessuna lettura istologica da parte di un patologo (l'attribuzione «neuropilo» resta non verificata). La permutazione vera del nullo per R è stata fatta solo su A1 r1, A5 r1, A6 r1 (5 semi); negli altri ROI si usa l'atteso analitico (media del territorio).
+- BA e CP-1 con lo spostamento ottimo di C-2 (M-02): **non** ricalcolati, solo R.
+- Ricalcolo indipendente di E: 3 ROI (A2 r1, A3 r1, A6 r1), s = 6, primaria.
+
+## Rilievi
+
+### Bug
+
+**M-01** — Il riepilogo CP-1 conta male i ROI che passano: il conteggio si ferma a 1. Quindi «CP-1 FAIL in tutti gli archetipi» è falso per A6 (4/5 ROI passano a s = 6 e a s = 10) e per A2 (3/5); A4 ha 2/5 a s = 6.
+
+- *Evidenza*: tools/S1.3c_analysis.py r.98: `ok = (0.9 <= Rp <= 1.1) and (ba_p < ba_r)` restituisce numpy.bool_ quando la prima condizione è vera; r.109–110: `c1['pass'].sum()` e `.mean()` su una colonna object, dove np.bool_ + np.bool_ = True (OR logico) → somma 1, media 1/5. Riprodotto in results/S1.3c/review/method/check_cp1_count.py. Conteggi veri da S1.3c_cp_roi.csv: A1 1/5 e 0/5, A2 3/5 e 3/5, A3 0, A4 2/5 e 1/5, A5 0, A6 4/5 e 4/5 (k = 3 e k = 5). S1.3c_controprove.csv riporta 1/5 per A2, A4 e A6. Con le soglie del codice stesso (media ≥ 0.6 → WARN) A2 e A6 sarebbero WARN, non FAIL.
+- *Azione*: Convertire con bool(...) e usare astype(bool).sum(); rigenerare S1.3c_controprove.csv; correggere sez. 4, Sintesi 5 e Verdetto (A6 supera CP-1 secondo il criterio pre-registrato in 4/5 ROI). Aggiungere un test per analysis.py.
+
+### Discrepanze testo ↔ CSV/codice
+
+**M-05** — Sintesi 5 e sez. 6: «il simulatore attuale (densità uniforme nel territorio) predice R ≈ 1» è falso, e in A1 il gradiente non è legato ai nuclei. Il nullo pre-registrato riproduce già quasi tutto il gradiente di A1; il resto viene dai bordi.
+
+- *Evidenza*: out/edge_R.csv (tutti i 30 ROI). R atteso dal nullo (media del territorio come valore del bin) in A1: 0.723–0.762, contro R osservato 0.685–0.729. Permutazione vera del nullo (check_Rnull.py, 5 semi), A1 r1: 0.745–0.748 contro 0.723 osservato. R a parità di territorio, A1: 0.922–0.944; con i soli bin a ≥ 20 µm dal bordo del tessuto e del ROI: 0.970–1.000. Bordi: in A1, R con bin a ≥ 20 µm dal bordo 0.773–0.842, a ≥ 40 µm 0.816–0.959. I bin a d_nuc 4–8 µm sono più vicini al bordo di quelli a 0–2 µm (mediana 21–25 contro 34–38 µm; quota entro 20 µm 0.42–0.48 contro 0.20–0.25; Spearman d_nuc–d_bordo da −0.35 a −0.44). CP-1 pre-registrato in A1: 1/5 ROI, R placebo fuori da [0.9, 1.1] in r1 (0.809) e r5 (1.128). Figura out/F_rev_R_decomposition.png.
+- *Azione*: Togliere A1 dagli archetipi con gradiente legato ai nuclei. Confrontare R con il nullo (o usare R a parità di territorio), non con 1. Riscrivere Sintesi 5 e l'indicazione per S1.4.
+
+**M-09** — Rilievo (b), A6: «la maschera esclude in gran parte tessuto pallido» vale solo in 2 ROI su 5. In r3–r5 i bin esclusi sono vuoti veri, simili al vetro. In più la maschera delle bolle esclude tessuto in A6.
+
+- *Evidenza*: out/mask_categories.csv, A6, bin «lume» CP-2. r1, r2: saturazione 0.318/0.323 (tessuto 0.33), UMI 3.94/1.82 (82/77 % del tessuto) → tessuto pallido. r3, r4, r5: saturazione 0.023–0.027 (vetro), UMI 0.64/0.46/1.43 (25/14/30 % del tessuto), bin a zero UMI 64/76/43 % → vuoti veri. A > 8 µm dal tessuto, in tutti i ROI: saturazione 0.02–0.05, UMI 0.10–2.0. Bolle in tessuto con in_tissue = 1: 1.4–1.8 % del ROI, UMI 1.3–3.4, frazione nucleare StarDist 0.05–0.12 (tessuto 0.02–0.03).
+- *Azione*: Correggere Sintesi 2 e la didascalia PH-4: in A6 c'è un misto, con tessuto pallido ai margini (r1, r2) e vuoti veri (r3–r5). CP-2 in A6 (0.45–0.52 vuote) è in parte un test valido. Segnalare la maschera delle bolle di A6 in BACKLOG.
+
+**M-11** — Sintesi 2: «plateau 4–13 volte sopra lo sfondo lontano a 16–32 µm» non si ritrova nei CSV.
+
+- *Evidenza*: Ricalcolo da S1.3c_PH1_profile.csv / S1.3c_PH1_levels.csv (out/claims.json), fascia 16–32 µm diviso sfondo lontano per bin. Mediane per archetipo: A1 8.28, A2 6.67, A3 4.56, A4 10.62. Intervallo per ROI 2.89–18.35 (A1 5.87–12.69, A2 4.42–15.72, A3 4.30–9.61, A4 2.89–18.35).
+- *Azione*: Sostituire con «mediane 4.6–10.6× (ROI 2.9–18.4×)», o indicare come è stato calcolato 4–13.
+
+**M-12** — Testo PH-2 / C-2 impreciso in tre punti.
+
+- *Evidenza*: S1.3c_PH2_summary.csv. (1) «A4, A6 (0, 0) riprodotto nelle due metà»: A6 r4 ha (−2, 0) in tutte e due le metà; A6 r1 metà 1 (0, 2). (2) «A5 offset coerente di 2–4 µm» e riserva 3: A5 r1 ha ottimo (0, 0) (metà 0 (0, 0), metà 1 (0, −2)); l'intervallo è 0–4 µm. (3) «correlazione a (0, 0) ≈ 0» in A2: vero per r1–r3 (|r| ≤ 0.021), non per r4 (0.049) né per r5 (0.107).
+- *Azione*: Correggere le tre frasi.
+
+**M-13** — Mutante C-4: il report e le note dicono «permutazione sull'intero ROI»; il codice permuta solo i bin di tessuto valido.
+
+- *Evidenza*: ecm.py r.250: um = rng.permutation(u[idx]), con idx = bin validi. Note di sviluppo, punto 9: «permutazione su tutti i bin del ROI». Effetto nullo sull'esito: il mutante viola comunque in 30/30.
+- *Azione*: Allineare il testo al codice.
+
+### Metodo
+
+**M-02** — Deviazione non dichiarata: la pre-registrazione (C-2) dice «con FAIL: dichiarato e si usa lo spostamento ottimo». Il codice non applica mai lo spostamento (d_nuc è sempre a (0, 0)), anche nei 10 ROI con C-2 FAIL.
+
+- *Evidenza*: Pre-registrazione §6, riga C-2; tools/S1.3c_ecm.py r.228–229: dnuc = dmap[s.ri, s.ci], senza spostamento; né le note di sviluppo né il report lo dichiarano. E non dipende da d_nuc (verdetti invariati). R ricalcolato con lo spostamento ottimo (out/edge_R.csv, R_C2shift_all): A1 r1 0.723→0.685, A1 r4 0.720→0.697, A2 r1–r5 0.924/0.916/0.899/0.837/0.700 → 0.880/0.869/0.851/0.792/0.688, A3 r1/r3/r5 0.689/0.699/0.581 → 0.666/0.686/0.553. BA e CP-1 con lo spostamento: non ricalcolati.
+- *Azione*: Dichiarare la deviazione nel report (dopo il run). In alternativa rieseguire BA, R e CP-1 con lo spostamento ottimo nei ROI FAIL, come pre-registrato.
+
+**M-03** — C-5a: la definizione operativa (note di sviluppo, punto 12) diverge dalla pre-registrazione, ma è etichettata «non divergente». Inoltre è quasi tautologica.
+
+- *Evidenza*: Pre-registrazione: aumento di φ_obs = numero esatto (geometrico) di finestre interamente nei dischi, tolleranza 0. Note, punto 12: Δ = geometriche + parziali scese sotto soglia. Con il criterio letterale C-5a fallirebbe in 6/6 (parziali 61, 63, 260, 35, 13, 140; S1.3c_C5.csv). Il bilancio Δ = piene + parziali vale per costruzione, perché azzerare non può svuotare finestre senza bin nei dischi né riempirne (other_changes = 0).
+- *Azione*: Nel report: «C-5a esatto con la definizione operativa del punto 12; con la definizione pre-registrata FAIL 6/6 per finestre parziali (atteso)». Non presentarlo come validazione indipendente.
+
+**M-04** — «Il criterio di forma funziona» è un'affermazione troppo forte. C-5b è circolare: il vuoto sintetico di tipo A è definito con la stessa d_nuc che il modello A adatta. E il criterio d'area non distingue A da B.
+
+- *Evidenza*: ecm.py r.333–334: zA = d_nuc > r90; il modello A (fit_model_a) usa min d_nuc per finestra → BA 0.85–0.99 per costruzione. Anche i vuoti di tipo A stanno al 46–100 % in componenti grandi (A_large 0.93, 0.88, 0.90, 1.00, 0.46, 0.86; S1.3c_C5.csv): la discriminazione viene solo dalla BA.
+- *Azione*: Riformulare: «C-5 verifica che il codice riconosca un vuoto A definito dalla stessa d_nuc; la capacità di riconoscere corpi cellulari reali non isodistanti non è testata». Va in BACKLOG come limite del criterio.
+
+**M-07** — Il CP-1 è riletto dopo il risultato, contro la regola pre-registrata. La pre-registrazione dice «se non sparisce, il profilo non è legato ai nuclei» (congiunzione R placebo ∈ [0.9, 1.1] e BA placebo < BA reale). Il report usa solo la metà su R e conclude per un legame con i nuclei in A1, A5 e A6.
+
+- *Evidenza*: Report sez. 4, primo punto; Sintesi 5. Con il conteggio corretto il criterio pre-registrato dà: A6 4/5, A2 3/5, A4 2/5, A1 1/5, A3 0/5, A5 0/5. La causa (a) del report («BA = 0.5 sia reale sia placebo») vale per A1, A4 e A5, non per A2, A3, A6. In più, senza finestre vuote la BA è NaN, non 0.5 (A1 r3, r4; A4 p1–p3; A5 r1, r4, r5).
+- *Azione*: Riportare l'esito pre-registrato corretto per archetipo. Etichettare la lettura «solo R» come post hoc. Tenere l'ambiguità della congiunzione (BA indefinita) come errore di pre-registrazione (già in riserva 4).
+
+**M-10** — Rilievo (c), CP-2: la lettura «spillover per ~10 µm poi plateau» ha un'alternativa più semplice e misurabile. C'è una coda lunga di diffusione presente anche fuori dalla sezione, e lo sfondo lontano (≥ 50 µm) la esclude per costruzione. La registrazione è esclusa. Il contenuto dei lumi non è escluso, ma non è visibile.
+
+- *Evidenza*: out/lumen_vs_exterior_profile.csv. A1: vetro esterno (in_tissue = 0) a 16–32 µm dal tessuto 0.72–1.03 UMI per bin, a > 32 µm 0.56–0.84, contro lo sfondo lontano 0.197 (3–5×). Lumi alla stessa distanza 1.15–2.50 (1.4–3.5× l'esterno a pari distanza), compatibile con una geometria circondata dal tessuto. A2: lumi 1.98–7.04 contro esterno 0.90–1.41. Il profilo dei lumi non ha un plateau dopo 10 µm: le mediane di A1 scendono 9.71 → 5.37 → 2.53 → 1.63 (0–2 → 4–8 → 8–16 → 16–32 µm). Pixel dei lumi uguali al vetro (saturazione 0.015–0.021, eosina 0). Correlazione di rango UMI–eosina nei lumi a > 8 µm: A1 0.06–0.22, A2 da −0.04 a 0.17 (debole; il contenuto non è escluso). Registrazione: la ricerca allargata a ±30 µm (out/C2_wide.csv) trova l'ottimo dentro ±10 µm in 30/30 ROI (|spostamento| ≤ 8 µm), quindi non spiega UMI a 16–32 µm. Conseguenza: la soglia (q95 delle finestre a ≥ 50 µm dal tessuto) è irraggiungibile per qualsiasi vuoto largo meno di ~2 × la coda. PH-3, con zeri perfetti, sovrastima la potenza.
+- *Azione*: Nel report presentare le alternative e questa controprova. Per una ripresa di BL-077: calibrare E con vuoti iniettati che abbiano l'alone esterno empirico, e/o una soglia locale (esterno alla stessa distanza).
+
+**M-14** — BA mediana con valori NaN: la regola dice «BA mediana (5 ROI)», ma il codice fa la mediana sui soli ROI con finestre vuote, senza dichiararlo.
+
+- *Evidenza*: S1.3c_roi.csv: A4, primaria, s = 6, BA = 0.880, 0.704, NaN, NaN, NaN → BA_median 0.792 da 2 ROI (≥ 0.75, cioè «A» se E fosse ≥ 0.05). Primaria s = 10 in A1: BA tutta NaN. Nessun effetto sui verdetti (E < 0.05 ovunque).
+- *Azione*: Dichiarare la gestione dei NaN e riportare n ROI con BA definita nella tabella per archetipo.
+
+**M-15** — Il codice di aggregazione e di decisione (tools/S1.3c_analysis.py) è stato messo sotto versione solo dopo i risultati e non ha test. Il livello WARN del CP-1 (≥ 60 % dei ROI) non è pre-registrato.
+
+- *Evidenza*: git: analysis.py compare la prima volta in abe1a6a (15:39:03); S1.3c_archetype.csv ha mtime 15:06, il run parte alle 15:02:47 da d70bb13. I 31 test di R/testing/test_S1.3c.py coprono solo ecm.py: il bug M-01 sta in analysis.py. Il resto della cronologia è coerente (M-20).
+- *Azione*: Dichiarare nel report che l'aggregazione è stata scritta durante il run, ma non committata prima; segnare il livello WARN del CP-1 come convenzione post hoc; aggiungere test per analysis.py.
+
+**M-16** — P1 passa per parità: il codice usa ≤, e E(A4) = E(A5) = 0 (E(A1) = 3.7e-5).
+
+- *Evidenza*: analysis.py r.83: (e['A4'] <= e.min()). S1.3c_archetype.csv: E_median A4 0.0, A5 0.0. La pre-registrazione dice «A4 ha la E più bassa».
+- *Azione*: Etichettare P1 come «ex aequo / non informativo» invece di PASS. Il report lo dice già a parole: allineare la tabella.
+
+**M-17** — Rilievo (d): «C formale» è corretta per la regola 3. «Non sostenuta» è coerente con il principio della controprova (CP-2 FAIL 6/6 smentisce la capacità della misura). Ma lo stato «chiusa con riserve» è generoso, e due letture sono post hoc: CP-2 «non valido» in A5/A6 (PH-4) e CP-1 «solo R».
+
+- *Evidenza*: Skill di sessione e principi: le attese pre-registrate non si modificano; la controprova è il test che, se fallisce, smentisce il passo. Esiti pre-registrati: CP-2 FAIL 6/6; CP-1 non soddisfatto in 4/6 archetipi anche dopo la correzione; C-5b/c FAIL in 3/6; P2 FAIL; C-3 FAIL 5/5. L'obiettivo unico (una raccomandazione A/B/C sostenuta) non è raggiunto, e BL-077 resta aperta. M-05 smentisce in parte l'indicazione per S1.4 (A1). M-09 mostra che CP-2 in A6 è in parte valido.
+- *Azione*: Proporre a Luca «non chiusa» o «chiusa con esito negativo: misura invalidata dalla propria controprova», tenendo C formale; la decisione è di Luca. Il report deve tenere separati gli esiti pre-registrati e le letture post hoc (CP-2 in A5/A6, CP-1 «solo R», gradiente) e correggere M-01, M-05, M-09.
+
+### Confermati
+
+**M-06** — Rilievo (a) per A5 e A6: il gradiente degli UMI con d_nuc non è un effetto dei bordi del tessuto né della composizione dei territori. È dentro il territorio ed è legato ai nuclei.
+
+- *Evidenza*: out/edge_R.csv. A5: R osservato 0.561–0.609; ≥ 20 µm da bordo tessuto e ROI 0.557–0.585; nullo 0.854–0.916; a parità di territorio 0.616–0.662 (≥ 20 µm: 0.601–0.644); placebo all'interno 0.879–0.990. A6: R 0.555–0.676; ≥ 20 µm 0.540–0.669; nullo 0.953–0.991; a parità di territorio 0.583–0.695; placebo 0.977–1.011. R è stabile nelle fasce di distanza dal bordo (A5 0.54–0.67, A6 0.53–0.72). Con il conteggio corretto (M-01), A6 supera il CP-1 pre-registrato in 4/5 ROI. A5 0/5 solo perché la BA è NaN o 0.5 (nessuna o pochissime finestre vuote), con R placebo in banda in 5/5.
+- *Azione*: Riportare il gradiente come confermato in A5 e A6 con questa controprova aggiuntiva (post hoc del revisore). In A3 il quadro è misto (R a parità di territorio 0.79–0.96; placebo 0.64–0.89).
+
+**M-08** — Rilievo (b), A5: la maschera R2 esclude davvero tessuto pallido, per luminosità e non per saturazione. Verificato in modo indipendente su UMI, in_tissue e pixel.
+
+- *Evidenza*: out/mask_categories.csv. Bin in_tissue = 1 fuori dalla maschera R2 e fuori dalle bolle: 7.0–25.4 % del ROI; UMI 19.3–27.8 per bin (43–61 % del tessuto, 41–46); bin a zero UMI ≤ 0.2 %; anche a > 16 µm dal tessuto 10.9–29.2 per bin. Pixel: saturazione 0.49–0.53 (tessuto 0.50–0.57, vetro 0.03–0.04), OD dell'eosina 0.050–0.056 (tessuto 0.051–0.062, vetro 0.001); luminosità 0.981–0.985 contro la soglia R2 val < 0.97 (tools/R2_common.py, tissue_mask). Il tessuto valido di A5 ha luminosità 0.957–0.964, cioè a ridosso della soglia. Vetro esterno vicino (in_tissue = 0): 1.8–3.4 UMI per bin. Frazione di pixel nucleari 0.000–0.002 (tessuto 0.07–0.12): regioni povere di nuclei, compatibili con il neuropilo (attribuzione istologica non verificata).
+- *Azione*: Confermato. Aggiungere al report il meccanismo (soglia di luminosità 0.97) e la quota del ROI. La riserva 2 vale anche per densità e territori di R2/R3.
+
+**M-18** — φ_obs, φ_null ed E ricalcolati in modo indipendente (finestre e permutazione proprie, semi diversi): coincidono.
+
+- *Evidenza*: out/indep_E.csv. A2 r1: n finestre 19836 = 19836; φ_obs 0.0041843 identico; φ_null 0.000239 (semi 1001–1020) contro 0.000260; E 0.00394 contro 0.00392. A3 r1: 27449; 0.029436; 0.020418 contro 0.020502; E 0.00902 contro 0.00893. A6 r1: 24403; 0.0093021; 0.001885 contro 0.001899; E 0.00742 contro 0.00740.
+- *Azione*: Nessuna.
+
+**M-19** — Gli altri numeri del report corrispondono ai CSV.
+
+- *Evidenza*: out/claims.json e lettura dei CSV. Emax primaria s = 6: 0.0294 (A6 r2); 0/180 righe con E ≥ 0.05 (massimo 0.0333 in sens_seg A6 r2). PH-3: recupero 0.096 (A4, A, f 0.30) – 0.973 (A6, A, f 0.05); f minima 0.1–0.2, A4 tipo A > 0.30. C-5 BA: A 0.851–0.988, B 0.490–0.602. C-2: 16 PASS / 4 WARN / 10 FAIL. C-1: 30/30 (−0.05 … +0.06 %). C-3: 0.10–7.62 %. C-4: 30/30. C-6: 196 file (10 bins, 6 ctrl, 180 roi), diff vuoto. Test 31/31 (rieseguiti). CP-2: 0.000 (A5) – 0.516 (A6, s = 10). R mediani 0.720/0.587/0.626; placebo 0.919/0.953/0.987. frac_changed ≥ 0.84. Distanze fra le metà in A2: 8.2–14.6 µm. P2: E(A3) = 0.0069.
+- *Azione*: Nessuna (salvo M-01, M-09, M-11, M-12).
+
+**M-20** — Revisione del codice di ecm.py: nessun bug trovato in indici, ordinamenti, convenzioni x/y, permutazione, soglia, regola o cronologia.
+
+- *Evidenza*: permute_within: l'ordinamento lexsort per gruppo e casuale e argsort stabile per gruppo allinea i blocchi, quindi la permutazione resta dentro il gruppo (verificato anche da C-4 e dal ricalcolo M-18). I merge left su gt[['wr','wc']] conservano l'ordine (dmin coerente con empty). Righe = y = pxl_row, colonne = x = pxl_col; maschera nativa 3653² = side_px; valid_ds4 coincide al 100 % con tissue_ds4 ∧ ¬bubble_ds4 (A1 r1); px4 coerente. Join per barcode con validate one_to_one. verdict(): ordine A → B → indeterminato come in pre-registrazione §5. Cronologia: pre-registrazione f341f71 14:35 < codice 423b302 14:40 < umi v0 14:42–14:46 < decisione sui geni 3806fb1 14:56 < umi finale 14:57–14:59 < prova 15:00–15:01 < d70bb13 15:02:41 < run 15:02:47; ecm.py invariato dopo il run. C-2 riprodotto con un'implementazione indipendente: stesso ottimo e stesso |r| in 30/30.
+- *Azione*: Nessuna.
+
+## Figura
+
+`out/F_rev_R_decomposition.png`: R per ROI: osservato; con i soli bin a ≥ 20 µm dai bordi; atteso dal nullo (densità uniforme nel territorio); a parità di territorio; a parità di territorio e ≥ 20 µm. In A1 il nullo spiega il gradiente; in A5 e A6 no.
+
+## File
+
+- `rev_method.py` — verifiche (`claims`, `indep`, `edge`, `mask`, `reg`); uscite in `out/`.
+- `check_cp1_count.py` — conteggi CP-1 veri e riproduzione del bug np.bool_.
+- `check_Rnull.py` — R sotto la permutazione nulla vera (A1 r1, A5 r1, A6 r1).
+- `fig_R.py` — figura.
+- `out/claims.json` (numeri del testo dai CSV), `out/indep_E.csv`, `out/edge_R.csv`, `out/mask_categories.csv`, `out/lumen_vs_exterior_profile.csv`, `out/C2_wide.csv`, `out/F_rev_R_decomposition.png`, `findings.json`.
+
+Riproduzione (root del repo): `for s in claims indep edge mask reg; do .venv/bin/python results/S1.3c/review/method/rev_method.py $s; done` (~4 min, 10 processi), poi `check_cp1_count.py`, `check_Rnull.py`, `fig_R.py`.

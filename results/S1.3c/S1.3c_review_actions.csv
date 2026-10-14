@@ -1,0 +1,28 @@
+id,revisore,classe,rilievo,azione
+RC-1,Ricalcolo,confermato,UMI per bin / C-3 / soglie di sfondo identici in 5/5 dataset,nessuna
+RC-2,Ricalcolo,bug,mappatura bin->maschere ds4 con side_um/913 invece di 4 px nativi (<= 0.55 um; |dE| <= 1.6e-4),corretto (ds4_index) e rieseguito; verdetti invariati
+RC-3,Ricalcolo,confermato,141/141 grandezze deterministiche dei 6 ROI identiche,nessuna
+RC-4,Ricalcolo,confermato,phi_null ed E entro la variabilita' di seed (|z| <= 2.2),nessuna
+RC-5,Ricalcolo,confermato,controllo positivo A3 r1 E 0.0688; C5 typeA e PH-3 f=0.10 sono lo stesso numero,nel report non presentati come conferme distinte
+RC-6,Ricalcolo,metodo,convenzione floor dei pixel non dichiarata (effetto <= 0.004 su R),dichiarata (note punto 25)
+RC-7,Ricalcolo,metodo,BA instabile con poche finestre vuote,n ROI con BA definita riportato; nessuna soglia minima (sarebbe post hoc)
+M-01,Metodo,bug,conteggio CP-1 fermo a 1 (somma di numpy.bool_ in colonna object),corretto con test (analysis --test 8/8); A6 4/5 A2 3/5 A4 2/5
+M-02,Metodo,metodo,spostamento ottimo di C-2 non applicato come pre-registrato,applicato a BA r* R CP-1 nei ROI con C-2 FAIL; riportati anche i valori senza
+M-03,Metodo,metodo,C-5a operativo diverge dalla pre-registrazione ed e' quasi tautologico,dichiarato nel report; con la definizione letterale FAIL 6/6
+M-04,Metodo,metodo,C-5b circolare (vuoto A definito con la stessa d_nuc del modello A),dichiarato come limite del criterio di forma
+M-05,Metodo,discrepanza,gradiente in A1 non legato ai nuclei; confronto con 1 sbagliato,R nullo aggiunto; gradiente oltre il nullo solo in A5 e A6
+M-06,Metodo,confermato,gradiente in A5 e A6 robusto a bordi e composizione dei territori,riportato
+M-07,Metodo,metodo,CP-1 riletto solo su R (post hoc),esito pre-registrato per archetipo riportato; lettura su R etichettata post hoc
+M-08,Metodo,confermato,maschera R2 esclude tessuto pallido in A5 (luminosita' > 0.97),meccanismo nel report; BACKLOG
+M-09,Metodo,discrepanza,in A6 tessuto pallido escluso solo in r1 r2; r3-r5 vuoti veri,corretto nel report
+M-10,Metodo,metodo,nessun plateau: coda di diffusione lunga presente anche sul vetro esterno,lettura corretta nel report
+M-11,Metodo,discrepanza,rapporto 4-13x non riproducibile,sostituito con mediane per archetipo e intervallo per ROI
+M-12,Metodo,discrepanza,tre frasi imprecise su C-2/PH-2,corrette
+M-13,Metodo,discrepanza,mutante C-4 permuta i bin validi non tutto il ROI,testo allineato al codice
+M-14,Metodo,metodo,BA mediana sui soli ROI con BA definita,dichiarato; n riportato
+M-15,Metodo,metodo,analysis.py scritto durante il run e committato dopo,dichiarato; test aggiunti
+M-16,Metodo,metodo,P1 passa per parita',P1 non valutabile
+M-17,Metodo,metodo,stato chiusa con riserve generoso,stato: non chiusa
+M-18,Metodo,confermato,E phi_obs phi_null ricalcolati indipendentemente coincidono,nessuna
+M-19,Metodo,confermato,altri numeri del report coincidono con i CSV,nessuna
+M-20,Metodo,confermato,nessun bug in ecm.py; cronologia coerente,nessuna

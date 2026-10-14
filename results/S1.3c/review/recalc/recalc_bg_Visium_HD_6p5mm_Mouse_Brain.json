@@ -1,0 +1,56 @@
+{
+ "C3": {
+  "n_in_tissue": 6343031,
+  "n_filtered": 6343031,
+  "n_filtered_not_in_tissue": 0,
+  "n_tissue_not_in_filtered": 0,
+  "n_diff_com": 0,
+  "n_diff_all": 196172,
+  "frac_umi_excl_tissue": 0.0009622507802339308
+ },
+ "bg": {
+  "com": {
+   "3": {
+    "thr": 10.0,
+    "n_windows": 466521,
+    "mean": 3.699743419910358,
+    "frac_zero": 0.11790037318791652
+   },
+   "5": {
+    "thr": 26.0,
+    "n_windows": 167325,
+    "mean": 10.198583594800537,
+    "frac_zero": 0.01638727028238458
+   }
+  },
+  "all": {
+   "3": {
+    "thr": 10.0,
+    "n_windows": 466521,
+    "mean": 3.703576044808272,
+    "frac_zero": 0.11772031698465878
+   },
+   "5": {
+    "thr": 26.0,
+    "n_windows": 167325,
+    "mean": 10.20918571642014,
+    "frac_zero": 0.01634543552965785
+   }
+  }
+ },
+ "n_bins": 11222500,
+ "n_umi_missing": 0,
+ "n_genes_all": 33715,
+ "n_genes_com": 19070,
+ "feature_types": {
+  "Gene Expression": 33715
+ },
+ "umi_total": {
+  "com": 214517133,
+  "all": 214723964
+ },
+ "umi_tissue": {
+  "com": 210717110,
+  "all": 210920068
+ }
+}
