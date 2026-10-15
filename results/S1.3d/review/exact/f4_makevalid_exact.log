@@ -1,0 +1,15 @@
+                 key  cell  valid_after_shapely  n_rings_after  same_vertex_set  area_exact_after  area_exact_v0  equal_exact  d_over_tau     tau_i
+0       A5_r1_CSR_03   225                 True              2             True        505.854737     505.854737         True         0.0  0.000198
+1       A5_r1_RSA_06   773                 True              2             True        633.417266     633.417266         True         0.0  0.000254
+2   A5_r1_RSArule_05   576                 True              2             True        655.385090     655.385090         True         0.0  0.000276
+3       A5_r2_CSR_01   202                 True              2             True       1713.228135    1713.228135         True         0.0  0.000284
+4       A5_r2_CSR_16   649                 True              2             True       2186.748154    2186.748154         True         0.0  0.000325
+5       A5_r2_CSR_17   501                 True              2             True       3223.427245    3223.427245         True         0.0  0.000451
+6   A5_r2_RSArule_01   296                 True              2             True       3091.146817    3091.146817         True         0.0  0.000409
+7       A5_r4_CSR_06   249                 True              2             True       6705.512332    6705.512332         True         0.0  0.000884
+8       A5_r4_CSR_09   513                 True              2             True       2917.241879    2917.241879         True         0.0  0.000437
+9       A5_r4_RSA_11   289                 True              2             True       2840.645984    2840.645984         True         0.0  0.000415
+10      A5_r4_RSA_20   361                 True              3             True       6337.545879    6337.545879         True         0.0  0.000936
+11  A5_r4_RSArule_06   308                 True              2             True       2722.445878    2722.445878         True         0.0  0.000405
+12  A5_r4_RSArule_16    21                 True              2             True       3278.427350    3278.427350         True         0.0  0.000547
+13  A5_r4_RSArule_63   112                 True              2             True       3000.601918    3000.601918         True         0.0  0.000450

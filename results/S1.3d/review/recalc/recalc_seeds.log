@@ -1,0 +1,12 @@
+H: 300 seed distinti; range offset 1161 .. 30363
+collisioni con seed di GENERAZIONE dei nulli (R3, S1.3, S1.3b): 0
+collisioni numeriche con seed di ALTRI usi (campionamento/perturbazione/permutazione): 57
+  per uso: {'S1.3b C-3 st_sample': 10, 'S1.3b CP-2 s3b_perturb': 51}
+  es. (1, 'CSR', 61) seed BASE+1161 ['S1.3b C-3 st_sample']
+  es. (1, 'CSR', 62) seed BASE+1162 ['S1.3b C-3 st_sample', 'S1.3b CP-2 s3b_perturb']
+  es. (1, 'CSR', 63) seed BASE+1163 ['S1.3b C-3 st_sample']
+  es. (1, 'CSR', 64) seed BASE+1164 ['S1.3b C-3 st_sample']
+  es. (1, 'RSA', 61) seed BASE+1261 ['S1.3b C-3 st_sample']
+  es. (1, 'RSA', 62) seed BASE+1262 ['S1.3b C-3 st_sample']
+  es. (1, 'RSA', 63) seed BASE+1263 ['S1.3b C-3 st_sample', 'S1.3b CP-2 s3b_perturb']
+  es. (1, 'RSArule', 61) seed BASE+1361 ['S1.3b C-3 st_sample', 'S1.3b CP-2 s3b_perturb']

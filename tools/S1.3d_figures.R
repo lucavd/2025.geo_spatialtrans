@@ -5,6 +5,7 @@ suppressPackageStartupMessages({ library(ggplot2); library(sf); library(arrow); 
 a <- commandArgs(TRUE); OUTD <- if (length(a)) a[1] else "/mnt/micron/geo_spatialtrans/S1.3d"
 IN <- Sys.getenv("S13D_OUTR", "results/S1.3d"); FIG <- file.path(IN, "figures"); dir.create(FIG, showWarnings = FALSE, recursive = TRUE)
 G_GRID <- 1e-6; source("tools/S1.3d_candidates.R")
+set.seed(20261014)  # jitter riproducibile (figure identiche a ogni rigenerazione)
 theme_set(theme_bw(base_size = 10) + theme(panel.background = element_rect(fill = "white"), plot.background = element_rect(fill = "white", colour = NA)))
 CC <- c(V0 = "grey45", F1 = "#1b9e77", F2 = "#7570b3", F3 = "#e7298a", F4 = "#66a61e", F5 = "#d95f02", F6 = "#e6ab02")
 O1 <- read.csv(file.path(IN, "S1.3d_o1_long.csv")); O2 <- read.csv(file.path(IN, "S1.3d_o2_long.csv"))
@@ -58,7 +59,7 @@ if (nrow(v5)) { best <- NULL
     if (is.null(best) || q$d > best$d) best <- q }
   kk <- as.integer(strsplit(best$k, " ")[[1]])
   p <- case_plot(best$key, kk[1], kk[2], kk[3], 2, sprintf("F5 su %s (input valido): cella %d, bin (%d, %d)", best$key, kk[1], kk[2], kk[3]))
-  ggsave(file.path(FIG, "fig5_f5_case.png"), p, width = 5.5, height = 5.5, dpi = 150) }
+  ggsave(file.path(FIG, "fig5_f5_case.png"), p, width = 7, height = 6.2, dpi = 150) }
 c5f <- list.files(file.path(OUTD, "res"), pattern = "_o12?\\.rds$", full.names = TRUE)
 for (f in c5f) { r <- readRDS(f); if (!is.null(r$c5$info$n_invalid) && r$c5$info$n_invalid > 0) {
   m <- fromJSON(file.path(OUTD, "geom", paste0(r$key, "_meta.json"))); t4 <- df_to_sfc(as.data.frame(read_parquet(file.path(OUTD, "geom", paste0(r$key, "_f4cells.parquet")))), m$n)

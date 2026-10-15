@@ -1,0 +1,13 @@
+scipen = 0 
+interi in [0, 2e6] con paste(double) != sprintf:  11 
+ [1] 1e+05 2e+05 3e+05 4e+05 5e+05 6e+05 7e+05 8e+05 9e+05 1e+06 2e+06
+minimo: 1e+05  tutti multipli di 1e5: TRUE 
+casi: 2669 ; fuori da S: max n = 31070  max nx2 = 508  max ny2 = 508 
+S: n = 449536  nx2 = 2000  ny2 = 2000 
+fuori da S, casi con n >= 1e5 o nx2/ny2 >= 1e5: 0 
+S, s = 2: pezzi esatti delle celle 1e5..4e5 = 70 (-> 140 violazioni fittizie se mancanti + spuri)
+   per cella: 100000 22; 200000 21; 300000 8; 400000 19 
+   pezzi di S con chiave paste(double) diversa: 70  di cui fuori dalle celle 1e5..4e5: 0 
+S, s = 8: pezzi esatti delle celle 1e5..4e5 = 14 (-> 28 violazioni fittizie se mancanti + spuri)
+   per cella: 100000 4; 200000 4; 300000 2; 400000 4 
+   pezzi di S con chiave paste(double) diversa: 14  di cui fuori dalle celle 1e5..4e5: 0 

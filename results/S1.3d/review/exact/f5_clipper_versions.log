@@ -1,0 +1,11 @@
+drv640_t riproduce polyclip (|d| <= 1e-9 rel): 147 / 268
+drv640        t: errore max 1.039e+00  n(err > 1e-3 µm²) = 145  n(err > 1e-5) = 147
+drv640        r: errore max 3.800e-06  n(err > 1e-3 µm²) =   0  n(err > 1e-5) =   0
+drv640g       t: errore max 7.817e-06  n(err > 1e-3 µm²) =   0  n(err > 1e-5) =   0
+drv640g       r: errore max 3.800e-06  n(err > 1e-3 µm²) =   0  n(err > 1e-5) =   0
+drv642        t: errore max 7.817e-06  n(err > 1e-3 µm²) =   0  n(err > 1e-5) =   0
+drv642        r: errore max 3.800e-06  n(err > 1e-3 µm²) =   0  n(err > 1e-5) =   0
+pyclipper642  t: errore max 7.817e-06  n(err > 1e-3 µm²) =   0  n(err > 1e-5) =   0
+pyclipper642  r: errore max 3.800e-06  n(err > 1e-3 µm²) =   0  n(err > 1e-5) =   0
+clipper2      t: errore max 7.817e-06  n(err > 1e-3 µm²) =   0  n(err > 1e-5) =   0
+clipper2      r: errore max 5.879e-06  n(err > 1e-3 µm²) =   0  n(err > 1e-5) =   0

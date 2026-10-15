@@ -1,0 +1,19 @@
+                n  keys  whole     max_exact    min_cand  max_dev
+set  v0_valid                                                    
+CP1P False      4     4      3  1.002549e-14   26.593783      NaN
+     True       1     1      1  0.000000e+00  163.266702      NaN
+H    False     10     8     10  3.500091e-14   13.232537      NaN
+     True       6     4      6  0.000000e+00   54.479660      NaN
+N    False     61    46     59  2.395909e-14    4.007998      NaN
+     True      22    19     20  0.000000e+00   17.444636      NaN
+U2   False     43    27     43  2.395909e-14   65.704056      NaN
+     True      20    10     20  0.000000e+00   99.396268      NaN
+max |cand - area cella intera| fra le 'whole': 3.183231456205249e-12  non-whole: 5
+                       key     what     i     j  exact         cand          a_i          a_j       tau  cand_minus_ai  cand_minus_aj  cand_is_whole_cell whole_cell_is  v0_valid   set        dev
+16            A2_r4_RSA_16  pair_ji  3426  2588    0.0   138.638578   297.546620   149.281311  0.000131     158.908042      10.642733               False             j     False     N  10.642733
+43            A3_r5_RSA_11  pair_ji  1351   180    0.0   303.109958   383.102531   305.797155  0.000157      79.992573       2.687197               False             j     False     N   2.687197
+68        A5_r1_RSArule_02  pair_ji  1073   812    0.0   148.020808   496.271131   152.637993  0.000171     348.250322       4.617185               False             j      True     N   4.617185
+85            A6_r2_CSR_04  pair_ji   873   803    0.0  1739.198480  1651.852326  2936.523044  0.000508      87.346154    1197.324564               False             i      True     N  87.346154
+101  CP1P_A3_r4_CSR_15_d08  pair_ij  3181  4244    0.0   172.787918   218.979596   369.528580  0.000162      46.191678     196.740661               False             i     False  CP1P  46.191678
+20 chiavi: 20 ; coppie violate in esse: 22 ; chiavi con coppie: 19 ; tutte 'cella intera': False ; esatto max: 0.0
+chiavi delle 20 senza coppie violate: ['A4_p2_RSArule_13']

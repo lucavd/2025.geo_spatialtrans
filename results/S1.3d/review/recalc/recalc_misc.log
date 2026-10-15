@@ -1,0 +1,86 @@
+      
+       O2s2 O2s8 O3
+  CP1P    3    3  3
+  CP1T   31   18 31
+  H      16    1  1
+  N       3    0  0
+  S       1    1  1
+  U5      1    1  1
+                   key   op n_viol n_missing n_spurious    max_ratio
+520   A4_p1_RSArule_06 O2s2      1         0          0 3.893108e+00
+2032  A4_f2_RSArule_16 O2s2      1         0          0 1.624713e+00
+2284  A4_p1_RSArule_18 O2s2      1         1          0 1.075451e+00
+9493         U5_cocirc O2s2     17         0          0 1.499613e+08
+9494         U5_cocirc   O3      2         0          0 2.500019e+00
+9495         U5_cocirc O2s8      2         0          0 2.500019e+00
+16552          S_cperf O2s2     62        18          0 5.976799e+00
+16553          S_cperf   O3      7         1          0 4.485614e+00
+16554          S_cperf O2s8      7         1          0 4.485614e+00
+V0 O1 silent per insieme:
+      
+       FALSE TRUE
+  CP1P   175    5
+  CP1T   180    0
+  H      287   13
+  N     1730   70
+  S        1    0
+  U1       5    0
+  U2     133   37
+  U3       8    0
+  U4      20    0
+  U5       5    0
+F4 O1 applicabile per insieme:
+
+CP1P    H    N    S   U5 
+ 180  300 1800    1    5 
+max ratio O1 F1 coppie / celle per insieme:
+    set   pmax_ratio   cmax_ratio
+1  CP1P 1.107340e-08 4.611823e-01
+2  CP1T 1.615261e-01 4.626766e-01
+3     H 8.368061e-09 4.533148e-01
+4     N 1.069271e-08 4.618982e-01
+5     S 4.986015e-10 4.271080e-01
+6    U1 0.000000e+00 2.273737e-07
+7    U2 1.985569e-08 3.934473e-01
+8    U3 0.000000e+00 7.117379e-02
+9    U4 0.000000e+00 1.150470e-01
+10   U5 4.329490e-09 2.942818e-01
+max ratio O2 F1 per insieme e op:
+    set   op    max_ratio
+1  CP1P O2s2 5.002216e-01
+2  CP1T O2s2 5.018385e-01
+3     H O2s2 5.188758e-01
+4     N O2s2 4.888549e-01
+5     S O2s2 4.407030e-01
+6    U1 O2s2 2.273737e-07
+7    U3 O2s2 1.615213e-01
+8    U4 O2s2 3.108586e-01
+9    U5 O2s2 3.242837e-01
+10 CP1P O2s8 4.929696e-01
+11 CP1T O2s8 4.929698e-01
+12    H O2s8 5.146102e-01
+13    N O2s8 5.139616e-01
+14    S O2s8 4.705078e-01
+15   U1 O2s8 2.273737e-07
+16   U3 O2s8 7.893771e-02
+17   U4 O2s8 2.412637e-01
+18   U5 O2s8 2.942818e-01
+19 CP1P   O3 4.458559e-01
+20 CP1T   O3 4.458009e-01
+21    H   O3 5.009624e-01
+22    N   O3 4.888549e-01
+23    S   O3 3.951921e-01
+24   U1   O3 2.273737e-07
+25   U3   O3 5.440049e-02
+26   U4   O3 2.289773e-01
+27   U5   O3 2.942818e-01
+U3 F1 (cella vuota dopo set_precision):
+               key silent cell_viol   cmax_ratio
+12632      U3_axis  FALSE         0 0.000000e+00
+12638   U3_diamond  FALSE         0 0.000000e+00
+12644     U3_ulp_m  FALSE         0 4.736952e-08
+12650     U3_ulp_p  FALSE         0 4.736952e-08
+12656 U3_ulp_slant  FALSE         0 0.000000e+00
+12662      U3_tiny  FALSE         0 1.521119e-08
+12668    U3_sliver  FALSE         0 4.999998e-02
+12674       U3_big  FALSE         0 7.117379e-02

@@ -1,0 +1,17 @@
+files 2689 viol rows 617 
+
+    cmp   o1_V0 o2_F2_2 o2_F3_2 o2_F5_2 o2_F5_8   o3_F5 
+     69     219       1       1     164      35     128 
+c5 n_invalid>0: 14  total 14 
+[1] "key"  "n"    "o1"   "o2"   "viol" "c5"  
+List of 10
+ $ n_faces     : int 82
+ $ n_ambiguous : int 0
+ $ n_fragments : int 0
+ $ n_reassigned: int 0
+ $ n_isolated  : int 0
+ $ min_margin  : num Inf
+ $ n_tie       : int 0
+ $ n_invalid   : int 0
+ $ n_empty     : int 0
+ $ elapsed_s   : num 0.287

@@ -1,0 +1,45 @@
+indipendente O1: righe 4201 ( H F1 300; H V0 300; N F1 1800; N V0 1800; S F1 1 )
+indipendente O2/O3: righe 1266 ( H F1 O2s2 300; H F1 O2s8 300; H F1 O3 300; N F1 O2s2 120; N F1 O2s8 120; N F1 O3 120; S F1 O2s2 1; S F1 O2s8 1; S F1 O3 1; S V0 O2s2 1; S V0 O2s8 1; S V0 O3 1 )
+coppie: elenco geom/_pairs vs st_intersects ricalcolato, chiavi con differenze: 0 su 4200 
+verità celle: n_tc != n: 0 
+
+O1 abbinate 4201 
+  union_viol                   diversi: 0
+  symd_viol                    diversi: 0
+  coppie ij                    diversi: 0
+  coppie ji                    diversi: 0
+  coppie any                   diversi: 0
+  celle                        diversi: 0
+  eccezioni                    diversi: 0
+  silent                       diversi: 0
+  fail                         diversi: 0
+  union_err: max |Δ| 0 ; identici 4201/4201 ; symd_err max |Δ| 0
+  [indip] N V0: casi 1800, silenziosi 70, fail 70, unione 15, coppie 65, celle 0, eccezioni 0, max errore/tau coppie 5.13e+06
+  [indip] N F1: casi 1800, silenziosi 0, fail 0, unione 0, coppie 0, celle 0, eccezioni 0, max errore/tau coppie 1.07e-08
+  [indip] H V0: casi 300, silenziosi 13, fail 13, unione 4, coppie 12, celle 0, eccezioni 0, max errore/tau coppie 2.99e+06
+  [indip] H F1: casi 300, silenziosi 0, fail 0, unione 0, coppie 0, celle 0, eccezioni 0, max errore/tau coppie 8.37e-09
+  [indip] S F1: casi 1, silenziosi 0, fail 0, unione 0, coppie 0, celle 0, eccezioni 0, max errore/tau coppie 4.99e-10
+  [indip] F1 celle invalide dopo geos_set_precision: N 0  H 0  S 0 
+
+O2/O3 abbinate 1266 su 1266 
+  n_truth                      diversi: 0
+  n_cand                       diversi: 0
+  n_viol                       diversi: 0
+  n_missing                    diversi: 0
+  n_spurious                   diversi: 0
+  max_ratio: max |Δ| 0 (rel 0)
+  [indip] N F1 O2s2: casi 120, con violazioni 0 (pezzi violati 0; mancanti 0, spuri 0), max errore/tau 0.489, eccezioni 0; identità O3 (gruppi mancanti 0, extra 0, max rel 2.2e-16)
+  [indip] N F1 O2s8: casi 120, con violazioni 0 (pezzi violati 0; mancanti 0, spuri 0), max errore/tau 0.514, eccezioni 0; identità O3 (gruppi mancanti 0, extra 0, max rel 2.2e-16)
+  [indip] N F1 O3: casi 120, con violazioni 0 (pezzi violati 0; mancanti 0, spuri 0), max errore/tau 0.489, eccezioni 0; identità O3 (gruppi mancanti 0, extra 0, max rel 2.2e-16)
+  [indip] H F1 O2s2: casi 300, con violazioni 0 (pezzi violati 0; mancanti 0, spuri 0), max errore/tau 0.519, eccezioni 0; identità O3 (gruppi mancanti 0, extra 0, max rel 2.2e-16)
+  [indip] H F1 O2s8: casi 300, con violazioni 0 (pezzi violati 0; mancanti 0, spuri 0), max errore/tau 0.515, eccezioni 0; identità O3 (gruppi mancanti 0, extra 0, max rel 2.2e-16)
+  [indip] H F1 O3: casi 300, con violazioni 0 (pezzi violati 0; mancanti 0, spuri 0), max errore/tau 0.501, eccezioni 0; identità O3 (gruppi mancanti 0, extra 0, max rel 2.2e-16)
+  [indip] S F1 O2s2: casi 1, con violazioni 0 (pezzi violati 0; mancanti 0, spuri 0), max errore/tau 0.441, eccezioni 0; identità O3 (gruppi mancanti 0, extra 0, max rel 2.2e-16)
+  [indip] S F1 O2s8: casi 1, con violazioni 0 (pezzi violati 0; mancanti 0, spuri 0), max errore/tau 0.471, eccezioni 0; identità O3 (gruppi mancanti 0, extra 0, max rel 2.2e-16)
+  [indip] S F1 O3: casi 1, con violazioni 0 (pezzi violati 0; mancanti 0, spuri 0), max errore/tau 0.395, eccezioni 0; identità O3 (gruppi mancanti 0, extra 0, max rel 2.2e-16)
+  [indip] S V0 O2s2: casi 1, con violazioni 0 (pezzi violati 0; mancanti 0, spuri 0), max errore/tau 0.000, eccezioni 0; identità O3 (gruppi mancanti 0, extra 0, max rel 2.2e-16)
+  [indip] S V0 O2s8: casi 1, con violazioni 0 (pezzi violati 0; mancanti 0, spuri 0), max errore/tau 0.000, eccezioni 0; identità O3 (gruppi mancanti 0, extra 0, max rel 2.2e-16)
+  [indip] S V0 O3: casi 1, con violazioni 0 (pezzi violati 0; mancanti 0, spuri 0), max errore/tau 0.000, eccezioni 0; identità O3 (gruppi mancanti 0, extra 0, max rel 2.2e-16)
+
+CP-3 indipendente (F1 su H): O1 0/300 ; O2 0/600 ; O3 0/300
+FINE

@@ -1,0 +1,18 @@
+PASS area quadrato 1
+PASS quadrato ∩ quadrato traslato = 1/4
+PASS quadrati adiacenti = 0
+PASS identici = 1
+PASS triangolo ∩ bin [0,2]^2 = 4
+PASS triangolo ∩ bin [2,4]x[0,2] = 2
+PASS triangolo ∩ bin [2,4]x[2,4] = 0
+PASS bucato area 12
+PASS bucato ∩ bin [0,2]^2 = 3
+PASS bucato ∩ quadrato nel buco = 0
+PASS rombo ∩ rombo ruotato (ottagono)
+PASS incavo: shoelace = slab
+PASS incavo ∩ bin [0,1]x[0,1] = 11/12 (analitico)
+PASS incavo ∩ bin vs shapely
+PASS slab = |shoelace| su 59 celle reali
+PASS pezzi vs shapely e somma pezzi = area (max |d| = 1.03e-13)
+PASS coppie: simmetria esatta 3/3, vs shapely max |d| = 0.00e+00
+TOTALE PASS 17 FAIL 0

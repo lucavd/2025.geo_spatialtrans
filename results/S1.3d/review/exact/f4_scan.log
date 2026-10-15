@@ -1,0 +1,16 @@
+file 2286 celle 18745076 celle invalide 14 casi con invalide 14
+                   key  n_cells  n_invalid invalid
+1402      A5_r1_CSR_03     1267          1     225
+1429      A5_r1_RSA_06     1267          1     773
+1451  A5_r1_RSArule_05     1267          1     576
+1470      A5_r2_CSR_01      777          1     202
+1485      A5_r2_CSR_16      777          1     649
+1486      A5_r2_CSR_17      777          1     501
+1517  A5_r2_RSArule_01      778          1     296
+1615      A5_r4_CSR_06      524          1     249
+1618      A5_r4_CSR_09      524          1     513
+1644      A5_r4_RSA_11      523          1     289
+1653      A5_r4_RSA_20      523          1     361
+1662  A5_r4_RSArule_06      524          1     308
+1672  A5_r4_RSArule_16      524          1      21
+1679  A5_r4_RSArule_63      524          1     112

@@ -1,0 +1,9 @@
+o1 A4_f1_CSR_62 30 eq 30 0.1s
+o1 A6_r4_CSR_61 30 eq 30 0.1s
+o1 A5_r3_RSArule_61 30 eq 30 0.1s
+o1 A5_r2_CSR_61 30 eq 30 0.1s
+o2 A2_r2_RSArule_62 191 eq 191 0.1s
+o2 A6_r4_RSArule_61 802 eq 802 0.3s
+o1 S_cperf 30 eq 30 0.3s
+o2 A6_r2_CSR_64 1186 eq 1186 0.4s
+o2 S_cperf 111 eq 111 0.9s

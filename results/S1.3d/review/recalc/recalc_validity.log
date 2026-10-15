@@ -1,0 +1,25 @@
+     st n_invalid_input n_empty_input n_invalid_F1F3 n_empty_F1F3
+1  CP1P               0             0              0            0
+2  CP1T              15             0              0            0
+3     H               0             0              0            0
+4     N               0             0              0            0
+5     S               0             0              0            0
+6    U1               0             0              0            0
+7    U2               0             0              0            0
+8    U3               0             0              0            1
+9    U4               0             0              0            0
+10   U5               0             0              0            0
+     st cases_inv_input
+1  CP1P               0
+2  CP1T              14
+3     H               0
+4     N               0
+5     S               0
+6    U1               0
+7    U2               0
+8    U3               0
+9    U4               0
+10   U5               0
+perimetri: max rel |P_ricalcolato - P_meta| / P = 4.97e-15 
+validity_F1F3.csv vs ricalcolo: chiavi in comune 2369 ; n_invalid diverso 0 ; n_empty diverso 0 
+FINE

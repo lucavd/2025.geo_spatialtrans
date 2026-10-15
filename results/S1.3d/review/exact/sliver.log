@@ -1,0 +1,21 @@
+                                 0                 1                 2                 3
+key                   A4_p2_CSR_62  A4_f2_RSArule_16  A4_p1_RSArule_06  A4_p1_RSArule_18
+cell                          8601              9871             27810              9781
+ix                             380               447               496               419
+iy                             469               434               442               439
+label                    F2/F3 (H)            F5 (N)            F5 (N)            F5 (N)
+exact                          0.0               0.0               0.0               0.0
+exact_eq_truth                True              True              True              True
+perim_exact                    0.0          0.000037          0.000013          0.000035
+ext_x                          0.0           0.00001          0.000004          0.000014
+ext_y                          0.0          0.000012          0.000003          0.000005
+ext_x_over_g              0.003921          9.855899          4.196118         14.200474
+ext_y_over_g              0.007238         11.556429          3.456338          5.236549
+mean_width                     0.0          0.000003          0.000001          0.000002
+mean_width_over_g         0.001464          3.111926          1.108063          2.150901
+area_over_g2              0.000014         56.949502          7.251601         37.180742
+verts_in_bin                     0                 0                 0                 0
+cand                           0.0               NaN               NaN               NaN
+rounded_cell_piece             0.0               0.0               0.0               0.0
+rounded_matches_cand          True              None              None              None
+tau                            0.0               0.0               0.0               0.0

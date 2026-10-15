@@ -2,6 +2,28 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.3d — 2026-10-14/15 — BL-084: banco di prova degli overlay (branch `step1-cell-layer`) — **chiusa con riserve**
+
+### Decisioni (ROADMAP §6)
+- Perimetro (Luca, 2026-10-14): completo F1–F6, organizzato per operazione (O1 partizione, O2 cella × bin, O3 aggregazione 2→8 µm).
+- Criterio di sostituzione (Luca, 2026-10-14): garanzia documentata, poi tempo (F1 resta salvo ≥ 2× più veloce con memoria ≤ 1.5×).
+- Per regola pre-registrata: **F1 (V2, snap-rounding GEOS 1e-6 µm) per O1, O2, O3**, un solo helper (BL-081); CP-3 su 300 nulli nuovi PASS.
+
+### Codice
+- `tools/S1.3d_{common,candidates,f4,compare,cases,run,perf,b1,validity,analysis,figures}.R`, `tools/S1.3d_{arbiter,arbiter_batch,arbiter_merge,arbiter_check,coverage}.py`,
+  `tools/S1.3d_perf.sh`, `tools/run_S1.3d.sh`, `R/testing/test_S1.3d.R` (C-1 79/79), `reports/S1.3d.qmd`. Libreria: + `exactextractr` 0.10.1, `terra` 1.9-50 (PPM).
+- Arbitro esatto di S1.3b riusato invariato (md5 `0c6a43fe…`), esteso con cella ∩ regione indicizzata e Sutherland–Hodgman esatto per O2.
+- Difetti in sviluppo (6, dev_notes) e durante il run: D-1 clausola «0 invalide» estesa a F1/F3/F4; D-3 chiavi `paste()` «1e+05» (falsi errori O2 su S), validità F2 su S; corretti, decisione invariata.
+
+### Risultati (`results/S1.3d/`; grezzi in `/mnt/micron/geo_spatialtrans/S1.3d/`)
+- Check C tutti PASS (C-0 1 800/1 800; C-2 14 011 uguaglianze esatte; mutanti 4/4 + M-arb; C-4 558/558; C-5 F4 = `04b3` 1 986/1 986).
+- F1: 0 errori in K, U, N, S, CP-1, H; O1 su S 82 s (metodi sf ~1 270 s). V0: O1 errato in 70/1 800 nulli, O2/O3 mai (7.85 M pezzi su S).
+- F5 (polyclip 1.10.7/Clipper 6.4.0): errori topologici silenziosi in O2 su input validi (causa: Clipper 6.4.0 `AddLocalMinPoly`, corretto in 6.4.2); polyclip tronca.
+- F4 (taglio unico): copertura valida 1 800/1 800, ma 14 celle invalide (strozzature della regione) e 1 660 s su S. F6: corretto, 3.2 GB, non garantito.
+- B-1: 62/62 verdetti B di S1.3 invariati per ogni candidato. Previsioni smentite: F5 «0 errori»; V0 copertura invalida ≥ 80 % (61.6 %).
+- Revisione avversariale: «ricalcolo» (20/20 righe, 5 467 righe V0/F1 identiche) e «esatto» (verità 100 %, 565/565 violazioni reali); 24 rilievi, nessuno cambia la decisione.
+  BACKLOG BL-091…BL-097; BL-080, BL-084 chiuse.
+
 ## S1.3c — 2026-10-12/14 — BL-077: spazio extracellulare intra-regione dai conteggi a 2 µm (branch `step1-cell-layer`) — **non chiusa**
 
 ### Decisioni (ROADMAP §6)

@@ -1,0 +1,18 @@
+V0 : righe diverse 0  sezioni  
+F1 : righe diverse 1  sezioni C 
+  sec  id                                      ref
+1   C C-6 186/1200 (attese 1200); max rel 3.64e-01
+                                    cand out_ref out_cand
+1 1/1200 (attese 1200); max rel 3.64e-01    FAIL     FAIL
+F2 : righe diverse 1  sezioni C 
+  sec  id                                      ref
+1   C C-6 186/1200 (attese 1200); max rel 3.64e-01
+                                    cand out_ref out_cand
+1 1/1200 (attese 1200); max rel 3.64e-01    FAIL     FAIL
+F3 : righe diverse 1  sezioni C 
+  sec  id                                      ref
+1   C C-6 186/1200 (attese 1200); max rel 3.64e-01
+                                    cand out_ref out_cand
+1 1/1200 (attese 1200); max rel 3.64e-01    FAIL     FAIL
+F4 : righe diverse 0  sezioni  
+F5 : righe diverse 0  sezioni  
