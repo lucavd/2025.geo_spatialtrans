@@ -2,6 +2,36 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.4b — 2026-10-15 — BL-098: relazione nucleo–territorio, banco delle opzioni (branch `step1-cell-layer`) — **chiusa con riserve**
+
+### Decisioni (ROADMAP §6)
+- Perimetro (Luca): banco + decisione; implementazione in S1.4c. Decisione per regola pre-registrata con veto motivato di Luca.
+- **BL-098 → (c)** contenimento nel Voronoi con troncamento dichiarato (D-S1.4.2 resta), per regola: parità 4–4 → (c);
+  Luca: «Nessun veto: resta (c), BL-098 riaperta sulla forma del nucleo».
+
+### Codice (prototipo, non pacchetto)
+- `tools/S1.4b_laguerre.R` (diagramma di potenza da qhull/`geometry`, celle per Sutherland–Hodgman, griglia F1 1e-6 µm;
+  nuclei disgiunti in una passata), `tools/S1.4b_mutants.R` (MU1–MU4), `tools/S1.4b_bench.R` (prep, loo, mut, perf),
+  `tools/S1.4b_arbiter.py` (C-L2, MU5), `tools/S1.4b_cp1.py` (CP-1 sulle maschere), `tools/S1.4b_analysis.R`,
+  `tools/S1.4b_posthoc.R` (PH-C), `tools/S1.4b_posthoc_arbiter.py` (PH-A, PH-B), `tools/S1.4b_figures.R`,
+  `tools/S1.4b_recheck.R`, `tools/run_S1.4b.sh`, `tools/run_S1.4b_recheck.sh`, `R/testing/test_S1.4b.R` (C-L1 19/19), `reports/S1.4b.qmd`.
+- Libreria: + `geometry` 0.5.2 (PPM) in `tools/setup_r_library.R` (`renv.lock` invariato, BL-078).
+- Difetti D-1…D-6 (dev notes): griglia mista, precisione geos→sf, mutanti, ricerca dei vicini O(n²) (ricalcolo 60/60 identico),
+  «doppi» dell'arbitro (rieseguito identico), unità A1 × MU4 fermata.
+
+### Risultati (`results/S1.4b/`; grezzi in `/mnt/micron/geo_spatialtrans/S1.4b/`)
+- Check C: C-0 330/330, C-L1 19/19 (mutanti 4–6 FAIL ciascuno), C-L3 3.8e-15, C3 0 su 2 652 815 nuclei, C-NO 0, C-mut 5/5,
+  C-perf 54.7 s / 3.6 GB; **C-L2 22/30 FAIL** (sotto-criterio delle aree mal calibrato; 0 errori puntuali su 5.3 M punti; PH-A 8/8, PH-B).
+- Check B: PASS {B-1, B-2, B-3, B-7} 4 (V-a/V-b) vs 4 (V-c); B-4 FAIL ovunque tranne V-c A6; V-a/V-b troncano più di V-c
+  (A1–A4 36–56 % vs 16–48 %). B-8: cerchi reali di pari area sovrapposti 33–53 % in A1–A4 (≈ B-7 reale); PH-C: ellissi dei momenti 24–47 %.
+- CP-1: Laguerre con pesi reali batte 20/20 permutazioni in 30/30 ROI ((a) non smentita), guadagno modesto (m2 −4…−23 % A1–A4).
+- Previsioni P1–P4 smentite, P5–P6 confermate.
+- BIO_REFERENCES B-115…B-120 (contatto fra nuclei reali: cerchi ed ellissi sovrapposti; m1 Voronoi / Laguerre).
+
+### Revisione avversariale
+- 2 revisori («recalc», «code»): 0 discrepanze numeriche; decisione non robusta (semi RC-2, operatore di V-c CODE-07, C-L2 CODE-05),
+  non sovrapposizione ~2× il minimo (CODE-06), bug n = 1 (CODE-01). BACKLOG BL-109…BL-117.
+
 ## S1.4 — 2026-10-15 — `derive_cell_geometry()` (branch `step1-cell-layer`) — **chiusa con riserve**
 
 ### Decisioni (ROADMAP §6)

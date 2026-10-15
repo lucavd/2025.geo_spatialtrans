@@ -1,0 +1,55 @@
+"case","mode","n","error","n_hidden","n_multi","cl3_rel","c3_viol"
+"C1_hetero","snap",300,"",142,0,0,NA
+"C1_hetero","exact",300,"",142,0,1.81898940354586e-16,NA
+"C1b_extreme","snap",200,"",170,0,0,NA
+"C1b_extreme","exact",200,"",170,0,0,NA
+"C1c_negpos","snap",250,"",130,0,0,NA
+"C1c_negpos","exact",250,"",130,0,0,NA
+"C2_near","snap",164,"",10,0,1.59834356357654e-10,NA
+"C2_near","exact",164,"",10,0,1.61687946981854e-16,NA
+"C3a_allcollinear","snap",20,"Received error code 2 from qhull. Qhull error:
+QH6154 Qhull precision error: Initial simplex is flat (facet 1 is coplanar with the interior point)
+
+While executing:  | qhull Qt n 
+Options selected for",NA,NA,NA,NA
+"C3a_allcollinear","exact",20,"Received error code 2 from qhull. Qhull error:
+QH6154 Qhull precision error: Initial simplex is flat (facet 1 is coplanar with the interior point)
+
+While executing:  | qhull Qt n 
+Options selected for",NA,NA,NA,NA
+"C3b_somecollinear","snap",120,"",6,0,0,NA
+"C3b_somecollinear","exact",120,"",6,0,1.81898940354586e-16,NA
+"C3c_hexlattice","snap",225,"",0,0,0,NA
+"C3c_hexlattice","exact",225,"",0,0,2.33503132675976e-16,NA
+"C3d_checker","snap",144,"",0,0,0,NA
+"C3d_checker","exact",144,"",0,0,0,NA
+"C4_multihidden","snap",232,"",65,0,0,NA
+"C4_multihidden","exact",232,"",65,0,0,NA
+"C5_multihole","snap",260,"",52,2,0,NA
+"C5_multihole","exact",260,"",52,2,1.18116195035445e-16,NA
+"C6_off1e4","snap",300,"",72,0,3.42635123105591e-15,NA
+"C6_off1e4","exact",300,"",72,0,2.01550072415053e-16,NA
+"C6_off0","snap",300,"",72,0,2.01550072415053e-16,NA
+"C6_off0","exact",300,"",72,0,0,NA
+"C6b_off1e5","snap",300,"",72,0,4.43410159313117e-15,NA
+"C6b_off1e5","exact",300,"",72,0,0,NA
+"C7_gen_outside","snap",150,"",72,0,1.26318708579573e-16,NA
+"C7_gen_outside","exact",150,"",72,0,1.26318708579573e-16,NA
+"C8a_n3_hidden","snap",3,"",1,0,0,NA
+"C8a_n3_hidden","exact",3,"",1,0,0,NA
+"C8b_n4_hidden","snap",4,"",1,0,0,NA
+"C8b_n4_hidden","exact",4,"",1,0,0,NA
+"C8c_n5_hidden","snap",5,"Received error code 2 from qhull. Qhull error:
+QH6154 Qhull precision error: Initial simplex is flat (facet 1 is coplanar with the interior point)
+
+While executing:  | qhull Qt n 
+Options selected for",NA,NA,NA,NA
+"C8c_n5_hidden","exact",5,"Received error code 2 from qhull. Qhull error:
+QH6154 Qhull precision error: Initial simplex is flat (facet 1 is coplanar with the interior point)
+
+While executing:  | qhull Qt n 
+Options selected for",NA,NA,NA,NA
+"C8d_n1","snap",1,"",0,0,0.36,NA
+"C8d_n1","exact",1,"",0,0,0.36,NA
+"C9_rsa_theorem","snap",400,"",0,0,0,0
+"C9_rsa_theorem","exact",400,"",0,0,0,0
