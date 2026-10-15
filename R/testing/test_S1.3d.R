@@ -44,6 +44,7 @@ o2 <- o; o2$errors <- c(union = "x"); chk("cmp_o1", "eccezione -> FAIL non silen
 t2 <- data.frame(i = c(1L, 1L), ix = c(0L, 1L), iy = c(0L, 0L), area = c(1, 1), perim = c(4, 4))
 chk("cmp_o2", "identità -> 0 violazioni", "-", cmp_o2(transform(t2), t2, 2, "X")$summary$n_viol == 0)
 chk("cmp_o2", "pezzo mancante -> 1 mancante", "-", cmp_o2(t2[1, ], t2, 2, "X")$summary$n_missing == 1)
+chk("cmp_o2", "id 100000 double vs intero -> stessa chiave (D-3)", "-", cmp_o2(transform(t2, i = c(1e5, 1e5)), transform(t2, i = c(100000L, 100000L)), 2, "X")$summary$n_viol == 0)
 chk("cmp_o2", "pezzo spurio -> 1 spurio", "-", cmp_o2(rbind(t2, data.frame(i = 2L, ix = 0L, iy = 0L, area = 0.5, perim = 3)), t2, 2, "X")$summary$n_spurious == 1)
 # F4 su un caso piccolo: stesse aree di tessellate_voronoi entro tau, copertura con vertici condivisi identici (verifica in python a parte)
 set.seed(7); x <- 1000 + runif(60, 0, 20); y <- 1000 + runif(60, 0, 20); rg <- pg(rbind(c(1000, 1000), c(1020, 1000), c(1020, 1013.3), c(1011.1, 1020), c(1000, 1020)))

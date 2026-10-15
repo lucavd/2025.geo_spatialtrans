@@ -39,6 +39,7 @@ for (f in SP) { o <- readRDS(f); if (o$cand == "F4" && !is.null(o$f4info$c5_n_ov
   C5 <- rbind_fill(list(C5, data.frame(key = "S_cperf", n_over = o$f4info$c5_n_over, max_ratio = o$f4info$c5_max_ratio, same_lost = o$f4info$same_lost, same_gained = o$f4info$same_gained,
                                        n_tie = o$f4info$n_tie, min_margin = o$f4info$min_margin, n_ambiguous = o$f4info$n_ambiguous, n_invalid = o$f4info$n_invalid, t_build = o$f4info$elapsed_s))) }
 C5 <- C5[!duplicated(C5$key), ]
+if (is.null(CV)) CV <- data.frame(key = character(0), v0_valid = logical(0), v0_ncells = numeric(0), f4_valid = logical(0), f4_ncells = numeric(0))
 O1$set <- set_of(O1$key); O2$set <- set_of(O2$key)
 O1 <- merge(O1, M[, c("key", "n_invalid_input", "archetype")], by = "key", all.x = TRUE); O2 <- merge(O2, M[, c("key", "n_invalid_input", "archetype")], by = "key", all.x = TRUE)
 O1 <- merge(O1, CV[, c("key", "f4_valid", "v0_valid")], by = "key", all.x = TRUE)
@@ -72,6 +73,7 @@ VF <- if (file.exists(file.path(OUTD, "checks", "validity_F1F3.csv"))) read.csv(
 O1$n_invalid_out <- NA_real_
 if (!is.null(VF)) { k <- O1$cand %in% c("F1", "F3"); O1$n_invalid_out[k] <- VF$n_invalid_F1F3[match(O1$key[k], VF$key)] }
 k <- O1$cand == "F2"; O1$n_invalid_out[k] <- O1$still_invalid[k]
+f2s <- file.path(RES, "S_cperf_F2_validity.rds"); if (file.exists(f2s)) { v <- readRDS(f2s); k <- O1$cand == "F2" & O1$key == "S_cperf"; O1$n_invalid_out[k] <- v$still_invalid; O1$n_invalid_rounded[k] <- v$n_invalid_rounded }
 k <- O1$cand == "F4" & O1$applicable %in% TRUE; O1$n_invalid_out[k] <- C5$n_invalid[match(O1$key[k], C5$key)]
 O1$n_invalid_out[O1$cand %in% c("V0", "F5")] <- 0          # V0: uscita = ingresso (ingressi invalidi esclusi); F5: nessuna geometria sf
 inv_by <- function(cd, sets) { d <- O1[O1$cand == cd & O1$set %in% sets & O1$valid_input & O1$applicable %in% TRUE, ]; c(n = sum(d$n_invalid_out, na.rm = TRUE), na = sum(is.na(d$n_invalid_out))) }

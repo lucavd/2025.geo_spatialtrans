@@ -1,0 +1,40 @@
+"section","id","cand","metric","value","threshold","outcome","prediction","confirmed"
+"C","C-0","-","nulli riprodotti (n, c1, c2 rel <= 1e-12)","1800/1800","1800/1800","PASS","1800/1800",TRUE
+"C","C-1","-","test unitari","78/78","100 %","PASS","100 %",TRUE
+"C","C-2a","arbitro","cella ∩ regione: indice vs tutti i lati","2805/2805","100 %","PASS","100 %",TRUE
+"C","C-2b","arbitro","coppie: Green vs S-H","2779/2779","100 %","PASS","100 %",TRUE
+"C","C-2c","arbitro","pezzi O2: S-H vs Green","8427/8427","100 %","PASS","100 %",TRUE
+"C","C-3","M-O1","union_err/tauU = 1.998","TRUE","rilevato","PASS","rilevato",TRUE
+"C","C-3","M-O2a","n_missing 1","TRUE","rilevato","PASS","rilevato",TRUE
+"C","C-3","M-O2b","n_viol 161506 su 337657","TRUE","rilevato","PASS","rilevato",TRUE
+"C","C-3","M-O3","n_viol 42266","TRUE","rilevato","PASS","rilevato",TRUE
+"C","C-3","M-arb","vertice tolto -> area esatta cambia","257/257","100 %","PASS","100 %",TRUE
+"C","C-4","-","perturbazioni che cambiano l'input","558/558","100 %","PASS","100 %",TRUE
+"C","C-5","F4","F4 vs 04b3: |Δa| <= tau_i e stessi frammenti (casi; parità)","1986/1986; parità 0; errori di costruzione 0","100 % fuori dalle parità","PASS","100 %",TRUE
+"C","C-6","-","max |coord| / g","4.000e+09","< 1e12","PASS","< 1e12",TRUE
+"P","P-V0a","V0","nulli N con errore silenzioso O1 (unione / coppie)","70 (unione 15, coppie 65)",">= 15 unioni e >= 11 coppie","confermata","15 unioni, >= 11 coppie",TRUE
+"P","P-V0b","V0","violazioni O2/O3 su N","0","0","confermata","0",TRUE
+"P","P-F1","F1","eleggibile O1 (errori silenziosi, eccezioni, CP-1)","TRUE (silenziosi 0, eccezioni 0, CP-1 0)","eleggibile","confermata","eleggibile",TRUE
+"P","P-F2","F2","eleggibile O1 (errori silenziosi, eccezioni, CP-1)","FALSE (silenziosi 0, eccezioni 0, CP-1 0)","eleggibile","smentita","eleggibile",FALSE
+"P","P-F3","F3","eleggibile O1 (errori silenziosi, eccezioni, CP-1)","TRUE (silenziosi 0, eccezioni 0, CP-1 0)","eleggibile","confermata","eleggibile",TRUE
+"P","P-F4","F4","eleggibile O1 (errori silenziosi, eccezioni, CP-1)","FALSE (silenziosi 0, eccezioni 0, CP-1 0)","eleggibile","smentita","eleggibile",FALSE
+"P","P-F5","F5","eleggibile O1 (errori silenziosi, eccezioni, CP-1)","FALSE (silenziosi 0, eccezioni 0, CP-1 0)","eleggibile","smentita","eleggibile",FALSE
+"P","P-F1-O2","F1","eleggibile O2","TRUE (silenziosi 0)","eleggibile","confermata","eleggibile",TRUE
+"P","P-F1-O3","F1","eleggibile O3","TRUE (silenziosi 0)","eleggibile","confermata","eleggibile",TRUE
+"P","P-F6-O2","F6","eleggibile O2","TRUE (silenziosi 0)","eleggibile","confermata","eleggibile",TRUE
+"P","P-F6-O3","F6","eleggibile O3","TRUE (silenziosi 0)","eleggibile","confermata","eleggibile",TRUE
+"P","P-F2inv","F2","celle invalide dopo l'arrotondamento in N (nulli; ancora invalide)","2; 0","2 rilevate e riparate","confermata","2; 0",TRUE
+"P","P-F4cov","F4","copertura F4 valida (N)","1800/1800","100 %","confermata","100 %",TRUE
+"P","P-V0cov","V0","copertura V0 invalida (N)","1108/1800 (61.6 %)",">= 80 %","smentita",">= 80 %",FALSE
+"CP","CP-1","V0","FAIL su input validi (O1); input invalidi esclusi","5/346; esclusi 14","0","FAIL",NA,NA
+"CP","CP-1","F1","FAIL su input validi (O1); input invalidi esclusi","0/346; esclusi 14","0","PASS",NA,NA
+"CP","CP-1","F2","FAIL su input validi (O1); input invalidi esclusi","0/346; esclusi 14","0","PASS",NA,NA
+"CP","CP-1","F3","FAIL su input validi (O1); input invalidi esclusi","0/346; esclusi 14","0","PASS",NA,NA
+"CP","CP-1","F4","FAIL su input validi (O1); input invalidi esclusi","0/180; esclusi 0","0","PASS",NA,NA
+"CP","CP-1","F5","FAIL su input validi (O1); input invalidi esclusi","0/346; esclusi 14","0","PASS",NA,NA
+"CP","CP-2","V0","U4 a cavallo della griglia: casi oltre tau (max errore/tau coppie)","0/20 (0)","0","PASS",NA,NA
+"CP","CP-2","F1","U4 a cavallo della griglia: casi oltre tau (max errore/tau coppie)","0/20 (0)","0","PASS",NA,NA
+"CP","CP-2","F2","U4 a cavallo della griglia: casi oltre tau (max errore/tau coppie)","0/20 (0)","0","PASS",NA,NA
+"CP","CP-2","F3","U4 a cavallo della griglia: casi oltre tau (max errore/tau coppie)","0/20 (0)","0","PASS",NA,NA
+"CP","CP-2","F5","U4 a cavallo della griglia: casi oltre tau (max errore/tau coppie)","0/20 (0)","0","PASS",NA,NA
+"CP","CP-4","arbitro","placebo (ordine permutato: input cambiato, verità identica)","257/257","100 %","PASS",NA,NA

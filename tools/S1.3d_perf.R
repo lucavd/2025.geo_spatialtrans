@@ -17,6 +17,8 @@ if (CAND == "F4") { b <- f4_build(pts$x, pts$y, reg); f4 <- b$terr; f4info <- b$
   f4info$same_lost <- identical(as.integer(b$info$lost), as.integer(meta$n_lost)); f4info$same_gained <- identical(as.integer(b$info$gained), as.integer(meta$n_gained))
   a0 <- as.numeric(st_area(terr)); a4 <- as.numeric(st_area(f4)); f4info$c5_n_over <- sum(abs(a4 - a0) > G_GRID * meta$P); f4info$c5_max_ratio <- max(abs(a4 - a0) / (G_GRID * meta$P)) }
 C <- cand_prepare(CAND, terr, reg, f4 = f4); t_prep <- proc.time()[[3]] - t0
+if (CAND == "F2") { f2info <- list(n_invalid_rounded = length(C$info$invalid_idx), still_invalid = C$info$still_invalid)
+  if (identical(Sys.getenv("S13D_F2INFO_ONLY"), "1")) { saveRDS(f2info, file.path(RES, "S_cperf_F2_validity.rds")); print(f2info); quit(status = 0) } }
 t1 <- proc.time()[[3]]
 if (OP == "O1") o <- o1_run(C, pairs) else { s <- if (OP == "O2s2") 2 else 8; o <- o2_run(C, meta$gs, s) }
 t_op <- proc.time()[[3]] - t1

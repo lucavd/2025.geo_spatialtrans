@@ -26,7 +26,7 @@ cmp_o1 <- function(o, tr, tp, tc, P, Preg, g = G_GRID) {
 cmp_o2 <- function(pc, tr, s, cand, g = G_GRID, tau_truth = NULL) {
   if (is.null(pc)) return(list(summary = data.frame(cand = cand, s = s, n_truth = nrow(tr), n_cand = NA, n_viol = NA, n_missing = NA, n_spurious = NA,
                                                      max_ratio = NA, sum_signed = NA, exception = TRUE, fail = TRUE, silent = FALSE), viol = NULL))
-  kt <- paste(tr$i, tr$ix, tr$iy); kc <- paste(pc$i, pc$ix, pc$iy)
+  kt <- sprintf("%d %d %d", as.integer(tr$i), as.integer(tr$ix), as.integer(tr$iy)); kc <- sprintf("%d %d %d", as.integer(pc$i), as.integer(pc$ix), as.integer(pc$iy))   # interi: paste(100000) = "1e+05" (bug corretto, D-3)
   if (anyDuplicated(kc)) { ag <- tapply(pc$area, kc, sum); pp <- tapply(pc$perim, kc, function(v) if (all(is.na(v))) NA_real_ else sum(v, na.rm = TRUE))
     pc <- data.frame(k = names(ag), area = as.numeric(ag), perim = as.numeric(pp[names(ag)])) } else pc <- data.frame(k = kc, area = pc$area, perim = pc$perim)
   tt <- data.frame(k = kt, area_t = tr$area, perim_t = tr$perim)
