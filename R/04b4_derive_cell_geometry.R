@@ -39,7 +39,7 @@ derive_cell_geometry <- function(centroids, territories, cell_types, random_seed
   nucleus_center <- match.arg(nucleus_center)
   cen <- .dcg_check_args(centroids, territories, n_vertices, clamp_factor, poi_precision_um)
   ct <- .dcg_check_types(cell_types, unique(cen$cell_type))
-  terr <- territories$cell_territories
+  terr <- .dcg_as_polys(territories$cell_territories)
   n <- nrow(cen)
   a_t <- territories$territory_df$territory_area[match(cen$cell_id, territories$territory_df$cell_id)]
   if (any(!is.finite(a_t) | a_t <= 0)) stop("derive_cell_geometry(): territory_area non positiva o mancante")
@@ -156,6 +156,15 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
   okm <- om %in% c("random", "territory") | !is.na(suppressWarnings(as.numeric(om)))
   if (any(!okm)) stop("derive_cell_geometry(): nucleus_orient non valido: ", paste(om[!okm], collapse = ", "))
   ct
+}
+
+# sfc misto (POLYGON + MULTIPOLYGON, orfani senza confine di D-S1.3.2) -> MULTIPOLYGON: polylabelr e st_coordinates
+# non accettano sfc_GEOMETRY (difetto D-1 di S1.4, trovato sui ROI reali)
+.dcg_as_polys <- function(g) {
+  if (inherits(g, c("sfc_POLYGON", "sfc_MULTIPOLYGON"))) return(g)
+  ty <- unique(as.character(sf::st_geometry_type(g)))
+  if (!all(ty %in% c("POLYGON", "MULTIPOLYGON"))) stop("derive_cell_geometry(): territori non poligonali: ", paste(ty, collapse = ", "))
+  sf::st_cast(g, "MULTIPOLYGON")
 }
 
 .dcg_center <- function(terr, cen, mode, prec) {

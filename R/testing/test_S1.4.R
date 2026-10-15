@@ -186,6 +186,23 @@ for (asp in c(1, 2)) {
       ">= 0; 1e-9", pf(min(cd$cytoplasm_area) >= 0 && rel(cd$cytoplasm_area + cd$nucleus_area, cd$territory_area) <= TOL))
   rec("C-1", lab, "frazione clampata", sprintf("%.3f", mean(cd$nucleus_clamped)), "riportata", "PASS")
 }
+# T18 sfc misto (POLYGON + MULTIPOLYGON con orfano): POI nella parte principale, C3, orientazione (D-1)
+mpo <- st_multipolygon(list(list(rbind(c(30, 0), c(31, 0), c(31, 1), c(30, 1), c(30, 0))), list(rbind(c(12, 0), c(28, 0), c(28, 4), c(12, 4), c(12, 0)))))
+x <- mk(list(sq, mpo), gx = c(5, 20), gy = c(5, 2))
+stopifnot(inherits(x$tess$cell_territories, "sfc_GEOMETRY"))
+o <- safe(DCG(x$cen, x$tess, CT(nucleus_to_eq_ratio = 0.3, nucleus_aspect = 1.5, nucleus_orient = "territory")))
+if (inherits(o, "dcg_err")) rec("C-1", "T18 sfc misto", "esecuzione", o$msg, "nessun errore", "FAIL") else {
+  cd <- o$cell_df
+  rec("C-1", "T18 sfc misto", "POI parte principale", sprintf("%.3f,%.3f d=%.3f", cd$nucleus_cx[2], cd$nucleus_cy[2], cd$center_dist[2]), "x in [14,26], y=2, d=2",
+      pf(cd$nucleus_cx[2] >= 14 && cd$nucleus_cx[2] <= 26 && abs(cd$nucleus_cy[2] - 2) <= 2 * PREC && abs(cd$center_dist[2] - 2) <= 2 * PREC))
+  rec("C-1", "T18 sfc misto", "C3 st_within", sum(within_sf(o, x$tess)), "2/2", pf(all(within_sf(o, x$tess))))
+  # atteso analitico: momenti combinati di rettangolo 16x4 (centro 20,2) e quadrato 1x1 (centro 30.5,0.5)
+  Ai <- c(64, 1); cxi <- c(20, 30.5); cyi <- c(2, 0.5); ox <- c(16^2, 1) / 12; oy <- c(4^2, 1) / 12
+  cxa <- sum(Ai * cxi) / 65; cya <- sum(Ai * cyi) / 65
+  mxx <- sum(Ai * (ox + (cxi - cxa)^2)) / 65; myy <- sum(Ai * (oy + (cyi - cya)^2)) / 65; mxy <- sum(Ai * (cxi - cxa) * (cyi - cya)) / 65
+  th_exp <- 0.5 * atan2(2 * mxy, mxx - myy)
+  rec("C-1", "T18 sfc misto", "orientazione multiparte", sprintf("%.6f vs %.6f", cd$nucleus_orient[2], th_exp), "analitico ± 1e-9", pf(abs(cd$nucleus_orient[2] - th_exp) <= TOL))
+}
 # T17 errori con messaggio atteso
 x <- mk(list(sq))
 err_cases <- list(
@@ -197,7 +214,8 @@ err_cases <- list(
   list("n_vertices = 6", function() DCG(x$cen, x$tess, CT(), n_vertices = 6), "n_vertices"),
   list("cell_id non corrispondenti", function() DCG(transform(x$cen, cell_id = 5L), x$tess, CT()), "non corrispondono"),
   list("shape incoerente", function() DCG(x$cen, x$tess, CT(nucleus_shape = "circle", nucleus_aspect = 2)), "incoerente"),
-  list("sigma < 0", function() DCG(x$cen, x$tess, CT(nucleus_area_sdlog = -1)), "nucleus_area_sdlog"))
+  list("sigma < 0", function() DCG(x$cen, x$tess, CT(nucleus_area_sdlog = -1)), "nucleus_area_sdlog"),
+  list("territorio linea", function() { y <- x; y$tess$cell_territories <- st_sfc(st_linestring(rbind(c(0, 0), c(1, 1)))); DCG(y$cen, y$tess, CT()) }, "territori non poligonali"))
 for (ec in err_cases) {
   m <- tryCatch({ ec[[2]](); "nessun errore" }, error = function(e) conditionMessage(e))
   rec("C-1", ec[[1]], "messaggio", substr(m, 1, 60), ec[[3]], pf(grepl(ec[[3]], m, fixed = TRUE)))

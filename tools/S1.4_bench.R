@@ -36,7 +36,7 @@ real_one <- function(A, roi, method) {
   stopifnot(identical(nucp$idx, gen$idx)); n <- nrow(gen)
   cen <- data.frame(cell_id = seq_len(n), region_id = 1L, x = gen$x, y = gen$y, cell_type = "c")
   tv <- tessellate_voronoi(cen, one_region(w), keep_tiles = TRUE, verbose = FALSE)
-  td <- tv$territory_df; terr <- tv$cell_territories
+  td <- tv$territory_df; terr <- E$.dcg_as_polys(tv$cell_territories)
   in_frame <- lengths(st_within(tv$tiles, w$frame)) > 0
   interior <- !td$clipped | (in_frame & td$territory_area / td$tile_area > 0.999)
   ref13 <- readRDS(file.path(S13, "real", sprintf("%s_%s_%s.rds", A, roi, method)))$geos$cells
