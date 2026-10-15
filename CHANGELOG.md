@@ -2,6 +2,26 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.4 — 2026-10-15 — `derive_cell_geometry()` (branch `step1-cell-layer`) — **chiusa con riserve**
+
+### Decisioni (ROADMAP §6)
+- Perimetro (Luca): solo geometria; BL-087 in una sessione dedicata.
+- D-S1.4.1 (Luca): modello di taglia a due parametri (β, σ) che contiene il design; D-S1.4.2: clamp in tutti i modi (sul raggio circoscritto).
+
+### Codice
+- `R/04b4_derive_cell_geometry.R`: `derive_cell_geometry()`, `fit_nucleus_size_model()`; interni `.dcg_*`; D-1 (sfc misto con MULTIPOLYGON) corretto prima degli stadi ufficiali; guardia «centro sul bordo» dopo la revisione (CODE-05).
+- `R/testing/test_S1.4.R` (C-1 63/63), `tools/S1.4_mutants.R` (M1–M5 pre-registrati, X1–X9 della revisione; 14/14 rilevati), `tools/S1.4_bench.R` (stadi real, loo, rec, null), `tools/S1.4_perf.R`, `tools/S1.4_analysis.R`, `tools/S1.4_posthoc.R` (PH-1…PH-3), `tools/S1.4_figures.R`, `reports/S1.4.qmd`.
+- Design doc v1.4 (§4.2, §4.4, §5.4, §9).
+
+### Risultati (`results/S1.4/`; grezzi in `/mnt/micron/geo_spatialtrans/S1.4/`)
+- Check C PASS tranne C-rec 31/36 (troncamento del clamp con β = 0; PH-2 36/36 senza clamp). C3: 0 violazioni su 347 971 nuclei reali e 964 660 dei nulli. C-perf 44 s, 3.6 GB.
+- Modello calibrato per archetipo: β 0.11 (A1), 0.32 (A2), 0.15 (A3), 0.44 (A4), 0.62 (A5), 0.13 (A6); il design è smentito (CP-1 30/30 fold).
+- Check B: B-4 FAIL A1–A5; B-1/B-2 per lo più FAIL/WARN. Causa (PH-1): i nuclei reali escono dal Voronoi dei centroidi nel 33–52 % in A1–A4.
+- BIO_REFERENCES B-091…B-114 (modello di taglia, intervalli C8). BL-066, BL-006, BL-071 chiuse; nuove BL-098…BL-108.
+
+### Revisione avversariale
+- 2 revisori («recalc», «code»): 0 bug, 0 verdetti cambiati; correzioni: test e mutanti aggiuntivi, guardia del bordo, `stopifnot` nel banco, sensibilità al seme nel report (deviazione RC-8).
+
 ## S1.3d — 2026-10-14/15 — BL-084: banco di prova degli overlay (branch `step1-cell-layer`) — **chiusa**
 
 ### Decisioni (ROADMAP §6)

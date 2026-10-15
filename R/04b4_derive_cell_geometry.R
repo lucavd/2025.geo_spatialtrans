@@ -50,6 +50,7 @@ derive_cell_geometry <- function(centroids, territories, cell_types, random_seed
   pts <- geos::geos_make_point(ctr$x, ctr$y)
   if (!all(geos::geos_intersects(pts, gt))) stop("derive_cell_geometry(): centro del nucleo fuori dal territorio")
   d <- geos::geos_distance(pts, geos::geos_boundary(gt))
+  if (any(d <= 0)) stop("derive_cell_geometry(): centro del nucleo sul bordo del territorio (d = 0) per ", sum(d <= 0), " cellule")
   a_tgt <- .dcg_target_area(a_t, ct, ti, z)
   asp <- ct$nucleus_aspect[ti]
   theta <- .dcg_orientation(terr, ct, ti, u, asp)

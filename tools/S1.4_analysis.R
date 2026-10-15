@@ -45,8 +45,8 @@ stopifnot(nrow(prim) == 6 * 5 * 4)
 # ---- check C --------------------------------------------------------------------------------------------------------
 tt <- read.csv(file.path(RES, "S1.4_test_none.csv"))
 vr("C", "C-1", "-", "test unitari (test_S1.4.R)", sprintf("%d/%d", sum(tt$status == "PASS"), nrow(tt)), "tutti", pf(all(tt$status == "PASS")))
-mut <- vapply(sprintf("M%d", 1:5), function(m) { t <- read.csv(file.path(RES, sprintf("S1.4_test_%s.csv", m))); sum(t$status == "FAIL") }, 0)
-vr("C", "C-mut", "-", "mutanti rilevati dai test (FAIL per mutante)", sprintf("%d/5 (%s)", sum(mut > 0), paste(mut, collapse = ",")), "5/5", pf(all(mut > 0)))
+mut <- vapply(c(sprintf("M%d", 1:5), sprintf("X%d", 1:9)), function(m) { t <- read.csv(file.path(RES, sprintf("S1.4_test_%s.csv", m))); sum(t$status == "FAIL") }, 0)
+vr("C", "C-mut", "-", "mutanti rilevati (M1-M5 pre-reg.; X1-X9 revisione)", sprintf("%d/14 (%s)", sum(mut > 0), paste(mut, collapse = ",")), "5/5 pre-reg.", pf(all(mut > 0)))
 c3r <- do.call(rbind, lapply(L, function(o) data.frame(archetype = o$archetype, method = o$method, n = o$c3[["n"]], w = o$c3[["within_sf"]], ra = o$c3[["rel_area"]])))
 viol <- sum(folds$c3_viol)
 vr("C", "C3", "A1-A6", "nuclei dentro il territorio, ROI reali (sf, M2)", sprintf("%d/%d (40 set x fold)", sum(c3r$w), sum(c3r$n)), "0 violazioni", pf(all(c3r$w == c3r$n)))
@@ -117,6 +117,18 @@ c8 <- do.call(rbind, lapply(ARCH$archetype, function(A) { ids <- rois$roi_id[roi
 write.csv(c8, file.path(RES, "S1.4_c8.csv"), row.names = FALSE)
 for (i in seq_len(nrow(c8))) vr("B", "B-6", c8$archetype[i], "C8 [q05, q95] eq_r; specif. | x2 | x0.5 (su 5)",
    sprintf("[%.2f, %.2f]; %d | %d | %d", c8$q05[i], c8$q95[i], c8$spec[i], c8$det_x2[i], c8$det_x05[i]), "riportata", "INFO")
+
+
+# ---- sensibilita' al seme (10 semi M2, dichiarata «solo riportata»; aggiunta al report dopo la revisione, RC-8) -------
+ss <- do.call(rbind, lapply(ARCH$archetype, function(A) { p <- ARCH$primary[ARCH$archetype == A]
+  oo <- L[vapply(L, function(o) o$archetype == A && o$method == p, TRUE)]; oo <- oo[order(vapply(oo, function(o) o$fold, 1))]
+  do.call(rbind, lapply(1:10, function(s) { v <- t(vapply(oo, function(o) c(
+      cls(o$seeds[s, "ks_nc"], median(o$yard$ks_nc), max(o$yard$ks_nc)), cls(o$seeds[s, "ks_an"], median(o$yard$ks_an), max(o$yard$ks_an)),
+      cls(o$seeds[s, "d_sp"], median(o$yard$d_sp), max(o$yard$d_sp))), character(3)))
+    data.frame(archetype = A, seed = s, B1 = arch_v(v[, 1]), B2 = arch_v(v[, 2]), B3 = arch_v(v[, 3]), clamp = mean(vapply(oo, function(o) o$seeds[s, "clamp_all"], 0))) })) }))
+write.csv(ss, file.path(RES, "S1.4_seed_sensitivity.csv"), row.names = FALSE)
+for (A in ARCH$archetype) { z <- ss[ss$archetype == A, ]; tb <- function(x) paste(sprintf("%s %d", names(table(x)), table(x)), collapse = ", ")
+  vr("B", "B-seed", A, "verdetti M2 su 10 semi: B-1 | B-2 | B-3", sprintf("%s | %s | %s", tb(z$B1), tb(z$B2), tb(z$B3)), "riportata", "INFO") }
 
 # ---- parametri calibrati (5 ROI) e CP-2 placebo -------------------------------------------------------------------
 cal <- do.call(rbind, lapply(seq_len(nrow(ARCH)), function(i) { A <- ARCH$archetype[i]

@@ -44,6 +44,7 @@ real_one <- function(A, roi, method) {
   a_own <- gen$area_nuc
   if (method == "spaceranger") {             # BL-060: area e forma dal nucleo StarDist il cui centroide cade nel territorio
     sg <- as.data.frame(read_parquet(rp(A, roi, "stardist_he", "gen"))); sn <- as.data.frame(read_parquet(rp(A, roi, "stardist_he", "nuc")))
+    stopifnot(identical(sg$idx, sn$idx))     # aggiunto dopo la revisione (CODE-12): vero nei dati, non verificato al run
     hit <- st_intersects(st_as_sf(sg, coords = c("x", "y")), terr)
     h1 <- vapply(hit, function(z) if (length(z) == 1) z else NA_integer_, 1L)
     cnt <- tabulate(h1[!is.na(h1)], n)

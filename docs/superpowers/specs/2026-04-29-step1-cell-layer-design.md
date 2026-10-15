@@ -134,7 +134,7 @@ Il join è sempre per **`cell_id`** (1..N nello stesso ordine in `cell_df`, `cel
 | `nucleus_shape` | char | — | `"circle"` (default) o `"ellipse"` |
 | `nucleus_radius` | num | µm | raggio nucleo (se circle); NA se ellipse |
 | `nucleus_major_r`, `nucleus_minor_r`, `nucleus_orient` | num | µm, rad | NA se circle |
-| `nucleus_cx`, `nucleus_cy` | num | µm | centroide nucleo (= POI nel territorio) |
+| `nucleus_cx`, `nucleus_cy` | num | µm | centro del nucleo (POI del territorio o generatore, v1.4) |
 | `nucleus_area` | num | µm² | area del nucleo |
 | `cytoplasm_area` | num | µm² | `territory_area − nucleus_area` |
 | `is_minority_type` | logi | — | TRUE se `cell_type` ≠ tipo dominante della regione |
@@ -166,7 +166,7 @@ cell_types <- data.frame(
 )
 ```
 
-Significato di `nucleus_to_eq_ratio`: `nucleus_radius_actual = ratio × eq_radius`. Si adatta alla densità (cellula compressa → nucleo proporzionalmente più piccolo). Se l'utente specifica `nucleus_radius` assoluto in µm, quello prevale e `ratio` viene ignorato.
+**(v1.4)** Colonne opzionali: `nucleus_area_slope` (β, default 1), `nucleus_area_sdlog` (σ, default 0), `nucleus_aspect` (default 1), `nucleus_orient` (default `"random"`); vedi §5.4. Significato di `nucleus_to_eq_ratio` (con β = 1, σ = 0): `nucleus_radius_actual = ratio × eq_radius`. Si adatta alla densità (cellula compressa → nucleo proporzionalmente più piccolo). Se l'utente specifica `nucleus_radius` assoluto in µm, quello prevale e `ratio` viene ignorato.
 
 ### 4.5 Composizione `region_composition`
 
@@ -258,17 +258,15 @@ Firma: `tessellate_voronoi(centroids, regions, corner_smoothing = 0, keep_tiles 
 > Avvertenza (BL-069): i vertici condivisi possono differire all'ultima cifra; le operazioni di sovrapposizione GEOS su questi territori (unione, intersezione) possono dare risultati sbagliati — usare predicati o una precisione fissa.
 
 ### 5.4 `derive_cell_geometry()`
-Per ogni cellula:
-1. `eq_radius = sqrt(territory_area / π)`.
-2. **Centroide nucleo** = `polylabelr::poi(territory)` (Pole of Inaccessibility) — punto più "interno" del poligono, evita di mettere il nucleo in punte sottili.
-3. **Raggio nucleo effettivo:**
-   - Se `cell_types$nucleus_radius` è NA → `nucleus_radius_actual = nucleus_to_eq_ratio × eq_radius`
-   - Altrimenti → `nucleus_radius_actual = min(nucleus_radius, 0.85 × distanza POI dal bordo)` (clamp di sicurezza: il nucleo non esce dalla cellula)
-4. **Forma nucleo:**
-   - `circle` → poligono circolare a 32 vertici intorno al POI
-   - `ellipse` → ellisse con `nucleus_major_r`, `nucleus_minor_r`, `nucleus_orient`
-5. Calcolo `nucleus_area`, `cytoplasm_area = territory_area − nucleus_area`.
-6. Output: `cell_df` completo + `cell_nuclei` (sfc_POLYGON).
+*(v1.4, S1.4, 2026-10-15 — testo riscritto; D-S1.4.1, D-S1.4.2; le versioni precedenti sono nella storia git)*
+Firma: `derive_cell_geometry(centroids, territories, cell_types, random_seed, nucleus_center = c("poi", "generator"), n_vertices = 32, clamp_factor = 0.85, poi_precision_um = 1e-3, strict = TRUE)`.
+1. `eq_radius = sqrt(territory_area / π)`; flusso casuale `set.seed(random_seed); z <- rnorm(n); u <- runif(n)` in ordine di `cell_id`.
+2. **Centro**: POI di `polylabelr` (default) o generatore; `d` = distanza GEOS dal bordo del territorio (errore se d = 0).
+3. **Taglia (D-S1.4.1)**: `log A_N = log(ρ²·A_ref) + β·(log A_T − log A_ref) + σ·z`, `A_ref = 1e6/density` del tipo; `nucleus_radius` assoluto → `log A_N = log(π r²) + σ·z`. Default β = 1, σ = 0 (= v1.0: `ρ × eq_radius`). Stima: `fit_nucleus_size_model()`. S1.4: il design (β = 1, σ = 0) è smentito sui 6 archetipi (β = 0.11–0.62; B-091…B-108).
+4. **Forma**: poligono di `n_vertices` vertici su ellisse con aspetto `nucleus_aspect` (1 = cerchio), orientazione `nucleus_orient` (`"random"`, `"territory"` = asse maggiore del territorio, o angolo); semiassi moltiplicati per k = sqrt(2π/(n sin(2π/n))) così che l'area del poligono sia esattamente A_N.
+5. **Clamp (D-S1.4.2, in tutti i modi)**: fattore uniforme s ≤ 1; cerchio: raggio circoscritto ≤ 0.85·d; ellisse: dal limite del cerchio circoscritto, bisezione finché il poligono dilatato di 1/0.85 resta nel territorio. `nucleus_area = s²·A_N`; colonne `nucleus_area_target`, `nucleus_scale`, `nucleus_clamped`, `center_dist`.
+6. Output: `cell_df` (§4.2; `is_minority_type` è dell'orchestratore), `cell_nuclei` (sfc_POLYGON), `info`.
+> Avvertenza (S1.4, PH-1): nei tessuti densi (A1–A4) il 33–52 % dei nuclei reali, come cerchi di pari area al centroide, esce dal territorio di Voronoi dei centroidi; con il contenimento le aree simulate sono troncate nel 16–48 % delle cellule. Decisione aperta (BACKLOG BL-098).
 
 ---
 
@@ -416,3 +414,4 @@ plot_cell_layer(cell_layer, mode = c("voronoi", "types", "density", "regions"))
 | 2026-09-18 | **v1.1 (S0)** — C-A: `pixel_size_um` obbligatorio, helper `estimate_pixel_size()`, `metadata$pixel_size_source`, check C8, casi limite sulla scala (decisione 10). C-B: diffusione laterale mRNA come requisito di Step 2, riga in 7.1, vincolo in 7.2 (decisione 11). Pannello A1–A6 → 6 preset in 4.6/4.7 (decisione 8 rivista); test su tutti i preset. Corretto refuso nella riga C6 (nome campo `region_id`). | Daniele (commenti) + Luca + Claude |
 | 2026-10-08 | **v1.2 (S1.2, parziale)** — §5.2: densità di miscela armonica (D3); RSA a n fissato invece di Bridson (Bridson satura a ≈ 5× la densità target con d = ⅔·eq_radius); arrotondamento stocastico; distanza minima globale d_ij = (d_i+d_j)/2; `min_dist_um` opzionale. §5.1 passo 4 (BL-043) e stride (BL-042) decisi, da implementare | Luca + Claude |
 | 2026-10-08 | **v1.3 (S1.3)** — §5.3: Voronoi **per regione** (D-S1.3.1; il testo «globale + ritaglio sulla regione del centroide» lascia scoperta in mediana il 9.4 % delle regioni piccole, CP-1); frammenti orfani al territorio con il confine condiviso più lungo (D-S1.3.2); Chaikin con `n_iter = max(1, round(3·cs))` intersecato con il territorio originale (D-S1.3.3); firma `tessellate_voronoi(centroids, regions, corner_smoothing, keep_tiles, verbose)`; decisione 6: motore GEOS invece di deldir (confronto C-10, `results/S1.3/`) | Luca + Claude |
+| 2026-10-15 | **v1.4 (S1.4)** — §5.4 riscritta: modello di taglia a due parametri (β, σ) che contiene il design (D-S1.4.1); clamp in tutti i modi sul raggio circoscritto, bisezione per l'ellisse (D-S1.4.2); centro POI o generatore; §4.4 colonne opzionali; §4.2 `nucleus_cx/cy`. Contenimento in conflitto con i dati nei tessuti densi (PH-1, BL-098) | Luca (scelte in chat) + S1.4 |

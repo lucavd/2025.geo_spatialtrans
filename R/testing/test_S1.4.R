@@ -203,6 +203,37 @@ if (inherits(o, "dcg_err")) rec("C-1", "T18 sfc misto", "esecuzione", o$msg, "ne
   th_exp <- 0.5 * atan2(2 * mxy, mxx - myy)
   rec("C-1", "T18 sfc misto", "orientazione multiparte", sprintf("%.6f vs %.6f", cd$nucleus_orient[2], th_exp), "analitico ± 1e-9", pf(abs(cd$nucleus_orient[2] - th_exp) <= TOL))
 }
+# T19 clamp dell'ellisse: s massimo analitico (rettangolo 1x10, aspetto 20 lungo x) — X1 bisezione, X2 margine 1/0.85
+x <- mk(list(rect)); o <- safe(DCG(x$cen, x$tess, CT(nucleus_to_eq_ratio = 0.9, nucleus_aspect = 20, nucleus_orient = "0"), strict = FALSE))
+if (inherits(o, "dcg_err")) rec("C-1", "T19 ellisse max", "esecuzione", o$msg, "nessun errore", "FAIL") else {
+  cd <- o$cell_df; A19 <- 0.81 * 10; a19 <- sqrt(A19 * 20 / pi); b19 <- sqrt(A19 / (20 * pi))
+  s_exp <- min(1, 0.85 * min(cd$nucleus_cx, 10 - cd$nucleus_cx) / (k32 * a19), 0.85 * min(cd$nucleus_cy, 1 - cd$nucleus_cy) / (k32 * b19))
+  rec("C-1", "T19 ellisse max", "s = massimo analitico", sprintf("%.10f vs %.10f", cd$nucleus_scale, s_exp), "rel 1e-9", pf(abs(cd$nucleus_scale / s_exp - 1) <= TOL))
+  rec("C3", "T19 ellisse max", "C3 st_within", sum(within_sf(o, x$tess)), "1/1", pf(all(within_sf(o, x$tess))))
+}
+# T20 flusso casuale dichiarato: set.seed; z <- rnorm(n); u <- runif(n) — X4 ordine, X8 intervallo dell'angolo
+x <- mk(many[1:50]); o <- safe(DCG(x$cen, x$tess, CT(nucleus_to_eq_ratio = 0.3, nucleus_area_sdlog = 0.3, nucleus_aspect = 1.2), random_seed = 11))
+if (inherits(o, "dcg_err")) rec("C-1", "T20 flusso", "esecuzione", o$msg, "nessun errore", "FAIL") else {
+  set.seed(11); z20 <- rnorm(50); u20 <- runif(50)
+  rec("C-rip", "T20 flusso", "aree target = rnorm del seme", fmt(rel(o$cell_df$nucleus_area_target, 9 * exp(0.3 * z20))), "rel 1e-9",
+      pf(rel(o$cell_df$nucleus_area_target, 9 * exp(0.3 * z20)) <= TOL))
+  rec("C-rip", "T20 flusso", "angoli = pi u - pi/2", fmt(max(abs(o$cell_df$nucleus_orient - (pi * u20 - pi / 2)))), "1e-12",
+      pf(max(abs(o$cell_df$nucleus_orient - (pi * u20 - pi / 2))) <= 1e-12))
+}
+# T21 asse del territorio con un buco decentrato: momenti analitici ad area con segno — X5
+hole2 <- st_polygon(list(rbind(c(0, 0), c(10, 0), c(10, 10), c(0, 10), c(0, 0)), rbind(c(1, 1), c(5, 1), c(5, 3), c(1, 3), c(1, 1))))
+x <- mk(list(hole2)); o <- safe(DCG(x$cen, x$tess, CT(nucleus_to_eq_ratio = 0.2, nucleus_aspect = 1.5, nucleus_orient = "territory")))
+if (inherits(o, "dcg_err")) rec("C-1", "T21 asse con buco", "esecuzione", o$msg, "nessun errore", "FAIL") else {
+  Ai <- c(100, -8); cxi <- c(5, 3); cyi <- c(5, 2); ox <- c(100, 16) / 12; oy <- c(100, 4) / 12; At <- sum(Ai)
+  cxa <- sum(Ai * cxi) / At; cya <- sum(Ai * cyi) / At
+  mxx <- sum(Ai * (ox + (cxi - cxa)^2)) / At; myy <- sum(Ai * (oy + (cyi - cya)^2)) / At; mxy <- sum(Ai * (cxi - cxa) * (cyi - cya)) / At
+  th21 <- 0.5 * atan2(2 * mxy, mxx - myy)
+  rec("C-1", "T21 asse con buco", "orientazione analitica", sprintf("%.6f vs %.6f", o$cell_df$nucleus_orient, th21), "1e-9", pf(abs(o$cell_df$nucleus_orient - th21) <= TOL))
+}
+# T22 centro = generatore sul bordo -> errore (CODE-05: area 0 invisibile a C3)
+x <- mk(list(sq), gx = 0, gy = 5)
+m22 <- tryCatch({ DCG(x$cen, x$tess, CT(), nucleus_center = "generator"); "nessun errore" }, error = function(e) conditionMessage(e))
+rec("C-1", "T22 generatore sul bordo", "messaggio", substr(m22, 1, 60), "sul bordo", pf(grepl("sul bordo", m22, fixed = TRUE)))
 # T17 errori con messaggio atteso
 x <- mk(list(sq))
 err_cases <- list(
