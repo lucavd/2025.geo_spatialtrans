@@ -36,6 +36,9 @@ Testo integrale: `results/S1.4b/S1.4b_preregistration.md` (commit `ccf1c0e`, md5
 motivato». Definizioni operative (prima degli stadi ufficiali, commit `230fe74`): `results/S1.4b/S1.4b_dev_notes.md`.
 Pre-registrazione, codice e script del run sono stati pubblicati su GitHub prima del run.
 
+**Deviazione di perimetro**: la pre-registrazione cita i 40 tassellamenti di S1.4 (30 del segmentatore primario + 10 di
+sensibilità StarDist in A4/A6); il banco ha usato i **30 primari**. La sensibilità StarDist non è stata valutata in S1.4b.
+
 | Check | Attesa | Soglia | Fonte |
 |---|---|---|---|
 | C-0 | V-c = S1.4 | identico | S1.4 |
