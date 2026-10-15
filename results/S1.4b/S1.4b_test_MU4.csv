@@ -1,0 +1,20 @@
+"id","desc","value","pass"
+"T1a","pesi uguali: celle non ritagliate = Voronoi GEOS (max rel)","4.224",FALSE
+"T1b","pesi uguali: celle ritagliate (senza griglia) = Voronoi GEOS (max rel)","201.5",FALSE
+"T1c","pesi uguali, griglia F1: |dA| <= perimetro x 1e-6 per ogni cella","40.7",FALSE
+"T2","due punti: area della cella 1 = (x* + 20) * 25","631.2",TRUE
+"T2b","due punti: somma delle aree = riquadro","1250",TRUE
+"T3","invarianza w + costante (max |dA|/A)","0",TRUE
+"T4","teorema: 500 dischi disgiunti contenuti nella cella","0",TRUE
+"T4b","teorema: nessun punto nascosto con dischi disgiunti","0",TRUE
+"T4c","partizione (griglia F1): somma delle aree = regione (rel)","8.455",FALSE
+"T5","traslazione 1e4 µm: celle non ritagliate invariate (max rel)","3.793e-13",TRUE
+"T6","punto nascosto: cella vuota, partizione conservata","1",TRUE
+"T7","griglia degenere: 100 celle di area 100 (max |dA|)","0",TRUE
+"T8","regione con buco (griglia F1): somma delle aree = regione (rel)","11.28",FALSE
+"T8b","regione con buco: sovrapposizioni fra vicini (max area)","1.171e-05",FALSE
+"T9a","coppia R = 3, 2, d = 4: s = 0.99 * 4 / 5","0.792",TRUE
+"T9b","bordo della regione: s = 0.99 * 0.5 / 1","0.495",TRUE
+"T9c","2 000 dischi casuali: nessuna coppia con R_i s_i + R_j s_j > 0.99 d_ij","0",TRUE
+"T10a","V-a: nuclei dentro la cella (2 000)","0",TRUE
+"T10b","V-a: nessuna coppia di nuclei sovrapposta","0",TRUE

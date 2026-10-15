@@ -53,11 +53,11 @@ lag_cells <- function(x, y, w, box, nb = lag_neighbors(x, y, w)) {
   n <- length(x); mx <- nb$center[1]; my <- nb$center[2]
   xc <- x - mx; yc <- y - my; q <- xc^2 + yc^2 - w
   B <- rbind(c(box[1], box[2]), c(box[3], box[2]), c(box[3], box[4]), c(box[1], box[4])) - matrix(c(mx, my), 4, 2, byrow = TRUE)
-  pr <- nb$pairs; adj <- split(c(pr[, 2], pr[, 1]), c(pr[, 1], pr[, 2]))
-  cells <- vector("list", n)
+  pr <- nb$pairs; adj <- split(c(pr[, 2], pr[, 1]), factor(c(pr[, 1], pr[, 2]), levels = seq_len(n)))   # per posizione (S1.4b D-4)
+  cells <- vector("list", n); hid <- seq_len(n) %in% nb$hidden
   for (i in seq_len(n)) {
-    P <- B; js <- adj[[as.character(i)]]
-    if (i %in% nb$hidden || is.null(js)) { cells[[i]] <- if (i %in% nb$hidden) P[0, , drop = FALSE] else P; next }
+    P <- B; js <- adj[[i]]
+    if (hid[i] || !length(js)) { cells[[i]] <- if (hid[i]) P[0, , drop = FALSE] else P; next }
     for (j in js) {
       # pow_i <= pow_j  <=>  2 p.(c_j - c_i) <= q_j - q_i
       P <- .lag_clip(P, 2 * c(xc[j] - xc[i], yc[j] - yc[i]), q[j] - q[i])

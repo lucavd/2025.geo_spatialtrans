@@ -53,11 +53,13 @@ def run_set(f, n_pts, mutant=None, seed=20261016):
         unc_bad = int((dd > TOL).sum())
     else:
         unc_bad = 0
-    dbl = np.where(ncont >= 2)[0]; dbl_bad = 0
-    if len(dbl):
-        for p in dbl:
-            cs = ci[pi == p]
-            if np.all(shapely.distance(pts[p], bd[cs]) > TOL): dbl_bad += 1
+    # doppi: punti contenuti in >= 2 celle e a piu' di TOL da tutti i loro bordi (vettorizzato dopo il run, stessa semantica)
+    dbl_bad = 0
+    sel = ncont[pi] >= 2
+    if sel.any():
+        dd = shapely.distance(pts[pi[sel]], bd[ci[sel]])
+        mind = np.full(len(Q), np.inf); np.minimum.at(mind, pi[sel], dd)
+        dbl_bad = int(np.sum((ncont >= 2) & (mind > TOL)))
     # aree: n_i contro N * A_i / A_box (punti uniformi nel riquadro)
     A_box = (xmax - xmin) * (ymax - ymin)
     area = shapely.area(cells); p_i = area / A_box
