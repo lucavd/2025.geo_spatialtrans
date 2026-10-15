@@ -1,6 +1,6 @@
 "section","id","cand","metric","value","threshold","outcome","prediction","confirmed"
 "C","C-0","-","nulli riprodotti (n, c1, c2 rel <= 1e-12)","1800/1800","1800/1800","PASS","1800/1800",TRUE
-"C","C-1","-","test unitari","78/78","100 %","PASS","100 %",TRUE
+"C","C-1","-","test unitari","79/79","100 %","PASS","100 %",TRUE
 "C","C-2a","arbitro","cella ∩ regione: indice vs tutti i lati","2805/2805","100 %","PASS","100 %",TRUE
 "C","C-2b","arbitro","coppie: Green vs S-H","2779/2779","100 %","PASS","100 %",TRUE
 "C","C-2c","arbitro","pezzi O2: S-H vs Green","8427/8427","100 %","PASS","100 %",TRUE
@@ -10,12 +10,12 @@
 "C","C-3","M-O3","n_viol 42266","TRUE","rilevato","PASS","rilevato",TRUE
 "C","C-3","M-arb","vertice tolto -> area esatta cambia","257/257","100 %","PASS","100 %",TRUE
 "C","C-4","-","perturbazioni che cambiano l'input","558/558","100 %","PASS","100 %",TRUE
-"C","C-5","F4","F4 vs 04b3: |Δa| <= tau_i e stessi frammenti (casi; parità)","1986/1986; parità 0; errori di costruzione 0","100 % fuori dalle parità","PASS","100 %",TRUE
+"C","C-5","F4","F4 vs 04b3: |Δa| <= tau_i e stessi frammenti (casi; parità)","2286/2286; parità 0; errori di costruzione 0","100 % fuori dalle parità","PASS","100 %",TRUE
 "C","C-6","-","max |coord| / g","4.000e+09","< 1e12","PASS","< 1e12",TRUE
 "P","P-V0a","V0","nulli N con errore silenzioso O1 (unione / coppie)","70 (unione 15, coppie 65)",">= 15 unioni e >= 11 coppie","confermata","15 unioni, >= 11 coppie",TRUE
 "P","P-V0b","V0","violazioni O2/O3 su N","0","0","confermata","0",TRUE
 "P","P-F1","F1","eleggibile O1 (errori silenziosi, eccezioni, CP-1)","TRUE (silenziosi 0, eccezioni 0, CP-1 0)","eleggibile","confermata","eleggibile",TRUE
-"P","P-F2","F2","eleggibile O1 (errori silenziosi, eccezioni, CP-1)","FALSE (silenziosi 0, eccezioni 0, CP-1 0)","eleggibile","smentita","eleggibile",FALSE
+"P","P-F2","F2","eleggibile O1 (errori silenziosi, eccezioni, CP-1)","TRUE (silenziosi 0, eccezioni 0, CP-1 0)","eleggibile","confermata","eleggibile",TRUE
 "P","P-F3","F3","eleggibile O1 (errori silenziosi, eccezioni, CP-1)","TRUE (silenziosi 0, eccezioni 0, CP-1 0)","eleggibile","confermata","eleggibile",TRUE
 "P","P-F4","F4","eleggibile O1 (errori silenziosi, eccezioni, CP-1)","FALSE (silenziosi 0, eccezioni 0, CP-1 0)","eleggibile","smentita","eleggibile",FALSE
 "P","P-F5","F5","eleggibile O1 (errori silenziosi, eccezioni, CP-1)","FALSE (silenziosi 0, eccezioni 0, CP-1 0)","eleggibile","smentita","eleggibile",FALSE
@@ -38,3 +38,6 @@
 "CP","CP-2","F3","U4 a cavallo della griglia: casi oltre tau (max errore/tau coppie)","0/20 (0)","0","PASS",NA,NA
 "CP","CP-2","F5","U4 a cavallo della griglia: casi oltre tau (max errore/tau coppie)","0/20 (0)","0","PASS",NA,NA
 "CP","CP-4","arbitro","placebo (ordine permutato: input cambiato, verità identica)","257/257","100 %","PASS",NA,NA
+"CP","CP-3","F1","H (300 nulli nuovi): O1 casi con errore","0/300","0","PASS",NA,NA
+"CP","CP-3","F1","H (300 nulli nuovi): O2 casi con errore","0/600","0","PASS",NA,NA
+"CP","CP-3","F1","H (300 nulli nuovi): O3 casi con errore","0/300","0","PASS",NA,NA

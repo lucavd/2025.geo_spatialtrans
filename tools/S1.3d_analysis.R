@@ -30,7 +30,7 @@ CV <- rbind_fill(lapply(list.files(COV, pattern = "\\.json$", full.names = TRUE)
   data.frame(key = j$key, v0_valid = if (is.null(j$V0)) NA else j$V0$valid, v0_ncells = if (is.null(j$V0)) NA else j$V0$n_cells_invalid_edges,
              f4_valid = if (is.null(j$F4)) NA else j$F4$valid, f4_ncells = if (is.null(j$F4)) NA else j$F4$n_cells_invalid_edges) }))
 # S (perf): confronti salvati da tools/S1.3d_perf.R (rep 1)
-SP <- list.files(RES, pattern = "^S_cperf_.*\\.rds$", full.names = TRUE)
+SP <- list.files(RES, pattern = "^S_cperf_.*_(O1|O2s2|O2s8)\\.rds$", full.names = TRUE)
 for (f in SP) { o <- readRDS(f)
   if (o$op == "O1") { d <- o$cmp$summary; d$key <- "S_cperf"; d$applicable <- TRUE; O1 <- rbind_fill(list(O1, d)) }
   else { d <- o$cmp$summary; d$key <- "S_cperf"; d$op <- "O2"; d$t_o2 <- o$t_op; O2 <- rbind_fill(list(O2, d))
