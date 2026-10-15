@@ -94,9 +94,11 @@ tot <- as.numeric(sub(".*total_s=([0-9.]+).*", "\\1", pl))
 addc("C-perf", "K-2 su S (449 536 celle)", sprintf("%.1f s, %.2f GB; %s", tot, rss, sub("^PERF ", "", pl)), "<= 300 s, <= 8 GB (solo WARN)", if (tot <= 300 && rss <= 8) "PASS" else "WARN")
 checks <- do.call(rbind, chk); write.csv(checks, file.path(RES, "S1.4c_checks.csv"), row.names = FALSE)
 shared_ok <- all(checks$verdict[checks$check %in% c("C-OP", "C-R", "C-mut")] %in% c("PASS", "INFO"))
-eligible <- c("K-c" = shared_ok && checks$verdict[checks$check == "C-0"] == "PASS",
-              "K-1" = shared_ok && all(checks$verdict[grepl("^K-1", checks$what)] == "PASS"),
-              "K-2" = shared_ok && all(checks$verdict[grepl("^K-2", checks$what)] == "PASS"))
+# eleggibilita' (regola 1): tutti i check C PASS, C-perf solo WARN (escluso). Correzione dopo il run (dev notes D-6): la prima
+# versione selezionava le righe con grepl("^K-2", what), che include C-perf ("K-2 su S ...") e rendeva K-2 non eleggibile.
+var_ok <- function(V) { z <- checks[checks$check != "C-perf" & startsWith(checks$what, paste0(V, " ")), ]; nrow(z) > 0 && all(z$verdict == "PASS") }
+eligible <- c("K-c" = shared_ok && checks$verdict[checks$check == "C-0"] == "PASS", "K-1" = shared_ok && var_ok("K-1"), "K-2" = shared_ok && var_ok("K-2"))
+write.csv(data.frame(variant = names(eligible), eligible = eligible, shared_ok = shared_ok), file.path(RES, "S1.4c_eligibility.csv"), row.names = FALSE)
 
 # ---- CP-2: robustezza dei riferimenti di forma al segmentatore ---------------------------------------------------------
 cp2v <- function(A, roi, seg) { z <- as.data.frame(read_parquet(file.path(OUT, "cp2", sprintf("%s_%s_%s_cp2.parquet", A, roi, seg)))); z <- z[z$ev, ]

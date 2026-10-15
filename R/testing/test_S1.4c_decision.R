@@ -30,6 +30,7 @@ ck("D11 auc: separazione perfetta = 1, inversa = 0, casuale ~ 0.5",
    auc(1:10, c(rep(FALSE, 5), rep(TRUE, 5))) == 1 && auc(10:1, c(rep(FALSE, 5), rep(TRUE, 5))) == 0 &&
    abs({ set.seed(1); auc(runif(4000), runif(4000) > 0.5) } - 0.5) < 0.03)
 ck("D12 auc con pareggi = 0.5", auc(rep(1, 6), c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE)) == 0.5)
+ck("D12b auc senza overflow con n1 * n0 > 2^31", { set.seed(2); y <- c(rep(TRUE, 30000), rep(FALSE, 300000)); s <- c(rnorm(30000, 1), rnorm(300000)); a <- auc(s, y); is.finite(a) && abs(a - pnorm(1 / sqrt(2))) < 0.01 })
 yy <- rep(list(c(0.1, 0.2, 0.3, 0.4)), 5)
 ck("D13 cp2_exceeds: 3/5 sopra il max -> TRUE; 2/5 -> FALSE", cp2_exceeds(c(0.5, 0.5, 0.5, 0.1, 0.1), yy) && !cp2_exceeds(c(0.5, 0.5, 0.4, 0.1, 0.1), yy))
 nf <- sum(!unlist(res)); cat(sprintf("RESULT %d/%d PASS\n", length(res) - nf, length(res))); quit(status = if (nf) 1 else 0)

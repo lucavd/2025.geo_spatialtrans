@@ -51,7 +51,7 @@ decide <- function(score, pboot, eligible, margin = 3, pmin = 0.9, order_simple 
 }
 
 #' AUC (Mann-Whitney) dello score per l'esito binario.
-auc <- function(score, y) { y <- as.logical(y); r <- rank(score); n1 <- sum(y); n0 <- sum(!y)
+auc <- function(score, y) { y <- as.logical(y); r <- rank(score); n1 <- as.numeric(sum(y)); n0 <- as.numeric(sum(!y))   # double: n1 * n0 supera 2^31 (A4)
   if (!n1 || !n0) return(NA_real_); (sum(r[y]) - n1 * (n1 + 1) / 2) / (n1 * n0) }
 
 #' CP-2: per archetipo, numero di ROI in cui la distanza fra segmentatori supera il massimo del metro inter-ROI.

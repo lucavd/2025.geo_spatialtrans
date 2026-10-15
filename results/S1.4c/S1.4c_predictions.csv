@@ -1,0 +1,7 @@
+"id","text","observed","confirmed"
+"P1","S-1 reale >= 0.30 in A1-A4 e <= 0.15 in A5, A6","A1 0.436; A2 0.626; A3 0.397; A4 0.419; A5 0.107; A6 0.045",TRUE
+"P2","B-4 di K-2 <= 0.05 in >= 4/6","A1 0.027; A2 0.047; A3 0.034; A4 0.023; A5 0.041; A6 0.015",TRUE
+"P3","K-1: B-2 FAIL in A1-A4","A1 WARN; A2 WARN; A3 WARN; A4 WARN",FALSE
+"P4","punteggio(K-2) >= punteggio(K-c) + 3","K-2 8, K-c 3",TRUE
+"P5","solidita' reale mediana >= 0.95, entrambi i segmentatori, 6/6","A1/ce 0.946; A1/st 0.955; A2/ce 0.954; A2/st 0.961; A3/ce 0.954; A3/st 0.961; A4/ce 0.956; A4/st 0.958; A5/ce 0.975; A5/st 0.971; A6/ce 0.946; A6/st 0.953",FALSE
+"P6","CP-0 AUC >= 0.75 in A1-A4","A1 0.960; A2 0.947; A3 0.967; A4 0.974; A5 0.994; A6 0.997",TRUE
