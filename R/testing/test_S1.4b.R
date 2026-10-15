@@ -1,0 +1,86 @@
+# R/testing/test_S1.4b.R — S1.4b, C-L1: test analitici del prototipo Laguerre (tools/S1.4b_laguerre.R).
+# Uso (root del repo): R_LIBS_SITE=/nonexistent R_LIBS_USER=/nonexistent [S14B_MUTANT=MU1..MU4] Rscript --vanilla R/testing/test_S1.4b.R
+# Stampa PASS/FAIL per asserzione; scrive results/S1.4b/S1.4b_test_<mutante>.csv.
+.libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({ library(sf); library(geos) })
+source("tools/S1.4b_mutants.R")
+MUT <- Sys.getenv("S14B_MUTANT", "none"); L <- lag_mutate(lag_env(), MUT)
+res <- list()
+chk <- function(id, desc, ok, val = NA) {
+  ok <- isTRUE(ok); res[[length(res) + 1]] <<- data.frame(id = id, desc = desc, value = as.character(signif(val, 4)), pass = ok)
+  cat(sprintf("%-5s %-4s %s [%s]\n", id, if (ok) "PASS" else "FAIL", desc, signif(val, 4)))
+}
+sq <- function(a, b, c, d) st_sfc(st_polygon(list(rbind(c(a, b), c(c, b), c(c, d), c(a, d), c(a, b)))))
+grid <- 1e-6
+# T1 pesi uguali = Voronoi GEOS (celle intere: rel <= 1e-9; ritagliate: |dA| <= perimetro * griglia)
+set.seed(11); n <- 400; x <- runif(n, 0, 200); y <- runif(n, 0, 200); reg <- sq(0, 0, 200, 200)
+pd <- L$power_diagram(x, y, rep(7, n), reg, snap = FALSE)
+v <- st_voronoi(st_multipoint(cbind(x, y)), envelope = reg[[1]], point_order = TRUE)
+va <- as.numeric(st_area(st_intersection(st_collection_extract(st_sfc(v)), reg)))
+cl <- !geos_prepared_contains(geos::as_geos_geometry(reg), L$power_diagram(x, y, rep(7, n), sq(-1e4, -1e4, 1e4, 1e4), snap = FALSE)$cells)
+rel <- abs(pd$area - va) / va; per <- geos_length(geos_boundary(pd$cells))
+chk("T1a", "pesi uguali: celle non ritagliate = Voronoi GEOS (max rel)", max(rel[!cl]) <= 1e-9, max(rel[!cl]))
+chk("T1b", "pesi uguali: celle ritagliate (senza griglia) = Voronoi GEOS (max rel)", max(rel[cl]) <= 1e-9, max(rel[cl]))
+pds <- L$power_diagram(x, y, rep(7, n), reg)
+chk("T1c", "pesi uguali, griglia F1: |dA| <= perimetro x 1e-6 per ogni cella", all(abs(pds$area - va) <= geos_length(geos_boundary(pds$cells)) * grid), max(abs(pds$area - va) / geos_length(geos_boundary(pds$cells))))
+# T2 due punti: bisettrice di potenza x* = (d^2 + w1 - w2) / (2 d)
+x2 <- c(0, 10); y2 <- c(0, 0); w2 <- c(9, 4)
+pdb <- L$power_diagram(x2, y2, w2, sq(-20, -20, 30, 5), snap = FALSE)
+xs <- (100 + 9 - 4) / 20
+chk("T2", "due punti: area della cella 1 = (x* + 20) * 25", abs(pdb$area[1] - (xs + 20) * 25) / ((xs + 20) * 25) <= 1e-9, pdb$area[1])
+chk("T2b", "due punti: somma delle aree = riquadro", abs(sum(pdb$area) - 50 * 25) / 1250 <= 1e-9, sum(pdb$area))
+# T3 invarianza per w + costante
+set.seed(12); n <- 300; x <- runif(n, 0, 150); y <- runif(n, 0, 150); w <- runif(n, 0, 10); reg <- sq(0, 0, 150, 150)
+p1 <- L$power_diagram(x, y, w, reg, snap = FALSE); p2 <- L$power_diagram(x, y, w + 37.5, reg, snap = FALSE)
+chk("T3", "invarianza w + costante (max |dA|/A)", max(abs(p1$area - p2$area) / pmax(p1$area, 1e-12)) <= 1e-9, max(abs(p1$area - p2$area) / pmax(p1$area, 1e-12)))
+# T4 teorema: dischi disgiunti (RSA, raggi variabili) -> ogni disco (poligono circoscritto) nella propria cella
+set.seed(13); X <- numeric(0); Y <- numeric(0); Rr <- numeric(0)
+for (t in 1:20000) { if (length(X) >= 500) break
+  px <- runif(1, 5, 295); py <- runif(1, 5, 295); pr <- runif(1, 1, 5)
+  if (!length(X) || all(sqrt((X - px)^2 + (Y - py)^2) > (Rr + pr) / 0.99)) { X <- c(X, px); Y <- c(Y, py); Rr <- c(Rr, pr) } }
+reg <- sq(0, 0, 300, 300); pdt <- L$power_diagram(X, Y, Rr^2, reg)
+nuc <- L$nucleus_polys(X, Y, Rr)
+wi <- geos_within(nuc, pdt$cells)
+chk("T4", sprintf("teorema: %d dischi disgiunti contenuti nella cella", length(X)), all(wi), sum(!wi))
+chk("T4b", "teorema: nessun punto nascosto con dischi disgiunti", pdt$n_hidden == 0, pdt$n_hidden)
+chk("T4c", "partizione (griglia F1): somma delle aree = regione (rel)", abs(sum(pdt$area) - geos_area(pdt$region)) / geos_area(pdt$region) <= 1e-9, abs(sum(pdt$area) - geos_area(pdt$region)) / geos_area(pdt$region))
+# T5 traslazione di 1e4 µm: aree invariate (celle non ritagliate)
+pdt2 <- L$power_diagram(X + 1e4, Y + 1e4, Rr^2, sq(1e4, 1e4, 1e4 + 300, 1e4 + 300), snap = FALSE); pdt0 <- L$power_diagram(X, Y, Rr^2, sq(0, 0, 300, 300), snap = FALSE)
+inn <- geos_prepared_contains(geos::as_geos_geometry(sq(0, 0, 300, 300)), L$power_diagram(X, Y, Rr^2, sq(-1e4, -1e4, 1e4, 1e4), snap = FALSE)$cells)
+chk("T5", "traslazione 1e4 µm: celle non ritagliate invariate (max rel)", max(abs(pdt2$area - pdt0$area)[inn] / pdt0$area[inn]) <= 1e-9, max(abs(pdt2$area - pdt0$area)[inn] / pdt0$area[inn]))
+# T6 punto nascosto: peso piccolo circondato da pesi grandi -> cella vuota, partizione conservata
+xh <- c(0, 10, -10, 0, 0, 0); yh <- c(0, 0, 0, 10, -10, 0.5); wh <- c(0, 90, 90, 90, 90, -50)
+pdh <- L$power_diagram(xh[-1], yh[-1], wh[-1], sq(-30, -30, 30, 30))
+pdh2 <- L$power_diagram(c(xh[2:5], 0), c(yh[2:5], 0), c(wh[2:5], -50), sq(-30, -30, 30, 30))
+chk("T6", "punto nascosto: cella vuota, partizione conservata", pdh2$n_hidden == 1 && pdh2$hidden == 5 && abs(sum(pdh2$area) - 3600) / 3600 <= 1e-9, pdh2$n_hidden)
+# T7 griglia regolare (degenere, cocircolare) con pesi uguali: celle quadrate di area 100
+g <- expand.grid(x = seq(5, 95, 10), y = seq(5, 95, 10))
+pdg <- L$power_diagram(g$x, g$y, rep(1, nrow(g)), sq(0, 0, 100, 100), snap = FALSE)
+chk("T7", "griglia degenere: 100 celle di area 100 (max |dA|)", max(abs(pdg$area - 100)) <= 1e-9 * 100, max(abs(pdg$area - 100)))
+# T8 regione non convessa con buco: somma delle aree = area della regione (entro perimetro x griglia)
+ring <- rbind(c(0, 0), c(200, 0), c(200, 200), c(100, 200), c(100, 100), c(0, 100), c(0, 0))
+hole <- rbind(c(140, 40), c(160, 40), c(160, 60), c(140, 60), c(140, 40))
+regc <- st_sfc(st_polygon(list(ring, hole))); set.seed(14)
+pts <- st_coordinates(st_sample(regc, 300)); wv <- runif(300, 0, 8)
+pdc <- L$power_diagram(pts[, 1], pts[, 2], wv, regc)
+A0 <- geos_area(pdc$region)
+chk("T8", "regione con buco (griglia F1): somma delle aree = regione (rel)", abs(sum(pdc$area) - A0) / A0 <= 1e-9, abs(sum(pdc$area) - A0) / A0)
+ov <- geos_area(geos_intersection_prec(pdc$cells[pdc$pairs[, 1]], pdc$cells[pdc$pairs[, 2]], grid))
+chk("T8b", "regione con buco: sovrapposizioni fra vicini (max area)", max(ov) <= 1e-9, max(ov))
+# T9 non sovrapposizione: coppia analitica e bordo della regione
+ns <- L$nonoverlap_scale(c(0, 4, 50), c(0, 0, 50), c(3, 2, 1), d_reg = c(100, 100, 0.5), gamma = 0.99)
+chk("T9a", "coppia R = 3, 2, d = 4: s = 0.99 * 4 / 5", abs(ns$s[1] - 0.792) < 1e-12 && abs(ns$s[2] - 0.792) < 1e-12, ns$s[1])
+chk("T9b", "bordo della regione: s = 0.99 * 0.5 / 1", abs(ns$s[3] - 0.495) < 1e-12, ns$s[3])
+set.seed(15); n <- 2000; x <- runif(n, 0, 300); y <- runif(n, 0, 300); R <- exp(rnorm(n, log(3), 0.5))
+ns2 <- L$nonoverlap_scale(x, y, R, d_reg = rep(1e3, n))
+D <- as.matrix(dist(cbind(x, y))); RR <- outer(R * ns2$s, R * ns2$s, "+"); diag(D) <- Inf
+chk("T9c", "2 000 dischi casuali: nessuna coppia con R_i s_i + R_j s_j > 0.99 d_ij", !any(RR > 0.99 * D + 1e-12), sum(RR > 0.99 * D + 1e-12) / 2)
+# T10 V-a end-to-end su dischi da nonoverlap_scale: contenimento e non sovrapposizione
+Rc <- R * ns2$s; pdv <- L$power_diagram(x, y, Rc^2, sq(-5, -5, 305, 305)); nv <- L$nucleus_polys(x, y, Rc)
+chk("T10a", "V-a: nuclei dentro la cella (2 000)", all(geos_within(nv, pdv$cells)), sum(!geos_within(nv, pdv$cells)))
+pp <- L$near_pairs(x, y, Rc, gamma = 1)
+chk("T10b", "V-a: nessuna coppia di nuclei sovrapposta", nrow(pp) == 0, nrow(pp))
+out <- do.call(rbind, res)
+dir.create("results/S1.4b", showWarnings = FALSE, recursive = TRUE)
+write.csv(out, sprintf("results/S1.4b/S1.4b_test_%s.csv", MUT), row.names = FALSE)
+cat(sprintf("\nC-L1 [%s]: %d/%d PASS\n", MUT, sum(out$pass), nrow(out)))
