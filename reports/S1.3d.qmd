@@ -125,11 +125,12 @@ invalide rilevate e riparate, esattamente come in S1.3b), F3, F4 copertura valid
 
 # Verdetto
 
-- **Stato: chiusa con riserve.**
+- **Stato: chiusa** (verdetto di Luca, 2026-10-15: «Le riserve sono pretenziose»). Nessun punto aperto tocca la decisione: F5 in O1 su S
+  non poteva comunque battere F1 (nessuna corsa finita in 6 h 40 min contro 82 s), e F5 resta escluso dagli errori in O2/O3.
 - Decisione per regola: **F1 per O1, O2, O3** (snap-rounding GEOS a 1e-6 µm, un solo helper, BL-081); CP-3 su H PASS.
-- Riserve: (1) F5 in O1 su S non valutato a questa profondità (D-2, D-4); (2) F4 escluso per un difetto d'implementazione (14 celle,
-  riparabili a area invariata) e per lo scaling (1 660 s su S), non per il principio; (3) tolleranza per pezzi sotto-griglia; (4) tre difetti del codice di analisi corretti durante il run
-  (D-1, D-3; dichiarati, decisione invariata); (5) prestazioni misurate su macchina condivisa con 4 processi paralleli.
+- Punti aperti, come voci di BACKLOG e non come riserve: F5 O1 su S non valutato (D-2, D-4; BL-091); F4 da correggere (BL-092);
+  tolleranza per pezzi sotto-griglia (BL-093); difetti dell'analisi D-1, D-3 dichiarati e corretti; prestazioni con 4 processi paralleli
+  su macchina condivisa.
 
 # Revisione avversariale
 

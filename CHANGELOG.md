@@ -2,7 +2,7 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## S1.3d — 2026-10-14/15 — BL-084: banco di prova degli overlay (branch `step1-cell-layer`) — **chiusa con riserve**
+## S1.3d — 2026-10-14/15 — BL-084: banco di prova degli overlay (branch `step1-cell-layer`) — **chiusa**
 
 ### Decisioni (ROADMAP §6)
 - Perimetro (Luca, 2026-10-14): completo F1–F6, organizzato per operazione (O1 partizione, O2 cella × bin, O3 aggregazione 2→8 µm).
@@ -23,6 +23,7 @@ Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in 
 - B-1: 62/62 verdetti B di S1.3 invariati per ogni candidato. Previsioni smentite: F5 «0 errori»; V0 copertura invalida ≥ 80 % (61.6 %).
 - Revisione avversariale: «ricalcolo» (20/20 righe, 5 467 righe V0/F1 identiche) e «esatto» (verità 100 %, 565/565 violazioni reali); 24 rilievi, nessuno cambia la decisione.
   BACKLOG BL-091…BL-097; BL-080, BL-084 chiuse.
+- Stato: proposto «chiusa con riserve»; Luca (2026-10-15): «Le riserve sono pretenziose» → **chiusa**; i punti aperti restano in BACKLOG.
 
 ## S1.3c — 2026-10-12/14 — BL-077: spazio extracellulare intra-regione dai conteggi a 2 µm (branch `step1-cell-layer`) — **non chiusa**
 
