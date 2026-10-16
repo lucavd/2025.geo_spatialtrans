@@ -1,38 +1,41 @@
 #!/usr/bin/env python
-"""tools/R2c_candidates.py — R2c: d_max, coppie candidate, nuclei focali, check C-1/C-3 e liste degli item da annotare.
+"""tools/R2c_candidates.py — R2c: d_max, coppie candidate, fascia, nuclei focali, check C-1/C-3 e liste degli item.
 
-Pre-registrazione: results/R2c/R2c_preregistration.md (approvata da Luca 2026-10-16).
+Pre-registrazione: results/R2c/R2c_preregistration.md (approvata 2026-10-16) + addendum D-1..D-4 (approvato 2026-10-16, prima
+delle annotazioni). Il primo run con la regola pre-registrata e' conservato in results/R2c/prereg_rule/.
 - Punti: punti manuali di Luca R2b (results/R2b/R2b_points.csv), coordinate in µm del ROI (x = colonna * upp).
 - Contatto dei segmentatori: operatore di S1.4c (tools/S1.4c_raster.py, contact_pairs, Chebyshev <= 2 px) sulle maschere
-  native del ROI filtrate come nello stadio cp2 (centroide del nucleo nel tessuto valido).
-- d_max(archetipo) = q99.5 della distanza fra i due punti manuali appaiati alle etichette di ogni coppia a contatto
-  (cellpose_rgb U stardist_he, coppie con entrambi i punti appaiati a etichette distinte) + 1 µm.
-- Candidati: lati di Delaunay dei punti di Luca della finestra con d <= d_max.
-- Focali: 15 per finestra fra i punti a distanza >= d_max dal bordo della finestra e dalle esclusioni; rng([SEED, k]),
-  k = indice della finestra in R2b_windows.csv.
-- Item: coppie candidate con almeno un estremo focale; ripetute 10 % (inserite >= 30 item dopo l'originale); trappole 5 %
-  (coppie di punti della stessa finestra con 20 < d <= lato del ritaglio - 6 µm). Federica: gli item delle finestre rater2, ordine con seme proprio.
+  native del ROI filtrate come nello stadio cp2 (centroide nel tessuto valido).
+- d_prereg(A) = q99.5 della distanza fra i punti manuali appaiati alle due etichette di ogni coppia a contatto (cp U sd) + 1 µm.
+- d_roi(A)    = q99.5 della distanza fra centroidi di tutte le coppie a contatto (cp U sd) nei ROI dell'archetipo + 1 µm.
+- d_max = max(d_prereg, d_roi) (D-2); candidati = tutte le coppie di punti della finestra con d <= d_max (D-1).
+- d_geo(A) = max_seg [2 q99.5(r_max) + 2 upp], r_max = distanza max centroide-pixel + 0.5 px (D-3). Fascia: d_max < d <= d_geo.
+- Focali: 15 per finestra fra i punti a distanza >= d_max dal bordo della finestra e dalle esclusioni; rng([SEED, k]).
+- Item: coppie candidate con un estremo focale ("pair"); fascia, 15 per archetipo fra le coppie di fascia con un estremo
+  focale ("band"); ripetute 10 % delle "pair" (>= 30 item dopo l'originale); trappole 5 % con max(20, d_geo) < d <= lato - 6
+  (D-4). Lato del ritaglio = max(2.5 d_max, 30 µm). Federica: gli item delle finestre rater2, ordine con seme proprio.
 Output: results/R2c/R2c_{dmax,pairs,focal,coverage,c3,items_Luca,items_Federica}.csv
 Uso (root del repo): .venv/bin/python tools/R2c_candidates.py
 """
-import importlib.util, json
+import importlib.util, json, ast
 import numpy as np, pandas as pd
 from pathlib import Path
-from scipy.spatial import Delaunay
+from scipy.spatial import Delaunay, cKDTree
 import shapely
-from shapely.geometry import Polygon, box
+from shapely.geometry import Polygon
 
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "results/R2c"; RES.mkdir(parents=True, exist_ok=True)
 R2B = ROOT / "results/R2b"
 MASKS = "/mnt/micron/geo_spatialtrans/R2/masks"
 SEED = 20261016
-N_FOCAL = 15
-Q_DMAX, DMAX_PAD = 0.995, 1.0
+N_FOCAL, N_BAND = 15, 15
+Q, PAD = 0.995, 1.0
 REPEAT_FRAC, CATCH_FRAC, CATCH_DMIN, REPEAT_GAP = 0.10, 0.05, 20.0, 30
-CROP_K, CROP_MIN_UM, CATCH_FIT_UM = 2.5, 30.0, 6.0   # lato del ritaglio = max(2.5 d_max, 30 µm); trappole con d <= lato - 6 µm
+CROP_K, CROP_MIN_UM, CATCH_FIT_UM = 2.5, 30.0, 6.0
 SEGS = ["cellpose_rgb", "stardist_he"]
 SR_ARCH = {"A4", "A6"}
+ARCH = ["A1", "A2", "A3", "A4", "A5", "A6"]
 
 
 def load_s14c():
@@ -60,14 +63,23 @@ def cp2_lab(A, roi, seg, rois):
     return lab, upp
 
 
+def label_geometry(lab, upp):
+    """Per etichetta: centroide (µm) e r_max (µm) = distanza massima centroide-centro pixel + 0.5 px."""
+    r, c = np.nonzero(lab); l = lab[r, c]; M = int(lab.max()) + 1
+    n = np.bincount(l, minlength=M); ids = np.nonzero(n)[0]
+    cx = np.bincount(l, c.astype(float), M) / np.maximum(n, 1); cy = np.bincount(l, r.astype(float), M) / np.maximum(n, 1)
+    dd = np.hypot(c - cx[l], r - cy[l]); mx = np.zeros(M); np.maximum.at(mx, l, dd)
+    return ids, cx * upp, cy * upp, (mx + 0.5) * upp
+
+
 def delaunay_edges(xy):
     if len(xy) < 3:
-        return np.zeros((0, 2), int)
+        return set()
     e = set()
     for s in Delaunay(xy).simplices:
         for a, b in ((0, 1), (1, 2), (0, 2)):
             i, j = sorted((int(s[a]), int(s[b]))); e.add((i, j))
-    return np.array(sorted(e), int)
+    return e
 
 
 def exclusions_um(wins_json, wrow):
@@ -76,7 +88,7 @@ def exclusions_um(wins_json, wrow):
     m = float(wj["margin_px"]); upp = float(wrow.um_per_px)
     ex = wj.get("exclusions") or []
     if isinstance(ex, str):
-        import ast; ex = ast.literal_eval(ex)
+        ex = ast.literal_eval(ex)
     out = []
     for e in ex:
         p = (np.asarray(e["pts"], float) - m) * upp + np.array([float(wrow.x0_um), float(wrow.y0_um)])
@@ -86,22 +98,38 @@ def exclusions_um(wins_json, wrow):
 
 
 def seg_tables(wins, rois):
-    """Per ROI x segmentatore: insieme delle coppie a contatto (label_i < label_j) e S-1 per etichetta; C-3 contro cp2."""
+    """Per ROI x segmentatore: coppie a contatto; distanze fra centroidi delle coppie a contatto; r_max; C-3 contro cp2."""
     need = sorted(set((r.archetype, r.roi_id) for r in wins.itertuples()))
-    pairs, c3 = {}, []
+    pairs, c3, dcon, rmax = {}, [], {}, {}
     for A, roi in need:
         segs = SEGS + (["spaceranger"] if A in SR_ARCH else [])
         for seg in segs:
             lab, upp = cp2_lab(A, roi, seg, rois)
             pr = S.contact_pairs(lab, 2)
-            pairs[(A, roi, seg)] = set(zip(pr.label_i.astype(int), pr.label_j.astype(int)))
-            if seg in SEGS:                                      # C-3: identita' con lo stadio cp2 di S1.4c
+            i = pr.label_i.to_numpy().astype(int); j = pr.label_j.to_numpy().astype(int)
+            pairs[(A, roi, seg)] = set(zip(i, j))
+            if seg in SEGS:
+                ids, cx, cy, rm = label_geometry(lab, upp)
+                dcon.setdefault((A, seg), []).append(np.hypot(cx[i] - cx[j], cy[i] - cy[j]))
+                rmax.setdefault((A, seg), []).append(rm[ids])
+                rmax.setdefault(("upp", A), []).append(upp)
                 cp = pd.read_parquet(f"/mnt/micron/geo_spatialtrans/S1.4c/cp2/{A}_{roi}_{seg}_cp2.parquet")
-                in_pair = set(pr.label_i.astype(int)) | set(pr.label_j.astype(int))
-                a = set(cp.label[cp.n_c2 > 0].astype(int)); b = in_pair
+                a = set(cp.label[cp.n_c2 > 0].astype(int)); b = set(i) | set(j)
                 c3.append(dict(archetype=A, roi=roi, seg=seg, n_labels=len(cp), n_contact_cp2=len(a), n_contact_r2c=len(b),
                                n_diff=len(a ^ b), labels_equal=bool(set(cp.label.astype(int)) == set(np.unique(lab[lab > 0])))))
-    return pairs, pd.DataFrame(c3)
+    dcon = {k: np.concatenate(v) for k, v in dcon.items()}
+    upp = {A: float(np.max(rmax.pop(("upp", A)))) for A in sorted(set(k[1] for k in rmax if k[0] == "upp"))}
+    rmax = {k: np.concatenate(v) for k, v in rmax.items()}
+    return pairs, pd.DataFrame(c3), dcon, rmax, upp
+
+
+def insert_repeats(order, reps, rng):
+    for rr in reps:
+        o = next(n for n, it in enumerate(order) if it["pair_id"] == rr["pair_id"] and it["kind"] == "pair")
+        lo = o + REPEAT_GAP + 1
+        pos = int(rng.integers(lo, len(order) + 1)) if lo <= len(order) else len(order)
+        order.insert(pos, rr)
+    return order
 
 
 def main():
@@ -109,24 +137,28 @@ def main():
     rois = S.rois_table()
     pts = pd.read_csv(R2B / "R2b_points.csv"); pts = pts[pts.rater == "Luca"].copy()
     wjson = json.load(open(R2B / "annotations/R2b_annotations_Luca.json"))["windows"]
-    seg_pairs, c3 = seg_tables(wins, rois)
+    seg_pairs, c3, dcon, rmax, uppA = seg_tables(wins, rois)
     c3.to_csv(RES / "R2c_c3.csv", index=False)
 
-    # ---- coppie di punti manuali a contatto in ciascun segmentatore; lati di Delaunay
+    # ---- d_roi, d_geo (indipendenti dai punti manuali)
+    d_roi = {A: float(np.quantile(np.concatenate([dcon[(A, s)] for s in SEGS]), Q)) + PAD for A in ARCH}
+    d_geo = {A: max(2 * float(np.quantile(rmax[(A, s)], Q)) + 2 * uppA[A] for s in SEGS) for A in ARCH}
+    d_hi = {A: max(d_geo[A], d_roi[A]) for A in ARCH}
+
+    # ---- tutte le coppie di punti entro d_hi + le coppie a contatto dei segmentatori fra punti appaiati
     rows = []
     for wr in wins.itertuples():
         g = pts[pts.win_id == wr.win_id].sort_values("idx")
-        xy = g[["x_um", "y_um"]].to_numpy(); idx = g["idx"].to_numpy()
-        E = delaunay_edges(xy)
-        dset = set((int(idx[i]), int(idx[j])) for i, j in E)
+        xy = g[["x_um", "y_um"]].to_numpy(); idx = g["idx"].to_numpy().astype(int)
+        P = {k: v for k, v in zip(idx, xy)}
+        dl = set((int(idx[a]), int(idx[b])) for a, b in delaunay_edges(xy))
+        allp = set((int(idx[a]), int(idx[b])) for a, b in cKDTree(xy).query_pairs(d_hi[wr.archetype], output_type="ndarray"))
+        allp = set(tuple(sorted(p)) for p in allp)
         segs = SEGS + (["spaceranger"] if wr.archetype in SR_ARCH else [])
-        lab = {seg: dict() for seg in segs}
+        lab = {}
         for seg in segs:
             mm = g[g[f"match_{seg}"].astype(str) == "True"]
             lab[seg] = dict(zip(mm["idx"].astype(int), mm[f"label_{seg}"].astype(int)))
-        P = {int(k): v for k, v in zip(idx, xy)}
-        allp = set(dset)
-        for seg in segs:                                          # coppie a contatto fra punti appaiati
             inv = {}
             for k, l in lab[seg].items():
                 inv.setdefault(l, []).append(k)
@@ -137,7 +169,7 @@ def main():
                             allp.add(tuple(sorted((a, b))))
         for a, b in sorted(allp):
             row = dict(win_id=wr.win_id, archetype=wr.archetype, roi_id=wr.roi_id, i=a, j=b,
-                       d_um=float(np.hypot(*(P[a] - P[b]))), delaunay=(a, b) in dset)
+                       d_um=float(np.hypot(*(P[a] - P[b]))), delaunay=(a, b) in dl)
             for seg in ["cellpose_rgb", "stardist_he", "spaceranger"]:
                 if seg not in segs:
                     row[f"both_{seg}"] = np.nan; row[f"contact_{seg}"] = np.nan; continue
@@ -148,31 +180,36 @@ def main():
             rows.append(row)
     pr = pd.DataFrame(rows)
 
-    # ---- d_max per archetipo (regola pre-registrata)
+    # ---- d_prereg (regola pre-registrata) e d_max (D-2)
     dm = []
-    for A, g in pr.groupby("archetype"):
+    for A in ARCH:
+        g = pr[pr.archetype == A]
         cu = g[(g.contact_cellpose_rgb == True) | (g.contact_stardist_he == True)]
-        q = float(np.quantile(cu.d_um, Q_DMAX)) if len(cu) else np.nan
-        dm.append(dict(archetype=A, n_contact_pairs_union=len(cu), q995_um=q, d_max_um=q + DMAX_PAD,
-                       n_cp=int((g.contact_cellpose_rgb == True).sum()), n_sd=int((g.contact_stardist_he == True).sum())))
-    dm = pd.DataFrame(dm); dm["crop_um"] = np.maximum(CROP_K * dm.d_max_um, CROP_MIN_UM)
-    dm.to_csv(RES / "R2c_dmax.csv", index=False)
-    crop = dict(zip(dm.archetype, dm.crop_um))
-    dmax = dict(zip(dm.archetype, dm.d_max_um))
-    pr["candidate"] = pr.delaunay & (pr.d_um <= pr.archetype.map(dmax))
+        dp = float(np.quantile(cu.d_um, Q)) + PAD if len(cu) else np.nan
+        dmax = float(np.nanmax([dp, d_roi[A]]))
+        dm.append(dict(archetype=A, n_contact_pairs_manual=len(cu), d_prereg_um=dp,
+                       n_contact_pairs_roi=int(sum(len(dcon[(A, s)]) for s in SEGS)), d_roi_um=d_roi[A], d_max_um=dmax,
+                       d_geo_cp_um=2 * float(np.quantile(rmax[(A, "cellpose_rgb")], Q)) + 2 * uppA[A],
+                       d_geo_sd_um=2 * float(np.quantile(rmax[(A, "stardist_he")], Q)) + 2 * uppA[A], d_geo_um=d_geo[A],
+                       crop_um=max(CROP_K * dmax, CROP_MIN_UM)))
+    dm = pd.DataFrame(dm); dm.to_csv(RES / "R2c_dmax.csv", index=False)
+    dmax = dict(zip(dm.archetype, dm.d_max_um)); crop = dict(zip(dm.archetype, dm.crop_um))
+    pr["candidate"] = pr.d_um <= pr.archetype.map(dmax)
+    pr["band"] = (pr.d_um > pr.archetype.map(dmax)) & (pr.d_um <= pr.archetype.map(d_geo))
 
-    # ---- C-1 copertura
+    # ---- C-1 copertura (D-1: senza Delaunay)
     cov = []
-    for (A, seg), _ in [((A, s), 0) for A in sorted(dmax) for s in ["cellpose_rgb", "stardist_he", "spaceranger"]]:
-        g = pr[(pr.archetype == A) & (pr[f"contact_{seg}"] == True)]
-        if seg == "spaceranger" and A not in SR_ARCH:
-            continue
-        f = float(g.candidate.mean()) if len(g) else np.nan
-        verdict = "NA" if not len(g) else ("PASS" if f >= 0.99 else "WARN" if f >= 0.97 else "FAIL")
-        cov.append(dict(archetype=A, seg=seg, n_contact_pairs=len(g), n_not_delaunay=int((~g.delaunay).sum()),
-                        n_beyond_dmax=int((g.d_um > dmax[A]).sum()), coverage=f, verdict=verdict,
-                        role="descrittivo" if seg == "spaceranger" else "pre-registrato"))
-    pd.DataFrame(cov).to_csv(RES / "R2c_coverage.csv", index=False)
+    for A in ARCH:
+        for seg in ["cellpose_rgb", "stardist_he", "spaceranger"]:
+            if seg == "spaceranger" and A not in SR_ARCH:
+                continue
+            g = pr[(pr.archetype == A) & (pr[f"contact_{seg}"] == True)]
+            f = float(g.candidate.mean()) if len(g) else np.nan
+            verdict = "NA" if not len(g) else ("PASS" if f >= 0.99 else "WARN" if f >= 0.97 else "FAIL")
+            cov.append(dict(archetype=A, seg=seg, n_contact_pairs=len(g), n_beyond_dmax=int((~g.candidate).sum()),
+                            n_beyond_dgeo=int((g.d_um > d_geo[A]).sum()), coverage=f, verdict=verdict,
+                            role="descrittivo" if seg == "spaceranger" else "pre-registrato"))
+    cov = pd.DataFrame(cov); cov.to_csv(RES / "R2c_coverage.csv", index=False)
 
     # ---- nuclei focali
     foc = []
@@ -182,11 +219,8 @@ def main():
         d = dmax[wr.archetype]
         dist_edge = np.asarray(np.minimum.reduce([g.x_um - x0, x0 + s - g.x_um, g.y_um - y0, y0 + s - g.y_um]), float)
         ex = exclusions_um(wjson, wr)
-        if ex:
-            u = shapely.union_all(ex)
-            dist_ex = shapely.distance(shapely.points(g[["x_um", "y_um"]].to_numpy()), u)
-        else:
-            dist_ex = np.full(len(g), np.inf)
+        dist_ex = (shapely.distance(shapely.points(g[["x_um", "y_um"]].to_numpy()), shapely.union_all(ex))
+                   if ex else np.full(len(g), np.inf))
         elig = (dist_edge >= d) & (dist_ex >= d)
         rng = np.random.default_rng([SEED, k])
         cand_idx = g["idx"].to_numpy()[elig]
@@ -198,59 +232,56 @@ def main():
     F = set(zip(foc.win_id[foc.focal], foc.idx[foc.focal]))
     pr["focal_i"] = [(w, i) in F for w, i in zip(pr.win_id, pr.i)]
     pr["focal_j"] = [(w, j) in F for w, j in zip(pr.win_id, pr.j)]
-    pr["judged"] = pr.candidate & (pr.focal_i | pr.focal_j)
+    anyf = pr.focal_i | pr.focal_j
+    pr["judged"] = pr.candidate & anyf
     pr["pair_id"] = pr.win_id + ":" + pr.i.astype(str) + "-" + pr.j.astype(str)
+    # fascia: 15 per archetipo fra le coppie di fascia con un estremo focale
+    pr["band_sampled"] = False
+    for n, A in enumerate(ARCH):
+        pool = np.nonzero((pr.archetype == A).to_numpy() & pr.band.to_numpy() & anyf.to_numpy())[0]
+        rng = np.random.default_rng([SEED, 777, n])
+        pick = rng.choice(pool, size=min(N_BAND, len(pool)), replace=False) if len(pool) else []
+        pr.loc[pr.index[pick], "band_sampled"] = True
     pr.to_csv(RES / "R2c_pairs.csv", index=False)
 
-    # ---- item: coppie giudicate, trappole, ripetute
+    # ---- item
     rng = np.random.default_rng([SEED, 999])
-    J = pr[pr.judged].copy()
-    base = [dict(pair_id=p, win_id=w, i=i, j=j, d_um=d, kind="pair") for p, w, i, j, d in
+    J = pr[pr.judged]; B = pr[pr.band_sampled]
+    base = [dict(pair_id=p, win_id=w, i=int(i), j=int(j), d_um=float(d), kind="pair") for p, w, i, j, d in
             zip(J.pair_id, J.win_id, J.i, J.j, J.d_um)]
+    base += [dict(pair_id=p, win_id=w, i=int(i), j=int(j), d_um=float(d), kind="band") for p, w, i, j, d in
+             zip(B.pair_id, B.win_id, B.i, B.j, B.d_um)]
     n_catch = int(round(CATCH_FRAC * len(J)))
-    wcount = J.win_id.value_counts()
-    wlist, wprob = wcount.index.to_numpy(), (wcount / wcount.sum()).to_numpy()
-    used = set()
+    wcount = J.win_id.value_counts(); wlist, wprob = wcount.index.to_numpy(), (wcount / wcount.sum()).to_numpy()
+    used, tries = set(), 0
     while len(used) < n_catch:
-        w = rng.choice(wlist, p=wprob)
+        tries += 1; assert tries < 10 ** 6, "trappole: vincoli irrealizzabili"
+        w = rng.choice(wlist, p=wprob); A = w[:2]
         g = pts[pts.win_id == w]
-        a, b = rng.choice(g["idx"].to_numpy(), 2, replace=False)
-        a, b = int(min(a, b)), int(max(a, b))
+        a, b = rng.choice(g["idx"].to_numpy(), 2, replace=False); a, b = int(min(a, b)), int(max(a, b))
         pa = g[g.idx == a][["x_um", "y_um"]].to_numpy()[0]; pb = g[g.idx == b][["x_um", "y_um"]].to_numpy()[0]
         dd = float(np.hypot(*(pa - pb)))
-        if CATCH_DMIN < dd <= crop[w[:2]] - CATCH_FIT_UM and (w, a, b) not in used:
-            used.add((w, a, b))
-            base.append(dict(pair_id=f"{w}:{a}-{b}", win_id=w, i=a, j=b, d_um=dd, kind="catch"))
+        if max(CATCH_DMIN, d_geo[A]) < dd <= crop[A] - CATCH_FIT_UM and (w, a, b) not in used:
+            used.add((w, a, b)); base.append(dict(pair_id=f"{w}:{a}-{b}", win_id=w, i=a, j=b, d_um=dd, kind="catch"))
     rng.shuffle(base)
     rep = rng.choice(len(J), size=int(round(REPEAT_FRAC * len(J))), replace=False)
-    reps = [dict(base_row) for base_row in [dict(pair_id=J.pair_id.iloc[r], win_id=J.win_id.iloc[r], i=int(J.i.iloc[r]),
-            j=int(J.j.iloc[r]), d_um=float(J.d_um.iloc[r]), kind="repeat") for r in rep]]
-    order = list(base)
-    for rr in reps:
-        o = next(n for n, it in enumerate(order) if it["pair_id"] == rr["pair_id"] and it["kind"] == "pair")
-        lo = o + REPEAT_GAP + 1
-        pos = int(rng.integers(lo, len(order) + 1)) if lo <= len(order) else len(order)
-        order.insert(pos, rr)
-    items = pd.DataFrame(order); items.insert(0, "item", np.arange(1, len(items) + 1))
+    reps = [dict(pair_id=J.pair_id.iloc[r], win_id=J.win_id.iloc[r], i=int(J.i.iloc[r]), j=int(J.j.iloc[r]),
+                 d_um=float(J.d_um.iloc[r]), kind="repeat") for r in rep]
+    items = pd.DataFrame(insert_repeats(list(base), reps, rng)); items.insert(0, "item", np.arange(1, len(items) + 1))
     items.to_csv(RES / "R2c_items_Luca.csv", index=False)
     r2w = set(wins.win_id[wins.rater2])
     it2 = items[items.win_id.isin(r2w)].drop(columns="item").sample(frac=1, random_state=SEED + 2).reset_index(drop=True)
-    # ripetute di Federica a >= REPEAT_GAP dall'originale: riposizionate con la stessa regola
     b2 = it2[it2.kind != "repeat"].to_dict("records"); r2 = it2[it2.kind == "repeat"].to_dict("records")
-    rng2 = np.random.default_rng([SEED, 2])
-    for rr in r2:
-        o = next(n for n, it in enumerate(b2) if it["pair_id"] == rr["pair_id"] and it["kind"] == "pair")
-        lo = o + REPEAT_GAP + 1
-        pos = int(rng2.integers(lo, len(b2) + 1)) if lo <= len(b2) else len(b2)
-        b2.insert(pos, rr)
-    it2 = pd.DataFrame(b2); it2.insert(0, "item", np.arange(1, len(it2) + 1))
+    it2 = pd.DataFrame(insert_repeats(b2, r2, np.random.default_rng([SEED, 2]))); it2.insert(0, "item", np.arange(1, len(it2) + 1))
     it2.to_csv(RES / "R2c_items_Federica.csv", index=False)
 
-    print(dm.to_string(index=False))
-    print(pd.DataFrame(cov).to_string(index=False))
-    print("C-3 n_diff tot", int(c3.n_diff.sum()), "labels_equal", bool(c3.labels_equal.all()))
+    pd.set_option("display.width", 200)
+    print(dm.round(3).to_string(index=False))
+    print(cov.round(4).to_string(index=False))
+    print("C-3 n_diff tot", int(c3.n_diff.sum()), "labels_equal", bool(c3.labels_equal.all()), "n", len(c3))
     print(foc.groupby("archetype").agg(n=("idx", "size"), elig=("eligible", "sum"), focal=("focal", "sum")).to_string())
-    print(J.groupby("archetype").size().to_string())
+    print(pr.groupby("archetype")[["judged", "band", "band_sampled"]].sum().to_string())
+    print("band pool (focal)", pr[pr.band & anyf].groupby("archetype").size().to_dict())
     print("items Luca", len(items), items.kind.value_counts().to_dict(), "| Federica", len(it2), it2.kind.value_counts().to_dict())
 
 

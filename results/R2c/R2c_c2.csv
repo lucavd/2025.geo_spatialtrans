@@ -1,0 +1,15 @@
+rater,check,result,value
+Luca,C-2f item->immagine,PASS,1607 item
+Luca,C-2f ripetute = stessa immagine,PASS,132 ripetute
+Luca,C-2a ritagli = ROI,PASS,"1475 immagini, diverse 0"
+Luca,C-2b ritagli = finestra R2b (parte interna),PASS,"1475 confrontate, diverse 0"
+Luca,C-2c marcatori -> punti R2b,PASS,max err 1.14e-13 µm
+Luca,C-2d marcatori nel ritaglio,PASS,1607/1607
+Luca,C-2e cecita' (grep),PASS,"parole trovate {}, finestre 0, catch( JS esclusi 2"
+Federica,C-2f item->immagine,PASS,834 item
+Federica,C-2f ripetute = stessa immagine,PASS,71 ripetute
+Federica,C-2a ritagli = ROI,PASS,"763 immagini, diverse 0"
+Federica,C-2b ritagli = finestra R2b (parte interna),PASS,"763 confrontate, diverse 0"
+Federica,C-2c marcatori -> punti R2b,PASS,max err 1.14e-13 µm
+Federica,C-2d marcatori nel ritaglio,PASS,834/834
+Federica,C-2e cecita' (grep),PASS,"parole trovate {}, finestre 0, catch( JS esclusi 2"

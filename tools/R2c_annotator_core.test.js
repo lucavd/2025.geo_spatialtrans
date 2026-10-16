@@ -1,0 +1,31 @@
+// tools/R2c_annotator_core.test.js — test del nucleo dell'annotatore R2c (C-2). Uso: node tools/R2c_annotator_core.test.js
+var C = require("./R2c_annotator_core.js");
+var n_fail = 0;
+function ck(name, ok, val) { console.log((ok ? "PASS " : "FAIL ") + name + (val === undefined ? "" : " " + JSON.stringify(val))); if (!ok) n_fail++; }
+var st = C.newState(3); C.show(st, 1000);
+C.answer(st, "1", 1600);
+ck("T1 risposta registrata e avanzamento", st.ans[0] === "touch" && st.cur === 1);
+ck("T2 tempo per item", st.t_ms[0] === 600, st.t_ms[0]);
+C.answer(st, "x", 1700);
+ck("T3 tasto non valido ignorato", st.cur === 1 && st.ans[1] === null);
+C.answer(st, "2", 2000); C.answer(st, "3", 2500);
+ck("T4 ultimo item: nessun superamento", st.cur === 2 && st.ans[2] === "unsure");
+ck("T5 progresso", C.progress(st) === 3);
+C.back(st, 3000); C.back(st, 3000);
+ck("T6 indietro", st.cur === 0);
+C.answer(st, "2", 3400);
+ck("T7 correzione sovrascrive risposta e tempo", st.ans[0] === "separate" && st.t_ms[0] === 400);
+var doc = C.exportDoc(st, { tool_version: "v", doc_id: "d", rater: "r", now_iso: "t" });
+ck("T8 esportazione", doc.n_items === 3 && doc.n_done === 3 && doc.answers[2].item === 3 && doc.answers[0].answer === "separate");
+var s2 = C.newState(3); C.restore(s2, { n: 3, ans: ["touch", null, null], t_ms: [1, null, null] });
+ck("T9 ripristino al primo vuoto", s2.cur === 1 && s2.ans[0] === "touch");
+var s3 = C.newState(4); C.restore(s3, { n: 3, ans: ["touch", null, null], t_ms: [1, null, null] });
+ck("T10 ripristino rifiutato se n diverso", s3.ans[0] === null);
+var d = C.toDisplay(0, 0, 100, 400);
+ck("T11 marcatore: centro del pixel 0", d[0] === 2 && d[1] === 2, d);
+var e = C.toDisplay(99, 49.5, 100, 400);
+ck("T12 marcatore: ultimo pixel e mezzo pixel", e[0] === 398 && e[1] === 200, e);
+var s4 = C.newState(2); C.answer(s4, "1", 10);
+ck("T13 tempo nullo se l'item non e' stato mostrato", s4.t_ms[0] === null);
+console.log(n_fail === 0 ? "ALL PASS" : n_fail + " FAIL");
+process.exit(n_fail === 0 ? 0 : 1);
