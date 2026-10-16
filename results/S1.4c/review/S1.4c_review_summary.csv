@@ -1,0 +1,36 @@
+id,revisore,tipo,rilievo,cambia verdetto o decisione
+RC-01,ricalcolo,conferma,"Verdetti di fold (630) e d'archetipo (126) per K-c/K-1/K-2 x B1,B2,B7,B8,S1,S2,S3 riprodotti con codice Python proprio da obs/*.rds e metri ricostruiti (B1/B2 da yard loo S1.4, B7/B8 da prep, S1-S3 da real_shape ∩ ev).",no
+RC-02,ricalcolo,conferma,"Distanze per seme ri-derivate da zero dai grezzi sim_out con un Voronoi proprio (shapely + regola orfani D-S1.3.2 ricodificata), B-8 con cKDTree, KS di scipy.",no
+RC-03,ricalcolo,conferma,"CP-2: declassazione di S1 (4/6), S2 (4/6), S3 (6/6) riprodotta dai parquet cp2; pannello B1,B2,B7,B8. Robusta: in S1 resta >=3/6 anche se A4 (3/5 ROI, il caso al limite) cambiasse.",no
+RC-04,ricalcolo,conferma,"Punteggi K-c 3, K-1 7, K-2 8 (pannello); su 7 metriche 3/10/12. Bootstrap indipendente (numpy, semi 777 e 31415): P(K-1>K-c)=P(K-2>K-c)=1.0; scelta K-2 con la regola pre-registrata.",no
+RC-05,ricalcolo,rilievo,"La scelta K-2 rispetto a K-1 poggia su una sola cella del pannello: A2 x B2 (K-2 PASS 4/5, K-1 WARN 3/5). L'altra differenza (A6 x B7: K-1 WARN, K-2 FAIL) non sposta il punteggio. La regola 4 non chiede margine né bootstrap fra K-1 e K-2.",no
+RC-06,ricalcolo,conferma,B-4 per archetipo e variante (media sui fold della mediana sui semi di trunc_all) riprodotto; K-2 PASS 6/6.,no
+RC-07,ricalcolo,rilievo,B-4 di K-2: A2 a 0.003 dalla soglia (0.0470) e 5 fold singoli oltre 0.05; il PASS 6/6 dipende dall'aggregazione 'media sui fold' delle dev notes.,no
+RC-08,ricalcolo,conferma,"S-1 reale ricalcolato su tutti i 30 ROI dalle maschere native con un metodo diverso (ciclo per etichetta su bounding box + dilatazione binaria 5x5), con l'appaiamento A4/A6 (BL-060) rifatto in shapely; anche n_bnd e n_c2 per nucleo e le coppie a contatto.",no
+RC-09,ricalcolo,conferma,"CP-0 AUC ricalcolata con Delaunay di scipy e coppie di contatto proprie, su tutti i 30 ROI e riunita per archetipo.",no
+RC-10,ricalcolo,rilievo,Lo score di CP-0 nel codice è (r_i+r_j)/d_ij (dichiarato nelle dev notes prima del run); la pre-registrazione scrive r_i+r_j-d_ij. Le due non sono monotone l'una dell'altra. Con lo score pre-registrato la conclusione non cambia.,no
+RC-11,ricalcolo,conferma,"CP-1: guadagno K-2 su K-c 6 in A1-A4 (3 per coppia) e 3 in A5+A6 -> smentita, come riportato.",no
+RC-12,ricalcolo,rilievo,"CP-1 è smentita all'uguaglianza (3 >= 3); sul pannello effettivo (dopo CP-2) sarebbe 1 < 2, cioè non smentita: 2 dei 3 punti di guadagno in A5+A6 vengono da metriche S poi declassate. Con le 7 metriche pre-registrate l'esito 'smentita' è corretto.",no
+RC-13,ricalcolo,conferma,"Raster indipendente (shapely.contains_xy sui centri dei pixel) di 6 file gen_in (A1 r1 e A4 f1, fold 1, s01, K-c/K-1/K-2): n_px identico per ogni nucleo, centroidi, n_bnd, n_c2 e S-1 ev identici, 0 conflitti.",no
+RC-14,ricalcolo,conferma,"C-0: K-c con derive_cell_geometry (random_seed = seed + 100000*s, s=0..10) su 4 fold (A1:1, A2:2, A4:3, A6:5) riproduce V-c di S1.4b con metriche ricalcolate da me.",no
+RC-15,ricalcolo,rilievo,"Sensibilità alla regola dei frammenti di Voronoi: senza riassegnazione degli orfani B1 cambia in 57/900 osservazioni (max 4.5e-3); cambiano 1 verdetto di fold e 1 d'archetipo, ma non i punteggi. Un errore in questa parte dell'operatore avrebbe quindi effetti piccoli.",no
+RC-16,ricalcolo,rilievo,"Fragilità locale: A6xB2 è PASS per tutte le varianti grazie al fold 3 con d/mediana 0.991-0.998 (un eventuale cambio toglierebbe 1 punto a tutte, senza cambiare le differenze); A4xB2 K-2 ha il fold 5 a 1.005 (WARN).",no
+RC-17,ricalcolo,rilievo,"S-2 è quasi ridondante con S-1: la mediana reale di S-2 è 0 in 24/30 ROI, quindi la KS è dominata dalla massa in 0; in CP-2 A6 d_seg di S1 e S2 coincide in 4/5 ROI. Nessun effetto sulla decisione (entrambe declassate), ma nel punteggio a 7 metriche contano quasi due volte.",no
+RC-18,ricalcolo,rilievo,"Con K-1/K-2 il contatto simulato supera di molto quello reale: K-2 vince sulle metriche B, non sulla forma del contatto.",no
+RC-19,ricalcolo,conferma,phi di K-2 (q99 tipo 7 di a_n/a_t sull'insieme ev dei 4 ROI di addestramento) riprodotto per tutti i 30 fold; insieme ev = interior & matched & a_n>0 identico al prep in 30/30 ROI.,no
+RC-20,ricalcolo,conferma,"Correzione D-6 (eleggibilità): con 'C-perf solo WARN' della pre-registrazione, K-2 è eleggibile (tutti gli altri check C di K-2 PASS in checks.csv) e la scelta corretta è K-2. Va comunque notato che la correzione è stata fatta dopo aver visto i risultati e ha cambiato la scelta da K-1 a K-2.",no
+CODE-1,codice,conferma,"Stadio obs ricalcolato in modo indipendente (Voronoi shapely, cerchi cKDTree, KS propria) su 900/900 file.",no
+CODE-2,codice,conferma,Allineamento dei metri e assenza di fuga dal ROI di test.,no
+CODE-3,codice,conferma,"K-1/K-2: vuoti, buchi, tetto, multiparte, K-1 contenuto in K-2 dove il tetto non e' attivo.",no
+CODE-4,codice,conferma,"La fessura di 2e-5 um (rientro 1e-5) non cambia in modo rilevante contatto raster, solidita' o area.",no
+CODE-5,codice,conferma,"Operatore raster: regola del centro del pixel, bordo, contatto con sentinella, coppie di contatto.",no
+CODE-6,codice,rilievo,Solidita' di skimage su oggetti piccoli: distorta e dipendente dalla taglia; a ~200 px non distingue una forma da un disco. Etichette reali sconnesse asimmetriche.,no
+CODE-7,codice,rilievo,"Asimmetrie A4/A6 (simulati sui generatori SR, vicini reali StarDist, B-8 con a_own, B-7 sul generatore SR) quantificate.",no
+CODE-8,codice,discrepanza,CP-0: score (r_i+r_j)/d_ij nel codice contro r_i+r_j-d_ij nella pre-registrazione.,no
+CODE-9,codice,rilievo,"D-6 (C-perf escluso dall'eleggibilita'): coerente con «C-perf solo WARN», ma fatta dopo i risultati e capovolge la scelta.",sì
+CODE-10,codice,rilievo,"K-2 batte K-1 di un solo punto (A2 x B-2, 4/5 contro 3/5 fold PASS); la regola 4 non ha criterio bootstrap fra K-1 e K-2.",no
+CODE-11,codice,rilievo,CP-1 smentita come pre-registrata (7 metriche) ma non sul pannello dopo CP-2; nessuna conseguenza fissata dalla pre-registrazione.,no
+CODE-12,codice,conferma,"CP-2 ricalcolata; declassamento di S-1, S-2, S-3 robusto a due regole alternative.",no
+CODE-13,codice,rilievo,I test di decisione non coprono bootstrap e metro: 3/10 mutanti costruiti non rilevati.,no
+CODE-14,codice,conferma,Mutanti C-mut rilevati per il motivo giusto; MU5 ha effetto grande nel banco.,no
+CODE-15,codice,conferma,Strato di decisione ricalcolato con codice proprio; robustezza descrittiva.,no

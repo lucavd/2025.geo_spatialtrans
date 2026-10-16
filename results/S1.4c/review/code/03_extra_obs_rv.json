@@ -1,0 +1,253 @@
+{
+ "phi_with_test": [
+  {
+   "archetype": "A1",
+   "fold": 1,
+   "phi_train": 0.7570449785271792,
+   "phi_all": 0.7574559866047302
+  },
+  {
+   "archetype": "A1",
+   "fold": 2,
+   "phi_train": 0.7627501744764316,
+   "phi_all": 0.7574559866047302
+  },
+  {
+   "archetype": "A1",
+   "fold": 3,
+   "phi_train": 0.7594554913079953,
+   "phi_all": 0.7574559866047302
+  },
+  {
+   "archetype": "A1",
+   "fold": 4,
+   "phi_train": 0.7535659986230191,
+   "phi_all": 0.7574559866047302
+  },
+  {
+   "archetype": "A1",
+   "fold": 5,
+   "phi_train": 0.7564706969653231,
+   "phi_all": 0.7574559866047302
+  },
+  {
+   "archetype": "A2",
+   "fold": 1,
+   "phi_train": 1,
+   "phi_all": 1
+  },
+  {
+   "archetype": "A2",
+   "fold": 2,
+   "phi_train": 1,
+   "phi_all": 1
+  },
+  {
+   "archetype": "A2",
+   "fold": 3,
+   "phi_train": 1,
+   "phi_all": 1
+  },
+  {
+   "archetype": "A2",
+   "fold": 4,
+   "phi_train": 1,
+   "phi_all": 1
+  },
+  {
+   "archetype": "A2",
+   "fold": 5,
+   "phi_train": 1,
+   "phi_all": 1
+  },
+  {
+   "archetype": "A3",
+   "fold": 1,
+   "phi_train": 0.9589733936828789,
+   "phi_all": 0.9465208737710389
+  },
+  {
+   "archetype": "A3",
+   "fold": 2,
+   "phi_train": 0.9591740628905954,
+   "phi_all": 0.9465208737710389
+  },
+  {
+   "archetype": "A3",
+   "fold": 3,
+   "phi_train": 0.9505532732966165,
+   "phi_all": 0.9465208737710389
+  },
+  {
+   "archetype": "A3",
+   "fold": 4,
+   "phi_train": 0.9514736486161475,
+   "phi_all": 0.9465208737710389
+  },
+  {
+   "archetype": "A3",
+   "fold": 5,
+   "phi_train": 0.9007744728438805,
+   "phi_all": 0.9465208737710389
+  },
+  {
+   "archetype": "A4",
+   "fold": 1,
+   "phi_train": 0.8146245259372902,
+   "phi_all": 0.816152559238597
+  },
+  {
+   "archetype": "A4",
+   "fold": 2,
+   "phi_train": 0.8156229516161393,
+   "phi_all": 0.816152559238597
+  },
+  {
+   "archetype": "A4",
+   "fold": 3,
+   "phi_train": 0.8205852605757451,
+   "phi_all": 0.816152559238597
+  },
+  {
+   "archetype": "A4",
+   "fold": 4,
+   "phi_train": 0.8102811102711238,
+   "phi_all": 0.816152559238597
+  },
+  {
+   "archetype": "A4",
+   "fold": 5,
+   "phi_train": 0.8209856013226009,
+   "phi_all": 0.816152559238597
+  },
+  {
+   "archetype": "A5",
+   "fold": 1,
+   "phi_train": 0.4184783973688842,
+   "phi_all": 0.47440235606993814
+  },
+  {
+   "archetype": "A5",
+   "fold": 2,
+   "phi_train": 0.4923132438058924,
+   "phi_all": 0.47440235606993814
+  },
+  {
+   "archetype": "A5",
+   "fold": 3,
+   "phi_train": 0.48429004741288467,
+   "phi_all": 0.47440235606993814
+  },
+  {
+   "archetype": "A5",
+   "fold": 4,
+   "phi_train": 0.47678578853818715,
+   "phi_all": 0.47440235606993814
+  },
+  {
+   "archetype": "A5",
+   "fold": 5,
+   "phi_train": 0.490537302827771,
+   "phi_all": 0.47440235606993814
+  },
+  {
+   "archetype": "A6",
+   "fold": 1,
+   "phi_train": 0.18027111824616082,
+   "phi_all": 0.17967567290175027
+  },
+  {
+   "archetype": "A6",
+   "fold": 2,
+   "phi_train": 0.1865512123365955,
+   "phi_all": 0.17967567290175027
+  },
+  {
+   "archetype": "A6",
+   "fold": 3,
+   "phi_train": 0.1897847994024714,
+   "phi_all": 0.17967567290175027
+  },
+  {
+   "archetype": "A6",
+   "fold": 4,
+   "phi_train": 0.137501486160935,
+   "phi_all": 0.17967567290175027
+  },
+  {
+   "archetype": "A6",
+   "fold": 5,
+   "phi_train": 0.18152553392961984,
+   "phi_all": 0.17967567290175027
+  }
+ ],
+ "cp2_demoted": {
+  "as_implemented": [
+   "S1",
+   "S2",
+   "S3"
+  ],
+  "bench_yard": [
+   "S1",
+   "S2",
+   "S3"
+  ],
+  "median_rule": [
+   "S1",
+   "S2",
+   "S3"
+  ]
+ },
+ "score_full7": {
+  "K-c": 3,
+  "K-1": 10,
+  "K-2": 12
+ },
+ "cp1": {
+  "g14": 6,
+  "g56": 3,
+  "refuted": true,
+  "g14_panel": 4,
+  "g56_panel": 1,
+  "refuted_panel": false,
+  "alt_per_archetype": {
+   "gain_per_arch_A1A4": 1.5,
+   "gain_per_arch_A5A6": 1.5
+  }
+ },
+ "boot": {
+  "p_K2_gt_K1": 0.9275,
+  "p_K2_eq_K1": 0.0725,
+  "p_K1_gt_K2": 0.0,
+  "score_quantiles": {
+   "K-c": [
+    2.0,
+    3.0,
+    3.0
+   ],
+   "K-1": [
+    6.0,
+    7.0,
+    8.0
+   ],
+   "K-2": [
+    7.0,
+    8.0,
+    10.0
+   ]
+  },
+  "p_K2_margin3": 1.0,
+  "p_K1_margin3": 0.9995,
+  "winner_freq": {
+   "K-2": 0.9275,
+   "K-1": 0.0725
+  }
+ },
+ "decision_if_Cperf_blocks": "K-1",
+ "boot_unpaired": {
+  "B": 500,
+  "p_K1_gt_Kc": 1.0,
+  "p_K2_gt_Kc": 1.0,
+  "p_K2_gt_K1": 0.854
+ }
+}

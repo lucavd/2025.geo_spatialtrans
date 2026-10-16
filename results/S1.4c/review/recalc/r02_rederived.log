@@ -1,0 +1,16 @@
+REFS max |mio - riportato|: {"s1": 4.440892098500626e-16, "s2_median": 1.6653345369377348e-16, "s3_median": 4.440892098500626e-16, "b7": 0.0, "b8": 0.0, "n_ev": 0.0}
+FOLD verdetti: 630 righe, discordanti 0; max|d_med| 7.77e-16; max|metro| 9.99e-16
+ARCHETIPO verdetti: 126 righe, discordanti 0
+CP-2 S1: archetipi che superano 4/6 -> DECLASSATA
+CP-2 S2: archetipi che superano 4/6 -> DECLASSATA
+CP-2 S3: archetipi che superano 6/6 -> DECLASSATA
+CP-2 n_roi_above discordanti: 0 | exceeds discordanti: 0 | d_seg stringhe diverse: 0 | yard_max stringhe diverse: 0
+PANNELLO: ['B1', 'B2', 'B7', 'B8'] declassate: ['S1', 'S2', 'S3']
+PUNTEGGI pannello: {'K-c': 3, 'K-1': 7, 'K-2': 8} | su 7 metriche: {'K-c': 3, 'K-1': 10, 'K-2': 12}
+BOOT (seme 777) P(V > K-c): {'K-1': 1.0, 'K-2': 1.0} | (seme 31415): {'K-1': 1.0, 'K-2': 1.0} | P(K-2 > K-1): 0.925 P(K-2 >= K-1): 1.0
+BOOT media punteggi: {'K-c': 2.62, 'K-1': 6.94, 'K-2': 8.32} | quantili 5-95%: {'K-c': (2.0, 3.0), 'K-1': (6.0, 8.0), 'K-2': (7.0, 10.0)}
+BOOT riportato media: {'K-1': 6.9, 'K-2': 8.36, 'K-c': 2.6} P(K-1>K-c) 1.0 P(K-2>K-c) 1.0 P(K-2>K-1) 0.935
+DECISIONE (eleggibilita' assunta dai check C): K-2 vincenti: ['K-1', 'K-2']
+CP-1: guadagno A1-A4 6 (per coppia 3.0), A5+A6 3 -> smentita True | pannello: 4, 1
+B-4: max|mio - riportato| 6.11e-16; verdetti discordanti 0; K-2 PASS 6/6
+B-4 K-2: {'A1': 0.0268, 'A2': 0.047, 'A3': 0.0343, 'A4': 0.0227, 'A5': 0.0408, 'A6': 0.0148} | K-c: {'A1': 0.1636, 'A2': 0.3267, 'A3': 0.1786, 'A4': 0.4782, 'A5': 0.0679, 'A6': 0.003}

@@ -1,0 +1,16 @@
+VALIDA operatore sui generatori reali: max rel a_t 10.638932734220994 max |d| 6.039613253960852e-14 esclusi 0
+b7_real max|mio-prep| 4.996003610813204e-16 b8_real max|mio-prep| 4.440892098500626e-16
+finestra: max|area poly - area_um2| 7.683411240577698e-09
+righe 900 unite 900
+n_eval: max|mio - obs| 0.000e+00  n>1e-9 0
+n_excluded: max|mio - obs| 0.000e+00  n>1e-9 0
+b7: max|mio - obs| 4.996e-16  n>1e-9 0
+b8: max|mio - obs| 4.996e-16  n>1e-9 0
+s1: max|mio - obs| 4.996e-16  n>1e-9 0
+B1: max|mio - obs| 4.525e-03  n>1e-9 57
+B2: max|mio - obs| 5.551e-16  n>1e-9 0
+B7: max|mio - obs| 9.437e-16  n>1e-9 0
+B8: max|mio - obs| 8.049e-16  n>1e-9 0
+S1: max|mio - obs| 4.996e-16  n>1e-9 0
+S2: max|mio - obs| 5.829e-16  n>1e-9 0
+S3: max|mio - obs| 6.661e-16  n>1e-9 0

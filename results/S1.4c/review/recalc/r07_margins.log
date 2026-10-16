@@ -1,0 +1,45 @@
+Celle del pannello (archetipo x metrica):
+variant            K-1   K-2   K-c
+archetype metric                  
+A1        B1      FAIL  FAIL  FAIL
+          B2      WARN  WARN  FAIL
+          B7      FAIL  FAIL  FAIL
+          B8      FAIL  FAIL  FAIL
+A2        B1      WARN  WARN  FAIL
+          B2      WARN  PASS  FAIL
+          B7      WARN  WARN  FAIL
+          B8      WARN  WARN  FAIL
+A3        B1      PASS  PASS  PASS
+          B2      WARN  WARN  WARN
+          B7      PASS  PASS  FAIL
+          B8      PASS  PASS  FAIL
+A4        B1      PASS  PASS  FAIL
+          B2      WARN  WARN  FAIL
+          B7      WARN  WARN  FAIL
+          B8      FAIL  FAIL  FAIL
+A5        B1      WARN  WARN  WARN
+          B2      PASS  PASS  PASS
+          B7      WARN  WARN  FAIL
+          B8      PASS  PASS  FAIL
+A6        B1      WARN  WARN  FAIL
+          B2      PASS  PASS  PASS
+          B7      WARN  FAIL  FAIL
+          B8      FAIL  FAIL  FAIL
+
+K-2 != K-1:
+variant            K-1   K-2   K-c
+archetype metric                  
+A2        B2      WARN  PASS  FAIL
+A6        B7      WARN  FAIL  FAIL
+
+Verdetti d'archetipo a un fold dal cambio (|d/mediana - 1| <= 0.1):
+  archetype variant metric  n_pass fold        ratio
+0        A1     K-2     B2       3    4        1.069
+1        A4     K-2     B2       3  1,5  1.045,1.005
+2        A5     K-2     B7       3    5        1.050
+3        A6     K-1     B2       4    3        0.995
+4        A6     K-2     B2       4    3        0.991
+5        A6     K-c     B2       4    3        0.998
+
+PASS per variante (pannello): {'K-1': 7, 'K-2': 8, 'K-c': 3}
+PASS per variante (7 metriche): {'K-1': 10, 'K-2': 12, 'K-c': 3}

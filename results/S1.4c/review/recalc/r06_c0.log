@@ -1,0 +1,10 @@
+A1 1 fatto
+A4 3 fatto
+A6 5 fatto
+A2 2 fatto
+C-0 righe 44 | max |mio - S1.4b V-c| 1.11e-16 | identici bit a bit 3 
+  archetype fold max_abs_diff
+1        A1    1 1.040834e-16
+2        A2    2 8.326673e-17
+3        A4    3 1.110223e-16
+4        A6    5 1.110223e-16

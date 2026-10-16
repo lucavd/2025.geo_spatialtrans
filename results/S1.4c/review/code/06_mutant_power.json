@@ -1,0 +1,450 @@
+{
+ "mutant_failures": {
+  "MU1": [
+   "FAIL U3 tetto: area = phi * A_T (territorio rientrato) dove capped capped=FALSE area=99.999600",
+   "FAIL U3 C-area: area = a_star dove il tetto non e' attivo 99.9996",
+   "FAIL U4c phi = 1, target = A_T: raggiunge il territorio rientrato senza errore a_star=100.000000 area=99.999600",
+   "RESULT 14/17 PASS (mutante MU1)"
+  ],
+  "MU2": [
+   "FAIL U4 C3: nuclei nei propri territori ",
+   "FAIL U4b C3 (K1, disco piu' grande del territorio) ",
+   "RESULT 15/17 PASS (mutante MU2)"
+  ],
+  "MU5": [
+   "FAIL U5 territori dei centroidi: d centrale = 5, area 100 d=3.6378 a=109.5663",
+   "RESULT 16/17 PASS (mutante MU5)"
+  ],
+  "MU3": [
+   "FAIL T1 centroide disco <= 0.25 px 0.5582",
+   "RESULT 23/24 PASS (mutante MU3)"
+  ],
+  "MU4": [
+   "FAIL T2 frazione di perimetro a contatto in [0.38, 0.50] [0.0, 0.0]",
+   "FAIL T3 g=0 delta=2 0",
+   "FAIL T3 g=0 delta=1 0",
+   "FAIL T3 g=1 delta=2 0",
+   "FAIL T5 img0 delta=1 arbitro a cicli (n_bnd, n_c) 202",
+   "FAIL T5 img0 delta=2 arbitro a cicli (n_bnd, n_c) 265",
+   "FAIL T5 img1 delta=1 arbitro a cicli (n_bnd, n_c) 253",
+   "FAIL T5 img1 delta=2 arbitro a cicli (n_bnd, n_c) 321",
+   "FAIL T5 img2 delta=1 arbitro a cicli (n_bnd, n_c) 210",
+   "FAIL T5 img2 delta=2 arbitro a cicli (n_bnd, n_c) 275",
+   "RESULT 14/24 PASS (mutante MU4)"
+  ]
+ },
+ "MU5_bench": [
+  {
+   "archetype": "A1",
+   "b7_none": 0.0040880917842542,
+   "b7_MU5": 0.310167479889226,
+   "B7_none": 0.345509692733747,
+   "B7_MU5": 0.0394303046287749
+  },
+  {
+   "archetype": "A2",
+   "b7_none": 0.0192474423443732,
+   "b7_MU5": 0.418588520894746,
+   "B7_none": 0.475984047164904,
+   "B7_MU5": 0.076642968614531
+  },
+  {
+   "archetype": "A3",
+   "b7_none": 0.0053859964093357,
+   "b7_MU5": 0.222108232880226,
+   "B7_none": 0.305975891254168,
+   "B7_MU5": 0.0892536547832778
+  },
+  {
+   "archetype": "A4",
+   "b7_none": 0.0055940654262434,
+   "b7_MU5": 0.295147756293324,
+   "B7_none": 0.391645384896023,
+   "B7_MU5": 0.102091694028943
+  },
+  {
+   "archetype": "A5",
+   "b7_none": 0.0330739299610895,
+   "b7_MU5": 0.359922178988327,
+   "B7_none": 0.147859922178988,
+   "B7_MU5": 0.178988326848249
+  },
+  {
+   "archetype": "A6",
+   "b7_none": 0.0,
+   "b7_MU5": 0.0411764705882353,
+   "B7_none": 0.0647058823529412,
+   "B7_MU5": 0.0235294117647059
+  }
+ ],
+ "MU12_bench": [
+  {
+   "mutant": "MU1",
+   "archetype": "A1",
+   "variant": "K-1",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": NaN,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU1",
+   "archetype": "A1",
+   "variant": "K-2",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": 0.653318341621082,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU1",
+   "archetype": "A2",
+   "variant": "K-1",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": NaN,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU1",
+   "archetype": "A2",
+   "variant": "K-2",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": 0.848337333168379,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU1",
+   "archetype": "A3",
+   "variant": "K-1",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": NaN,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU1",
+   "archetype": "A3",
+   "variant": "K-2",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": 0.623481906864907,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU1",
+   "archetype": "A4",
+   "variant": "K-1",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": NaN,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU1",
+   "archetype": "A4",
+   "variant": "K-2",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": 0.214835002376778,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU1",
+   "archetype": "A5",
+   "variant": "K-1",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": NaN,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU1",
+   "archetype": "A5",
+   "variant": "K-2",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": 0.646759861452541,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU1",
+   "archetype": "A6",
+   "variant": "K-1",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": NaN,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU1",
+   "archetype": "A6",
+   "variant": "K-2",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": 0.0594218432318122,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU2",
+   "archetype": "A1",
+   "variant": "K-1",
+   "c3_viol": 86.0,
+   "c3_sf_viol": 86.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": NaN,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU2",
+   "archetype": "A1",
+   "variant": "K-2",
+   "c3_viol": 8739.0,
+   "c3_sf_viol": 8739.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": 9.56286370500649e-07,
+   "n_capped": 556.0
+  },
+  {
+   "mutant": "MU2",
+   "archetype": "A2",
+   "variant": "K-1",
+   "c3_viol": 59.0,
+   "c3_sf_viol": 59.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": NaN,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU2",
+   "archetype": "A2",
+   "variant": "K-2",
+   "c3_viol": 6546.0,
+   "c3_sf_viol": 6546.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": 3.41820706528202e-07,
+   "n_capped": 810.0
+  },
+  {
+   "mutant": "MU2",
+   "archetype": "A3",
+   "variant": "K-1",
+   "c3_viol": 22.0,
+   "c3_sf_viol": 22.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": NaN,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU2",
+   "archetype": "A3",
+   "variant": "K-2",
+   "c3_viol": 4165.0,
+   "c3_sf_viol": 4165.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": 3.76821646081401e-07,
+   "n_capped": 87.0
+  },
+  {
+   "mutant": "MU2",
+   "archetype": "A4",
+   "variant": "K-1",
+   "c3_viol": 4.0,
+   "c3_sf_viol": 4.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": NaN,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU2",
+   "archetype": "A4",
+   "variant": "K-2",
+   "c3_viol": 23707.0,
+   "c3_sf_viol": 23707.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": 2.46118210294968e-07,
+   "n_capped": 1910.0
+  },
+  {
+   "mutant": "MU2",
+   "archetype": "A5",
+   "variant": "K-1",
+   "c3_viol": 19.0,
+   "c3_sf_viol": 19.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": NaN,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU2",
+   "archetype": "A5",
+   "variant": "K-2",
+   "c3_viol": 1267.0,
+   "c3_sf_viol": 1267.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": 2.82193175359229e-07,
+   "n_capped": 262.0
+  },
+  {
+   "mutant": "MU2",
+   "archetype": "A6",
+   "variant": "K-1",
+   "c3_viol": 0.0,
+   "c3_sf_viol": 0.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": NaN,
+   "n_capped": 0.0
+  },
+  {
+   "mutant": "MU2",
+   "archetype": "A6",
+   "variant": "K-2",
+   "c3_viol": 674.0,
+   "c3_sf_viol": 674.0,
+   "cno_pairs": 0.0,
+   "c_area_rel_max": 4.43159521389844e-07,
+   "n_capped": 10.0
+  }
+ ],
+ "decision_mutants": [
+  {
+   "mutant": "DM1 bootstrap senza reinserimento",
+   "detected": false,
+   "failing": [],
+   "result": [
+    "RESULT 15/15 PASS"
+   ]
+  },
+  {
+   "mutant": "DM2 bootstrap non appaiato (estrazione per variante)",
+   "detected": false,
+   "failing": [],
+   "result": [
+    "RESULT 15/15 PASS"
+   ]
+  },
+  {
+   "mutant": "DM3 verdetto di fold sulla media del metro",
+   "detected": false,
+   "failing": [],
+   "result": [
+    "RESULT 15/15 PASS"
+   ]
+  },
+  {
+   "mutant": "DM4 verdetto di fold: PASS se d < mediana (stretto)",
+   "detected": true,
+   "failing": [
+    "FAIL D1b fold_verdict al confine (= mediana -> PASS, = max -> WARN)"
+   ],
+   "result": [
+    "RESULT 14/15 PASS"
+   ]
+  },
+  {
+   "mutant": "DM5 distanza di fold = media dei semi",
+   "detected": true,
+   "failing": [
+    "FAIL D5 mediana dei semi robusta a un seme anomalo"
+   ],
+   "result": [
+    "RESULT 14/15 PASS"
+   ]
+  },
+  {
+   "mutant": "DM6 archetipo PASS con >= 3 fold PASS",
+   "detected": true,
+   "failing": [
+    "FAIL D2 arch_verdict"
+   ],
+   "result": [
+    "RESULT 14/15 PASS"
+   ]
+  },
+  {
+   "mutant": "DM7 margine stretto (>)",
+   "detected": true,
+   "failing": [
+    "FAIL D7 decide: K-2 ha piu' punti ma p < 0.9 -> K-1"
+   ],
+   "result": [
+    "RESULT 14/15 PASS"
+   ]
+  },
+  {
+   "mutant": "DM8 CP-2 contro la mediana del metro",
+   "detected": true,
+   "failing": [
+    "FAIL D13 cp2_exceeds: 3/5 sopra il max -> TRUE; 2/5 -> FALSE"
+   ],
+   "result": [
+    "RESULT 14/15 PASS"
+   ]
+  },
+  {
+   "mutant": "DM9 CP-2 basta 2/5 ROI",
+   "detected": true,
+   "failing": [
+    "FAIL D13 cp2_exceeds: 3/5 sopra il max -> TRUE; 2/5 -> FALSE"
+   ],
+   "result": [
+    "RESULT 14/15 PASS"
+   ]
+  },
+  {
+   "mutant": "DM10 parita' -> la piu' complessa",
+   "detected": true,
+   "failing": [
+    "FAIL D9 decide: parita' -> la piu' semplice (K-1)"
+   ],
+   "result": [
+    "RESULT 14/15 PASS"
+   ]
+  }
+ ],
+ "undetected_effect_scores": {
+  "base": {
+   "K-c": 3,
+   "K-1": 7,
+   "K-2": 8
+  },
+  "mean_seeds": {
+   "K-c": 3,
+   "K-1": 7,
+   "K-2": 8
+  },
+  "strict": {
+   "K-c": 3,
+   "K-1": 7,
+   "K-2": 8
+  },
+  "arch3": {
+   "K-c": 3,
+   "K-1": 13,
+   "K-2": 15
+  }
+ },
+ "reported_bootstrap": {
+  "B": 200,
+  "p_K1_gt_Kc": 1.0,
+  "p_K2_gt_Kc": 1.0,
+  "p_K2_gt_K1": 0.935,
+  "p_tie": 0.065,
+  "p_K1_gt_K2": 0.0,
+  "p_K2_ge_Kc3": 1.0,
+  "p_K1_ge_Kc3": 1.0
+ }
+}

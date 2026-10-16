@@ -1,0 +1,12 @@
+file ricalcolati 900, appaiati con obs_raw 900
+n_eval: max |diff| = 0.000e+00; n(diff > 1e-9) = 0
+n_excluded: max |diff| = 0.000e+00; n(diff > 1e-9) = 0
+b7: max |diff| = 4.996e-16; n(diff > 1e-9) = 0
+b8: max |diff| = 4.996e-16; n(diff > 1e-9) = 0
+B1: max |diff| = 4.525e-03; n(diff > 1e-9) = 57
+B2: max |diff| = 4.996e-16; n(diff > 1e-9) = 0
+B7: max |diff| = 9.437e-16; n(diff > 1e-9) = 0
+B8: max |diff| = 8.049e-16; n(diff > 1e-9) = 0
+S1: max |diff| = 4.996e-16; n(diff > 1e-9) = 0
+S2: max |diff| = 4.996e-16; n(diff > 1e-9) = 0
+S3: max |diff| = 4.996e-16; n(diff > 1e-9) = 0

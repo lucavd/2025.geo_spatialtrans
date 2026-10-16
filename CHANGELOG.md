@@ -2,6 +2,33 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.4c — 2026-10-15/16 — BL-098 riformulata: forma del nucleo, scala contro ritaglio (branch `step1-cell-layer`) — **chiusa con riserve**
+
+### Decisioni (ROADMAP §6)
+- Perimetro (Luca): banco + decisione; implementazione in `04b4` in S1.4d. Varianti: K-c, K-1, K-2 nel Voronoi.
+- **BL-098 → K-2** (ritaglio nel territorio rientrato di 1e-5 µm + gonfiaggio a pari area, tetto φ = min(1, q99 N/C)), per regola
+  pre-registrata; Luca: «Nessun veto: K-2 per S1.4d, fragilità tra le riserve».
+
+### Codice (prototipo, non pacchetto)
+- `tools/S1.4c_shape.R` (K-1, K-2, `obs_territories()`, B-8), `tools/S1.4c_raster.py` (operatore raster unico: contatto ≤ 2 px,
+  solidità, `frac_out`; modi test/sim/real/cp2), `tools/S1.4c_bench.R` (prep, gen, obs, mut, perf), `tools/S1.4c_decision.R`
+  (verdetti, bootstrap appaiato, regola, AUC, CP-2), `tools/S1.4c_analysis.R`, `tools/S1.4c_figures.R`, `tools/S1.4c_fig_maps.py`,
+  `tools/S1.4c_bio.R`, `tools/run_S1.4c.sh`, test `R/testing/test_S1.4c.R` (17), `R/testing/test_S1.4c_decision.R` (15), test Python (24); `reports/S1.4c.qmd`.
+- Difetti di sviluppo D-1…D-5 (ritaglio sulla griglia, buffer negativo con precisione, sentinella, tolleranza, MU2); difetti
+  dell'analisi dopo il run D-6 (eleggibilità: C-perf incluso per errore → scelta K-1 invece di K-2), D-7 (overflow dell'AUC), dichiarati.
+
+### Risultati (`results/S1.4c/`; grezzi in `/mnt/micron/geo_spatialtrans/S1.4c/`)
+- Check C: C-0 330/330, C3 0, C-NO 0, vuoti 0, C-area 5.8e-7, C-OP (maschere = R3 a scarto 0; territori osservati = S1.4 a 1e-9),
+  test tutti PASS, mutanti 5/5; **C-perf WARN** (622.7 s, 5.6 GB).
+- Check B (pannello {B-1, B-2, B-7, B-8}): PASS K-c 3, K-1 7, K-2 8; K-c non produce contatti (B-7 ≈ 0.005, B-8 = 0 ovunque);
+  B-4 K-2 1.5–4.7 % (PASS 6/6), K-1 8.5–50 %, K-c 16–48 % in A1–A4.
+- CP-0: AUC 0.95–0.97 in A1–A4 (premessa non smentita); CP-1 smentita al limite (3 ≥ 3); CP-2: S-1/S-2/S-3 dipendono dal segmentatore → descrittive.
+- Previsioni P1, P2, P4, P6 confermate; P3, P5 smentite. BIO_REFERENCES B-121…B-126.
+
+### Revisione avversariale
+- 2 revisori («ricalcolo», «codice»): 0 discrepanze numeriche che cambino verdetti, 0 bug nella pipeline; decisione dipendente da D-6
+  e con 1 punto su K-1; asimmetrie A4/A6 quantificate. BACKLOG BL-118…BL-127; BL-098 decisa, BL-111 superata, BL-112 risolta nel banco.
+
 ## S1.4b — 2026-10-15 — BL-098: relazione nucleo–territorio, banco delle opzioni (branch `step1-cell-layer`) — **chiusa con riserve**
 
 ### Decisioni (ROADMAP §6)

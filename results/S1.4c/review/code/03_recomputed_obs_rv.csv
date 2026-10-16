@@ -1,0 +1,22 @@
+quantity,reported,recomputed,match
+"insieme ev (interior & matched & a_n>0) = prep$ev, 30 ROI",30/30,30/30,True
+b7_real (S1.4b prep) max |diff| su 30 ROI,prep,5.0e-16,True
+b8_real (S1.4b prep) max |diff| su 30 ROI,prep,4.4e-16,True
+"riferimenti reali S-1, mediane S-2, S-3 (real_refs.csv), 30 ROI",real_refs.csv,max |diff| 4.4e-16,True
+fold k -> ROI di test = k-esimo ROI (R2_rois_checked) e yard$j = altri ROI nello stesso ordine (30 fold),stopifnot in analysis,60/60,True
+"metro B-1/B-2 (yard$ks_nc, ks_an di S1.4) ricalcolato dai reali",S1.4 loo,max |diff| 5.0e-16,True
+"phi = min(1, q99 tipo 7 di a_n/a_t su ev dei 4 ROI di addestramento), 30 fold",S1.4c_phi.csv,max |diff| 4.9e-15,True
+a_ref di M2 = sum a_t / n sui soli ROI di addestramento (S1.4 loo),fits$M2['a_ref'],max rel diff 2.5e-15,True
+n del fit M2 = celle ev dei soli ROI di addestramento,fits$M2['n'],30/30,True
+verdetti d'archetipo (6 x 3 varianti x 7 metriche),S1.4c_verdicts.csv,126/126 uguali,True
+"CP-2: ROI sopra il massimo del metro, 18 celle metrica x archetipo; metriche declassate","S1.4c_cp2.csv; S1,S2,S3","uguali; S1,S2,S3",True
+"punteggi sul pannello {B1,B2,B7,B8}","K-c 3, K-1 7, K-2 8","K-c 3, K-1 7, K-2 8",True
+CP-1 guadagno K-2 vs K-c (7 metriche): A1-A4 | A5+A6 | smentita (g56 >= g14/2),6 | 3 | TRUE,6 | 3 | True,True
+"P(bootstrap) punteggio > K-c (RNG proprio, B = 2000)","K-1 1.0, K-2 1.0","K-1 1.0000, K-2 1.0000",True
+"scelta della regola (eleggibili tutte, margine 3, p 0.9)",K-2,K-2,True
+"CP-0 AUC (score (r_i + r_j)/d come nel codice), 6 archetipi; n coppie",0.947-0.997,max |diff| 4.4e-16; n coppie uguali,True
+CP-0 AUC con lo score pre-registrato r_i + r_j - d_ij (A1-A4),ratio 0.947-0.974,A1 0.959; A2 0.942; A3 0.965; A4 0.975,True
+"B-4 (media sui fold della mediana sui semi), K-2 PASS",6/6,"6/6, max |diff| 6.1e-16",True
+C-0 identico (fold x semi 0..10),330/330,330/330,True
+"C3 | C-NO | vuoti (K-1, K-2, 300 configurazioni ciascuna)",0 | 0 | 0,0 | 0 | 0,True
+C-area max,5.84e-07,5.84e-07,True
