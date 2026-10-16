@@ -61,3 +61,32 @@ rischio «indeciso». S-2/S-3 restano declassate (non misurate da un giudizio s�
 ## Perimetro
 Solo `tools/R2c_*`, `results/R2c/`, `R/testing/test_R2c.sh`; pacchetto invariato. Ogni ridefinizione rispetto a questo testo
 va dichiarata come deviazione (BL-124).
+
+
+## Addendum 2026-10-16 — deviazioni dichiarate prima di qualsiasi annotazione (approvate da Luca in chat: «ok»)
+
+Primo run di `tools/R2c_candidates.py` con la regola pre-registrata (output conservati in `results/R2c/prereg_rule/`):
+- C-3 PASS: 0 differenze fra le etichette a contatto di R2c e lo stadio cp2 di S1.4c su 40/40 ROI × segmentatore.
+- C-1 (copertura dei candidati di Delaunay): A1 cellpose 0.970 **FAIL** (3/99 coppie non di Delaunay); A2 StarDist 0.967 **FAIL**
+  (1/30); A2 cellpose 0.972 WARN; A3 cellpose 0.971 WARN; A1 StarDist, A3 StarDist, A4, A5, A6 PASS.
+- C-5 (eleggibilità): in A6 d_max = 5.09 µm stimato da **una sola** coppia a contatto → 0 coppie giudicabili, S-1 manuale = 0 per
+  costruzione; A5 da 14 coppie.
+
+Deviazioni (le soglie di tutti i check restano quelle pre-registrate):
+- **D-1** candidati = tutte le coppie di punti di Luca della finestra con d ≤ d_max (tolta la restrizione ai lati di Delaunay).
+- **D-2** d_max(A) = max(regola pre-registrata, q99.5 delle distanze fra centroidi delle coppie a contatto (δ = 2 px) di
+  cellpose_rgb ∪ stardist_he su tutti i ROI dell'archetipo che contengono finestre + 1 µm). La stima su più coppie può solo
+  allargare d_max.
+- **D-3** verifica della fascia (proposta di Luca: le coppie lontane si classificano «separate» per regola). d_geo(A) =
+  max sui due segmentatori di [2 · q99.5(r_max) + 2 · upp], r_max = distanza massima dal centroide del nucleo ai suoi pixel
+  (+ 0.5 px), sugli stessi ROI. Coppie con d_max < d ≤ d_geo e almeno un estremo focale: campione di 15 per archetipo (tutte se
+  meno), seme fisso, mischiate alla cieca. Le coppie oltre d_max non campionate sono «separate» per regola.
+  Regola (risposte di Luca, «non giudicabile» escluse, totale della fascia): limite superiore IC 95 % Clopper–Pearson della
+  frazione «si toccano» ≤ 5 % → PASS; esattamente 1 contatto e limite > 5 % → WARN, S-1 manuale dell'archetipo riportata anche
+  con le coppie di fascia giudicate; ≥ 2 contatti → FAIL, la classificazione per regola è smentita, limite dichiarato e BACKLOG.
+- **D-4** trappole: max(20 µm, d_geo) < d ≤ lato del ritaglio − 6 µm (in A6 i candidati arrivano a 27 µm: una trappola a
+  20–27 µm non sarebbe certamente separata).
+- Dettaglio d'implementazione (non pre-registrato): lato del ritaglio = max(2.5 · d_max, 30 µm), fisso per archetipo, per tutti
+  gli item (coppie, fascia, ripetute, trappole), così l'ingrandimento non rivela il tipo di item.
+
+Carico atteso: ~1 309 coppie + ≤ 90 di fascia + 10 % ripetute + 5 % trappole.

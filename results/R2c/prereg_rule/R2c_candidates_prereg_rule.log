@@ -1,0 +1,38 @@
+archetype  n_contact_pairs_union   q995_um  d_max_um  n_cp  n_sd   crop_um
+       A1                    105  9.256334 10.256334    99    16 30.000000
+       A2                    145 14.912446 15.912446   141    30 39.781115
+       A3                     34 17.656358 18.656358    34     3 46.640894
+       A4                     93  7.776723  8.776723    64    64 30.000000
+       A5                     14 14.264082 15.264082    12     5 38.160205
+       A6                      1  4.090607  5.090607     0     1 30.000000
+archetype          seg  n_contact_pairs  n_not_delaunay  n_beyond_dmax  coverage verdict           role
+       A1 cellpose_rgb               99               3              0  0.969697    FAIL pre-registrato
+       A1  stardist_he               16               0              0  1.000000    PASS pre-registrato
+       A2 cellpose_rgb              141               4              1  0.971631    WARN pre-registrato
+       A2  stardist_he               30               1              0  0.966667    FAIL pre-registrato
+       A3 cellpose_rgb               34               1              0  0.970588    WARN pre-registrato
+       A3  stardist_he                3               0              0  1.000000    PASS pre-registrato
+       A4 cellpose_rgb               64               0              0  1.000000    PASS pre-registrato
+       A4  stardist_he               64               0              0  1.000000    PASS pre-registrato
+       A4  spaceranger              523              20              5  0.954111    FAIL    descrittivo
+       A5 cellpose_rgb               12               0              0  1.000000    PASS pre-registrato
+       A5  stardist_he                5               0              0  1.000000    PASS pre-registrato
+       A6 cellpose_rgb                0               0              0       NaN      NA pre-registrato
+       A6  stardist_he                1               0              0  1.000000    PASS pre-registrato
+       A6  spaceranger                2               0              1  0.500000    FAIL    descrittivo
+C-3 n_diff tot 0 labels_equal True
+             n  elig  focal
+archetype                  
+A1         496   304     60
+A2         513   301     60
+A3         279   152     60
+A4         404   199     60
+A5         296   235     60
+A6         242   222     60
+archetype
+A1    202
+A2    261
+A3    151
+A4    267
+A5     33
+items Luca 1051 {'pair': 914, 'repeat': 91, 'catch': 46} | Federica 540 {'pair': 470, 'repeat': 46, 'catch': 24}

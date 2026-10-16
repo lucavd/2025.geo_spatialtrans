@@ -1,0 +1,15 @@
+archetype,seg,n_contact_pairs,n_not_delaunay,n_beyond_dmax,coverage,verdict,role
+A1,cellpose_rgb,99,3,0,0.9696969696969697,FAIL,pre-registrato
+A1,stardist_he,16,0,0,1.0,PASS,pre-registrato
+A2,cellpose_rgb,141,4,1,0.9716312056737588,WARN,pre-registrato
+A2,stardist_he,30,1,0,0.9666666666666667,FAIL,pre-registrato
+A3,cellpose_rgb,34,1,0,0.9705882352941176,WARN,pre-registrato
+A3,stardist_he,3,0,0,1.0,PASS,pre-registrato
+A4,cellpose_rgb,64,0,0,1.0,PASS,pre-registrato
+A4,stardist_he,64,0,0,1.0,PASS,pre-registrato
+A4,spaceranger,523,20,5,0.9541108986615678,FAIL,descrittivo
+A5,cellpose_rgb,12,0,0,1.0,PASS,pre-registrato
+A5,stardist_he,5,0,0,1.0,PASS,pre-registrato
+A6,cellpose_rgb,0,0,0,,NA,pre-registrato
+A6,stardist_he,1,0,0,1.0,PASS,pre-registrato
+A6,spaceranger,2,0,1,0.5,FAIL,descrittivo
