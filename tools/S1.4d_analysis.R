@@ -4,7 +4,9 @@
 .libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
 OUT <- "/mnt/micron/geo_spatialtrans/S1.4d"; RES <- "results/S1.4d"; dir.create(RES, showWarnings = FALSE)
 TIS <- c(A1 = "intestino", A2 = "tumore del colon", A3 = "stroma", A4 = "linfonodo", A5 = "cervello", A6 = "cuore")
-rd <- function(d) do.call(rbind, lapply(sort(list.files(file.path(OUT, d), pattern = "\\.rds$", full.names = TRUE)), readRDS))
+rd <- function(d) { z <- lapply(sort(list.files(file.path(OUT, d), pattern = "\\.rds$", full.names = TRUE)), readRDS)
+  nm <- unique(unlist(lapply(z, names)))                       # unione delle colonne (le unita' "fold" hanno le colonne eq_*)
+  do.call(rbind, lapply(z, function(x) { for (m in setdiff(nm, names(x))) x[[m]] <- NA; x[, nm] })) }
 # stima +- 2 SE; per le frazioni gli estremi si tagliano a [0, 1] (definizione operativa scritta prima del calcolo)
 judge <- function(est, se, L, U, frac = TRUE) {
   lo <- est - 2 * se; hi <- est + 2 * se; if (frac) { lo <- max(0, lo); hi <- min(1, hi) }

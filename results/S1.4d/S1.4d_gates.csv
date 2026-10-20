@@ -1,0 +1,16 @@
+"gate","check","value","threshold","pass"
+"G-3","C3 (geos), nuclei fuori dal territorio","0","0",TRUE
+"G-3","C3 (sf via WKB), nuclei fuori dal territorio","0","0",TRUE
+"G-3","coppie sovrapposte > 1e-9 µm²","0","0",TRUE
+"G-3","area relativa max |A - A*| / A*","1.46e-06","<= 1e-6",FALSE
+"G-3","geometrie invalide / vuote","0 0","0 / 0",TRUE
+"G-3","nulli rigenerati = S1.4 (n, seme)","60","60/60",TRUE
+"G-3","riproducibilita' bit per bit (md5)","6","6/6",TRUE
+"G-4a","forma pre-registrata: celle con differenza simmetrica / A* > 1e-6","0","0",TRUE
+"G-4a","stesse celle al tetto del prototipo (unita' x seme)","300","300/300",TRUE
+"G-4a*","spiegazione: |dA| / A* max (accordo d'area)","7.45e-07","<= 1e-6",TRUE
+"G-4a*","spiegazione: celle oltre il limite del rumore di griglia","0","0",TRUE
+"G-4b","modo scale = pacchetto db4afea (cell_df e WKB)","330","330/330",TRUE
+"G-4b","modo scale = righe V-c di S1.4b (C-0)","330","330/330",TRUE
+"controllo","codice delle finestre = R2c (prototipo K-2: n e contatti identici)","240","240/240",TRUE
+"CP-1","vecchio modello non smentito nei tessuti densi (deve essere < 2)","0","< 2",TRUE
