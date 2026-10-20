@@ -12,6 +12,8 @@ rev = sec("\n## Revisione avversariale (cancello G-5)\n", r"\n#{1,2} ").replace(
 post = sec("\n## Dopo il risultato e la revisione avversariale", r"\n#{1,2} ")
 out = pathlib.Path("reports")
 (out / "_S1.4d_inbreve.md").write_text(inb, encoding="utf-8")
+ver = sec("\n# Verifiche di Luca\n", r"\n# ").replace("# Verifiche di Luca\n", "", 1)
 (out / "_S1.4d_rinviati.md").write_text(rin, encoding="utf-8")
+(out / "_S1.4d_verifiche.md").write_text(ver, encoding="utf-8")
 (out / "_S1.4d_review.md").write_text(rev + "\n" + post.replace("## Dopo il risultato", "## Note dopo il risultato", 1), encoding="utf-8")
 print("ok", len(inb), len(rin), len(rev), len(post))

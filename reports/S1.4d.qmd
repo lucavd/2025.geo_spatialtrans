@@ -25,6 +25,10 @@ f4 <- function(x) formatC(x, digits = 3, format = "fg", flag = "#")
 
 {{< include _S1.4d_inbreve.md >}}
 
+# Decisioni e verifiche di Luca
+
+{{< include _S1.4d_verifiche.md >}}
+
 # Dubbi rinviati
 
 {{< include _S1.4d_rinviati.md >}}

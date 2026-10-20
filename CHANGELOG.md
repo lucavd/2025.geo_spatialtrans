@@ -2,6 +2,28 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.4d — 2026-10-20 — Il nucleo ritagliato nel territorio e riportato all'area giusta (K-2) nel pacchetto (branch `step1-cell-layer`) — **chiusa**
+
+Primo step con il protocollo di sessione v2 (DEC-002); file dello step `docs/steps/S1.4d.md`, report `reports/S1.4d.html`.
+
+### Passaggio alla versione 2
+- `tools/okf.py` adattato da MMM con i suoi test (`tools/test_okf.py`, 8/8; DEC-001); bundle OKF `docs/decisions/`, `docs/steps/`, `docs/index.md`, `docs/log.md`; decisione sul protocollo v2 registrata (DEC-002).
+
+### Codice
+- `R/04b4_derive_cell_geometry.R`: `nucleus_model = c("clip", "scale")`, «clip» predefinito (K-2: ritaglio nel territorio rientrato di 1e-5 µm, ingrandimento fino all'area del modello di taglia, tetto `nucleus_nc_max` = φ per tipo), «scale» identico a `db4afea`; solutore con falsa posizione di Illinois, ricaduta sulla bisezione e arresto legato alla griglia (euristico, BL-140); nuclei in `sf` via WKB (DEC-003).
+- Test `R/testing/test_S1.4d.R` (36), runner `R/testing/run_S1.4d.sh`, mutanti `tools/S1.4d_mutants.R`; banco `tools/S1.4d_bench.R`, finestre `tools/S1.4d_windows.py`, analisi `tools/S1.4d_analysis.R`, controllo cella per cella `tools/S1.4d_g4a_cells.R`, post hoc `tools/S1.4d_posthoc_nc.R`, `tools/run_S1.4d.sh`.
+- Script di S1.4, S1.4b, S1.4c e delle loro revisioni: 19 chiamate con `nucleus_model = "scale"` (riproducibilità); `test_S1.4.R` in modo «scale».
+- Design v1.5: §5.4 riscritta (modello «clip»), operatore di osservazione dei check B (BL-112), frazione di contatti sulle finestre a peso uguale (BL-131), `nucleus_nc_max` in §4.4.
+
+### Risultati
+- Cancelli: test e mutanti superati; 0 nuclei fuori e 0 sovrapposti su 6 823 226; equivalenza con il prototipo cella per cella (2 411 650 celle) e del modo «scale» con `db4afea` (330/330); revisione avversariale 38/38 numeri concordanti. Controllo di precisione delle aree fallito come scritto per un nucleo di 0.18 µm² in un nullo: errore della soglia (DEC-004, Luca).
+- Frazione di nuclei a contatto contro il conteggio manuale: confermata in 5 tessuti, linfonodo indeterminato (0.744 contro ≤ 0.750); con centri StarDist 0.41 (BL-130 spiegata). Controprova: il modello vecchio non produce contatti nei tessuti densi.
+- Tumore del colon: 5.8 % di cellule quasi senza citoplasma contro ≤ 2.9 % reale, dalla coda del modello di taglia; φ resta 1, correzione con i tipi cellulari (DEC-005, Luca; BL-138).
+- Tempo sulla sezione S 224.6 s (prototipo 622.7 s), 6.36 GiB.
+
+### Rinvii
+- BL-138 (coda del modello di taglia, S1.5), BL-139 (nuclei in più parti, S1.5), BL-140 (arresto del solutore, da assegnare); BL-130 → R3b. Risolte BL-112, BL-118, BL-122, BL-127, BL-131; BL-098 implementata.
+
 ## R2c — 2026-10-16/20 — Verità manuale sul contatto fra nuclei (BL-120) (branch `step1-cell-layer`) — **chiusa con riserve**
 
 ### Decisioni (ROADMAP §6)
