@@ -1,0 +1,9 @@
+rater,kind,n,n_done,t_med_s,touch,separate,unsure
+Luca,band,90,90,0.8195,0,90,0
+Luca,catch,66,66,0.8765,0,65,1
+Luca,pair,1319,1319,0.949,118,1153,48
+Luca,repeat,132,132,0.8725,8,118,6
+Federica,band,38,38,0.9335,0,37,1
+Federica,catch,39,39,1.057,0,39,0
+Federica,pair,686,686,1.035,50,572,64
+Federica,repeat,71,71,1.087,9,58,4
