@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """tools/R3b_consensus_test.py — R3b, cancello G-1 (parte Python): test del costruttore della maschera CO su etichette sintetiche.
-Stampa una riga PASS/FAIL per asserzione e l'ultima riga «G-1 python: k/n PASS». Mutanti: R3B_MUTANT=M1..M5 (cancello G-2).
+Stampa una riga PASS/FAIL per asserzione e l'ultima riga «G-1 python: k/n PASS». Mutanti: R3B_MUTANT=M1..M5 (cancello G-2);
+R3B_CONSENSUS_FILE=<copia mutata> per i mutanti del revisore (T12-T17 aggiunti dopo la revisione, rilievi F-01...F-04).
 Uso (root del repo): .venv/bin/python tools/R3b_consensus_test.py
 """
 import importlib.util, os, sys
@@ -8,7 +9,7 @@ import numpy as np
 from pathlib import Path
 from skimage import measure
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location("r3b", ROOT / "tools/R3b_consensus.py"); B = importlib.util.module_from_spec(spec); spec.loader.exec_module(B)
+spec = importlib.util.spec_from_file_location("r3b", os.environ.get("R3B_CONSENSUS_FILE", str(ROOT / "tools/R3b_consensus.py"))); B = importlib.util.module_from_spec(spec); spec.loader.exec_module(B)
 spec = importlib.util.spec_from_file_location("r3c", ROOT / "tools/R3_containment.py"); R3C = importlib.util.module_from_spec(spec); spec.loader.exec_module(R3C)
 RES = []
 
@@ -107,6 +108,45 @@ ck("T11 centroide", abs(pm.cx_px - rp.centroid[1] * upp) < 1e-9 and abs(pm.cy_px
 ck("T11 eccentricita'", abs(pm.ecc_N - rp.eccentricity) < 0.02, f"{pm.ecc_N:.4f} vs {rp.eccentricity:.4f}")
 dth = abs((pm.theta_N - (np.pi / 2 - rp.orientation) + np.pi / 2) % np.pi - np.pi / 2)
 ck("T11 orientazione", np.rad2deg(dth) < 2, f"{np.rad2deg(dth):.3f} deg")
+
+
+# ---- aggiunti dopo la revisione avversariale (rilievi F-01...F-04 del revisore «codice») ----
+# T12 pareggio dal lato Space Ranger: uno StarDist sovrapposto in parti uguali a due Space Ranger -> il piu' piccolo
+sr = paint((4, rect(10, 10, 20, 30)), (2, rect(20, 10, 30, 30))); sd = paint((7, rect(15, 12, 25, 28)))
+co, tab = B.build_consensus(sr, sd)
+ck("T12 pareggio SR all'identificativo piu' piccolo", int(tab[tab.src == "sd"].sr_label.iloc[0]) == 2 if (tab.src == "sd").any() else False)
+
+# T13 filtro cp2 in geometria non simmetrica, upp != 1, troncamento (non arrotondamento) della cella valida
+lab = paint((1, disk(100, 20, 3)), (2, disk(20, 100, 3)), (3, rect(58, 60, 60, 63)))   # 3: centroide colonna 58.5, riga 61
+upp = 0.5; side_um = H * upp                                                             # 60 µm, valid 30 x 30 -> celle di 2 µm (4 px)
+valid = np.zeros((30, 30), bool); valid[0:10, 20:30] = True; valid[15, 14] = True          # alto a destra; cella (riga 15, col 14)
+f = B.cp2_filter(lab, upp, valid, side_um)
+ck("T13 x e y non scambiati", np.any(f == 1) and not np.any(f == 2))
+ck("T13 cella per troncamento (col 58.5*0.5/2=14.6 -> 14, riga 61*0.5/2=15.25 -> 15)", np.any(f == 3))
+
+# T14 StarDist appaiato che esce dal poligono Space Ranger: la forma CO e' tutto lo StarDist, anche fuori
+sr = paint((1, rect(20, 20, 40, 40))); sd = paint((3, rect(25, 25, 46, 38)))
+co, tab = B.build_consensus(sr, sd)
+ck("T14 forma StarDist anche fuori dal poligono SR", np.array_equal(co > 0, sd == 3) and B.matched_pixels_identical(co, sd, tab) == 0)
+
+# T15 uno StarDist non appaiato non cancella i pixel di uno Space Ranger solo
+sr = paint((2, rect(10, 10, 20, 30)), (3, rect(20, 10, 40, 30)))
+sd = paint((7, rect(23, 12, 40, 28)), (6, rect(18, 12, 23, 28)))       # SD6: SR2 32 px, SR3 48 px -> best SR3; SR3 preferisce SD7
+co, tab = B.build_consensus(sr, sd)
+r2 = tab[tab.sr_label == 2]
+ck("T15 SD non appaiato escluso", 6 not in set(tab.sd_label))
+ck("T15 SR solo intatto sotto lo StarDist non appaiato", len(r2) == 1 and np.array_equal(co == int(r2.label.iloc[0]), sr == 2))
+
+# T16 un resto Space Ranger piccolo (30 % dei pixel) resta: si tolgono solo i vuoti
+sr = paint((1, rect(10, 10, 30, 30)), (2, rect(30, 10, 40, 30))); sd = paint((5, rect(12, 12, 37, 28)))
+co, tab = B.build_consensus(sr, sd)
+r2 = tab[tab.sr_label == 2]
+ck("T16 resto SR sotto il 50 % tenuto", len(r2) == 1 and r2.src.iloc[0] == "sr" and int(r2.n_px.iloc[0]) == int(np.sum((sr == 2) & (sd != 5))))
+
+# T17 massima sovrapposizione, non massimo IoU
+sr = paint((1, rect(10, 10, 20, 20))); sd = paint((8, rect(14, 10, 34, 30)), (9, rect(10, 10, 14, 20)))
+co, tab = B.build_consensus(sr, sd)
+ck("T17 appaiamento per sovrapposizione in pixel", (tab.src == "sd").any() and int(tab[tab.src == "sd"].sd_label.iloc[0]) == 8)
 
 print(f"G-1 python [{os.environ.get('R3B_MUTANT', 'none')}]: {sum(RES)}/{len(RES)} PASS")
 sys.exit(0 if all(RES) else 1)

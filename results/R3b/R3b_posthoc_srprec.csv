@@ -1,0 +1,17 @@
+win_id,archetype,src,n_counted,n_matched_to_point,n_points_matched_here,n_points
+A4_w1,A4,sd,46,38,38,67
+A4_w1,A4,sr,29,22,22,67
+A4_w2,A4,sd,96,95,99,118
+A4_w2,A4,sr,22,13,13,118
+A4_w3,A4,sd,86,86,88,108
+A4_w3,A4,sr,26,14,14,108
+A4_w4,A4,sd,86,84,90,111
+A4_w4,A4,sr,25,16,16,111
+A6_w1,A6,sd,47,40,40,51
+A6_w1,A6,sr,11,6,6,51
+A6_w2,A6,sd,47,43,43,60
+A6_w2,A6,sr,19,13,13,60
+A6_w3,A6,sd,56,47,48,62
+A6_w3,A6,sr,14,10,10,62
+A6_w4,A6,sd,45,39,39,69
+A6_w4,A6,sr,23,18,18,69

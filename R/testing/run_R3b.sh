@@ -18,3 +18,10 @@ case "${1:-test}" in
     done
     echo "G-2: $det/$tot mutanti rilevati" ;;
 esac
+# mutanti del revisore (dopo la revisione avversariale): bash R/testing/run_R3b.sh reviewer
+if [ "${1:-}" = "reviewer" ]; then
+  for f in /mnt/micron/geo_spatialtrans/R3b/review_code/mutants/X*.py; do
+    R3B_MUTANT=none R3B_CONSENSUS_FILE=$f $PY -B tools/R3b_consensus_test.py > "$LOG/rv_$(basename $f .py).log" 2>&1
+    nf=$(grep -c '^FAIL' "$LOG/rv_$(basename $f .py).log" || true); echo "$(basename $f .py): ${nf:-0} FAIL"
+  done
+fi

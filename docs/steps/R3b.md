@@ -149,15 +149,98 @@ Con la maschera scelta si ricalcolano per linfonodo e cuore, con il codice di R3
 - **D-7 Contatti nella maschera a livello di ROI** (la prima parte di B-124 e B-126, descrittiva) non ricalcolati: per la maschera CO si riporta P-2, sugli stessi nuclei del giudizio di Luca.
 - **D-8 Strumenti**: codice nuovo in `tools/R3b_*.py`, `tools/R3b_*.R`; nessun file degli step passati modificato; le funzioni copiate da R3, S1.4 e S1.4d sono verificate dalla regressione G-3.
 
+## Risultati (dai file di `results/R3b/`, prima della revisione; i verdetti non cambiano dopo)
+
+| previsione | tessuto | maschera | stima | ± 2 SE o IC | intervallo | esito |
+|---|---|---|---|---|---|---|
+| P-1 rapporto nuclei / punti di Luca | linfonodo | CO | 1.039 | 0.983-1.095 | 0.905-1.102 | confermata (attesa indeterminata) |
+| P-1 | linfonodo | SD | 0.768 | 0.711-0.824 | 0.905-1.102 | smentita (nota) |
+| P-1 | linfonodo | SR (rif.) | 1.043 | 0.980-1.105 | 0.905-1.102 | indeterminata |
+| P-1 | cuore | CO | 1.088 | 1.018-1.158 | 0.878-1.134 | indeterminata (dichiarata) |
+| P-1 | cuore | SD | 0.842 | 0.727-0.956 | 0.878-1.134 | indeterminata (nota) |
+| P-2 contatti nella maschera, focali di R2c | linfonodo | CO | 0.746 | 0.621-0.862 | 0.35-0.75 | **indeterminata** (attesa 0.45-0.65) |
+| P-2 | linfonodo | SD | 0.367 | 0.184-0.528 | 0.35-0.75 | indeterminata |
+| P-2 | linfonodo | SR (rif.) | 0.983 | 0.931-1.000 | 0.35-0.75 | smentita (nota) |
+| P-2 | cuore | CO / SD / SR | 0.019 / 0.022 / 0.038 | 0-0.080 / 0-0.095 / 0-0.111 | 0-0.070 | indeterminate (dichiarate) |
+| P-3 contatti simulati | linfonodo | CO | 0.690 | 0.672-0.709 | 0.35-0.75 | confermata |
+| P-3 | linfonodo | SD | 0.409 | 0.385-0.432 | 0.35-0.75 | confermata |
+| P-3 | cuore | CO / SD | 0.047 / 0.012 | 0.037-0.056 / 0-0.027 | 0-0.070 | confermate |
+| P-4 troncati | linfonodo | CO / SD | 0.023 / 0.031 | 0.017-0.029 / 0.024-0.037 | 0-0.05 | confermate |
+| P-4 | cuore | CO / SD | 0.016 / 0.010 | 0.009-0.022 / 0.003-0.016 | 0-0.05 | confermate |
+| CP-1 punti di Luca come centri | linfonodo | manuale + CO | 0.715 | 0.697-0.734 | 0.35-0.75 | confermata |
+| CP-1 | cuore | manuale + CO | 0.015 | 0.009-0.021 | 0-0.070 | confermata |
+
+**Regola di decisione**: linfonodo, CO unica eleggibile (SD smentita in P-1) → **CO**; cuore, entrambe eleggibili, P-3 confermata per entrambe, CP-1 non smentita → rapporto di P-1 più vicino a 1 (|log| 0.084 contro 0.172) → **CO**. Tetti φ: CO 0.868 (linfonodo), 0.147 (cuore); SD 0.649, 0.166.
+
+**Cancelli prima della revisione**: G-1 26/26, G-2 5/5, G-3 identico in tutte le voci (nuclei R2 21/21 colonne × 10 ROI; generatori, celle, momenti R3, territori S1.4, M2, nuclei simulati S1.4d, finestre S1.4d 80/80; R2b 646 punti e 8 finestre; R2c 119 focali per maschera; φ di Space Ranger 0.816 e 0.180), G-4: invarianti della maschera CO 0 violazioni su 10 ROI, nucleo simulato 0 fuori, 0 sovrapposti, 0 invalidi su 4.76 milioni di nuclei, md5 343/343.
+
+## Dopo il risultato e la revisione avversariale (aggiunto dopo i verdetti; non cambia previsioni, intervalli né verdetti)
+
+- **D-9 Definizione di «troncato» in P-4** (revisore «ricalcolo», F-2): area finale < (1 − 1e-6) · area bersaglio, come P-2 di S1.4d; coincide con `nucleus_capped` in 40/40 righe rigenerate. Senza tolleranza metà dei nuclei risulterebbe «troncata» per la tolleranza del solutore (1e-7): definizione non scritta nella pre-registrazione, ora fissata.
+- **D-10 G-4 fallito come scritto per una voce** (revisori F-1, F-05): «ogni centroide nel tessuto valido» non vale sulla maschera CO salvata (59 etichette su 145 098), ed è stato verificato solo dopo. Lo stesso accade nelle maschere native di R2 (Space Ranger 60, StarDist 107): le maschere grezze non sono filtrate, il filtro si applica a valle. Dopo il filtro usato da P-2: 0; fra i generatori: 0 (`results/R3b/R3b_posthoc_valid.csv`). **Errore di scrittura del cancello**: la proprietà vale sugli oggetti usati nei calcoli, non sul raster grezzo. Nessun numero cambia. Decisione di Luca sotto.
+- **D-11 Batteria rinforzata** (F-01…F-04, F-09): test T12-T17 (pareggio dal lato Space Ranger, filtro del tessuto valido in geometria asimmetrica con troncamento, StarDist che esce dal poligono, StarDist non appaiato che non cancella uno Space Ranger, resto Space Ranger piccolo tenuto, appaiamento per sovrapposizione e non per IoU). G-1 34/34; mutanti M1-M5 5/5; mutanti del revisore 12/12 (prima 4/12).
+- **PH-1 Contatti nella maschera CO nel linfonodo** (`tools/R3b_posthoc.py`): sui 59 focali appaiati la maschera segna 44 contatti, Luca 32; 15 contatti dove Luca vede nuclei separati, 3 mancati. Il 47 % dei focali (28/59) ha un vicino a contatto di forma Space Ranger; fra i 44 focali a contatto la quota è 64 % (F-07). Sensibilità del revisore (F-06, non pre-registrata): 8 contatti esistono solo sulla linea di taglio fra uno StarDist e il resto Space Ranger che copriva; senza di essi P-2 sarebbe 0.610 [0.467, 0.750]. StarDist sugli stessi focali: 18 contatti, 8 dove Luca vede separati, 12 mancati.
+- **PH-2 Quanti poligoni Space Ranger rimasti sono nuclei** (`tools/R3b_posthoc_srprec.py`, scritta dopo la figura di controllo): nelle finestre del linfonodo 102 oggetti di forma Space Ranger, 65 appaiati a un punto di Luca (precisione 0.64, contro 0.97 dei nuclei di forma StarDist); nel cuore 67 e 47 (0.70 contro 0.87). Il conteggio di CO è giusto anche per compensazione fra circa 37 falsi positivi e circa 36 nuclei non visti (linfonodo).
+- **PH-3 Aree dei nuclei di forma Space Ranger e modello di taglia** (`tools/R3b_posthoc_area.R`): 27 % delle celle interne in entrambi i tessuti; area mediana 12.8 contro 16.0 µm² (linfonodo), 15.2 contro 20.5 (cuore); sullo stesso nucleo il poligono Space Ranger è 1.34 volte lo StarDist (mediana, IQR 1.18-1.51). M2 su tutti i nuclei CO: σ 0.288, β 0.535 (linfonodo); sui soli nuclei di forma StarDist: σ 0.210, β 0.455, come oggi (0.212, 0.442). Parte della differenza d'area viene dai territori più piccoli di questi nuclei (28.9 contro 33.0 µm², F-08): lo script confronta mediane grezze.
+- **PH-4 Sensibilità: taglia dai soli nuclei di forma StarDist** (`tools/R3b_posthoc_sdarea.R`): contatti simulati nel linfonodo 0.736 ± 0.016 (contro 0.690), troncati 0.028; cuore 0.049. φ 0.791 e 0.149.
+- **Riferimenti ricalcolati** (`tools/R3b_refs.R`, `results/R3b/R3b_refs.csv`): lo stesso codice sulle uscite originali ridà le 20 righe di BIO_REFERENCES di linfonodo e cuore; con CO le misure dei territori cambiano al più dell'1.6 %; N/C mediano del linfonodo 0.606 → 0.480 (il vecchio valore usava le aree dei poligoni Space Ranger); φ del cuore 0.180 → 0.147.
+- Note del revisore senza effetto: F-10 resti Space Ranger in più pezzi o sotto il 50 % (al più 0.2 % dei nuclei contati); F-11 lato della finestra in CP-1 (60.0 contro 59.96 µm, 0 centri nella striscia); F-12 φ stimato sui 5 ROI compreso quello di test (come la modalità «tissue» di S1.4d).
+
+## Revisione avversariale (cancello G-5)
+
+Due revisori indipendenti al commit `fdac76a`, con codice proprio sul server (`/mnt/micron/geo_spatialtrans/R3b/review_recalc/`, `review_code/`).
+
+- **Ricalcolo**: 65 controlli su 65 uguali all'autore (scarto massimo 2.2e-16): maschera CO identica bit per bit su 10/10 ROI con conteggi identici; flag `keep`; P-1 (8 finestre × 3 maschere); P-2 (357 righe focale × maschera, intervalli bootstrap identici); P-3 e CP-1 (240 righe finestra × seme dai raster); P-4 rigenerando 4 unità × 10 semi (40/40); 24 esiti e regola di decisione. Limiti dichiarati: P-4 rigenerato su 4 unità su 20, aggregato dalle righe dell'autore. Rilievi: F-1 (→ D-10), F-2 (→ D-9), F-3 e F-4 informativi.
+- **Codice**: nessun errore che cambi un numero o un verdetto; maschera ricostruita identica su 10/10 ROI; funzioni copiate identiche agli originali salvo i percorsi; CP-1 misura solo nuclei nati dai punti di Luca (0 di origine CO in 80 raster); md5 343/343. Rilievo principale: batteria debole (4/12 mutanti del revisore) → D-11 (12/12). Altri: F-05 (→ D-10), F-06 e F-07 (→ PH-1), F-08 (→ PH-3), F-10…F-12 note. Limiti dichiarati: catena R non rieseguita, ingressi CO controllati su 3 ROI, verdetti dai CSV.
+- G-5: ricalcolo indipendente concordante → superato.
+
 # In breve
 
-(da scrivere a numeri verificati)
+## In breve: nel linfonodo e nel cuore, da quale insieme di nuclei veri prendiamo posizioni, aree e vicini?
+
+**A cosa serviva.** Nel linfonodo e nel cuore il simulatore prendeva i centri dei nuclei da Space Ranger, ma aree e vicini da StarDist: tre misure da due maschere diverse. Abbiamo confrontato con i tuoi conteggi manuali due maschere uniche: «i nuclei di Space Ranger con la forma di StarDist» e «solo StarDist». Volevamo anche capire perché nel linfonodo i nuclei simulati si toccano più di quanto vedi tu.
+
+**Cosa abbiamo trovato.**
+
+1. **La regola sceglie in tutti e due i tessuti i nuclei di Space Ranger con la forma di StarDist: ne conta quanti ne conti tu, mentre StarDist da solo ne perde troppi.**
+   - Nelle finestre di linfonodo questa maschera trova 416 nuclei contro i tuoi 404; StarDist da solo 314, quasi uno su quattro in meno. Nel cuore 262 e 202 contro i tuoi 242.
+   - Il conteggio giusto viene in parte da una compensazione. Dei 102 nuclei che restano con la forma di Space Ranger (quelli che StarDist non vede) 65 sono nuclei veri, spesso pallidi, e 37 non corrispondono a nessun tuo punto. Nel cuore 47 veri su 67.
+2. **L'eccesso di contatti simulati nel linfonodo non viene dai centri dei nuclei: con i tuoi punti come centri resta lo stesso.**
+   - Con i tuoi punti i nuclei simulati a contatto sono 0.72, con la maschera scelta 0.69, contro il tuo 0.55; tutti dentro il tuo margine, che arriva a 0.75.
+   - Lo 0.41 di StarDist dipendeva dai nuclei che StarDist non vede. La spiegazione che avevamo dato quando abbiamo portato il nucleo ritagliato nel simulatore (centri di Space Ranger troppo fitti) era sbagliata.
+   - Nel cuore tutte le versioni stanno nel margine (0.05 contro il tuo 0.02).
+3. **I nuclei rimasti con la forma di Space Ranger hanno aree e contatti poco affidabili.**
+   - Sono più di un nucleo su quattro in entrambi i tessuti, con la forma a scalini di 2 µm. Dove lo stesso nucleo è visto anche da StarDist, il poligono di Space Ranger è più grande di un terzo, con grandi oscillazioni.
+   - Se li usiamo per la taglia, la variabilità della taglia dei nuclei del linfonodo cresce di più di un terzo; se la stimiamo sui soli nuclei con la forma di StarDist resta quella di oggi. I contatti simulati nel linfonodo passano da 0.69 a 0.74, al bordo del tuo margine.
+   - Sui nuclei che hai giudicato nel linfonodo, la maschera segna 44 contatti su 59 contro i tuoi 32: quasi due contatti su tre passano da un poligono di Space Ranger. Il riferimento del simulatore per i contatti resta comunque il tuo conteggio.
+4. **Con la nuova maschera i territori non cambiano; cambiano il rapporto fra nucleo e cellula nel linfonodo e il tetto del nucleo nel cuore.**
+   - Area e forma dei territori cambiano meno del 2 %.
+   - Nel linfonodo il nucleo occupa in mediana il 48 % della cellula invece del 61 %: il vecchio valore usava le aree dei poligoni di Space Ranger. Nel cuore il tetto al nucleo scende dal 18 % al 15 % della cellula.
+5. **Un controllo di integrità è fallito per come l'avevo scritto, non per un difetto della maschera.**
+   - Avevo chiesto che ogni nucleo della maschera avesse il centro nel tessuto valido. Sulla maschera salvata 59 nuclei su 145 000 hanno il centro fuori, come nelle maschere originali di Space Ranger (60) e di StarDist (107).
+   - Il filtro del tessuto si applica dopo: nessuno di quei nuclei entra nei territori o nei conteggi. I due revisori indipendenti hanno rifatto la maschera e tutti i numeri e trovano gli stessi valori.
+
+**Cosa devi decidere.**
+
+1. **Adottiamo per linfonodo e cuore i nuclei di Space Ranger con la forma di StarDist, ma stimiamo la taglia dei nuclei solo su quelli con la forma di StarDist? Consiglio di sì.**
+   - Posizioni, territori e vicini vengono da un'unica maschera, che conta i nuclei come te. La taglia si misura solo dove la forma è affidabile, e il modello della taglia resta quello di oggi.
+   - Alternativa: la taglia da tutti i nuclei della maschera. Più coerente sulla carta, ma un nucleo su quattro porta un'area a scalini e circa un terzo di questi non è un nucleo; la variabilità della taglia nel linfonodo crescerebbe di più di un terzo.
+   - Alternativa: solo StarDist. Anche i suoi contatti simulati stanno nel margine (0.41), ma nel linfonodo ha un nucleo su quattro in meno, quindi territori più grandi di circa un terzo.
+2. **Accettiamo che il controllo di integrità fallito sia un errore di come l'avevo scritto, e non un difetto della maschera? Consiglio di sì.**
+   - Le maschere originali da cui partiamo hanno lo stesso comportamento, e il filtro del tessuto esclude quei nuclei da ogni calcolo.
+   - Alternativa: filtrare già la maschera salvata e ripetere i controlli. Non cambierebbe nessun numero.
+
+**Comunque**, appena decidi aggiorneremo i riferimenti di linfonodo e cuore (territori, taglia, tetto, rapporto fra nucleo e cellula) e la maschera di questi due tessuti nei banchi. I nuclei con la forma di Space Ranger che non sono nuclei veri li riguarderemo più avanti, per esempio tenendo solo quelli con un segnale di ematossilina. Nel linfonodo i contatti simulati stanno nella parte alta del tuo margine anche con i tuoi punti come centri: per stringere il confronto servirebbero più finestre contate a mano, e lo teniamo da parte. La forma vera delle cellule del cuore passa a quando scriveremo la composizione dei tessuti.
+
+Appena decidi questi 2 punti, lo step è chiuso.
 
 # Dubbi rinviati
 
 | cosa | perché | cosa serve per chiuderlo | step destinatario | voce di BACKLOG |
 |---|---|---|---|---|
 | Forma vera delle cellule del cuore | richiede una segmentazione dei profili cellulari, non dei nuclei | misura indipendente dell'allungamento dei cardiomiociti | S1.5 (scelta di Luca, 2026-10-20) | BL-064 |
+| Falsi positivi fra i poligoni Space Ranger rimasti: precisione 0.64 nel linfonodo, 0.70 nel cuore (contro 0.97 e 0.87 dei nuclei di forma StarDist) | il conteggio della maschera CO è giusto anche per compensazione; i falsi positivi dividono i territori vicini | filtro dei poligoni Space Ranger solo con evidenza di ematossilina (come gli «esclusivi» di R2), valutato sulle finestre manuali | da assegnare | BL-141 |
+| Linfonodo: contatti simulati 0.69-0.74 (anche 0.72 con i punti di Luca) contro il manuale 0.55, margine 0.35-0.75 da 4 finestre | dentro il margine, ma sempre nella parte alta; il margine è largo | più finestre manuali di contatto nel linfonodo, oppure un nucleo meno «riempitivo» nei tessuti densi | da assegnare | BL-142 |
 
 # Verifiche di Luca
 
