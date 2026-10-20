@@ -38,3 +38,21 @@ annotatore, check C-2/C-3/C-5). Nessuna risposta manuale esiste a questo punto.
   B-dec dà «nessuno» in A1–A4 perché StarDist perde i vicini (recall): B-dec giudica l'S-1 del segmentatore come riferimento
   (quello di CP-2 in S1.4c, BL-120), P-3 la correttezza dei contatti sui nuclei visti. Nel report vanno tenuti distinti.
 - Errore ripetuto due volte (`np.minimum.reduce(...).to_numpy()`), corretto prima di qualsiasi risultato.
+
+## Dopo i risultati (2026-10-20): revisione avversariale, scelte dichiarate, erratum
+- **Erratum** dell'addendum: «C-3 PASS … su 40/40 ROI × segmentatore» va letto **48/48** (24 ROI × 2; RV-17). Il testo
+  pre-registrato non è stato modificato.
+- **RV-10**: i verdetti P-1/P-2/P-3 e CP-5 non erano scritti dalla pipeline; aggiunti (`R2c_predictions.csv`), output
+  preesistenti identici al bit (md5 18/18). P-3 «non valutabile» se meno di 3 archetipi hanno ≥ 10 coppie a contatto: criterio
+  di Claude, fissato dopo i risultati.
+- **RV-12**: bug latente in `R2c_candidates.py` (enumerazione fino a max(d_geo, d_roi), non d_prereg): non attivo; asserzione.
+- **RV-11 — scelte d'implementazione non scritte nella pre-registrazione** (ora dichiarate): (a) allargamento di B-K2 =
+  |S-1 Luca sui focali delle finestre di Federica − S-1 Federica|; (b) CP-3 conta «non giudicabile» come fallimento (Luca 65/66);
+  (c) il ramo WARN di D-3 non è implementato (non scatta); (d) un focale senza coppie candidate vale 0; (e) CP-2 solo PASS/FAIL;
+  (f) le trappole sono estratte con peso proporzionale alle coppie della finestra; (g) 1 ripetuta per annotatore cade a 11 item
+  dall'originale (coda della lista), non ≥ 30; (h) B-dec dà «nessuno» se l'S-1 di un segmentatore manca; (i) l'S-1 manuale usa
+  solo la risposta originale, le ripetute servono a CP-2 (F-10); (j) le etichette con ev = False sono incluse nell'S-1 dei
+  segmentatori (F-6: 7 casi, esiti invariati); (k) distanza dal bordo con side_px · upp (F-7); (l) K-2 aggregato somma/somma (F-2).
+- Claude in chat ha scritto «A5 StarDist per 0.001»: il margine è 0.0005 (RV-3).
+- Analisi post hoc (`R2c_posthoc.py`) e CP-6 (`R2c_cp6.py`, regola committata in `798c901` prima del riesame) scritte dopo la
+  revisione avversariale: non ri-revisionate.

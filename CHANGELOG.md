@@ -2,6 +2,33 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## R2c — 2026-10-16/20 — Verità manuale sul contatto fra nuclei (BL-120) (branch `step1-cell-layer`) — **chiusa con riserve**
+
+### Decisioni (ROADMAP §6)
+- Disegno (Luca, 2026-10-16): compito sì/no su coppie proposte; 15 nuclei focali per finestra; Federica su metà delle finestre.
+- Deviazioni D-1…D-4 approvate da Luca prima delle annotazioni (candidati senza Delaunay; d_max combinato; fascia verificata a
+  campione, proposta di Luca; trappole oltre d_geo). D-5, D-6 trovati dai test prima delle risposte.
+- **Riferimento S-1 da S1.4d in poi = valore manuale per archetipo con IC bootstrap a due stadi (B-127…B-132)**; segmentatori solo
+  descrittivi; S-2/S-3 fuori (Luca, 2026-10-20).
+
+### Codice (`tools/`, nessun file del pacchetto)
+- `R2c_candidates.py` (d_max, candidati, fascia, focali, item), `R2c_annotator.py` + `R2c_annotator_core.js` (annotatore sì/no,
+  zip con PNG senza perdita), `R2c_check_annotator.py` (C-2), `R2c_refs.py` (segmentatori sui focali, K-2 nelle finestre),
+  `R2c_analysis.py` (+ `R2c_analysis_test.py`, 24 test, mutanti 3/3), `R2c_dryrun.py`, `R2c_posthoc.py`, `R2c_rereview_items.py`,
+  `R2c_cp6.py`, `R2c_figures.py`, `R2c_fig_eligibility.py`; `R/testing/test_R2c.sh` (9 asserzioni); `reports/R2c.qmd`.
+
+### Risultati (`results/R2c/`; zip degli annotatori in `/mnt/micron/geo_spatialtrans/R2c/`)
+- Risposte: Luca 1 607/1 607 (+ 94 del riesame), Federica 834/834.
+- Check C: C-1 PASS (dopo D-1/D-2; regola pre-registrata FAIL A1/A2, `prereg_rule/`), C-2 PASS (ritagli pixel-identici, marcatori
+  1e-13 µm, cecità, ordine riproducibile), C-3 48/48 identici a cp2, C-4 3/3.
+- S-1 manuale (Luca): A1 0.50, A2 0.37, A3 0.18, A4 0.55, A5 0.08, A6 0.02; B-dec «nessuno» in A1–A4, A5 StarDist (per 0.0005),
+  A6 indeciso; K-2 PASS A1, A2, A5, A6, FAIL A3 (fragile), WARN A4 (0.77). P-1, P-2 smentite; P-3 non valutabile.
+- Controprove: CP-1 κ 0.765, CP-2 0.810 / 1.000, CP-3, CP-4 AUC 0.83–0.95, D-3 0/90, CP-5 3/4 PASS; CP-6 (post hoc, riesame):
+  abitudine a «separati» non sostenuta (2/64 contro 1/15, p 0.91).
+- Revisione avversariale: 2 revisori; 167/170 quantità identiche, 0 bug attivi, 1 latente (RV-12), verdetti P-1…P-3 mancanti
+  (RV-10, aggiunti), scelte non dichiarate (RV-11, dichiarate); sensibilità post hoc (IC onesti, confronto appaiato,
+  leave-one-window-out, K-2 a peso uguale, accordo a 3 categorie).
+
 ## S1.4c — 2026-10-15/16 — BL-098 riformulata: forma del nucleo, scala contro ritaglio (branch `step1-cell-layer`) — **chiusa con riserve**
 
 ### Decisioni (ROADMAP §6)
