@@ -1,5 +1,9 @@
 # Registro delle modifiche
 
+## 2026-10-20 (apertura di R3b)
+
+* **Creazione**: file dello step [Nel linfonodo e nel cuore, da quale insieme di nuclei veri prendiamo posizioni, aree e vicini? (R3b)](steps/R3b.md) con dubbi ricevuti, maschere a confronto, cancelli G-1…G-5, previsioni P-1…P-4, controprova CP-1 e regola di decisione, scritti prima di ogni calcolo; previsioni in attesa dell'ok di Luca. Forma delle cellule del cuore (BL-064) rinviata a S1.5 da Luca.
+
 ## 2026-10-20 (apertura di S1.4d, primo step con il protocollo v2)
 
 * **Chiusura**: [La forma del nucleo ritagliato nel territorio e riportato all'area giusta entra nel pacchetto e riproduce i contatti contati a mano? (S1.4d)](steps/S1.4d.md) chiuso con l'approvazione di Luca; decisioni [Il controllo di precisione sulle aree fallito in S1.4d è un errore della soglia, non del programma (DEC-004)](decisions/DEC-004.md) e [Nel tumore del colon nessun limite all'area del nucleo; la coda del modello di taglia si corregge con i tipi cellulari (DEC-005)](decisions/DEC-005.md). ROADMAP §7: S1.4d chiusa, prossima sessione proposta R3b.

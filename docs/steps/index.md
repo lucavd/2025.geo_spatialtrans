@@ -1,3 +1,4 @@
 # Step
 
+* [Nel linfonodo e nel cuore, da quale insieme di nuclei veri prendiamo posizioni, aree e vicini? (R3b)](R3b.md) - Sceglie per linfonodo e cuore una sola maschera nucleare (i nuclei di Space Ranger con la forma di StarDist, oppure solo StarDist), confrontandole con il conteggio manuale dei nuclei e dei contatti di Luca, e controlla con i punti manuali se l'eccesso di contatti simulati nel linfonodo dipende davvero dai centri dei nuclei.
 * [La forma del nucleo ritagliato nel territorio e riportato all'area giusta entra nel pacchetto e riproduce i contatti contati a mano? (S1.4d)](S1.4d.md) - Porta nel pacchetto (derive_cell_geometry) il nucleo ritagliato nel proprio territorio e gonfiato fino all'area del modello, scelto nel banco S1.4c, e controlla che sia identico al prototipo, che rispetti le invarianti geometriche e che la frazione di nuclei a contatto stia nell'intervallo del conteggio manuale di Luca.
