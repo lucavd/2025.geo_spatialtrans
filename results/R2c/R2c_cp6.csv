@@ -1,0 +1,4 @@
+group,n,touch,separate,unsure,frac_touch,t_med_s,f_minus_c,fisher_p_one_sided,verdict
+ctrl_sep,15,1,14,0,0.06666666666666667,1.216,-0.035416666666666666,0.9092679472426308,non sostenuta
+ctrl_touch,15,12,3,0,0.8,2.357,-0.035416666666666666,0.9092679472426308,non sostenuta
+fast,64,2,62,0,0.03125,0.7855,-0.035416666666666666,0.9092679472426308,non sostenuta
