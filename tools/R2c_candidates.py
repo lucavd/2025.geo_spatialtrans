@@ -192,7 +192,11 @@ def main():
                        d_geo_cp_um=2 * float(np.quantile(rmax[(A, "cellpose_rgb")], Q)) + 2 * uppA[A],
                        d_geo_sd_um=2 * float(np.quantile(rmax[(A, "stardist_he")], Q)) + 2 * uppA[A], d_geo_um=d_geo[A],
                        crop_um=max(CROP_K * dmax, CROP_MIN_UM)))
-    dm = pd.DataFrame(dm); dm.to_csv(RES / "R2c_dmax.csv", index=False)
+    dm = pd.DataFrame(dm)
+    # RV-12 (revisione avversariale): le coppie sono enumerate fino a d_hi = max(d_geo, d_roi); se d_prereg superasse d_hi
+    # si perderebbero candidati. Con i dati attuali non accade: asserzione invece di un cambiamento silenzioso.
+    assert (dm.d_max_um <= dm.archetype.map(d_hi) + 1e-12).all(), "RV-12: d_max > d_hi, candidati incompleti"
+    dm.to_csv(RES / "R2c_dmax.csv", index=False)
     dmax = dict(zip(dm.archetype, dm.d_max_um)); crop = dict(zip(dm.archetype, dm.crop_um))
     pr["candidate"] = pr.d_um <= pr.archetype.map(dmax)
     pr["band"] = (pr.d_um > pr.archetype.map(dmax)) & (pr.d_um <= pr.archetype.map(d_geo))

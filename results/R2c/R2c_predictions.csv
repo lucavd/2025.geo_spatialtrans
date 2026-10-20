@@ -1,0 +1,5 @@
+prediction,detail,n_ok,n,verdict
+P-1,A1 sì; A2 sì; A3 no; A4 sì; A5 sì; A6 sì,5,6,smentita
+P-2,A1 no; A2 sì; A3 sì; A4 no,2,4,smentita
+P-3,A1 no (touch 3); A2 no (touch 1); A3 no (touch 1); A4 no (touch 12); A5 sì (touch 1); A6 no (touch 1),1,6,non valutabile (potenza)
+CP-5,stesso esito 3/4,3,4,PASS

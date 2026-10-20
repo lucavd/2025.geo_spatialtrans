@@ -90,3 +90,15 @@ Deviazioni (le soglie di tutti i check restano quelle pre-registrate):
   gli item (coppie, fascia, ripetute, trappole), così l'ingrandimento non rivela il tipo di item.
 
 Carico atteso: ~1 309 coppie + ≤ 90 di fascia + 10 % ripetute + 5 % trappole.
+
+
+## Addendum post hoc 2026-10-20 — CP-6 riesame delle «separate» veloci (RV-14), scritto PRIMA del riesame
+Motivo: revisione avversariale RV-14 (le risposte rapide sono quasi sempre «separate»; 64 coppie vicine giudicate «separate»
+in < 0.8 s). Decisione di Luca 2026-10-20: «Riesame ora, come controprova post hoc». Non cambia alcun verdetto pre-registrato.
+- Item (`tools/R2c_rereview_items.py`): gruppo *fast* = coppie «pair» di Luca giudicate «separate» in < 0.8 s con
+  d/d_max ≤ q75 dei «touch» (64); controlli: 15 *ctrl_sep* (stesso intervallo, «separate» in ≥ 1.5 s), 15 *ctrl_touch*
+  (stesso intervallo, «touch»). Stesse immagini, alla cieca, ordine casuale (seme 20261020).
+- Misure: ribaltamento «separate» → «touch» nel gruppo fast (f) e in ctrl_sep (c); coerenza su ctrl_touch.
+- Regola: abitudine a «separate» **sospetta** se f − c ≥ 0.10 e test esatto di Fisher unilaterale p < 0.05; altrimenti
+  **non sostenuta**. In ogni caso si riporta l'S-1 manuale ricalcolata sostituendo le risposte del riesame alle originali
+  (solo come sensibilità).

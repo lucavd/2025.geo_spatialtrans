@@ -13,3 +13,10 @@ Federica,C-2b ritagli = finestra R2b (parte interna),PASS,"763 confrontate, dive
 Federica,C-2c marcatori -> punti R2b,PASS,max err 1.14e-13 µm
 Federica,C-2d marcatori nel ritaglio,PASS,834/834
 Federica,C-2e cecita' (grep),PASS,"parole trovate {}, finestre 0, catch( JS esclusi 2"
+Luca_rev,C-2f item->immagine,PASS,94 item
+Luca_rev,C-2f ripetute = stessa immagine,PASS,0 ripetute
+Luca_rev,C-2a ritagli = ROI,PASS,"94 immagini, diverse 0"
+Luca_rev,C-2b ritagli = finestra R2b (parte interna),PASS,"94 confrontate, diverse 0"
+Luca_rev,C-2c marcatori -> punti R2b,PASS,max err 1.14e-13 µm
+Luca_rev,C-2d marcatori nel ritaglio,PASS,94/94
+Luca_rev,C-2e cecita' (grep),PASS,"parole trovate {}, finestre 0, catch( JS esclusi 2"

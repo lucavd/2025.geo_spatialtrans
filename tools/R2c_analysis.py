@@ -245,6 +245,26 @@ def main(partial=False):
             ss.append(dict(archetype=A, seg=seg, n=len(g), n_touch=int(t.sum()),
                            sens=float(c_[t].mean()) if t.any() else np.nan, spec=float((~c_[~t]).mean()) if (~t).any() else np.nan))
     out["sens_spec"] = pd.DataFrame(ss)
+    # --- verdetti delle previsioni P-1..P-3 e di CP-5 (pre-registrati; aggiunti dopo la revisione avversariale, RV-10)
+    S = s1L.set_index("archetype"); pv = []
+    p1 = [(a, S.s1_primary[a] >= 0.30) for a in A14] + [(a, S.s1_primary[a] <= 0.15) for a in ["A5", "A6"]]
+    pv.append(dict(prediction="P-1", detail="; ".join(f"{a} {'sì' if ok else 'no'}" for a, ok in p1),
+                   n_ok=sum(ok for _, ok in p1), n=len(p1), verdict="confermata" if all(ok for _, ok in p1) else "smentita"))
+    p2 = [(a, min(S.seg_stardist_he[a], S.seg_cellpose_rgb[a]) < S.s1_primary[a] < max(S.seg_stardist_he[a], S.seg_cellpose_rgb[a])) for a in A14]
+    pv.append(dict(prediction="P-2", detail="; ".join(f"{a} {'sì' if ok else 'no'}" for a, ok in p2),
+                   n_ok=sum(ok for _, ok in p2), n=4, verdict="confermata" if sum(ok for _, ok in p2) >= 3 else "smentita"))
+    ssi = out["sens_spec"].set_index(["archetype", "seg"]); p3 = []
+    for a in ARCH:
+        cp_, sd_ = ssi.loc[(a, "cellpose_rgb")], ssi.loc[(a, "stardist_he")]
+        p3.append((a, int(cp_.n_touch), bool(cp_.sens > sd_.sens and sd_.spec > cp_.spec)))
+    pv.append(dict(prediction="P-3", detail="; ".join(f"{a} {'sì' if ok else 'no'} (touch {n})" for a, n, ok in p3),
+                   n_ok=sum(ok for *_, ok in p3), n=len(p3),
+                   verdict=("non valutabile (potenza)" if sum(n >= 10 for _, n, _ in p3) < 3 else
+                            "confermata" if all(ok for *_, ok in p3) else "smentita")))
+    if "cp5" in out:
+        k5 = int(out["cp5"].same.sum())
+        pv.append(dict(prediction="CP-5", detail=f"stesso esito {k5}/4", n_ok=k5, n=4, verdict="PASS" if k5 >= 3 else "FAIL"))
+    out["predictions"] = pd.DataFrame(pv)
     for k, v in out.items():
         v.to_csv(RES / f"R2c_{k}.csv", index=False)
     return out
