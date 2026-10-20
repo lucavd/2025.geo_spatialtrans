@@ -2,7 +2,7 @@
 
 ## 2026-10-20 (apertura di R3b)
 
-* **Creazione**: file dello step [Nel linfonodo e nel cuore, da quale insieme di nuclei veri prendiamo posizioni, aree e vicini? (R3b)](steps/R3b.md) con dubbi ricevuti, maschere a confronto, cancelli G-1…G-5, previsioni P-1…P-4, controprova CP-1 e regola di decisione, scritti prima di ogni calcolo; previsioni in attesa dell'ok di Luca. Forma delle cellule del cuore (BL-064) rinviata a S1.5 da Luca.
+* **Creazione**: file dello step [Nel linfonodo e nel cuore, da quale insieme di nuclei veri prendiamo posizioni, aree e vicini? (R3b)](steps/R3b.md) con dubbi ricevuti, maschere a confronto, cancelli G-1…G-5, previsioni P-1…P-4, controprova CP-1 e regola di decisione, scritti prima di ogni calcolo; previsioni approvate da Luca in chat il 2026-10-20 («Approvo così»). Forma delle cellule del cuore (BL-064) rinviata a S1.5 da Luca.
 
 ## 2026-10-20 (apertura di S1.4d, primo step con il protocollo v2)
 

@@ -51,7 +51,7 @@ Le voci di BACKLOG che la riga «Prossima sessione» di ROADMAP assegna a R3b[^r
 
 # Attese pre-registrate
 
-Regole del protocollo v2[^protocol]. Commit dei cancelli: vedi `git log` (messaggio «R3b: pre-registrazione»). Ok di Luca sulle previsioni: in attesa.
+Regole del protocollo v2[^protocol]. Commit dei cancelli: vedi `git log` (messaggio «R3b: pre-registrazione»). Ok di Luca sulle previsioni: 2026-10-20, in chat, alla domanda «Approvi le previsioni, i loro intervalli e la regola di decisione così come sono scritti, compresi gli esiti indeterminati dichiarati in anticipo (conteggio di «Space Ranger con la forma di StarDist» al bordo superiore; contatti nella maschera con poco potere su 4 finestre)?»: «Approvo così». Commit: vedi `git log` (messaggio «R3b: ok di Luca sulle previsioni»).
 
 ## Le maschere a confronto
 
@@ -151,6 +151,7 @@ Con la maschera scelta si ricalcolano per linfonodo e cuore, con il codice di R3
 # Verifiche di Luca
 
 - Perimetro, alla domanda «La voce sulla forma vera delle cellule del cuore (BL-064) è assegnata a R3b oppure S1.5. La includiamo in R3b?»: «Rinviarla a S1.5» (trascritto dalla chat, 2026-10-20).
+- Ok sulle previsioni, sui loro intervalli e sulla regola di decisione: «Approvo così» (trascritto dalla chat, 2026-10-20).
 
 # Riproduzione
 
