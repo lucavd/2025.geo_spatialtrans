@@ -138,6 +138,17 @@ Con la maschera scelta si ricalcolano per linfonodo e cuore, con il codice di R3
 - **CP-1**: punti di Luca in µm del ROI (`results/R2b/R2b_points.csv`, rater Luca); centri CO tolti dentro il quadrato della finestra salvo dentro le esclusioni di Luca, dove restano.
 - Calcolo su lesexp-server, al massimo 6 worker a un thread (server condiviso con MMM), file `WORKERS` per cambiarli in corsa, `OMP_NUM_THREADS=1`; uscite stabili in `/mnt/micron/geo_spatialtrans/R3b/`, un file per unità, rilanciabili. Stima: meno di un'ora di calcolo (tempi di S1.4d: 50-130 s per fold di linfonodo, 3 s per il cuore).
 
+## Note di sviluppo e definizioni operative aggiunte durante il calcolo (non cambiano previsioni, intervalli, regola)
+
+- **D-1 md5 «prima».** L'istantanea md5 dei 343 file letti è stata presa alle 13:59 del 2026-10-20, dopo l'avvio della costruzione della maschera CO, che legge soltanto. Controprova: 120 di quei file sono anche nell'elenco md5 di chiusura di S1.4d e coincidono tutti; le altre maschere native di R2 sono lette e mai scritte dal codice di R3b. Dopo il calcolo: 343/343 identici.
+- **D-2 Stima di P-2** come in R2c: media sui nuclei focali appaiati (non media dei rapporti per finestra); l'intervallo è il bootstrap a due stadi pre-registrato.
+- **D-3 φ** arrotondato a tre decimali e limitato a 1, come i φ per tessuto di S1.4d.
+- **D-4 Flag `keep` della maschera CO** ricalcolati con la regola di R2 (`R2_common.nuclei_table`: centroide nel tessuto, fuori dalle bolle, area 4-400 µm²) sulle etichette CO, non ereditati dalle etichette di origine. Le etichette scartate restano nel raster come vicini, come nelle maschere di R2.
+- **D-5 Stadio loo**: si stima solo M2 (l'unico usato dal nucleo simulato); la regressione G-3 confronta M2, ROI di test e seme con S1.4.
+- **D-6 CP-1**: tutti i punti di Luca nelle 8 finestre cadono nel tessuto valido (0 esclusi, `results/R3b/R3b_cp1_inputs.csv`).
+- **D-7 Contatti nella maschera a livello di ROI** (la prima parte di B-124 e B-126, descrittiva) non ricalcolati: per la maschera CO si riporta P-2, sugli stessi nuclei del giudizio di Luca.
+- **D-8 Strumenti**: codice nuovo in `tools/R3b_*.py`, `tools/R3b_*.R`; nessun file degli step passati modificato; le funzioni copiate da R3, S1.4 e S1.4d sono verificate dalla regressione G-3.
+
 # In breve
 
 (da scrivere a numeri verificati)

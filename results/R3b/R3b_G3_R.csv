@@ -1,0 +1,21 @@
+"check","archetype","roi","gen","cells","nuc","s14_cells","s14_terr"
+"R3+S1.4 real","A4","f1",TRUE,TRUE,TRUE,TRUE,TRUE
+"R3+S1.4 real","A4","f2",TRUE,TRUE,TRUE,TRUE,TRUE
+"R3+S1.4 real","A4","p1",TRUE,TRUE,TRUE,TRUE,TRUE
+"R3+S1.4 real","A4","p2",TRUE,TRUE,TRUE,TRUE,TRUE
+"R3+S1.4 real","A4","p3",TRUE,TRUE,TRUE,TRUE,TRUE
+"R3+S1.4 real","A6","r1",TRUE,TRUE,TRUE,TRUE,TRUE
+"R3+S1.4 real","A6","r2",TRUE,TRUE,TRUE,TRUE,TRUE
+"R3+S1.4 real","A6","r3",TRUE,TRUE,TRUE,TRUE,TRUE
+"R3+S1.4 real","A6","r4",TRUE,TRUE,TRUE,TRUE,TRUE
+"R3+S1.4 real","A6","r5",TRUE,TRUE,TRUE,TRUE,TRUE
+"S1.4 loo M2 + S1.4d gen","A4","f1",TRUE,TRUE,TRUE,TRUE,NA
+"S1.4 loo M2 + S1.4d gen","A4","f2",TRUE,TRUE,TRUE,TRUE,NA
+"S1.4 loo M2 + S1.4d gen","A4","p1",TRUE,TRUE,TRUE,TRUE,NA
+"S1.4 loo M2 + S1.4d gen","A4","p2",TRUE,TRUE,TRUE,TRUE,NA
+"S1.4 loo M2 + S1.4d gen","A4","p3",TRUE,TRUE,TRUE,TRUE,NA
+"S1.4 loo M2 + S1.4d gen","A6","r1",TRUE,TRUE,TRUE,TRUE,NA
+"S1.4 loo M2 + S1.4d gen","A6","r2",TRUE,TRUE,TRUE,TRUE,NA
+"S1.4 loo M2 + S1.4d gen","A6","r3",TRUE,TRUE,TRUE,TRUE,NA
+"S1.4 loo M2 + S1.4d gen","A6","r4",TRUE,TRUE,TRUE,TRUE,NA
+"S1.4 loo M2 + S1.4d gen","A6","r5",TRUE,TRUE,TRUE,TRUE,NA

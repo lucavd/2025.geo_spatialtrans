@@ -1,0 +1,17 @@
+check,equal,n
+R2b_matching spaceranger n_manual,True,8
+R2b_matching spaceranger n_obj,True,8
+R2b_matching spaceranger tp,True,8
+R2b_matching spaceranger tp_points,True,8
+R2b_matching spaceranger n_obj_unkept,True,8
+R2b_matching spaceranger n_obj_in_excl,True,8
+R2b_points spaceranger match/label,True,646
+R2c_seg_focal spaceranger seg_contact,True,119
+R2b_matching stardist_he n_manual,True,8
+R2b_matching stardist_he n_obj,True,8
+R2b_matching stardist_he tp,True,8
+R2b_matching stardist_he tp_points,True,8
+R2b_matching stardist_he n_obj_unkept,True,8
+R2b_matching stardist_he n_obj_in_excl,True,8
+R2b_points stardist_he match/label,True,646
+R2c_seg_focal stardist_he seg_contact,True,119

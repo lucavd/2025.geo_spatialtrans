@@ -1,0 +1,4 @@
+gate,passed
+G-3 regressione,True
+G-4 invarianti CO,True
+"G-4 invarianti nucleo simulato (contenimento, sovrapposizioni, validita')",True
