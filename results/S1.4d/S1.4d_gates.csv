@@ -10,6 +10,8 @@
 "G-4a","stesse celle al tetto del prototipo (unita' x seme)","300","300/300",TRUE
 "G-4a*","spiegazione: |dA| / A* max (accordo d'area)","7.45e-07","<= 1e-6",TRUE
 "G-4a*","spiegazione: celle oltre il limite del rumore di griglia","0","0",TRUE
+"G-4a+","cella per cella: celle troncate diverse dal prototipo (300 unita' x seme)","0","0",TRUE
+"G-4a+","codice corretto dopo la revisione: md5 del seme 1 = banco","30","30/30",TRUE
 "G-4b","modo scale = pacchetto db4afea (cell_df e WKB)","330","330/330",TRUE
 "G-4b","modo scale = righe V-c di S1.4b (C-0)","330","330/330",TRUE
 "controllo","codice delle finestre = R2c (prototipo K-2: n e contatti identici)","240","240/240",TRUE

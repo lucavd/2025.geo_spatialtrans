@@ -31,7 +31,7 @@ one <- function(A, k) {
   rnc <- cc$a_n[ev] / cc$a_t[ev]; ran <- cc$a_n[ev]; rsp <- spr(ran, cc$a_t[ev])
   rows <- list(); poi <- NULL; exp1 <- NULL
   for (s in 1:10) {
-    vc <- E$derive_cell_geometry(cen, tess, ct, random_seed = o$seed + 100000 * s, verbose = FALSE)
+    vc <- E$derive_cell_geometry(nucleus_model = "scale", cen, tess, ct, random_seed = o$seed + 100000 * s, verbose = FALSE)
     d <- vc$cell_df; an <- d$nucleus_area
     if (is.null(poi)) {
       poi <- cbind(d$nucleus_cx, d$nucleus_cy)

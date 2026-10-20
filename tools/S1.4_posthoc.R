@@ -32,7 +32,7 @@ ph2 <- do.call(rbind, mclapply(seq_len(nrow(ARCH)), function(ai) { A <- ARCH$arc
   do.call(rbind, lapply(seq_len(nrow(REC)), function(g) {
     ct <- data.frame(cell_type = "c", density = 1e6 / a_ref, nucleus_to_eq_ratio = 0.3, nucleus_area_slope = REC$beta[g], nucleus_area_sdlog = REC$sigma[g])
     sim <- do.call(rbind, lapply(seq_along(rs), function(i) { r <- rs[[i]]
-      o <- E1$derive_cell_geometry(data.frame(cell_id = seq_len(r$n), region_id = 1L, x = r$cells$x, y = r$cells$y, cell_type = "c"),
+      o <- E1$derive_cell_geometry(nucleus_model = "scale", data.frame(cell_id = seq_len(r$n), region_id = 1L, x = r$cells$x, y = r$cells$y, cell_type = "c"),
              list(cell_territories = r$terr, territory_df = data.frame(cell_id = seq_len(r$n), territory_area = r$cells$a_t)), ct,
              random_seed = 20261015 + 50000 + 1000 * ai + 10 * g + i, verbose = FALSE, strict = FALSE)
       data.frame(a_n = o$cell_df$nucleus_area, a_t = r$cells$a_t, interior = r$cells$interior) }))
@@ -54,9 +54,9 @@ ph3 <- do.call(rbind, mclapply(seq_len(nrow(jobs)), function(q) { i <- jobs$i[q]
                clamp = mean(oo$cell_df$nucleus_clamped), not_within = oo$info$n_not_within,
                y_nc_med = median(o$yard$ks_nc), y_nc_max = max(o$yard$ks_nc), y_an_med = median(o$yard$ks_an), y_an_max = max(o$yard$ks_an),
                y_sp_med = median(o$yard$d_sp), y_sp_max = max(o$yard$d_sp)) }
-  rbind(one("M2 clamp 0.85 (primaria)", E0$derive_cell_geometry(cen, tess, ct, random_seed = o$seed, verbose = FALSE)),
-        one("M2 clamp 0.99", E0$derive_cell_geometry(cen, tess, ct, random_seed = o$seed, verbose = FALSE, clamp_factor = 0.99)),
-        one("M2 senza clamp (M1)", E1$derive_cell_geometry(cen, tess, ct, random_seed = o$seed, verbose = FALSE, strict = FALSE))) }, mc.cores = 30))
+  rbind(one("M2 clamp 0.85 (primaria)", E0$derive_cell_geometry(nucleus_model = "scale", cen, tess, ct, random_seed = o$seed, verbose = FALSE)),
+        one("M2 clamp 0.99", E0$derive_cell_geometry(nucleus_model = "scale", cen, tess, ct, random_seed = o$seed, verbose = FALSE, clamp_factor = 0.99)),
+        one("M2 senza clamp (M1)", E1$derive_cell_geometry(nucleus_model = "scale", cen, tess, ct, random_seed = o$seed, verbose = FALSE, strict = FALSE))) }, mc.cores = 30))
 ph3$v_b1 <- mapply(cls, ph3$ks_nc, ph3$y_nc_med, ph3$y_nc_max); ph3$v_b2 <- mapply(cls, ph3$ks_an, ph3$y_an_med, ph3$y_an_max); ph3$v_b3 <- mapply(cls, ph3$d_sp, ph3$y_sp_med, ph3$y_sp_max)
 write.csv(ph3, file.path(RES, "S1.4_ph3.csv"), row.names = FALSE)
 cat("PH-1\n"); print(aggregate(cbind(circ_poi_085, circ_gen_085, circ_gen_1, r3_frac_out_gt0, r_over_dgen_med) ~ archetype, ph1, mean, na.action = na.pass), digits = 3)

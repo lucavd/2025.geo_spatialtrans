@@ -7,7 +7,7 @@
 .libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
 suppressPackageStartupMessages({ library(sf); library(geos); library(parallel); library(arrow) })
 source("R/04b1_extract_regions.R"); source("tools/R3_voronoi_metrics.R"); source("tools/S1.4_mutants.R"); source("tools/S1.4b_mutants.R")
-E <- dcg_env()                                          # derive_cell_geometry() di S1.4, invariato
+E <- dcg_env()                                          # derive_cell_geometry() di S1.4, modo "scale" (da S1.4d il predefinito e' "clip")
 args <- commandArgs(TRUE); STAGE <- args[1]
 OUT <- if (length(args) > 1) args[2] else "/mnt/micron/geo_spatialtrans/S1.4b"
 S14 <- "/mnt/micron/geo_spatialtrans/S1.4"
@@ -91,7 +91,7 @@ loo_one <- function(A, method, k, mut = "none") {
   ccv <- c(o$sims$M2[c("ks_nc", "ks_an", "d_sp", "clamp_all")])
   for (s in seeds) {
     sd <- o$seed + 100000 * s
-    vc <- E$derive_cell_geometry(cen, tess, ct, random_seed = sd, verbose = FALSE)
+    vc <- E$derive_cell_geometry(nucleus_model = "scale", cen, tess, ct, random_seed = sd, verbose = FALSE)
     a_tgt <- vc$cell_df$nucleus_area_target
     m_c <- metr(vc$cell_df$nucleus_area, vc$cell_df$nucleus_clamped, 1 - vc$cell_df$nucleus_area / a_tgt, vc$cell_df$center_dist)
     vb <- L$vab_nuclei(cc$x, cc$y, a_tgt, bnd, GAMMA); nd <- vb$df
@@ -146,7 +146,7 @@ if (STAGE == "prep") {
   # C-perf: Laguerre su S (449 536 celle; S1.4 perf_S.rds); aree estratte con i parametri di S1.4 C-perf (non cronometrate)
   L <- lag_env(); S <- readRDS(file.path(S14, "perf_S.rds")); cen <- S$cen; cen$cell_type <- "a4"
   ct <- data.frame(cell_type = "a4", density = 28096, nucleus_to_eq_ratio = 0.6, nucleus_area_slope = 0.5, nucleus_area_sdlog = 0.3)
-  o <- E$derive_cell_geometry(cen, S$tv, ct, random_seed = 42, verbose = FALSE)
+  o <- E$derive_cell_geometry(nucleus_model = "scale", cen, S$tv, ct, random_seed = 42, verbose = FALSE)
   reg <- geos_set_precision(as_geos_geometry(st_polygon(list(rbind(c(0, 0), c(4000, 0), c(4000, 4000), c(0, 4000), c(0, 0))))), GRID)
   gc(reset = TRUE); t0 <- proc.time()[["elapsed"]]
   vb <- L$vab_nuclei(cen$x, cen$y, o$cell_df$nucleus_area_target, geos_boundary(reg), GAMMA)

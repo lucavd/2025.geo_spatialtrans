@@ -9,7 +9,7 @@
 suppressPackageStartupMessages({ library(sf); library(geos); library(parallel); library(arrow) })
 source("R/04b1_extract_regions.R"); source("R/04b3_tessellate_voronoi.R"); source("tools/R3_voronoi_metrics.R")
 source("tools/S1.4_mutants.R"); source("tools/S1.4c_shape.R")
-E <- dcg_env()                                          # derive_cell_geometry() del pacchetto, invariato (K-c)
+E <- dcg_env()                                          # derive_cell_geometry() del pacchetto, modo "scale" (K-c; da S1.4d il predefinito e' "clip")
 L <- new.env(); sys.source("tools/S1.4b_laguerre.R", envir = L)   # solo near_pairs() per B-8
 args <- commandArgs(TRUE); STAGE <- args[1]
 OUT <- if (length(args) > 1 && !is.na(args[2])) args[2] else "/mnt/micron/geo_spatialtrans/S1.4c"
@@ -99,7 +99,7 @@ gen_one <- function(A, method, k, mut = "none") {
   rows <- list(); chk <- list(); seeds <- if (mut == "none") 0:NSEED else 1L
   for (s in seeds) {
     sd <- o$seed + 100000 * s
-    vc <- E$derive_cell_geometry(cen, tess, ct, random_seed = sd, verbose = FALSE)
+    vc <- E$derive_cell_geometry(nucleus_model = "scale", cen, tess, ct, random_seed = sd, verbose = FALSE)
     a_tgt <- vc$cell_df$nucleus_area_target
     m_c <- metr(vc$cell_df$nucleus_area, vc$cell_df$nucleus_clamped, 1 - vc$cell_df$nucleus_area / a_tgt, vc$cell_df$center_dist)
     ref <- ob14$m[ob14$m$seed_idx == s & ob14$m$variant == "V-c", names(m_c)]
@@ -192,7 +192,7 @@ if (STAGE == "prep") {
   # C-perf: K-2 su S (449 536 celle; S1.4 perf_S.rds), aree estratte con i parametri di C-perf di S1.4 (non cronometrate)
   S <- readRDS(file.path(S14, "perf_S.rds")); cen <- S$cen; cen$cell_type <- "a4"
   ct <- data.frame(cell_type = "a4", density = 28096, nucleus_to_eq_ratio = 0.6, nucleus_area_slope = 0.5, nucleus_area_sdlog = 0.3)
-  o <- E$derive_cell_geometry(cen, S$tv, ct, random_seed = 42, verbose = FALSE)
+  o <- E$derive_cell_geometry(nucleus_model = "scale", cen, S$tv, ct, random_seed = 42, verbose = FALSE)
   a_t <- S$tv$territory_df$territory_area[match(cen$cell_id, S$tv$territory_df$cell_id)]
   gc(reset = TRUE); t0 <- proc.time()[["elapsed"]]
   Tg <- geos_set_precision(as_geos_geometry(E$.dcg_as_polys(S$tv$cell_territories)), S14C_GRID)

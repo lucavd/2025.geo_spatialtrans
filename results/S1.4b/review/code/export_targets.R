@@ -19,7 +19,7 @@ one <- function(A, k) { method <- ARCH$primary[ARCH$archetype == A]
   cen <- data.frame(cell_id = seq_len(n), region_id = 1L, x = cc$x, y = cc$y, cell_type = "c")
   tess <- list(cell_territories = te$terr, territory_df = data.frame(cell_id = seq_len(n), territory_area = cc$a_t))
   df <- data.frame(x = cc$x, y = cc$y, d_reg = geos_distance(geos_make_point(cc$x, cc$y), geos_boundary(reg)), ev = ev, a_t = cc$a_t, a_n = cc$a_n, d_gen = cc$d_gen)
-  for (s in 1:10) df[[paste0("tgt", s)]] <- E$derive_cell_geometry(cen, tess, ct, random_seed = o$seed + 100000 * s, verbose = FALSE)$cell_df$nucleus_area_target
+  for (s in 1:10) df[[paste0("tgt", s)]] <- E$derive_cell_geometry(nucleus_model = "scale", cen, tess, ct, random_seed = o$seed + 100000 * s, verbose = FALSE)$cell_df$nucleus_area_target
   write_parquet(df, file.path(OD, sprintf("%s_fold%d.parquet", A, k)))
   data.frame(A = A, k = k, y_nc_med = median(o$yard$ks_nc), y_nc_max = max(o$yard$ks_nc), y_an_med = median(o$yard$ks_an), y_an_max = max(o$yard$ks_an),
              y_sp_med = median(o$yard$d_sp), y_sp_max = max(o$yard$d_sp), y_b7_med = median(b$yard_b7), y_b7_max = max(b$yard_b7), b7_real = b$b7_real, real_sp = o$real_sp) }

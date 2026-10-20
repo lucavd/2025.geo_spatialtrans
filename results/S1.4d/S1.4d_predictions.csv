@@ -19,4 +19,4 @@
 "P-3","A5","cervello",0,0,0,0,0,0,"confermata",5,NA
 "P-3","A6","cuore",0,0,0,0,0,0,"confermata",5,NA
 "P-5 (tempo, s)","S","sezione S",224.587333333333,1.66150116193494,221.264331009463,227.910335657203,0,300,"confermata",3,NA
-"P-5 (memoria, GB)","S","sezione S",6.35761642456055,0,6.35761642456055,6.35761642456055,0,8,"confermata",1,NA
+"P-5 (memoria, GiB; GB decimali = GiB x 1.0737)","S","sezione S",6.35761642456055,0,6.35761642456055,6.35761642456055,0,8,"confermata",1,NA

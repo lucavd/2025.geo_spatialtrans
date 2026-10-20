@@ -41,7 +41,7 @@ for (i in seq_len(nrow(ARCH))) { A <- ARCH$archetype[i]; p <- ARCH$primary[i]
   d2[[A]] <- data.frame(archetype = A, nc = te$cells$a_n[ev] / te$cells$a_t[ev], source = "reale")
   for (m in c("M0", "M2")) { f <- o$fits[[m]]
     ct <- data.frame(cell_type = "c", density = 1e6 / f[["a_ref"]], nucleus_to_eq_ratio = f[["rho"]], nucleus_area_slope = f[["beta"]], nucleus_area_sdlog = f[["sigma"]])
-    s <- derive_cell_geometry(cen, tess, ct, random_seed = o$seed, verbose = FALSE)
+    s <- derive_cell_geometry(nucleus_model = "scale", cen, tess, ct, random_seed = o$seed, verbose = FALSE)
     nc <- s$cell_df$nucleus_area[ev] / te$cells$a_t[ev]
     chk[[length(chk) + 1]] <- data.frame(archetype = A, model = m, ks_recomputed = ks_d(nc, d2[[A]]$nc), ks_stored = o$sims[[m]][["ks_nc"]])
     d2[[paste(A, m)]] <- data.frame(archetype = A, nc = nc, source = if (m == "M0") "M0 design" else "M2 stimato")

@@ -44,6 +44,9 @@ G("G-4a", "forma pre-registrata: celle con differenza simmetrica / A* > 1e-6", s
 G("G-4a", "stesse celle al tetto del prototipo (unita' x seme)", sum(g4a$units_same_ncap), "300/300", sum(g4a$units_same_ncap) == 300 && nrow(fo) == 300)
 G("G-4a*", "spiegazione: |dA| / A* max (accordo d'area)", signif(max(g4a$dA_rel_max), 3), "<= 1e-6", max(g4a$dA_rel_max) <= 1e-6)
 G("G-4a*", "spiegazione: celle oltre il limite del rumore di griglia", sum(g4a$cells_beyond_grid_bound), "0", sum(g4a$cells_beyond_grid_bound) == 0)
+if (file.exists(file.path(RES, "S1.4d_g4a_cells.csv"))) { gc4 <- read.csv(file.path(RES, "S1.4d_g4a_cells.csv"))   # dopo la revisione (F-04)
+  G("G-4a+", "cella per cella: celle troncate diverse dal prototipo (300 unita' x seme)", sum(gc4$diff_trunc), "0", nrow(gc4) == 300 && sum(gc4$diff_trunc) == 0)
+  G("G-4a+", "codice corretto dopo la revisione: md5 del seme 1 = banco", sum(gc4$md5_same_as_bench, na.rm = TRUE), "30/30", sum(gc4$md5_same_as_bench, na.rm = TRUE) == 30) }
 lg <- rd("legacy"); write.csv(lg, file.path(RES, "S1.4d_g4b_legacy.csv"), row.names = FALSE)
 G("G-4b", "modo scale = pacchetto db4afea (cell_df e WKB)", sum(lg$identical_db4afea), "330/330", nrow(lg) == 330 && all(lg$identical_db4afea))
 G("G-4b", "modo scale = righe V-c di S1.4b (C-0)", sum(lg$c0_identical_S14b), "330/330", nrow(lg) == 330 && all(lg$c0_identical_S14b))
@@ -80,9 +83,9 @@ for (A in names(TIS)) { v <- nc$sim_nc95[nc$archetype == A]
 mem_gb <- { l <- readLines(file.path(OUT, "perf.log")); as.numeric(sub(".*: ", "", grep("Maximum resident", l, value = TRUE))) / 1024^2 }
 pt <- judge(mean(pf$times), sd(pf$times) / sqrt(3), 0, 300, frac = FALSE)
 P[[length(P) + 1]] <- cbind(id = "P-5 (tempo, s)", archetype = "S", tissue = "sezione S", pt, n_units = 3, n_windows = NA)
-P[[length(P) + 1]] <- cbind(id = "P-5 (memoria, GB)", archetype = "S", tissue = "sezione S", judge(mem_gb, 0, 0, 8, frac = FALSE), n_units = 1, n_windows = NA)
+P[[length(P) + 1]] <- cbind(id = "P-5 (memoria, GiB; GB decimali = GiB x 1.0737)", archetype = "S", tissue = "sezione S", judge(mem_gb, 0, 0, 8, frac = FALSE), n_units = 1, n_windows = NA)
 pred <- do.call(rbind, P); write.csv(pred, file.path(RES, "S1.4d_predictions.csv"), row.names = FALSE)
-write.csv(data.frame(times_s = pf$times, warmup_s = pf$warmup_s, mem_gb = mem_gb, env_before = paste(pf$env_before, collapse = " | "),
+write.csv(data.frame(times_s = pf$times, warmup_s = pf$warmup_s, mem_gib = mem_gb, mem_gb_decimal = mem_gb * 1024^3 / 1e9, env_before = paste(pf$env_before, collapse = " | "),
                      env_after = paste(pf$env_after, collapse = " | ")), file.path(RES, "S1.4d_perf.csv"), row.names = FALSE)
 cp <- do.call(rbind, lapply(names(TIS), function(A) cbind(id = "CP-1", archetype = A, tissue = TIS[[A]], s1("Kc", A))))
 cp$dense <- cp$archetype %in% c("A1", "A2", "A3", "A4")

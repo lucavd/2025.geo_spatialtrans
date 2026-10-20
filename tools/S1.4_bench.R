@@ -92,7 +92,7 @@ loo_one <- function(A, method, k) {
                d_sp = abs(real_sp - spear(cj$a_n[e2], cj$a_t[e2]))) }))
   seed <- BASE14 + 1000 * ai + 10 * k
   cen <- cen_of(te); tess <- tess_of(te)
-  run <- function(ct, sd, ...) E$derive_cell_geometry(cen, tess, ct, random_seed = sd, verbose = FALSE, ...)
+  run <- function(ct, sd, ...) E$derive_cell_geometry(nucleus_model = "scale", cen, tess, ct, random_seed = sd, verbose = FALSE, ...)
   ev_sim <- function(o) { a <- o$cell_df$nucleus_area[ev]
     c(ks_nc = ks_d(a / te$cells$a_t[ev], real_nc), ks_an = ks_d(a, real_an), d_sp = abs(spear(a, te$cells$a_t[ev]) - real_sp),
       clamp_all = mean(o$cell_df$nucleus_clamped), clamp_ev = mean(o$cell_df$nucleus_clamped[ev]),
@@ -141,7 +141,7 @@ rec_one <- function(A) {
   out <- do.call(rbind, lapply(seq_len(nrow(REC)), function(g) {
     fp <- c(rho = 0.3, beta = REC$beta[g], sigma = REC$sigma[g])
     sim <- do.call(rbind, lapply(seq_along(rs), function(i) { r <- rs[[i]]
-      o <- E$derive_cell_geometry(cen_of(r), tess_of(r), ctab(fp, a_ref), random_seed = BASE14 + 50000 + 1000 * ai + 10 * g + i, verbose = FALSE)
+      o <- E$derive_cell_geometry(nucleus_model = "scale", cen_of(r), tess_of(r), ctab(fp, a_ref), random_seed = BASE14 + 50000 + 1000 * ai + 10 * g + i, verbose = FALSE)
       data.frame(a_n = o$cell_df$nucleus_area, a_t = r$cells$a_t, interior = r$cells$interior, clamped = o$cell_df$nucleus_clamped) }))
     s <- sim[sim$interior, ]
     ft <- E$fit_nucleus_size_model(s$a_n, s$a_t, a_ref, "full")
@@ -175,7 +175,7 @@ null_one <- function(i, model) {
   res <- list()
   for (v in c("circle", "ellipse")) {
     ct <- ctab(fs$fit, 1e6 / dens, nucleus_aspect = if (v == "circle") 1 else 1.6, nucleus_orient = if (v == "circle") "random" else "territory")
-    o <- tryCatch(E$derive_cell_geometry(cen, tv, ct, random_seed = seed, verbose = FALSE, strict = FALSE), error = function(e) conditionMessage(e))
+    o <- tryCatch(E$derive_cell_geometry(nucleus_model = "scale", cen, tv, ct, random_seed = seed, verbose = FALSE, strict = FALSE), error = function(e) conditionMessage(e))
     if (is.character(o)) { res[[v]] <- c(error = 1); next }
     cd <- o$cell_df; un <- !cd$nucleus_clamped
     ga <- as.numeric(st_area(o$cell_nuclei))

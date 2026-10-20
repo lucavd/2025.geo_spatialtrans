@@ -19,7 +19,7 @@ for (arg in commandArgs(TRUE)) {
   cen <- data.frame(cell_id = seq_len(n), region_id = 1L, x = cc$x, y = cc$y, cell_type = "c")
   tess <- list(cell_territories = te$terr, territory_df = data.frame(cell_id = seq_len(n), territory_area = cc$a_t))
   for (s in 0:10) {
-    vc <- E$derive_cell_geometry(cen, tess, ct, random_seed = o$seed + 100000 * s, verbose = FALSE)$cell_df
+    vc <- E$derive_cell_geometry(nucleus_model = "scale", cen, tess, ct, random_seed = o$seed + 100000 * s, verbose = FALSE)$cell_df
     a <- vc$nucleus_area; tg <- vc$nucleus_area_target
     mine <- c(ks_nc = ksD(a[ev] / cc$a_t[ev], cc$a_n[ev] / cc$a_t[ev]), ks_an = ksD(a[ev], cc$a_n[ev]),
               d_sp = abs(cor(a[ev], cc$a_t[ev], method = "spearman") - cor(cc$a_n[ev], cc$a_t[ev], method = "spearman")),

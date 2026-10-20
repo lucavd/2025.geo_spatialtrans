@@ -24,7 +24,7 @@ for (jb in jobs) {
   cen <- data.frame(cell_id = seq_len(n), region_id = 1L, x = te$cells$x, y = te$cells$y, cell_type = "c")
   tess <- list(cell_territories = te$terr, territory_df = data.frame(cell_id = seq_len(n), territory_area = te$cells$a_t))
   seed <- L14$seed + 100000 * s_idx
-  o <- E$derive_cell_geometry(cen, tess, ct, random_seed = seed, verbose = FALSE)
+  o <- E$derive_cell_geometry(nucleus_model = "scale", cen, tess, ct, random_seed = seed, verbose = FALSE)
   cd <- o$cell_df
   ev <- te$cells$interior & te$cells$matched & is.finite(te$cells$a_n) & te$cells$a_n > 0
   real_an <- te$cells$a_n[ev]; real_nc <- real_an / te$cells$a_t[ev]

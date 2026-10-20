@@ -131,5 +131,33 @@ ck("U15a schema di cell_df (clip) e centro = generatore", isok(o) && identical(n
    o$info$nucleus_model == "clip" && o$info$nucleus_center == "generator", msg(o))
 o <- safe(DCG(xL$cen, xL$tess, CT(250), nucleus_center = "poi"))
 ck("U15b clip con centro POI: dentro, area = bersaglio", isok(o) && inside(o, xL) && rel(o$cell_df$nucleus_area, 250) <= 1e-6 && o$cell_df$nucleus_cx != 5, msg(o))
+# ---- test aggiunti dopo la revisione avversariale (rilievo F-05: mutanti del revisore R5, R7, R8, R10, R22 non rilevati) ----
+# U18 ellisse con asse maggiore lungo il lato corto e tetto = territorio rientrato: s_alto deve usare il semiasse minore (R5)
+xN <- mk(list(st_polygon(list(rbind(c(0, 0), c(4, 0), c(4, 20), c(0, 20), c(0, 0))))), 2, 10)
+o <- safe(DCG(xN$cen, xN$tess, CT(80, nucleus_aspect = 3, nucleus_orient = "0")))
+ck("U18 ellisse al tetto in un territorio stretto: area = territorio rientrato", isok(o) && o$cell_df$nucleus_capped &&
+   rel(o$cell_df$nucleus_area, o$cell_df$nucleus_area_cap) <= 1e-6, if (isok(o)) signif(rel(o$cell_df$nucleus_area, o$cell_df$nucleus_area_cap), 3) else msg(o))
+# U19 orientamento rispettato nel modo clip (R7): asse maggiore del nucleo dai momenti = angolo richiesto
+xB <- mk(list(sqp(0, 0, 40)), 20, 20)
+ax <- vapply(c(0.3, 1.2), function(th) { o <- safe(DCG(xB$cen, xB$tess, CT(30, nucleus_aspect = 3, nucleus_orient = as.character(th))))
+  if (isok(o)) E$.dcg_territory_axis(o$cell_nuclei) else NA_real_ }, 0)
+ck("U19 orientamento dell'ellisse rispettato (0.3 e 1.2 rad, scarto < 0.01)", all(is.finite(ax)) && all(abs(ax - c(0.3, 1.2)) < 0.01), signif(ax, 4))
+# U20 nucleo in piu' parti (territorio con un frammento staccato): una riga per cella, aree allineate (R8)
+mp <- st_multipolygon(list(list(rbind(c(0, 0), c(10, 0), c(10, 10), c(0, 10), c(0, 0))), list(rbind(c(10.5, 0), c(12.5, 0), c(12.5, 2), c(10.5, 2), c(10.5, 0)))))
+xM <- mk(list(mp, sqp(20, 0, 10)), c(5, 25), c(5, 5))
+o <- safe(DCG(xM$cen, xM$tess, data.frame(cell_type = "c", density = 1000, nucleus_radius = sqrt(c(102, 50) / pi)[1])))
+ok20 <- isok(o) && length(o$cell_nuclei) == 2 && nrow(o$cell_df) == 2 && inherits(o$cell_nuclei, "sfc_MULTIPOLYGON") && o$info$n_multipart == 1 &&
+  all(rel(as.numeric(st_area(o$cell_nuclei)), o$cell_df$nucleus_area) <= 1e-9) && all(rel(o$cell_df$nucleus_area, o$cell_df$nucleus_area_cap) <= 1e-6) && inside(o, xM)
+ck("U20 nucleo in piu' parti: una riga per cella, MULTIPOLYGON, aree allineate, dentro", ok20, if (isok(o)) sprintf("n=%d multipart=%d", length(o$cell_nuclei), o$info$n_multipart) else msg(o))
+# U21 la guardia C3 del modo clip e' attiva (R10): con un territorio "rientrato" che in realta' esce di 1e-3 µm deve fermarsi
+if (isok(o8)) {
+  f_in <- E$.dcg_inset; E$.dcg_inset <- function(gt, inset, grid) geos::geos_set_precision(geos::geos_buffer(gt, 1e-3), grid)
+  o21 <- safe(DCG(x8$cen, x8$tess, ct8, random_seed = 11)); E$.dcg_inset <- f_in
+  ck("U21 guardia C3 attiva nel modo clip (strict): nuclei fuori -> errore", !isok(o21) && grepl("C3", msg(o21)), msg(o21))
+  # U22 tolleranza dichiarata: fra le celle che il solutore ha cercato, mediana dell'errore <= area_rel_tol e >= 75 % entro (R22)
+  d8 <- o8$cell_df; r8 <- rel(d8$nucleus_area, d8$nucleus_area_cap); k8 <- d8$nucleus_clipped & !(d8$nucleus_capped & d8$nucleus_n_iter == 0)
+  ck("U22 tolleranza: mediana |A - A*| / A* <= 1e-7 e >= 75 % delle celle entro 1e-7", median(r8[k8]) <= 1e-7 && mean(r8[k8] <= 1e-7) >= 0.75,
+     sprintf("mediana %.2e, entro 1e-7 %.3f", median(r8[k8]), mean(r8[k8] <= 1e-7)))
+}
 nf <- sum(!unlist(res)); cat(sprintf("RESULT %d/%d PASS (mutante %s)\n", length(res) - nf, length(res), MUT))
 quit(status = if (nf) 1 else 0)

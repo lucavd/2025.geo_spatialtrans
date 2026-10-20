@@ -76,7 +76,7 @@ r1 <- load_real("A1", "r1", "cellpose_rgb")
 tess <- list(cell_territories = r1$terr, territory_df = data.frame(cell_id = seq_len(r1$n), territory_area = r1$cells$a_t))
 cen <- data.frame(cell_id = seq_len(r1$n), region_id = 1L, x = r1$cells$x, y = r1$cells$y, cell_type = "c")
 ctr <- data.frame(cell_type = "c", density = 1e4, nucleus_to_eq_ratio = 0.45, nucleus_area_slope = 0.5, nucleus_area_sdlog = 0.3)
-h <- vapply(1:2, function(i) digest(serialize(derive_cell_geometry(cen, tess, ctr, random_seed = 5, verbose = FALSE)[1:2], NULL)), "")
+h <- vapply(1:2, function(i) digest(serialize(derive_cell_geometry(nucleus_model = "scale", cen, tess, ctr, random_seed = 5, verbose = FALSE)[1:2], NULL)), "")
 vr("C", "C-rip", "A1", "due run sullo stesso ROI reale (md5)", substr(h[1], 1, 8), "identici", pf(h[1] == h[2]))
 # C-perf
 pp <- function(v) { x <- readLines(file.path(OUT, sprintf("perf_%s.log", v)))

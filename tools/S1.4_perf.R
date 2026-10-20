@@ -19,7 +19,7 @@ if (STEP == "prep") {
   ct <- data.frame(cell_type = "a4", density = 28096, nucleus_to_eq_ratio = 0.6, nucleus_area_slope = 0.5, nucleus_area_sdlog = 0.3,
                    nucleus_aspect = if (STEP == "ellipse") 1.6 else 1, nucleus_orient = if (STEP == "ellipse") "territory" else "random")
   gc(reset = TRUE); t0 <- proc.time()[["elapsed"]]
-  o <- derive_cell_geometry(cen, S$tv, ct, random_seed = 42, verbose = FALSE)
+  o <- derive_cell_geometry(nucleus_model = "scale", cen, S$tv, ct, random_seed = 42, verbose = FALSE)
   el <- proc.time()[["elapsed"]] - t0
   cat(sprintf("PERF %s n=%d elapsed_s=%.1f clamped=%.4f not_within=%d\n", STEP, o$info$n, el, o$info$frac_clamped, o$info$n_not_within))
 }

@@ -21,7 +21,7 @@
 #' (intersezione sulla griglia), con la scala s >= 1 scelta perche' area = A* (|area - A*| / A* <= `area_rel_tol`).
 #' Solo le celle ritagliate a s = 1 cercano s: primo passo s = sqrt(A* / area(1)), poi falsa posizione di Illinois
 #' nell'intervallo, con ricaduta sulla bisezione; arresto anche quando lo spostamento dei vertici fra gli estremi e' sotto
-#' un quarto della griglia. Nuclei contenuti nel proprio territorio e disgiunti per costruzione.
+#' un quarto della griglia (euristica: `area_rel_tol` e' un obiettivo, non una garanzia; S1.4d). Nuclei contenuti nel proprio territorio e disgiunti per costruzione.
 #'
 #' `nucleus_model = "scale"` (D-S1.4.2, il modello fino a S1.4c, invariato): fattore di scala uniforme s <= 1. Cerchio:
 #' raggio circoscritto k * a * s <= clamp_factor * d (d = distanza del centro dal bordo del territorio). Ellisse: s parte
@@ -43,7 +43,8 @@
 #' @param clamp_factor frazione della distanza dal bordo concessa al nucleo (solo "scale", design: 0.85), in (0, 1).
 #' @param clip_inset_um rientro del territorio per il ritaglio (µm, > 0; S1.4c D-1, BL-118a).
 #' @param snap_grid_um griglia delle intersezioni (µm, > 0; F1 di S1.3d / V2 di S1.3b).
-#' @param area_rel_tol tolleranza relativa sull'area del nucleo ritagliato (> 0, < 1e-3).
+#' @param area_rel_tol tolleranza relativa obiettivo sull'area del nucleo ritagliato (> 0, < 1e-3); misurato in S1.4d: 94.1 % delle
+#'   celle reali entro 1e-7, tutte entro 7.4e-7; per nuclei sotto il µm² il rumore della griglia supera 1e-6.
 #' @param poi_precision_um precisione di `polylabelr::poi()` (µm).
 #' @param strict se TRUE (default) errore se un nucleo non e' dentro il proprio territorio (C3).
 #' @param verbose stampa un riepilogo.
@@ -319,8 +320,10 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
     side <- integer(m); wa <- rep(Inf, m); wb <- rep(Inf, m)
     done <- abs(ahi - A) / A <= tol                  # tetto = area del territorio rientrato: hi e' gia' la soluzione
     for (k in seq_len(max_iter)) {
-      # arresto anche quando lo spostamento dei vertici fra gli estremi e' < griglia / 4: la geometria sulla griglia
-      # non puo' piu' cambiare (nuclei piccoli: il rumore della griglia supera area_rel_tol; sviluppo S1.4d, dev D-2)
+      # arresto anche quando lo spostamento dei vertici fra gli estremi e' < griglia / 4 (nota D-1 di S1.4d). E' un'euristica:
+      # i vertici d'intersezione scorrono lungo il lato del territorio piu' dello spostamento radiale quando il taglio e'
+      # radente (revisione S1.4d, F-02), quindi area_rel_tol e' un obiettivo, non una garanzia: sui tassellamenti reali di
+      # S1.4d il 94.1 % delle celle e' entro 1e-7 e tutte entro 7.4e-7; sotto il µm² il rumore della griglia supera 1e-6
       act <- which(!done & (hi - lo) * rv > grid / 4)
       if (!length(act)) break
       L <- lo[act]; H <- hi[act]; W <- H - L
@@ -339,6 +342,8 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
       wb[act] <- wa[act]; wa[act] <- W
       done[act] <- abs(fm) / A[act] <= tol
     }
+    left <- sum(!done & (hi - lo) * rv > grid / 4)
+    if (left) warning(sprintf("derive_cell_geometry(): %d celle non convergenti dopo %d iterazioni", left, max_iter))
     best <- ifelse(abs(alo - A) <= abs(ahi - A), lo, hi)
     s[need] <- best
     nuc[need] <- clip_at(need, best)

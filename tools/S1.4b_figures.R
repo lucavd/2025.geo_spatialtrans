@@ -43,7 +43,7 @@ for (A in c("A2", "A4")) { method <- if (A == "A4") "spaceranger" else "cellpose
   o <- readRDS(file.path(S14, "loo", sprintf("%s_%s_fold1.rds", A, method))); te <- readRDS(file.path(S14, "real", sprintf("%s_%s_%s.rds", A, o$roi_test, method)))
   cc <- te$cells; n <- te$n; f2 <- o$fits$M2
   ct <- data.frame(cell_type = "c", density = 1e6 / f2[["a_ref"]], nucleus_to_eq_ratio = f2[["rho"]], nucleus_area_slope = f2[["beta"]], nucleus_area_sdlog = f2[["sigma"]])
-  vc <- E$derive_cell_geometry(data.frame(cell_id = seq_len(n), region_id = 1L, x = cc$x, y = cc$y, cell_type = "c"),
+  vc <- E$derive_cell_geometry(nucleus_model = "scale", data.frame(cell_id = seq_len(n), region_id = 1L, x = cc$x, y = cc$y, cell_type = "c"),
           list(cell_territories = te$terr, territory_df = data.frame(cell_id = seq_len(n), territory_area = cc$a_t)), ct, random_seed = o$seed + 100000, verbose = FALSE)
   w <- r3_roi_window(A, o$roi_test, rois); reg <- geos_set_precision(as_geos_geometry(w$poly), 1e-6)
   vb <- vab_nuclei(cc$x, cc$y, vc$cell_df$nucleus_area_target, geos_boundary(reg)); pd <- power_diagram(cc$x, cc$y, vb$df$Rc^2, reg)

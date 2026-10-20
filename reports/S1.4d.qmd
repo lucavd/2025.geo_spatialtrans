@@ -1,0 +1,141 @@
+---
+title: "S1.4d: il nucleo ritagliato nel territorio e riportato all'area giusta entra nel pacchetto e riproduce i contatti contati a mano?"
+subtitle: "geo_spatialtrans, report di step (protocollo v2)"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+execute:
+  echo: false
+  warning: false
+---
+
+```{r setup}
+.libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({ library(ggplot2); library(knitr) })
+theme_set(theme_bw(base_size = 11))
+RES <- "../results/S1.4d"
+rd <- function(f) read.csv(file.path(RES, f), stringsAsFactors = FALSE)
+TIS <- c(A1 = "intestino", A2 = "tumore del colon", A3 = "stroma", A4 = "linfonodo", A5 = "cervello", A6 = "cuore")
+pred <- rd("S1.4d_predictions.csv"); gates <- rd("S1.4d_gates.csv"); cp <- rd("S1.4d_counterproof.csv")
+f4 <- function(x) formatC(x, digits = 3, format = "fg", flag = "#")
+```
+
+{{< include _S1.4d_inbreve.md >}}
+
+# Dubbi rinviati
+
+{{< include _S1.4d_rinviati.md >}}
+
+# Cancelli
+
+Pre-registrazione: commit `5118bce` (cancelli), ok di Luca sulle previsioni il 2026-10-20 (commit `eae40f6`, «Approvo così»). Note di sviluppo D-1…D-7 scritte prima del banco (commit `3dda369`).
+
+```{r gates}
+kable(gates[, c("gate", "check", "value", "threshold", "pass")], col.names = c("cancello", "controllo", "valore", "soglia", "superato"))
+```
+
+- **G-1** (batteria di test) e **G-2** (mutanti) superati: 31/31 asserzioni nuove, 63/63 di S1.4 in modo «scale» con esiti riscritti identici a quelli committati, 8/8 dello strumento OKF; 7 mutanti su 7 rilevati, M6 solo dopo l'aggiunta del test diretto dell'helper di conversione (nota D-3: il mutante è equivalente sul percorso della funzione).
+- **G-3 fallito come scritto in un solo nucleo** su `r format(sum(rd("S1.4d_g3_invariants.csv")$cells), big.mark = " ")` (vedi sotto): l'errore d'area relativo massimo è 1.46e-6 contro la soglia 1e-6. Tutte le altre invarianti sono a zero.
+- **G-4** superato nella forma pre-registrata: nessuna cella con differenza simmetrica / area bersaglio > 1e-6 rispetto al prototipo (il timore della nota D-2 non si è avverato sui tessuti reali); stesse celle al tetto in 300/300 unità; modo «scale» identico al pacchetto di `db4afea` e alle righe di S1.4b in 330/330.
+- **G-5**: vedi «Revisione avversariale».
+
+## Il nucleo che supera la soglia di G-3
+
+```{r g3}
+g3 <- rd("S1.4d_g3_invariants.csv")
+kable(transform(g3, area_rel_max = signif(area_rel_max, 3), overlap_max = signif(overlap_max, 3)))
+```
+
+Il solo nucleo sopra 1e-6 è in un tassellamento nullo CSR (punti a caso) del linfonodo, ROI p2, seme 20280109, cella 13822: territorio 0.216 µm², nucleo 0.176 µm² (al tetto φ = 0.816), perimetro 2.64 µm, 11 iterazioni. L'errore assoluto è 2.6e-7 µm²; il limite del rumore della griglia di 1e-6 µm per quel perimetro (√2/2 · griglia · perimetro / area) vale 1.06e-5 in relativo, sette volte più dell'errore osservato. È la stessa causa della nota D-2: la tolleranza relativa di 1e-6 non è raggiungibile per nuclei sotto il µm², che nei tessuti reali non esistono (il nucleo reale più piccolo misura 4.05 µm²; errore massimo per unità 7.4e-7 nei tassellamenti primari, 4.7e-7 con StarDist, 5.7e-7 sulla sezione S). **Errore di pre-registrazione della soglia, non del software; decisione di Luca nel riassunto.**
+
+# Previsioni
+
+```{r preds}
+pp <- pred; pp$stima <- sprintf("%s ± %s", f4(pp$est), f4(2 * pp$se)); pp$intervallo <- sprintf("%s–%s", f4(pp$int_lo), f4(pp$int_hi))
+pp$tessuto <- pp$tissue
+kable(pp[, c("id", "tessuto", "stima", "intervallo", "verdict")], col.names = c("previsione", "tessuto", "stima ± 2 SE", "intervallo di rilevanza", "esito"))
+```
+
+Atteso e fonte degli intervalli: file dello step (`docs/steps/S1.4d.md`, tabella delle previsioni). Unità: semi (P-1, P-4), ROI (P-2, P-3), ripetizioni (P-5); estremi tagliati a [0, 1] per le frazioni (nota D-5).
+
+```{r fig-s1, fig.width = 9, fig.height = 4.2}
+d <- rbind(transform(pred[pred$id == "P-1", ], model = "nucleo ritagliato, centri primari"),
+           transform(pred[pred$id == "P-4", ], model = "nucleo ritagliato, centri StarDist"),
+           transform(cp[cp$id == "CP-1", ], model = "vecchio modello (scala)"))
+d$tissue <- factor(d$tissue, levels = TIS)
+ci <- unique(pred[pred$id == "P-1", c("tissue", "int_lo", "int_hi")]); ci$tissue <- factor(ci$tissue, levels = TIS)
+ggplot(d, aes(x = model, y = est, colour = model)) +
+  geom_rect(data = ci, aes(xmin = -Inf, xmax = Inf, ymin = int_lo, ymax = int_hi), inherit.aes = FALSE, fill = "grey85", alpha = 0.6) +
+  geom_pointrange(aes(ymin = pmax(0, est - 2 * se), ymax = pmin(1, est + 2 * se)), size = 0.3) +
+  facet_wrap(~tissue, nrow = 1) + labs(x = NULL, y = "frazione di nuclei a contatto", colour = NULL) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), legend.position = "bottom")
+```
+
+Cosa guardare: il punto rosso (nucleo ritagliato, centri primari) dentro la fascia grigia (intervallo del conteggio manuale di Luca) in cinque tessuti, sul bordo nel linfonodo; il vecchio modello a zero nei quattro tessuti densi; nel linfonodo i centri StarDist (punto verde) portano la frazione dentro la fascia.
+
+## Cellule quasi senza citoplasma nel tumore del colon (P-3 smentita): analisi post hoc
+
+```{r posthoc}
+ph <- rd("S1.4d_posthoc_nc.csv")
+roi <- aggregate(. ~ archetype + roi, data = ph[, setdiff(names(ph), "seed")], FUN = mean)
+ag <- aggregate(. ~ archetype, data = roi[, setdiff(names(roi), "roi")], FUN = mean)
+ag$tessuto <- TIS[ag$archetype]
+kable(transform(ag[, c("tessuto", "sigma", "tgt_nc95", "real_nc95", "tgt_nc_q99", "real_nc_q99", "b4_phi100", "b4_phi095", "b4_phi090")],
+                sigma = f4(sigma), tgt_nc95 = f4(tgt_nc95), real_nc95 = f4(real_nc95), tgt_nc_q99 = f4(tgt_nc_q99), real_nc_q99 = f4(real_nc_q99),
+                b4_phi100 = f4(b4_phi100), b4_phi095 = f4(b4_phi095), b4_phi090 = f4(b4_phi090)),
+      col.names = c("tessuto", "σ del modello", "bersagli ≥ 0.95 A_T", "reali ≥ 0.95 A_T", "q99 bersaglio/A_T", "q99 reale", "troncati con φ = 1", "φ = 0.95", "φ = 0.90"))
+```
+
+Post hoc (`tools/S1.4d_posthoc_nc.R`, dichiarata dopo i risultati): le aree bersaglio del modello di taglia, prima di ogni tetto, sono già ≥ 0.95 del territorio nel 5.8 % delle cellule del tumore del colon contro il 2.0 % dei nuclei reali; la coda alta del modello lognormale (σ = 0.55) è circa tre volte più pesante del reale (q99 1.56 contro 1.05). Con φ = 1 il ritaglio trasforma esattamente quella coda in cellule quasi senza citoplasma. Un tetto più basso sposta il problema sul troncamento (5.5 % con φ = 0.95, 6.5 % con 0.90, sopra la soglia del 5 %). Negli altri tessuti densi la stessa coda è assorbita dal tetto e diventa il troncamento di P-2.
+
+# Controprova
+
+```{r cp}
+kable(transform(cp, stima = sprintf("%s ± %s", f4(est), f4(2 * se)), intervallo = sprintf("%s–%s", f4(int_lo), f4(int_hi)))[, c("id", "tissue", "stima", "intervallo", "verdict")],
+      col.names = c("", "tessuto", "stima ± 2 SE", "intervallo", "esito"))
+```
+
+Il vecchio modello che scala il nucleo è smentito nei quattro tessuti densi (0 contatti in intestino, tumore del colon e stroma; 0.019 nel linfonodo): il confronto con il conteggio manuale distingue i due modelli, quindi la conferma del nucleo ritagliato ha un contenuto. In cervello e cuore il confronto non ha potere (gli intervalli includono 0), come previsto.
+
+# Revisione avversariale
+
+{{< include _S1.4d_review.md >}}
+
+# Cosa è girato
+
+- Codice: commit `3dda369` (pacchetto, test, banco), risultati `c14930b`; `tools/run_S1.4d.sh` (job del 2026-10-20, 11:16–12:27 circa), 4–6 worker a un thread sul server condiviso con la simulazione MMM (Tctl 84–90 °C).
+- Semi: `seed_fold + 100000 · s`, s = 1…10 (S1.4/loo); nulli con i semi di S1.4 (20261008 + 1000 · i + 100/200 + 1); sezione S seme 42.
+- Ingressi: 1 598 file con md5 identico prima e dopo (`/mnt/micron/geo_spatialtrans/S1.4d/md5_before.txt`, `md5_after.txt`).
+- Controllo del codice delle finestre: sui nuclei del prototipo riproduce `results/R2c/R2c_k2_windows.csv` in 240/240 righe.
+- Prestazioni: tre ripetizioni 227.9, 223.4, 222.5 s (riscaldamento 232.9 s), memoria di picco 6.36 GiB; il prototipo impiegava 622.7 s per il solo ritaglio.
+
+# Appendice
+
+## Troncamento per ROI (P-2)
+
+```{r p2}
+p2 <- rd("S1.4d_p2_roi.csv"); p2$tessuto <- TIS[p2$archetype]
+ggplot(p2, aes(x = tessuto, y = x)) + geom_hline(yintercept = 0.05, linetype = 2) + geom_point() +
+  labs(x = NULL, y = "frazione di nuclei troncati dal tetto (media su 10 semi)")
+```
+
+## Cellule quasi senza citoplasma per ROI (P-3)
+
+```{r p3}
+p3 <- rd("S1.4d_p3_roi.csv"); p3$tessuto <- TIS[p3$archetype]
+kable(transform(p3, sim_nc95 = f4(sim_nc95), real_nc95 = f4(real_nc95))[, c("tessuto", "roi", "sim_nc95", "real_nc95")],
+      col.names = c("tessuto", "ROI", "simulato", "reale"))
+```
+
+## Equivalenza con il prototipo (G-4a)
+
+```{r g4}
+kable(rd("S1.4d_g4a_equivalence.csv"))
+```
+
+## Da dove vengono i numeri del riassunto
+
+{{< include _S1.4d_fonti.md >}}
