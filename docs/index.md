@@ -4,6 +4,7 @@ okf_version: "0.2"
 # Cartelle
 
 * [Decisioni](decisions/) - Una decisione per file, con titolo e descrizione in parole semplici, chi l'ha presa e se e' in vigore.
+* [Step](steps/) - Un file per step (dal protocollo v2): attese pre-registrate, riassunto In breve, approvazione del PI, link al report.
 * [Registro delle modifiche](log.md) - Modifiche al bundle per data, la piu' recente in alto.
 
 # Documenti non ancora in OKF
