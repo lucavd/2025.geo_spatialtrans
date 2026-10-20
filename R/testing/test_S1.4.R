@@ -15,7 +15,7 @@ source("R/04b1_extract_regions.R"); source("R/04b2_seed_centroids.R"); source("R
 source("tools/S1.4_mutants.R")
 MUT <- Sys.getenv("S14_MUTANT", "none")
 E <- dcg_mutate(dcg_env(), MUT)
-DCG <- function(...) E$derive_cell_geometry(..., verbose = FALSE)
+DCG <- function(...) E$derive_cell_geometry(..., nucleus_model = "scale", verbose = FALSE)   # S1.4d: il predefinito e' "clip"
 RES <- "results/S1.4"; dir.create(RES, showWarnings = FALSE, recursive = TRUE)
 TOL <- 1e-9; PREC <- 1e-3
 rows <- list()

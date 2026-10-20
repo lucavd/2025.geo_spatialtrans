@@ -1,6 +1,7 @@
-# R/04b4_derive_cell_geometry.R — Step 1, fase 4: nucleo (centro, taglia, forma, clamp) per ogni territorio.
-# Design: docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md §4.4, §5.4 (v1.4, S1.4: D-S1.4.1, D-S1.4.2).
-# Pre-registrazione: results/S1.4/S1.4_preregistration.md (commit c72c01a).
+# R/04b4_derive_cell_geometry.R — Step 1, fase 4: nucleo (centro, taglia, forma) per ogni territorio.
+# Design: docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md §4.4, §5.4 (v1.5, S1.4d: modello "clip" = K-2 di
+# S1.4c, decisione 2026-10-16; v1.4, S1.4: D-S1.4.1, D-S1.4.2 per il modello "scale").
+# Pre-registrazioni: results/S1.4/S1.4_preregistration.md (c72c01a); docs/steps/S1.4d.md (5118bce, eae40f6).
 # Convenzioni: µm, y verso il basso (come extract_regions()); angoli in rad da +x verso +y, in (-pi/2, pi/2].
 # Dipendenze: sf, geos, polylabelr.
 
@@ -9,12 +10,22 @@
 #' Modello di taglia (D-S1.4.1), per tipo t con `A_ref = 1e6 / density_t`:
 #' `log A_N = log(rho^2 * A_ref) + beta * (log A_T - log A_ref) + sigma * z`, z ~ N(0, 1);
 #' con `nucleus_radius` assoluto: `log A_N = log(pi * r^2) + sigma * z`. Con beta = 1, sigma = 0 il modello
-#' coincide con il design (`nucleus_radius = rho * eq_radius`).
+#' coincide con il design (`nucleus_radius = rho * eq_radius`). L'area bersaglio non dipende da `nucleus_model`.
+#'
 #' Forma: poligono di `n_vertices` vertici su un'ellisse di semiassi a = sqrt(A * asp / pi), b = sqrt(A / (asp * pi)),
 #' moltiplicati per k = sqrt(2 pi / (n sin(2 pi / n))) cosi' che l'area del poligono sia esattamente A.
-#' Clamp (D-S1.4.2, in tutti i modi): fattore di scala uniforme s <= 1. Cerchio: raggio circoscritto
-#' k * a * s <= clamp_factor * d (d = distanza del centro dal bordo del territorio). Ellisse: s parte dal valore del
-#' cerchio circoscritto e cresce per bisezione finche' il poligono dilatato di 1/clamp_factor resta dentro il territorio.
+#'
+#' `nucleus_model = "clip"` (predefinito da S1.4d; K-2 di S1.4c): centro = generatore; tetto
+#' `A* = min(A_N, phi * min(A_T, area(T_in)))` con phi = `nucleus_nc_max` del tipo e T_in = territorio rientrato di
+#' `clip_inset_um` (calcolato senza modello di precisione, poi sulla griglia `snap_grid_um`); nucleo = poligono(s) ∩ T_in
+#' (intersezione sulla griglia), con la scala s >= 1 scelta perche' area = A* (|area - A*| / A* <= `area_rel_tol`).
+#' Solo le celle ritagliate a s = 1 cercano s: primo passo s = sqrt(A* / area(1)), poi falsa posizione di Illinois
+#' nell'intervallo, con ricaduta sulla bisezione; arresto anche quando lo spostamento dei vertici fra gli estremi e' sotto
+#' un quarto della griglia. Nuclei contenuti nel proprio territorio e disgiunti per costruzione.
+#'
+#' `nucleus_model = "scale"` (D-S1.4.2, il modello fino a S1.4c, invariato): fattore di scala uniforme s <= 1. Cerchio:
+#' raggio circoscritto k * a * s <= clamp_factor * d (d = distanza del centro dal bordo del territorio). Ellisse: s parte
+#' dal valore del cerchio circoscritto e cresce per bisezione finche' il poligono dilatato di 1/clamp_factor resta dentro.
 #'
 #' @param centroids data.frame con `cell_id` (unico), `region_id`, `x`, `y`, `cell_type`; `cluster_id` opzionale.
 #' @param territories output di `tessellate_voronoi()`: `cell_territories` (sfc, ordine di `cell_id` crescente) e
@@ -22,22 +33,34 @@
 #' @param cell_types catalogo: `cell_type`, `density` (cell/mm²), `nucleus_to_eq_ratio` (rho) e/o `nucleus_radius`
 #'   (µm, NA = usa rho); opzionali `nucleus_area_slope` (beta, default 1), `nucleus_area_sdlog` (sigma, default 0),
 #'   `nucleus_aspect` (>= 1, default 1 = cerchio), `nucleus_orient` (`"random"` default, `"territory"` = asse maggiore
-#'   del territorio, oppure un angolo in rad, numerico o stringa numerica).
+#'   del territorio, oppure un angolo in rad, numerico o stringa numerica), `nucleus_nc_max` (phi in (0, 1], default 1;
+#'   solo "clip").
 #' @param random_seed seme; un solo flusso: `z <- rnorm(n)` e poi `u <- runif(n)`, in ordine di `cell_id`.
-#' @param nucleus_center `"poi"` (polo di inaccessibilita', design) o `"generator"` (il centroide seminato).
+#' @param nucleus_model `"clip"` (ritaglio nel territorio a pari area) o `"scale"` (scala con clamp).
+#' @param nucleus_center `"generator"` o `"poi"` (polo di inaccessibilita'); NULL = `"generator"` con "clip", `"poi"`
+#'   con "scale".
 #' @param n_vertices vertici del poligono del nucleo (>= 8).
-#' @param clamp_factor frazione della distanza dal bordo concessa al nucleo (design: 0.85), in (0, 1).
+#' @param clamp_factor frazione della distanza dal bordo concessa al nucleo (solo "scale", design: 0.85), in (0, 1).
+#' @param clip_inset_um rientro del territorio per il ritaglio (µm, > 0; S1.4c D-1, BL-118a).
+#' @param snap_grid_um griglia delle intersezioni (µm, > 0; F1 di S1.3d / V2 di S1.3b).
+#' @param area_rel_tol tolleranza relativa sull'area del nucleo ritagliato (> 0, < 1e-3).
 #' @param poi_precision_um precisione di `polylabelr::poi()` (µm).
 #' @param strict se TRUE (default) errore se un nucleo non e' dentro il proprio territorio (C3).
 #' @param verbose stampa un riepilogo.
-#' @return lista con `cell_df` (schema del design §4.2 piu' `nucleus_area_target`, `nucleus_scale`, `nucleus_clamped`,
-#'   `center_dist`), `cell_nuclei` (sfc_POLYGON, ordine di `cell_id`), `info`.
+#' @return lista con `cell_df`, `cell_nuclei` (sfc, ordine di `cell_id`; sfc_POLYGON, oppure sfc_MULTIPOLYGON se
+#'   qualche nucleo ritagliato e' in piu' parti), `info`. Colonne di `cell_df`: schema del design §4.2 piu'
+#'   `nucleus_area_target`, `nucleus_scale`, `center_dist`; con "scale" anche `nucleus_clamped`; con "clip" anche
+#'   `nucleus_area_cap` (A*), `nucleus_capped` (A* < A_N), `nucleus_clipped` (ritagliato a s = 1), `nucleus_n_iter`.
 derive_cell_geometry <- function(centroids, territories, cell_types, random_seed = 42,
-                                 nucleus_center = c("poi", "generator"), n_vertices = 32L, clamp_factor = 0.85,
+                                 nucleus_model = c("clip", "scale"), nucleus_center = NULL, n_vertices = 32L,
+                                 clamp_factor = 0.85, clip_inset_um = 1e-5, snap_grid_um = 1e-6, area_rel_tol = 1e-7,
                                  poi_precision_um = 1e-3, strict = TRUE, verbose = TRUE) {
   t0 <- proc.time()[["elapsed"]]
-  nucleus_center <- match.arg(nucleus_center)
+  nucleus_model <- match.arg(nucleus_model)
+  if (is.null(nucleus_center)) nucleus_center <- if (nucleus_model == "clip") "generator" else "poi"
+  nucleus_center <- match.arg(nucleus_center, c("poi", "generator"))
   cen <- .dcg_check_args(centroids, territories, n_vertices, clamp_factor, poi_precision_um)
+  .dcg_check_clip_args(clip_inset_um, snap_grid_um, area_rel_tol)
   ct <- .dcg_check_types(cell_types, unique(cen$cell_type))
   terr <- .dcg_as_polys(territories$cell_territories)
   n <- nrow(cen)
@@ -55,6 +78,10 @@ derive_cell_geometry <- function(centroids, territories, cell_types, random_seed
   asp <- ct$nucleus_aspect[ti]
   theta <- .dcg_orientation(terr, ct, ti, u, asp)
   kp <- .dcg_poly_factor(n_vertices)
+  if (nucleus_model == "clip")
+    return(.dcg_run_clip(cen, ct, ti, a_t, a_tgt, asp, theta, ctr, d, gt, kp, n_vertices, clip_inset_um, snap_grid_um,
+                         area_rel_tol, strict, verbose, t0,
+                         list(nucleus_center = nucleus_center, random_seed = random_seed, poi_precision_um = poi_precision_um)))
   a_eq <- sqrt(a_tgt * asp / pi); b_eq <- sqrt(a_tgt / (asp * pi))
   s <- .dcg_clamp(a_eq, b_eq, theta, ctr, d, gt, kp, n_vertices, clamp_factor)
   nuc_g <- .dcg_polygons(ctr$x, ctr$y, kp * a_eq * s, kp * b_eq * s, theta, n_vertices)
@@ -77,7 +104,7 @@ derive_cell_geometry <- function(centroids, territories, cell_types, random_seed
   info <- list(n = n, n_clamped = sum(s < 1), frac_clamped = mean(s < 1), n_not_within = sum(!within),
                nucleus_center = nucleus_center, random_seed = random_seed, n_vertices = as.integer(n_vertices),
                clamp_factor = clamp_factor, poly_factor = kp, poi_precision_um = poi_precision_um,
-               elapsed_s = proc.time()[["elapsed"]] - t0)
+               elapsed_s = proc.time()[["elapsed"]] - t0, nucleus_model = "scale")
   if (verbose) message(sprintf("derive_cell_geometry(): %d cellule, %d clampate (%.2f %%), centro = %s, %.1f s",
                                n, info$n_clamped, 100 * info$frac_clamped, nucleus_center, info$elapsed_s))
   list(cell_df = cell_df, cell_nuclei = sf::st_as_sfc(nuc_g), info = info)
@@ -137,7 +164,7 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
   miss <- setdiff(used, ct$cell_type)
   if (length(miss)) stop("derive_cell_geometry(): tipi senza catalogo: ", paste(miss, collapse = ", "))
   dflt <- list(nucleus_to_eq_ratio = NA_real_, nucleus_radius = NA_real_, nucleus_area_slope = 1,
-               nucleus_area_sdlog = 0, nucleus_aspect = 1, nucleus_orient = "random")
+               nucleus_area_sdlog = 0, nucleus_aspect = 1, nucleus_orient = "random", nucleus_nc_max = 1)
   for (nm in names(dflt)) if (!nm %in% names(ct)) ct[[nm]] <- dflt[[nm]]
   ct$nucleus_orient <- as.character(ct$nucleus_orient); ct$nucleus_orient[is.na(ct$nucleus_orient)] <- "random"
   if ("nucleus_shape" %in% names(ct)) {
@@ -153,6 +180,8 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
   if (any(!is.finite(u$nucleus_area_slope)) || any(!is.finite(u$nucleus_area_sdlog) | u$nucleus_area_sdlog < 0))
     stop("derive_cell_geometry(): nucleus_area_slope finito e nucleus_area_sdlog >= 0")
   if (any(!is.finite(u$nucleus_aspect) | u$nucleus_aspect < 1)) stop("derive_cell_geometry(): nucleus_aspect >= 1")
+  if (any(!is.finite(u$nucleus_nc_max) | u$nucleus_nc_max <= 0 | u$nucleus_nc_max > 1))
+    stop("derive_cell_geometry(): nucleus_nc_max (phi) deve stare in (0, 1]")
   om <- u$nucleus_orient
   okm <- om %in% c("random", "territory") | !is.na(suppressWarnings(as.numeric(om)))
   if (any(!okm)) stop("derive_cell_geometry(): nucleus_orient non valido: ", paste(om[!okm], collapse = ", "))
@@ -247,4 +276,118 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
     }
   }
   s
+}
+
+# ---- modello "clip" (S1.4d; K-2 di S1.4c) --------------------------------------------------------------------------
+
+.dcg_check_clip_args <- function(inset, grid, tol) {
+  ok1 <- function(x) is.numeric(x) && length(x) == 1 && is.finite(x)
+  if (!ok1(inset) || inset <= 0) stop("derive_cell_geometry(): clip_inset_um deve essere > 0")
+  if (!ok1(grid) || grid <= 0) stop("derive_cell_geometry(): snap_grid_um deve essere > 0")
+  if (!ok1(tol) || tol <= 0 || tol >= 1e-3) stop("derive_cell_geometry(): area_rel_tol deve stare in (0, 1e-3)")
+  invisible(TRUE)
+}
+
+# territorio rientrato: il buffer negativo si calcola SENZA modello di precisione (con la griglia ereditata
+# geos_buffer(-eps) restituisce in silenzio poligoni vuoti, BL-118b), poi si torna sulla griglia; vuoti = errore
+.dcg_inset <- function(gt, inset, grid) {
+  tg <- geos::geos_set_precision(gt, grid)
+  tin <- geos::geos_set_precision(geos::geos_buffer(geos::geos_set_precision(tg, 0), -inset,
+                                                    params = geos::geos_buffer_params(quad_segs = 2L)), grid)
+  emp <- geos::geos_is_empty(tin)
+  if (any(emp)) stop(sprintf("derive_cell_geometry(): territorio rientrato vuoto per %d celle (BL-118)", sum(emp)))
+  tin
+}
+
+# scala s per cella: area(poligono(s) ∩ tin) = a_star. Restituisce nuclei (geos), aree, s, iterazioni, ritagliati.
+.dcg_clip_solve <- function(cx, cy, a0, b0, theta, kp, nv, tin, a_star, grid, tol, max_iter = 100L) {
+  n <- length(cx); s <- rep(1, n); it <- integer(n)
+  clip_at <- function(idx, sc) geos::geos_intersection_prec(
+    .dcg_polygons(cx[idx], cy[idx], kp * a0[idx] * sc, kp * b0[idx] * sc, theta[idx], nv), tin[idx], grid)
+  nuc <- clip_at(seq_len(n), s)
+  area <- geos::geos_area(nuc)
+  need <- which(area < a_star * (1 - tol))
+  if (length(need)) {
+    A <- a_star[need]; m <- length(need); rv <- kp * pmax(a0[need], b0[need])   # raggio del vertice piu' lontano a s = 1
+    lo <- rep(1, m); alo <- area[need]
+    ext <- geos::geos_extent(tin[need]); xs <- cx[need]; ys <- cy[need]
+    dmax <- sqrt(pmax((xs - ext$xmin)^2, (xs - ext$xmax)^2) + pmax((ys - ext$ymin)^2, (ys - ext$ymax)^2))
+    # il poligono di scala s contiene l'ellisse inscritta di semiasse minore k * b0 * s * cos(pi / nv)
+    hi <- pmax(dmax / (kp * b0[need] * cos(pi / nv)) * (1 + 1e-9), 1 + 1e-9)
+    ahi <- geos::geos_area(clip_at(need, hi))
+    fl <- alo - A; fh <- ahi - A                     # valori per l'interpolazione (dimezzati da Illinois)
+    side <- integer(m); wa <- rep(Inf, m); wb <- rep(Inf, m)
+    done <- abs(ahi - A) / A <= tol                  # tetto = area del territorio rientrato: hi e' gia' la soluzione
+    for (k in seq_len(max_iter)) {
+      # arresto anche quando lo spostamento dei vertici fra gli estremi e' < griglia / 4: la geometria sulla griglia
+      # non puo' piu' cambiare (nuclei piccoli: il rumore della griglia supera area_rel_tol; sviluppo S1.4d, dev D-2)
+      act <- which(!done & (hi - lo) * rv > grid / 4)
+      if (!length(act)) break
+      L <- lo[act]; H <- hi[act]; W <- H - L
+      cand <- if (k == 1L) L * sqrt(A[act] / pmax(alo[act], .Machine$double.xmin))
+              else (L * fh[act] - H * fl[act]) / (fh[act] - fl[act])
+      bis <- !is.finite(cand) | cand <= L | cand >= H | W > 0.5 * wb[act]
+      cand[bis] <- (L[bis] + H[bis]) / 2
+      am <- geos::geos_area(clip_at(need[act], cand))
+      it[need[act]] <- it[need[act]] + 1L
+      fm <- am - A[act]; up <- fm < 0
+      iu <- act[up]; id <- act[!up]
+      lo[iu] <- cand[up]; alo[iu] <- am[up]; fl[iu] <- fm[up]
+      fh[iu] <- ifelse(side[iu] == -1L, fh[iu] / 2, fh[iu]); side[iu] <- -1L
+      hi[id] <- cand[!up]; ahi[id] <- am[!up]; fh[id] <- fm[!up]
+      fl[id] <- ifelse(side[id] == 1L, fl[id] / 2, fl[id]); side[id] <- 1L
+      wb[act] <- wa[act]; wa[act] <- W
+      done[act] <- abs(fm) / A[act] <= tol
+    }
+    best <- ifelse(abs(alo - A) <= abs(ahi - A), lo, hi)
+    s[need] <- best
+    nuc[need] <- clip_at(need, best)
+    area[need] <- geos::geos_area(nuc[need])
+  }
+  list(nuc = nuc, area = area, s = s, n_iter = it, clipped = seq_len(n) %in% need)
+}
+
+# geos -> sf via WKB: con la griglia 1e-6 ereditata st_as_sfc() legge la precisione come fattore di scala (nota S1.4b)
+.dcg_to_sfc <- function(g) {
+  out <- sf::st_as_sfc(geos::geos_write_wkb(g))
+  ty <- as.character(sf::st_geometry_type(out))
+  if (all(ty == "POLYGON")) sf::st_cast(out, "POLYGON") else sf::st_cast(out, "MULTIPOLYGON")
+}
+
+.dcg_run_clip <- function(cen, ct, ti, a_t, a_tgt, asp, theta, ctr, d, gt, kp, nv, inset, grid, tol, strict, verbose,
+                          t0, meta) {
+  n <- nrow(cen)
+  tin <- .dcg_inset(gt, inset, grid)
+  phi <- ct$nucleus_nc_max[ti]
+  a_star <- pmin(a_tgt, phi * pmin(a_t, geos::geos_area(tin)))
+  a0 <- sqrt(a_star * asp / pi); b0 <- sqrt(a_star / (asp * pi))
+  r <- .dcg_clip_solve(ctr$x, ctr$y, a0, b0, theta, kp, nv, tin, a_star, grid, tol)
+  emp <- geos::geos_is_empty(r$nuc)
+  if (any(emp)) stop(sprintf("derive_cell_geometry(): %d nuclei vuoti", sum(emp)))
+  within <- geos::geos_within(r$nuc, gt)
+  if (strict && !all(within)) stop(sprintf("derive_cell_geometry(): %d nuclei non contenuti nel territorio (C3)", sum(!within)))
+  multi <- geos::geos_num_geometries(r$nuc) > 1L
+  circ <- asp == 1
+  cell_df <- data.frame(
+    cell_id = cen$cell_id, region_id = cen$region_id,
+    cluster_id = if ("cluster_id" %in% names(cen)) cen$cluster_id else NA_integer_,
+    cell_type = cen$cell_type, x = cen$x, y = cen$y,
+    territory_area = a_t, eq_radius = sqrt(a_t / pi),
+    nucleus_shape = ifelse(circ, "circle", "ellipse"),
+    nucleus_radius = ifelse(circ, sqrt(r$area / pi), NA_real_),
+    nucleus_major_r = ifelse(circ, NA_real_, a0 * r$s), nucleus_minor_r = ifelse(circ, NA_real_, b0 * r$s),
+    nucleus_orient = ifelse(circ, NA_real_, theta),
+    nucleus_cx = ctr$x, nucleus_cy = ctr$y, nucleus_area = r$area, cytoplasm_area = a_t - r$area,
+    nucleus_area_target = a_tgt, nucleus_area_cap = a_star, nucleus_capped = a_star < a_tgt,
+    nucleus_clipped = r$clipped, nucleus_scale = r$s, nucleus_n_iter = r$n_iter, center_dist = d,
+    stringsAsFactors = FALSE)
+  rel <- abs(r$area - a_star) / a_star
+  info <- c(list(n = n, nucleus_model = "clip", n_clipped = sum(r$clipped), n_capped = sum(a_star < a_tgt),
+                 frac_capped = mean(a_star < a_tgt), n_multipart = sum(multi), n_not_within = sum(!within),
+                 max_iter = max(c(0L, r$n_iter)), total_iter = sum(r$n_iter), max_area_rel_err = max(rel),
+                 n_vertices = as.integer(nv), poly_factor = kp, clip_inset_um = inset, snap_grid_um = grid,
+                 area_rel_tol = tol), meta, list(elapsed_s = proc.time()[["elapsed"]] - t0))
+  if (verbose) message(sprintf("derive_cell_geometry(): %d cellule, clip: %d ritagliate, %d al tetto (%.2f %%), max %d iterazioni, %.1f s",
+                               n, info$n_clipped, info$n_capped, 100 * info$frac_capped, info$max_iter, info$elapsed_s))
+  list(cell_df = cell_df, cell_nuclei = .dcg_to_sfc(r$nuc), info = info)
 }
