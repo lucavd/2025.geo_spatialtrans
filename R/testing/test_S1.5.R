@@ -149,15 +149,21 @@ e2 <- safe(estimate_pixel_size(smooth, ctS))
 ck("S3 tessuto liscio senza nuclei: rifiuto, nessun numero", isok(e2) && isTRUE(e2$refused) && is.na(e2$pixel_size_um), if (isok(e2)) e2$reason else msg(e2))
 e3 <- safe(estimate_pixel_size(disk_img(10, n_side_um = 2000, seed = 6), ctS))
 ck("S4 dischi a 10 µm/px (nuclei sotto il pixel): rifiuto", isok(e3) && isTRUE(e3$refused), if (isok(e3)) e3$reason else msg(e3))
-de <- disk_img(0.5); Le <- safe(withCallingHandlers(PC(de, cell_types = data.frame(cell_type = "t", density = 4000, nucleus_to_eq_ratio = 0.4), pixel_size_um = "estimate", random_seed = 3),
+de <- disk_img(0.5); Le <- safe(withCallingHandlers(PC(de, cell_types = data.frame(cell_type = "t", density = 4000, nucleus_to_eq_ratio = 0.4), pixel_size_um = "estimate", random_seed = 3, allow_estimate = TRUE),
   warning = function(w) invokeRestart("muffleWarning")))
 ck("S5 place_cells(pixel_size_um = \"estimate\"): fonte \"estimated\" in metadata, scala entro ±20 %", isok(Le) && Le$metadata$pixel_size_source == "estimated" &&
    abs(Le$metadata$pixel_size_um / 0.5 - 1) <= 0.2, if (isok(Le)) Le$metadata$pixel_size_um else msg(Le))
-w5 <- tryCatch({ PC(de, cell_types = data.frame(cell_type = "t", density = 4000, nucleus_to_eq_ratio = 0.4), pixel_size_um = "estimate", random_seed = 3); "" },
+w5 <- tryCatch({ PC(de, cell_types = data.frame(cell_type = "t", density = 4000, nucleus_to_eq_ratio = 0.4), pixel_size_um = "estimate", random_seed = 3, allow_estimate = TRUE); "" },
   warning = function(w) conditionMessage(w), error = function(e) "")
 ck("S6 stima della scala mai silenziosa: avviso", grepl("scala stimata", w5), w5)
-Ls <- safe(PC(smooth, cell_types = ctS, pixel_size_um = "estimate"))
+Ls <- safe(PC(smooth, cell_types = ctS, pixel_size_um = "estimate", allow_estimate = TRUE))
 ck("S7 stima rifiutata -> place_cells si ferma con errore", !isok(Ls) && grepl("rifiutata", msg(Ls)), msg(Ls))
+
+# aggiunti dopo CP-1 (nota D-11): stima fuori dall'uso raccomandato e controllo di coerenza della taglia
+Lna <- safe(PC(de, cell_types = data.frame(cell_type = "t", density = 4000, nucleus_to_eq_ratio = 0.4), pixel_size_um = "estimate", random_seed = 3))
+ck("S8 senza allow_estimate la stima dall'immagine e' rifiutata da place_cells", !isok(Lna) && grepl("allow_estimate", msg(Lna)), msg(Lna))
+e9 <- safe(estimate_pixel_size(disk_img(0.5), data.frame(cell_type = "t", density = 4000, nucleus_to_eq_ratio = 0.12)))
+ck("S9 taglia dei nuclei incoerente con il conteggio (raggio atteso 3 volte piu' piccolo): rifiuto", isok(e9) && isTRUE(e9$refused) && grepl("incoerente", e9$reason), if (isok(e9)) e9$reason else msg(e9))
 
 # ---- F: figura ----
 if (isok(L)) {

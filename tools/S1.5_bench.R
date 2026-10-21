@@ -186,19 +186,20 @@ if (STAGE == "perf") {
 
 # ---- cp1: stima della scala sulle immagini H&E ricampionate (tools/S1.5_cp1_resample.py) ----
 if (STAGE == "cp1") {
-  dir.create(file.path(OUT, "cp1", "est"), recursive = TRUE, showWarnings = FALSE)
+  TAG <- Sys.getenv("S15_CP1_TAG", "est"); SC <- Sys.getenv("S15_CP1_SIZECHECK", "FALSE") == "TRUE"
+  dir.create(file.path(OUT, "cp1", TAG), recursive = TRUE, showWarnings = FALSE)
   fs <- list.files(file.path(OUT, "cp1", "img"), pattern = "\\.npz$", full.names = TRUE)
   jobs <- expand.grid(f = fs, variant = c("pipeline", "full_mask"), stringsAsFactors = FALSE)
   par_run(jobs, function(j) {
-    b <- sub("\\.npz$", "", basename(j$f)); o <- file.path(OUT, "cp1", "est", paste0(b, "_", j$variant, ".rds")); if (file.exists(o)) return(invisible())
+    b <- sub("\\.npz$", "", basename(j$f)); o <- file.path(OUT, "cp1", TAG, paste0(b, "_", j$variant, ".rds")); if (file.exists(o)) return(invisible())
     pz <- file.path(OUT, "cp1", "img", paste0(b, ".parquet")); d <- as.data.frame(read_parquet(pz))
     tk <- strsplit(b, "_")[[1]]; A <- tk[1]; roi <- tk[2]; s_true <- as.numeric(sub("um$", "", tk[3]))
     cl <- if (j$variant == "pipeline") d[d$value < 0.7, ] else d[d$valid, ]
     cl$intensity_cluster <- 1L
-    e <- tryCatch(estimate_pixel_size(cl, tissue_preset_spec(PRESET[[A]])$cell_types), error = function(e) list(refused = NA, reason = conditionMessage(e), pixel_size_um = NA, ci = c(NA, NA), n_features = NA, sigma_px = NA))
+    e <- tryCatch(estimate_pixel_size(cl, tissue_preset_spec(PRESET[[A]])$cell_types, size_check = SC), error = function(e) list(refused = NA, reason = conditionMessage(e), pixel_size_um = NA, ci = c(NA, NA), n_features = NA, sigma_px = NA))
     saveRDS(data.frame(archetype = A, roi_id = roi, scale_true = s_true, variant = j$variant, n_px = nrow(cl), refused = e$refused, reason = e$reason,
                        scale_est = e$pixel_size_um, ratio = e$pixel_size_um / s_true, ci_lo = e$ci[1], ci_hi = e$ci[2], n_features = e$n_features, sigma_px = e$sigma_px), o)
   }, "cp1")
-  tab <- do.call(rbind, lapply(list.files(file.path(OUT, "cp1", "est"), full.names = TRUE), readRDS))
-  write.csv(tab, file.path(RES, "S1.5_CP1_scale.csv"), row.names = FALSE); print(table(tab$variant, tab$scale_true, tab$refused, useNA = "ifany"))
+  tab <- do.call(rbind, lapply(list.files(file.path(OUT, "cp1", TAG), full.names = TRUE), readRDS))
+  write.csv(tab, file.path(RES, if (TAG == "est") "S1.5_CP1_scale.csv" else paste0("S1.5_CP1_scale_", TAG, ".csv")), row.names = FALSE); print(table(tab$variant, tab$scale_true, tab$refused, useNA = "ifany"))
 }

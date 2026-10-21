@@ -65,7 +65,7 @@ if (length(pf)) {
   for (pr in unique(P$preset)) { x <- P$elapsed_s[P$preset == pr]; A <- arch[[pr]]
     rows <- list(); add("P-8", A, "preserve_area", "tempo di place_cells (s), 4000 x 4000 px", mean(x), se_of(x), 0, 300, "design v1.1, casi limite", n_units = length(x)); V <- rbind(V, cbind(do.call(rbind, rows), winner_arm = TRUE))
     tf <- file.path(OUT, "perf", paste0(pr, ".time")); if (file.exists(tf)) { kb <- as.numeric(sub(".*: ", "", grep("Maximum resident", readLines(tf), value = TRUE)))
-      rows <- list(); add("P-8", A, "preserve_area", "memoria di picco del processo (GB)", kb / 1024^2, 0, 0, 8, "design v1.1, casi limite", n_units = 1); V <- rbind(V, cbind(do.call(rbind, rows), winner_arm = TRUE)) } }
+      rows <- list(); add("P-8", A, "preserve_area", sprintf("memoria di picco del processo (GB decimali; %.2f GiB)", kb / 1024^2), kb * 1024 / 1e9, 0, 0, 8, "design v1.1, casi limite", n_units = 1); V <- rbind(V, cbind(do.call(rbind, rows), winner_arm = TRUE)) } }
 }
 write.csv(V, file.path(RES, "S1.5_verdicts.csv"), row.names = FALSE)
 print(V[V$winner_arm, c("id", "archetype", "estimate", "lo2", "hi2", "int_lo", "int_hi", "outcome")], digits = 4)

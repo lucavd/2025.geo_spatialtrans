@@ -19,11 +19,13 @@
 #' @param cluster_to_dominant data.frame `cluster_id`, `cell_type`; NULL con un catalogo di un tipo = tutti i pixel.
 #' @param method `"nuclear_spacing"` o `"metadata"`.
 #' @param scalefactors_json file `scalefactors_json.json` (solo `"metadata"`).
+#' @param size_check se TRUE (predefinito) rifiuta quando il raggio dei nuclei visto (sqrt(2) * s* * scala) e' fuori da un fattore 2
+#'   dal raggio atteso dal catalogo (`nucleus_to_eq_ratio`^2 * 1e6 / density); senza `nucleus_to_eq_ratio` il controllo non si fa.
 #' @return lista `pixel_size_um`, `method`, `n_features`, `ci`, `sigma_px`, `refused`, `reason`, `detail`.
 #' @export
 estimate_pixel_size <- function(clust, cell_types, cluster_to_dominant = NULL, method = c("nuclear_spacing", "metadata"),
                                 scalefactors_json = NULL, value_col = "value", cluster_col = "intensity_cluster",
-                                n_boot = 200L, block_px = 64L) {
+                                n_boot = 200L, block_px = 64L, size_check = TRUE) {
   method <- match.arg(method)
   if (method == "metadata") return(.ep_metadata(scalefactors_json))
   if (!value_col %in% names(clust)) stop("estimate_pixel_size(): manca la colonna ", value_col, call. = FALSE)
@@ -62,6 +64,14 @@ estimate_pixel_size <- function(clust, cell_types, cluster_to_dominant = NULL, m
   N <- nrow(pk)
   if (N < 30 && .ep_mut() != "M9") return(refuse(sprintf("troppo pochi nuclei rilevati (%d < 30)", N)))
   s_hat <- sqrt(N / (A_px * lam))
+  # controllo di coerenza (aggiunto in S1.5 dopo CP-1, nota D-11): il raggio dei nuclei visto dal laplaciano (sqrt(2) * s*,
+  # in µm con la scala stimata) deve stare entro un fattore 2 dal raggio atteso dal catalogo (rho^2 * A_ref); altrimenti rifiuto
+  ty_row <- if (is.null(cluster_to_dominant)) 1L else which(cell_types$cell_type == ty)
+  rho <- if ("nucleus_to_eq_ratio" %in% names(cell_types)) cell_types$nucleus_to_eq_ratio[ty_row] else NA_real_
+  r_obs <- sqrt(2) * s_star * s_hat; r_exp <- if (is.finite(rho)) sqrt(rho^2 * (1e6 / dens) / pi) else NA_real_
+  if (size_check && is.finite(r_exp) && .ep_mut() != "M9" && (r_obs / r_exp < 0.5 || r_obs / r_exp > 2))
+    return(c(refuse(sprintf("taglia dei nuclei incoerente con il conteggio (raggio visto %.2f um, atteso %.2f um)", r_obs, r_exp))[-8],
+             list(detail = list(sigma = sig, energy = energy, A_px = A_px, threshold = thr, n = N, s_count = s_hat, r_obs = r_obs, r_exp = r_exp))))
   # bootstrap su blocchi
   bi <- (pk[, 1] - 1L) %/% block_px; bj <- (pk[, 2] - 1L) %/% block_px
   mi <- which(msk, arr.ind = TRUE); key_m <- ((mi[, 1] - 1L) %/% block_px) * 1e6 + (mi[, 2] - 1L) %/% block_px
@@ -72,7 +82,7 @@ estimate_pixel_size <- function(clust, cell_types, cluster_to_dominant = NULL, m
   set.seed(1L)
   bs <- vapply(seq_len(n_boot), function(b) { k <- sample.int(length(blocks), replace = TRUE); sqrt(sum(nb[k]) / (sum(ab[k]) * lam)) }, 0)
   list(pixel_size_um = s_hat, method = method, n_features = N, ci = unname(stats::quantile(bs, c(0.025, 0.975))),
-       sigma_px = s_star, refused = FALSE, reason = "", detail = list(sigma = sig, energy = energy, A_px = A_px, threshold = thr))
+       sigma_px = s_star, refused = FALSE, reason = "", detail = list(sigma = sig, energy = energy, A_px = A_px, threshold = thr, r_obs = r_obs, r_exp = r_exp))
 }
 
 .ep_otsu <- function(v, nbins = 256L) {

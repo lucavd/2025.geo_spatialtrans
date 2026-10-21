@@ -18,7 +18,9 @@ def main():
     wins = pd.read_csv(R2B / "R2b_windows.csv"); dm = pd.read_csv(RES / "R2c_dmax.csv").set_index("archetype")
     wjson = json.load(open(R2B / "annotations/R2b_annotations_Luca.json"))["windows"]
     rows = []
-    for arm in ("preserve_area", "none"):
+    import os
+    arms = os.environ.get("S15_ARMS", "preserve_area,none").split(",")
+    for arm in arms:
         for wr in wins.itertuples():
             dmax = float(dm.d_max_um[wr.archetype]); upp = float(wr.um_per_px); x0, y0 = float(wr.x0_um), float(wr.y0_um)
             s = int(wr.side_px) * upp
@@ -34,7 +36,7 @@ def main():
                 rows.append(dict(arm=arm, win_id=wr.win_id, archetype=wr.archetype, roi=wr.roi_id, seed=p.stem.split("_")[2],
                                  n=int(keep.sum()), n_contact=int((t.n_c2[keep] > 0).sum()), n_conflict=int(t.n_conflict.iloc[0]) if len(t) else 0))
     r = pd.DataFrame(rows); r["s1"] = r.n_contact / r.n
-    r.to_csv(OUT / "S1.5_windows.csv", index=False)
+    r.to_csv(OUT / os.environ.get("S15_WIN_OUT", "S1.5_windows.csv"), index=False)
     print(r.groupby(["arm", "archetype"]).size().to_string())
 
 if __name__ == "__main__":

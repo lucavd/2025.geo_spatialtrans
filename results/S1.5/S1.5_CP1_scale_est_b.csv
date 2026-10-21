@@ -1,0 +1,241 @@
+"archetype","roi_id","scale_true","variant","n_px","refused","reason","scale_est","ratio","ci_lo","ci_hi","n_features","sigma_px"
+"A1","r1",10,"full_mask",8017,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A1","r1",10,"pipeline",4588,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 4.76 um, atteso 2.06 um)",NA,NA,NA,NA,NA,3.36358566101486
+"A1","r1",1,"full_mask",798172,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A1","r1",1,"pipeline",427592,FALSE,"",1.36546769906403,1.36546769906403,1.33945603624075,1.39423190112197,9901,2
+"A1","r1",2,"full_mask",200780,TRUE,"troppo pochi nuclei rilevati (5 < 30)",NA,NA,NA,NA,NA,22.6274169979695
+"A1","r1",2,"pipeline",110288,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A1","r1",5,"full_mask",31999,TRUE,"troppo pochi nuclei rilevati (6 < 30)",NA,NA,NA,NA,NA,8
+"A1","r1",5,"pipeline",18306,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A1","r2",10,"full_mask",6835,TRUE,"troppo pochi nuclei rilevati (26 < 30)",NA,NA,NA,NA,NA,5.65685424949238
+"A1","r2",10,"pipeline",4038,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 4.80 um, atteso 2.06 um)",NA,NA,NA,NA,NA,3.36358566101486
+"A1","r2",1,"full_mask",682376,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A1","r2",1,"pipeline",375022,FALSE,"",1.12895143464272,1.12895143464272,1.10950739621131,1.15049185358979,5936,2.37841423000544
+"A1","r2",2,"full_mask",171715,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A1","r2",2,"pipeline",96509,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A1","r2",5,"full_mask",27396,TRUE,"troppo pochi nuclei rilevati (27 < 30)",NA,NA,NA,NA,NA,11.3137084989848
+"A1","r2",5,"pipeline",16123,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A1","r3",10,"full_mask",8101,TRUE,"troppo pochi nuclei rilevati (7 < 30)",NA,NA,NA,NA,NA,5.65685424949238
+"A1","r3",10,"pipeline",4465,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 5.34 um, atteso 2.06 um)",NA,NA,NA,NA,NA,4.75682846001088
+"A1","r3",1,"full_mask",810178,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A1","r3",1,"pipeline",418400,FALSE,"",1.14992846047465,1.14992846047465,1.12804924349281,1.17541928318032,6871,2.37841423000544
+"A1","r3",2,"full_mask",203707,TRUE,"troppo pochi nuclei rilevati (6 < 30)",NA,NA,NA,NA,NA,26.9086852881189
+"A1","r3",2,"pipeline",107526,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A1","r3",5,"full_mask",32459,TRUE,"troppo pochi nuclei rilevati (6 < 30)",NA,NA,NA,NA,NA,11.3137084989848
+"A1","r3",5,"pipeline",17845,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A1","r4",10,"full_mask",6405,TRUE,"troppo pochi nuclei rilevati (8 < 30)",NA,NA,NA,NA,NA,6.72717132202972
+"A1","r4",10,"pipeline",3383,TRUE,"troppo pochi nuclei rilevati (6 < 30)",NA,NA,NA,NA,NA,5.65685424949238
+"A1","r4",1,"full_mask",638743,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A1","r4",1,"pipeline",322462,FALSE,"",1.37814709936256,1.37814709936256,1.34985448568569,1.40729621007378,7606,2
+"A1","r4",2,"full_mask",160615,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A1","r4",2,"pipeline",82689,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A1","r4",5,"full_mask",25598,TRUE,"troppo pochi nuclei rilevati (9 < 30)",NA,NA,NA,NA,NA,13.4543426440594
+"A1","r4",5,"pipeline",13620,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A1","r5",10,"full_mask",7229,TRUE,"troppo pochi nuclei rilevati (23 < 30)",NA,NA,NA,NA,NA,6.72717132202972
+"A1","r5",10,"pipeline",3500,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 5.10 um, atteso 2.06 um)",NA,NA,NA,NA,NA,3.36358566101486
+"A1","r5",1,"full_mask",723142,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A1","r5",1,"pipeline",342836,FALSE,"",1.40794179127288,1.40794179127288,1.38153384133304,1.43417764920674,8440,2
+"A1","r5",2,"full_mask",181965,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A1","r5",2,"pipeline",87444,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A1","r5",5,"full_mask",29007,TRUE,"troppo pochi nuclei rilevati (24 < 30)",NA,NA,NA,NA,NA,13.4543426440594
+"A1","r5",5,"pipeline",14167,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A2","r1",10,"full_mask",7460,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r1",10,"pipeline",4690,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A2","r1",1,"full_mask",744268,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r1",1,"pipeline",446094,TRUE,"troppo pochi nuclei rilevati (24 < 30)",NA,NA,NA,NA,NA,13.4543426440594
+"A2","r1",2,"full_mask",186881,TRUE,"troppo pochi nuclei rilevati (3 < 30)",NA,NA,NA,NA,NA,19.0273138400435
+"A2","r1",2,"pipeline",113148,FALSE,"",0.429193612976946,0.214596806488473,0.401459820972035,0.458559339274794,186,6.72717132202972
+"A2","r1",5,"full_mask",29798,TRUE,"troppo pochi nuclei rilevati (26 < 30)",NA,NA,NA,NA,NA,8
+"A2","r1",5,"pipeline",18554,FALSE,"",1.18371032422287,0.236742064844575,1.12041281182439,1.25131909044711,232,2.82842712474619
+"A2","r2",10,"full_mask",8628,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r2",10,"pipeline",7081,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r2",1,"full_mask",861424,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r2",1,"pipeline",666364,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r2",2,"full_mask",215757,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r2",2,"pipeline",169156,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r2",5,"full_mask",34483,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r2",5,"pipeline",27798,TRUE,"troppo pochi nuclei rilevati (4 < 30)",NA,NA,NA,NA,NA,19.0273138400435
+"A2","r3",10,"full_mask",6840,TRUE,"troppo pochi nuclei rilevati (5 < 30)",NA,NA,NA,NA,NA,11.3137084989848
+"A2","r3",10,"pipeline",5909,TRUE,"troppo pochi nuclei rilevati (5 < 30)",NA,NA,NA,NA,NA,9.51365692002177
+"A2","r3",1,"full_mask",684542,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r3",1,"pipeline",562663,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r3",2,"full_mask",171760,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r3",2,"pipeline",142521,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A2","r3",5,"full_mask",27403,TRUE,"troppo pochi nuclei rilevati (5 < 30)",NA,NA,NA,NA,NA,22.6274169979695
+"A2","r3",5,"pipeline",23191,TRUE,"troppo pochi nuclei rilevati (5 < 30)",NA,NA,NA,NA,NA,19.0273138400435
+"A2","r4",10,"full_mask",9709,FALSE,"",1.10607837446407,0.110607837446407,0.904849148102353,1.2373762129611,106,2
+"A2","r4",10,"pipeline",6411,FALSE,"",1.58097626322587,0.158097626322587,1.37417470949039,1.78573153894973,143,2
+"A2","r4",1,"full_mask",970842,TRUE,"troppo pochi nuclei rilevati (12 < 30)",NA,NA,NA,NA,NA,19.0273138400435
+"A2","r4",1,"pipeline",601039,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A2","r4",2,"full_mask",242959,FALSE,"",0.224216192030876,0.112108096015438,0.204464685972254,0.244638225749515,109,9.51365692002177
+"A2","r4",2,"pipeline",155607,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A2","r4",5,"full_mask",38843,FALSE,"",0.617093259122517,0.123418651824503,0.51278108417525,0.706704319960805,132,3.36358566101486
+"A2","r4",5,"pipeline",25719,FALSE,"",0.873196938392049,0.17463938767841,0.767473258801679,0.98840767105536,175,3.36358566101486
+"A2","r5",10,"full_mask",9747,FALSE,"",0.89708533296452,0.089708533296452,0.848351657914327,0.973088772966191,70,2.37841423000544
+"A2","r5",10,"pipeline",5109,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A2","r5",1,"full_mask",974720,FALSE,"",0.682182434301143,0.682182434301143,0.667049634312489,0.697660709248559,4048,2.82842712474619
+"A2","r5",1,"pipeline",515821,FALSE,"",1.42245595073765,1.42245595073765,1.38673309032751,1.47080012003067,9314,2
+"A2","r5",2,"full_mask",243818,FALSE,"",0.28278864117485,0.141394320587425,0.257926317771736,0.305786747563841,174,6.72717132202972
+"A2","r5",2,"pipeline",131662,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A2","r5",5,"full_mask",39004,FALSE,"",0.702958794726693,0.140591758945339,0.667998231085689,0.756276659230567,172,2.82842712474619
+"A2","r5",5,"pipeline",21270,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r1",10,"full_mask",9967,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A3","r1",10,"pipeline",3585,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A3","r1",1,"full_mask",996440,FALSE,"",1.4008819597352,1.4008819597352,1.37758193415646,1.42674919060834,6062,2.37841423000544
+"A3","r1",1,"pipeline",398055,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 7.60 um, atteso 3.30 um)",NA,NA,NA,NA,NA,1.68179283050743
+"A3","r1",2,"full_mask",249153,FALSE,"",2.34104750688449,1.17052375344224,2.2795913894537,2.40404147758655,4233,1.4142135623731
+"A3","r1",2,"pipeline",98485,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A3","r1",5,"full_mask",39866,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r1",5,"pipeline",15203,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r2",10,"full_mask",9915,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A3","r2",10,"pipeline",2255,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r2",1,"full_mask",991339,FALSE,"",1.25171715059463,1.25171715059463,1.22314935279248,1.28634900717465,4815,2.37841423000544
+"A3","r2",1,"pipeline",319694,TRUE,"nuclei non risolti (scala caratteristica 0.84 px < 1 px)",NA,NA,NA,NA,NA,0.840896415253715
+"A3","r2",2,"full_mask",247916,FALSE,"",2.08967068900311,1.04483534450155,1.97544074219458,2.17618706104295,3356,1.4142135623731
+"A3","r2",2,"pipeline",76373,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A3","r2",5,"full_mask",39656,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r2",5,"pipeline",10804,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r3",10,"full_mask",9995,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A3","r3",10,"pipeline",4198,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r3",1,"full_mask",999465,FALSE,"",1.38414728145352,1.38414728145352,1.35986563668579,1.41118907948751,5936,2.37841423000544
+"A3","r3",1,"pipeline",464803,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A3","r3",2,"full_mask",249876,FALSE,"",2.32825110538384,1.16412555269192,2.27082573792434,2.38595752900794,4199,1.4142135623731
+"A3","r3",2,"pipeline",115295,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A3","r3",5,"full_mask",39979,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r3",5,"pipeline",17852,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r4",10,"full_mask",9978,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A3","r4",10,"pipeline",3405,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r4",1,"full_mask",997743,FALSE,"",1.3783220434987,1.3783220434987,1.35775763158141,1.40243661297135,5876,2.37841423000544
+"A3","r4",1,"pipeline",393923,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A3","r4",2,"full_mask",249459,FALSE,"",2.11400705073652,1.05700352536826,2.07008591400144,2.17014139044491,3456,1.68179283050743
+"A3","r4",2,"pipeline",97121,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A3","r4",5,"full_mask",39912,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r4",5,"pipeline",14881,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r5",10,"full_mask",9913,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r5",10,"pipeline",3970,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r5",1,"full_mask",991455,FALSE,"",1.15201862921653,1.15201862921653,1.12938728165405,1.17595914122456,4079,2.82842712474619
+"A3","r5",1,"pipeline",425472,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A3","r5",2,"full_mask",247919,FALSE,"",1.51929131459018,0.759645657295092,1.47417129203245,1.56121326425699,1774,2.37841423000544
+"A3","r5",2,"pipeline",106318,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A3","r5",5,"full_mask",39668,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A3","r5",5,"pipeline",16700,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","f1",10,"full_mask",9914,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A4","f1",10,"pipeline",9487,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A4","f1",1,"full_mask",990488,FALSE,"",0.747632464378356,0.747632464378356,0.734982887646004,0.759033183262411,15555,2
+"A4","f1",1,"pipeline",841883,FALSE,"",0.812655163402052,0.812655163402052,0.800186571132163,0.824275945977729,15621,2
+"A4","f1",2,"full_mask",247707,TRUE,"nuclei non risolti (scala caratteristica 0.84 px < 1 px)",NA,NA,NA,NA,NA,0.840896415253715
+"A4","f1",2,"pipeline",216036,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A4","f1",5,"full_mask",39639,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","f1",5,"pipeline",36728,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","f2",10,"full_mask",9971,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","f2",10,"pipeline",9459,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","f2",1,"full_mask",996893,FALSE,"",0.811486008924281,0.811486008924281,0.799082228734535,0.823992023953829,18444,1.68179283050743
+"A4","f2",1,"pipeline",853745,FALSE,"",0.828780564331087,0.828780564331087,0.817751804015652,0.839716384648828,16476,2
+"A4","f2",2,"full_mask",249270,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A4","f2",2,"pipeline",218599,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A4","f2",5,"full_mask",39876,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","f2",5,"pipeline",36807,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","p1",10,"full_mask",9992,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A4","p1",10,"pipeline",9846,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A4","p1",1,"full_mask",999033,FALSE,"",0.882899955014659,0.882899955014659,0.876998253224698,0.889815209968257,21880,1.68179283050743
+"A4","p1",1,"pipeline",889262,FALSE,"",0.919520136991347,0.919520136991347,0.91191334808584,0.927164542845062,21125,1.68179283050743
+"A4","p1",2,"full_mask",249773,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A4","p1",2,"pipeline",228299,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A4","p1",5,"full_mask",39963,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","p1",5,"pipeline",38536,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","p2",10,"full_mask",9955,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","p2",10,"pipeline",9748,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","p2",1,"full_mask",995192,FALSE,"",0.864936837668346,0.864936837668346,0.856989336661179,0.87405944806079,20918,1.68179283050743
+"A4","p2",1,"pipeline",916412,FALSE,"",0.88832696893075,0.88832696893075,0.881006425604654,0.896724229838452,20318,1.68179283050743
+"A4","p2",2,"full_mask",248846,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A4","p2",2,"pipeline",233364,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A4","p2",5,"full_mask",39809,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","p2",5,"pipeline",38536,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","p3",10,"full_mask",10000,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","p3",10,"pipeline",9866,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","p3",1,"full_mask",1000000,FALSE,"",0.888221778108971,0.888221778108971,0.881339892580965,0.894592979544886,22166,1.68179283050743
+"A4","p3",1,"pipeline",934184,FALSE,"",0.90987432556922,0.90987432556922,0.901464085541851,0.915792620431967,21729,1.68179283050743
+"A4","p3",2,"full_mask",250000,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A4","p3",2,"pipeline",237313,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A4","p3",5,"full_mask",40000,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A4","p3",5,"pipeline",39071,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r1",10,"full_mask",7526,TRUE,"troppo pochi nuclei rilevati (2 < 30)",NA,NA,NA,NA,NA,13.4543426440594
+"A5","r1",10,"pipeline",229,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r1",1,"full_mask",745935,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 9.63 um, atteso 4.74 um)",NA,NA,NA,NA,NA,9.51365692002177
+"A5","r1",1,"pipeline",71313,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A5","r1",2,"full_mask",188701,FALSE,"",1.66781899721166,0.833909498605832,1.5384482629225,1.79645099198226,622,4
+"A5","r1",2,"pipeline",13969,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r1",5,"full_mask",29962,TRUE,"troppo pochi nuclei rilevati (2 < 30)",NA,NA,NA,NA,NA,26.9086852881189
+"A5","r1",5,"pipeline",1431,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r2",10,"full_mask",8431,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r2",10,"pipeline",1613,TRUE,"troppo pochi nuclei rilevati (3 < 30)",NA,NA,NA,NA,NA,22.6274169979695
+"A5","r2",1,"full_mask",840240,FALSE,"",0.663248389101486,0.663248389101486,0.625472159605467,0.710363647121009,438,8
+"A5","r2",1,"pipeline",228118,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r2",2,"full_mask",211287,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r2",2,"pipeline",50724,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r2",5,"full_mask",33701,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r2",5,"pipeline",6849,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r3",10,"full_mask",7844,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r3",10,"pipeline",2194,TRUE,"troppo pochi nuclei rilevati (1 < 30)",NA,NA,NA,NA,NA,16
+"A5","r3",1,"full_mask",780681,FALSE,"",0.58629687576814,0.58629687576814,0.535896119917769,0.629384107669716,318,9.51365692002177
+"A5","r3",1,"pipeline",267216,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r3",2,"full_mask",196699,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r3",2,"pipeline",62454,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r3",5,"full_mask",31314,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r3",5,"pipeline",9215,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r4",10,"full_mask",7506,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r4",10,"pipeline",2074,TRUE,"troppo pochi nuclei rilevati (1 < 30)",NA,NA,NA,NA,NA,22.6274169979695
+"A5","r4",1,"full_mask",748361,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r4",1,"pipeline",232978,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r4",2,"full_mask",188529,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r4",2,"pipeline",55205,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r4",5,"full_mask",30057,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r4",5,"pipeline",8433,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r5",10,"full_mask",8727,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r5",10,"pipeline",1260,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r5",1,"full_mask",869134,FALSE,"",0.520474619862625,0.520474619862625,0.482110873861893,0.565746207910425,279,9.51365692002177
+"A5","r5",1,"pipeline",197051,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r5",2,"full_mask",218229,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r5",2,"pipeline",42695,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A5","r5",5,"full_mask",34838,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A5","r5",5,"pipeline",5536,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A6","r1",10,"full_mask",9275,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A6","r1",10,"pipeline",324,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A6","r1",1,"full_mask",923753,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 6.07 um, atteso 2.68 um)",NA,NA,NA,NA,NA,8
+"A6","r1",1,"pipeline",39355,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 16.08 um, atteso 2.68 um)",NA,NA,NA,NA,NA,4
+"A6","r1",2,"full_mask",232019,FALSE,"",1.12281620968353,0.561408104841765,1.02994033263189,1.19771641183175,289,3.36358566101486
+"A6","r1",2,"pipeline",8780,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 17.05 um, atteso 2.68 um)",NA,NA,NA,NA,NA,2.37841423000544
+"A6","r1",5,"full_mask",37044,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 5.37 um, atteso 2.68 um)",NA,NA,NA,NA,NA,2
+"A6","r1",5,"pipeline",1223,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 18.69 um, atteso 2.68 um)",NA,NA,NA,NA,NA,1
+"A6","r2",10,"full_mask",9067,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A6","r2",10,"pipeline",183,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A6","r2",1,"full_mask",900228,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 6.80 um, atteso 2.68 um)",NA,NA,NA,NA,NA,8
+"A6","r2",1,"pipeline",26615,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 17.00 um, atteso 2.68 um)",NA,NA,NA,NA,NA,3.36358566101486
+"A6","r2",2,"full_mask",226353,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 7.59 um, atteso 2.68 um)",NA,NA,NA,NA,NA,3.36358566101486
+"A6","r2",2,"pipeline",5776,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 18.27 um, atteso 2.68 um)",NA,NA,NA,NA,NA,2
+"A6","r2",5,"full_mask",36100,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 5.76 um, atteso 2.68 um)",NA,NA,NA,NA,NA,2
+"A6","r2",5,"pipeline",741,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A6","r3",10,"full_mask",9674,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A6","r3",10,"pipeline",185,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A6","r3",1,"full_mask",966079,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 9.24 um, atteso 2.68 um)",NA,NA,NA,NA,NA,2.82842712474619
+"A6","r3",1,"pipeline",30983,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A6","r3",2,"full_mask",241895,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 8.84 um, atteso 2.68 um)",NA,NA,NA,NA,NA,2
+"A6","r3",2,"pipeline",6332,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 16.96 um, atteso 2.68 um)",NA,NA,NA,NA,NA,2.37841423000544
+"A6","r3",5,"full_mask",38668,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A6","r3",5,"pipeline",797,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 18.65 um, atteso 2.68 um)",NA,NA,NA,NA,NA,1
+"A6","r4",10,"full_mask",9335,TRUE,"scala caratteristica all'estremo superiore della griglia",NA,NA,NA,NA,NA,32
+"A6","r4",10,"pipeline",183,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A6","r4",1,"full_mask",932095,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 8.74 um, atteso 2.68 um)",NA,NA,NA,NA,NA,2.82842712474619
+"A6","r4",1,"pipeline",34095,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 19.63 um, atteso 2.68 um)",NA,NA,NA,NA,NA,2.37841423000544
+"A6","r4",2,"full_mask",233451,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 8.94 um, atteso 2.68 um)",NA,NA,NA,NA,NA,2.37841423000544
+"A6","r4",2,"pipeline",7104,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A6","r4",5,"full_mask",37306,TRUE,"nuclei non risolti (scala caratteristica 0.50 px < 1 px)",NA,NA,NA,NA,NA,0.5
+"A6","r4",5,"pipeline",807,TRUE,"nuclei non risolti (scala caratteristica 0.71 px < 1 px)",NA,NA,NA,NA,NA,0.707106781186548
+"A6","r5",10,"full_mask",9103,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 12.59 um, atteso 2.68 um)",NA,NA,NA,NA,NA,2.37841423000544
+"A6","r5",10,"pipeline",421,TRUE,"nuclei non risolti (scala caratteristica 0.59 px < 1 px)",NA,NA,NA,NA,NA,0.594603557501361
+"A6","r5",1,"full_mask",909582,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 10.65 um, atteso 2.68 um)",NA,NA,NA,NA,NA,16
+"A6","r5",1,"pipeline",57728,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 17.50 um, atteso 2.68 um)",NA,NA,NA,NA,NA,3.36358566101486
+"A6","r5",2,"full_mask",228309,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 10.84 um, atteso 2.68 um)",NA,NA,NA,NA,NA,8
+"A6","r5",2,"pipeline",12649,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 19.03 um, atteso 2.68 um)",NA,NA,NA,NA,NA,2.37841423000544
+"A6","r5",5,"full_mask",36450,TRUE,"taglia dei nuclei incoerente con il conteggio (raggio visto 10.87 um, atteso 2.68 um)",NA,NA,NA,NA,NA,3.36358566101486
+"A6","r5",5,"pipeline",1776,TRUE,"nuclei non risolti (scala caratteristica 0.84 px < 1 px)",NA,NA,NA,NA,NA,0.840896415253715

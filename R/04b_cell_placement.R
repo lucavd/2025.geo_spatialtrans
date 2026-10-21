@@ -99,6 +99,7 @@ merge_small_components <- function(clust, pixel_size_um, min_region_area_um2, cl
 #' @param small_components `"merge"` (BL-043) o `"exclude"`.
 #' @param stride passo dei pixel; NULL = attributo `stride` di `clust`, altrimenti 1 se i dati sono contigui, errore se
 #'   il passo rilevato e' > 1 (BL-042).
+#' @param allow_estimate se TRUE accetta `pixel_size_um = "estimate"` (sconsigliato: controprova CP-1 di S1.5).
 #' @param keep_tiles se TRUE restituisce anche i tile di Voronoi non ritagliati (`tiles`, diagnostica: regola d'interna di R3).
 #' @return `cell_layer` (design §4.1): `cell_df`, `region_df`, `region_polygons`, `cell_territories`, `cell_nuclei`,
 #'   `territory_df`, `region_check`, `region_composition`, `cell_types_resolved`, `metadata`.
@@ -108,7 +109,8 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
                         pixel_size_um, corner_smoothing = 0, min_region_area_um2 = 100, random_seed = 42,
                         cluster_col = "intensity_cluster", stride = NULL, simplify_tol_um = 0.5,
                         small_components = c("merge", "exclude"), nucleus_model = "clip",
-                        size_conversion = c("preserve_area", "none"), validate = TRUE, strict = TRUE, keep_tiles = FALSE, verbose = TRUE) {
+                        size_conversion = c("preserve_area", "none"), validate = TRUE, strict = TRUE, keep_tiles = FALSE,
+                        allow_estimate = FALSE, verbose = TRUE) {
   t0 <- proc.time()[["elapsed"]]
   small_components <- match.arg(small_components); size_conversion <- match.arg(size_conversion)
   if (missing(pixel_size_um))
@@ -145,6 +147,9 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   # ---- scala ----
   src <- "user"; est <- NULL
   if (identical(pixel_size_um, "estimate")) {
+    if (!allow_estimate)
+      stop("place_cells(): la stima della scala dall'immagine non e' raccomandata (S1.5, controprova CP-1: sbaglia in 5 tessuti su 6 e ",
+           "puo' dare numeri sbagliati senza rifiuto). Passare pixel_size_um o list(scalefactors_json = ...); per usarla comunque allow_estimate = TRUE.", call. = FALSE)
     est <- estimate_pixel_size(clust, ct, cluster_to_dominant = cluster_to_dominant, method = "nuclear_spacing", cluster_col = cluster_col)
     if (isTRUE(est$refused)) stop("place_cells(): stima della scala rifiutata: ", est$reason, ". Passare pixel_size_um.", call. = FALSE)
     px <- est$pixel_size_um; src <- "estimated"
