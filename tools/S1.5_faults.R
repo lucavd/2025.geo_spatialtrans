@@ -16,6 +16,10 @@
   stop("nessuna coppia adatta")
 }
 
+# dopo un guasto geometrico le aree di cell_df seguono le geometrie: il guasto resta in un punto solo (revisione di S1.5)
+.f_sync <- function(cl) { cl$cell_df$territory_area <- as.numeric(sf::st_area(cl$cell_territories))
+  cl$cell_df$nucleus_area <- as.numeric(sf::st_area(cl$cell_nuclei)); cl }
+
 #' Costruisce un guasto di tipo `type` e area `delta` su un cell_layer valido
 make_fault <- function(cl, type = c("overlap", "gap", "outside_region", "nucleus_out", "nuclei_overlap", "nan_area", "invalid"),
                        delta = 0.1) {
@@ -23,26 +27,26 @@ make_fault <- function(cl, type = c("overlap", "gap", "outside_region", "nucleus
   if (type %in% c("overlap", "gap", "nucleus_out", "nuclei_overlap", "nan_area")) pij <- .f_pair(cl, delta)
   if (type == "overlap") {        # T_i invade T_j per delta
     j <- pij[["j"]]; S <- .f_sq(sf::st_point_on_surface(sf::st_sfc(.f_diff(Tt[[j]], Nn[[j]]))), delta)
-    cl$cell_territories <- .f_set(Tt, pij[["i"]], .f_union(Tt[[pij[["i"]]]], S)); return(list(cl = cl, expect = "C2", cell = pij[["i"]]))
+    cl$cell_territories <- .f_set(Tt, pij[["i"]], .f_union(Tt[[pij[["i"]]]], S)); return(list(cl = .f_sync(cl), expect = "C2", cell = pij[["i"]]))
   }
   if (type == "gap") {            # buco di area delta dentro T_j, fuori dal nucleo
     j <- pij[["j"]]; S <- .f_sq(sf::st_point_on_surface(sf::st_sfc(.f_diff(Tt[[j]], sf::st_buffer(Nn[j], 1)[[1]]))), delta)
-    cl$cell_territories <- .f_set(Tt, j, .f_diff(Tt[[j]], S)); return(list(cl = cl, expect = "C2", cell = j))
+    cl$cell_territories <- .f_set(Tt, j, .f_diff(Tt[[j]], S)); return(list(cl = .f_sync(cl), expect = "C2", cell = j))
   }
   if (type == "outside_region") { # un territorio di bordo esce dalla regione per delta
     td <- cl$territory_df; i <- which(td$clipped)[1]
     R <- cl$region_polygons[match(cl$cell_df$region_id[i], cl$region_df$region_id)]
     out <- sf::st_difference(sf::st_buffer(Tt[i], 2), R)
     S <- .f_sq(sf::st_point_on_surface(sf::st_sfc(sf::st_difference(out, sf::st_buffer(R, 0.5))[[1]])), delta)
-    cl$cell_territories <- .f_set(Tt, i, .f_union(Tt[[i]], S)); return(list(cl = cl, expect = "C2", cell = i))
+    cl$cell_territories <- .f_set(Tt, i, .f_union(Tt[[i]], S)); return(list(cl = .f_sync(cl), expect = "C2", cell = i))
   }
   if (type == "nucleus_out") {    # il nucleo di i esce nel territorio di j, fuori dal nucleo di j
     j <- pij[["j"]]; S <- .f_sq(sf::st_point_on_surface(sf::st_sfc(.f_diff(Tt[[j]], sf::st_buffer(Nn[j], 1)[[1]]))), delta)
-    cl$cell_nuclei <- .f_set(Nn, pij[["i"]], .f_union(Nn[[pij[["i"]]]], S)); return(list(cl = cl, expect = "C3", cell = pij[["i"]]))
+    cl$cell_nuclei <- .f_set(Nn, pij[["i"]], .f_union(Nn[[pij[["i"]]]], S)); return(list(cl = .f_sync(cl), expect = "C3", cell = pij[["i"]]))
   }
   if (type == "nuclei_overlap") { # il nucleo di i invade il nucleo di j
     j <- pij[["j"]]; S <- .f_sq(sf::st_point_on_surface(Nn[j]), delta)
-    cl$cell_nuclei <- .f_set(Nn, pij[["i"]], .f_union(Nn[[pij[["i"]]]], S)); return(list(cl = cl, expect = "C3", cell = pij[["i"]]))
+    cl$cell_nuclei <- .f_set(Nn, pij[["i"]], .f_union(Nn[[pij[["i"]]]], S)); return(list(cl = .f_sync(cl), expect = "C3", cell = pij[["i"]]))
   }
   if (type == "nan_area") { cl$cell_df$nucleus_area[pij[["i"]]] <- NaN; return(list(cl = cl, expect = "C5", cell = pij[["i"]])) }
   # invalid: il territorio di i diventa un poligono a farfalla (auto-intersecante) sul suo riquadro

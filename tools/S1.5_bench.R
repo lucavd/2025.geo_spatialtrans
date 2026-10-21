@@ -88,11 +88,11 @@ if (STAGE == "gen") {
 
 # ---- faults: guasti costruiti sulle uscite del seme 1 (braccio preserve_area) ----
 if (STAGE == "faults") {
-  dir.create(file.path(OUT, "faults"), showWarnings = FALSE)
+  FDIR <- Sys.getenv("S15_FAULTS_DIR", "faults"); dir.create(file.path(OUT, FDIR), showWarnings = FALSE)
   jobs <- expand.grid(i = rois$roi_idx, type = FAULT_TYPES, delta = c(0.01, 0.1, 1), stringsAsFactors = FALSE)
   par_run(jobs, function(j) {
     A <- rois$archetype[j$i]; roi <- rois$roi_id[j$i]
-    f <- file.path(OUT, "faults", sprintf("%s_%s_%s_%g.rds", A, roi, j$type, j$delta)); if (file.exists(f)) return(invisible())
+    f <- file.path(OUT, FDIR, sprintf("%s_%s_%s_%g.rds", A, roi, j$type, j$delta)); if (file.exists(f)) return(invisible())
     L <- readRDS(file.path(OUT, "layers", sprintf("%s_%s_preserve_area.rds", A, roi)))
     fz <- make_fault(L, j$type, j$delta); v <- validate_cell_layer(fz$cl, c8_interval = tissue_preset_spec(PRESET[[A]])$c8_interval)
     r <- data.frame(archetype = A, roi_id = roi, type = j$type, delta = j$delta, expect = fz$expect, cell = fz$cell,
@@ -100,14 +100,14 @@ if (STAGE == "faults") {
                     statuses = paste(v$table$check, v$table$status, sep = ":", collapse = " "))
     saveRDS(r, f)
   }, "faults")
-  tab <- do.call(rbind, lapply(list.files(file.path(OUT, "faults"), full.names = TRUE), readRDS))
-  write.csv(tab, file.path(RES, "S1.5_G4_faults.csv"), row.names = FALSE)
+  tab <- do.call(rbind, lapply(list.files(file.path(OUT, FDIR), full.names = TRUE), readRDS))
+  write.csv(tab, file.path(RES, if (FDIR == "faults") "S1.5_G4_faults.csv" else paste0("S1.5_G4_", FDIR, ".csv")), row.names = FALSE)
   cat(sprintf("%s G-4 guasti rilevati dal controllo atteso: %d/%d\n", if (all(tab$status_expected == "ERROR")) "PASS" else "FAIL", sum(tab$status_expected == "ERROR"), nrow(tab)))
 }
 
 # ---- nulls: i 1 800 nulli di S1.3 (codice e semi di tools/S1.3_roi.R, gen_points) con i nuclei del preset ----
 if (STAGE == "nulls") {
-  dir.create(file.path(OUT, "nulls"), showWarnings = FALSE)
+  NDIR <- Sys.getenv("S15_NULLS_DIR", "nulls"); dir.create(file.path(OUT, NDIR), showWarnings = FALSE)
   DSTAR <- c(A1 = 2.5, A2 = 3.5, A3 = 3.5, A4 = 4, A5 = 7, A6 = 2.5)
   PRIM <- c(A1 = "cellpose_rgb", A2 = "cellpose_rgb", A3 = "cellpose_rgb", A4 = "spaceranger", A5 = "cellpose_rgb", A6 = "spaceranger")
   gen_points <- function(i, model, rp, w, n_obs, dstar) {      # copia di tools/S1.3_roi.R (BASE_SEED 20261008)
@@ -123,14 +123,14 @@ if (STAGE == "nulls") {
   jobs <- jobs[order(-(rois$archetype[jobs$i] == "A4")), ]
   par_run(jobs, function(j) {
     A <- rois$archetype[j$i]; roi <- rois$roi_id[j$i]
-    f <- file.path(OUT, "nulls", sprintf("%s_%s_%s_%02d.rds", A, roi, j$model, j$rp)); if (file.exists(f)) return(invisible())
+    f <- file.path(OUT, NDIR, sprintf("%s_%s_%s_%02d.rds", A, roi, j$model, j$rp)); if (file.exists(f)) return(invisible())
     w <- r3_roi_window(A, roi, rois)
     n_obs <- readRDS(file.path(M, "R3", "real", sprintf("%s_%s_%s_roi.rds", A, roi, PRIM[[A]])))$n
     p <- gen_points(j$i, j$model, j$rp, w, n_obs, DSTAR[[A]])
     reg1 <- list(region_df = data.frame(region_id = 1L, cluster_id = 1L, area_um2 = w$area_um2), region_polygons = sf::st_sfc(w$poly[[1]]))
     cen <- data.frame(cell_id = seq_along(p$x), region_id = 1L, x = p$x, y = p$y, cell_type = paste0(PRESET[[A]], "_all"), cluster_id = 1L)
     tv <- tessellate_voronoi(cen, reg1, verbose = FALSE)
-    sp <- tissue_preset_spec(PRESET[[A]]); dg <- derive_cell_geometry(cen, tv, sp$cell_types, random_seed = p$seed, strict = FALSE, verbose = FALSE)
+    sp <- tissue_preset_spec(PRESET[[A]]); dg <- derive_cell_geometry(cen, tv, sp$cell_types, random_seed = stage_seeds(p$seed)[["size"]], strict = FALSE, verbose = FALSE)   # FND-14
     rd <- data.frame(region_id = 1L, cluster_id = 1L, area_um2 = w$area_um2, n_cells = nrow(cen))
     cl <- list(cell_df = dg$cell_df, region_df = rd, region_polygons = reg1$region_polygons, cell_territories = tv$cell_territories,
                cell_nuclei = dg$cell_nuclei, territory_df = tv$territory_df, region_check = tv$region_check)
@@ -139,9 +139,25 @@ if (STAGE == "nulls") {
                        statuses = paste(v$table$check, v$table$status, sep = ":", collapse = " "),
                        c2 = v$table$value[v$table$check == "C2"]), f)
   }, "nulls")
-  tab <- do.call(rbind, lapply(list.files(file.path(OUT, "nulls"), full.names = TRUE), readRDS))
-  write.csv(tab, file.path(RES, "S1.5_G4_nulls.csv"), row.names = FALSE)
+  tab <- do.call(rbind, lapply(list.files(file.path(OUT, NDIR), full.names = TRUE), readRDS))
+  write.csv(tab, file.path(RES, if (NDIR == "nulls") "S1.5_G4_nulls.csv" else paste0("S1.5_G4_", NDIR, ".csv")), row.names = FALSE)
   cat(sprintf("%s G-4 nulli di S1.3 senza ERROR: %d/%d\n", if (all(tab$n_error == 0)) "PASS" else "FAIL", sum(tab$n_error == 0), nrow(tab)))
+}
+
+# ---- recheck: dopo la revisione, tutte le 600 unita' con il validatore corretto; md5 delle geometrie uguale al pannello? ----
+if (STAGE == "recheck") {
+  dir.create(file.path(OUT, "recheck"), showWarnings = FALSE)
+  tab <- read.csv(file.path(RES, "S1.5_panel_units.csv"))
+  jobs <- expand.grid(i = rois$roi_idx, s = SEEDS, arm = ARMS, stringsAsFactors = FALSE)
+  par_run(jobs, function(j) {
+    A <- rois$archetype[j$i]; roi <- rois$roi_id[j$i]; f <- file.path(OUT, "recheck", sprintf("%s_%s_s%02d_%s.rds", A, roi, j$s, j$arm)); if (file.exists(f)) return(invisible())
+    L <- run_pc(j$i, j$s, j$arm); vt <- L$metadata$validation$table
+    saveRDS(data.frame(archetype = A, roi_id = roi, seed = j$s, arm = j$arm, md5 = layer_md5(L), md5_panel = tab$md5[tab$roi_idx == j$i & tab$seed == j$s & tab$arm == j$arm],
+                       n_error = L$metadata$validation$n_error, statuses = paste(vt$check, vt$status, sep = ":", collapse = " ")), f)
+  }, "recheck")
+  r <- do.call(rbind, lapply(list.files(file.path(OUT, "recheck"), full.names = TRUE), readRDS)); write.csv(r, file.path(RES, "S1.5_G3_recheck.csv"), row.names = FALSE)
+  cat(sprintf("%s ricontrollo: %d/%d unita' senza ERROR, md5 uguale al pannello %d/%d\n", if (all(r$n_error == 0) && all(r$md5 == r$md5_panel)) "PASS" else "FAIL",
+              sum(r$n_error == 0), nrow(r), sum(r$md5 == r$md5_panel), nrow(r)))
 }
 
 # ---- check: G-3 (ERROR, riproducibilita', equivalenza con la catena manuale) ----

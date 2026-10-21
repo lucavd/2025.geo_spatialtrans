@@ -13,7 +13,8 @@ verdict <- function(est, se, lo, hi, frac = FALSE) {
 }
 se_of <- function(x) sd(x) / sqrt(length(x))
 roi_means <- function(arm) aggregate(. ~ archetype + roi_id, data = u[u$arm == arm, c("archetype", "roi_id", "median_area_nuc", "median_nc", "frac_nc095",
-  "frac_trunc", "cv_terr", "median_ecc_T", "median_eq_r", "frac_pale", "desc_border_ratio", "n_failed", "n_warn", "n_error")], FUN = mean)
+  "frac_trunc", "cv_terr", "median_ecc_T", "median_eq_r", "frac_pale", "desc_border_ratio", "n_failed", "n_warn", "n_error")], FUN = mean, na.action = na.pass)
+stopifnot(all(aggregate(seed ~ archetype + roi_id + arm, data = u, FUN = length)$seed == 10))   # FND-15: 10 semi per ROI e braccio
 rows <- list()
 add <- function(id, A, arm, qty, est, se, lo, hi, src, frac = FALSE, n_units = NA) {
   v <- verdict(est, se, lo, hi, frac)

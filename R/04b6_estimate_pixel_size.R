@@ -41,7 +41,7 @@ estimate_pixel_size <- function(clust, cell_types, cluster_to_dominant = NULL, m
   x <- as.integer(round(clust$x)); y <- as.integer(round(clust$y))
   x0 <- min(x); y0 <- min(y); nx <- max(x) - x0 + 1L; ny <- max(y) - y0 + 1L
   dmat <- matrix(0, nx, ny); msk <- matrix(FALSE, nx, ny)
-  dmat[cbind(x - x0 + 1L, y - y0 + 1L)] <- 1 - clust[[value_col]]
+  dmat[cbind(x[keep] - x0 + 1L, y[keep] - y0 + 1L)] <- 1 - clust[[value_col]][keep]   # fuori dal cluster dominante = 0 (FND-13)
   msk[cbind(x[keep] - x0 + 1L, y[keep] - y0 + 1L)] <- TRUE
   A_px <- sum(msk)
   im <- imager::as.cimg(dmat)

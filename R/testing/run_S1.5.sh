@@ -8,6 +8,8 @@ export R_LIBS_SITE=/nonexistent R_LIBS_USER=/nonexistent OMP_NUM_THREADS=1 OPENB
 LOG=${S15_LOG:-/mnt/micron/geo_spatialtrans/S1.5/tests}; mkdir -p "$LOG"
 mode=${1:-test}; fail=0
 if [ "$mode" = test ]; then
+  if [ -n "$(git status --porcelain -- results/S1.1 results/S1.2 results/S1.3 results/S1.4)" ]; then
+    echo "FAIL modifiche locali in results/S1.1-S1.4: il test le sovrascriverebbe; fermo (revisione FND-10)"; exit 2; fi
   S15_MUTANT=none Rscript --vanilla R/testing/test_S1.5.R > "$LOG/test_S1.5.log" 2>&1 || fail=1
   grep -E '^(PASS|FAIL)' "$LOG/test_S1.5.log"; tail -1 "$LOG/test_S1.5.log"
   Rscript --vanilla R/testing/test_S1.1.R > "$LOG/test_S1.1.log" 2>&1; echo "test_S1.1 exit $?"

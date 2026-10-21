@@ -107,7 +107,8 @@ if (isok(L)) {
   v0 <- validate_cell_layer(L0, min_region_area_um2 = 0)
   ck("V-empty regione senza cellule: C6 WARN, C2 non la conta", identical(st_of(v0, "C6"), "WARN") && identical(st_of(v0, "C2"), "PASS"))
   Lo <- L; Lo$cell_nuclei <- Lo$cell_nuclei[c(2:length(Lo$cell_nuclei), 1)]
-  ck("V-order nuclei fuori ordine -> C3 ERROR", identical(st_of(validate_cell_layer(Lo), "C3"), "ERROR"))
+  vo <- validate_cell_layer(Lo)
+  ck("V-order nuclei fuori ordine -> ERROR (C9 legame righe-geometrie, oppure C3)", identical(st_of(vo, "C9"), "ERROR") || identical(st_of(vo, "C3"), "ERROR"))
   Lc <- L; Lc$cell_df$cell_id <- rev(Lc$cell_df$cell_id)
   ck("V-cellid cell_id non 1..N -> C9 ERROR", identical(st_of(validate_cell_layer(Lc), "C9"), "ERROR"))
   L1 <- L; L1$region_df$achieved_density[1] <- 2 * L1$region_df$target_density_weighted[1]
@@ -115,7 +116,7 @@ if (isok(L)) {
   L4 <- L; L4$region_composition <- rbind(L4$region_composition, data.frame(cluster_id = L4$region_df$cluster_id[1], cell_type = "altro", fraction = 1))
   ck("V-C4 frazione di tipo mancata -> WARN", identical(st_of(validate_cell_layer(L4), "C4"), "WARN"))
   L6 <- L; L6$region_df$n_cells[1] <- 0L
-  ck("V-C6 regione senza cellule -> WARN", identical(st_of(validate_cell_layer(L6, min_region_area_um2 = 0), "C6"), "WARN"))
+  ck("V-C6 n_cells di region_df falsato -> C9 ERROR (C6 si calcola dalle cellule; regione davvero vuota: V-empty)", identical(st_of(validate_cell_layer(L6, min_region_area_um2 = 0), "C9"), "ERROR"))
   L7 <- L; L7$cell_df$eq_radius <- 3 * L7$cell_df$eq_radius
   ck("V-C7 eq_r triplo -> WARN", identical(st_of(validate_cell_layer(L7), "C7"), "WARN"))
 }
@@ -174,13 +175,13 @@ if (isok(L)) {
 
 # ---- E: casi limite del design §6.2 ----
 ce <- toy(); ce$intensity_cluster[ce$x %in% 30:34 & ce$y %in% 30:34] <- 2L            # 25 µm² di cluster 2 dentro il cluster 1
-Ex <- PC(ce, "epithelial", pixel_size_um = 1, small_components = "exclude", random_seed = 2)
-ck("E1 regione sotto la soglia di area: esclusa (exclude)", nrow(Ex$region_df) == 2 && nrow(Ex$metadata$excluded_df) == 1)
-Em <- PC(ce, "epithelial", pixel_size_um = 1, random_seed = 2)
-ck("E1b BL-043: con merge la componente piccola passa al cluster adiacente", nrow(Em$region_df) == 2 && nrow(Em$metadata$excluded_df) == 0 && Em$metadata$merge_info$n_px_moved == 25)
+Ex <- safe(PC(ce, "epithelial", pixel_size_um = 1, small_components = "exclude", random_seed = 2))
+ck("E1 regione sotto la soglia di area: esclusa (exclude)", isok(Ex) && nrow(Ex$region_df) == 2 && nrow(Ex$metadata$excluded_df) == 1, msg(Ex))
+Em <- safe(PC(ce, "epithelial", pixel_size_um = 1, random_seed = 2))
+ck("E1b BL-043: con merge la componente piccola passa al cluster adiacente", isok(Em) && nrow(Em$region_df) == 2 && nrow(Em$metadata$excluded_df) == 0 && Em$metadata$merge_info$n_px_moved == 25)
 ci <- toy(); ci <- ci[!(ci$x %in% 60:70 & ci$y %in% 60:70) | (ci$x %in% 64:66 & ci$y %in% 64:66), ]; ci$intensity_cluster[ci$x %in% 64:66 & ci$y %in% 64:66] <- 2L
-Ei <- PC(ci, "epithelial", pixel_size_um = 1, random_seed = 2)
-ck("E1c BL-043: isola che tocca solo il fondo resta esclusa", nrow(Ei$metadata$excluded_df) == 1)
+Ei <- safe(PC(ci, "epithelial", pixel_size_um = 1, random_seed = 2))
+ck("E1c BL-043: isola che tocca solo il fondo resta esclusa", isok(Ei) && nrow(Ei$metadata$excluded_df) == 1, msg(Ei))
 ctu <- data.frame(cell_type = c("a", "b"), density = c(5000, 3000), nucleus_to_eq_ratio = c(0.4, 0.5))
 w2 <- tryCatch({ PC(toy(), cell_types = ctu, region_composition = data.frame(cluster_id = c(1, 1, 2), cell_type = c("a", "b", "a"), fraction = c(0.5, 0.3, 1)), pixel_size_um = 1); "" },
   warning = function(w) conditionMessage(w))
@@ -193,8 +194,8 @@ ck("E4 tessuto enorme 4000 x 4000 px (cuore): nessun errore, < 5 min, memoria R 
    isok(Lb) && tb < 300 && mb < 8000, sprintf("%.1f s, %.0f MB, %s celle", tb, mb, if (isok(Lb)) nrow(Lb$cell_df) else msg(Lb)))
 rm(big, Lb); invisible(gc())
 c1 <- expand.grid(x = 1:120, y = 1:120); c1$intensity_cluster <- 3L
-E5 <- PC(c1, "lymphoid", pixel_size_um = 1, random_seed = 2)
-ck("E5 tessuto con un solo cluster: una regione", nrow(E5$region_df) == 1 && E5$metadata$validation$ok)
+E5 <- safe(PC(c1, "lymphoid", pixel_size_um = 1, random_seed = 2))
+ck("E5 tessuto con un solo cluster: una regione", isok(E5) && nrow(E5$region_df) == 1 && E5$metadata$validation$ok, msg(E5))
 E6 <- safe(PC(toy(), "lymphoid", pixel_size_um = 1, corner_smoothing = 1, random_seed = 2))
 ck("E6 corner_smoothing = 1 con territori piccoli: nessun poligono degenere, controlli senza ERROR", isok(E6) && all(E6$cell_df$territory_area > 0) && E6$metadata$validation$ok &&
    sum(E6$region_check$gap_area) > 0, msg(E6))
@@ -222,6 +223,77 @@ e12 <- safe(PC(cs, "epithelial", pixel_size_um = 1))
 ck("E12 BL-042: passo 2 rilevato e non dichiarato -> errore", !isok(e12) && grepl("BL-042", msg(e12)), msg(e12))
 attr(cs, "stride") <- 2L; e13 <- safe(PC(cs, "epithelial", pixel_size_um = 1, random_seed = 2))
 ck("E13 BL-042: passo dai metadati (attributo stride) -> regione dell'area giusta", isok(e13) && isTRUE(all.equal(sum(e13$region_df$area_um2), nrow(cs) * 4)), msg(e13))
+
+
+# ---- R: test aggiunti dopo la revisione avversariale (FND-01...FND-13), prima della chiusura ----
+if (isok(L)) {
+  # R1 sovrapposizione compensata da una lacuna della stessa area nella stessa regione: la somma non cambia, le coppie la vedono
+  f1 <- make_fault(L, "overlap", 0.5); f2 <- make_fault(f1$cl, "gap", 0.5)
+  vv <- validate_cell_layer(f2$cl); nt <- vv$table$note[vv$table$check == "C2"]
+  ck("R1 sovrapposizione compensata: C2 ERROR dalle coppie (somma invariata)", identical(st_of(vv, "C2"), "ERROR") && grepl("regioni 0, coppie [1-9]", nt), nt)
+  # R2 uscita dalla regione compensata da una lacuna, con i segnali di territory_df azzerati: la geometria la vede
+  f3 <- make_fault(L, "outside_region", 0.5); i3 <- f3$cell
+  f4 <- make_fault(f3$cl, "gap", 0.5); cl4 <- f4$cl; cl4$territory_df$clipped <- FALSE; cl4$territory_df$n_pieces_gained <- 0L
+  cl4$cell_df$territory_area <- as.numeric(sf::st_area(cl4$cell_territories))
+  vv <- validate_cell_layer(cl4); nt <- vv$table$note[vv$table$check == "C2"]
+  ck("R2 uscita compensata senza segnali: C2 ERROR dal contenimento geometrico (FND-02)", identical(st_of(vv, "C2"), "ERROR") && grepl("uscite [1-9]", nt), nt)
+  # R3 lacuna dichiarata dalla tassellazione ma non dalla smussatura: non e' ammessa (FND-01)
+  cl5 <- make_fault(L, "gap", 0.5)$cl; cl5$cell_df$territory_area <- as.numeric(sf::st_area(cl5$cell_territories))
+  rk <- cl5$cell_df$region_id[1]; cl5$region_check$gap_area[cl5$region_check$region_id == rk] <- 0.5
+  ck("R3 lacuna scritta in region_check senza perdita di smussatura: C2 ERROR", identical(st_of(validate_cell_layer(cl5), "C2"), "ERROR"))
+  # R4 scambio di territori e nuclei fra due cellule (cell_df intatto): C9 ERROR (FND-03)
+  pr <- .f_pair(L, 0.01); cl6 <- L; ii <- pr[c("i", "j")]
+  cl6$cell_territories[ii] <- L$cell_territories[rev(ii)]; cl6$cell_nuclei[ii] <- L$cell_nuclei[rev(ii)]
+  ck("R4 righe scambiate rispetto alle geometrie: C9 ERROR", identical(st_of(validate_cell_layer(cl6), "C9"), "ERROR"))
+  # R5 nucleo dimezzato con nucleus_area invariata: C9 ERROR
+  cl7 <- L; k7 <- which(!L$territory_df$clipped)[1]; c7 <- sf::st_coordinates(sf::st_centroid(L$cell_nuclei[k7]))[1, 1:2]
+  cl7$cell_nuclei[k7] <- (L$cell_nuclei[k7] - c7) * sqrt(0.5) + c7
+  ck("R5 area del nucleo diversa da cell_df: C9 ERROR", identical(st_of(validate_cell_layer(cl7), "C9"), "ERROR"))
+  # R6 region_id NA: C9 ERROR, nessun errore R (FND-04)
+  cl8 <- L; cl8$cell_df$region_id[10] <- NA
+  v8 <- safe(validate_cell_layer(cl8))
+  ck("R6 region_id NA: C9 ERROR senza interruzione", isok(v8) && identical(st_of(v8, "C9"), "ERROR"), msg(v8))
+  # R7 nucleo che sporge di pochissimo (area sotto la tolleranza): lo vede il predicato within di C3
+  cl9 <- L; k9 <- which(!L$territory_df$clipped)[2]; g9 <- L$cell_df[k9, c("x", "y")]; gg <- as.numeric(g9)
+  big <- (L$cell_territories[k9] - gg) * (1 + 1e-8) + gg
+  cl9$cell_nuclei[k9] <- big; cl9$cell_df$nucleus_area[k9] <- as.numeric(sf::st_area(big))
+  v9 <- validate_cell_layer(cl9)
+  ck("R7 nucleo che esce dal territorio di ~1e-7 µm: C3 ERROR dal predicato within", identical(st_of(v9, "C3"), "ERROR") && grepl("non within [1-9]", v9$table$value[v9$table$check == "C3"]),
+     v9$table$value[v9$table$check == "C3"])
+  # R8 nuclei pallidi estratti con il seme dedicato
+  s8 <- stage_seeds(11); u8 <- .pc_with_seed(s8[["pale"]], stats::runif(nrow(L$cell_df)))
+  ck("R8 nuclei pallidi = runif con il seme dedicato < frazione del preset", identical(L$cell_df$nucleus_pale, u8 < L$cell_types_resolved$pale_fraction))
+}
+# R9 catalogo effettivo dei preset contro BIO_REFERENCES (FND-06)
+bad9 <- character(0)
+for (k in seq_along(tissue_presets())) {
+  p <- tissue_preset_spec(tissue_presets()[k]); ct <- p$cell_types; src <- setNames(p$sources$source, p$sources$parameter)
+  ref <- c(density = bnum(src[["density"]]), min_dist_um = bnum(src[["min_dist_um"]]), nucleus_area_slope = bnum(src[["beta"]]),
+           nucleus_area_sdlog = bnum(src[["sigma"]]), nucleus_nc_max = bphi(src[["phi"]]))
+  for (nm in names(ref)) if (!isTRUE(abs(ct[[nm]] - ref[[nm]]) <= 1e-12)) bad9 <- c(bad9, paste(p$preset, nm))
+  if (!identical(p$c8_interval, c(binterval_c8 <- as.numeric(strsplit(gsub("[][ ]", "", bval(src[["c8_lo"]])), ",")[[1]])))) bad9 <- c(bad9, paste(p$preset, "c8"))
+}
+ck("R9 colonne del catalogo usato da place_cells uguali alle righe di BIO_REFERENCES", !length(bad9), bad9)
+# R10 orchestratore sui 6 preset (FND-12)
+okp <- vapply(tissue_presets(), function(pp) { o <- safe(PC(toy(), pp, pixel_size_um = 1, random_seed = 5)); isok(o) && o$metadata$validation$ok &&
+  identical(o$cell_df$cell_id, seq_len(nrow(o$cell_df))) && all(o$metadata$validation$table$status[o$metadata$validation$table$check %in% c("C2", "C3", "C5", "C9")] == "PASS") }, TRUE)
+ck("R10 place_cells su tutti i 6 preset: nessun ERROR, ordine di cell_id", all(okp), names(okp)[!okp])
+# R11 metadati con griglia dei bin discorde -> errore
+fj <- tempfile(fileext = ".json"); writeLines('{"spot_diameter_fullres": 7.3, "bin_size_um": 2.0, "microns_per_pixel": 0.30}', fj)
+ck("R11 scalefactors_json con griglia dei bin discorde: errore", !isok(safe(estimate_pixel_size(NULL, NULL, method = "metadata", scalefactors_json = fj))))
+# R12 troppo pochi nuclei -> rifiuto
+e12 <- safe(estimate_pixel_size(disk_img(0.5, n_side_um = 100, dens = 2000, seed = 8), ctS))
+ck("R12 meno di 30 nuclei: rifiuto", isok(e12) && isTRUE(e12$refused) && grepl("pochi", e12$reason), if (isok(e12)) paste(e12$reason, e12$n_features) else msg(e12))
+# R13 merge: la componente piccola va al cluster con piu' lati condivisi
+cm <- expand.grid(x = 1:60, y = 1:40); cm$k <- ifelse(cm$x <= 30, 1L, 2L); cm$k[cm$x %in% 28:31 & cm$y %in% 20:22] <- 3L
+cm$k[cm$x == 31 & cm$y %in% 20:22] <- 3L; cm$k[cm$x %in% 25:31 & cm$y %in% 20:22] <- 3L      # 7 x 3: 6 colonne nel cluster 1, 1 nel 2
+mm <- merge_small_components(cm, 1, 50, "k", 1L)
+ck("R13 merge a maggioranza: la componente piccola passa al cluster con piu' lati condivisi", all(mm$k[cm$k == 3L] == 1L), table(mm$k[cm$k == 3L]))
+# R14 stima dall'immagine: scurezza 0 fuori dal cluster dominante (FND-13)
+d14 <- disk_img(0.5); d14$intensity_cluster <- ifelse(d14$x > 700, 2L, 1L); d14$value[d14$intensity_cluster == 2L] <- 0.1
+e14 <- safe(estimate_pixel_size(d14, data.frame(cell_type = c("t", "o"), density = c(4000, 100)), cluster_to_dominant = data.frame(cluster_id = 1:2, cell_type = c("t", "o"))))
+ck("R14 cluster dominante: pixel degli altri cluster con scurezza 0, scala entro ±20 %", isok(e14) && !isTRUE(e14$refused) && abs(e14$pixel_size_um / 0.5 - 1) <= 0.2,
+   if (isok(e14)) sprintf("%.3g %s", e14$pixel_size_um, e14$reason) else msg(e14))
 
 nf <- sum(!unlist(res)); cat(sprintf("RESULT %d/%d PASS (mutante %s)\n", length(res) - nf, length(res), MUT))
 quit(status = if (nf) 1 else 0)

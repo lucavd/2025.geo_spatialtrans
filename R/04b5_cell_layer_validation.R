@@ -61,16 +61,29 @@ validate_cell_layer <- function(cell_layer, c8_interval = NULL, pixel_size_sourc
   cl <- cell_layer; cd <- cl$cell_df; rd <- cl$region_df
   Tt <- cl$cell_territories; Nn <- cl$cell_nuclei; R <- cl$region_polygons
   g <- grid_um; out <- list()
-  # ---- C9 validita' e ordine (prima, perche' gli altri controlli ne dipendono) ----
+  # ---- C9 validita', ordine e legame righe-geometrie (FND-03, FND-04 della revisione di S1.5) ----
   n <- nrow(cd)
   ord_ok <- length(Tt) == n && length(Nn) == n && identical(as.numeric(cd$cell_id), as.numeric(seq_len(n)))
+  rid_bad <- .nbad(cd$region_id %in% rd$region_id)
+  cnt_bad <- if ("n_cells" %in% names(rd) && rid_bad == 0)   # region_df$n_cells = conteggio dalle cellule
+    sum(rd$n_cells != as.numeric(table(factor(cd$region_id, levels = rd$region_id))), na.rm = TRUE) + sum(is.na(rd$n_cells)) else 0L
   gT <- geos::as_geos_geometry(sf::st_set_crs(Tt, NA)); gN <- geos::as_geos_geometry(sf::st_set_crs(Nn, NA))
   bad_valid <- .nbad(geos::geos_is_valid(gT)) + .nbad(geos::geos_is_valid(gN))
   bad_empty <- sum(geos::geos_is_empty(gT)) + sum(geos::geos_is_empty(gN))
-  out$c9 <- .v5_row("C9", if (ord_ok && bad_valid == 0 && bad_empty == 0) "PASS" else "ERROR",
-                    sprintf("ordine %s; non valide %d; vuote %d", if (ord_ok) "ok" else "DIVERSO", bad_valid, bad_empty),
-                    "ordine identico, 0 non valide, 0 vuote", bad_valid + bad_empty + (!ord_ok))
-  if (!ord_ok || bad_valid > 0 || bad_empty > 0) return(.v5_finish(out))   # geometrie non valide: gli altri controlli non sono affidabili
+  bad_link <- 0L
+  if (ord_ok && bad_valid == 0 && bad_empty == 0) {
+    gen <- geos::geos_make_point(cd$x, cd$y)
+    a_t <- geos::geos_area(gT); a_n <- geos::geos_area(gN)
+    bad_link <- .nbad(geos::geos_intersects(gen, gT)) +                                   # generatore nel proprio territorio
+      .nbad(!is.finite(cd$territory_area) | abs(a_t - cd$territory_area) <= 1e-9 * pmax(a_t, 1)) +                    # area del territorio = cell_df
+      .nbad(!is.finite(cd$nucleus_area) | abs(a_n - cd$nucleus_area) <= 1e-9 * pmax(a_n, 1) + grid_um * geos::geos_length(gN))   # area del nucleo = cell_df (NaN: C5)
+  }
+  nb9 <- (!ord_ok) + rid_bad + cnt_bad + bad_valid + bad_empty + bad_link
+  out$c9 <- .v5_row("C9", if (nb9 == 0) "PASS" else "ERROR",
+                    sprintf("ordine %s; region_id fuori o NA %d; n_cells di region_df diversi dalle cellule %d; non valide %d; vuote %d; righe non legate alle geometrie %d",
+                            if (ord_ok) "ok" else "DIVERSO", rid_bad, cnt_bad, bad_valid, bad_empty, bad_link),
+                    "ordine identico, region_id validi, n_cells coerenti, 0 non valide, 0 vuote, generatore nel territorio, aree = cell_df", nb9)
+  if (nb9 > 0) return(.v5_finish(out))   # gli altri controlli non sono affidabili
   aT <- geos::geos_area(gT); pT <- geos::geos_length(gT); aN <- geos::geos_area(gN); pN <- geos::geos_length(gN)
   # una sola conversione: origine locale (BL-094/BL-104) e griglia g (F1), poi solo indici
   bb <- sf::st_bbox(Tt); o <- c(bb[["xmin"]], bb[["ymin"]])
@@ -85,8 +98,15 @@ validate_cell_layer <- function(cell_layer, c8_interval = NULL, pixel_size_sourc
                       "|raggiunta - target| / target <= 0.20", nb)
   }
   # ---- C2 partizione ----
-  gap <- rep(0, nrow(rd))
-  if (!is.null(cl$region_check)) { mi <- match(rd$region_id, cl$region_check$region_id); gap[!is.na(mi)] <- cl$region_check$gap_area[mi[!is.na(mi)]] }
+  # lacuna ammessa = sola perdita della smussatura dichiarata per territorio (FND-01: non la differenza calcolata dalla tassellazione)
+  gap <- rep(0, nrow(rd)); td0 <- cl$territory_df
+  if (!is.null(td0) && "smooth_loss" %in% names(td0) && nrow(td0) == n) {
+    sl <- tapply(td0$smooth_loss, factor(cd$region_id, levels = rd$region_id), sum); sl[is.na(sl)] <- 0; gap <- as.numeric(sl)
+  }
+  if (!is.null(cl$region_check) && "gap_area" %in% names(cl$region_check)) {   # una lacuna NaN dichiarata resta un errore (BL-095)
+    mi <- match(rd$region_id, cl$region_check$region_id); gq <- cl$region_check$gap_area[mi]
+    gap[!is.na(mi) & is.nan(gq)] <- NaN
+  }
   aR <- geos::geos_area(gR)
   sT <- tapply(aT, factor(cd$region_id, levels = rd$region_id), sum); sT[is.na(sT)] <- 0
   has_cells <- rd$region_id %in% cd$region_id            # le regioni senza cellule sono il caso di C6, non di C2
@@ -104,9 +124,12 @@ validate_cell_layer <- function(cell_layer, c8_interval = NULL, pixel_size_sourc
   } else { nb_pair <- 0L; max_pair <- 0; n_eval <- 0L }
   # contenimento nella regione: territori di bordo (ritagliati o che hanno ricevuto frammenti)
   td <- cl$territory_df
-  bnd <- if (!is.null(td) && all(c("clipped", "n_pieces_gained") %in% names(td)) && nrow(td) == n) {
-    which(td$clipped | td$n_pieces_gained > 0)
-  } else which(geos::geos_intersects(gT, geos::geos_boundary(gR)[match(cd$region_id, rd$region_id)]))
+  flag <- if (!is.null(td) && all(c("clipped", "n_pieces_gained") %in% names(td)) && nrow(td) == n) td$clipped | td$n_pieces_gained > 0 else rep(FALSE, n)
+  # FND-02: anche dalla geometria (territorio non dentro la propria regione, predicato su regione preparata)
+  geo_out <- rep(FALSE, n)
+  for (k in seq_len(nrow(rd))) { idx <- which(cd$region_id == rd$region_id[k])
+    if (length(idx)) geo_out[idx] <- !geos::geos_prepared_covers(gR[k], gT[idx]) }
+  bnd <- which(flag | geo_out | is.na(geo_out))
   nb_out <- 0L; max_out <- 0
   if (length(bnd)) {
     ext <- geos::geos_extent(gT[bnd])
@@ -142,10 +165,11 @@ validate_cell_layer <- function(cell_layer, c8_interval = NULL, pixel_size_sourc
   # ---- C4 frazioni per tipo ----
   if (!is.null(cl$region_composition) && nrow(cd)) {
     comp <- cl$region_composition; nb4 <- 0L; mx <- 0
-    for (r in rd$region_id[rd$n_cells >= 10]) {
+    ncr <- table(factor(cd$region_id, levels = rd$region_id))
+    for (r in rd$region_id[as.numeric(ncr) >= 10]) {
       cid <- rd$cluster_id[rd$region_id == r]; cc <- comp[comp$cluster_id == cid, ]
       obs <- table(factor(cd$cell_type[cd$region_id == r], levels = cc$cell_type)) / sum(cd$region_id == r)
-      d <- max(abs(as.numeric(obs) - cc$fraction / sum(cc$fraction))); mx <- max(mx, d); nb4 <- nb4 + (d > 0.10)
+      d <- max(abs(as.numeric(obs) - cc$fraction / sum(cc$fraction))); mx <- max(mx, d, na.rm = TRUE); nb4 <- nb4 + (is.na(d) || d > 0.10)
     }
     out$c4 <- .v5_row("C4", if (nb4 == 0) "PASS" else "WARN", sprintf("max %.3g", mx), "|osservata - target| <= 0.10 (regioni con >= 10 cellule)", nb4)
   }
@@ -153,8 +177,9 @@ validate_cell_layer <- function(cell_layer, c8_interval = NULL, pixel_size_sourc
   nb5 <- .nbad(cd$nucleus_area > 0) + .nbad(aN > 0)
   out$c5 <- .v5_row("C5", if (nb5 == 0) "PASS" else "ERROR", sprintf("min %.3g um2", suppressWarnings(min(aN))), "> 0", nb5)
   # ---- C6 regioni senza cellule ----
-  if ("n_cells" %in% names(rd)) {
-    nb6 <- sum(rd$area_um2 >= min_region_area_um2 & rd$n_cells == 0)
+  if (TRUE) {
+    ncr6 <- as.numeric(table(factor(cd$region_id, levels = rd$region_id)))   # FND-04: dalle cellule, non da region_df$n_cells
+    nb6 <- sum(rd$area_um2 >= min_region_area_um2 & ncr6 == 0)
     out$c6 <- .v5_row("C6", if (nb6 == 0) "PASS" else "WARN", nb6, "0 regioni senza cellule", nb6)
   }
   # ---- C7 eq_r per tipo ----
