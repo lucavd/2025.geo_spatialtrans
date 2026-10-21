@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-10-21 (apertura di S1.5)
+
+* **Creazione**: file dello step [Il simulatore del livello cellulare funziona tutto insieme, con i sei preset dei tessuti, e sa riconoscere la propria scala? (S1.5)](steps/S1.5.md) con dubbi ricevuti e loro ripartizione, definizioni operative, cancelli G-1…G-5, previsioni P-1…P-8, controprova CP-1 e tre decisioni chieste a Luca, scritti prima di ogni calcolo; riferimenti reali per ROI in `results/S1.5/S1.5_real_refs_roi.csv`. Previsioni in attesa dell'ok di Luca.
+* **Creazione**: decisione [S1.5 costruisce orchestratore, controlli, preset e stima della scala; la composizione per tipi cellulari passa a due step successivi (DEC-008)](decisions/DEC-008.md), scelta di Luca in chat.
+
 ## 2026-10-21 (chiusura di R3b)
 
 * **Chiusura**: [Nel linfonodo e nel cuore, da quale insieme di nuclei veri prendiamo posizioni, aree e vicini? (R3b)](steps/R3b.md) chiuso con l'approvazione di Luca; decisioni [Nel linfonodo e nel cuore una sola maschera nucleare: i nuclei di Space Ranger con la forma di StarDist, con la taglia stimata sui soli nuclei di forma StarDist (DEC-006)](decisions/DEC-006.md) e [Il controllo di integrita' di R3b fallito sul centro dei nuclei nel tessuto valido e' un errore di scrittura del controllo, non della maschera (DEC-007)](decisions/DEC-007.md). BIO_REFERENCES B-133…B-154; BACKLOG BL-100, BL-115, BL-121, BL-130 chiuse; ROADMAP §7: R3b chiusa, prossima sessione proposta S1.5.
