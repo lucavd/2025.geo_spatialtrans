@@ -157,6 +157,8 @@ Il binario R deve stare **davanti** al binario S: R1-R2 prima di S1.2, R3 prima 
 | 2026-10-21 | vedi DEC-006: Nel linfonodo e nel cuore una sola maschera nucleare: i nuclei di Space Ranger con la forma di StarDist, con la taglia stimata sui soli nuclei di forma StarDist (`docs/decisions/DEC-006.md`) — Luca |
 | 2026-10-21 | vedi DEC-007: Il controllo di integrita' di R3b fallito sul centro dei nuclei nel tessuto valido e' un errore di scrittura del controllo, non della maschera (`docs/decisions/DEC-007.md`) — Luca |
 | 2026-10-21 | vedi DEC-008: S1.5 costruisce orchestratore, controlli, preset e stima della scala; la composizione per tipi cellulari passa a due step successivi (`docs/decisions/DEC-008.md`) — Luca |
+| 2026-10-21 | vedi DEC-009: Nei sei preset la distanza minima fra i centri delle cellule e' quella stimata dai tessuti veri (`docs/decisions/DEC-009.md`, decisione tecnica dai dati, S1.5) |
+| 2026-10-21 | vedi DEC-010: I nuclei simulati in piu' pezzi restano come sono: sono piu' rari che nelle maschere reali (`docs/decisions/DEC-010.md`, decisione tecnica dai dati, S1.5) |
 | 2026-09-18 | **Una sessione = una chat.** Ogni step del protocollo si svolge in una chat nuova; a chiusura ci si ferma. Nessuna eccezione |
 
 ## 7. Stato delle sessioni

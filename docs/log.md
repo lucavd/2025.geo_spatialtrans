@@ -2,6 +2,7 @@
 
 ## 2026-10-21 (apertura di S1.5)
 
+* **Aggiornamento**: [Il simulatore del livello cellulare funziona tutto insieme, con i sei preset dei tessuti, e sa riconoscere la propria scala? (S1.5)](steps/S1.5.md): ok di Luca sulle previsioni («Approvo così»); le tre scelte del modello, chieste per errore a Luca, riscritte come decise dai dati su sua correzione: distanza minima ([Nei sei preset la distanza minima fra i centri delle cellule e' quella stimata dai tessuti veri (DEC-009)](decisions/DEC-009.md)), conversione del modello di taglia con una regola sul pannello, nuclei in piu' parti ([I nuclei simulati in piu' pezzi restano come sono: sono piu' rari che nelle maschere reali (DEC-010)](decisions/DEC-010.md), `results/S1.5/S1.5_real_multipart.csv`).
 * **Creazione**: file dello step [Il simulatore del livello cellulare funziona tutto insieme, con i sei preset dei tessuti, e sa riconoscere la propria scala? (S1.5)](steps/S1.5.md) con dubbi ricevuti e loro ripartizione, definizioni operative, cancelli G-1…G-5, previsioni P-1…P-8, controprova CP-1 e tre decisioni chieste a Luca, scritti prima di ogni calcolo; riferimenti reali per ROI in `results/S1.5/S1.5_real_refs_roi.csv`. Previsioni in attesa dell'ok di Luca.
 * **Creazione**: decisione [S1.5 costruisce orchestratore, controlli, preset e stima della scala; la composizione per tipi cellulari passa a due step successivi (DEC-008)](decisions/DEC-008.md), scelta di Luca in chat.
 
