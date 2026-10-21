@@ -2,9 +2,9 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## S1.5 — 2026-10-21 — Il simulatore del livello cellulare tutto insieme: orchestratore, controlli, sei preset, scala (branch `step1-cell-layer`) — **in attesa di una decisione di Luca**
+## S1.5 — 2026-10-21 — Il simulatore del livello cellulare tutto insieme: orchestratore, controlli, sei preset, scala (branch `step1-cell-layer`) — **chiusa**
 
-File dello step `docs/steps/S1.5.md`, report `reports/S1.5.html`; decisioni DEC-008 (perimetro), DEC-009 (distanza minima dai tessuti veri), DEC-010 (nuclei in piu' parti: nessuna modifica).
+File dello step `docs/steps/S1.5.md`, report `reports/S1.5.html`; decisioni DEC-008 (perimetro), DEC-009 (distanza minima dai tessuti veri), DEC-010 (nuclei in piu' parti: nessuna modifica), DEC-011 (caso limite «scala sbagliata → C8» fallito come scritto: errore di pre-registrazione).
 
 ### Codice (nessun file degli step passati modificato nel comportamento predefinito)
 - `R/04b_cell_placement.R`: `place_cells()` (catena completa, tre semi indipendenti per semina, taglia e nuclei pallidi; `stride` dai metadati o errore, BL-042; fusione delle componenti piccole, BL-043; conversione del modello di taglia alla densita' manuale `size_conversion = "preserve_area"`; `keep_tiles`; `allow_estimate`), `merge_small_components()`, `plot_cell_layer()` (4 modi).
@@ -16,7 +16,7 @@ File dello step `docs/steps/S1.5.md`, report `reports/S1.5.html`; decisioni DEC-
 - Design v1.6.
 
 ### Risultati
-- Cancelli: G-1 81/83 (E10, E10b: caso limite «scala sbagliata → C8» non realizzabile, errore di pre-registrazione, decisione di Luca); G-2 9/9; G-3 600/600 senza ERROR, rerun e catena manuale 6/6, ricontrollo dopo le correzioni 600/600 identico; G-4 guasti 630/630, nulli 1 800/1 800; G-5 274/277 (3 rilievi di testo e sensibilita').
+- Cancelli: G-1 81/83 (E10, E10b: caso limite «scala sbagliata → C8» non realizzabile, errore di pre-registrazione, DEC-011); G-2 9/9; G-3 600/600 senza ERROR, rerun e catena manuale 6/6, ricontrollo dopo le correzioni 600/600 identico; G-4 guasti 630/630, nulli 1 800/1 800; G-5 274/277 (3 rilievi di testo e sensibilita').
 - Regola della scelta 2: vince la conversione che conserva il legame nucleo/territorio (P-1 6 contro 4).
 - Previsioni: P-1 6/6, P-3 6/6, P-7 6/6 confermate; P-2 smentita in intestino e tumore del colon; P-4 smentita nel tumore del colon; P-5 smentita in tumore del colon e linfonodo, indeterminata in stroma e cuore; P-6 smentita in 5 tessuti (cuore confermata, fragile); P-8 smentita nel linfonodo (310 s, 8.50 GB). Post hoc: con i generatori reali contatti e rapporto nucleo/territorio tornano (causa: semina omogenea).
 - CP-1 smentita: la stima della scala dall'immagine esce dall'uso raccomandato.

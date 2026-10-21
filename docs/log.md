@@ -1,5 +1,9 @@
 # Registro delle modifiche
 
+## 2026-10-21 (chiusura di S1.5)
+
+* **Chiusura**: [Il simulatore del livello cellulare funziona tutto insieme, con i sei preset dei tessuti, e sa riconoscere la propria scala? (S1.5)](steps/S1.5.md) chiuso con l'approvazione di Luca; decisione [Il caso limite «scala sbagliata di 10 volte, scatta C8» fallito in S1.5 e' un errore della pre-registrazione: la scala viene dall'utente o dai metadati (DEC-011)](decisions/DEC-011.md). Design v1.6 aggiornato di conseguenza; nella skill di sessione la regola sulle scelte decise dai dati.
+
 ## 2026-10-21 (risultati di S1.5)
 
 * **Aggiornamento**: [Il simulatore del livello cellulare funziona tutto insieme, con i sei preset dei tessuti, e sa riconoscere la propria scala? (S1.5)](steps/S1.5.md): risultati dei cancelli, delle previsioni e della controprova; analisi post hoc PH-1...PH-3; revisione avversariale (due revisori) con le correzioni del codice (commit `ab03c27`) e la controprova delle correzioni; note D-11...D-14; riassunto «In breve» con una decisione per Luca (il caso limite «scala sbagliata di 10 volte → C8» non e' realizzabile); dubbi rinviati in BACKLOG (BL-143...BL-146). Design v1.6, BIO_REFERENCES B-155...B-160, report `reports/S1.5.html`.
