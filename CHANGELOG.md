@@ -2,6 +2,26 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.5 — 2026-10-21 — Il simulatore del livello cellulare tutto insieme: orchestratore, controlli, sei preset, scala (branch `step1-cell-layer`) — **in attesa di una decisione di Luca**
+
+File dello step `docs/steps/S1.5.md`, report `reports/S1.5.html`; decisioni DEC-008 (perimetro), DEC-009 (distanza minima dai tessuti veri), DEC-010 (nuclei in piu' parti: nessuna modifica).
+
+### Codice (nessun file degli step passati modificato nel comportamento predefinito)
+- `R/04b_cell_placement.R`: `place_cells()` (catena completa, tre semi indipendenti per semina, taglia e nuclei pallidi; `stride` dai metadati o errore, BL-042; fusione delle componenti piccole, BL-043; conversione del modello di taglia alla densita' manuale `size_conversion = "preserve_area"`; `keep_tiles`; `allow_estimate`), `merge_small_components()`, `plot_cell_layer()` (4 modi).
+- `R/04b0_tissue_presets.R`: `tissue_preset_spec()` per i 6 preset con la tabella delle fonti (B-043...B-054, B-091...B-111, B-113, B-121...B-125, B-139...B-143, B-150...B-154).
+- `R/04b5_cell_layer_validation.R`: `validate_cell_layer()` (C1-C9; C2 senza `st_union`, coppie nei due ordini, tolleranze sulla griglia, NA = ERROR; C9 lega righe e geometrie) e `overlay_prec()` (BL-070, BL-079, BL-081, BL-093...BL-097, BL-116).
+- `R/04b6_estimate_pixel_size.R`: `estimate_pixel_size()` dai metadati (`scalefactors_json` controllato sulla griglia dei bin) e dall'immagine (laplaciano della gaussiana, rifiuto, controllo di coerenza); la seconda fuori dall'uso raccomandato.
+- Test `R/testing/test_S1.5.R` (83 asserzioni), runner `R/testing/run_S1.5.sh` (test e mutanti M1-M9); banco `tools/S1.5_bench.R`, `tools/S1.5_real_refs.R`, `tools/S1.5_real_multipart.py`, `tools/S1.5_faults.R`, `tools/S1.5_cp1_resample.py`, `tools/S1.5_windows.py`, `tools/S1.5_analysis.R`, `tools/S1.5_posthoc.R`, `tools/S1.5_regress_cmp.R`, `tools/S1.5_fig_crops.py`, `tools/S1.5_figures.R`; controprova dopo la revisione `tools/S1.5_review_mutants.sh|py`, `tools/S1.5_review_mutants_analyse.py`, `tools/S1.5_review_faults.R`.
+- Correzioni dalla revisione del codice (commit `ab03c27`): FND-01...FND-04, FND-06...FND-10, FND-12...FND-15.
+- Design v1.6.
+
+### Risultati
+- Cancelli: G-1 81/83 (E10, E10b: caso limite «scala sbagliata → C8» non realizzabile, errore di pre-registrazione, decisione di Luca); G-2 9/9; G-3 600/600 senza ERROR, rerun e catena manuale 6/6, ricontrollo dopo le correzioni 600/600 identico; G-4 guasti 630/630, nulli 1 800/1 800; G-5 274/277 (3 rilievi di testo e sensibilita').
+- Regola della scelta 2: vince la conversione che conserva il legame nucleo/territorio (P-1 6 contro 4).
+- Previsioni: P-1 6/6, P-3 6/6, P-7 6/6 confermate; P-2 smentita in intestino e tumore del colon; P-4 smentita nel tumore del colon; P-5 smentita in tumore del colon e linfonodo, indeterminata in stroma e cuore; P-6 smentita in 5 tessuti (cuore confermata, fragile); P-8 smentita nel linfonodo (310 s, 8.50 GB). Post hoc: con i generatori reali contatti e rapporto nucleo/territorio tornano (causa: semina omogenea).
+- CP-1 smentita: la stima della scala dall'immagine esce dall'uso raccomandato.
+- BIO_REFERENCES B-155...B-160 (densita' di riferimento del modello di taglia). BACKLOG: chiuse BL-016, BL-029, BL-042, BL-043, BL-050, BL-070, BL-076, BL-079, BL-081, BL-093, BL-094, BL-095, BL-097, BL-106, BL-116, BL-139; nuove BL-143...BL-146; rinvii agli step dei tipi (BL-055, BL-064, BL-099, BL-138) e della semina (BL-051, BL-068).
+
 ## R3b — 2026-10-20/21 — Maschera nucleare unica per linfonodo e cuore (branch `step1-cell-layer`) — **chiusa**
 
 File dello step `docs/steps/R3b.md`, report `reports/R3b.html`; decisioni DEC-006 (maschera CO, taglia dai nuclei di forma StarDist) e DEC-007 (G-4 fallito come scritto: errore di scrittura).

@@ -1,0 +1,29 @@
+id,desc,detected,by,result,halted,n_not_run
+M1,mutante dell'autore,True,V-gap-0.01 V-gap-1 V-nan-gap V-outside_region-0.01 V-outside_region-1 V-overlap-0.01 V-overlap-1,no RESULT,True,49
+M2,mutante dell'autore,True,V0b,RESULT 80/83 PASS (mutante M2),False,0
+M3,mutante dell'autore,True,V-nan-gap,RESULT 80/83 PASS (mutante M3),False,0
+M4,mutante dell'autore,True,O7,RESULT 80/83 PASS (mutante M4),False,0
+M5,mutante dell'autore,True,E1 E1b E1c E4 E5 E6 O1 S5,no RESULT,True,60
+M6,mutante dell'autore,True,P1 R9,RESULT 79/83 PASS (mutante M6),False,0
+M7,mutante dell'autore,True,E11,RESULT 80/83 PASS (mutante M7),False,0
+M8,mutante dell'autore,True,R11 S1,RESULT 79/83 PASS (mutante M8),False,0
+M9,mutante dell'autore,True,R12 S3 S4 S7 S9,RESULT 76/83 PASS (mutante M9),False,0
+R01,C3: st_within indipendente tolto,True,R7,RESULT 80/83 PASS (mutante none),False,0
+R02,C2: tolleranza dell'uscita dalla regione x1e6,True,R2,RESULT 80/83 PASS (mutante none),False,0
+R03,C2/C3: coppie con st_touches (esclude le coppie sovrapposte),True,R1,RESULT 80/83 PASS (mutante none),False,0
+R04,C2: controllo della somma per regione spento,True,R3 V-gap-0.01 V-gap-1 V-nan-gap,RESULT 77/83 PASS (mutante none),False,0
+R05,NA/NaN contati come superati,True,V-nan-gap V-nan_area-0.01 V-nan_area-1,RESULT 78/83 PASS (mutante none),False,0
+R06,nuclei pallidi estratti con il seme della semina,True,R8,RESULT 80/83 PASS (mutante none),False,0
+R07,catalogo: beta e sigma scambiati (tabella fonti intatta),True,R9,RESULT 80/83 PASS (mutante none),False,0
+R08,catalogo: distanza minima raddoppiata (tabella fonti intatta),True,E6 R9,RESULT 79/83 PASS (mutante none),False,0
+R09,is_minority_type sempre FALSE,True,E7b,RESULT 80/83 PASS (mutante none),False,0
+R10,merge: cluster con MENO lati condivisi,True,R13,RESULT 80/83 PASS (mutante none),False,0
+R11,BL-042: attributo stride ignorato,True,E13,RESULT 80/83 PASS (mutante none),False,0
+R12,metadati: controllo sulla griglia dei bin tolto,True,R11,RESULT 80/83 PASS (mutante none),False,0
+R13,C1: soglia 0.20 -> 2,True,V-C1,RESULT 80/83 PASS (mutante none),False,0
+R14,place_cells: braccio (b) come predefinito,True,O10,RESULT 80/83 PASS (mutante none),False,0
+R15,C6 spento,True,V-empty,RESULT 80/83 PASS (mutante none),False,0
+R16,stima: soglia di rifiuto N < 30 -> N < 3,True,R12,RESULT 80/83 PASS (mutante none),False,0
+R17,rho': rapporto delle densita' invertito,True,P1,RESULT 80/83 PASS (mutante none),False,0
+R18,C3: disgiunzione dei nuclei spenta,False,,RESULT 81/83 PASS (mutante none),False,0
+R19,tassellazione: il territorio 1 perde una corona di 0.2 um (lacuna nella partizione),True,E1 E1b E1c E4 E5 E6 O1 S5,no RESULT,True,60

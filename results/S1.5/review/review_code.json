@@ -1,0 +1,510 @@
+{
+ "reviewer": "Codice",
+ "commit_reviewed": "fafb3d0",
+ "structured_output": {
+  "checks": [
+   {
+    "id": "MUT-base",
+    "what": "Batteria test_S1.5.R senza mutante, copia dell'albero a fafb3d0 (review_code/tree/base)",
+    "author_value": "67/69 PASS; FAIL solo E10, E10b (nota D-3)",
+    "reviewer_value": "67/69 PASS; FAIL E10, E10b; 115.27 s, 3 580 132 kB di picco",
+    "match": true
+   },
+   {
+    "id": "MUT-M1-HEAD",
+    "what": "Mutante dell'autore M1 (C2 con st_union) rieseguito al commit fafb3d0 (il G-2 ufficiale e' del commit dab8b3a)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da V-gap-0.01 V-gap-1 V-nan-gap V-outside_region-0.01 V-outside_region-1 V-overlap-0.01 V-overlap-1; script interrotto, 35 asserzioni non eseguite",
+    "match": true
+   },
+   {
+    "id": "MUT-M2-HEAD",
+    "what": "Mutante dell'autore M2 (coppie di C2 in un solo ordine) rieseguito al commit fafb3d0 (il G-2 ufficiale e' del commit dab8b3a)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da V0b",
+    "match": true
+   },
+   {
+    "id": "MUT-M3-HEAD",
+    "what": "Mutante dell'autore M3 (NaN d'area trattato come 0) rieseguito al commit fafb3d0 (il G-2 ufficiale e' del commit dab8b3a)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da V-nan-gap",
+    "match": true
+   },
+   {
+    "id": "MUT-M4-HEAD",
+    "what": "Mutante dell'autore M4 (stesso seme per semina e taglia) rieseguito al commit fafb3d0 (il G-2 ufficiale e' del commit dab8b3a)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da O7",
+    "match": true
+   },
+   {
+    "id": "MUT-M5-HEAD",
+    "what": "Mutante dell'autore M5 (cell_nuclei riordinati) rieseguito al commit fafb3d0 (il G-2 ufficiale e' del commit dab8b3a)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da O1 S5; script interrotto, 54 asserzioni non eseguite",
+    "match": true
+   },
+   {
+    "id": "MUT-M6-HEAD",
+    "what": "Mutante dell'autore M6 (phi di linfonodo e cuore scambiati) rieseguito al commit fafb3d0 (il G-2 ufficiale e' del commit dab8b3a)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da P1",
+    "match": true
+   },
+   {
+    "id": "MUT-M7-HEAD",
+    "what": "Mutante dell'autore M7 (scala ignorata) rieseguito al commit fafb3d0 (il G-2 ufficiale e' del commit dab8b3a)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da E11",
+    "match": true
+   },
+   {
+    "id": "MUT-M8-HEAD",
+    "what": "Mutante dell'autore M8 (scala dal tag TIFF) rieseguito al commit fafb3d0 (il G-2 ufficiale e' del commit dab8b3a)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da S1",
+    "match": true
+   },
+   {
+    "id": "MUT-M9-HEAD",
+    "what": "Mutante dell'autore M9 (stima della scala senza rifiuto) rieseguito al commit fafb3d0 (il G-2 ufficiale e' del commit dab8b3a)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da S3 S4 S7 S9",
+    "match": true
+   },
+   {
+    "id": "MUT-R01",
+    "what": "Mutante del revisore R01: C3: st_within indipendente tolto",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "NON rilevato (67/69, stessi FAIL E10, E10b del giro senza mutante)",
+    "match": false
+   },
+   {
+    "id": "MUT-R02",
+    "what": "Mutante del revisore R02: C2: tolleranza dell'uscita dalla regione x1e6",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "NON rilevato (67/69, stessi FAIL E10, E10b del giro senza mutante)",
+    "match": false
+   },
+   {
+    "id": "MUT-R03",
+    "what": "Mutante del revisore R03: C2/C3: coppie con st_touches (esclude le coppie sovrapposte)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "NON rilevato (67/69, stessi FAIL E10, E10b del giro senza mutante)",
+    "match": false
+   },
+   {
+    "id": "MUT-R04",
+    "what": "Mutante del revisore R04: C2: controllo della somma per regione spento",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da V-gap-0.01 V-gap-1 V-nan-gap",
+    "match": true
+   },
+   {
+    "id": "MUT-R05",
+    "what": "Mutante del revisore R05: NA/NaN contati come superati",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da V-nan-gap V-nan_area-0.01 V-nan_area-1",
+    "match": true
+   },
+   {
+    "id": "MUT-R06",
+    "what": "Mutante del revisore R06: nuclei pallidi estratti con il seme della semina",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "NON rilevato (67/69, stessi FAIL E10, E10b del giro senza mutante)",
+    "match": false
+   },
+   {
+    "id": "MUT-R07",
+    "what": "Mutante del revisore R07: catalogo: beta e sigma scambiati (tabella fonti intatta)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "NON rilevato (67/69, stessi FAIL E10, E10b del giro senza mutante)",
+    "match": false
+   },
+   {
+    "id": "MUT-R08",
+    "what": "Mutante del revisore R08: catalogo: distanza minima raddoppiata (tabella fonti intatta)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da E6",
+    "match": true
+   },
+   {
+    "id": "MUT-R09",
+    "what": "Mutante del revisore R09: is_minority_type sempre FALSE",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da E7b",
+    "match": true
+   },
+   {
+    "id": "MUT-R10",
+    "what": "Mutante del revisore R10: merge: cluster con MENO lati condivisi",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "NON rilevato (67/69, stessi FAIL E10, E10b del giro senza mutante)",
+    "match": false
+   },
+   {
+    "id": "MUT-R11",
+    "what": "Mutante del revisore R11: BL-042: attributo stride ignorato",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da E13",
+    "match": true
+   },
+   {
+    "id": "MUT-R12",
+    "what": "Mutante del revisore R12: metadati: controllo sulla griglia dei bin tolto",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "NON rilevato (67/69, stessi FAIL E10, E10b del giro senza mutante)",
+    "match": false
+   },
+   {
+    "id": "MUT-R13",
+    "what": "Mutante del revisore R13: C1: soglia 0.20 -> 2",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da V-C1",
+    "match": true
+   },
+   {
+    "id": "MUT-R14",
+    "what": "Mutante del revisore R14: place_cells: braccio (b) come predefinito",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da O10",
+    "match": true
+   },
+   {
+    "id": "MUT-R15",
+    "what": "Mutante del revisore R15: C6 spento",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da V-C6 V-empty",
+    "match": true
+   },
+   {
+    "id": "MUT-R16",
+    "what": "Mutante del revisore R16: stima: soglia di rifiuto N < 30 -> N < 3",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "NON rilevato (67/69, stessi FAIL E10, E10b del giro senza mutante)",
+    "match": false
+   },
+   {
+    "id": "MUT-R17",
+    "what": "Mutante del revisore R17: rho': rapporto delle densita' invertito",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato da P1",
+    "match": true
+   },
+   {
+    "id": "MUT-R18",
+    "what": "Mutante del revisore R18: C3: disgiunzione dei nuclei spenta",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "NON rilevato (67/69, stessi FAIL E10, E10b del giro senza mutante)",
+    "match": false
+   },
+   {
+    "id": "MUT-R19",
+    "what": "Mutante del revisore R19: tassellazione: il territorio 1 perde una corona di 0.2 um (lacuna nella partizione)",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "NON rilevato (67/69, stessi FAIL E10, E10b del giro senza mutante)",
+    "match": false
+   },
+   {
+    "id": "FAULT-F1_exit_gap_unflagged",
+    "what": "Guasto indipendente sui 30 layer del seme 1 (braccio preserve_area): territorio di bordo che esce dalla regione di 1 um2 e perde 1 um2 all'interno (somma invariata), con clipped = FALSE e n_pieces_gained = 0 in territory_df; controllo atteso C2",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato in 4/30 layer costruiti",
+    "match": false
+   },
+   {
+    "id": "FAULT-F1b_exit_gap_flagged",
+    "what": "Guasto indipendente sui 30 layer del seme 1 (braccio preserve_area): stesso guasto di F1 con i segnali di bordo intatti (controllo positivo di F1); controllo atteso C2",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato in 30/30 layer costruiti",
+    "match": true
+   },
+   {
+    "id": "FAULT-F2_region_cells_missing",
+    "what": "Guasto indipendente sui 30 layer del seme 1 (braccio preserve_area): tutte le cellule della regione con meno cellule rimosse (cell_df, territori, nuclei, territory_df), region_df invariato; costruibile solo nei 12 layer con >= 2 regioni con cellule; controllo atteso C2 o C6",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato in 1/12 layer costruiti; validate_cell_layer() si ferma con errore R in 6; non costruibile in 18",
+    "match": false
+   },
+   {
+    "id": "FAULT-F3_swap_two_cells",
+    "what": "Guasto indipendente sui 30 layer del seme 1 (braccio preserve_area): territori e nuclei di due cellule interne vicine scambiati fra loro, cell_df invariato (generatore fuori dal proprio territorio); controllo atteso C9, C3 o C2",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato in 0/30 layer costruiti",
+    "match": false
+   },
+   {
+    "id": "FAULT-F4_duplicate_cell",
+    "what": "Guasto indipendente sui 30 layer del seme 1 (braccio preserve_area): ultima cellula duplicata (riga, territorio, nucleo) con cell_id rinumerato; controllo atteso C2",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato in 30/30 layer costruiti",
+    "match": true
+   },
+   {
+    "id": "FAULT-F5_region_id_NA",
+    "what": "Guasto indipendente sui 30 layer del seme 1 (braccio preserve_area): cell_df$region_id della cellula 10 posto a NA; controllo atteso C2",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato in 0/30 layer costruiti; validate_cell_layer() si ferma con errore R in 30",
+    "match": false
+   },
+   {
+    "id": "FAULT-F6_nucleus_in_background",
+    "what": "Guasto indipendente sui 30 layer del seme 1 (braccio preserve_area): nucleo di una cellula di bordo sostituito da un quadrato di pari area nel fondo fuori dalla regione; controllo atteso C3",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato in 30/30 layer costruiti",
+    "match": true
+   },
+   {
+    "id": "FAULT-F7_empty_nucleus",
+    "what": "Guasto indipendente sui 30 layer del seme 1 (braccio preserve_area): nucleo della cellula 5 sostituito da un poligono vuoto; controllo atteso C9",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato in 30/30 layer costruiti",
+    "match": true
+   },
+   {
+    "id": "FAULT-F9_small_gap",
+    "what": "Guasto indipendente sui 30 layer del seme 1 (braccio preserve_area): lacuna di 0.001 um2 dentro un territorio interno (sopra la tolleranza delle coppie, sotto 1e-9 x area della regione per regioni > 1e6 um2); controllo atteso C2",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato in 29/30 layer costruiti",
+    "match": false
+   },
+   {
+    "id": "FAULT-F10_nucleus_halved",
+    "what": "Guasto indipendente sui 30 layer del seme 1 (braccio preserve_area): nucleo della cellula 7 ridotto a meta' area attorno al centroide, cell_df$nucleus_area invariato; controllo atteso C3 o C5",
+    "author_value": "rilevato atteso",
+    "reviewer_value": "rilevato in 0/30 layer costruiti",
+    "match": false
+   },
+   {
+    "id": "REC-verdicts",
+    "what": "Ricalcolo indipendente (Python) di P-1...P-7, 2 bracci x 6 tessuti = 84 righe, da S1.5_panel_units.csv, S1.5_real_refs_roi.csv, S1.5_windows.csv",
+    "author_value": "S1.5_verdicts.csv",
+    "reviewer_value": "84/84 righe appaiate; max |stima| 4.3e-14, max |errore standard| 9.2e-16; 0 esiti diversi",
+    "match": true
+   },
+   {
+    "id": "REC-size-rule",
+    "what": "Regola della scelta 2 (P-1 poi P-2 confermate per braccio)",
+    "author_value": "preserve_area 6 e 4, none 4 e 3; vince preserve_area",
+    "reviewer_value": "preserve_area 6 e 4, none 4 e 3; vince preserve_area",
+    "match": true
+   },
+   {
+    "id": "REC-CP1",
+    "what": "Ricalcolo dei 48 verdetti di CP-1 (2 varianti x 4 scale x 6 tessuti)",
+    "author_value": "S1.5_CP1_verdicts.csv",
+    "reviewer_value": "48/48 esiti uguali, conteggi di rifiuti e numeri fuori uguali, max scarto 4.9e-15; ingresso della pipeline: numeri sbagliati senza rifiuto 9+5+4+5 = 23 (D-11 dice 23)",
+    "match": true
+   },
+   {
+    "id": "REC-units-seed1",
+    "what": "Ricalcolo delle metriche per unita' dai 60 layer del seme 1 (30 ROI x 2 bracci) con regola d'interna riscritta (sf::st_within del tile nella regione, oppure tile nel quadrato del ROI e area/tile > 0.999)",
+    "author_value": "S1.5_panel_units.csv (seed 1)",
+    "reviewer_value": "celle interne identiche 60/60; max scarto area mediana nucleo 1.0e-12, rapporto N/T 1.3e-14, frazione >= 0.95 4.9e-17, CV 5.0e-16; frac_trunc = media di nucleus_capped (scarto 4.9e-17)",
+    "match": true
+   },
+   {
+    "id": "REC-presets",
+    "what": "Valori dei 6 preset contro le righe di BIO_REFERENCES citate (parser Python indipendente): densita', evidenti, d*, rho, beta, sigma, phi, intervallo C8",
+    "author_value": "P1 PASS",
+    "reviewer_value": "54/54 valori uguali; rho' = 0.408 0.536 0.326 0.680 0.289 0.149 (come nello step); frazione pallida 0.171 0.173 0.255 0.045 0.196 0.083; catalogo = tabella per densita', d*, beta, sigma, phi",
+    "match": true
+   },
+   {
+    "id": "REC-density-model",
+    "what": "density_model del preset contro 1e6 / a_ref del fit (S1.4_calibration.csv; R3b_refs.csv, a_ref = somma A_T / n in tools/R3b_refs.R:33)",
+    "author_value": "10591.0, 7723.3, 4278.9, 27897.5, 1039.7, 1062.4",
+    "reviewer_value": "10591.011, 7723.286, 4278.870, 27897.49, 1039.688, 1062.351 (stessa definizione di A_ref nei due file)",
+    "match": true
+   },
+   {
+    "id": "REC-arms",
+    "what": "Bracci appaiati: stessi semi, stessa semina, cambia solo rho",
+    "author_value": "due bracci sulle stesse 300 unita'",
+    "reviewer_value": "300/300 coppie con random_seed, n, CV dei territori, eccentricita', frazione pallida identici; seme = 20261021 + 1000 i + s verificato; 600 md5 distinti",
+    "match": true
+   },
+   {
+    "id": "REC-gaps-panel",
+    "what": "Lacune reali nei layer del pannello (region_check$gap_area), per valutare l'impatto del finding sul controllo della somma di C2",
+    "author_value": "-",
+    "reviewer_value": "max |gap_area| 5.1e-9 um2, max relativo 7.1e-14 sui 60 layer: nessuna lacuna nascosta nel pannello",
+    "match": true
+   },
+   {
+    "id": "REC-perf-errors",
+    "what": "ERROR di validazione nelle 6 corse di prestazione (G-3 le include, lo stadio check non le legge)",
+    "author_value": "0 ERROR",
+    "reviewer_value": "n_error = 0 in tutte le 24 righe di perf/*.csv (riscaldamento compreso)",
+    "match": true
+   },
+   {
+    "id": "REC-metadata-bins",
+    "what": "Controllo dei metadati sulla griglia dei bin sui 5 scalefactors_json square_002um",
+    "author_value": "S1 PASS",
+    "reviewer_value": "5/5 file hanno bin_size_um e spot_diameter_fullres; bin_size_um/spot_diameter_fullres = microns_per_pixel a 6 cifre in tutti e 5",
+    "match": true
+   }
+  ],
+  "findings": [
+   {
+    "id": "FND-01",
+    "severity": "bug",
+    "affects_numbers": false,
+    "description": "Il controllo della somma di C2 non confronta i territori con l'area della regione ma con la somma calcolata dalla stessa tassellazione. Le 'lacune di smussatura' dello step sono implementate come region_check$gap_area = area regione - somma dei territori al momento della tassellazione, cioe' tutte le lacune. Una lacuna prodotta da tessellate_voronoi() (frammento perso, ritaglio sbagliato) viene assorbita e C2 resta PASS.",
+    "evidence": "R/04b5_cell_layer_validation.R:89-93 (gap da cl$region_check); R/04b3_tessellate_voronoi.R:86 (gap_area = r_area - s_terr). Mutante R19 (territorio 1 ristretto di 0.2 um dentro tessellate_voronoi): review_code/demo_r19.log: 'C2 with region_check: PASS', gap_area 5.835 um2 con smooth_loss totale 0; togliendo region_check: 'C2 ... ERROR, max rel 0.000437'. La batteria di test non lo rileva (R19: 67/69, stessi FAIL). Nel pannello non succede: max |gap_area| 5.1e-9 um2 sui 60 layer del seme 1.",
+    "suggested_fix": "Usare come lacuna ammessa solo la perdita di smussatura dichiarata (somma di territory_df$smooth_loss per regione, piu' i territori eliminati dalla smussatura), oppure ricalcolare la differenza regione meno unione su griglia senza leggere region_check; aggiungere un test con lacuna prodotta a monte."
+   },
+   {
+    "id": "FND-02",
+    "severity": "bug",
+    "affects_numbers": false,
+    "description": "Il contenimento nella regione (area(T \\ R) <= tau) si valuta solo sui territori marcati clipped o n_pieces_gained > 0 in territory_df. Un territorio che esce dalla regione ma non e' marcato e' visto solo dalla somma, e un'uscita compensata da una lacuna della stessa area passa.",
+    "evidence": "R/04b5_cell_layer_validation.R:106-109. Guasto F1 (uscita di 1 um2 + lacuna interna di 1 um2, segnali azzerati): rilevato in 4/30 layer (nei 4 la compensazione non era esatta, somma rel ~1e-7); con i segnali intatti (F1b) 30/30. Mutante R02 (tolleranza dell'uscita x1e6) non rilevato dai test.",
+    "suggested_fix": "Calcolare l'insieme di bordo dalla geometria (territori non contenuti nella propria regione, geos_within) invece che dai segnali di territory_df, o almeno in unione con essi."
+   },
+   {
+    "id": "FND-03",
+    "severity": "discrepanza",
+    "affects_numbers": false,
+    "description": "C9 dichiara 'ordine di cell_id identico in cell_df, cell_territories, cell_nuclei' ma controlla solo lunghezze e cell_id == 1..N: nessun controllo lega la riga i di cell_df al territorio i e al nucleo i. Neppure nucleus_area e territory_area di cell_df sono confrontate con le geometrie.",
+    "evidence": "R/04b5_cell_layer_validation.R:66. Guasto F3 (territori e nuclei di due cellule vicine scambiati, cell_df intatto): 0/30 rilevati. Guasto F10 (nucleo ridotto a meta' area, nucleus_area invariato): 0/30.",
+    "suggested_fix": "In C9: generatore (x, y) dentro il proprio territorio; |area(T_i) - territory_area_i| e |area(N_i) - nucleus_area_i| entro tolleranza; region_id della cellula = regione che contiene il generatore."
+   },
+   {
+    "id": "FND-04",
+    "severity": "bug",
+    "affects_numbers": false,
+    "description": "NA/NaN in cell_df$region_id e regioni rimaste senza cellule fanno fermare validate_cell_layer() con un errore R invece di dare ERROR (BL-095 dice 'ogni NA/NaN e' ERROR'). Se le cellule di una regione spariscono ma region_df resta, la regione esce da C2 (has_cells da cell_df) e C6 resta PASS (usa region_df$n_cells).",
+    "evidence": "R/04b5_cell_layer_validation.R:92 (has_cells), 145-148 (C4: sum(cd$region_id == r) con NA, nb4 + (d > 0.10) con NaN -> 'missing value where TRUE/FALSE needed'), 157 (C6 da rd$n_cells). Guasto F5 (region_id NA): crash 30/30. Guasto F2 (cellule di una regione rimosse, 12 layer costruibili): 6 crash, 5 PASS, 1 rilevato.",
+    "suggested_fix": "n_cells per regione ricalcolato da cell_df per C2, C4, C6; region_id NA o non presente in region_df = ERROR esplicito; C4 robusto a NaN."
+   },
+   {
+    "id": "FND-05",
+    "severity": "rilievo",
+    "affects_numbers": false,
+    "description": "La tolleranza della somma di C2 e' relativa all'area della regione (1e-9 x area), quella delle coppie e delle uscite e' legata alla griglia (g x perimetro). Su regioni grandi la somma non vede lacune molto sopra la tolleranza delle coppie: e' come scritto nello step, ma non e' 'legata alla griglia' come chiede BL-093.",
+    "evidence": "R/04b5_cell_layer_validation.R:93-95. Aree delle regioni dei 30 ROI fino a 1.0002e6 um2 (soglia 0.001 um2); guasto F9 (lacuna di 0.001 um2): mancato in 1/30 (A4 p3, 'max rel 1e-09'). Su 4000 x 4000 um (P-8, E4) la soglia sale a 0.016 um2. G-4 usa delta >= 0.01 um2, quindi il suo 630/630 non e' toccato.",
+    "suggested_fix": "Tolleranza della somma g x (somma dei perimetri della regione e dei territori) o lacuna misurata con overlay_prec('difference', regione, unione)."
+   },
+   {
+    "id": "FND-06",
+    "severity": "discrepanza",
+    "affects_numbers": false,
+    "description": "Il test P1 ('ogni valore dei 6 preset uguale alla riga di BIO_REFERENCES') confronta la tabella spec$sources, non il catalogo che place_cells() usa davvero. Un errore nella costruzione del catalogo passa.",
+    "evidence": "R/testing/test_S1.5.R:75-89 (v <- spec$sources); R/04b0_tissue_presets.R:60-64. Mutante R07 (beta e sigma scambiati nel catalogo): non rilevato; R08 (d* raddoppiata nel catalogo) rilevato solo per caso da E6. I valori attuali sono giusti: 54/54 contro BIO_REFERENCES e catalogo = tabella.",
+    "suggested_fix": "In P1 confrontare anche le colonne di spec$cell_types (density, min_dist_um, nucleus_area_slope, nucleus_area_sdlog, nucleus_nc_max) con le righe citate."
+   },
+   {
+    "id": "FND-07",
+    "severity": "rilievo",
+    "affects_numbers": false,
+    "description": "I sottocontrolli di C2 e C3 non sono provati uno per uno: tutti i guasti dei test hanno una delta che la somma di C2 (o la differenza N \\ T di C3) vede comunque, quindi spegnere le coppie, l'uscita dalla regione, st_within o la disgiunzione dei nuclei non fa fallire nessuna asserzione.",
+    "evidence": "Mutanti R01 (st_within tolto), R02 (uscita x1e6), R03 (coppie con st_touches), R18 (disgiunzione dei nuclei spenta): 0/4 rilevati. tools/S1.5_faults.R: overlap, gap, outside_region cambiano tutti la somma.",
+    "suggested_fix": "Guasti a somma invariata (sovrapposizione compensata da lacuna, uscita compensata da lacuna con i segnali intatti) e asserzioni sul contatore del sottocontrollo nella colonna note (regioni / coppie / uscite)."
+   },
+   {
+    "id": "FND-08",
+    "severity": "rilievo",
+    "affects_numbers": false,
+    "description": "Altre parti del codice nuovo senza un test che le distingua: il seme dei nuclei pallidi (O7 prova solo che stage_seeds() da' 3 numeri diversi, non chi li usa), il controllo dei metadati sulla griglia dei bin (nessun file discorde), la soglia di rifiuto N < 30, la regola di maggioranza di merge_small_components() (E1b ha un solo vicino).",
+    "evidence": "Mutanti R06, R12, R16, R10: 0/4 rilevati. Totale mutanti del revisore: 9/19 rilevati (R04, R05, R08, R09, R11, R13, R14, R15, R17).",
+    "suggested_fix": "Test: pallidi con seme diverso da quello della semina (confronto con .pc_with_seed(ss['pale'])); scalefactors_json sintetico discorde -> errore; immagine con 10-29 nuclei -> rifiuto; componente piccola con due vicini di lati diversi."
+   },
+   {
+    "id": "FND-09",
+    "severity": "rilievo",
+    "affects_numbers": false,
+    "description": "Il G-2 ufficiale (tests/official/G2.out, 9/9) e' stato eseguito al commit dab8b3a; a fafb3d0 sono cambiati estimate_pixel_size(), place_cells() e test_S1.5.R (D-11). Rieseguiti al commit fafb3d0 dal revisore: 9/9 rilevati (M9 ora anche da S9). M1 e M5 interrompono lo script (35 e 54 asserzioni non eseguite) perche' alcune chiamate dei test non sono protette da safe().",
+    "evidence": "tests/official.commit = dab8b3a; git diff --stat dab8b3a fafb3d0 -- R tools; review_code/logs/M1.log, M5.log; R/testing/test_S1.5.R:177, 196, 201, 207 (PC senza safe).",
+    "suggested_fix": "Rieseguire run_S1.5.sh mutants al commit finale; avvolgere in safe() le chiamate PC dei casi limite."
+   },
+   {
+    "id": "FND-10",
+    "severity": "rilievo",
+    "affects_numbers": false,
+    "description": "run_S1.5.sh test esegue 'git checkout -- results/S1.1 results/S1.2 results/S1.3 results/S1.4' senza controllo: cancella in silenzio ogni modifica locale non committata in quelle cartelle (azione distruttiva nel repository).",
+    "evidence": "R/testing/run_S1.5.sh:23-24.",
+    "suggested_fix": "Scrivere le uscite dei test di regressione in una cartella temporanea e confrontarle con git show HEAD:<file>, senza checkout; o fermarsi se git status --porcelain non e' vuoto."
+   },
+   {
+    "id": "FND-11",
+    "severity": "discrepanza",
+    "affects_numbers": false,
+    "description": "Il design (§5.4) riporta ancora i tetti phi di linfonodo e cuore delle righe superate (0.816 e 0.180, B-124/B-126), mentre preset e step usano B-143 = 0.791 e B-154 = 0.149 (DEC-006).",
+    "evidence": "docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md:267; R/04b0_tissue_presets.R:28-29; BIO_REFERENCES righe B-143, B-154.",
+    "suggested_fix": "Aggiornare il design (o rimandare alla tabella dei preset)."
+   },
+   {
+    "id": "FND-12",
+    "severity": "rilievo",
+    "affects_numbers": false,
+    "description": "La batteria prova l'orchestratore quasi solo sul preset epithelial (O1-O13, V, F); gli altri preset entrano in E4 (cuore), E5 ed E6 (linfonodo). Il design §6.2 v1.1 chiede i test su tutti i 6 preset (principio 5); il banco del pannello copre i 6 tessuti per G-3, non per G-1.",
+    "evidence": "R/testing/test_S1.5.R:23, 177-217; design §6.2 riga 316.",
+    "suggested_fix": "Ciclo O1/O5/O10/V0 sui 6 preset con un tessuto di prova."
+   },
+   {
+    "id": "FND-13",
+    "severity": "rilievo",
+    "affects_numbers": false,
+    "description": "Stima dall'immagine: la scurezza e la maschera usano il riquadro di tutti i pixel di clust, non quello del cluster dominante con fondo 0 come scritto nello step. Con un solo cluster (CP-1) coincide; con piu' cluster i pixel degli altri cluster entrano nel laplaciano come tessuto.",
+    "evidence": "R/04b6_estimate_pixel_size.R:41-46.",
+    "suggested_fix": "Porre a 0 la scurezza fuori dal cluster dominante, o correggere la definizione nello step."
+   },
+   {
+    "id": "FND-14",
+    "severity": "rilievo",
+    "affects_numbers": false,
+    "description": "Nello stadio nulls del banco lo stesso seme serve alla semina (gen_points) e alla taglia dei nuclei (derive_cell_geometry(random_seed = p$seed)), contro la regola 'lo stesso seme non entra due volte in due stadi'. Tocca solo il conteggio dei falsi allarmi di G-4, non previsioni.",
+    "evidence": "tools/S1.5_bench.R:114-120, 133.",
+    "suggested_fix": "Usare stage_seeds(p$seed)[['size']] per i nuclei dei nulli."
+   },
+   {
+    "id": "FND-15",
+    "severity": "rilievo",
+    "affects_numbers": false,
+    "description": "Nell'analisi aggregate(. ~ archetype + roi_id) scarta in silenzio ogni unita' con un NA in una qualsiasi colonna (anche descrittiva), cambiando il numero di semi per ROI. Oggi non succede: 0 NA in S1.5_panel_units.csv, 10 semi per ROI e braccio, 0 NA in S1.5_windows.csv.",
+    "evidence": "tools/S1.5_analysis.R:15-16, 46.",
+    "suggested_fix": "na.action = na.pass e controllo esplicito del numero di unita' per ROI."
+   }
+  ],
+  "outputs_on_server": [
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/make_mutants.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/make_r19.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/mutants.json",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/run_mutants.sh",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/analyse_mutants.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/mutants_result.json",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/logs/",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/tree/",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/reviewer_faults.R",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/reviewer_faults.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/reviewer_faults.log",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/demo_r19.R",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/demo_r19.log",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/recompute_verdicts.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/reviewer_verdicts.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/check_cp1.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/recompute_units.R",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/reviewer_unit_metrics_seed1.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/recompute_units.log",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/check_presets.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/dump_tp.R",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/tp_table.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/tp_catalog.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/check_arms.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/chk1.R",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/chk2.R",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_code/chk3.R"
+  ],
+  "summary": "Revisione del codice di S1.5 al commit fafb3d0. Nessun bug cambia un numero o un verdetto: i ricalcoli indipendenti tornano. Sono 84/84 verdetti P-1...P-7 (scarto <= 4.3e-14), 48/48 verdetti CP-1, la regola della scelta 2 (vince preserve_area, 6 e 4 contro 4 e 3), 60/60 unita' del seme 1 con la regola d'interna riscritta (scarti <= 1e-12) e 54/54 valori dei preset contro BIO_REFERENCES. I controlli hanno buchi reali, nessuno attivo nel pannello. (1) La somma di C2 usa la lacuna calcolata dalla stessa tassellazione: una lacuna di 5.8 um2 creata in tessellate_voronoi() passa con C2 PASS. (2) L'uscita dalla regione si guarda solo sui territori marcati: un'uscita di 1 um2 compensata e senza segnale passa in 26/30 layer. (3) C9 non lega le righe di cell_df alle geometrie: uno scambio fra due cellule passa in 30/30 layer. (4) Un NA in region_id ferma il validatore con un errore R in 30/30 layer invece di dare ERROR. Mutanti: i 9 dell'autore sono rilevati 9/9 anche al commit fafb3d0. Dei 19 del revisore ne sono rilevati 9: la batteria non prova i sottocontrolli di C2 e C3 uno per uno, ne' il catalogo vero dei preset, il seme dei pallidi, il controllo dei bin, il rifiuto con N < 30 e la regola di maggioranza del merge. Guasti indipendenti: 4 tipi su 10 rilevati sempre (duplicato, nucleo nel fondo, nucleo vuoto, uscita con segnali intatti), lacuna di 0.001 um2 in 29/30, gli altri 5 no o con crash."
+ },
+ "deviations": [
+  "Ricalcoli delle metriche per unita' solo sul seme 1 (60 unita' su 600 di S1.5_panel_units.csv: i layer completi esistono solo per il seme 1); per gli altri 9 semi ho verificato aggregazioni e verdetti a partire dalle righe dell'autore, non dalle geometrie.",
+  "Eccentricita' dei territori (P-7) e contatti (P-5) non ricalcolati dalle geometrie: ho ricalcolato solo verdetti e aggregazioni da S1.5_panel_units.csv e S1.5_windows.csv.",
+  "Guasti indipendenti costruiti solo sui layer del braccio preserve_area del seme 1 (30); F2 costruibile solo nei 12 layer con almeno 2 regioni con cellule; delta fisse (F1 1 um2, F9 0.001 um2).",
+  "Codice Python dei contatti (S1.5_windows.py, S1.4c_raster.py), stadio perf, CP-1 sulle immagini e post hoc letti ma non rieseguiti.",
+  "Un job dei guasti e' partito per errore in parallelo alla batteria dei mutanti (circa 14 processi per circa 1 minuto, sopra il limite di 8); l'ho fermato e rilanciato da solo."
+ ]
+}

@@ -1,0 +1,2295 @@
+{
+ "reviewer": "Ricalcolo",
+ "commit_reviewed": "fafb3d0",
+ "structured_output": {
+  "checks": [
+   {
+    "id": "U1-n",
+    "what": "metrica per unita' n, seme 1, preserve_area, 30 ROI (Python/shapely, momenti di Green)",
+    "author_value": "30 righe di S1.5_panel_units.csv (es. A1_r1: 9914)",
+    "reviewer_value": "30/30 entro 1e-9 (scarto rel. max 0.00e+00; A1_r1: 9914)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U1-n_interior",
+    "what": "metrica per unita' n_interior, seme 1, preserve_area, 30 ROI (Python/shapely, momenti di Green)",
+    "author_value": "30 righe di S1.5_panel_units.csv (es. A1_r1: 8317)",
+    "reviewer_value": "30/30 entro 1e-9 (scarto rel. max 0.00e+00; A1_r1: 8317)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U1-median_area_nuc",
+    "what": "metrica per unita' median_area_nuc, seme 1, preserve_area, 30 ROI (Python/shapely, momenti di Green)",
+    "author_value": "30 righe di S1.5_panel_units.csv (es. A1_r4: 13.16382212)",
+    "reviewer_value": "30/30 entro 1e-9 (scarto rel. max 2.70e-15; A1_r4: 13.16382212)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U1-median_nc",
+    "what": "metrica per unita' median_nc, seme 1, preserve_area, 30 ROI (Python/shapely, momenti di Green)",
+    "author_value": "30 righe di S1.5_panel_units.csv (es. A2_r5: 0.3068161088)",
+    "reviewer_value": "30/30 entro 1e-9 (scarto rel. max 1.34e-14; A2_r5: 0.3068161088)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U1-frac_nc095",
+    "what": "metrica per unita' frac_nc095, seme 1, preserve_area, 30 ROI (Python/shapely, momenti di Green)",
+    "author_value": "30 righe di S1.5_panel_units.csv (es. A2_r2: 0.03537298531)",
+    "reviewer_value": "30/30 entro 1e-9 (scarto rel. max 2.94e-15; A2_r2: 0.03537298531)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U1-frac_trunc",
+    "what": "metrica per unita' frac_trunc, seme 1, preserve_area, 30 ROI (Python/shapely, momenti di Green)",
+    "author_value": "30 righe di S1.5_panel_units.csv (es. A6_r2: 0.01124859393)",
+    "reviewer_value": "30/30 entro 1e-9 (scarto rel. max 8.94e-15; A6_r2: 0.01124859393)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U1-cv_terr",
+    "what": "metrica per unita' cv_terr, seme 1, preserve_area, 30 ROI (Python/shapely, momenti di Green)",
+    "author_value": "30 righe di S1.5_panel_units.csv (es. A4_f1: 0.2117786456)",
+    "reviewer_value": "30/30 entro 1e-9 (scarto rel. max 1.83e-15; A4_f1: 0.2117786456)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U1-median_ecc_T",
+    "what": "metrica per unita' median_ecc_T, seme 1, preserve_area, 30 ROI (Python/shapely, momenti di Green)",
+    "author_value": "30 righe di S1.5_panel_units.csv (es. A1_r3: 0.7509860337)",
+    "reviewer_value": "30/30 entro 1e-9 (scarto rel. max 7.39e-16; A1_r3: 0.7509860337)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U1-median_eq_r",
+    "what": "metrica per unita' median_eq_r, seme 1, preserve_area, 30 ROI (Python/shapely, momenti di Green)",
+    "author_value": "30 righe di S1.5_panel_units.csv (es. A4_p2: 3.331276302)",
+    "reviewer_value": "30/30 entro 1e-9 (scarto rel. max 8.40e-15; A4_p2: 3.331276302)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U1-frac_pale",
+    "what": "metrica per unita' frac_pale, seme 1, preserve_area, 30 ROI (Python/shapely, momenti di Green)",
+    "author_value": "30 righe di S1.5_panel_units.csv (es. A1_r3: 0.1709571613)",
+    "reviewer_value": "30/30 entro 1e-9 (scarto rel. max 2.92e-15; A1_r3: 0.1709571613)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U300-n_interior",
+    "what": "metrica n_interior su tutte le 300 unita' preserve_area (semi 2-10 rigenerati con md5 identico)",
+    "author_value": "300 righe S1.5_panel_units.csv",
+    "reviewer_value": "300/300 entro 1e-9 (max rel 0.00e+00)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U300-median_area_nuc",
+    "what": "metrica median_area_nuc su tutte le 300 unita' preserve_area (semi 2-10 rigenerati con md5 identico)",
+    "author_value": "300 righe S1.5_panel_units.csv",
+    "reviewer_value": "300/300 entro 1e-9 (max rel 3.78e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U300-median_nc",
+    "what": "metrica median_nc su tutte le 300 unita' preserve_area (semi 2-10 rigenerati con md5 identico)",
+    "author_value": "300 righe S1.5_panel_units.csv",
+    "reviewer_value": "300/300 entro 1e-9 (max rel 4.22e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U300-frac_nc095",
+    "what": "metrica frac_nc095 su tutte le 300 unita' preserve_area (semi 2-10 rigenerati con md5 identico)",
+    "author_value": "300 righe S1.5_panel_units.csv",
+    "reviewer_value": "300/300 entro 1e-9 (max rel 1.47e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U300-cv_terr",
+    "what": "metrica cv_terr su tutte le 300 unita' preserve_area (semi 2-10 rigenerati con md5 identico)",
+    "author_value": "300 righe S1.5_panel_units.csv",
+    "reviewer_value": "300/300 entro 1e-9 (max rel 2.38e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U300-median_ecc_T",
+    "what": "metrica median_ecc_T su tutte le 300 unita' preserve_area (semi 2-10 rigenerati con md5 identico)",
+    "author_value": "300 righe S1.5_panel_units.csv",
+    "reviewer_value": "300/300 entro 1e-9 (max rel 8.96e-16)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "U300-frac_trunc",
+    "what": "metrica frac_trunc su tutte le 300 unita' preserve_area (semi 2-10 rigenerati con md5 identico)",
+    "author_value": "300 righe S1.5_panel_units.csv",
+    "reviewer_value": "300/300 entro 1e-9 (max rel 6.94e-14)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "V-P-1-A1-none-nuc",
+    "what": "verdetto P-1 A1 braccio none (nuc)",
+    "author_value": "stima 11.47246149, ±2ES [11.44181942, 11.50310355], int. [12.59079887, 13.78992258], smentita, n=5",
+    "reviewer_value": "stima 11.47246149, ±2ES [11.44181942, 11.50310355], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.3e-14"
+   },
+   {
+    "id": "V-P-1-A1-preserve_area-nuc",
+    "what": "verdetto P-1 A1 braccio preserve_area (nuc)",
+    "author_value": "stima 13.20152488, ±2ES [13.16541143, 13.23763832], int. [12.59079887, 13.78992258], confermata, n=5",
+    "reviewer_value": "stima 13.20152488, ±2ES [13.16541143, 13.23763832], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.1e-14"
+   },
+   {
+    "id": "V-P-1-A2-none-nuc",
+    "what": "verdetto P-1 A2 braccio none (nuc)",
+    "author_value": "stima 28.20234412, ±2ES [28.10734347, 28.29734477], int. [27.94231605, 32.43705858], confermata, n=5",
+    "reviewer_value": "stima 28.20234412, ±2ES [28.10734347, 28.29734477], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.1e-14"
+   },
+   {
+    "id": "V-P-1-A2-preserve_area-nuc",
+    "what": "verdetto P-1 A2 braccio preserve_area (nuc)",
+    "author_value": "stima 31.09018592, ±2ES [30.98397104, 31.1964008], int. [27.94231605, 32.43705858], confermata, n=5",
+    "reviewer_value": "stima 31.09018592, ±2ES [30.98397104, 31.1964008], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.8e-15"
+   },
+   {
+    "id": "V-P-1-A3-none-nuc",
+    "what": "verdetto P-1 A3 braccio none (nuc)",
+    "author_value": "stima 44.19083411, ±2ES [44.09518884, 44.28647939], int. [27.7924913, 33.78548134], smentita, n=5",
+    "reviewer_value": "stima 44.19083411, ±2ES [44.09518884, 44.28647939], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.9e-14"
+   },
+   {
+    "id": "V-P-1-A3-preserve_area-nuc",
+    "what": "verdetto P-1 A3 braccio preserve_area (nuc)",
+    "author_value": "stima 33.58341494, ±2ES [33.51304381, 33.65378607], int. [27.7924913, 33.78548134], confermata, n=5",
+    "reviewer_value": "stima 33.58341494, ±2ES [33.51304381, 33.65378607], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.3e-15"
+   },
+   {
+    "id": "V-P-1-A4-none-nuc",
+    "what": "verdetto P-1 A4 braccio none (nuc)",
+    "author_value": "stima 16.25282844, ±2ES [16.24511925, 16.26053763], int. [15.66512846, 16.63951444], confermata, n=5",
+    "reviewer_value": "stima 16.25282844, ±2ES [16.24511925, 16.26053763], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 2.8e-15"
+   },
+   {
+    "id": "V-P-1-A4-preserve_area-nuc",
+    "what": "verdetto P-1 A4 braccio preserve_area (nuc)",
+    "author_value": "stima 16.31540517, ±2ES [16.30759018, 16.32322016], int. [15.66512846, 16.63951444], confermata, n=5",
+    "reviewer_value": "stima 16.31540517, ±2ES [16.30759018, 16.32322016], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 7.7e-14"
+   },
+   {
+    "id": "V-P-1-A5-none-nuc",
+    "what": "verdetto P-1 A5 braccio none (nuc)",
+    "author_value": "stima 61.02355147, ±2ES [59.92047164, 62.1266313], int. [56.87983842, 119.2411662], confermata, n=5",
+    "reviewer_value": "stima 61.02355147, ±2ES [59.92047164, 62.1266313], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 7.1e-16"
+   },
+   {
+    "id": "V-P-1-A5-preserve_area-nuc",
+    "what": "verdetto P-1 A5 braccio preserve_area (nuc)",
+    "author_value": "stima 64.12517809, ±2ES [62.96603215, 65.28432402], int. [56.87983842, 119.2411662], confermata, n=5",
+    "reviewer_value": "stima 64.12517809, ±2ES [62.96603215, 65.28432402], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 5.7e-16"
+   },
+   {
+    "id": "V-P-1-A6-none-nuc",
+    "what": "verdetto P-1 A6 braccio none (nuc)",
+    "author_value": "stima 23.29377911, ±2ES [23.18356881, 23.40398942], int. [17.54361151, 31.71345158], confermata, n=5",
+    "reviewer_value": "stima 23.29377911, ±2ES [23.18356881, 23.40398942], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 7.7e-16"
+   },
+   {
+    "id": "V-P-1-A6-preserve_area-nuc",
+    "what": "verdetto P-1 A6 braccio preserve_area (nuc)",
+    "author_value": "stima 21.86900651, ±2ES [21.7607269, 21.97728612], int. [17.54361151, 31.71345158], confermata, n=5",
+    "reviewer_value": "stima 21.86900651, ±2ES [21.7607269, 21.97728612], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 9.2e-15"
+   },
+   {
+    "id": "V-P-2-A1-none-nc",
+    "what": "verdetto P-2 A1 braccio none (nc)",
+    "author_value": "stima 0.1592647725, ±2ES [0.1586255367, 0.1599040083], int. [0.2165066729, 0.230941298], smentita, n=5",
+    "reviewer_value": "stima 0.1592647725, ±2ES [0.1586255367, 0.1599040083], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 3.1e-15"
+   },
+   {
+    "id": "V-P-2-A1-preserve_area-nc",
+    "what": "verdetto P-2 A1 braccio preserve_area (nc)",
+    "author_value": "stima 0.1833945086, ±2ES [0.1826584237, 0.1841305936], int. [0.2165066729, 0.230941298], smentita, n=5",
+    "reviewer_value": "stima 0.1833945086, ±2ES [0.1826584237, 0.1841305936], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 2.3e-15"
+   },
+   {
+    "id": "V-P-2-A2-none-nc",
+    "what": "verdetto P-2 A2 braccio none (nc)",
+    "author_value": "stima 0.2773407106, ±2ES [0.2765051494, 0.2781762717], int. [0.3094239982, 0.4333804385], smentita, n=5",
+    "reviewer_value": "stima 0.2773407106, ±2ES [0.2765051494, 0.2781762717], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.8e-15"
+   },
+   {
+    "id": "V-P-2-A2-preserve_area-nc",
+    "what": "verdetto P-2 A2 braccio preserve_area (nc)",
+    "author_value": "stima 0.3059765513, ±2ES [0.3050547172, 0.3068983853], int. [0.3094239982, 0.4333804385], smentita, n=5",
+    "reviewer_value": "stima 0.3059765513, ±2ES [0.3050547172, 0.3068983853], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.3e-15"
+   },
+   {
+    "id": "V-P-2-A3-none-nc",
+    "what": "verdetto P-2 A3 braccio none (nc)",
+    "author_value": "stima 0.1546258201, ±2ES [0.1539902273, 0.1552614128], int. [0.1166383582, 0.3370937362], confermata, n=5",
+    "reviewer_value": "stima 0.1546258201, ±2ES [0.1539902273, 0.1552614128], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 3.2e-15"
+   },
+   {
+    "id": "V-P-2-A3-preserve_area-nc",
+    "what": "verdetto P-2 A3 braccio preserve_area (nc)",
+    "author_value": "stima 0.1174592509, ±2ES [0.1169764316, 0.1179420701], int. [0.1166383582, 0.3370937362], confermata, n=5",
+    "reviewer_value": "stima 0.1174592509, ±2ES [0.1169764316, 0.1179420701], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.8e-15"
+   },
+   {
+    "id": "V-P-2-A4-none-nc",
+    "what": "verdetto P-2 A4 braccio none (nc)",
+    "author_value": "stima 0.4658655639, ±2ES [0.4657279443, 0.4660031835], int. [0.4491193079, 0.5012703515], confermata, n=5",
+    "reviewer_value": "stima 0.4658655639, ±2ES [0.4657279443, 0.4660031835], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.3e-13"
+   },
+   {
+    "id": "V-P-2-A4-preserve_area-nc",
+    "what": "verdetto P-2 A4 braccio preserve_area (nc)",
+    "author_value": "stima 0.4676692132, ±2ES [0.4675310575, 0.4678073689], int. [0.4491193079, 0.5012703515], confermata, n=5",
+    "reviewer_value": "stima 0.4676692132, ±2ES [0.4675310575, 0.4678073689], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.5e-13"
+   },
+   {
+    "id": "V-P-2-A5-none-nc",
+    "what": "verdetto P-2 A5 braccio none (nc)",
+    "author_value": "stima 0.08332999947, ±2ES [0.08203920439, 0.08462079456], int. [0.08207803451, 0.1107951506], indeterminata, n=5",
+    "reviewer_value": "stima 0.08332999947, ±2ES [0.08203920439, 0.08462079456], indeterminata, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.2e-15"
+   },
+   {
+    "id": "V-P-2-A5-preserve_area-nc",
+    "what": "verdetto P-2 A5 braccio preserve_area (nc)",
+    "author_value": "stima 0.08756538962, ±2ES [0.08620898671, 0.08892179252], int. [0.08207803451, 0.1107951506], confermata, n=5",
+    "reviewer_value": "stima 0.08756538962, ±2ES [0.08620898671, 0.08892179252], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.3e-15"
+   },
+   {
+    "id": "V-P-2-A6-none-nc",
+    "what": "verdetto P-2 A6 braccio none (nc)",
+    "author_value": "stima 0.02756023274, ±2ES [0.02697328411, 0.02814718137], int. [0.02354357076, 0.03659205419], confermata, n=5",
+    "reviewer_value": "stima 0.02756023274, ±2ES [0.02697328411, 0.02814718137], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 3.5e-15"
+   },
+   {
+    "id": "V-P-2-A6-preserve_area-nc",
+    "what": "verdetto P-2 A6 braccio preserve_area (nc)",
+    "author_value": "stima 0.02585821619, ±2ES [0.02530751535, 0.02640891702], int. [0.02354357076, 0.03659205419], confermata, n=5",
+    "reviewer_value": "stima 0.02585821619, ±2ES [0.02530751535, 0.02640891702], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 4.0e-15"
+   },
+   {
+    "id": "V-P-3-A1-none-trunc",
+    "what": "verdetto P-3 A1 braccio none (trunc)",
+    "author_value": "stima 0.009156571981, ±2ES [0.008735508474, 0.009577635487], int. [0, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.009156571981, ±2ES [0.008735508474, 0.009577635487], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.1e-14"
+   },
+   {
+    "id": "V-P-3-A1-preserve_area-trunc",
+    "what": "verdetto P-3 A1 braccio preserve_area (trunc)",
+    "author_value": "stima 0.0156433814, ±2ES [0.01518733584, 0.01609942696], int. [0, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.0156433814, ±2ES [0.01518733584, 0.01609942696], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 6.6e-15"
+   },
+   {
+    "id": "V-P-3-A2-none-trunc",
+    "what": "verdetto P-3 A2 braccio none (trunc)",
+    "author_value": "stima 0.02116504127, ±2ES [0.02015736234, 0.0221727202], int. [0, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.02116504127, ±2ES [0.02015736234, 0.0221727202], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-3-A2-preserve_area-trunc",
+    "what": "verdetto P-3 A2 braccio preserve_area (trunc)",
+    "author_value": "stima 0.03046711133, ±2ES [0.02950499563, 0.03142922702], int. [0, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.03046711133, ±2ES [0.02950499563, 0.03142922702], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 3.3e-15"
+   },
+   {
+    "id": "V-P-3-A3-none-trunc",
+    "what": "verdetto P-3 A3 braccio none (trunc)",
+    "author_value": "stima 0.007394360744, ±2ES [0.007056781724, 0.007731939764], int. [0, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.007394360744, ±2ES [0.007056781724, 0.007731939764], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.4e-14"
+   },
+   {
+    "id": "V-P-3-A3-preserve_area-trunc",
+    "what": "verdetto P-3 A3 braccio preserve_area (trunc)",
+    "author_value": "stima 0.002618490986, ±2ES [0.002405740413, 0.00283124156], int. [0, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.002618490986, ±2ES [0.002405740413, 0.00283124156], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 4.2e-14"
+   },
+   {
+    "id": "V-P-3-A4-none-trunc",
+    "what": "verdetto P-3 A4 braccio none (trunc)",
+    "author_value": "stima 0.01390021352, ±2ES [0.01372375321, 0.01407667383], int. [0, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.01390021352, ±2ES [0.01372375321, 0.01407667383], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 7.3e-15"
+   },
+   {
+    "id": "V-P-3-A4-preserve_area-trunc",
+    "what": "verdetto P-3 A4 braccio preserve_area (trunc)",
+    "author_value": "stima 0.01446013758, ±2ES [0.01426703871, 0.01465323645], int. [0, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.01446013758, ±2ES [0.01426703871, 0.01465323645], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 6.9e-15"
+   },
+   {
+    "id": "V-P-3-A5-none-trunc",
+    "what": "verdetto P-3 A5 braccio none (trunc)",
+    "author_value": "stima 0.02062172783, ±2ES [0.01848227283, 0.02276118283], int. [0, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.02062172783, ±2ES [0.01848227283, 0.02276118283], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 5.4e-15"
+   },
+   {
+    "id": "V-P-3-A5-preserve_area-trunc",
+    "what": "verdetto P-3 A5 braccio preserve_area (trunc)",
+    "author_value": "stima 0.02345158907, ±2ES [0.02116904604, 0.0257341321], int. [0, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.02345158907, ±2ES [0.02116904604, 0.0257341321], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 3.9e-15"
+   },
+   {
+    "id": "V-P-3-A6-none-trunc",
+    "what": "verdetto P-3 A6 braccio none (trunc)",
+    "author_value": "stima 0.01360578346, ±2ES [0.0119565026, 0.01525506432], int. [0, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.01360578346, ±2ES [0.0119565026, 0.01525506432], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 8.3e-15"
+   },
+   {
+    "id": "V-P-3-A6-preserve_area-trunc",
+    "what": "verdetto P-3 A6 braccio preserve_area (trunc)",
+    "author_value": "stima 0.01190442099, ±2ES [0.01035099252, 0.01345784945], int. [0, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.01190442099, ±2ES [0.01035099252, 0.01345784945], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 8.3e-15"
+   },
+   {
+    "id": "V-P-4-A1-none-nc095",
+    "what": "verdetto P-4 A1 braccio none (nc095)",
+    "author_value": "stima 0, ±2ES [0, 0], int. [0, 0.002016671148], confermata, n=5",
+    "reviewer_value": "stima 0, ±2ES [0, 0], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-4-A1-preserve_area-nc095",
+    "what": "verdetto P-4 A1 braccio preserve_area (nc095)",
+    "author_value": "stima 0, ±2ES [0, 0], int. [0, 0.002016671148], confermata, n=5",
+    "reviewer_value": "stima 0, ±2ES [0, 0], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-4-A2-none-nc095",
+    "what": "verdetto P-4 A2 braccio none (nc095)",
+    "author_value": "stima 0.02491867257, ±2ES [0.02427100894, 0.02556633621], int. [0, 0.02873399716], confermata, n=5",
+    "reviewer_value": "stima 0.02491867257, ±2ES [0.02427100894, 0.02556633621], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 4.1e-15"
+   },
+   {
+    "id": "V-P-4-A2-preserve_area-nc095",
+    "what": "verdetto P-4 A2 braccio preserve_area (nc095)",
+    "author_value": "stima 0.03579131148, ±2ES [0.03482623905, 0.03675638391], int. [0, 0.02873399716], smentita, n=5",
+    "reviewer_value": "stima 0.03579131148, ±2ES [0.03482623905, 0.03675638391], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-4-A3-none-nc095",
+    "what": "verdetto P-4 A3 braccio none (nc095)",
+    "author_value": "stima 0, ±2ES [0, 0], int. [0, 0.0208423795], confermata, n=5",
+    "reviewer_value": "stima 0, ±2ES [0, 0], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-4-A3-preserve_area-nc095",
+    "what": "verdetto P-4 A3 braccio preserve_area (nc095)",
+    "author_value": "stima 0, ±2ES [0, 0], int. [0, 0.0208423795], confermata, n=5",
+    "reviewer_value": "stima 0, ±2ES [0, 0], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-4-A4-none-nc095",
+    "what": "verdetto P-4 A4 braccio none (nc095)",
+    "author_value": "stima 0, ±2ES [0, 0], int. [0, 0.002430576654], confermata, n=5",
+    "reviewer_value": "stima 0, ±2ES [0, 0], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-4-A4-preserve_area-nc095",
+    "what": "verdetto P-4 A4 braccio preserve_area (nc095)",
+    "author_value": "stima 0, ±2ES [0, 0], int. [0, 0.002430576654], confermata, n=5",
+    "reviewer_value": "stima 0, ±2ES [0, 0], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-4-A5-none-nc095",
+    "what": "verdetto P-4 A5 braccio none (nc095)",
+    "author_value": "stima 0, ±2ES [0, 0], int. [0, 0], confermata, n=5",
+    "reviewer_value": "stima 0, ±2ES [0, 0], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-4-A5-preserve_area-nc095",
+    "what": "verdetto P-4 A5 braccio preserve_area (nc095)",
+    "author_value": "stima 0, ±2ES [0, 0], int. [0, 0], confermata, n=5",
+    "reviewer_value": "stima 0, ±2ES [0, 0], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-4-A6-none-nc095",
+    "what": "verdetto P-4 A6 braccio none (nc095)",
+    "author_value": "stima 0, ±2ES [0, 0], int. [0, 0], confermata, n=5",
+    "reviewer_value": "stima 0, ±2ES [0, 0], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-4-A6-preserve_area-nc095",
+    "what": "verdetto P-4 A6 braccio preserve_area (nc095)",
+    "author_value": "stima 0, ±2ES [0, 0], int. [0, 0], confermata, n=5",
+    "reviewer_value": "stima 0, ±2ES [0, 0], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-5-A1-none-contact",
+    "what": "verdetto P-5 A1 braccio none (contact)",
+    "author_value": "stima 0.4119034437, ±2ES [0.3930484109, 0.4307584765], int. [0.366, 0.65], confermata, n=10",
+    "reviewer_value": "stima 0.4119034437, ±2ES [0.3930484109, 0.4307584765], confermata, n=10",
+    "match": true,
+    "note": "scarto rel. max 9.4e-16"
+   },
+   {
+    "id": "V-P-5-A1-preserve_area-contact",
+    "what": "verdetto P-5 A1 braccio preserve_area (contact)",
+    "author_value": "stima 0.4692489496, ±2ES [0.4434298835, 0.4950680157], int. [0.366, 0.65], confermata, n=10",
+    "reviewer_value": "stima 0.4692489496, ±2ES [0.4434298835, 0.4950680157], confermata, n=10",
+    "match": true,
+    "note": "scarto rel. max 9.5e-16"
+   },
+   {
+    "id": "V-P-5-A2-none-contact",
+    "what": "verdetto P-5 A2 braccio none (contact)",
+    "author_value": "stima 0.5728051696, ±2ES [0.548465482, 0.5971448573], int. [0.217, 0.567], indeterminata, n=10",
+    "reviewer_value": "stima 0.5728051696, ±2ES [0.548465482, 0.5971448573], indeterminata, n=10",
+    "match": true,
+    "note": "scarto rel. max 8.3e-15"
+   },
+   {
+    "id": "V-P-5-A2-preserve_area-contact",
+    "what": "verdetto P-5 A2 braccio preserve_area (contact)",
+    "author_value": "stima 0.6195375235, ±2ES [0.5938966961, 0.6451783508], int. [0.217, 0.567], smentita, n=10",
+    "reviewer_value": "stima 0.6195375235, ±2ES [0.5938966961, 0.6451783508], smentita, n=10",
+    "match": true,
+    "note": "scarto rel. max 6.9e-16"
+   },
+   {
+    "id": "V-P-5-A3-none-contact",
+    "what": "verdetto P-5 A3 braccio none (contact)",
+    "author_value": "stima 0.4049616311, ±2ES [0.3710002607, 0.4389230015], int. [0.083, 0.283], smentita, n=10",
+    "reviewer_value": "stima 0.4049616311, ±2ES [0.3710002607, 0.4389230015], smentita, n=10",
+    "match": true,
+    "note": "scarto rel. max 8.9e-16"
+   },
+   {
+    "id": "V-P-5-A3-preserve_area-contact",
+    "what": "verdetto P-5 A3 braccio preserve_area (contact)",
+    "author_value": "stima 0.2992655197, ±2ES [0.268302077, 0.3302289624], int. [0.083, 0.283], indeterminata, n=10",
+    "reviewer_value": "stima 0.2992655197, ±2ES [0.268302077, 0.3302289624], indeterminata, n=10",
+    "match": true,
+    "note": "scarto rel. max 6.5e-15"
+   },
+   {
+    "id": "V-P-5-A4-none-contact",
+    "what": "verdetto P-5 A4 braccio none (contact)",
+    "author_value": "stima 0.8258570272, ±2ES [0.8095672584, 0.842146796], int. [0.35, 0.75], smentita, n=10",
+    "reviewer_value": "stima 0.8258570272, ±2ES [0.8095672584, 0.842146796], smentita, n=10",
+    "match": true,
+    "note": "scarto rel. max 4.1e-16"
+   },
+   {
+    "id": "V-P-5-A4-preserve_area-contact",
+    "what": "verdetto P-5 A4 braccio preserve_area (contact)",
+    "author_value": "stima 0.8322811398, ±2ES [0.8156528439, 0.8489094357], int. [0.35, 0.75], smentita, n=10",
+    "reviewer_value": "stima 0.8322811398, ±2ES [0.8156528439, 0.8489094357], smentita, n=10",
+    "match": true,
+    "note": "scarto rel. max 4.1e-16"
+   },
+   {
+    "id": "V-P-5-A5-none-contact",
+    "what": "verdetto P-5 A5 braccio none (contact)",
+    "author_value": "stima 0.09843730663, ±2ES [0.0752028447, 0.1216717686], int. [0, 0.217], confermata, n=10",
+    "reviewer_value": "stima 0.09843730663, ±2ES [0.0752028447, 0.1216717686], confermata, n=10",
+    "match": true,
+    "note": "scarto rel. max 8.7e-15"
+   },
+   {
+    "id": "V-P-5-A5-preserve_area-contact",
+    "what": "verdetto P-5 A5 braccio preserve_area (contact)",
+    "author_value": "stima 0.1076600717, ±2ES [0.08328142166, 0.1320387218], int. [0, 0.217], confermata, n=10",
+    "reviewer_value": "stima 0.1076600717, ±2ES [0.08328142166, 0.1320387218], confermata, n=10",
+    "match": true,
+    "note": "scarto rel. max 2.3e-15"
+   },
+   {
+    "id": "V-P-5-A6-none-contact",
+    "what": "verdetto P-5 A6 braccio none (contact)",
+    "author_value": "stima 0.08766083113, ±2ES [0.06903814112, 0.1062835211], int. [0, 0.07], indeterminata, n=10",
+    "reviewer_value": "stima 0.08766083113, ±2ES [0.06903814112, 0.1062835211], indeterminata, n=10",
+    "match": true,
+    "note": "scarto rel. max 4.7e-15"
+   },
+   {
+    "id": "V-P-5-A6-preserve_area-contact",
+    "what": "verdetto P-5 A6 braccio preserve_area (contact)",
+    "author_value": "stima 0.08377201221, ±2ES [0.06606825418, 0.1014757702], int. [0, 0.07], indeterminata, n=10",
+    "reviewer_value": "stima 0.08377201221, ±2ES [0.06606825418, 0.1014757702], indeterminata, n=10",
+    "match": true,
+    "note": "scarto rel. max 3.8e-15"
+   },
+   {
+    "id": "V-P-6-A1-none-cv",
+    "what": "verdetto P-6 A1 braccio none (cv)",
+    "author_value": "stima -0.4156070842, ±2ES [-0.4513723148, -0.3798418535], int. [-0.1, 0.1], smentita, n=5",
+    "reviewer_value": "stima -0.4156070842, ±2ES [-0.4513723148, -0.3798418535], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 5.6e-15"
+   },
+   {
+    "id": "V-P-6-A1-preserve_area-cv",
+    "what": "verdetto P-6 A1 braccio preserve_area (cv)",
+    "author_value": "stima -0.4156070842, ±2ES [-0.4513723148, -0.3798418535], int. [-0.1, 0.1], smentita, n=5",
+    "reviewer_value": "stima -0.4156070842, ±2ES [-0.4513723148, -0.3798418535], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 5.6e-15"
+   },
+   {
+    "id": "V-P-6-A2-none-cv",
+    "what": "verdetto P-6 A2 braccio none (cv)",
+    "author_value": "stima -0.4150146797, ±2ES [-0.5286908488, -0.3013385107], int. [-0.1, 0.1], smentita, n=5",
+    "reviewer_value": "stima -0.4150146797, ±2ES [-0.5286908488, -0.3013385107], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.8e-15"
+   },
+   {
+    "id": "V-P-6-A2-preserve_area-cv",
+    "what": "verdetto P-6 A2 braccio preserve_area (cv)",
+    "author_value": "stima -0.4150146797, ±2ES [-0.5286908488, -0.3013385107], int. [-0.1, 0.1], smentita, n=5",
+    "reviewer_value": "stima -0.4150146797, ±2ES [-0.5286908488, -0.3013385107], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.8e-15"
+   },
+   {
+    "id": "V-P-6-A3-none-cv",
+    "what": "verdetto P-6 A3 braccio none (cv)",
+    "author_value": "stima -0.4347815539, ±2ES [-0.5383446955, -0.3312184122], int. [-0.1, 0.1], smentita, n=5",
+    "reviewer_value": "stima -0.4347815539, ±2ES [-0.5383446955, -0.3312184122], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.0e-15"
+   },
+   {
+    "id": "V-P-6-A3-preserve_area-cv",
+    "what": "verdetto P-6 A3 braccio preserve_area (cv)",
+    "author_value": "stima -0.4347815539, ±2ES [-0.5383446955, -0.3312184122], int. [-0.1, 0.1], smentita, n=5",
+    "reviewer_value": "stima -0.4347815539, ±2ES [-0.5383446955, -0.3312184122], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.0e-15"
+   },
+   {
+    "id": "V-P-6-A4-none-cv",
+    "what": "verdetto P-6 A4 braccio none (cv)",
+    "author_value": "stima -0.4242946418, ±2ES [-0.5517270129, -0.2968622707], int. [-0.1, 0.1], smentita, n=5",
+    "reviewer_value": "stima -0.4242946418, ±2ES [-0.5517270129, -0.2968622707], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.7e-15"
+   },
+   {
+    "id": "V-P-6-A4-preserve_area-cv",
+    "what": "verdetto P-6 A4 braccio preserve_area (cv)",
+    "author_value": "stima -0.4242946418, ±2ES [-0.5517270129, -0.2968622707], int. [-0.1, 0.1], smentita, n=5",
+    "reviewer_value": "stima -0.4242946418, ±2ES [-0.5517270129, -0.2968622707], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 1.7e-15"
+   },
+   {
+    "id": "V-P-6-A5-none-cv",
+    "what": "verdetto P-6 A5 braccio none (cv)",
+    "author_value": "stima -0.2599783599, ±2ES [-0.3517920889, -0.1681646309], int. [-0.1, 0.1], smentita, n=5",
+    "reviewer_value": "stima -0.2599783599, ±2ES [-0.3517920889, -0.1681646309], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 2.3e-15"
+   },
+   {
+    "id": "V-P-6-A5-preserve_area-cv",
+    "what": "verdetto P-6 A5 braccio preserve_area (cv)",
+    "author_value": "stima -0.2599783599, ±2ES [-0.3517920889, -0.1681646309], int. [-0.1, 0.1], smentita, n=5",
+    "reviewer_value": "stima -0.2599783599, ±2ES [-0.3517920889, -0.1681646309], smentita, n=5",
+    "match": true,
+    "note": "scarto rel. max 2.3e-15"
+   },
+   {
+    "id": "V-P-6-A6-none-cv",
+    "what": "verdetto P-6 A6 braccio none (cv)",
+    "author_value": "stima -0.05560524956, ±2ES [-0.09998010211, -0.01123039701], int. [-0.1, 0.1], confermata, n=5",
+    "reviewer_value": "stima -0.05560524956, ±2ES [-0.09998010211, -0.01123039701], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 4.5e-15"
+   },
+   {
+    "id": "V-P-6-A6-preserve_area-cv",
+    "what": "verdetto P-6 A6 braccio preserve_area (cv)",
+    "author_value": "stima -0.05560524956, ±2ES [-0.09998010211, -0.01123039701], int. [-0.1, 0.1], confermata, n=5",
+    "reviewer_value": "stima -0.05560524956, ±2ES [-0.09998010211, -0.01123039701], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 4.5e-15"
+   },
+   {
+    "id": "V-P-7-A1-none-ecc",
+    "what": "verdetto P-7 A1 braccio none (ecc)",
+    "author_value": "stima -0.01422390357, ±2ES [-0.02005092317, -0.00839688396], int. [-0.05, 0.05], confermata, n=5",
+    "reviewer_value": "stima -0.01422390357, ±2ES [-0.02005092317, -0.00839688396], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 7.1e-15"
+   },
+   {
+    "id": "V-P-7-A1-preserve_area-ecc",
+    "what": "verdetto P-7 A1 braccio preserve_area (ecc)",
+    "author_value": "stima -0.01422390357, ±2ES [-0.02005092317, -0.00839688396], int. [-0.05, 0.05], confermata, n=5",
+    "reviewer_value": "stima -0.01422390357, ±2ES [-0.02005092317, -0.00839688396], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 7.1e-15"
+   },
+   {
+    "id": "V-P-7-A2-none-ecc",
+    "what": "verdetto P-7 A2 braccio none (ecc)",
+    "author_value": "stima 0.01581015371, ±2ES [0.006940790041, 0.02467951738], int. [-0.05, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.01581015371, ±2ES [0.006940790041, 0.02467951738], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-7-A2-preserve_area-ecc",
+    "what": "verdetto P-7 A2 braccio preserve_area (ecc)",
+    "author_value": "stima 0.01581015371, ±2ES [0.006940790041, 0.02467951738], int. [-0.05, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.01581015371, ±2ES [0.006940790041, 0.02467951738], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-7-A3-none-ecc",
+    "what": "verdetto P-7 A3 braccio none (ecc)",
+    "author_value": "stima 0.02131983112, ±2ES [0.01016855905, 0.03247110318], int. [-0.05, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.02131983112, ±2ES [0.01016855905, 0.03247110318], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 4.7e-15"
+   },
+   {
+    "id": "V-P-7-A3-preserve_area-ecc",
+    "what": "verdetto P-7 A3 braccio preserve_area (ecc)",
+    "author_value": "stima 0.02131983112, ±2ES [0.01016855905, 0.03247110318], int. [-0.05, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.02131983112, ±2ES [0.01016855905, 0.03247110318], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 4.7e-15"
+   },
+   {
+    "id": "V-P-7-A4-none-ecc",
+    "what": "verdetto P-7 A4 braccio none (ecc)",
+    "author_value": "stima 0.0121243739, ±2ES [-0.0005118942398, 0.02476064205], int. [-0.05, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.0121243739, ±2ES [-0.0005118942398, 0.02476064205], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 2.0e-13"
+   },
+   {
+    "id": "V-P-7-A4-preserve_area-ecc",
+    "what": "verdetto P-7 A4 braccio preserve_area (ecc)",
+    "author_value": "stima 0.0121243739, ±2ES [-0.0005118942398, 0.02476064205], int. [-0.05, 0.05], confermata, n=5",
+    "reviewer_value": "stima 0.0121243739, ±2ES [-0.0005118942398, 0.02476064205], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 2.0e-13"
+   },
+   {
+    "id": "V-P-7-A5-none-ecc",
+    "what": "verdetto P-7 A5 braccio none (ecc)",
+    "author_value": "stima -0.001424382808, ±2ES [-0.01200906452, 0.009160298898], int. [-0.05, 0.05], confermata, n=5",
+    "reviewer_value": "stima -0.001424382808, ±2ES [-0.01200906452, 0.009160298898], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 8.4e-15"
+   },
+   {
+    "id": "V-P-7-A5-preserve_area-ecc",
+    "what": "verdetto P-7 A5 braccio preserve_area (ecc)",
+    "author_value": "stima -0.001424382808, ±2ES [-0.01200906452, 0.009160298898], int. [-0.05, 0.05], confermata, n=5",
+    "reviewer_value": "stima -0.001424382808, ±2ES [-0.01200906452, 0.009160298898], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 8.4e-15"
+   },
+   {
+    "id": "V-P-7-A6-none-ecc",
+    "what": "verdetto P-7 A6 braccio none (ecc)",
+    "author_value": "stima -0.01197881173, ±2ES [-0.01916502298, -0.004792600475], int. [-0.05, 0.05], confermata, n=5",
+    "reviewer_value": "stima -0.01197881173, ±2ES [-0.01916502298, -0.004792600475], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-7-A6-preserve_area-ecc",
+    "what": "verdetto P-7 A6 braccio preserve_area (ecc)",
+    "author_value": "stima -0.01197881173, ±2ES [-0.01916502298, -0.004792600475], int. [-0.05, 0.05], confermata, n=5",
+    "reviewer_value": "stima -0.01197881173, ±2ES [-0.01916502298, -0.004792600475], confermata, n=5",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-8-A1-preserve_area-mem",
+    "what": "verdetto P-8 A1 braccio preserve_area (mem)",
+    "author_value": "stima 6.74617344, ±2ES [6.74617344, 6.74617344], int. [0, 8], confermata, n=1",
+    "reviewer_value": "stima 6.74617344, ±2ES [6.74617344, 6.74617344], confermata, n=1",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-8-A1-preserve_area-time",
+    "what": "verdetto P-8 A1 braccio preserve_area (time)",
+    "author_value": "stima 128.7603333, ±2ES [127.2041318, 130.3165348], int. [0, 300], confermata, n=3",
+    "reviewer_value": "stima 128.7603333, ±2ES [127.2041318, 130.3165348], confermata, n=3",
+    "match": true,
+    "note": "scarto rel. max 3.3e-15"
+   },
+   {
+    "id": "V-P-8-A2-preserve_area-mem",
+    "what": "verdetto P-8 A2 braccio preserve_area (mem)",
+    "author_value": "stima 6.342938624, ±2ES [6.342938624, 6.342938624], int. [0, 8], confermata, n=1",
+    "reviewer_value": "stima 6.342938624, ±2ES [6.342938624, 6.342938624], confermata, n=1",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-8-A2-preserve_area-time",
+    "what": "verdetto P-8 A2 braccio preserve_area (time)",
+    "author_value": "stima 104.7566667, ±2ES [103.8582263, 105.655107], int. [0, 300], confermata, n=3",
+    "reviewer_value": "stima 104.7566667, ±2ES [103.8582263, 105.655107], confermata, n=3",
+    "match": true,
+    "note": "scarto rel. max 3.3e-15"
+   },
+   {
+    "id": "V-P-8-A3-preserve_area-mem",
+    "what": "verdetto P-8 A3 braccio preserve_area (mem)",
+    "author_value": "stima 5.444739072, ±2ES [5.444739072, 5.444739072], int. [0, 8], confermata, n=1",
+    "reviewer_value": "stima 5.444739072, ±2ES [5.444739072, 5.444739072], confermata, n=1",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-8-A3-preserve_area-time",
+    "what": "verdetto P-8 A3 braccio preserve_area (time)",
+    "author_value": "stima 40.287, ±2ES [40.01956527, 40.55443473], int. [0, 300], confermata, n=3",
+    "reviewer_value": "stima 40.287, ±2ES [40.01956527, 40.55443473], confermata, n=3",
+    "match": true,
+    "note": "scarto rel. max 2.3e-15"
+   },
+   {
+    "id": "V-P-8-A4-preserve_area-mem",
+    "what": "verdetto P-8 A4 braccio preserve_area (mem)",
+    "author_value": "stima 8.496676864, ±2ES [8.496676864, 8.496676864], int. [0, 8], smentita, n=1",
+    "reviewer_value": "stima 8.496676864, ±2ES [8.496676864, 8.496676864], smentita, n=1",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-8-A4-preserve_area-time",
+    "what": "verdetto P-8 A4 braccio preserve_area (time)",
+    "author_value": "stima 310.1323333, ±2ES [306.4701689, 313.7944978], int. [0, 300], smentita, n=3",
+    "reviewer_value": "stima 310.1323333, ±2ES [306.4701689, 313.7944978], smentita, n=3",
+    "match": true,
+    "note": "scarto rel. max 2.2e-15"
+   },
+   {
+    "id": "V-P-8-A5-preserve_area-mem",
+    "what": "verdetto P-8 A5 braccio preserve_area (mem)",
+    "author_value": "stima 5.16747264, ±2ES [5.16747264, 5.16747264], int. [0, 8], confermata, n=1",
+    "reviewer_value": "stima 5.16747264, ±2ES [5.16747264, 5.16747264], confermata, n=1",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-8-A5-preserve_area-time",
+    "what": "verdetto P-8 A5 braccio preserve_area (time)",
+    "author_value": "stima 20.04466667, ±2ES [19.62452489, 20.46480844], int. [0, 300], confermata, n=3",
+    "reviewer_value": "stima 20.04466667, ±2ES [19.62452489, 20.46480844], confermata, n=3",
+    "match": true,
+    "note": "scarto rel. max 1.6e-15"
+   },
+   {
+    "id": "V-P-8-A6-preserve_area-mem",
+    "what": "verdetto P-8 A6 braccio preserve_area (mem)",
+    "author_value": "stima 5.060759552, ±2ES [5.060759552, 5.060759552], int. [0, 8], confermata, n=1",
+    "reviewer_value": "stima 5.060759552, ±2ES [5.060759552, 5.060759552], confermata, n=1",
+    "match": true,
+    "note": "scarto rel. max 0.0e+00"
+   },
+   {
+    "id": "V-P-8-A6-preserve_area-time",
+    "what": "verdetto P-8 A6 braccio preserve_area (time)",
+    "author_value": "stima 18.056, ±2ES [17.81994633, 18.29205367], int. [0, 300], confermata, n=3",
+    "reviewer_value": "stima 18.056, ±2ES [17.81994633, 18.29205367], confermata, n=3",
+    "match": true,
+    "note": "scarto rel. max 2.4e-15"
+   },
+   {
+    "id": "RULE-preserve_area",
+    "what": "regola della scelta 2: P-1 e P-2 confermate, braccio preserve_area",
+    "author_value": "P1=6, P2=4, winner=True",
+    "reviewer_value": "P1=6, P2=4, winner=True",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RULE-none",
+    "what": "regola della scelta 2: P-1 e P-2 confermate, braccio none",
+    "author_value": "P1=4, P2=3, winner=False",
+    "reviewer_value": "P1=4, P2=3, winner=False",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "P5-windows",
+    "what": "frazione di contatti per finestra x seme x braccio (480 righe), filtro focali ricalcolato (d_max, esclusioni di Luca) sui raster",
+    "author_value": "480 righe S1.5_windows.csv",
+    "reviewer_value": "480/480 identiche (n e n_contact)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "P5-reraster",
+    "what": "controprova: nuclei ri-rasterizzati da zero dalle geometrie WKB (punto (c*upp, r*upp) dentro il poligono), contatto Chebyshev <= 2, preserve_area, 24 finestre x 10 semi",
+    "author_value": "240 righe preserve_area di S1.5_windows.csv",
+    "reviewer_value": "240/240 identiche; conflitti di pixel 0",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "P8-reps-brain_cortex",
+    "what": "P-8 brain_cortex: ripetizioni non di riscaldamento, celle, ERROR",
+    "author_value": "3 ripetizioni + 1 riscaldamento (dichiarato)",
+    "reviewer_value": "3 + 1, celle [18960], n_error 0, memoria 4.8126 GiB",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "P8-reps-columnar_muscle",
+    "what": "P-8 columnar_muscle: ripetizioni non di riscaldamento, celle, ERROR",
+    "author_value": "3 ripetizioni + 1 riscaldamento (dichiarato)",
+    "reviewer_value": "3 + 1, celle [15808], n_error 0, memoria 4.7132 GiB",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "P8-reps-epithelial",
+    "what": "P-8 epithelial: ripetizioni non di riscaldamento, celle, ERROR",
+    "author_value": "3 ripetizioni + 1 riscaldamento (dichiarato)",
+    "reviewer_value": "3 + 1, celle [198704], n_error 0, memoria 6.2829 GiB",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "P8-reps-lymphoid",
+    "what": "P-8 lymphoid: ripetizioni non di riscaldamento, celle, ERROR",
+    "author_value": "3 ripetizioni + 1 riscaldamento (dichiarato)",
+    "reviewer_value": "3 + 1, celle [449536], n_error 0, memoria 7.9131 GiB",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "P8-reps-stromal_rich",
+    "what": "P-8 stromal_rich: ripetizioni non di riscaldamento, celle, ERROR",
+    "author_value": "3 ripetizioni + 1 riscaldamento (dichiarato)",
+    "reviewer_value": "3 + 1, celle [49600], n_error 0, memoria 5.0708 GiB",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "P8-reps-tumor_microenv",
+    "what": "P-8 tumor_microenv: ripetizioni non di riscaldamento, celle, ERROR",
+    "author_value": "3 ripetizioni + 1 riscaldamento (dichiarato)",
+    "reviewer_value": "3 + 1, celle [142784], n_error 0, memoria 5.9073 GiB",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A1-n",
+    "what": "riferimento reale n, A1 (cellpose_rgb, S1.4/real), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 0.0e+00)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A1-n_interior",
+    "what": "riferimento reale n_interior, A1 (cellpose_rgb, S1.4/real), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 0.0e+00)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A1-n_eval",
+    "what": "riferimento reale n_eval, A1 (cellpose_rgb, S1.4/real), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 0.0e+00)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A1-density_seg_mm2",
+    "what": "riferimento reale density_seg_mm2, A1 (cellpose_rgb, S1.4/real), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 4.6e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A1-median_area_nuc",
+    "what": "riferimento reale median_area_nuc, A1 (cellpose_rgb, S1.4/real), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 2.3e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A1-median_nc",
+    "what": "riferimento reale median_nc, A1 (cellpose_rgb, S1.4/real), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 7.0e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A1-frac_nc095",
+    "what": "riferimento reale frac_nc095, A1 (cellpose_rgb, S1.4/real), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 0.0e+00)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A1-cv_terr",
+    "what": "riferimento reale cv_terr, A1 (cellpose_rgb, S1.4/real), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 6.6e-16)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A1-median_ecc_T",
+    "what": "riferimento reale median_ecc_T, A1 (cellpose_rgb, S1.4/real), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 2.9e-16)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A1-median_eq_r",
+    "what": "riferimento reale median_eq_r, A1 (cellpose_rgb, S1.4/real), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 1.2e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A4-n",
+    "what": "riferimento reale n, A4 (consensus, nuclei di forma StarDist (src == sd)), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 0.0e+00)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A4-n_interior",
+    "what": "riferimento reale n_interior, A4 (consensus, nuclei di forma StarDist (src == sd)), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 0.0e+00)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A4-n_eval",
+    "what": "riferimento reale n_eval, A4 (consensus, nuclei di forma StarDist (src == sd)), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 0.0e+00)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A4-density_seg_mm2",
+    "what": "riferimento reale density_seg_mm2, A4 (consensus, nuclei di forma StarDist (src == sd)), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 1.3e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A4-median_area_nuc",
+    "what": "riferimento reale median_area_nuc, A4 (consensus, nuclei di forma StarDist (src == sd)), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 2.9e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A4-median_nc",
+    "what": "riferimento reale median_nc, A4 (consensus, nuclei di forma StarDist (src == sd)), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 1.9e-14)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A4-frac_nc095",
+    "what": "riferimento reale frac_nc095, A4 (consensus, nuclei di forma StarDist (src == sd)), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 0.0e+00)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A4-cv_terr",
+    "what": "riferimento reale cv_terr, A4 (consensus, nuclei di forma StarDist (src == sd)), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 1.3e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A4-median_ecc_T",
+    "what": "riferimento reale median_ecc_T, A4 (consensus, nuclei di forma StarDist (src == sd)), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 6.9e-16)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-A4-median_eq_r",
+    "what": "riferimento reale median_eq_r, A4 (consensus, nuclei di forma StarDist (src == sd)), 5 ROI",
+    "author_value": "5 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "5/5 entro 1e-9 (max rel 5.9e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-ALL",
+    "what": "riferimenti reali, tutti i 30 ROI e 10 colonne",
+    "author_value": "30 righe S1.5_real_refs_roi.csv",
+    "reviewer_value": "300/300 valori entro 1e-9",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-own-n_interior",
+    "what": "controprova riferimenti reali: celle interne ricalcolate dai tile di Qhull e area del nucleo dai pixel della maschera, n_interior",
+    "author_value": "valore con flag interior e a_n salvati",
+    "reviewer_value": "30/30 identici",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-own-n_eval",
+    "what": "controprova riferimenti reali: celle interne ricalcolate dai tile di Qhull e area del nucleo dai pixel della maschera, n_eval",
+    "author_value": "valore con flag interior e a_n salvati",
+    "reviewer_value": "30/30 identici",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-own-median_area_nuc",
+    "what": "controprova riferimenti reali: celle interne ricalcolate dai tile di Qhull e area del nucleo dai pixel della maschera, median_area_nuc",
+    "author_value": "valore con flag interior e a_n salvati",
+    "reviewer_value": "30/30 identici",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-own-median_nc",
+    "what": "controprova riferimenti reali: celle interne ricalcolate dai tile di Qhull e area del nucleo dai pixel della maschera, median_nc",
+    "author_value": "valore con flag interior e a_n salvati",
+    "reviewer_value": "30/30 identici",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-own-frac_nc095",
+    "what": "controprova riferimenti reali: celle interne ricalcolate dai tile di Qhull e area del nucleo dai pixel della maschera, frac_nc095",
+    "author_value": "valore con flag interior e a_n salvati",
+    "reviewer_value": "30/30 identici",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-own-cv_terr",
+    "what": "controprova riferimenti reali: celle interne ricalcolate dai tile di Qhull e area del nucleo dai pixel della maschera, cv_terr",
+    "author_value": "valore con flag interior e a_n salvati",
+    "reviewer_value": "30/30 identici",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-own-median_ecc_T",
+    "what": "controprova riferimenti reali: celle interne ricalcolate dai tile di Qhull e area del nucleo dai pixel della maschera, median_ecc_T",
+    "author_value": "valore con flag interior e a_n salvati",
+    "reviewer_value": "30/30 identici",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "RR-order",
+    "what": "consensus: ordine di z$cells uguale a *_consensus_gen.parquet (x, y entro 1e-9) prima dell'abbinamento src == sd",
+    "author_value": "assunto implicito di tools/S1.5_real_refs.R",
+    "reviewer_value": "30/30 ROI allineati; a_n = pixel della maschera x upp^2 in 30/30 ROI",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-A1-primary",
+    "what": "nuclei reali in piu' pezzi (8-vicinato), A1 primary (skimage, indipendente da scipy.ndimage)",
+    "author_value": "7/39811, frammento max 0.4643",
+    "reviewer_value": "7/39811, frammento max 0.4643",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-A1-stardist_he",
+    "what": "nuclei reali in piu' pezzi (8-vicinato), A1 stardist_he (skimage, indipendente da scipy.ndimage)",
+    "author_value": "0/20171, frammento max 0.0000",
+    "reviewer_value": "0/20171, frammento max 0.0000",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-A2-primary",
+    "what": "nuclei reali in piu' pezzi (8-vicinato), A2 primary (skimage, indipendente da scipy.ndimage)",
+    "author_value": "36/32810, frammento max 0.4211",
+    "reviewer_value": "36/32810, frammento max 0.4211",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-A2-stardist_he",
+    "what": "nuclei reali in piu' pezzi (8-vicinato), A2 stardist_he (skimage, indipendente da scipy.ndimage)",
+    "author_value": "0/18258, frammento max 0.0000",
+    "reviewer_value": "0/18258, frammento max 0.0000",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-A3-primary",
+    "what": "nuclei reali in piu' pezzi (8-vicinato), A3 primary (skimage, indipendente da scipy.ndimage)",
+    "author_value": "18/21345, frammento max 0.4857",
+    "reviewer_value": "18/21345, frammento max 0.4857",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-A3-stardist_he",
+    "what": "nuclei reali in piu' pezzi (8-vicinato), A3 stardist_he (skimage, indipendente da scipy.ndimage)",
+    "author_value": "0/13029, frammento max 0.0000",
+    "reviewer_value": "0/13029, frammento max 0.0000",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-A4-primary",
+    "what": "nuclei reali in piu' pezzi (8-vicinato), A4 primary (skimage, indipendente da scipy.ndimage)",
+    "author_value": "361/140087, frammento max 0.6237",
+    "reviewer_value": "361/140087, frammento max 0.6237",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-A4-stardist_he",
+    "what": "nuclei reali in piu' pezzi (8-vicinato), A4 stardist_he (skimage, indipendente da scipy.ndimage)",
+    "author_value": "1/102704, frammento max 0.0061",
+    "reviewer_value": "1/102704, frammento max 0.0061",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-A5-primary",
+    "what": "nuclei reali in piu' pezzi (8-vicinato), A5 primary (skimage, indipendente da scipy.ndimage)",
+    "author_value": "2/4448, frammento max 0.0452",
+    "reviewer_value": "2/4448, frammento max 0.0452",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-A5-stardist_he",
+    "what": "nuclei reali in piu' pezzi (8-vicinato), A5 stardist_he (skimage, indipendente da scipy.ndimage)",
+    "author_value": "2/5194, frammento max 0.0043",
+    "reviewer_value": "2/5194, frammento max 0.0043",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-A6-primary",
+    "what": "nuclei reali in piu' pezzi (8-vicinato), A6 primary (skimage, indipendente da scipy.ndimage)",
+    "author_value": "20/5011, frammento max 0.6000",
+    "reviewer_value": "20/5011, frammento max 0.6000",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-A6-stardist_he",
+    "what": "nuclei reali in piu' pezzi (8-vicinato), A6 stardist_he (skimage, indipendente da scipy.ndimage)",
+    "author_value": "0/4216, frammento max 0.0000",
+    "reviewer_value": "0/4216, frammento max 0.0000",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "MP-rows-n4",
+    "what": "multipart per riga (60 righe), anche 4-vicinato",
+    "author_value": "60 righe S1.5_real_multipart.csv",
+    "reviewer_value": "60/60 identiche",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "G3-panel",
+    "what": "G-3: unita' del pannello senza ERROR (C2, C3, C5, C9 PASS)",
+    "author_value": "600/600",
+    "reviewer_value": "600/600 n_error = 0; 600/600 con C2, C3, C5, C9 = PASS; stati {'PASS': 5088, 'WARN': 312}",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "G3-repro",
+    "what": "G-3: rerun identico e catena manuale identica (S1.5_G3_repro.csv)",
+    "author_value": "6/6, 6/6",
+    "reviewer_value": "6/6, 6/6, tessuti ['A1', 'A2', 'A3', 'A4', 'A5', 'A6']",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "G3-repro-270",
+    "what": "controprova G-3: rigenerazione indipendente dei semi 2-10 (270 unita' preserve_area), md5 di cell_df + WKB",
+    "author_value": "md5 in S1.5_panel_units.csv",
+    "reviewer_value": "270/270 identici",
+    "match": true,
+    "note": "vedi md5chk.py; letto dall'uscita del comando"
+   },
+   {
+    "id": "G4-faults",
+    "what": "G-4: guasti rilevati dal controllo atteso",
+    "author_value": "630/630",
+    "reviewer_value": "630/630 (chiavi uniche 630, 7 tipi x 3 delta x 30 ROI; ERROR anche ricavato dalla colonna statuses: 630; file su disco 630)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "G4-nulls",
+    "what": "G-4: nulli di S1.3 senza ERROR",
+    "author_value": "1800/1800",
+    "reviewer_value": "1800/1800 (chiavi uniche 1800; modelli x repliche {'CSR': 20, 'RSA': 20, 'RSArule': 20}; file 1800)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "G4-falsealarm",
+    "what": "G-4: falsi allarmi su 2100 (1800 nulli + 300 unita' preserve_area)",
+    "author_value": "0",
+    "reviewer_value": "0",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-overlap-0.01-A2r3",
+    "what": "area del guasto overlap misurata con shapely, A2 r3, cellule 2/1568",
+    "author_value": "delta = 0.01 um2",
+    "reviewer_value": "0.0099999999999818 um2 (scarto rel. 1.8e-12); geometrie cambiate: territori 1, nuclei 0; dA_Ti=0.00999999999997669; Tj_unchanged=True",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-gap-0.01-A3r5",
+    "what": "area del guasto gap misurata con shapely, A3 r5, cellule 759/759",
+    "author_value": "delta = 0.01 um2",
+    "reviewer_value": "0.0099999999999909 um2 (scarto rel. 9.1e-13); geometrie cambiate: territori 1, nuclei 0; diff_area=0.00999999999999318; holes_after=1",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-outside_region-0.01-A5r2",
+    "what": "area del guasto outside_region misurata con shapely, A5 r2, cellule 1/1",
+    "author_value": "delta = 0.01 um2",
+    "reviewer_value": "0.0100000000000017 um2 (scarto rel. 1.7e-13); geometrie cambiate: territori 1, nuclei 0; dA_Ti=0.0100000000004457",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-nucleus_out-0.01-A6r4",
+    "what": "area del guasto nucleus_out misurata con shapely, A6 r4, cellule 1/173",
+    "author_value": "delta = 0.01 um2",
+    "reviewer_value": "0.0099999999999931 um2 (scarto rel. 6.8e-13); geometrie cambiate: territori 0, nuclei 1; in_Tj=0.00999999999999318; Ti_unchanged=True",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-nuclei_overlap-0.01-A2r1",
+    "what": "area del guasto nuclei_overlap misurata con shapely, A2 r1, cellule 1/149",
+    "author_value": "delta = 0.01 um2",
+    "reviewer_value": "0.0100000000000024 um2 (scarto rel. 2.4e-13); geometrie cambiate: territori 0, nuclei 1; dA_Ni=0.0100000000000016",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-nan_area-0.01-A3r3",
+    "what": "guasto nan_area (delta 0.01) costruito con make_fault() su A3 r3, cellula 2",
+    "author_value": "ERROR del controllo atteso (S1.5_G4_faults.csv)",
+    "reviewer_value": "nan_before=False; nan_after=True",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-invalid-0.01-A4p3",
+    "what": "guasto invalid (delta 0.01) costruito con make_fault() su A4 p3, cellula 1",
+    "author_value": "ERROR del controllo atteso (S1.5_G4_faults.csv)",
+    "reviewer_value": "valid_before=True; valid_after=False; reason=Self-intersection[303.786036742958 459.386505846253]",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-overlap-0.1-A6r2",
+    "what": "area del guasto overlap misurata con shapely, A6 r2, cellule 1/102",
+    "author_value": "delta = 0.1 um2",
+    "reviewer_value": "0.0999999999999904 um2 (scarto rel. 9.5e-14); geometrie cambiate: territori 1, nuclei 0; dA_Ti=0.100000000000023; Tj_unchanged=True",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-gap-0.1-A1r4",
+    "what": "area del guasto gap misurata con shapely, A1 r4, cellule 741/741",
+    "author_value": "delta = 0.1 um2",
+    "reviewer_value": "0.0999999999999943 um2 (scarto rel. 5.7e-14); geometrie cambiate: territori 1, nuclei 0; diff_area=0.099999999999995; holes_after=1",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-outside_region-0.1-A3r1",
+    "what": "area del guasto outside_region misurata con shapely, A3 r1, cellule 68/68",
+    "author_value": "delta = 0.1 um2",
+    "reviewer_value": "0.0999999999999997 um2 (scarto rel. 2.5e-15); geometrie cambiate: territori 1, nuclei 0; dA_Ti=0.0999999999999943",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-nucleus_out-0.1-A4p1",
+    "what": "area del guasto nucleus_out misurata con shapely, A4 p1, cellule 1/362",
+    "author_value": "delta = 0.1 um2",
+    "reviewer_value": "0.100000000000062 um2 (scarto rel. 6.2e-13); geometrie cambiate: territori 0, nuclei 1; in_Tj=0.100000000000062; Ti_unchanged=True",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-nuclei_overlap-0.1-A5r5",
+    "what": "area del guasto nuclei_overlap misurata con shapely, A5 r5, cellule 2/295",
+    "author_value": "delta = 0.1 um2",
+    "reviewer_value": "0.100000000000026 um2 (scarto rel. 2.6e-13); geometrie cambiate: territori 0, nuclei 1; dA_Ni=0.10000000000003",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-nan_area-0.1-A1r2",
+    "what": "guasto nan_area (delta 0.1) costruito con make_fault() su A1 r2, cellula 1",
+    "author_value": "ERROR del controllo atteso (S1.5_G4_faults.csv)",
+    "reviewer_value": "nan_before=False; nan_after=True",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-invalid-0.1-A2r4",
+    "what": "guasto invalid (delta 0.1) costruito con make_fault() su A2 r4, cellula 1",
+    "author_value": "ERROR del controllo atteso (S1.5_G4_faults.csv)",
+    "reviewer_value": "valid_before=True; valid_after=False; reason=Self-intersection[229.323785532163 52.0044960021204]",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-overlap-1-A4f1",
+    "what": "area del guasto overlap misurata con shapely, A4 f1, cellule 1/1457",
+    "author_value": "delta = 1 um2",
+    "reviewer_value": "1 um2 (scarto rel. 0.0e+00); geometrie cambiate: territori 1, nuclei 0; dA_Ti=1; Tj_unchanged=True",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-gap-1-A5r3",
+    "what": "area del guasto gap misurata con shapely, A5 r3, cellule 224/224",
+    "author_value": "delta = 1 um2",
+    "reviewer_value": "1 um2 (scarto rel. 0.0e+00); geometrie cambiate: territori 1, nuclei 0; diff_area=1; holes_after=1",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-outside_region-1-A6r5",
+    "what": "area del guasto outside_region misurata con shapely, A6 r5, cellule 1/1",
+    "author_value": "delta = 1 um2",
+    "reviewer_value": "1 um2 (scarto rel. 0.0e+00); geometrie cambiate: territori 1, nuclei 0; dA_Ti=1",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-nucleus_out-1-A2r2",
+    "what": "area del guasto nucleus_out misurata con shapely, A2 r2, cellule 2/1169",
+    "author_value": "delta = 1 um2",
+    "reviewer_value": "1 um2 (scarto rel. 0.0e+00); geometrie cambiate: territori 0, nuclei 1; in_Tj=1; Ti_unchanged=True",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-nuclei_overlap-1-A3r4",
+    "what": "area del guasto nuclei_overlap misurata con shapely, A3 r4, cellule 1/31",
+    "author_value": "delta = 1 um2",
+    "reviewer_value": "1 um2 (scarto rel. 0.0e+00); geometrie cambiate: territori 0, nuclei 1; dA_Ni=1",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-nan_area-1-A5r1",
+    "what": "guasto nan_area (delta 1) costruito con make_fault() su A5 r1, cellula 1",
+    "author_value": "ERROR del controllo atteso (S1.5_G4_faults.csv)",
+    "reviewer_value": "nan_before=False; nan_after=True",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "F-invalid-1-A6r3",
+    "what": "guasto invalid (delta 1) costruito con make_fault() su A6 r3, cellula 2",
+    "author_value": "ERROR del controllo atteso (S1.5_G4_faults.csv)",
+    "reviewer_value": "valid_before=True; valid_after=False; reason=Self-intersection[861.4601631771 868.95891084175]",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-1-A1",
+    "what": "CP-1 full_mask, 1 um/px, A1: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-1-A2",
+    "what": "CP-1 full_mask, 1 um/px, A2: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 4, fuori 1, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 4, dentro 0, fuori 1, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-1-A3",
+    "what": "CP-1 full_mask, 1 um/px, A3: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 0, fuori 4, media 1.313417413, smentita",
+    "reviewer_value": "rifiuti 0, dentro 1, fuori 4, media 1.313417413, smentita",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-1-A4",
+    "what": "CP-1 full_mask, 1 um/px, A4: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 0, fuori 1, media 0.8390354088, indeterminata",
+    "reviewer_value": "rifiuti 0, dentro 4, fuori 1, media 0.8390354088, indeterminata",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-1-A5",
+    "what": "CP-1 full_mask, 1 um/px, A5: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 1, fuori 4, media 0.6214746431, smentita",
+    "reviewer_value": "rifiuti 1, dentro 0, fuori 4, media 0.6214746431, smentita",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-1-A6",
+    "what": "CP-1 full_mask, 1 um/px, A6: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 0, fuori 5, media 1.220599021, indeterminata",
+    "reviewer_value": "rifiuti 0, dentro 0, fuori 5, media 1.220599021, indeterminata",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-2-A1",
+    "what": "CP-1 full_mask, 2 um/px, A1: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-2-A2",
+    "what": "CP-1 full_mask, 2 um/px, A2: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 3, fuori 2, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 3, dentro 0, fuori 2, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-2-A3",
+    "what": "CP-1 full_mask, 2 um/px, A3: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 0, fuori 1, media 1.039226767, confermata",
+    "reviewer_value": "rifiuti 0, dentro 4, fuori 1, media 1.039226767, confermata",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-2-A4",
+    "what": "CP-1 full_mask, 2 um/px, A4: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-2-A5",
+    "what": "CP-1 full_mask, 2 um/px, A5: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 4, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 4, dentro 1, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-2-A6",
+    "what": "CP-1 full_mask, 2 um/px, A6: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 0, fuori 5, media 0.945997186, indeterminata",
+    "reviewer_value": "rifiuti 0, dentro 0, fuori 5, media 0.945997186, indeterminata",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-5-A1",
+    "what": "CP-1 full_mask, 5 um/px, A1: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-5-A2",
+    "what": "CP-1 full_mask, 5 um/px, A2: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 3, fuori 2, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 3, dentro 0, fuori 2, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-5-A3",
+    "what": "CP-1 full_mask, 5 um/px, A3: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-5-A4",
+    "what": "CP-1 full_mask, 5 um/px, A4: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-5-A5",
+    "what": "CP-1 full_mask, 5 um/px, A5: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-5-A6",
+    "what": "CP-1 full_mask, 5 um/px, A6: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 2, fuori 3, media 0.4147308198, smentita",
+    "reviewer_value": "rifiuti 2, dentro 0, fuori 3, media 0.4147308198, smentita",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-10-A1",
+    "what": "CP-1 full_mask, 10 um/px, A1: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-10-A2",
+    "what": "CP-1 full_mask, 10 um/px, A2: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 3, fuori 2, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 3, dentro 0, fuori 2, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-10-A3",
+    "what": "CP-1 full_mask, 10 um/px, A3: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-10-A4",
+    "what": "CP-1 full_mask, 10 um/px, A4: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-10-A5",
+    "what": "CP-1 full_mask, 10 um/px, A5: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-full_mask-10-A6",
+    "what": "CP-1 full_mask, 10 um/px, A6: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 4, fuori 1, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 4, dentro 0, fuori 1, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-1-A1",
+    "what": "CP-1 pipeline, 1 um/px, A1: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 0, fuori 3, media 1.286087297, indeterminata",
+    "reviewer_value": "rifiuti 0, dentro 2, fuori 3, media 1.286087297, indeterminata",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-1-A2",
+    "what": "CP-1 pipeline, 1 um/px, A2: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 4, fuori 1, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 4, dentro 0, fuori 1, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-1-A3",
+    "what": "CP-1 pipeline, 1 um/px, A3: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 4, fuori 1, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 4, dentro 0, fuori 1, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-1-A4",
+    "what": "CP-1 pipeline, 1 um/px, A4: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 0, fuori 0, media 0.8718314318, confermata",
+    "reviewer_value": "rifiuti 0, dentro 5, fuori 0, media 0.8718314318, confermata",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-1-A5",
+    "what": "CP-1 pipeline, 1 um/px, A5: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-1-A6",
+    "what": "CP-1 pipeline, 1 um/px, A6: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 1, fuori 4, media 3.982661655, smentita",
+    "reviewer_value": "rifiuti 1, dentro 0, fuori 4, media 3.982661655, smentita",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-2-A1",
+    "what": "CP-1 pipeline, 2 um/px, A1: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-2-A2",
+    "what": "CP-1 pipeline, 2 um/px, A2: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 4, fuori 1, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 4, dentro 0, fuori 1, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-2-A3",
+    "what": "CP-1 pipeline, 2 um/px, A3: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-2-A4",
+    "what": "CP-1 pipeline, 2 um/px, A4: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-2-A5",
+    "what": "CP-1 pipeline, 2 um/px, A5: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-2-A6",
+    "what": "CP-1 pipeline, 2 um/px, A6: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 1, fuori 4, media 2.778382771, smentita",
+    "reviewer_value": "rifiuti 1, dentro 0, fuori 4, media 2.778382771, smentita",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-5-A1",
+    "what": "CP-1 pipeline, 5 um/px, A1: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-5-A2",
+    "what": "CP-1 pipeline, 5 um/px, A2: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 3, fuori 2, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 3, dentro 0, fuori 2, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-5-A3",
+    "what": "CP-1 pipeline, 5 um/px, A3: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-5-A4",
+    "what": "CP-1 pipeline, 5 um/px, A4: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-5-A5",
+    "what": "CP-1 pipeline, 5 um/px, A5: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-5-A6",
+    "what": "CP-1 pipeline, 5 um/px, A6: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 3, fuori 2, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 3, dentro 0, fuori 2, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-10-A1",
+    "what": "CP-1 pipeline, 10 um/px, A1: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 1, fuori 4, media 0.096891244, smentita",
+    "reviewer_value": "rifiuti 1, dentro 0, fuori 4, media 0.096891244, smentita",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-10-A2",
+    "what": "CP-1 pipeline, 10 um/px, A2: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 4, fuori 1, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 4, dentro 0, fuori 1, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-10-A3",
+    "what": "CP-1 pipeline, 10 um/px, A3: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-10-A4",
+    "what": "CP-1 pipeline, 10 um/px, A4: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-10-A5",
+    "what": "CP-1 pipeline, 10 um/px, A5: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-pipeline-10-A6",
+    "what": "CP-1 pipeline, 10 um/px, A6: rifiuti, numeri fuori 0.8-1.2, esito",
+    "author_value": "rifiuti 5, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "reviewer_value": "rifiuti 5, dentro 0, fuori 0, media nan, rifiuto (>= 3 ROI su 5)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-text-23-31",
+    "what": "CP-1: numeri fuori 0.8-1.2 senza rifiuto, tutte le scale (testo D-11: 23 pipeline, 31 maschera intera)",
+    "author_value": "23 e 31",
+    "reviewer_value": "{'full_mask': 31, 'pipeline': 23}",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1b-text-8-17",
+    "what": "CP-1b (size_check): numeri fuori 0.8-1.2 senza rifiuto, tutte le scale (testo D-11: 8 pipeline, 17 maschera intera)",
+    "author_value": "8 e 17",
+    "reviewer_value": "{'full_mask': 17, 'pipeline': 8}",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-1um",
+    "what": "CP-1 a 1 um/px (pipeline): tessuti con rapporto confermato dentro 0.8-1.2 (soglia: >= 3 su 6)",
+    "author_value": "smentita come scritta (D-11)",
+    "reviewer_value": "1 su 6 (solo linfonodo); CP-1b 1 su 6",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "CP1-integrity",
+    "what": "CP-1 e CP-1b: ratio = scale_est/scale_true; rifiuto <-> NA",
+    "author_value": "-",
+    "reviewer_value": "max |diff ratio| 9.8e-15 / 5.1e-15; rifiuto con numero 0/0; non rifiuto senza numero 0/0",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-preserve_area-A1",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), preserve_area, A1",
+    "author_value": "0.469249 ± 0.012910 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.469249 ± 0.012910 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-preserve_area-A2",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), preserve_area, A2",
+    "author_value": "0.619538 ± 0.012820 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.619538 ± 0.012820 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-preserve_area-A3",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), preserve_area, A3",
+    "author_value": "0.299266 ± 0.015482 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.299266 ± 0.015482 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-preserve_area-A4",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), preserve_area, A4",
+    "author_value": "0.832281 ± 0.008314 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.832281 ± 0.008314 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-preserve_area-A5",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), preserve_area, A5",
+    "author_value": "0.107660 ± 0.012189 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.107660 ± 0.012189 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-preserve_area-A6",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), preserve_area, A6",
+    "author_value": "0.083772 ± 0.008852 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.083772 ± 0.008852 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-realgen-A1",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), realgen, A1",
+    "author_value": "0.495968 ± 0.005535 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.495968 ± 0.005535 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-realgen-A2",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), realgen, A2",
+    "author_value": "0.498159 ± 0.009338 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.498159 ± 0.009338 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-realgen-A3",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), realgen, A3",
+    "author_value": "0.180836 ± 0.009867 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.180836 ± 0.009867 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-realgen-A4",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), realgen, A4",
+    "author_value": "0.739210 ± 0.008110 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.739210 ± 0.008110 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-realgen-A5",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), realgen, A5",
+    "author_value": "0.065390 ± 0.005393 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.065390 ± 0.005393 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-realgen-A6",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), realgen, A6",
+    "author_value": "0.048543 ± 0.004729 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.048543 ± 0.004729 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-sim_segdens-A1",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), sim_segdens, A1",
+    "author_value": "0.452757 ± 0.012168 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.452757 ± 0.012168 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-sim_segdens-A2",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), sim_segdens, A2",
+    "author_value": "0.585330 ± 0.014599 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.585330 ± 0.014599 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-sim_segdens-A3",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), sim_segdens, A3",
+    "author_value": "0.393105 ± 0.012444 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.393105 ± 0.012444 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-sim_segdens-A4",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), sim_segdens, A4",
+    "author_value": "0.823558 ± 0.008182 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.823558 ± 0.008182 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-sim_segdens-A5",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), sim_segdens, A5",
+    "author_value": "0.092350 ± 0.010426 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.092350 ± 0.010426 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-sim_segdens-A6",
+    "what": "PH-1 contatti medi (media dei semi della media delle 4 finestre), sim_segdens, A6",
+    "author_value": "0.093116 ± 0.016468 (da S1.5_posthoc_windows.csv, aggregazione di tools/S1.5_figures.R)",
+    "reviewer_value": "0.093116 ± 0.016468 (filtro focali proprio sui raster)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-windows",
+    "what": "PH-1: righe di S1.5_posthoc_windows.csv ricalcolate dai raster (3 bracci)",
+    "author_value": "720 righe",
+    "reviewer_value": "n 720/720, n_contact 720/720; braccio preserve_area = P-5 240/240",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH2-realgen-n",
+    "what": "PH-2 righe realgen di S1.5_posthoc_units.csv (n) ricalcolate da territori reali e nuclei WKB salvati, 24 ROI con finestre x 10 semi",
+    "author_value": "240 righe",
+    "reviewer_value": "240/240 entro 1e-9 (max rel 0.0e+00)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH2-realgen-median_area_nuc",
+    "what": "PH-2 righe realgen di S1.5_posthoc_units.csv (median_area_nuc) ricalcolate da territori reali e nuclei WKB salvati, 24 ROI con finestre x 10 semi",
+    "author_value": "240 righe",
+    "reviewer_value": "240/240 entro 1e-9 (max rel 4.1e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH2-realgen-median_nc",
+    "what": "PH-2 righe realgen di S1.5_posthoc_units.csv (median_nc) ricalcolate da territori reali e nuclei WKB salvati, 24 ROI con finestre x 10 semi",
+    "author_value": "240 righe",
+    "reviewer_value": "240/240 entro 1e-9 (max rel 3.4e-14)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH2-realgen-frac_nc095",
+    "what": "PH-2 righe realgen di S1.5_posthoc_units.csv (frac_nc095) ricalcolate da territori reali e nuclei WKB salvati, 24 ROI con finestre x 10 semi",
+    "author_value": "240 righe",
+    "reviewer_value": "240/240 entro 1e-9 (max rel 9.8e-16)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH2-realgen-median_area_terr",
+    "what": "PH-2 righe realgen di S1.5_posthoc_units.csv (median_area_terr) ricalcolate da territori reali e nuclei WKB salvati, 24 ROI con finestre x 10 semi",
+    "author_value": "240 righe",
+    "reviewer_value": "240/240 entro 1e-9 (max rel 2.1e-14)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH2-realgen-cv_terr",
+    "what": "PH-2 righe realgen di S1.5_posthoc_units.csv (cv_terr) ricalcolate da territori reali e nuclei WKB salvati, 24 ROI con finestre x 10 semi",
+    "author_value": "240 righe",
+    "reviewer_value": "240/240 entro 1e-9 (max rel 2.0e-15)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH2-text",
+    "what": "PH-2 testo: tumore del colon con territori reali 0.321, dentro 0.309-0.433; scende con la semina RSA",
+    "author_value": "0.321",
+    "reviewer_value": "0.3213 (RSA densita' segmentatori 0.2798, RSA manuale 0.3060)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH3-text",
+    "what": "PH-3 testo: cellule quasi senza citoplasma nel tumore del colon, generatori reali 6.0 %, semina simulata 3.6 %",
+    "author_value": "6.0 %, 3.6 %",
+    "reviewer_value": "5.95 %, 3.58 %",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "P8-text-mem",
+    "what": "D-12 testo: memoria linfonodo 8.50 GB, 7.91 GiB",
+    "author_value": "8.50 GB, 7.91 GiB",
+    "reviewer_value": "8.4967 GB, 7.9131 GiB",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PREREG-intervals",
+    "what": "intervalli pre-registrati (tabella delle previsioni P-1, P-2, P-4) contro min/max dei riferimenti reali per ROI",
+    "author_value": "valori arrotondati nel file dello step",
+    "reviewer_value": "18/18 coerenti con l'arrotondamento",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "SENS-P6-A6",
+    "what": "sensibilita': P-6 cuore escludendo dalle interne i territori che hanno ricevuto pezzi staccati (n_pieces_gained > 0)",
+    "author_value": "confermata, ±2ES [-0.09998, -0.01123]",
+    "reviewer_value": "indeterminata, ±2ES [-0.10542, -0.02173] (escludendo rapporto > 1: [-0.10586, -0.02065])",
+    "match": false,
+    "note": "non e' una discrepanza di calcolo: la regola pre-registrata e' applicata correttamente; e' la fragilita' del verdetto (vedi finding)"
+   },
+   {
+    "id": "SENS-others",
+    "what": "sensibilita': altri verdetti P-1, P-2, P-4, P-6, P-7 (30 righe) con le stesse esclusioni",
+    "author_value": "invariati",
+    "reviewer_value": "verdetti che cambiano: 1 su 30 (solo P-6 cuore)",
+    "match": true,
+    "note": ""
+   },
+   {
+    "id": "PH1-text-inside",
+    "what": "PH-1 testo: con i generatori reali i contatti tornano dentro gli intervalli manuali (linfonodo, B-130 0.350-0.750)",
+    "author_value": "dentro gli intervalli manuali",
+    "reviewer_value": "linfonodo 0.7392, ±2ES [0.7230, 0.7554]: a cavallo dell'estremo 0.750 (indeterminata); gli altri 5 tessuti dentro",
+    "match": false,
+    "note": "affermazione del testo dello step, non un numero di tabella"
+   },
+   {
+    "id": "PH1-text-segdens",
+    "what": "PH-1 testo: con la semina RSA i contatti salgono anche alla densita' dei segmentatori",
+    "author_value": "salgono (tutti i tessuti, implicito)",
+    "reviewer_value": "intestino: generatori reali 0.4960, semina alla densita' dei segmentatori 0.4528 (scendono); salgono negli altri 5 tessuti",
+    "match": false,
+    "note": "affermazione del testo dello step"
+   }
+  ],
+  "findings": [
+   {
+    "id": "F-1",
+    "severity": "rilievo",
+    "affects_numbers": true,
+    "description": "La regola delle celle interne (R3: non ritagliata, oppure tile nel quadrato del ROI con area territorio/area tile > 0.999) e' applicata esattamente come scritta, ma nel simulatore un territorio puo' ricevere pezzi staccati dai vicini ritagliati (n_pieces_gained > 0), anche se non e' ritagliato (clipped = FALSE). Questi territori hanno rapporto > 1 e passano la regola; nei riferimenti reali (r3_tessellate, solo ritaglio) non esistono. Il verdetto P-6 nel cuore (CV dei territori, controllo negativo) dipende da queste cellule: escludendole diventa indeterminata.",
+    "evidence": "Seme 1, 30 ROI: 193 interne su 228 086 con territorio > tile, rapporto fino a 2.33 (A5 r3) e fino a 1460 um2 fuori dal proprio tile (A5 r2) (interior_gain_check.csv). Su 300 unita' preserve_area (semi 2-10 rigenerati, md5 270/270 identici): 1 949 interne su 2 281 607 con pezzi ricevuti, ma 576/29 140 nel cuore e 519/27 830 nel cervello; 187 di queste non ritagliate. P-6 cuore: regola ±2ES [-0.09998, -0.01123] confermata; senza pezzi ricevuti [-0.10542, -0.02173] indeterminata; senza rapporto > 1 [-0.10586, -0.02065] indeterminata. Nessun altro dei 30 verdetti P-1, P-2, P-4, P-6, P-7 cambia (sensitivity_verdicts.csv).",
+    "suggested_fix": "Non cambiare il verdetto pre-registrato (la regola e' applicata come scritta), ma riportare nel report che P-6 nel cuore e' confermata con un margine di 2e-5 sul bordo e che con un insieme interno coerente con i riferimenti reali (territorio contenuto nel proprio tile, n_pieces_gained == 0) l'esito e' indeterminato; la definizione per i prossimi step la decide Luca."
+   },
+   {
+    "id": "F-2",
+    "severity": "rilievo",
+    "affects_numbers": false,
+    "description": "PH-1 (testo dello step): con i generatori reali i contatti nel linfonodo non stanno tutti dentro l'intervallo manuale e non tornano al valore di S1.4d citato.",
+    "evidence": "linfonodo, generatori reali: 0.7392 ± 2x0.0081 = [0.7230, 0.7554] contro B-130 0.350-0.750 (a cavallo dell'estremo alto); valore S1.4d citato nel testo 0.69 (ph1_recalc.csv).",
+    "suggested_fix": "Scrivere: dentro l'intervallo in 5 tessuti su 6, nel linfonodo a cavallo dell'estremo alto; i valori con i generatori reali sono vicini, non uguali, a quelli di S1.4d."
+   },
+   {
+    "id": "F-3",
+    "severity": "rilievo",
+    "affects_numbers": false,
+    "description": "PH-1 (testo dello step): 'con la semina RSA salgono anche alla densita' dei segmentatori' non vale nell'intestino.",
+    "evidence": "intestino: generatori reali 0.4960, semina RSA alla densita' dei segmentatori 0.4528 (piu' bassa); negli altri 5 tessuti la semina alla densita' dei segmentatori da' piu' contatti dei generatori reali (ph1_recalc.csv).",
+    "suggested_fix": "Scrivere 'in 5 tessuti su 6' e nominare l'eccezione dell'intestino."
+   }
+  ],
+  "outputs_on_server": [
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/checks.json",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/units_seed1_recalc.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/cmp_units_seed1.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/sensitivity_units.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/sensitivity_verdicts.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/interior_gain_check.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/verdicts_recalc.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/cmp_verdicts.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/windows_recalc.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/windows_rerasterized.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/real_refs_recalc.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/cmp_real_refs.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/multipart_recalc.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/cmp_multipart_agg.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/g34_counts.json",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/faults_shapely.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/cp1_recalc.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/cp1b_recalc.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/cmp_cp1.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/ph1_recalc.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/ph2_recalc.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/cmp_posthoc_realgen.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/prereg_intervals_check.csv",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/units_recalc.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/verdicts_recalc.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/real_refs_recalc.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/multipart_recalc.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/faults_export.R",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/faults_shapely.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/cp1_posthoc.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/windows_reraster.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/regen.R",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/sensitivity.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/posthoc_realgen.py",
+   "/mnt/micron/geo_spatialtrans/S1.5/review_recalc/assemble_checks.py"
+  ],
+  "summary": "Ricalcolo indipendente (G-5) su lesexp-server, commit fafb3d0, codice del revisore in /mnt/micron/geo_spatialtrans/S1.5/review_recalc. Su 277 voci di confronto 274 coincidono entro 1e-9 relativo; le 3 non concordi non sono errori di calcolo. (1) Metriche per unita': 30/30 ROI del seme 1 x 10 metriche (Python, aree e momenti di Green da zero, interne dalla regola R3) e, rigenerando i semi 2-10 con md5 identico (270/270), tutte le 300 unita' preserve_area; scarto max 7e-14. (2) Verdetti: 96/96 righe di S1.5_verdicts.csv identiche (P-1...P-8, due bracci), regola della scelta 2 identica (preserve_area 6 P-1 e 4 P-2 confermate, none 4 e 3); P-5 ricalcolata dai raster con filtro proprio (480/480 righe) e, come controprova, ri-rasterizzando i nuclei dalle geometrie (240/240). (3) Riferimenti reali: tutti i 30 ROI (non solo intestino e linfonodo) coincidono, anche ricalcolando le interne dai tile di Qhull e l'area del nucleo dai pixel; multipart 60/60 righe (skimage). (4) G-3/G-4: 600/600, 630/630, 1800/1800, 6/6 confermati; 21 guasti (7 tipi x 3 delta) misurati con shapely: area = delta entro 1.8e-12. (5) CP-1: 48/48 righe; 23->8 e 31->17 numeri sbagliati senza rifiuto confermati; a 1 um/px confermato 1 tessuto su 6. (6) Post hoc: 720/720 righe delle finestre, 240/240 righe realgen, valori di PH-2 (0.321) e PH-3 (6.0 %, 3.6 %) confermati. Rilievo principale (F-1): la regola delle interne accetta territori che hanno ricevuto pezzi staccati, assenti nei riferimenti reali; escludendoli P-6 nel cuore passa da confermata (estremo -0.09998) a indeterminata (-0.1054); nessun altro verdetto cambia. Due frasi del testo di PH-1 sono piu' forti dei dati (F-2 linfonodo, F-3 intestino)."
+ },
+ "deviations": [
+  "G-4 area dei guasti: ricalcolata con shapely su 21 dei 630 guasti (uno per tipo x delta, ROI scelti a rotazione k*7 mod 30 + 1); gli altri 609 verificati solo dai conteggi del file.",
+  "PH-2: righe ricalcolate da geometrie solo per il braccio realgen nei 24 ROI con finestre (240 su 300 righe realgen); le 300 righe sim_segdens non sono ricalcolabili (territori non salvati) e sono state solo aggregate dal file dell'autore; per PH-1/PH-2 non esiste una tabella aggregata dell'autore, il confronto e' con i valori citati nel testo dello step.",
+  "Per estendere il punto 1 a 300 unita' e per l'analisi di sensibilita' ho rigenerato i semi 2-10 del solo braccio preserve_area con place_cells() del pacchetto (generazione dei dati, md5 identico 270/270); metriche calcolate con codice mio. Il braccio none e' verificato solo dalla tabella (seme 1 non ricalcolato da geometrie).",
+  "Il controllo 'senza ERROR' sulle 6 corse di prestazione (G-3) e' verificato solo dalla colonna n_error dei csv di perf, non dagli stati dei singoli controlli.",
+  "Il riconteggio G-3 delle 270 unita' usa la stessa serializzazione dell'autore per l'md5 (saveRDS non compresso di cell_df + WKB), ricostruita nel mio script."
+ ]
+}

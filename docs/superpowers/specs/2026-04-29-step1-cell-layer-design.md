@@ -1,7 +1,7 @@
 # Step 1 — Cell Layer Design Doc
 
 **Data inizio**: 2026-04-29
-**Versione**: 1.1 (2026-09-18, sessione S0) — incorpora la revisione di Daniele (commenti C-A, C-B), il check C8 e il pannello di 6 archetipi/preset. v1.0 = commit `7836829`.
+**Versione**: 1.6 (2026-10-21, S1.5; storico completo in §9). Versione 1.1 (2026-09-18, sessione S0) — incorpora la revisione di Daniele (commenti C-A, C-B), il check C8 e il pannello di 6 archetipi/preset. v1.0 = commit `7836829`.
 **Stato**: 🟢 Design v1.1 — contratto per l'implementazione (sessioni S1.1–S1.6)
 **Autori**: Luca Vedovelli (project owner), Claude (assist), feedback da Daniele
 **Scope**: Solo Step 1 della nuova architettura proposta in `DS_review_aprile2026/REPORT_PROBLEMI_CRITICI.md`. Step 2 (mapping spot↔cellula, aggregazione, binning) sarà oggetto di un design doc separato.
@@ -39,7 +39,7 @@ Tracciate cronologicamente; le decisioni RIVISTE sono il risultato del feedback 
 | 7 | **Coesistenza** con pipeline esistente: il vecchio `cell_df` resta. Riconciliazione delegata a Step 2. | ✅ |
 | 8 | **Tissue presets** (livello sopra `cell_types`): **6 preset** inclusi nel package, uno per archetipo del pannello A1–A6 (v1.1; erano 3 in v1.0): `"epithelial"` (A1), `"tumor_microenv"` (A2), `"stromal_rich"` (A3), `"lymphoid"` (A4), `"brain_cortex"` (A5), `"columnar_muscle"` (A6, **controllo negativo previsto** per il Voronoi isotropo). I parametri numerici dei preset sono **provvisori** finché non compaiono in `docs/BIO_REFERENCES.md` con fonte (binario R, sessioni R1–R3). | ✅ v1.1 |
 | 9 | **Smossatura angoli** territori Voronoi = parametro `corner_smoothing` opzionale (default 0). Algoritmo Chaikin (corner cutting) o buffer-pos+buffer-neg. | ✅ |
-| 10 | **Scala px→µm obbligatoria (C-A, Daniele)**: `pixel_size_um` **non ha default** in `place_cells()`. O lo fornisce il chiamante (immagini a risoluzione reale: raccomandato 1 px = 1 µm) oppure viene stimato esplicitamente con `estimate_pixel_size(clust, cell_types, ...)`, che ricava la scala dalla dimensione attesa delle cellule del tipo dominante e la scrive in `metadata$pixel_size_um` con `metadata$pixel_size_source = "estimated"` e un WARN. Nuovo check di plausibilità **C8** sull'`eq_radius` mediano. | ✅ v1.1 |
+| 10 | **Scala px→µm obbligatoria (C-A, Daniele)**: `pixel_size_um` **non ha default** in `place_cells()`. O lo fornisce il chiamante (immagini a risoluzione reale: raccomandato 1 px = 1 µm) oppure viene stimato esplicitamente con `estimate_pixel_size(clust, cell_types, ...)`, che ricava la scala dalla dimensione attesa delle cellule del tipo dominante e la scrive in `metadata$pixel_size_um` con `metadata$pixel_size_source = "estimated"` e un WARN. Nuovo check di plausibilità **C8** sull'`eq_radius` mediano. **v1.6 (S1.5)**: la stima dall'immagine non ha superato la controprova (CP-1: scala trovata a 1 µm/px solo nel linfonodo; numeri sbagliati senza rifiuto) ed esce dall'uso raccomandato: `place_cells()` la usa solo con `allow_estimate = TRUE`. Fonti raccomandate: il valore dell'utente; `scalefactors_json.json` dello Space Ranger controllato contro la griglia dei bin (esatto sui 5 dataset); mai il tag di risoluzione del TIFF (BL-016). | ✅ v1.1, rivista v1.6 |
 | 11 | **Diffusione laterale degli mRNA (C-B, Daniele)** è un requisito dello **Step 2** (kernel gaussiano isotropo con parametro `diffusion_sigma_um`, da calibrare su dati reali — binario R5). Per Step 1 non cambia la geometria: `cell_territories` e `cell_nuclei` sono le **sorgenti** del kernel (sez. 7.1). | ✅ v1.1 |
 
 **Refinement futuri esplicitamente rinviati a "Step 1.5":**
@@ -84,7 +84,7 @@ visualize_cell_layer.R    [NUOVO] pannello: regioni + centroidi + Voronoi + nucl
 | Stadio | Coordinate |
 |---|---|
 | Input `clust` | pixel (output del clustering) |
-| Parametro globale | `pixel_size_um` — **obbligatorio, senza default** (decisione 10 / C-A). Immagine a risoluzione reale: raccomandato 1 px = 1 µm; altrimenti l'utente lo specifica o chiama `estimate_pixel_size()` |
+| Parametro globale | `pixel_size_um` — **obbligatorio, senza default** (decisione 10 / C-A). Immagine a risoluzione reale: raccomandato 1 px = 1 µm; altrimenti l'utente lo specifica o lo legge da `scalefactors_json` (v1.6; la stima dall'immagine solo con `allow_estimate = TRUE`) |
 | Output `cell_layer` | tutto in **µm** (centroidi, raggi, aree) |
 | Step 2 | erediterà la stessa convenzione |
 
@@ -92,7 +92,7 @@ visualize_cell_layer.R    [NUOVO] pannello: regioni + centroidi + Voronoi + nucl
 
 > **C-A (Daniele, revisione v1.0)**: una volta scelti tessuto e tipi cellulari, la dimensione dello spot Visium HD (2×2 o 8×8 µm) va calcolata **in proporzione al tessuto**, dividendo l'immagine in una griglia proporzionale. Se l'immagine ha risoluzione reale, 1 px = 1 µm; altrimenti l'utente **deve** specificare la scala. Conseguenze: (1) `pixel_size_um` obbligatorio (4.7); (2) `metadata$pixel_size_um` esposto da Step 1 ed ereditato da Step 2, che costruisce la griglia 2 µm da lì; (3) check C8 (6.1).
 
-**Helper `estimate_pixel_size(clust, cell_types, cluster_to_dominant = NULL, method = "nuclear_spacing")`** — stima la scala quando è ignota. Idea: la spaziatura media fra nuclei (o l'eq_radius atteso) del tipo dominante è nota in µm dal catalogo (`sqrt(1e6 / (π × density))`); misurando la stessa grandezza in **pixel** sull'immagine (es. distanza al primo vicino dei massimi locali di intensità nel cluster dominante) il rapporto dà µm/px. Restituisce `list(pixel_size_um, method, n_features, ci)`. Non è mai silenzioso: `place_cells()` lo invoca solo se l'utente passa `pixel_size_um = "estimate"`, e il risultato finisce in `metadata` con un WARN. La sua validazione (recupero di scale note 1, 2, 5, 10 µm/px) è la controprova della sessione S1.5.
+**Helper `estimate_pixel_size(clust, cell_types, cluster_to_dominant = NULL, method = "nuclear_spacing")`** — stima la scala quando è ignota. Idea: la spaziatura media fra nuclei (o l'eq_radius atteso) del tipo dominante è nota in µm dal catalogo (`sqrt(1e6 / (π × density))`); misurando la stessa grandezza in **pixel** sull'immagine (es. distanza al primo vicino dei massimi locali di intensità nel cluster dominante) il rapporto dà µm/px. Restituisce `list(pixel_size_um, method, n_features, ci)`. Non è mai silenzioso: `place_cells()` lo invoca solo se l'utente passa `pixel_size_um = "estimate"`, e il risultato finisce in `metadata` con un WARN. La sua validazione (recupero di scale note 1, 2, 5, 10 µm/px) è la controprova della sessione S1.5. **v1.6 (S1.5)**: implementata con il laplaciano della gaussiana sulla scurezza del cluster dominante, rifiuto se i nuclei non sono risolti o sono meno di 30, controllo di coerenza della taglia (`size_check`); metodo `"metadata"` aggiunto. La controprova l'ha smentita (CP-1, CP-1b, BL-145): non è raccomandata.
 
 ---
 
@@ -128,7 +128,7 @@ Il join è sempre per **`cell_id`** (1..N nello stesso ordine in `cell_df`, `cel
 | `region_id` | int | — | regione (blob connesso) di appartenenza |
 | `cluster_id` | int | — | cluster di origine |
 | `cell_type` | factor | — | tipo cellulare assegnato (catalogo `cell_types`) |
-| `x`, `y` | num | µm | centroide del territorio Voronoi |
+| `x`, `y` | num | µm | posizione del generatore (centro seminato della cellula; v1.6, S1.5 D-9: prima scritto «centroide del territorio Voronoi») |
 | `territory_area` | num | µm² | area del poligono Voronoi clipped |
 | `eq_radius` | num | µm | √(territory_area/π) |
 | `nucleus_shape` | char | — | `"circle"` (default) o `"ellipse"` |
@@ -197,26 +197,43 @@ Sei preset di proposito, non un atlante: la personalizzazione fine passa da `ove
 
 ### 4.7 API rivista
 
+*(v1.6, S1.5: firma implementata in `R/04b_cell_placement.R`; i semi degli stadi, le regole di `stride`, `small_components` e `size_conversion` sono definiti in `docs/steps/S1.5.md`)*
+
 ```r
 place_cells(
-  clust,                                # output di cluster_image()
+  clust,                                # output di cluster_image() (colonne x, y, cluster_col)
   tissue_preset       = "epithelial",   # "epithelial" | "tumor_microenv" | "stromal_rich" |
-                                        # "lymphoid" | "brain_cortex" | "columnar_muscle"  (A1–A6, v1.1)
+                                        # "lymphoid" | "brain_cortex" | "columnar_muscle"  (A1–A6)
   cell_types          = NULL,           # NULL → ereditato dal preset
   region_composition  = NULL,           # NULL → ereditato dal preset
   override_cell_types = NULL,           # patch incrementale sul catalogo
   override_composition = NULL,          # patch incrementale sulla composizione
   cluster_to_dominant = NULL,           # mapping esplicito cluster_id → tipo dominante
-                                        # se NULL: euristica intensità media + ordine cluster
-  pixel_size_um,                        # OBBLIGATORIO (C-A): numero (µm/px) oppure "estimate" → estimate_pixel_size()
+  pixel_size_um,                        # OBBLIGATORIO (C-A): numero (µm/px), list(scalefactors_json = <file>),
+                                        # oppure "estimate" (solo con allow_estimate = TRUE, v1.6)
   corner_smoothing    = 0,              # 0 = Voronoi puro, > 0 = Chaikin
-  min_region_area_um2 = 100,            # regioni più piccole vengono ignorate
-  random_seed         = 42,
+  min_region_area_um2 = 100,
+  random_seed         = 42,             # da qui tre semi indipendenti: semina, taglia, nuclei pallidi
+  cluster_col         = "intensity_cluster",
+  stride              = NULL,           # NULL → attributo "stride" di clust; errore se rilevato > 1 e non dichiarato (BL-042)
+  simplify_tol_um     = 0.5,
+  small_components    = c("merge", "exclude"),        # BL-043
+  nucleus_model       = "clip",                       # v1.5
+  size_conversion     = c("preserve_area", "none"),   # conversione del modello di taglia alla densita' del preset (S1.5, scelta 2)
+  validate = TRUE, strict = TRUE,       # strict: un ERROR dei controlli ferma la funzione
+  keep_tiles          = FALSE,          # restituisce i tile di Voronoi (regola delle celle interne)
+  allow_estimate      = FALSE,          # v1.6: la stima dall'immagine non e' raccomandata (S1.5, CP-1)
   verbose             = TRUE
 ) -> cell_layer
 
 # step interni (esposti per testabilità):
-estimate_pixel_size(clust, cell_types, cluster_to_dominant = NULL, method = "nuclear_spacing")   # v1.1, C-A
+estimate_pixel_size(clust, cell_types, cluster_to_dominant = NULL, method = c("nuclear_spacing", "metadata"),
+                    scalefactors_json = NULL, value_col = "value", cluster_col = "intensity_cluster",
+                    n_boot = 200L, block_px = 64L, size_check = TRUE)
+validate_cell_layer(cell_layer, c8_interval = NULL, pixel_size_source = "user", grid_um = 1e-6,
+                    sum_rel_tol = 1e-9, min_region_area_um2 = 0)       # C1–C9
+overlay_prec(op, x, y, grid_um = 1e-6, origin = NULL, area = TRUE)                     # unico helper degli overlay (F1, BL-081)
+plot_cell_layer(cell_layer, mode = c("voronoi", "types", "density", "regions"))
 extract_regions(clust, pixel_size_um, min_region_area_um2)
 seed_centroids(regions, cell_types, region_composition, random_seed)
 tessellate_voronoi(centroids, region_polygons, corner_smoothing)
@@ -264,7 +281,7 @@ Firma: `derive_cell_geometry(centroids, territories, cell_types, random_seed, nu
 2. **Centro**: `nucleus_center = NULL` → generatore con «clip», POI di `polylabelr` con «scale»; `d` = distanza GEOS dal bordo del territorio (errore se d = 0).
 3. **Taglia (D-S1.4.1)**: `log A_N = log(ρ²·A_ref) + β·(log A_T − log A_ref) + σ·z`, `A_ref = 1e6/density` del tipo; `nucleus_radius` assoluto → `log A_N = log(π r²) + σ·z`. Default β = 1, σ = 0. Stima: `fit_nucleus_size_model()`. S1.4: β = 0.11–0.62 sui 6 archetipi (B-091…B-108).
 4. **Forma**: poligono di `n_vertices` vertici su ellisse con aspetto `nucleus_aspect` (1 = cerchio), orientazione `nucleus_orient`; semiassi moltiplicati per k = sqrt(2π/(n sin(2π/n))) così che l'area del poligono sia esattamente l'area voluta.
-5. **Modello «clip» (predefinito; K-2 di S1.4c)**. Tetto `A* = min(A_N, φ·min(A_T, area(T_in)))`, φ = colonna `nucleus_nc_max` del tipo (in (0, 1], default 1; valori del pannello: q99 del rapporto nucleo/territorio reale, B-121…B-126: A1 0.757, A2 1, A3 0.947, A4 0.816, A5 0.474, A6 0.180). `T_in` = territorio rientrato di `clip_inset_um` (buffer senza modello di precisione, poi sulla griglia `snap_grid_um`; errore se vuoto: BL-118). Nucleo = poligono(s) ∩ `T_in` (intersezione sulla griglia), con la scala s ≥ 1 tale che area = A*: s = 1 per tutte le celle, poi solo per le celle ritagliate primo passo s = √(A*/area(1)) e falsa posizione di Illinois con ricaduta sulla bisezione; arresto a |area − A*|/A* ≤ `area_rel_tol` o quando lo spostamento dei vertici fra gli estremi è < griglia/4. Nuclei contenuti nel proprio territorio (C3) e disgiunti per costruzione (fessura di 2·`clip_inset_um` fra nuclei a contatto). Colonne: `nucleus_area_target` (A_N), `nucleus_area_cap` (A*), `nucleus_capped`, `nucleus_clipped`, `nucleus_scale` (s), `nucleus_n_iter`, `center_dist`; `nucleus_radius` = raggio del cerchio di pari area; `cell_nuclei` convertiti in `sf` via WKB, `sfc_MULTIPOLYGON` se un nucleo ritagliato è in più parti.
+5. **Modello «clip» (predefinito; K-2 di S1.4c)**. Tetto `A* = min(A_N, φ·min(A_T, area(T_in)))`, φ = colonna `nucleus_nc_max` del tipo (in (0, 1], default 1; valori del pannello: q99 del rapporto nucleo/territorio reale: A1 0.757 (B-121), A2 1 (B-122, DEC-005), A3 0.947 (B-123), A4 0.791 (B-143), A5 0.474 (B-125), A6 0.149 (B-154); v1.6: A4 e A6 dalla maschera unica di R3b (DEC-006), prima 0.816 e 0.180 (B-124, B-126)). `T_in` = territorio rientrato di `clip_inset_um` (buffer senza modello di precisione, poi sulla griglia `snap_grid_um`; errore se vuoto: BL-118). Nucleo = poligono(s) ∩ `T_in` (intersezione sulla griglia), con la scala s ≥ 1 tale che area = A*: s = 1 per tutte le celle, poi solo per le celle ritagliate primo passo s = √(A*/area(1)) e falsa posizione di Illinois con ricaduta sulla bisezione; arresto a |area − A*|/A* ≤ `area_rel_tol` o quando lo spostamento dei vertici fra gli estremi è < griglia/4. Nuclei contenuti nel proprio territorio (C3) e disgiunti per costruzione (fessura di 2·`clip_inset_um` fra nuclei a contatto). Colonne: `nucleus_area_target` (A_N), `nucleus_area_cap` (A*), `nucleus_capped`, `nucleus_clipped`, `nucleus_scale` (s), `nucleus_n_iter`, `center_dist`; `nucleus_radius` = raggio del cerchio di pari area; `cell_nuclei` convertiti in `sf` via WKB, `sfc_MULTIPOLYGON` se un nucleo ritagliato è in più parti.
 6. **Modello «scale» (D-S1.4.2, v1.4, invariato)**: fattore uniforme s ≤ 1; cerchio: raggio circoscritto ≤ `clamp_factor`·d; ellisse: dal limite del cerchio circoscritto, bisezione finché il poligono dilatato di 1/`clamp_factor` resta nel territorio. Colonne `nucleus_area_target`, `nucleus_scale`, `nucleus_clamped`, `center_dist`. Riproduce i risultati fino a S1.4c (S1.4d, cancello G-4b).
 7. **Operatore di osservazione per i check B sui nuclei simulati (BL-112, fissato in S1.4c, scritto qui in S1.4d)**: nuclei rasterizzati sulla griglia nativa del ROI (regola del centro del pixel, `tools/S1.4c_raster.py`), centro = centroide dei pixel, territorio osservato = Voronoi dei centroidi osservati con `tessellate_voronoi()` sulla regione del ROI, lo stesso operatore dei nuclei reali; contatto = pixel di bordo entro distanza di Chebyshev ≤ 2 px da un'altra etichetta.
 8. **Frazione di nuclei a contatto sulle finestre (S-1; BL-131, S1.4d)**: riferimento = valore manuale di Luca per archetipo (B-127…B-132, decisione del 2026-10-20); simulati = nuclei con centroide raster nella finestra a distanza ≥ d_max dai lati e dalle esclusioni (regola dei focali di R2c); per seme la media delle frazioni di finestra **a peso uguale** (come il riferimento, 15 nuclei per finestra), poi la media sui semi.
@@ -287,7 +304,7 @@ Eseguiti dopo la pipeline e riportati in `cell_layer$metadata$validation`. Sever
 | C5 | `nucleus_area > 0` per ogni cellula | **ERROR** | hard fail |
 | C6 | `n_cells > 0` per ogni `region_id` con `area_um2 ≥ min_region_area_um2` | **WARN** | log: parametri sbagliati |
 | C7 | `eq_radius` per `cell_type` coerente con il valore atteso | **WARN** | log: 90° percentile dentro `[0.5×, 2.0×]` di `expected_eq_radius` |
-| C8 | **Plausibilità della scala (C-A, v1.1)**: `eq_radius` mediano delle cellule piazzate dentro un intervallo plausibile per cellule di mammifero; valore **provvisorio** [5, 25] µm dalla revisione di Daniele, da sostituire con l'intervallo per archetipo di `BIO_REFERENCES.md` (R2–R3) | **WARN** (ERROR se `pixel_size_source = "estimated"`) | log: la scala px→µm è probabilmente sbagliata; riportare `pixel_size_um` usato e mediana osservata |
+| C8 | **Plausibilità della scala (C-A, v1.1)**: `eq_radius` mediano delle cellule piazzate dentro un intervallo plausibile per cellule di mammifero; valore **provvisorio** [5, 25] µm dalla revisione di Daniele, da sostituire con l'intervallo per archetipo di `BIO_REFERENCES.md` (R2–R3) | **WARN** (ERROR se `pixel_size_source = "estimated"`) | log: la scala px→µm è probabilmente sbagliata; riportare `pixel_size_um` usato e mediana osservata. **v1.6 (S1.5)**: intervalli per archetipo nei preset (B-109…B-111, B-142, B-113, B-153). Con la densità del catalogo in cellule/mm² una scala sbagliata cambia il numero di cellule, non il loro `eq_radius` (test E10d): C8 vede una densità in unità sbagliate (test E10c), non una scala sbagliata. Proposta in attesa della decisione di Luca (S1.5) |
 | TEST | `set.seed → output identico` | **TEST** | unit test, non runtime |
 
 `expected_eq_radius` (per C7) si deriva dalla `density` **del cell_type** (non dalla densità ponderata della regione), perché il check valuta il singolo tipo a prescindere dal suo contesto regionale:
@@ -337,13 +354,13 @@ cell_layer <- place_cells(
 | Cluster con `area_um2 < min_region_area_um2` | regione esclusa, log info |
 | `region_composition` con frazioni che non sommano 1.0 | normalizzazione + warning |
 | `cell_type` in composition ma assente dal catalogo | hard error con messaggio puntuale |
-| Tessuto enorme (4000×4000 px) | non crash, < 5 min, RAM < 8 GB |
+| Tessuto enorme (4000×4000 px) | non crash, < 5 min, RAM < 8 GB (v1.6, S1.5 P-8: rispettato in 5 tessuti; linfonodo 310 s e 8.50 GB, BL-144) |
 | Tessuto con un solo cluster | funziona, una sola regione |
 | `corner_smoothing = 1` con territori piccoli | nessun poligono degenerato (area > 0) |
 | Composizione con `fraction = 0` per un tipo | quel tipo non viene piazzato |
 | `pixel_size_um` omesso | hard error con messaggio puntuale (C-A) |
-| `pixel_size_um = "estimate"` su immagine con scala nota (1, 2, 5, 10 µm/px) | scala recuperata entro ±20%; `pixel_size_source = "estimated"` + WARN (controprova S1.5) |
-| `pixel_size_um` sbagliato di 10× | C8 scatta (WARN/ERROR) |
+| `pixel_size_um = "estimate"` su immagine con scala nota (1, 2, 5, 10 µm/px) | scala recuperata entro ±20%; `pixel_size_source = "estimated"` + WARN (controprova S1.5; v1.6: smentita, la stima richiede `allow_estimate = TRUE`) |
+| `pixel_size_um` sbagliato di 10× | C8 scatta (WARN/ERROR). **v1.6 (S1.5): non realizzabile** con densità assolute (vedi C8, §6.1); errore della pre-registrazione, decisione di Luca richiesta in S1.5 |
 
 ### 6.3 Visualizzazione (`R/testing/visualize_cell_layer.R`)
 
@@ -418,3 +435,4 @@ plot_cell_layer(cell_layer, mode = c("voronoi", "types", "density", "regions"))
 | 2026-10-08 | **v1.3 (S1.3)** — §5.3: Voronoi **per regione** (D-S1.3.1; il testo «globale + ritaglio sulla regione del centroide» lascia scoperta in mediana il 9.4 % delle regioni piccole, CP-1); frammenti orfani al territorio con il confine condiviso più lungo (D-S1.3.2); Chaikin con `n_iter = max(1, round(3·cs))` intersecato con il territorio originale (D-S1.3.3); firma `tessellate_voronoi(centroids, regions, corner_smoothing, keep_tiles, verbose)`; decisione 6: motore GEOS invece di deldir (confronto C-10, `results/S1.3/`) | Luca + Claude |
 | 2026-10-15 | **v1.4 (S1.4)** — §5.4 riscritta: modello di taglia a due parametri (β, σ) che contiene il design (D-S1.4.1); clamp in tutti i modi sul raggio circoscritto, bisezione per l'ellisse (D-S1.4.2); centro POI o generatore; §4.4 colonne opzionali; §4.2 `nucleus_cx/cy`. Contenimento in conflitto con i dati nei tessuti densi (PH-1, BL-098) | Luca (scelte in chat) + S1.4 |
 | 2026-10-20 | **v1.5 (S1.4d)** — §5.4: modello «clip» (nucleo ritagliato nel proprio territorio e portato all'area del modello di taglia, K-2 di S1.4c, decisione di Luca del 2026-10-16) predefinito, «scale» (v1.4) invariato come opzione; colonna `nucleus_nc_max` (φ) in §4.4; operatore di osservazione dei check B (BL-112) e aggregazione di S-1 sulle finestre a peso uguale (BL-131) | Luca (decisioni S1.4c, R2c) + S1.4d |
+| 2026-10-21 | **v1.6 (S1.5)** — §4.7 firma implementata di `place_cells()` (`stride`, `small_components`, `size_conversion`, `keep_tiles`, `allow_estimate`), `validate_cell_layer()` (C1–C9), `overlay_prec()`, `plot_cell_layer()`; §4.2 `x`, `y` = generatori (D-9); §5.4 tetti φ di A4 e A6 da B-143 e B-154 (revisione FND-11); decisione 10 e §3: stima della scala dall'immagine fuori dall'uso raccomandato (CP-1), fonti ammesse (BL-016); §6.1 C8 e §6.2: una scala sbagliata non è rilevabile da C8 con densità assolute (D-3, in attesa di Luca); prestazioni del linfonodo oltre il limite (BL-144) | S1.5 (agente; C8 e caso limite da confermare da Luca) |

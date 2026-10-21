@@ -1,0 +1,184 @@
+---
+title: "S1.5: il simulatore del livello cellulare funziona tutto insieme, con i sei preset dei tessuti, e sa riconoscere la propria scala?"
+subtitle: "geo_spatialtrans, report di step (protocollo v2)"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+execute:
+  echo: false
+  warning: false
+---
+
+```{r setup}
+#| include: false
+.libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({ library(knitr) })
+R <- "../results/S1.5"; rd <- function(f) read.csv(file.path(R, f), stringsAsFactors = FALSE)
+M <- "/mnt/micron/geo_spatialtrans/S1.5"
+TIS <- c(A1 = "intestino", A2 = "tumore del colon", A3 = "stroma", A4 = "linfonodo", A5 = "cervello", A6 = "cuore")
+v <- rd("S1.5_verdicts.csv")
+lastline <- function(f, pat) { x <- grep(pat, readLines(f, warn = FALSE), value = TRUE); if (length(x)) tail(x, 1) else "manca" }
+fmt <- function(x, d = 3) formatC(x, digits = d, format = "f")
+```
+
+{{< include _S1.5_inbreve.md >}}
+
+# Decisioni e verifiche di Luca
+
+{{< include _S1.5_verifiche.md >}}
+
+# Dubbi rinviati
+
+{{< include _S1.5_rinviati.md >}}
+
+# Cancelli
+
+Pre-registrazione: commit `6042a89` (cancelli), ok di Luca sulle previsioni il 2026-10-21 («Approvo così») e scelte decise dai dati, commit `710f5df`; codice e note di sviluppo D-1...D-9 prima della corsa ufficiale, commit `dab8b3a`; script di analisi prima dei risultati, `e85a1d8`; risultati `fafb3d0`; correzioni dopo la revisione `ab03c27`.
+
+```{r gates}
+F2 <- file.path(M, "tests/final2")
+g <- data.frame(
+  id = c("G-1", "G-1", "G-1", "G-2", "G-3", "G-3", "G-3", "G-4", "G-4", "G-5"),
+  controllo = c("batteria di S1.5 (`test_S1.5.R`)", "regressione S1.1, S1.2, S1.3, S1.4; S1.4d; OKF", "esito del cancello",
+                "mutanti M1-M9", "unita' del pannello senza ERROR (C2, C3, C5, C9)", "rerun identico e catena manuale (6 unita')",
+                "ricontrollo delle 600 unita' dopo le correzioni", "guasti costruiti (630)", "nulli di S1.3 (1 800)", "ricalcolo indipendente"),
+  esito = c(lastline(file.path(F2, "test_S1.5.log"), "^RESULT"),
+            paste(sum(grepl("^PASS regressione", readLines(file.path(F2, "G1.out")))), "regressioni identiche;",
+                  lastline(file.path(F2, "test_S1.4d.log"), "^RESULT"), ";", tail(grep("^RESULT", readLines(file.path(F2, "G1.out")), value = TRUE), 1)),
+            lastline(file.path(F2, "G1.out"), "^GATE"),
+            paste(lastline(file.path(F2, "G2.out"), "^mutanti"), "-", lastline(file.path(F2, "G2.out"), "^GATE")),
+            sprintf("%d/%d", sum(rd("S1.5_panel_units.csv")$n_error == 0), nrow(rd("S1.5_panel_units.csv"))),
+            with(rd("S1.5_G3_repro.csv"), sprintf("rerun %d/%d, catena %d/%d", sum(md5_rerun_identical), length(md5_rerun_identical), sum(manual_chain_identical), length(manual_chain_identical))),
+            with(rd("S1.5_G3_recheck.csv"), sprintf("senza ERROR %d/%d, md5 uguale %d/%d", sum(n_error == 0), length(n_error), sum(md5 == md5_panel), length(md5))),
+            with(rd("S1.5_G4_faults_v2.csv"), sprintf("%d/%d rilevati dal controllo atteso", sum(status_expected == "ERROR"), length(n_error))),
+            with(rd("S1.5_G4_nulls_v2.csv"), sprintf("%d/%d senza ERROR", sum(n_error == 0), length(n_error))),
+            "274/277 concordi entro 1e-9 (vedi «Revisione avversariale»)"))
+kable(g)
+```
+
+- **G-1 fallito come scritto**: falliscono solo E10 ed E10b, il caso limite del design «con `pixel_size_um` sbagliato di 10 volte C8 scatta». Con la densita' del catalogo in cellule/mm² una scala sbagliata cambia il numero di cellule, non il loro raggio: E10d (aggiunto) misura un raggio mediano di `r sub(".* ([0-9.]+) vs ([0-9.]+) um.*", "\\1 µm a 1 µm/px e \\2 µm a 10 µm/px", lastline(file.path(F2, "test_S1.5.log"), "E10d"))`; E10c (aggiunto) mostra che C8 scatta con la densita' in unita' sbagliate. Nota D-3; **errore di pre-registrazione, decisione di Luca nel riassunto**. Tutte le altre asserzioni passano, prima e dopo le correzioni della revisione.
+- G-1 e G-2 sono stati rieseguiti al commit `ab03c27` (log in `/mnt/micron/geo_spatialtrans/S1.5/tests/final2`); il primo giro ufficiale, al commit `fafb3d0`, dava 67/69 con gli stessi due FAIL.
+```{r md5}
+b <- read.csv(file.path(M, "md5_before.csv")); a <- read.csv(file.path(M, "md5_after.csv")); m5 <- merge(b, a, by = "file")
+dif <- m5$file[m5$md5.x != m5$md5.y]
+bio_ab <- sub(" .*", "", system("cd .. && git show ab03c27:docs/BIO_REFERENCES.md | md5sum", intern = TRUE))
+```
+
+- md5 dei `r nrow(b)` file letti (maschere, immagini, riferimenti): `r sum(m5$md5.x == m5$md5.y)`/`r nrow(b)` identici prima e dopo tutte le corse. Il solo diverso e' `r paste(dif, collapse = ", ")`, perche' a fine step vi sono state aggiunte le righe B-155...B-160; la versione usata dalle corse (commit `ab03c27`) ha md5 `r bio_ab`, `r if (identical(bio_ab, m5$md5.x[m5$file == "docs/BIO_REFERENCES.md"])) "uguale a quello di prima" else "DIVERSO da quello di prima"`.
+
+# Previsioni
+
+Unita' indipendente: ROI (5 per tessuto) per P-1...P-4, P-6, P-7; seme per P-5; ripetizione per P-8. Stima ± 2 errori standard. Braccio vincente della regola della scelta 2: `r { s <- rd("S1.5_size_rule.csv"); sprintf("%s (P-1 confermata in %d tessuti; l'altro braccio in %d)", s$arm[s$winner], s$P1_confirmed[s$winner], s$P1_confirmed[!s$winner]) }`.
+
+```{r preds}
+w <- v[v$winner_arm, ]
+w$tessuto <- TIS[w$archetype]
+w$osservato <- sprintf("%s [%s, %s]", fmt(w$estimate, 4), fmt(w$lo2, 4), fmt(w$hi2, 4))
+w$intervallo <- sprintf("%s-%s (%s)", signif(w$int_lo, 4), signif(w$int_hi, 4), w$interval_source)
+kable(w[, c("id", "tessuto", "quantity", "intervallo", "osservato", "outcome")], row.names = FALSE,
+      col.names = c("id", "tessuto", "quantita'", "intervallo di rilevanza (fonte)", "stima [± 2 ES]", "esito"))
+```
+
+```{r fig1, fig.cap = "Previsioni P-1...P-7 per tessuto: stima ± 2 errori standard (punti) e intervallo di rilevanza (banda)."}
+include_graphics(file.path(R, "figures/S1.5_fig1_predictions.png"))
+```
+
+**Cosa guardare**: le aree dei nuclei (P-1) cadono tutte nelle bande; il CV dei territori (P-6) e' sotto la banda in cinque tessuti, i contatti (P-5) sopra nel tumore del colon e nel linfonodo.
+
+Spiegazione degli esiti smentiti e indeterminati:
+
+- **P-2 intestino** (smentita, attesa): territori piu' uniformi del reale, effetto della semina omogenea (pre-registrato). **P-2 tumore del colon** (smentita, non attesa, appena sotto il limite): con i territori reali lo stesso preset da' `r { u <- rd("S1.5_posthoc_units.csv"); x <- u[u$arm == "realgen" & u$archetype == "A2", ]; fmt(mean(tapply(x$median_nc, x$roi_id, mean))) }`, dentro (PH-2): stessa causa.
+- **P-4 tumore del colon**: la coda del modello di taglia a un tipo ([Nel tumore del colon nessun limite all'area del nucleo; la coda del modello di taglia si corregge con i tipi cellulari (DEC-005)](../docs/decisions/DEC-005.md)); con i generatori reali 6.0 % (PH-3).
+- **P-5 tumore del colon e linfonodo** (smentite), **stroma e cuore** (indeterminate): con i generatori reali i contatti tornano nell'intervallo manuale in cinque tessuti (PH-1, sotto). L'eccesso viene dalla semina omogenea.
+- **P-6 in cinque tessuti** (smentita, attesa): gia' misurata in S1.3 e R3. Nel cuore confermata con 2e-5 di margine; fragile (rilievo F-1).
+- **P-8 linfonodo** (smentita): 310 s e 8.50 GB; il disegno dei nuclei prende circa 133 s (BL-144).
+
+```{r fig2, fig.cap = "P-5: frazione di nuclei a contatto per tessuto, simulato (due bracci) contro l'intervallo del conteggio manuale."}
+include_graphics(file.path(R, "figures/S1.5_fig2_contacts.png"))
+```
+
+## Analisi dopo il risultato
+
+{{< include _S1.5_dopo.md >}}
+
+```{r ph1}
+pw <- rd("S1.5_posthoc_windows.csv")
+s <- aggregate(s1 ~ arm + archetype + seed, pw, mean)
+a <- do.call(data.frame, aggregate(s1 ~ arm + archetype, s, function(x) c(m = mean(x), se = sd(x) / sqrt(length(x)))))
+a$val <- sprintf("%s ± %s", fmt(a$s1.m), fmt(2 * a$s1.se))
+t <- reshape(a[, c("arm", "archetype", "val")], idvar = "archetype", timevar = "arm", direction = "wide")
+man <- v[v$id == "P-5" & v$winner_arm, c("archetype", "int_lo", "int_hi")]
+t <- merge(t, man, by = "archetype"); t$archetype <- TIS[t$archetype]
+kable(t, col.names = c("tessuto", "pannello (RSA, densita' manuale)", "generatori reali", "RSA, densita' dei segmentatori", "manuale, basso", "manuale, alto"),
+      caption = "PH-1: frazione di nuclei a contatto, media dei 10 semi ± 2 errori standard")
+```
+
+# Controprova
+
+CP-1: la stima della scala dall'immagine sulle 30 immagini H&E ricampionate a 1, 2, 5 e 10 µm/px (ingresso della pipeline, `prepare_image()`); la variante «full_mask» e' descrittiva (nota D-7).
+
+```{r cp1}
+cp <- rd("S1.5_CP1_verdicts.csv"); cp$tessuto <- TIS[cp$archetype]
+cp$rapporto <- ifelse(is.na(cp$ratio_mean), "", sprintf("%s [%s, %s]", fmt(cp$ratio_mean), fmt(cp$lo2), fmt(cp$hi2)))
+kable(cp[cp$variant == "pipeline", c("scale_true", "tessuto", "n_refused", "n_number_outside", "rapporto", "outcome")], row.names = FALSE,
+      col.names = c("scala vera (µm/px)", "tessuto", "ROI rifiutati", "numeri fuori 0.8-1.2", "rapporto stimata/vera [± 2 ES]", "esito"))
+cs <- rd("S1.5_CP1_scale.csv"); csb <- rd("S1.5_CP1_scale_est_b.csv")
+wr <- function(d) tapply(!d$refused & abs(d$ratio - 1) > 0.2, list(d$variant, d$scale_true), sum)
+kable(rbind(cbind(variante = rownames(wr(cs)), controllo = "come scritto", wr(cs)), cbind(variante = rownames(wr(csb)), controllo = "con il controllo di coerenza (post hoc)", wr(csb))),
+      caption = "Numeri restituiti senza rifiuto e fuori da 0.8-1.2, per scala vera (30 ROI per cella)")
+```
+
+**Esito**: smentita. A 1 µm/px il rapporto sta dentro l'intervallo solo nel linfonodo (meno di 3 tessuti su 6): come pre-registrato, la stima dall'immagine esce dall'uso raccomandato (nota D-11, `allow_estimate = TRUE`). Il metodo dai metadati da' la scala esatta sui 5 dataset (test S1).
+
+```{r fig4, fig.cap = "CP-1: rapporto fra scala stimata e vera per ROI, con e senza il controllo di coerenza."}
+include_graphics(file.path(R, "figures/S1.5_fig4_scale.png"))
+```
+
+# Revisione avversariale
+
+{{< include _S1.5_review.md >}}
+
+```{r revtab}
+rm <- rd("S1.5_review_mutants_after.csv")
+kable(rm[, c("id", "desc", "detected", "by")], row.names = FALSE, col.names = c("mutante", "modifica", "rilevato", "asserzioni che falliscono"),
+      caption = "Mutanti rieseguiti al commit ab03c27 (M = autore, R = revisore)")
+rf <- rd("S1.5_review_faults_after.csv"); rf <- rf[rf$fault != "none" & !is.na(rf$detected), ]
+kable(do.call(rbind, lapply(split(rf, rf$fault), function(d) data.frame(guasto = d$fault[1], costruiti = nrow(d), rilevati = sum(d$detected_any),
+      `dal controllo atteso` = sum(d$detected), controlli = paste(names(table(d$by)), table(d$by), sep = " ", collapse = "; "), check.names = FALSE))),
+      row.names = FALSE, caption = "Guasti indipendenti del revisore rieseguiti al commit ab03c27")
+```
+
+# Cosa è girato
+
+- Server lesexp-server, 20 worker a un thread (`OMP_NUM_THREADS=1`, `R_LIBS_SITE` e `R_LIBS_USER` isolati). Semi del pannello `20261021 + 1000 · i + s` (i = riga del ROI in `results/R2/R2_rois_checked.csv`, s = 1...10); semi degli stadi da `set.seed(seme); sample.int(.Machine$integer.max, 3)`.
+- Generazione del pannello al commit `r readLines(file.path(M, "gen.commit"))[1]`.
+- Durate: `r paste(sapply(c("gen.log", "faults.log", "nulls.log", "cp1.log", "posthoc.log", "recheck.log", "faults_v2.log", "nulls_v2.log"), function(f) paste0(sub("\\.log$", "", f), ": ", sub("^\\[[a-z0-9]+\\] ", "", lastline(file.path(M, f), "^\\[")))), collapse = "; ")`.
+- Prestazioni (P-8): 3 ripetizioni dopo un riscaldamento, una per preset, processo da solo; memoria di picco da `/usr/bin/time -v`.
+- Controprova delle correzioni: `bash tools/S1.5_review_mutants.sh` (8 processi in parallelo), `Rscript --vanilla tools/S1.5_review_faults.R` (6 processi).
+- Regressione degli step passati e script: vedi «Riproduzione» nel file dello step.
+
+# Appendice
+
+## Note di sviluppo
+
+{{< include _S1.5_sviluppo.md >}}
+
+## Altre tabelle e figure
+
+```{r app}
+o <- v[!v$winner_arm, ]; o$tessuto <- TIS[o$archetype]
+kable(data.frame(id = o$id, tessuto = o$tessuto, quantita = o$quantity, stima = sprintf("%s [%s, %s]", fmt(o$estimate, 4), fmt(o$lo2, 4), fmt(o$hi2, 4)), esito = o$outcome),
+      caption = "Braccio non vincente (modello di taglia senza conversione)")
+d <- rd("S1.5_descriptive.csv"); d$archetype <- TIS[d$archetype]
+kable(d, digits = 3, caption = "Descrittive: area dei territori al bordo / interno (D-desc-1), cellule non piazzate e WARN medi per unita' (D-desc-2), frazione di nuclei pallidi")
+kable(rd("S1.5_real_multipart.csv"), caption = "Nuclei reali in piu' parti nelle maschere di riferimento (scelta 3)")
+```
+
+```{r fig3, fig.cap = "D-desc-3: un ROI per tessuto, H&E accanto ai quattro modi di plot_cell_layer()."}
+include_graphics(file.path(R, "figures/S1.5_fig3_example.png"))
+```
+
+{{< include _S1.5_fonti.md >}}

@@ -1,5 +1,9 @@
 # Registro delle modifiche
 
+## 2026-10-21 (risultati di S1.5)
+
+* **Aggiornamento**: [Il simulatore del livello cellulare funziona tutto insieme, con i sei preset dei tessuti, e sa riconoscere la propria scala? (S1.5)](steps/S1.5.md): risultati dei cancelli, delle previsioni e della controprova; analisi post hoc PH-1...PH-3; revisione avversariale (due revisori) con le correzioni del codice (commit `ab03c27`) e la controprova delle correzioni; note D-11...D-14; riassunto «In breve» con una decisione per Luca (il caso limite «scala sbagliata di 10 volte → C8» non e' realizzabile); dubbi rinviati in BACKLOG (BL-143...BL-146). Design v1.6, BIO_REFERENCES B-155...B-160, report `reports/S1.5.html`.
+
 ## 2026-10-21 (apertura di S1.5)
 
 * **Aggiornamento**: [Il simulatore del livello cellulare funziona tutto insieme, con i sei preset dei tessuti, e sa riconoscere la propria scala? (S1.5)](steps/S1.5.md): ok di Luca sulle previsioni («Approvo così»); le tre scelte del modello, chieste per errore a Luca, riscritte come decise dai dati su sua correzione: distanza minima ([Nei sei preset la distanza minima fra i centri delle cellule e' quella stimata dai tessuti veri (DEC-009)](decisions/DEC-009.md)), conversione del modello di taglia con una regola sul pannello, nuclei in piu' parti ([I nuclei simulati in piu' pezzi restano come sono: sono piu' rari che nelle maschere reali (DEC-010)](decisions/DEC-010.md), `results/S1.5/S1.5_real_multipart.csv`).
