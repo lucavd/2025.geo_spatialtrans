@@ -1,3 +1,6 @@
 
 - Perimetro, alla domanda «La voce sulla forma vera delle cellule del cuore (BL-064) è assegnata a R3b oppure S1.5. La includiamo in R3b?»: «Rinviarla a S1.5» (trascritto dalla chat, 2026-10-20).
 - Ok sulle previsioni, sui loro intervalli e sulla regola di decisione: «Approvo così» (trascritto dalla chat, 2026-10-20).
+- Decisione 1 del riassunto, alla domanda «Adottiamo per linfonodo e cuore i nuclei di Space Ranger con la forma di StarDist, ma stimiamo la taglia dei nuclei solo su quelli con la forma di StarDist?»: «ok» (trascritto dalla chat, 2026-10-21) → [Nel linfonodo e nel cuore una sola maschera nucleare: i nuclei di Space Ranger con la forma di StarDist, con la taglia stimata sui soli nuclei di forma StarDist (DEC-006)](/decisions/DEC-006.md).
+- Decisione 2 del riassunto, alla domanda «Accettiamo che il controllo di integrità fallito sia un errore di come l'avevo scritto, e non un difetto della maschera?»: «si» (trascritto dalla chat, 2026-10-21) → [Il controllo di integrita' di R3b fallito sul centro dei nuclei nel tessuto valido e' un errore di scrittura del controllo, non della maschera (DEC-007)](/decisions/DEC-007.md).
+- Luca ha letto il riassunto e deciso i due punti senza sollevare dubbi nuovi: **step chiuso**. Riferimenti di linfonodo e cuore aggiornati in BIO_REFERENCES (B-133...B-154).

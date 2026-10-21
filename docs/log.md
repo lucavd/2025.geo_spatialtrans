@@ -1,5 +1,9 @@
 # Registro delle modifiche
 
+## 2026-10-21 (chiusura di R3b)
+
+* **Chiusura**: [Nel linfonodo e nel cuore, da quale insieme di nuclei veri prendiamo posizioni, aree e vicini? (R3b)](steps/R3b.md) chiuso con l'approvazione di Luca; decisioni [Nel linfonodo e nel cuore una sola maschera nucleare: i nuclei di Space Ranger con la forma di StarDist, con la taglia stimata sui soli nuclei di forma StarDist (DEC-006)](decisions/DEC-006.md) e [Il controllo di integrita' di R3b fallito sul centro dei nuclei nel tessuto valido e' un errore di scrittura del controllo, non della maschera (DEC-007)](decisions/DEC-007.md). BIO_REFERENCES B-133…B-154; BACKLOG BL-100, BL-115, BL-121, BL-130 chiuse; ROADMAP §7: R3b chiusa, prossima sessione proposta S1.5.
+
 ## 2026-10-20 (apertura di R3b)
 
 * **Aggiornamento**: [Nel linfonodo e nel cuore, da quale insieme di nuclei veri prendiamo posizioni, aree e vicini? (R3b)](steps/R3b.md): risultati, analisi post hoc, revisione avversariale (due revisori, numeri concordanti), note D-9...D-11, riassunto «In breve» con due decisioni per Luca; report `reports/R3b.html`. BACKLOG BL-141, BL-142; BL-064 rinviata a S1.5.

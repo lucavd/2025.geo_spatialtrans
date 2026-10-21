@@ -3,11 +3,11 @@ type: Step
 title: "Nel linfonodo e nel cuore, da quale insieme di nuclei veri prendiamo posizioni, aree e vicini?"
 description: "Sceglie per linfonodo e cuore una sola maschera nucleare (i nuclei di Space Ranger con la forma di StarDist, oppure solo StarDist), confrontandole con il conteggio manuale dei nuclei e dei contatti di Luca, e controlla con i punti manuali se l'eccesso di contatti simulati nel linfonodo dipende davvero dai centri dei nuclei."
 step_id: "R3b"
-status: draft
+status: stable
 branch: "step1-cell-layer"
 resource: "reports/R3b.html"
 depends_on: ["S1.4d (chiusa, protocollo v2)", "R2c (chiusa con riserve, protocollo v1)", "R2b (chiusa con riserve, protocollo v1)"]
-pi_approval: pending
+pi_approval: { by: human:luca-vedovelli, at: 2026-10-21T11:40:00+02:00, evidence: "commit «R3b: chiusura» su step1-cell-layer" }
 generated: { by: geo-agent/skill-v2, at: 2026-10-20T14:10:00+02:00 }
 sources:
   - id: roadmap-s7
@@ -246,14 +246,18 @@ Appena decidi questi 2 punti, lo step è chiuso.
 
 - Perimetro, alla domanda «La voce sulla forma vera delle cellule del cuore (BL-064) è assegnata a R3b oppure S1.5. La includiamo in R3b?»: «Rinviarla a S1.5» (trascritto dalla chat, 2026-10-20).
 - Ok sulle previsioni, sui loro intervalli e sulla regola di decisione: «Approvo così» (trascritto dalla chat, 2026-10-20).
+- Decisione 1 del riassunto, alla domanda «Adottiamo per linfonodo e cuore i nuclei di Space Ranger con la forma di StarDist, ma stimiamo la taglia dei nuclei solo su quelli con la forma di StarDist?»: «ok» (trascritto dalla chat, 2026-10-21) → [Nel linfonodo e nel cuore una sola maschera nucleare: i nuclei di Space Ranger con la forma di StarDist, con la taglia stimata sui soli nuclei di forma StarDist (DEC-006)](/decisions/DEC-006.md).
+- Decisione 2 del riassunto, alla domanda «Accettiamo che il controllo di integrità fallito sia un errore di come l'avevo scritto, e non un difetto della maschera?»: «si» (trascritto dalla chat, 2026-10-21) → [Il controllo di integrita' di R3b fallito sul centro dei nuclei nel tessuto valido e' un errore di scrittura del controllo, non della maschera (DEC-007)](/decisions/DEC-007.md).
+- Luca ha letto il riassunto e deciso i due punti senza sollevare dubbi nuovi: **step chiuso**. Riferimenti di linfonodo e cuore aggiornati in BIO_REFERENCES (B-133...B-154).
 
 # Riproduzione
 
 ```bash
 cd ~/2025.geo_spatialtrans && git checkout <commit «R3b: chiusura»>
-bash R/testing/run_R3b.sh test && bash R/testing/run_R3b.sh mutants
-bash tools/run_R3b.sh
-quarto render reports/R3b.qmd
+bash R/testing/run_R3b.sh test && bash R/testing/run_R3b.sh mutants && bash R/testing/run_R3b.sh reviewer
+bash tools/run_R3b.sh          # catena completa, rilanciabile
+.venv/bin/python -B tools/R3b_posthoc_srprec.py && .venv/bin/python -B tools/R3b_posthoc_valid.py && .venv/bin/python -B tools/R3b_fig_mask.py
+.venv/bin/python -B tools/R3b_report_parts.py && quarto render reports/R3b.qmd
 ```
 
 [^roadmap-s7]: Perimetro di R3b e decisioni passate sul segmentatore di linfonodo e cuore

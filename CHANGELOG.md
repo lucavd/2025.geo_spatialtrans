@@ -2,6 +2,20 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## R3b — 2026-10-20/21 — Maschera nucleare unica per linfonodo e cuore (branch `step1-cell-layer`) — **chiusa**
+
+File dello step `docs/steps/R3b.md`, report `reports/R3b.html`; decisioni DEC-006 (maschera CO, taglia dai nuclei di forma StarDist) e DEC-007 (G-4 fallito come scritto: errore di scrittura).
+
+### Codice (nessun file degli step passati modificato)
+- `tools/R3b_consensus.py`: maschera CO (appaiamento reciproco di massima sovrapposizione, StarDist appaiati sopra gli Space Ranger rimasti), tabella dei nuclei R2, filtro cp2, cancello G-4; test `tools/R3b_consensus_test.py` (34/34) e runner `R/testing/run_R3b.sh` (mutanti 5/5, mutanti del revisore 12/12).
+- `tools/R3b_bench.R` (generatori R3, territori S1.4, M2 per fold, phi, nucleo ritagliato, controprova con i punti di Luca), `tools/R3b_nuc.py`, `tools/R3b_p1p2.py`, `tools/R3b_windows.py`, `tools/R3b_export.R`, `tools/R3b_analysis.py`, `tools/run_R3b.sh`; post hoc `tools/R3b_posthoc*.py|R`, `tools/R3b_refs.R`, `tools/R3b_fig_mask.py`, `tools/R3b_report_parts.py`.
+
+### Risultati
+- Regola di decisione: CO in linfonodo e cuore. Conteggio CO / punti di Luca 1.04 e 1.09 (StarDist 0.77 e 0.84); contatti simulati 0.69 e 0.05; con i punti di Luca come centri 0.72 e 0.015; troncati 1-3 %.
+- Post hoc: contatti nella maschera CO del linfonodo 44/59 contro 32 di Luca (64 % via poligoni Space Ranger); poligoni Space Ranger rimasti precisione 0.64 e 0.70; taglia dai soli nuclei di forma StarDist (sigma 0.210 contro 0.288).
+- BIO_REFERENCES B-133...B-154 sostituiscono B-073...B-078, B-085...B-090, B-100...B-102, B-106...B-108, B-112, B-114 e la parte q99 di B-124, B-126.
+- BACKLOG: chiuse BL-100, BL-115, BL-121, BL-130; nuove BL-141, BL-142; BL-064 rinviata a S1.5.
+
 ## S1.4d — 2026-10-20 — Il nucleo ritagliato nel territorio e riportato all'area giusta (K-2) nel pacchetto (branch `step1-cell-layer`) — **chiusa**
 
 Primo step con il protocollo di sessione v2 (DEC-002); file dello step `docs/steps/S1.4d.md`, report `reports/S1.4d.html`.
