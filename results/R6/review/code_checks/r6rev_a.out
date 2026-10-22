@@ -1,0 +1,38 @@
+A1 rois csv order == lab.roi_id.unique(): True | concat counts == labels parquet (label, roi_id, umi): True | ph1 aligned: True | n 38687 | label unique within roi: True
+A2 rois csv order == lab.roi_id.unique(): True | concat counts == labels parquet (label, roi_id, umi): True | ph1 aligned: True | n 32721 | label unique within roi: True
+A3 rois csv order == lab.roi_id.unique(): True | concat counts == labels parquet (label, roi_id, umi): True | ph1 aligned: True | n 21298 | label unique within roi: True
+A4 rois csv order == lab.roi_id.unique(): True | concat counts == labels parquet (label, roi_id, umi): True | ph1 aligned: True | n 139002 | label unique within roi: True
+A5 rois csv order == lab.roi_id.unique(): True | concat counts == labels parquet (label, roi_id, umi): True | ph1 aligned: True | n 4142 | label unique within roi: True
+A6 rois csv order == lab.roi_id.unique(): True | concat counts == labels parquet (label, roi_id, umi): True | ph1 aligned: True | n 4925 | label unique within roi: True
+ROI x footprint checked: 90 failures: 0
+     A roi   fp  nrow_npz  nrow_parquet    ok  maxabsdiff
+0   A1  r1  exp      8739          8739  True         0.0
+3   A1  r2  exp      7004          7004  True         0.0
+6   A1  r3  exp      8506          8506  True         0.0
+9   A1  r4  exp      6763          6763  True         0.0
+12  A1  r5  exp      7675          7675  True         0.0
+15  A2  r1  exp      6546          6546  True         0.0
+18  A2  r2  exp      6844          6844  True         0.0
+21  A2  r3  exp      5409          5409  True         0.0
+24  A2  r4  exp      7465          7465  True         0.0
+27  A2  r5  exp      6457          6457  True         0.0
+30  A3  r1  exp      4165          4165  True         0.0
+33  A3  r2  exp      3126          3126  True         0.0
+36  A3  r3  exp      4299          4299  True         0.0
+39  A3  r4  exp      4824          4824  True         0.0
+42  A3  r5  exp      4884          4884  True         0.0
+45  A4  f1  exp     23650         23650  True         0.0
+48  A4  f2  exp     24891         24891  True         0.0
+51  A4  p1  exp     30991         30991  True         0.0
+54  A4  p2  exp     29481         29481  True         0.0
+57  A4  p3  exp     29989         29989  True         0.0
+60  A5  r1  exp      1267          1267  True         0.0
+63  A5  r2  exp       777           777  True         0.0
+66  A5  r3  exp       645           645  True         0.0
+69  A5  r4  exp       524           524  True         0.0
+72  A5  r5  exp       929           929  True         0.0
+75  A6  r1  exp       673           673  True         0.0
+78  A6  r2  exp       882           882  True         0.0
+81  A6  r3  exp      1082          1082  True         0.0
+84  A6  r4  exp      1222          1222  True         0.0
+87  A6  r5  exp      1066          1066  True         0.0

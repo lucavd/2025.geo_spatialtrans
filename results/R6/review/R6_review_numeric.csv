@@ -1,0 +1,317 @@
+variant,archetype,item,mine,theirs,diff,ok
+prereg,A1,n[endoteliale],12740.0,12740.0,0.0,True
+prereg,A1,fraction[endoteliale],0.32930958719983455,0.3293095871998345,5.551115123125783e-17,True
+prereg,A1,median_area_nuc[endoteliale],13.86486780776047,13.86486780776047,0.0,True
+prereg,A1,median_ecc_nuc[endoteliale],0.8122904079850877,0.8122904079850877,0.0,True
+prereg,A1,n[epiteliale],14461.0,14461.0,0.0,True
+prereg,A1,fraction[epiteliale],0.3737948147956678,0.3737948147956678,0.0,True
+prereg,A1,median_area_nuc[epiteliale],14.08970350194037,14.08970350194037,0.0,True
+prereg,A1,median_ecc_nuc[epiteliale],0.7936288095099053,0.7936288095099053,0.0,True
+prereg,A1,n[immunitario],5082.0,5082.0,0.0,True
+prereg,A1,fraction[immunitario],0.13136195621268126,0.1313619562126812,5.551115123125783e-17,True
+prereg,A1,median_area_nuc[immunitario],11.391675171781575,11.391675171781577,-1.7763568394002505e-15,True
+prereg,A1,median_ecc_nuc[immunitario],0.7501145023267377,0.7501145023267377,0.0,True
+prereg,A1,n[non classificabile],6.0,6.0,0.0,True
+prereg,A1,fraction[non classificabile],0.00015509085739395662,0.0001550908573939,5.662245845805547e-17,True
+prereg,A1,median_area_nuc[non classificabile],8.618701610229481,8.618701610229481,0.0,True
+prereg,A1,median_ecc_nuc[non classificabile],0.7435319201663431,0.7435319201663431,0.0,True
+prereg,A1,n[non risolto],2573.0,2573.0,0.0,True
+prereg,A1,fraction[non risolto],0.06650812934577506,0.066508129345775,5.551115123125783e-17,True
+prereg,A1,median_area_nuc[non risolto],12.515853642681073,12.515853642681073,0.0,True
+prereg,A1,median_ecc_nuc[non risolto],0.7768270641116908,0.7768270641116908,0.0,True
+prereg,A1,n[stromale e muscolo liscio],3825.0,3825.0,0.0,True
+prereg,A1,fraction[stromale e muscolo liscio],0.09887042158864735,0.0988704215886473,5.551115123125783e-17,True
+prereg,A1,median_area_nuc[stromale e muscolo liscio],9.518044386949079,9.51804438694908,-1.7763568394002505e-15,True
+prereg,A1,median_ecc_nuc[stromale e muscolo liscio],0.8843973000036539,0.8843973000036539,0.0,True
+prereg,A1,P-2 max/min median area (types>=5%),1.4803149606299215,1.4803149606299215,0.0,True
+prereg,A2,n[endoteliale],2380.0,2380.0,0.0,True
+prereg,A2,fraction[endoteliale],0.07273616332019192,0.0727361633201919,2.7755575615628914e-17,True
+prereg,A2,median_area_nuc[endoteliale],26.369156168923627,26.369156168923627,0.0,True
+prereg,A2,median_ecc_nuc[endoteliale],0.7976869888302227,0.7976869888302227,0.0,True
+prereg,A2,n[epiteliale normale],14446.0,14446.0,0.0,True
+prereg,A2,fraction[epiteliale normale],0.44149017450566913,0.4414901745056691,5.551115123125783e-17,True
+prereg,A2,median_area_nuc[epiteliale normale],34.38478034527257,34.38478034527257,0.0,True
+prereg,A2,median_ecc_nuc[epiteliale normale],0.7912520667173646,0.7912520667173646,0.0,True
+prereg,A2,n[epiteliale tumorale],8092.0,8092.0,0.0,True
+prereg,A2,fraction[epiteliale tumorale],0.24730295528865254,0.2473029552886525,2.7755575615628914e-17,True
+prereg,A2,median_area_nuc[epiteliale tumorale],35.13390410007154,35.13390410007154,0.0,True
+prereg,A2,median_ecc_nuc[epiteliale tumorale],0.7780905957923303,0.7780905957923303,0.0,True
+prereg,A2,n[fibroblasti],880.0,880.0,0.0,True
+prereg,A2,fraction[fibroblasti],0.026894043580575167,0.0268940435805751,6.591949208711867e-17,True
+prereg,A2,median_area_nuc[fibroblasti],29.02854549845996,29.02854549845996,0.0,True
+prereg,A2,median_ecc_nuc[fibroblasti],0.8487007439245301,0.8487007439245301,0.0,True
+prereg,A2,n[immunitario],3262.0,3262.0,0.0,True
+prereg,A2,fraction[immunitario],0.09969132972708658,0.0996913297270865,8.326672684688674e-17,True
+prereg,A2,median_area_nuc[immunitario],22.398800268489104,22.398800268489104,0.0,True
+prereg,A2,median_ecc_nuc[immunitario],0.7566318216981495,0.7566318216981495,0.0,True
+prereg,A2,n[muscolo liscio],161.0,161.0,0.0,True
+prereg,A2,fraction[muscolo liscio],0.004920387518718866,0.0049203875187188,6.591949208711867e-17,True
+prereg,A2,median_area_nuc[muscolo liscio],25.245470536725175,25.245470536725172,3.552713678800501e-15,True
+prereg,A2,median_ecc_nuc[muscolo liscio],0.810974388850466,0.810974388850466,0.0,True
+prereg,A2,n[non classificabile],2.0,2.0,0.0,True
+prereg,A2,fraction[non classificabile],6.112282631948902e-05,6.112282631948902e-05,0.0,True
+prereg,A2,median_area_nuc[non classificabile],28.766352184280322,28.76635218428032,3.552713678800501e-15,True
+prereg,A2,median_ecc_nuc[non classificabile],0.5369329733509731,0.5369329733509731,0.0,True
+prereg,A2,n[non risolto],3498.0,3498.0,0.0,True
+prereg,A2,fraction[non risolto],0.10690382323278629,0.1069038232327862,8.326672684688674e-17,True
+prereg,A2,median_area_nuc[non risolto],21.724588889170033,21.724588889170036,-3.552713678800501e-15,True
+prereg,A2,median_ecc_nuc[non risolto],0.7163696223330378,0.7163696223330378,0.0,True
+prereg,A2,P-2 max/min median area (types>=5%),1.568561872909699,1.568561872909699,0.0,True
+prereg,A3,n[endoteliale],1729.0,1729.0,0.0,True
+prereg,A3,fraction[endoteliale],0.08118133158043009,0.08118133158043,8.326672684688674e-17,True
+prereg,A3,median_area_nuc[endoteliale],31.163548199637013,31.163548199637013,0.0,True
+prereg,A3,median_ecc_nuc[endoteliale],0.8175754584315428,0.8175754584315428,0.0,True
+prereg,A3,n[epiteliale normale],6279.0,6279.0,0.0,True
+prereg,A3,fraction[epiteliale normale],0.29481641468682507,0.294816414686825,5.551115123125783e-17,True
+prereg,A3,median_area_nuc[epiteliale normale],33.7105689659535,33.7105689659535,0.0,True
+prereg,A3,median_ecc_nuc[epiteliale normale],0.7385852421139566,0.7385852421139566,0.0,True
+prereg,A3,n[epiteliale tumorale],1602.0,1602.0,0.0,True
+prereg,A3,fraction[epiteliale tumorale],0.07521833035965818,0.0752183303596581,8.326672684688674e-17,True
+prereg,A3,median_area_nuc[epiteliale tumorale],30.901354885457376,30.901354885457376,0.0,True
+prereg,A3,median_ecc_nuc[epiteliale tumorale],0.7425400747771039,0.7425400747771039,0.0,True
+prereg,A3,n[fibroblasti],5621.0,5621.0,0.0,True
+prereg,A3,fraction[fibroblasti],0.2639214949760541,0.2639214949760541,0.0,True
+prereg,A3,median_area_nuc[fibroblasti],34.23495559431278,34.23495559431278,0.0,True
+prereg,A3,median_ecc_nuc[fibroblasti],0.8800681639697725,0.8800681639697725,0.0,True
+prereg,A3,n[immunitario],5244.0,5244.0,0.0,True
+prereg,A3,fraction[immunitario],0.24622030237580994,0.2462203023758099,2.7755575615628914e-17,True
+prereg,A3,median_area_nuc[immunitario],26.144419042483936,26.144419042483936,0.0,True
+prereg,A3,median_ecc_nuc[immunitario],0.8041118292495528,0.8041118292495528,0.0,True
+prereg,A3,n[non classificabile],57.0,57.0,0.0,True
+prereg,A3,fraction[non classificabile],0.002676307634519673,0.0026763076345196,7.32920668600201e-17,True
+prereg,A3,median_area_nuc[non classificabile],21.79950126464993,21.79950126464993,0.0,True
+prereg,A3,median_ecc_nuc[non classificabile],0.8411725319545228,0.8411725319545228,0.0,True
+prereg,A3,n[non risolto],766.0,766.0,0.0,True
+prereg,A3,fraction[non risolto],0.03596581838670298,0.0359658183867029,7.632783294297951e-17,True
+prereg,A3,median_area_nuc[non risolto],26.33169998118368,26.33169998118368,0.0,True
+prereg,A3,median_ecc_nuc[non risolto],0.7275892064566181,0.7275892064566181,0.0,True
+prereg,A3,P-2 max/min median area (types>=5%),1.3094555873925504,1.3094555873925504,0.0,True
+prereg,A4,n[endoteliali],14139.0,14139.0,0.0,True
+prereg,A4,fraction[endoteliali],0.10171796089264902,0.101717960892649,1.3877787807814457e-17,True
+prereg,A4,median_area_nuc[endoteliali],15.290364619557412,15.290364619557412,0.0,True
+prereg,A4,median_ecc_nuc[endoteliali],0.6293499360917323,0.6293499360917323,0.0,True
+prereg,A4,n[linfociti B],14875.0,14875.0,0.0,True
+prereg,A4,fraction[linfociti B],0.10701284873598942,0.1070128487359894,1.3877787807814457e-17,True
+prereg,A4,median_area_nuc[linfociti B],16.114845064729625,16.114845064729625,0.0,True
+prereg,A4,median_ecc_nuc[linfociti B],0.6382540886702766,0.6382540886702766,0.0,True
+prereg,A4,n[linfociti T],44304.0,44304.0,0.0,True
+prereg,A4,fraction[linfociti T],0.3187292269175983,0.3187292269175983,0.0,True
+prereg,A4,median_area_nuc[linfociti T],15.740081226014983,15.740081226014984,-1.7763568394002505e-15,True
+prereg,A4,median_ecc_nuc[linfociti T],0.6160153969273128,0.6160153969273128,0.0,True
+prereg,A4,n[mieloidi],5733.0,5733.0,0.0,True
+prereg,A4,fraction[mieloidi],0.04124401087754133,0.0412440108775413,2.7755575615628914e-17,True
+prereg,A4,median_area_nuc[mieloidi],15.740081226014983,15.740081226014984,-1.7763568394002505e-15,True
+prereg,A4,median_ecc_nuc[mieloidi],0.6248033114439498,0.6248033114439498,0.0,True
+prereg,A4,n[non classificabile],1886.0,1886.0,0.0,True
+prereg,A4,fraction[non classificabile],0.013568150098559733,0.0135681500985597,3.2959746043559335e-17,True
+prereg,A4,median_area_nuc[non classificabile],7.870040613007491,7.870040613007491,0.0,True
+prereg,A4,median_ecc_nuc[non classificabile],0.816398851030167,0.816398851030167,0.0,True
+prereg,A4,n[non risolto],3934.0,3934.0,0.0,True
+prereg,A4,fraction[non risolto],0.02830175105394167,0.0283017510539416,6.938893903907228e-17,True
+prereg,A4,median_area_nuc[non risolto],14.016167567927626,14.016167567927626,0.0,True
+prereg,A4,median_ecc_nuc[non risolto],0.6439676613204304,0.6439676613204304,0.0,True
+prereg,A4,n[plasmacellule],31852.0,31852.0,0.0,True
+prereg,A4,fraction[plasmacellule],0.22914778204630148,0.2291477820463014,8.326672684688674e-17,True
+prereg,A4,median_area_nuc[plasmacellule],16.489608903444267,16.489608903444267,0.0,True
+prereg,A4,median_ecc_nuc[plasmacellule],0.6438782889674701,0.6438782889674701,0.0,True
+prereg,A4,n[stromali],22279.0,22279.0,0.0,True
+prereg,A4,fraction[stromali],0.16027826937741904,0.160278269377419,2.7755575615628914e-17,True
+prereg,A4,median_area_nuc[stromali],14.91560078084277,14.91560078084277,0.0,True
+prereg,A4,median_ecc_nuc[stromali],0.6289256740481354,0.6289256740481354,0.0,True
+prereg,A4,P-2 max/min median area (types>=5%),1.1055276381909547,1.105527638190955,-2.220446049250313e-16,True
+prereg,A5,n[astrociti],452.0,452.0,0.0,True
+prereg,A5,fraction[astrociti],0.10912602607436021,0.1091260260743602,1.3877787807814457e-17,True
+prereg,A5,median_area_nuc[astrociti],57.21773845029467,57.21773845029467,0.0,True
+prereg,A5,median_ecc_nuc[astrociti],0.533294910419418,0.533294910419418,0.0,True
+prereg,A5,n[microglia],169.0,169.0,0.0,True
+prereg,A5,fraction[microglia],0.04080154514727185,0.0408015451472718,4.85722573273506e-17,True
+prereg,A5,median_area_nuc[microglia],22.22631309880213,22.22631309880213,0.0,True
+prereg,A5,median_ecc_nuc[microglia],0.7474867202461408,0.7474867202461408,0.0,True
+prereg,A5,n[neuroni],2524.0,2524.0,0.0,True
+prereg,A5,fraction[neuroni],0.6093674553355867,0.6093674553355867,0.0,True
+prereg,A5,median_area_nuc[neuroni],110.75612101599035,110.75612101599036,-1.4210854715202004e-14,True
+prereg,A5,median_ecc_nuc[neuroni],0.5491771265883545,0.5491771265883545,0.0,True
+prereg,A5,n[non classificabile],1.0,1.0,0.0,True
+prereg,A5,fraction[non classificabile],0.00024142926122646064,0.0002414292612264,6.063400649625184e-17,True
+prereg,A5,median_area_nuc[non classificabile],4.955867109868042,4.955867109868042,0.0,True
+prereg,A5,median_ecc_nuc[non classificabile],0.7570919238014352,0.7570919238014352,0.0,True
+prereg,A5,n[non risolto],193.0,193.0,0.0,True
+prereg,A5,fraction[non risolto],0.04659584741670691,0.0465958474167069,6.938893903907228e-18,True
+prereg,A5,median_area_nuc[non risolto],5.9320227527208385,5.932022752720839,-8.881784197001252e-16,True
+prereg,A5,median_ecc_nuc[non risolto],0.759829511893261,0.759829511893261,0.0,True
+prereg,A5,n[oligodendrociti],625.0,625.0,0.0,True
+prereg,A5,fraction[oligodendrociti],0.15089328826653792,0.1508932882665379,2.7755575615628914e-17,True
+prereg,A5,median_area_nuc[oligodendrociti],37.0188255328022,37.0188255328022,0.0,True
+prereg,A5,median_ecc_nuc[oligodendrociti],0.6571505568301265,0.6571505568301265,0.0,True
+prereg,A5,n[vascolari],178.0,178.0,0.0,True
+prereg,A5,fraction[vascolari],0.042974408498309996,0.0429744084983099,9.71445146547012e-17,True
+prereg,A5,median_area_nuc[vascolari],26.168480118015346,26.168480118015346,0.0,True
+prereg,A5,median_ecc_nuc[vascolari],0.6832874568266938,0.6832874568266938,0.0,True
+prereg,A5,P-2 max/min median area (types>=5%),2.9918864097363085,2.9918864097363085,0.0,True
+prereg,A5,P-1 median area neuroni / glia,2.504244482173175,2.504244482173175,0.0,True
+prereg,A5,"P-6 agreement with SR (matched, informative)",0.8808224926563155,0.8808224926563155,0.0,True
+prereg,A6,n[cardiomiociti],2748.0,2748.0,0.0,True
+prereg,A6,fraction[cardiomiociti],0.5579695431472081,0.5579695431472081,0.0,True
+prereg,A6,median_area_nuc[cardiomiociti],21.929514388135072,21.929514388135072,0.0,True
+prereg,A6,median_ecc_nuc[cardiomiociti],0.8112430725011903,0.8112430725011903,0.0,True
+prereg,A6,n[endoteliali],565.0,565.0,0.0,True
+prereg,A6,fraction[endoteliali],0.11472081218274112,0.1147208121827411,1.3877787807814457e-17,True
+prereg,A6,median_area_nuc[endoteliali],17.91847500432233,17.91847500432233,0.0,True
+prereg,A6,median_ecc_nuc[endoteliali],0.8237694105166029,0.8237694105166029,0.0,True
+prereg,A6,n[fibroblasti],628.0,628.0,0.0,True
+prereg,A6,fraction[fibroblasti],0.12751269035532994,0.1275126903553299,5.551115123125783e-17,True
+prereg,A6,median_area_nuc[fibroblasti],19.942737870919416,19.942737870919416,0.0,True
+prereg,A6,median_ecc_nuc[fibroblasti],0.8297923904070803,0.8297923904070803,0.0,True
+prereg,A6,n[non classificabile],3.0,3.0,0.0,True
+prereg,A6,fraction[non classificabile],0.0006091370558375635,0.0006091370558375,6.342582709040201e-17,True
+prereg,A6,median_area_nuc[non classificabile],9.071696550305449,9.071696550305449,0.0,True
+prereg,A6,median_ecc_nuc[non classificabile],0.7357533666155236,0.7357533666155236,0.0,True
+prereg,A6,n[non risolto],981.0,981.0,0.0,True
+prereg,A6,fraction[non risolto],0.19918781725888324,0.1991878172588832,2.7755575615628914e-17,True
+prereg,A6,median_area_nuc[non risolto],15.29443054762241,15.29443054762241,0.0,True
+prereg,A6,median_ecc_nuc[non risolto],0.8248800339096245,0.8248800339096245,0.0,True
+prereg,A6,P-2 max/min median area (types>=5%),1.2238493723849373,1.2238493723849373,0.0,True
+prereg,A6,P-3 median ecc cardiomiociti - others,-0.016422741171585598,-0.0164227411715855,-9.71445146547012e-17,True
+prereg,A6,"P-6 agreement with SR (matched, informative)",0.7738028169014084,0.7502673796791444,0.023535437222264033,False
+ph1,A1,n[epiteliale],26500.0,26500.0,0.0,True
+ph1,A1,fraction[epiteliale],0.6849846201566417,0.6849846201566417,0.0,True
+ph1,A1,median_area_nuc[epiteliale],13.93981303915377,13.93981303915377,0.0,True
+ph1,A1,median_ecc_nuc[epiteliale],0.797405760949305,0.797405760949305,0.0,True
+ph1,A1,n[immunitario],3906.0,3906.0,0.0,True
+ph1,A1,fraction[immunitario],0.10096414816346576,0.1009641481634657,5.551115123125783e-17,True
+ph1,A1,median_area_nuc[immunitario],11.241784708994976,11.241784708994976,0.0,True
+ph1,A1,median_ecc_nuc[immunitario],0.7587733176421565,0.7587733176421565,0.0,True
+ph1,A1,n[non classificabile],6.0,6.0,0.0,True
+ph1,A1,fraction[non classificabile],0.00015509085739395662,0.0001550908573939,5.662245845805547e-17,True
+ph1,A1,median_area_nuc[non classificabile],8.618701610229481,8.618701610229481,0.0,True
+ph1,A1,median_ecc_nuc[non classificabile],0.7435319201663431,0.7435319201663431,0.0,True
+ph1,A1,n[stromale e muscolo liscio],8275.0,8275.0,0.0,True
+ph1,A1,fraction[stromale e muscolo liscio],0.21389614082249853,0.2138961408224985,2.7755575615628914e-17,True
+ph1,A1,median_area_nuc[stromale e muscolo liscio],11.241784708994976,11.241784708994976,0.0,True
+ph1,A1,median_ecc_nuc[stromale e muscolo liscio],0.8336417373928947,0.8336417373928947,0.0,True
+ph1,A1,P-2 max/min median area (types>=5%),1.24,1.24,0.0,True
+ph1,A2,n[epiteliale normale],21588.0,21588.0,0.0,True
+ph1,A2,fraction[epiteliale normale],0.6597597872925645,0.6597597872925645,0.0,True
+ph1,A2,median_area_nuc[epiteliale normale],33.785481341433396,33.7854813414334,-7.105427357601002e-15,True
+ph1,A2,median_ecc_nuc[epiteliale normale],0.7808692635109599,0.7808692635109599,0.0,True
+ph1,A2,n[epiteliale tumorale],1621.0,1621.0,0.0,True
+ph1,A2,fraction[epiteliale tumorale],0.049540050731945846,0.0495400507319458,4.85722573273506e-17,True
+ph1,A2,median_area_nuc[epiteliale tumorale],20.825640383411272,20.825640383411272,0.0,True
+ph1,A2,median_ecc_nuc[epiteliale tumorale],0.6958723551598489,0.6958723551598489,0.0,True
+ph1,A2,n[fibroblasti],6683.0,6683.0,0.0,True
+ph1,A2,fraction[fibroblasti],0.20424192414657255,0.2042419241465725,5.551115123125783e-17,True
+ph1,A2,median_area_nuc[fibroblasti],24.346522030966415,24.346522030966412,3.552713678800501e-15,True
+ph1,A2,median_ecc_nuc[fibroblasti],0.7850754643378459,0.7850754643378459,0.0,True
+ph1,A2,n[non classificabile],2.0,2.0,0.0,True
+ph1,A2,fraction[non classificabile],6.112282631948902e-05,6.112282631948902e-05,0.0,True
+ph1,A2,median_area_nuc[non classificabile],28.766352184280322,28.76635218428032,3.552713678800501e-15,True
+ph1,A2,median_ecc_nuc[non classificabile],0.5369329733509731,0.5369329733509731,0.0,True
+ph1,A2,n[non risolto],2827.0,2827.0,0.0,True
+ph1,A2,fraction[non risolto],0.08639711500259772,0.0863971150025977,2.7755575615628914e-17,True
+ph1,A2,median_area_nuc[non risolto],30.264599693878253,30.264599693878253,0.0,True
+ph1,A2,median_ecc_nuc[non risolto],0.785042562647935,0.785042562647935,0.0,True
+ph1,A2,P-2 max/min median area (types>=5%),1.3876923076923078,1.6223021582733814,-0.23460985058107364,False
+ph1,A3,n[endoteliale],1729.0,1729.0,0.0,True
+ph1,A3,fraction[endoteliale],0.08118133158043009,0.08118133158043,8.326672684688674e-17,True
+ph1,A3,median_area_nuc[endoteliale],31.163548199637013,31.163548199637013,0.0,True
+ph1,A3,median_ecc_nuc[endoteliale],0.8175754584315428,0.8175754584315428,0.0,True
+ph1,A3,n[epiteliale normale],7055.0,7055.0,0.0,True
+ph1,A3,fraction[epiteliale normale],0.33125176072870693,0.3312517607287069,5.551115123125783e-17,True
+ph1,A3,median_area_nuc[epiteliale normale],34.984079349111745,34.984079349111745,0.0,True
+ph1,A3,median_ecc_nuc[epiteliale normale],0.741347322558283,0.741347322558283,0.0,True
+ph1,A3,n[epiteliale tumorale],1592.0,1592.0,0.0,True
+ph1,A3,fraction[epiteliale tumorale],0.0747488027044793,0.0747488027044793,0.0,True
+ph1,A3,median_area_nuc[epiteliale tumorale],24.571259157406107,24.571259157406107,0.0,True
+ph1,A3,median_ecc_nuc[epiteliale tumorale],0.725086826704227,0.725086826704227,0.0,True
+ph1,A3,n[fibroblasti],6905.0,6905.0,0.0,True
+ph1,A3,fraction[fibroblasti],0.32420884590102356,0.3242088459010235,5.551115123125783e-17,True
+ph1,A3,median_area_nuc[fibroblasti],31.987584329915876,31.98758432991588,-3.552713678800501e-15,True
+ph1,A3,median_ecc_nuc[fibroblasti],0.868324186298029,0.868324186298029,0.0,True
+ph1,A3,n[immunitario],3960.0,3960.0,0.0,True
+ph1,A3,fraction[immunitario],0.18593295145084046,0.1859329514508404,5.551115123125783e-17,True
+ph1,A3,median_area_nuc[immunitario],26.29424379344373,26.29424379344373,0.0,True
+ph1,A3,median_ecc_nuc[immunitario],0.8035735685489944,0.8035735685489944,0.0,True
+ph1,A3,n[non classificabile],57.0,57.0,0.0,True
+ph1,A3,fraction[non classificabile],0.002676307634519673,0.0026763076345196,7.32920668600201e-17,True
+ph1,A3,median_area_nuc[non classificabile],21.79950126464993,21.79950126464993,0.0,True
+ph1,A3,median_ecc_nuc[non classificabile],0.8411725319545228,0.8411725319545228,0.0,True
+ph1,A3,P-2 max/min median area (types>=5%),1.423780487804878,1.423780487804878,0.0,True
+ph1,A4,n[endoteliali],1120.0,1120.0,0.0,True
+ph1,A4,fraction[endoteliali],0.008057438022474496,0.0080574380224744,9.71445146547012e-17,True
+ph1,A4,median_area_nuc[endoteliali],15.140459084071555,15.140459084071557,-1.7763568394002505e-15,True
+ph1,A4,median_ecc_nuc[endoteliali],0.6692213004009631,0.6692213004009631,0.0,True
+ph1,A4,n[linfociti B],36352.0,36352.0,0.0,True
+ph1,A4,fraction[linfociti B],0.2615214169580294,0.2615214169580294,0.0,True
+ph1,A4,median_area_nuc[linfociti B],16.78941997441598,16.78941997441598,0.0,True
+ph1,A4,median_ecc_nuc[linfociti B],0.6430517790753167,0.6430517790753167,0.0,True
+ph1,A4,n[linfociti T],30628.0,30628.0,0.0,True
+ph1,A4,fraction[linfociti T],0.22034215335031151,0.2203421533503115,2.7755575615628914e-17,True
+ph1,A4,median_area_nuc[linfociti T],16.039892296986697,16.039892296986697,0.0,True
+ph1,A4,median_ecc_nuc[linfociti T],0.6157602982226987,0.6157602982226987,0.0,True
+ph1,A4,n[mieloidi],1486.0,1486.0,0.0,True
+ph1,A4,fraction[mieloidi],0.010690493661961698,0.0106904936619616,9.71445146547012e-17,True
+ph1,A4,median_area_nuc[mieloidi],17.014278277644767,17.014278277644767,0.0,True
+ph1,A4,median_ecc_nuc[mieloidi],0.6354534609807143,0.6354534609807143,0.0,True
+ph1,A4,n[non classificabile],1886.0,1886.0,0.0,True
+ph1,A4,fraction[non classificabile],0.013568150098559733,0.0135681500985597,3.2959746043559335e-17,True
+ph1,A4,median_area_nuc[non classificabile],7.870040613007491,7.870040613007491,0.0,True
+ph1,A4,median_ecc_nuc[non classificabile],0.816398851030167,0.816398851030167,0.0,True
+ph1,A4,n[non risolto],63623.0,63623.0,0.0,True
+ph1,A4,fraction[non risolto],0.4577128386641919,0.4577128386641919,0.0,True
+ph1,A4,median_area_nuc[non risolto],14.990553548585698,14.990553548585698,0.0,True
+ph1,A4,median_ecc_nuc[non risolto],0.626270731986879,0.626270731986879,0.0,True
+ph1,A4,n[plasmacellule],2345.0,2345.0,0.0,True
+ph1,A4,fraction[plasmacellule],0.016870260859555977,0.0168702608595559,7.632783294297951e-17,True
+ph1,A4,median_area_nuc[plasmacellule],15.665128458272054,15.665128458272054,0.0,True
+ph1,A4,median_ecc_nuc[plasmacellule],0.6601869659834597,0.6601869659834597,0.0,True
+ph1,A4,n[stromali],1562.0,1562.0,0.0,True
+ph1,A4,fraction[stromali],0.011237248384915325,0.0112372483849153,2.6020852139652106e-17,True
+ph1,A4,median_area_nuc[stromali],15.740081226014983,15.740081226014984,-1.7763568394002505e-15,True
+ph1,A4,median_ecc_nuc[stromali],0.6349809791785175,0.6349809791785175,0.0,True
+ph1,A4,P-2 max/min median area (types>=5%),1.0467289719626167,1.0467289719626167,0.0,True
+ph1,A5,n[astrociti],275.0,275.0,0.0,True
+ph1,A5,fraction[astrociti],0.06639304683727668,0.0663930468372766,6.938893903907228e-17,True
+ph1,A5,median_area_nuc[astrociti],49.93411557670073,49.93411557670073,0.0,True
+ph1,A5,median_ecc_nuc[astrociti],0.5590467624367609,0.5590467624367609,0.0,True
+ph1,A5,n[microglia],151.0,151.0,0.0,True
+ph1,A5,fraction[microglia],0.036455818445195555,0.0364558184451955,5.551115123125783e-17,True
+ph1,A5,median_area_nuc[microglia],23.42773542846711,23.42773542846711,0.0,True
+ph1,A5,median_ecc_nuc[microglia],0.7192083211945915,0.7192083211945915,0.0,True
+ph1,A5,n[neuroni],2701.0,2701.0,0.0,True
+ph1,A5,fraction[neuroni],0.6521004345726702,0.6521004345726702,0.0,True
+ph1,A5,median_area_nuc[neuroni],110.8312099115944,110.8312099115944,0.0,True
+ph1,A5,median_ecc_nuc[neuroni],0.5452612476657765,0.5452612476657765,0.0,True
+ph1,A5,n[non classificabile],1.0,1.0,0.0,True
+ph1,A5,fraction[non classificabile],0.00024142926122646064,0.0002414292612264,6.063400649625184e-17,True
+ph1,A5,median_area_nuc[non classificabile],4.955867109868042,4.955867109868042,0.0,True
+ph1,A5,median_ecc_nuc[non classificabile],0.7570919238014352,0.7570919238014352,0.0,True
+ph1,A5,n[oligodendrociti],818.0,818.0,0.0,True
+ph1,A5,fraction[oligodendrociti],0.1974891356832448,0.1974891356832448,0.0,True
+ph1,A5,median_area_nuc[oligodendrociti],30.936624988873234,30.936624988873238,-3.552713678800501e-15,True
+ph1,A5,median_ecc_nuc[oligodendrociti],0.6835748025462693,0.6835748025462693,0.0,True
+ph1,A5,n[vascolari],196.0,196.0,0.0,True
+ph1,A5,fraction[vascolari],0.04732013520038629,0.0473201352003862,9.020562075079397e-17,True
+ph1,A5,median_area_nuc[vascolari],23.39019098066508,23.39019098066508,0.0,True
+ph1,A5,median_ecc_nuc[vascolari],0.7299811418169346,0.7299811418169346,0.0,True
+ph1,A5,P-2 max/min median area (types>=5%),3.58252427184466,3.58252427184466,0.0,True
+ph1,A5,P-1 median area neuroni / glia,3.215686274509804,3.215686274509804,0.0,True
+ph1,A5,"P-6 agreement with SR (matched, informative)",0.9067055393586005,0.9067055393586004,1.1102230246251565e-16,True
+ph1,A6,n[cardiomiociti],3729.0,3729.0,0.0,True
+ph1,A6,fraction[cardiomiociti],0.7571573604060914,0.7571573604060914,0.0,True
+ph1,A6,median_area_nuc[cardiomiociti],19.71781977463085,19.71781977463085,0.0,True
+ph1,A6,median_ecc_nuc[cardiomiociti],0.8165099436104721,0.8165099436104721,0.0,True
+ph1,A6,n[fibroblasti],628.0,628.0,0.0,True
+ph1,A6,fraction[fibroblasti],0.12751269035532994,0.1275126903553299,5.551115123125783e-17,True
+ph1,A6,median_area_nuc[fibroblasti],19.942737870919416,19.942737870919416,0.0,True
+ph1,A6,median_ecc_nuc[fibroblasti],0.8297923904070803,0.8297923904070803,0.0,True
+ph1,A6,n[immunitari],565.0,565.0,0.0,True
+ph1,A6,fraction[immunitari],0.11472081218274112,0.1147208121827411,1.3877787807814457e-17,True
+ph1,A6,median_area_nuc[immunitari],17.91847500432233,17.91847500432233,0.0,True
+ph1,A6,median_ecc_nuc[immunitari],0.8237694105166029,0.8237694105166029,0.0,True
+ph1,A6,n[non classificabile],3.0,3.0,0.0,True
+ph1,A6,fraction[non classificabile],0.0006091370558375635,0.0006091370558375,6.342582709040201e-17,True
+ph1,A6,median_area_nuc[non classificabile],9.071696550305449,9.071696550305449,0.0,True
+ph1,A6,median_ecc_nuc[non classificabile],0.7357533666155236,0.7357533666155236,0.0,True
+ph1,A6,P-2 max/min median area (types>=5%),1.1129707112970713,1.1129707112970713,0.0,True
+ph1,A6,P-3 median ecc cardiomiociti - others,-0.011155870062303785,-0.0111558700623037,-8.500145032286355e-17,True
+ph1,A6,"P-6 agreement with SR (matched, informative)",0.7943374858437147,0.7765685019206146,0.017768983923100112,False

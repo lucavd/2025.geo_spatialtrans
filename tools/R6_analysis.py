@@ -38,11 +38,12 @@ def per_roi_type(lab):
 
 def boot_stat(lab, fn, B=B, two_stage=True, rois=None):
     """block bootstrap over ROIs (unit), optionally resampling nuclei within each resampled ROI; fn(df) -> float."""
-    groups = {r: g for r, g in lab.groupby("roi_id")}; keys = list(groups) if rois is None else [r for r in rois if r in groups]
+    cols = [c for c in ["roi_id", "cell_type", "area_um2", "eccentricity", "a_t", "interior", "nt", "sr_cell_id", "sr_type", "sr_lowumi"] if c in lab.columns]
+    groups = {r: g[cols].reset_index(drop=True) for r, g in lab.groupby("roi_id")}; keys = list(groups) if rois is None else [r for r in rois if r in groups]
     est = fn(pd.concat([groups[k] for k in keys])); vals = np.empty(B)
     for b in range(B):
         pick = rng.choice(keys, size=len(keys), replace=True)
-        parts = [groups[k].sample(frac=1.0, replace=True, random_state=int(rng.integers(1 << 31))) if two_stage else groups[k] for k in pick]
+        parts = [groups[k].iloc[rng.integers(0, len(groups[k]), len(groups[k]))] if two_stage else groups[k] for k in pick]
         vals[b] = fn(pd.concat(parts))
     vals = vals[np.isfinite(vals)]
     return est, np.quantile(vals, 0.025) if len(vals) else np.nan, np.quantile(vals, 0.975) if len(vals) else np.nan, len(vals)
@@ -59,7 +60,7 @@ GLIA = {"astrociti", "oligodendrociti", "microglia"}
 def ratio_neuron_glia(df):
     a = df.area_um2[df.cell_type == "neuroni"].median(); g = df.area_um2[df.cell_type.isin(GLIA)].median(); return a / g
 def ratio_max_min(df, min_frac=0.05):
-    d = df[~df.cell_type.isin(NONTYPE)]; fr = d.cell_type.value_counts(normalize=True); ty = fr[fr >= min_frac].index
+    fr = df.cell_type.value_counts(normalize=True); d = df[~df.cell_type.isin(NONTYPE)]; ty = [t for t in fr[fr >= min_frac].index if t not in NONTYPE]
     med = d[d.cell_type.isin(ty)].groupby("cell_type").area_um2.median(); return med.max() / med.min() if len(med) >= 2 else np.nan
 def ecc_diff_cm(df):
     d = df[~df.cell_type.isin(NONTYPE)]; return d.eccentricity[d.cell_type == "cardiomiociti"].median() - d.eccentricity[d.cell_type != "cardiomiociti"].median()
@@ -95,9 +96,9 @@ def add_sr(lab, A):
     return lab
 
 def agreement_all(df):
-    d = df[df.sr_cell_id.notna() & df.sr_type.notna() & ~df.sr_lowumi.fillna(True)]; return (d.cell_type == d.sr_type).mean()
+    d = df[df.sr_cell_id.notna() & df.sr_type.notna() & ~df.sr_lowumi.fillna(True).astype(bool)]; return (d.cell_type == d.sr_type).mean()
 def agreement_informative(df):
-    d = df[df.sr_cell_id.notna() & df.sr_type.notna() & ~df.sr_lowumi.fillna(True) & (df.sr_type != "altro") & ~df.cell_type.isin(NONTYPE)]; return (d.cell_type == d.sr_type).mean()
+    d = df[df.sr_cell_id.notna() & df.sr_type.notna() & ~df.sr_lowumi.fillna(True).astype(bool) & (df.sr_type != "altro") & ~df.cell_type.isin(NONTYPE)]; return (d.cell_type == d.sr_type).mean()
 
 # ================= main
 labs = {}; prt = []
@@ -138,14 +139,14 @@ def bdiff(df):
 gf = {r: g for r, g in l4[l4.roi_id.isin(fol)].groupby("roi_id")}; gp = {r: g for r, g in l4[l4.roi_id.isin(par)].groupby("roi_id")}
 vals = []
 for b in range(B):
-    pf = [gf[k].sample(frac=1, replace=True, random_state=int(rng.integers(1 << 31))) for k in rng.choice(list(gf), len(gf))]
-    pp = [gp[k].sample(frac=1, replace=True, random_state=int(rng.integers(1 << 31))) for k in rng.choice(list(gp), len(gp))]
+    pf = [gf[k].iloc[rng.integers(0, len(gf[k]), len(gf[k]))] for k in rng.choice(list(gf), len(gf))]
+    pp = [gp[k].iloc[rng.integers(0, len(gp[k]), len(gp[k]))] for k in rng.choice(list(gp), len(gp))]
     vals.append(bdiff(pd.concat(pf + pp)))
 P.append(dict(id="P-4", archetype="A4", quantity="B fraction follicular (f1,f2) - paracortical (p1-p3)", estimate=bdiff(l4), lo=np.quantile(vals, .025), hi=np.quantile(vals, .975), lower=0.20, upper=np.nan, verdict=verdict(np.quantile(vals, .025), np.quantile(vals, .975), lower=0.20)))
 DOM = {"A1": ("epiteliale", 0.88, None), "A2": ("epiteliale tumorale", 0.70, None), "A3": (["fibroblasti", "muscolo liscio"], 0.75, None), "A4": ("linfociti B", 0.80, fol), "A5": ("neuroni", 0.40, None), "A6": ("cardiomiociti", 0.85, None)}
 for A, (ty, hyp, rois) in DOM.items():
     fn = (lambda df, ty=ty: df.cell_type.isin(ty).mean()) if isinstance(ty, list) else frac_of(ty)
-    e = boot_stat(labs[A], fn, two_stage=False, rois=rois)
+    e = boot_stat(labs[A], fn, two_stage=True, rois=rois)
     P.append(dict(id="P-5", archetype=A, quantity=f"fraction of {ty if isinstance(ty, str) else '+'.join(ty)}" + (" (follicular ROIs)" if rois else ""), estimate=e[0], lo=e[1], hi=e[2], lower=hyp - 0.15, upper=hyp + 0.15, verdict=verdict(e[1], e[2], lower=hyp - 0.15, upper=hyp + 0.15), design_value=hyp))
 for A in ["A5", "A6"]:
     e = boot_stat(labs[A], agreement_informative, two_stage=False); P.append(dict(id="P-6", archetype=A, quantity="agreement with Space Ranger 10x Cloud coarse type (matched, informative)", estimate=e[0], lo=e[1], hi=e[2], lower=0.75, upper=np.nan, verdict=verdict(e[1], e[2], lower=0.75)))
@@ -154,7 +155,7 @@ P = pd.DataFrame(P); P.to_csv(f"{OUT}/R6_predictions{SUF}.csv", index=False); pr
 
 # confusion tables vs Space Ranger
 for A in ["A5", "A6"]:
-    d = labs[A]; d = d[d.sr_cell_id.notna() & ~d.sr_lowumi.fillna(True)]
+    d = labs[A]; d = d[d.sr_cell_id.notna() & ~d.sr_lowumi.fillna(True).astype(bool)]
     pd.crosstab(d.cell_type, d.sr_type).to_csv(f"{OUT}/R6_sr_confusion_{A}{SUF}.csv")
     print(A, "matched to SR:", len(d), "of", len(labs[A]))
 

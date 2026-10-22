@@ -1,0 +1,17 @@
+CAT identical cluster.py vs catalogue.py: True | EPI_SPLIT identical: True
+A1 clusters 16 n_nuclei quantiles [387, 1112, 1990, 4137, 5260] clusters <50 nuclei: 0 nuclei in them: 0
+  markers present: {'epiteliale': 390, 'stromale e muscolo liscio': 315, 'immunitario': 691, 'endoteliale': 183}
+  markers in universe (ph1): {'epiteliale': 321, 'stromale e muscolo liscio': 273, 'immunitario': 535, 'endoteliale': 161}
+A4 clusters 491 n_nuclei quantiles [5, 34, 50, 661, 7096] clusters <50 nuclei: 243 nuclei in them: 9378
+  markers present: {'linfociti B': 146, 'linfociti T': 183, 'plasmacellule': 69, 'mieloidi': 464, 'stromali': 305, 'endoteliali': 183}
+  markers in universe (ph1): {'linfociti B': 128, 'linfociti T': 148, 'plasmacellule': 52, 'mieloidi': 309, 'stromali': 183, 'endoteliali': 110}
+A5 clusters 20 n_nuclei quantiles [18, 60, 158, 363, 651] clusters <50 nuclei: 1 nuclei in them: 18
+  markers present: {'neuroni': 410, 'astrociti': 63, 'oligodendrociti': 110, 'microglia': 72, 'vascolari': 320}
+  markers in universe (ph1): {'neuroni': 386, 'astrociti': 61, 'oligodendrociti': 109, 'microglia': 66, 'vascolari': 292}
+A4 ph1: non risolto clusters 395 nuclei 63623 ; median n in non risolto clusters 46.0 vs resolved 467.0
+['genesymbol', 'canonical_marker', 'cell_type', 'germ_layer', 'human', 'human_sensitivity', 'human_specificity', 'mouse', 'mouse_sensitivity', 'mouse_specificity', 'ncbi_tax_id', 'organ', 'ubiquitiousness']
+  genesymbol  canonical_marker      cell_type germ_layer  human  human_sensitivity  human_specificity  mouse  mouse_sensitivity  mouse_specificity  ncbi_tax_id  organ  ubiquitiousness
+0       A1cf             False    Hepatocytes   Endoderm   True           0.189189           0.004437   True           0.175000           0.000257         9606  Liver            0.002
+1        A2m              True  Bergmann glia   Ectoderm   True           0.000000           0.062343   True           0.333333           0.001604         9606  Brain            0.012
+2       Mug2              True  Bergmann glia   Ectoderm   True           0.000000           0.062343   True           0.333333           0.001604         9606  Brain            0.012
+mouse table genesymbol examples: ['A1cf', 'A2m', 'Mug2', 'Mug1', 'A4galt', 'Aak1', 'Aak1', 'Aanat', 'Aanat', 'Aard'] | frac all-uppercase symbols: 0.002

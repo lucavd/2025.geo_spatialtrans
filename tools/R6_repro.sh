@@ -4,8 +4,8 @@ set -euo pipefail
 cd ~/2025.geo_spatialtrans
 L=/mnt/micron/geo_spatialtrans/R6; export OMP_NUM_THREADS=2
 mkdir -p $L/repro/labels; rm -f $L/repro/labels/*
+sed "s#OUT = f\"{M}/labels\"#OUT = f\"{M}/repro/labels\"#" tools/R6_cluster.py > $L/repro/R6_cluster_repro.py
 for a in A1 A2 A3 A4 A5 A6; do
-  sed "s#OUT = f\"{M}/labels\"#OUT = f\"{M}/repro/labels\"#" tools/R6_cluster.py > $L/repro/R6_cluster_repro.py
   .venv/bin/python $L/repro/R6_cluster_repro.py $a exp 20 20261022 > $L/repro/cluster_$a.log 2>&1 &
 done; wait
 .venv/bin/python - <<'EOF'

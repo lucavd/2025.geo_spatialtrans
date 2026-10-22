@@ -1,0 +1,6 @@
+cell_type,altro,astrociti,microglia,neuroni,oligodendrociti,vascolari
+astrociti,1,201,0,0,2,1
+microglia,0,0,91,21,6,2
+neuroni,0,29,0,1437,6,5
+oligodendrociti,0,16,0,74,365,6
+vascolari,13,4,1,50,1,83

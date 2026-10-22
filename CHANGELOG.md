@@ -2,6 +2,20 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## R6 — 2026-10-22/23 — Classificazione per tipo dei nuclei reali dall'espressione a 2 µm (branch `step1-cell-layer`) — **in attesa delle decisioni di Luca**
+
+File dello step `docs/steps/R6.md`, report `reports/R6.html`; decisione tecnica DEC-012 (impronta, clustering, marcatori).
+
+### Codice (nessun file degli step passati modificato)
+- `tools/R6_common.py` (impronte bin→nucleo: espansa, solo nucleo, spostata; aggregazione dei conteggi), `tools/R6_aggregate.py` (30 ROI × 3 impronte, appaiamento con le cellule di Space Ranger), `tools/R6_dexp.py` (espansione misurata da Space Ranger), `tools/R6_export_terr.R` (territori reali in parquet), `tools/R6_cluster.py` (Leiden + criterio pre-registrato), `tools/R6_catalogue.py`, `tools/R6_relabel.py` (PH-1), `tools/R6_analysis.py` (riferimenti per tipo, P-1…P-6, CP-1, CP-2, sensibilità; bootstrap a blocchi sulle ROI, B = 2000), `tools/R6_posthoc.py` (PH-2…PH-6), `tools/R6_figures.py`, `tools/R6_report_parts.py`; cancelli `tools/R6_test.py` (G-1), `tools/R6_md5.sh` (G-2), `tools/R6_repro.sh` (G-3), `tools/R6_check.py` (G-4).
+- Correzioni dopo la revisione avversariale: filtro Low UMI di Space Ranger (pandas 3), soglia del 5 % di P-2 su tutti i nuclei, bootstrap a due stadi per P-5.
+
+### Risultati
+- Cancelli tutti superati; revisione: 316 numeri ricalcolati, 3 discrepanze corrette, 0 bug che cambiano i numeri nel codice.
+- Criterio di etichettatura pre-registrato difettoso (cellule di Paneth → «endoteliali», tre cluster di cardiomiociti «non risolti»); correzione PH-1 con accordo con Space Ranger 0.91 (cervello) e 0.79 (cuore); kappa 0.83 e 0.29 contro 0.13 e 0.10 con impronte spostate.
+- Neuroni 111 µm² contro glia 34 (P-1); i tipi spiegano la taglia in intestino, tumore e stroma del colon (P-2 confermata), non nel linfonodo (B e T uguali) né nel cuore; il nucleo del cardiomiocita non è più allungato (P-3 smentita); le quote del design smentite in 5 tessuti su 6 (P-5).
+- BIO_REFERENCES B-161…B-185 (riferimenti per tipo, provvisori fino alle decisioni); BACKLOG BL-147…BL-152; BL-099, BL-138, BL-064, BL-055 aggiornate.
+
 ## S1.5 — 2026-10-21 — Il simulatore del livello cellulare tutto insieme: orchestratore, controlli, sei preset, scala (branch `step1-cell-layer`) — **chiusa**
 
 File dello step `docs/steps/S1.5.md`, report `reports/S1.5.html`; decisioni DEC-008 (perimetro), DEC-009 (distanza minima dai tessuti veri), DEC-010 (nuclei in piu' parti: nessuna modifica), DEC-011 (caso limite «scala sbagliata → C8» fallito come scritto: errore di pre-registrazione).

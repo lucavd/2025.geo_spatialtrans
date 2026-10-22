@@ -1,0 +1,4 @@
+A1_r1: box bins 250152; exp labels differ on 517 bins (0.2067%); assigned both 170422 vs 170422
+   among first 517 differing bins: exact distance ties 517; one side 0 (d_exp boundary) 0; max |d_EDT - d_KD| = 0 px
+A6_r1: box bins 249873; exp labels differ on 31 bins (0.0124%); assigned both 60487 vs 60487
+   among first 31 differing bins: exact distance ties 31; one side 0 (d_exp boundary) 0; max |d_EDT - d_KD| = 0 px

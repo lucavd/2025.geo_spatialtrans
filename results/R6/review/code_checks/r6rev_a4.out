@@ -1,0 +1,7 @@
+/usr/lib/python3.12/functools.py:909: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+A4: classifiable 137116; kNN graph connected components: 224; component sizes: largest 128066, n components <50 nuclei 206 holding 8126 nuclei; 39s
+small components (<50) that map to exactly one leiden cluster: 1; leiden clusters with <50 nuclei: 243
+median umi: in small components 55 vs giant component 86; sr? no. n small 8126
+ROI of small-component nuclei: {'p1': 2279, 'p2': 1730, 'p3': 1695, 'f1': 1349, 'f2': 1073}
+leiden cluster sizes quantiles: [5, 40, 50, 327, 7096]

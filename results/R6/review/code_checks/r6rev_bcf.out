@@ -1,0 +1,56 @@
+
+===== A1_r1 (Visium_HD_Mouse_Small_Intestine) um_per_px=0.273761 d_exp=8.0
+tissue_positions dtypes: float64 example 24543.676218275905 -700.3502774151291
+mask shape (3653, 3653) dtype uint32 box rows 3653 cols 3653
+labels in mask: 9064 nuclei table: 9064 keep: 8739 mask labels == table labels: True
+(b) centroid: median |COM(row,col)*um - (y_um,x_um)| = 0.0000 um (max 0.0000); swapped axes: median 399.75 um
+bins box 250152 (info 250152 ) filtered 218613 (info 218613 )
+(b) nuc-mode bins: nuclei with >=1 bin 8894; median dist mean-bin-position vs centroid = 0.415 um, q90 0.818, max 5.70; swapped axes median 399.0 um
+(c) exp (independent): bins assigned 169617 (info 169617); nuc: 30612 (info 30612)
+(c) expanded ambient bins: max dist*um = 7.996 um (<= d_exp)
+(c) bins assigned to keep=False nuclei (exp): 4891 = info bins_assigned_exp - sum(n_bins_exp parquet) = 4881
+(c) contrast without keep=False in mask: bins to keep nuclei 168567 vs with blocking 164726 (sum n_bins_exp parquet 164736)
+(a) nuc: independent counts vs npz: shape (8739, 19059) vs (8739, 19059); nonzero differences 0; nuclei with any difference 0; umi parquet == independent row sums: True
+(a) exp: independent counts vs npz: shape (8739, 19059) vs (8739, 19059); nonzero differences 31077; nuclei with any difference 909; umi parquet == independent row sums: False
+
+===== A5_r4 (Visium_HD_6p5mm_Mouse_Brain) um_per_px=0.274024 d_exp=8.0
+tissue_positions dtypes: float64 example 23413.16561235122 197.7723186545096
+mask shape (3649, 3649) dtype uint32 box rows 3649 cols 3649
+labels in mask: 525 nuclei table: 525 keep: 524 mask labels == table labels: True
+(b) centroid: median |COM(row,col)*um - (y_um,x_um)| = 0.0000 um (max 0.0000); swapped axes: median 441.81 um
+bins box 250020 (info 250020 ) filtered 215484 (info 215484 )
+(b) nuc-mode bins: nuclei with >=1 bin 522; median dist mean-bin-position vs centroid = 0.238 um, q90 0.482, max 2.23; swapped axes median 442.2 um
+(c) exp (independent): bins assigned 65598 (info 65598); nuc: 13872 (info 13872)
+(c) expanded ambient bins: max dist*um = 7.989 um (<= d_exp)
+(c) bins assigned to keep=False nuclei (exp): 51 = info bins_assigned_exp - sum(n_bins_exp parquet) = 51
+(c) contrast without keep=False in mask: bins to keep nuclei 65547 vs with blocking 65547 (sum n_bins_exp parquet 65547)
+(a) nuc: independent counts vs npz: shape (524, 19070) vs (524, 19070); nonzero differences 0; nuclei with any difference 0; umi parquet == independent row sums: True
+(a) exp: independent counts vs npz: shape (524, 19070) vs (524, 19070); nonzero differences 1380; nuclei with any difference 19; umi parquet == independent row sums: False
+(f) barcode_mappings rows 11222500 unique square_002um 11222500 cell_id example cellid_000017020-1 in_nucleus dtype bool
+(f) sr_in_nucleus agree: 1.0000; sr_cell_id agree (where in_nucleus): 1.0000; n in_nucleus 273 (parquet 273)
+(f) sr_bin_dist_px: median 2.90, max 5.00 px; bin pitch px = 7.30; half-diagonal = 5.16
+(f) fraction of nuclei whose centroid is within half-pitch of the matched bin centre: 0.7920
+(f) nearest bin in_cell but not in_nucleus: 14; in_nucleus with cell_id NaN: 0
+(f) cell_types.csv rows 17542 unique barcode 17542 example cellid_000000001-1 | matched sr_cell_id found in cell_types: 1.0
+(f) coarse types: {'glial cell': 7372, 'neuron': 3411, 'glutamatergic neuron': 2565, 'endothelial cell': 2056, 'fibroblast': 619, 'neuron associated cell': 612, 'mural cell': 394, 'epithelial cell': 237, 'connective tissue cell': 104, 'neural cell': 34, 'Low UMI Barcode': 32, 'precursor cell': 31}
+
+===== A6_r1 (Visium_HD_6p5mm_Human_Heart) um_per_px=0.273811 d_exp=8.0
+tissue_positions dtypes: float64 example 13004.868717690864 34387.90565728458
+mask shape (3652, 3652) dtype uint32 box rows 3652 cols 3652
+labels in mask: 681 nuclei table: 681 keep: 673 mask labels == table labels: True
+(b) centroid: median |COM(row,col)*um - (y_um,x_um)| = 0.0000 um (max 0.0000); swapped axes: median 443.89 um
+bins box 249873 (info 249873 ) filtered 249873 (info 249873 )
+(b) nuc-mode bins: nuclei with >=1 bin 681; median dist mean-bin-position vs centroid = 0.237 um, q90 0.513, max 1.34; swapped axes median 443.5 um
+(c) exp (independent): bins assigned 60487 (info 60487); nuc: 5353 (info 5353)
+(c) expanded ambient bins: max dist*um = 7.997 um (<= d_exp)
+(c) bins assigned to keep=False nuclei (exp): 711 = info bins_assigned_exp - sum(n_bins_exp parquet) = 711
+(c) contrast without keep=False in mask: bins to keep nuclei 59847 vs with blocking 59776 (sum n_bins_exp parquet 59776)
+(a) nuc: independent counts vs npz: shape (673, 18085) vs (673, 18085); nonzero differences 0; nuclei with any difference 0; umi parquet == independent row sums: True
+(a) exp: independent counts vs npz: shape (673, 18085) vs (673, 18085); nonzero differences 340; nuclei with any difference 46; umi parquet == independent row sums: False
+(f) barcode_mappings rows 11222500 unique square_002um 11222500 cell_id example cellid_000006894-1 in_nucleus dtype bool
+(f) sr_in_nucleus agree: 1.0000; sr_cell_id agree (where in_nucleus): 1.0000; n in_nucleus 669 (parquet 669)
+(f) sr_bin_dist_px: median 3.08, max 5.15 px; bin pitch px = 7.30; half-diagonal = 5.16
+(f) fraction of nuclei whose centroid is within half-pitch of the matched bin centre: 0.7786
+(f) nearest bin in_cell but not in_nucleus: 4; in_nucleus with cell_id NaN: 0
+(f) cell_types.csv rows 45616 unique barcode 45616 example cellid_000000019-1 | matched sr_cell_id found in cell_types: 1.0
+(f) coarse types: {'cardiac muscle cell': 33463, 'Low UMI Barcode': 3809, 'endothelial cell': 2125, 'fibroblast': 1484, 'cell': 1267, 'mural cell': 1148, 'smooth muscle cell': 647, 'macrophage': 549, 'neuron': 230, 'B cell': 162, 'mast cell': 148, 'neuron associated cell': 132}

@@ -1,5 +1,13 @@
 # Registro delle modifiche
 
+## 2026-10-23 (risultati di R6)
+
+* **Aggiornamento**: [Di che tipo sono le cellule vere nei sei tessuti, e i tipi spiegano le taglie dei nuclei? (R6)](steps/R6.md): risultati di cancelli, previsioni e controprove, correzione post hoc del criterio di etichettatura (PH-1), revisione avversariale con tre correzioni ed esecuzione ripetuta, riassunto «In breve» con tre decisioni per Luca, dubbi rinviati (BL-147…BL-152). Decisione tecnica [Come si attribuisce l'espressione a 2 µm ai nuclei veri e come si classificano (DEC-012)](decisions/DEC-012.md). Report `reports/R6.html`.
+
+## 2026-10-23 (apertura di R6)
+
+* **Creazione**: file dello step [Di che tipo sono le cellule vere nei sei tessuti, e i tipi spiegano le taglie dei nuclei? (R6)](steps/R6.md) con dubbi ricevuti, perimetro, cancelli G-1…G-5, previsioni P-1…P-6, controprove; ok di Luca («si va bene 1 e 2») su previsioni, catalogo dei tipi e soglie.
+
 ## 2026-10-21 (chiusura di S1.5)
 
 * **Chiusura**: [Il simulatore del livello cellulare funziona tutto insieme, con i sei preset dei tessuti, e sa riconoscere la propria scala? (S1.5)](steps/S1.5.md) chiuso con l'approvazione di Luca; decisione [Il caso limite «scala sbagliata di 10 volte, scatta C8» fallito in S1.5 e' un errore della pre-registrazione: la scala viene dall'utente o dai metadati (DEC-011)](decisions/DEC-011.md). Design v1.6 aggiornato di conseguenza; nella skill di sessione la regola sulle scelte decise dai dati.

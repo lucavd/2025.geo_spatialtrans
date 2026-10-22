@@ -1,0 +1,15 @@
+id,archetype,quantity,median_null,q975_null,threshold,verdict,primary,shifted,agreement_shift,agreement_primary
+CP-1,A1,"max/min median area, labels permuted within ROI",1.0173410404624277,1.0290740174078608,1.05,PASS,,,,
+CP-1,A2,"max/min median area, labels permuted within ROI",1.0425,1.0664961636828645,1.05,FAIL,,,,
+CP-1,A3,"max/min median area, labels permuted within ROI",1.0372208436724566,1.0744745845552297,1.05,FAIL,,,,
+CP-1,A4,"max/min median area, labels permuted within ROI",1.0047846889952152,1.0096153846153846,1.05,PASS,,,,
+CP-1,A5,"max/min median area, labels permuted within ROI",1.0904170632674566,1.1635397807038774,1.05,FAIL,,,,
+CP-1,A5,"neuron/glia area ratio, permuted",1.034937238493724,1.0858619752236107,1.05,FAIL,,,,
+CP-1,A6,"max/min median area, labels permuted within ROI",1.04296875,1.098495000340113,1.05,FAIL,,,,
+CP-1,A6,"ecc diff cardiomyocytes - others, permuted",0.00830704923313047,0.022191543955655126,0.01,FAIL,,,,
+CP-2,A1,fraction of clusters unresolved: primary vs shifted footprint,,,,,0.125,0.17647058823529413,,
+CP-2,A2,fraction of clusters unresolved: primary vs shifted footprint,,,,,0.1875,0.2608695652173913,,
+CP-2,A3,fraction of clusters unresolved: primary vs shifted footprint,,,,,0.17647058823529413,0.13333333333333333,,
+CP-2,A4,fraction of clusters unresolved: primary vs shifted footprint,,,,,0.11608961303462322,0.12133891213389121,,
+CP-2,A5,fraction of clusters unresolved: primary vs shifted footprint,,,,FAIL,0.05,0.07692307692307693,0.5057747834456208,0.8808224926563155
+CP-2,A6,fraction of clusters unresolved: primary vs shifted footprint,,,,FAIL,0.23076923076923078,0.23076923076923078,0.7087033747779752,0.7738028169014084

@@ -1,0 +1,16 @@
+Due revisori indipendenti (sotto-agenti con accesso al server e ai file, senza accesso a questa conversazione), prima del verdetto. I loro documenti sono in `results/R6/review/` (`R6_review_numeric.csv`, `R6_review_numeric_notes.md`, `R6_review_code.md`, script e output in `code_checks/`).
+
+**Revisore numerico** (ricalcolo indipendente dai file delle etichette, 316 confronti con le tabelle dei risultati): 313 coincidono entro 1e-6; 3 discrepanze, tutte riprodotte esattamente dal revisore e quindi spiegate.
+
+- D1, D2 (gravi): in P-6 nel cuore il filtro che esclude i nuclei appaiati a cellule «Low UMI Barcode» o «cell» di Space Ranger non agiva (`~` su una colonna di tipo oggetto in pandas 3.0 converte −2 e −1 entrambi a vero): 421 nuclei del cuore non esclusi, accordo 0.750 invece di 0.774 (pre-registrato) e 0.777 invece di 0.794 (PH-1); il cervello non era toccato. **Corretto** (`astype(bool)`) e analisi rieseguita; i valori nel report sono quelli corretti.
+- D3 (lieve): la soglia «tipi con almeno il 5 % dei nuclei» di P-2 era applicata nel codice alle frazioni fra i soli nuclei risolti, mentre la pre-registrazione la riferisce a tutti i nuclei; cambiava un solo caso (tumore del colon, PH-1: rapporto 1.39 fra epitelio e fibroblasti invece di 1.62 fra epitelio e il piccolo gruppo «epiteliale tumorale» al 4.95 %). **Corretto** come pre-registrato e rieseguito; l'esito resta confermato.
+
+**Revisore del codice** (lettura dei 5 script e controlli sui dati reali: ordine delle righe e somme UMI su tutte le 30 ROI; ricalcolo indipendente dall'h5 su 3 ROI; convenzione delle coordinate; blocco dei nuclei scartati; conteggi per cluster; join dei territori; appaiamento con Space Ranger su 2 ROI; stime puntuali di tutte le tabelle, differenza massima 2e-16): nessun bug che cambi i numeri. Rilievi accolti:
+
+- l'intervallo di P-5 nel linfonodo (2 ROI follicolari) con bootstrap a uno stadio era degenere (3 campioni distinti): **corretto** con il bootstrap a due stadi per tutte le P-5 e rieseguito;
+- pareggi di distanza nell'espansione dei nuclei risolti dall'indice della trasformata di distanza: 0.21 % dei bin nell'intestino, 0.012 % nel cuore (dichiarato qui, nessuna correzione);
+- catalogo dei tipi duplicato in due file (identici) e `capitalize()` sui simboli murini che perde 1 marcatore su 691 (intestino) e 1 su 400 circa (cervello): dichiarati, non corretti in questo step (BL-152);
+- le repliche bootstrap non finite sono scartate in silenzio: dichiarato;
+- osservazione metodologica: nel linfonodo Leiden produce 491 cluster, 243 con meno di 50 nuclei, e sono questi (dimensione mediana 46) a restare «non risolti» con PH-1; il grafo dei vicini si frammenta per i pochi trascritti per nucleo. Entra nel dubbio rinviato sul linfonodo (BL-148) con la proposta del revisore (dimensione minima di cluster o soglia di UMI più alta).
+
+Deviazioni dichiarate dai revisori: il ricalcolo dall'h5 e il controllo dei pareggi sono su 3 e 2 ROI, non su 30; la ricostruzione del grafo del linfonodo non è identica bit per bit alla corsa originale; il bootstrap è stato controllato per lettura del codice, non rieseguito.

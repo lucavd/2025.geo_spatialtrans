@@ -1,0 +1,103 @@
+check,pass
+"A1_r1: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A1_r2: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A1_r3: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A1_r4: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A1_r5: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A2_r1: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A2_r2: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A2_r3: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A2_r4: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A2_r5: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A3_r1: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A3_r2: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A3_r3: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A3_r4: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A3_r5: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A4_f1: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A4_f2: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A4_p1: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A4_p2: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A4_p3: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A5_r1: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A5_r2: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A5_r3: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A5_r4: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A5_r5: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A6_r1: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A6_r2: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A6_r3: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A6_r4: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A6_r5: bins/UMI assigned within ROI totals, nucleus-only subset of expanded, matrix rows = nuclei, matrix sum = UMI table",True
+"A1_exp_umi10_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A1_exp_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A1_exp_umi20_seed7_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A1_exp_umi40_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A1_nuc_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A1_shift_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A2_exp_umi10_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A2_exp_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A2_exp_umi20_seed7_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A2_exp_umi40_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A2_nuc_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A2_shift_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A3_exp_umi10_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A3_exp_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A3_exp_umi20_seed7_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A3_exp_umi40_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A3_nuc_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A3_shift_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A4_exp_umi10_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A4_exp_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A4_exp_umi20_seed7_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A4_exp_umi40_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A4_nuc_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A4_shift_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A5_exp_umi10_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A5_exp_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A5_exp_umi20_seed7_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A5_exp_umi40_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A5_nuc_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A5_shift_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A6_exp_umi10_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A6_exp_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A6_exp_umi20_seed7_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A6_exp_umi40_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A6_nuc_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A6_shift_umi20_seed20261022_nuclei.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A1_exp_umi10_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A1_exp_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A1_exp_umi20_seed7_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A1_exp_umi40_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A1_nuc_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A1_shift_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A2_exp_umi10_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A2_exp_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A2_exp_umi20_seed7_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A2_exp_umi40_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A2_nuc_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A2_shift_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A3_exp_umi10_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A3_exp_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A3_exp_umi20_seed7_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A3_exp_umi40_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A3_nuc_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A3_shift_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A4_exp_umi10_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A4_exp_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A4_exp_umi20_seed7_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A4_exp_umi40_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A4_nuc_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A4_shift_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A5_exp_umi10_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A5_exp_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A5_exp_umi20_seed7_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A5_exp_umi40_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A5_nuc_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A5_shift_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A6_exp_umi10_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A6_exp_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A6_exp_umi20_seed7_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A6_exp_umi40_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A6_nuc_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True
+"A6_shift_umi20_seed20261022_nuclei_ph1.parquet: one label per nucleus, fractions sum to 1 per ROI, typed nuclei have a cluster, cluster-less are 'non classificabile', unique (roi,label)",True

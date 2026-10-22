@@ -1,0 +1,20 @@
+id,archetype,quantity,estimate,lo,hi,lower,upper,verdict,design_value
+P-1,A5,median nuclear area neurons / glia,3.215686274509804,2.5552482784341413,3.690611529820528,2.1,,confermata,
+P-2,A1,max/min median nuclear area among types >= 5 %,1.24,1.2317880794701985,1.2993367346938773,1.095,,confermata,
+P-2,A2,max/min median nuclear area among types >= 5 %,1.6223021582733814,1.367156672260002,1.7095063916233533,1.161,,confermata,
+P-2,A3,max/min median nuclear area among types >= 5 %,1.423780487804878,1.3484837754313677,1.6914521346272084,1.216,,confermata,
+P-2,A4,max/min median nuclear area among types >= 5 %,1.0467289719626167,1.0233644859813085,1.0613207547169812,1.062,,smentita,
+P-2,A5,max/min median nuclear area among types >= 5 %,3.58252427184466,3.212165961815452,6.844759161870435,2.096,,confermata,
+P-2,A6,max/min median nuclear area among types >= 5 %,1.1129707112970713,1.0462606077196823,1.2208444148936168,1.808,,smentita,
+P-3,A6,median nuclear eccentricity cardiomyocytes - others,-0.011155870062303785,-0.04283461743208285,0.012481781010318466,0.104,,smentita,
+P-4,A4,"B fraction follicular (f1,f2) - paracortical (p1-p3)",0.16699891872144823,0.11199177549205057,0.22469779772187093,0.2,,indeterminata,
+P-5,A1,fraction of epiteliale,0.6849846201566417,0.6708552898256992,0.6961190701282332,0.73,1.03,smentita,0.88
+P-5,A2,fraction of epiteliale tumorale,0.049540050731945846,0.02829456055643718,0.07215200957356761,0.5499999999999999,0.85,smentita,0.7
+P-5,A3,fraction of fibroblasti+muscolo liscio,0.32420884590102356,0.25337448559670783,0.41993793216094083,0.6,0.9,smentita,0.75
+P-5,A4,fraction of linfociti B (follicular ROIs),0.3702025092190107,0.35936683941987063,0.38160676532769555,0.65,0.9500000000000001,smentita,0.8
+P-5,A5,fraction of neuroni,0.6521004345726702,0.5788995823497367,0.7329052969502408,0.25,0.55,smentita,0.4
+P-5,A6,fraction of cardiomiociti,0.7571573604060914,0.6863199144994656,0.8174817096649981,0.7,1.0,indeterminata,0.85
+P-6,A5,"agreement with Space Ranger 10x Cloud coarse type (matched, informative)",0.9067055393586005,0.8933080808080808,0.9334388904571264,0.75,,confermata,
+P-6 (all matched),A5,agreement incl. SR types outside the catalogue and our unresolved,0.9014492753623189,0.8899240855762595,0.9252110977080821,0.75,,confermata,
+P-6,A6,"agreement with Space Ranger 10x Cloud coarse type (matched, informative)",0.7765685019206146,0.7292062286365363,0.8183343822110342,0.75,,indeterminata,
+P-6 (all matched),A6,agreement incl. SR types outside the catalogue and our unresolved,0.7438675388389206,0.6913978494623656,0.7898359991901195,0.75,,indeterminata,

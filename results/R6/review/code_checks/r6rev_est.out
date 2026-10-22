@@ -1,0 +1,118 @@
+
+==== variant 'prereg'
+A1: refs_type rows 6 types 6; n mismatches 0; max|dfraction| 5.66e-17; max|darea| 1.78e-15; max|decc| 0.00e+00; fraction sums to 1.0000 (incl. nontype 0.067)
+A2: refs_type rows 8 types 8; n mismatches 0; max|dfraction| 8.33e-17; max|darea| 3.55e-15; max|decc| 0.00e+00; fraction sums to 1.0000 (incl. nontype 0.107)
+A3: refs_type rows 7 types 7; n mismatches 0; max|dfraction| 8.33e-17; max|darea| 0.00e+00; max|decc| 0.00e+00; fraction sums to 1.0000 (incl. nontype 0.039)
+A4: refs_type rows 8 types 8; n mismatches 0; max|dfraction| 8.33e-17; max|darea| 1.78e-15; max|decc| 0.00e+00; fraction sums to 1.0000 (incl. nontype 0.042)
+A5: refs_type rows 7 types 7; n mismatches 0; max|dfraction| 9.71e-17; max|darea| 1.42e-14; max|decc| 0.00e+00; fraction sums to 1.0000 (incl. nontype 0.047)
+A6: refs_type rows 5 types 5; n mismatches 0; max|dfraction| 6.34e-17; max|darea| 0.00e+00; max|decc| 0.00e+00; fraction sums to 1.0000 (incl. nontype 0.200)
+   A5: rows before/after add_sr 4142/4142; sr_cell_id notna 2415; merged sr_type notna 2415; lowumi 0
+   A5 sr_map coarse->type:
+sr_type                   altro  astrociti  microglia  neuroni  oligodendrociti  vascolari
+coarse_cell_type                                                                          
+B cell                        1          0          0        0                0          0
+GABAergic neuron              0          0          0        9                0          0
+Low UMI Barcode              10         22          0        0                0          0
+T cell                        2          0          0        0                0          0
+connective tissue cell      104          0          0        0                0          0
+endothelial cell              0          0          0        0                0       2056
+epithelial cell             237          0          0        0                0          0
+fibroblast                  619          0          0        0                0          0
+glial cell                    7       2704        864        0             3797          0
+glutamatergic neuron          0          0          0     2565                0          0
+granulocyte                   3          0          0        0                0          0
+hematopoietic cell            8          0          0        0                0          0
+lymphocyte                    5          0          0        0                0          0
+macrophage                   25          0          0        0                0          0
+mast cell                     8          0          0        0                0          0
+monocyte                      3          0          0        0                0          0
+mononuclear cell              6          0          0        0                0          0
+mural cell                    0          0          0        0                0        394
+neural cell                  34          0          0        0                0          0
+neuron                        0          0          0     3411                0          0
+neuron associated cell        0          0          0        0              612          0
+precursor cell               31          0          0        0                0          0
+squamous epithelial cell      4          0          0        0                0          0
+stem cell                     1          0          0        0                0          0
+   A6: rows before/after add_sr 4925/4925; sr_cell_id notna 4892; merged sr_type notna 4892; lowumi 421
+   A6 sr_map coarse->type:
+sr_type                    altro  cardiomiociti  endoteliali  fibroblasti  immunitari  muscolo liscio e periciti
+coarse_cell_type                                                                                                
+B cell                         0              0            0            0         162                          0
+Low UMI Barcode              449           2241          390          232         297                        200
+cardiac muscle cell            0          33463            0            0           0                          0
+cardiocyte                     0             45            0            0           0                          0
+cell                        1267              0            0            0           0                          0
+connective tissue cell         0              0            0           28           0                          0
+endothelial cell               0              0         2125            0           0                          0
+epithelial cell              108              0            0            0           0                          0
+extraembryonic cell           19              0            0            0           0                          0
+fibroblast                     0              0            0         1484           0                          0
+germ cell                     30              0            0            0           0                          0
+glandular epithelial cell     12              0            0            0           0                          0
+glial cell                    12              0            0            0           0                          0
+glutamatergic neuron          17              0            0            0           0                          0
+granulocyte                    0              0            0            0           5                          0
+hematopoietic cell             0              0            0            0          59                          0
+lymphocyte                     0              0            0            0          63                          0
+macrophage                     0              0            0            0         549                          0
+mast cell                      0              0            0            0         148                          0
+monocyte                       0              0            0            0          34                          0
+mural cell                     0              0            0            0           0                       1148
+muscle cell                    0             16            0            0           0                          0
+neuron                       230              0            0            0           0                          0
+neuron associated cell       132              0            0            0           0                          0
+smooth muscle cell             0              0            0            0           0                        647
+stem cell                      4              0            0            0           0                          0
+                   id   A  csv_estimate  recomputed       absdiff
+0                 P-1  A5      2.504244    2.504244  0.000000e+00
+1                 P-2  A1      1.480315    1.480315  0.000000e+00
+2                 P-2  A2      1.568562    1.568562  0.000000e+00
+3                 P-2  A3      1.309456    1.309456  0.000000e+00
+4                 P-2  A4      1.105528    1.105528  2.220446e-16
+5                 P-2  A5      2.991886    2.991886  0.000000e+00
+6                 P-2  A6      1.223849    1.223849  0.000000e+00
+7                 P-3  A6     -0.016423   -0.016423  9.714451e-17
+8                 P-4  A4      0.059971    0.059971  3.469447e-17
+9                 P-5  A1      0.373795    0.373795  0.000000e+00
+10                P-5  A2      0.247303    0.247303  2.775558e-17
+11                P-5  A3      0.263921    0.263921  0.000000e+00
+12                P-5  A4      0.146041    0.146041  2.775558e-17
+13                P-5  A5      0.609367    0.609367  0.000000e+00
+14                P-5  A6      0.557970    0.557970  0.000000e+00
+15                P-6  A5      0.880822    0.880822  0.000000e+00
+16  P-6 (all matched)  A5      0.869151    0.869151  0.000000e+00
+17                P-6  A6      0.750267    0.750267  0.000000e+00
+18  P-6 (all matched)  A6      0.573590    0.573590  0.000000e+00
+max abs diff: 2.220446049250313e-16
+
+==== variant '_ph1'
+A1: refs_type rows 4 types 4; n mismatches 0; max|dfraction| 5.66e-17; max|darea| 0.00e+00; max|decc| 0.00e+00; fraction sums to 1.0000 (incl. nontype 0.000)
+A2: refs_type rows 5 types 5; n mismatches 0; max|dfraction| 5.55e-17; max|darea| 7.11e-15; max|decc| 0.00e+00; fraction sums to 1.0000 (incl. nontype 0.086)
+A3: refs_type rows 6 types 6; n mismatches 0; max|dfraction| 8.33e-17; max|darea| 3.55e-15; max|decc| 0.00e+00; fraction sums to 1.0000 (incl. nontype 0.003)
+A4: refs_type rows 8 types 8; n mismatches 0; max|dfraction| 9.71e-17; max|darea| 1.78e-15; max|decc| 0.00e+00; fraction sums to 1.0000 (incl. nontype 0.471)
+A5: refs_type rows 6 types 6; n mismatches 0; max|dfraction| 9.02e-17; max|darea| 3.55e-15; max|decc| 0.00e+00; fraction sums to 1.0000 (incl. nontype 0.000)
+A6: refs_type rows 4 types 4; n mismatches 0; max|dfraction| 6.34e-17; max|darea| 0.00e+00; max|decc| 0.00e+00; fraction sums to 1.0000 (incl. nontype 0.001)
+   A5: rows before/after add_sr 4142/4142; sr_cell_id notna 2415; merged sr_type notna 2415; lowumi 0
+   A6: rows before/after add_sr 4925/4925; sr_cell_id notna 4892; merged sr_type notna 4892; lowumi 421
+                   id   A  csv_estimate  recomputed       absdiff
+0                 P-1  A5      3.215686    3.215686  0.000000e+00
+1                 P-2  A1      1.240000    1.240000  0.000000e+00
+2                 P-2  A2      1.622302    1.622302  0.000000e+00
+3                 P-2  A3      1.423780    1.423780  0.000000e+00
+4                 P-2  A4      1.046729    1.046729  0.000000e+00
+5                 P-2  A5      3.582524    3.582524  0.000000e+00
+6                 P-2  A6      1.112971    1.112971  0.000000e+00
+7                 P-3  A6     -0.011156   -0.011156  8.500145e-17
+8                 P-4  A4      0.166999    0.166999  2.775558e-17
+9                 P-5  A1      0.684985    0.684985  0.000000e+00
+10                P-5  A2      0.049540    0.049540  4.857226e-17
+11                P-5  A3      0.324209    0.324209  5.551115e-17
+12                P-5  A4      0.370203    0.370203  0.000000e+00
+13                P-5  A5      0.652100    0.652100  0.000000e+00
+14                P-5  A6      0.757157    0.757157  0.000000e+00
+15                P-6  A5      0.906706    0.906706  1.110223e-16
+16  P-6 (all matched)  A5      0.901449    0.901449  1.110223e-16
+17                P-6  A6      0.776569    0.776569  0.000000e+00
+18  P-6 (all matched)  A6      0.743868    0.743868  0.000000e+00
+max abs diff: 1.1102230246251565e-16

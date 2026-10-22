@@ -1,0 +1,45 @@
+id,archetype,quantity,estimate,lo,hi
+PH-6,A1,"epiteliale: sigma of log nuclear area; q01, q99 of area (um2)",0.464517196233713,4.64660434638459,39.42194116518953
+PH-6,A1,"immunitario: sigma of log nuclear area; q01, q99 of area (um2)",0.3862649921896291,4.49671388359799,25.702467106332165
+PH-6,A1,"stromale e muscolo liscio: sigma of log nuclear area; q01, q99 of area (um2)",0.5171599798197252,4.271878189418091,40.020753564022115
+PH-4,A2,fraction epithelial (tumorale + normale),0.7092998380245102,0.6303849402678895,0.7903016040131293
+PH-6,A2,"epiteliale normale: sigma of log nuclear area; q01, q99 of area (um2)",0.5603820191258375,8.09053655182884,113.43681369418847
+PH-6,A2,"epiteliale tumorale: sigma of log nuclear area; q01, q99 of area (um2)",0.4820598261012581,5.483585885128436,55.51007023060343
+PH-6,A2,"fibroblasti: sigma of log nuclear area; q01, q99 of area (um2)",0.5496635552194925,6.2926395403113204,81.66797350067377
+PH-4,A3,fraction epithelial (tumorale + normale),0.4060005634331862,0.24896312072637597,0.5544176436239501
+PH-6,A3,"endoteliale: sigma of log nuclear area; q01, q99 of area (um2)",0.5454436303712135,7.662037764083831,92.90033508012951
+PH-6,A3,"epiteliale normale: sigma of log nuclear area; q01, q99 of area (um2)",0.5608348983973863,9.064397433067496,128.3938185825045
+PH-6,A3,"epiteliale tumorale: sigma of log nuclear area; q01, q99 of area (um2)",0.5005218296749776,6.367551915791217,71.79976627870694
+PH-6,A3,"fibroblasti: sigma of log nuclear area; q01, q99 of area (um2)",0.5727139792499966,7.341412797029873,109.37206820064914
+PH-6,A3,"immunitario: sigma of log nuclear area; q01, q99 of area (um2)",0.5328410131060793,6.261925466364563,79.93525025582368
+PH-5,A4,fraction linfociti B among resolved nuclei,0.4946321418366375,0.4021275715054431,0.5846139392556604
+PH-5,A4,"fraction linfociti B among resolved, follicular ROIs",0.6086985976559853,0.5806556312885427,0.639300134589502
+PH-5,A4,"fraction linfociti B among resolved, paracortical ROIs",0.4180482590798481,0.33076863293697056,0.4926608470740382
+PH-5,A4,fraction linfociti T among resolved nuclei,0.41674717320016874,0.3237947080416479,0.5121624791313106
+PH-5,A4,"fraction linfociti T among resolved, follicular ROIs",0.298286023982115,0.25217822483530494,0.3405387861084064
+PH-5,A4,"fraction linfociti T among resolved, paracortical ROIs",0.4962816401719315,0.42185580342709345,0.5811766534545737
+PH-5,A4,ROI f1: fraction unresolved / B / T (all nuclei),0.39522198731501057,0.38160676532769555,0.15052854122621565
+PH-5,A4,ROI f2: fraction unresolved / B / T (all nuclei),0.3734281467196979,0.35936683941987063,0.21075890884255352
+PH-5,A4,ROI p1: fraction unresolved / B / T (all nuclei),0.5619373366461231,0.1373301926365719,0.24129586008841278
+PH-5,A4,ROI p2: fraction unresolved / B / T (all nuclei),0.4600590210644144,0.25843763780061735,0.22129507140191987
+PH-5,A4,ROI p3: fraction unresolved / B / T (all nuclei),0.4669378772216479,0.21697955917169628,0.26076227950248426
+PH-6,A4,"endoteliali: sigma of log nuclear area; q01, q99 of area (um2)",0.34583618612738315,4.796977135547423,34.06078624541898
+PH-6,A4,"linfociti B: sigma of log nuclear area; q01, q99 of area (um2)",0.3840115489735198,7.120512935578206,52.616842955535795
+PH-6,A4,"linfociti T: sigma of log nuclear area; q01, q99 of area (um2)",0.2693412643262113,7.345371238806992,31.25530414880118
+PH-6,A4,"mieloidi: sigma of log nuclear area; q01, q99 of area (um2)",0.2937924288819527,7.858797697846052,38.4582651288967
+PH-6,A4,"plasmacellule: sigma of log nuclear area; q01, q99 of area (um2)",0.38227355716031824,4.755003585611384,38.07600601340767
+PH-6,A4,"stromali: sigma of log nuclear area; q01, q99 of area (um2)",0.2726962405693846,7.345371238806992,31.264298480930254
+PH-1 detail,A5,median nuclear area glia pooled (um2),34.46580308226411,,
+PH-5,A5,ROI r1: fraction neurons / oligodendrocytes / astrocytes,0.5343330702446725,0.3622730860299921,0.05445935280189424
+PH-5,A5,ROI r2: fraction neurons / oligodendrocytes / astrocytes,0.7065637065637066,0.12355212355212356,0.06692406692406692
+PH-5,A5,ROI r3: fraction neurons / oligodendrocytes / astrocytes,0.7550387596899225,0.08527131782945736,0.06046511627906977
+PH-5,A5,ROI r4: fraction neurons / oligodendrocytes / astrocytes,0.7251908396946565,0.07824427480916031,0.08396946564885496
+PH-5,A5,ROI r5: fraction neurons / oligodendrocytes / astrocytes,0.6544671689989235,0.1797631862217438,0.07642626480086114
+PH-6,A5,"astrociti: sigma of log nuclear area; q01, q99 of area (um2)",0.5092225221603106,4.880778214263981,101.0005716991107
+PH-6,A5,"microglia: sigma of log nuclear area; q01, q99 of area (um2)",0.8435409185263492,9.911734219736084,177.20979362558455
+PH-6,A5,"neuroni: sigma of log nuclear area; q01, q99 of area (um2)",0.49145940593047266,15.918845868060984,219.03430847704666
+PH-6,A5,"oligodendrociti: sigma of log nuclear area; q01, q99 of area (um2)",1.0490079276485311,4.129889258223368,173.01457702818567
+PH-6,A5,"vascolari: sigma of log nuclear area; q01, q99 of area (um2)",0.9694332022351589,7.050847297221351,147.67733098450734
+PH-6,A6,"cardiomiociti: sigma of log nuclear area; q01, q99 of area (um2)",0.5748421901708946,6.11477331109845,81.41135413260888
+PH-6,A6,"fibroblasti: sigma of log nuclear area; q01, q99 of area (um2)",0.46836516553195584,4.798252720822717,54.655097398121256
+PH-6,A6,"immunitari: sigma of log nuclear area; q01, q99 of area (um2)",0.47245580547393545,4.744272377713461,48.165460593208536
