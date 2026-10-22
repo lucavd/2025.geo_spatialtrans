@@ -2,6 +2,7 @@
 
 ## 2026-10-22 (apertura di S1.5b)
 
+* **Aggiornamento**: [S1.5b](steps/S1.5b.md): ok di Luca su previsioni e regola dei bracci («Approvo così»); decisioni [Cervello: i nuclei persi da Cellpose ricevono un tipo dall'espressione (DEC-017)](decisions/DEC-017.md) e [Stroma del tumore: preset misto come misurato (DEC-018)](decisions/DEC-018.md).
 * **Creazione**: file dello step [Con i tipi cellulari nei preset, il simulatore dà a ogni tipo la taglia di nucleo che ha nei tessuti veri? (S1.5b)](steps/S1.5b.md) con dubbi ricevuti (BL-099, BL-138, BL-055, BL-149, BL-150), definizioni operative, cancelli G-1…G-5, previsioni P-1…P-8, controprova CP-1, due decisioni per Luca (composizione del cervello, stroma misto), scritti prima di ogni simulazione; riferimenti per tipo, valori reali per ROI e stime a mano degli attesi in `results/S1.5b/`. Previsioni in attesa dell'ok di Luca.
 * **Creazione**: decisione tecnica [Tipi nei preset: gruppi di taglia, densità del tipo puro, distanza minima unica (DEC-016)](decisions/DEC-016.md).
 * **Nota**: i documenti di R6 datano la chiusura al 2026-10-23, ma i commit di chiusura sono del 2026-10-22 (orologio del server); le date di R6 non si correggono qui.

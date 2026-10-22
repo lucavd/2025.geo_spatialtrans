@@ -165,6 +165,8 @@ Il binario R deve stare **davanti** al binario S: R1-R2 prima di S1.2, R3 prima 
 | 2026-10-23 | vedi DEC-014: Nel colon l'epitelio e' «tumorale» o «normale» per l'istologia della ROI, non per il criterio di espressione (`docs/decisions/DEC-014.md`, Luca, R6) |
 | 2026-10-23 | vedi DEC-015: Nel linfonodo i riferimenti per B e T restano provvisori e i linfociti hanno una sola taglia di nucleo (`docs/decisions/DEC-015.md`, Luca, R6) |
 | 2026-10-22 | vedi DEC-016: Tipi nei preset: un modello di taglia per gruppo di tipi simili, densita' del tipo puro, distanza minima unica per tessuto (`docs/decisions/DEC-016.md`, decisione tecnica, S1.5b) |
+| 2026-10-22 | vedi DEC-017: Cervello di topo: i nuclei persi da Cellpose ricevono un tipo dall'espressione (`docs/decisions/DEC-017.md`, Luca, S1.5b) |
+| 2026-10-22 | vedi DEC-018: Stroma del tumore: preset misto come misurato, provvisorio (`docs/decisions/DEC-018.md`, Luca, S1.5b) |
 | 2026-09-18 | **Una sessione = una chat.** Ogni step del protocollo si svolge in una chat nuova; a chiusura ci si ferma. Nessuna eccezione |
 
 ## 7. Stato delle sessioni
