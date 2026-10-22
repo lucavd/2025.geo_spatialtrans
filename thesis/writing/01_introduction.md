@@ -1,64 +1,83 @@
-# Introduction
+# 1. Introduction
 
 <!--
-Skeleton of bullets to expand later. Target: 8–10 pages (PROTOCOLLO.md §8); first 2–3 page draft due week 1.
-Order follows §8: spatial transcriptomics and deconvolution → simulation in benchmarks → Crowell 2023 → generative models → the question.
-[REF] = citation still to add (no claims or numbers without a source). Limits go in the Discussion, not here.
+Draft v3 (2026-10-23): rewritten for narrative flow; each section ends with the problem the next one addresses.
+Week-1 deliverable of PROTOCOLLO.md §6; the full chapter will be 8–10 pages (§8), order as in §8.
+All references checked 2026-10-22/23 (DOIs in the list). [REF] marks a statement that still needs a source. Limits of this thesis belong in the Discussion.
 -->
 
-## 1. Spatial transcriptomics and the spot
+Spatial transcriptomics has made it possible to measure gene expression without removing cells from the tissue in which they reside, but many of the technologies in current use record the expression of small groups of cells rather than of individual cells. Recovering the cellular composition of each measurement has therefore become a central computational task, and a large number of deconvolution methods have been proposed to perform it. Deciding which of these methods to trust requires benchmarks, and benchmarks require data whose true composition is known, which in practice means simulated data. This chapter argues that the conclusions of such benchmarks may depend on how the simulated data are generated, and in particular on the source of the expression profiles assigned to each cell type, a choice that has recently been widened by the appearance of generative models trained on public archives. It then presents the question addressed in this thesis and the approach taken to answer it.
 
-- Spatial transcriptomics measures gene expression while keeping track of *where* in the tissue it was measured. [REF]
-- In spot-based technologies (e.g. Visium), each measurement comes from a **spot**: a small capture area that collects the RNA of several cells at once. [REF]
-- So a spot is not a cell. It is a **mixture**: its counts are the sum of the transcripts of the cells that fall in it.
-- Two dimensions of "spatial" are worth separating:
-  - **geometric:** positions, neighbouring spots, tissue structure;
-  - **spot (mixture):** each measurement is a blend of cell types in unknown proportions.
-- This thesis works on the **spot dimension**: how well can we recover what is inside each spot?
+## 1.1 Spatial transcriptomics and the mixed nature of spot measurements
 
-## 2. Deconvolution: unmixing the spot
+Single-cell RNA sequencing describes tissues as collections of transcriptionally defined cell types, but the dissociation on which it depends separates every cell from its anatomical context. Spatially resolved transcriptomics was developed to preserve this context by measuring gene expression directly in tissue sections. In the array-based approach introduced by Ståhl et al. (2016), a section is placed on a surface carrying reverse-transcription primers with positional barcodes, so that each sequenced transcript can be traced back to the location at which it was captured. The commercial implementation of this principle, 10x Genomics Visium, captures transcripts in spots of approximately 55 µm in diameter, arranged with a centre-to-centre distance of 100 µm (10x Genomics, Space Ranger documentation). At this scale a spot typically overlaps several cells, their number depending on the tissue [REF], and the profile it yields is the sum of the transcripts of all the cells it contains. Higher-resolution platforms such as Visium HD replace the spots with a continuous grid of 2 µm barcoded squares (10x Genomics, Space Ranger documentation), but these squares are usually aggregated into larger bins for analysis, which may again span parts of several cells [REF].
 
-- **Deconvolution** estimates the proportion of each cell type in each spot. [REF]
-- Most methods need a **reference**: the typical expression profile of each cell type, usually taken from single-cell RNA-seq.
-- Methods used here: RCTD, CARD, cell2location, NNLS as a simple baseline (SPOTlight optional). [REF for each]
-  - one line each: statistical model, what reference it needs.
-- The quality of the result depends on the method *and* on how well the reference matches the cells in the spots.
+Spot-based data are therefore spatial in two distinct senses. Geometrically, they record where each measurement was taken and which measurements are adjacent. Compositionally, each measurement is a mixture of cell types in unknown proportions. It is this second property that stands between the raw data and most biological interpretations, since statements about the location of immune infiltrates, tumour compartments or neuronal layers all presuppose knowledge of which cells each spot contains. The composition of the spots must therefore be inferred.
 
-## 3. Why benchmarks need simulation
+## 1.2 Inferring cellular composition by deconvolution
 
-- To score a deconvolution method you need the **true composition** of each spot, which real tissue does not give you.
-- Simulation solves this: build spots with a known recipe, then check how close each method gets. [REF]
-- Common designs: pseudo-spots made by summing single cells; fully simulated counts. [REF]
-- Two families of simulators: **de novo** (counts generated from parameters the user chooses: flexible, but possibly unrealistic) and **reference-based** (parameters estimated from a real dataset: more realistic, but limited to what the reference contains). Many are hybrids: a baseline fitted to one homogeneous group, with differences between groups added by hand. [Crowell 2023]
-- Simulation studies should be planned like experiments: aims, data-generating mechanism, estimands, methods, performance measures (ADEMP, Morris 2019). [REF]
-- **The catch:** a benchmark's ranking can depend on choices in the simulator, not only on the methods.
+Cell-type deconvolution addresses this inference by estimating the proportion of each cell type within each spot. Most methods are reference-based: they take as input a set of expression profiles, one per cell type, usually derived from single-cell or single-nucleus sequencing of the same tissue, and model each spot as a combination of these profiles whose weights are the estimated proportions. Within this common framework the methods differ in their statistical assumptions. Robust cell-type decomposition (RCTD) models the observed counts as a mixture of reference profiles while explicitly accounting for systematic differences between the sequencing technology of the reference and that of the spatial platform (Cable et al. 2022). CARD complements the reference with the assumption that cell-type composition is correlated across neighbouring locations (Ma & Zhou 2022). Cell2location adopts a Bayesian formulation designed to resolve fine-grained cell types (Kleshchevnikov et al. 2022). At the other extreme, non-negative least squares (NNLS) simply regresses each spot on the reference profiles under a non-negativity constraint.
 
-## 4. Crowell 2023: simulators are not neutral
+Because every one of these methods explains the spot as a combination of reference profiles, its accuracy depends not only on its own modelling choices but also on how well those profiles represent the cells actually present in the tissue. The variety of available approaches, together with this dependence on the reference, makes it impossible to identify the most suitable method on theoretical grounds alone. Methods must be compared empirically.
 
-- Crowell et al. compared 16 scRNA-seq simulators that learn from real data (reference-based) on 12 real datasets, then re-ran two benchmarks (batch correction, clustering) on real and simulated versions of the same data. [Crowell 2023; Author Correction 2024 fixes only a table legend]
-- **Fidelity is limited.** Most simulators can generate only one group of cells unless the user adds artificial differences; the structure *between* groups (batches, clusters) is the worst-reproduced feature. [Crowell 2023]
-- **Benchmarks become over-optimistic.** Clustering methods scored higher on simulated data than on the real data the simulation was fitted to, for every simulator. [Crowell 2023]
-- **Rankings move.** Clustering rankings on simulated data agreed poorly with those on real data; among simulators of similar quality, they depended more on which reference dataset was used than on which simulator. For batch correction the results were closer to real data. [Crowell 2023]
-- **Realistic is not the same as reliable.** The most faithful simulators did not give the most faithful rankings (e.g. muscat: high fidelity, inconsistent rankings; SPsimSeq: mediocre fidelity, the best integration ranking). Which features of the data matter for a given task is an open question. [Crowell 2023]
-- Their study covered single-cell tasks only; spot deconvolution was not tested.
-- Link: if the simulator can change conclusions, and overall realism does not tell us which simulator to trust, we need to isolate **one ingredient** and measure its effect on the ranking directly. For deconvolution, the obvious ingredient is the cell-type expression profiles (§5).
+## 1.3 Benchmarking deconvolution methods and the need for known compositions
 
-## 5. Where cell-type expression comes from
+Such comparisons are the purpose of benchmarking studies. Their central difficulty is that the true composition of a spot in real tissue is unknown, so that the estimates of a method cannot be checked against the truth. Benchmarks therefore rely, in large part, on data whose composition is known by construction. The most common strategy is to build pseudo-spots by aggregating cells drawn from a single-cell dataset according to a prescribed composition. In Spotless, a recent independent benchmark of 11 deconvolution methods, 63 synthetic "silver-standard" datasets generated in this way were complemented by only 3 gold-standard datasets derived from spatial data at single-cell resolution and by 2 case studies (Sang-aram et al. 2024); Li et al. (2022) likewise combined simulated datasets with paired real data. The conclusions of these benchmarks are informative: in Spotless, cell2location and RCTD achieved the best overall performance, whereas a basic regression model outperformed almost half of the dedicated methods (Sang-aram et al. 2024).
 
-- The one ingredient we vary: the **cell-type expression profiles** that go into the spots.
-- Possible sources:
-  - **empirical:** averages from real single-cell data;
-  - **parametric:** profiles drawn from a statistical distribution, with controlled marker genes;
-  - **simulator-based:** e.g. scDesign3 [REF];
-  - **generative AI models:** e.g. GEM-1, which produces expression from metadata alone. [REF: GEM-1 preprint]
-- Generative models are new, and their training data and evaluation have limits (see `letture.md`).
+The weight of such conclusions, however, rests largely on simulated data. Methodological guidelines warn that overly simplistic simulations and unrepresentative datasets can bias a benchmark (Weber et al. 2019), and recommend that simulation studies be planned as experiments whose aims, data-generating mechanisms, estimands, methods and performance measures are stated in advance (Morris et al. 2019). Whether the ranking of methods obtained on simulated data would hold on real tissue is therefore not a matter that can be taken for granted. It is an empirical question about the simulator itself.
 
-## 6. The question
+## 1.4 The influence of simulation design on benchmark conclusions
 
-- **Main question:** does the source of cell-type expression change the rankings of a deconvolution benchmark?
-- Objective 1 (fidelity): how close is each source to real held-out cells?
-- Objective 2 (benchmark sensitivity): do method rankings and errors change across sources, and which source gives the ranking closest to pseudo-spots built from real held-out cells?
-- The two objectives are measured separately on purpose: Crowell 2023 showed that a more realistic simulator does not necessarily give a more faithful ranking, so Objective 1 cannot stand in for Objective 2.
-- Controls: a negative control that must fail (permuted genes) and a positive control as the ceiling (a second real donor).
-- Three tissues: colon/colorectal cancer, lymphoid tissue, brain. More than one, because benchmark rankings can depend on the reference dataset as much as on the simulator. [Crowell 2023]
-- One sentence on why it matters: guidance for anyone who builds a deconvolution benchmark.
+For single-cell analysis, this question has been examined systematically by Crowell et al. (2023), who evaluated 16 reference-based simulators on 12 public datasets. The authors first measured how closely the simulated data resembled the real data through gene-level and cell-level summaries, and then repeated two benchmarks, of 6 batch-correction and 9 clustering methods, on both the real and the simulated version of each dataset, under the premise that "benchmark results (i.e., the ranking of computational tools for a given task) should be the same for experimental and simulated data". This premise was only partly met. Most simulators could generate only a single group of cells unless artificial differences were introduced by the user, and the structure between groups was the least faithfully reproduced feature. Clustering methods performed better on simulated data than on the real data from which the simulations were derived, irrespective of the simulator, and their ranking on simulated data agreed poorly with that obtained on real data; among simulators of comparable quality, the ranking depended more on the reference dataset than on the simulator, whereas agreement was closer for batch correction. Realism and reliability did not coincide: muscat was among the most realistic simulators yet produced rankings inconsistent with real data, while SPsimSeq, of only moderate realism, yielded the batch-correction ranking closest to the real one. The authors concluded that "the most truthful model for real data is real data".
+
+These findings establish that a simulator can alter the conclusions of a benchmark, but the design of that study does not reveal which aspect of the simulator is responsible. Each simulator is a complete generative pipeline that combines its own expression model with its own noise model, so a change in ranking cannot be ascribed to any single component. Moreover, the accompanying analysis code generates one simulated dataset for each combination of reference and simulator (repository HelenaLC/simulation-comparison, version available at the time of writing); the variability in the results thus arises from the use of several references rather than from repeated simulation, and the unrealism of a simulator cannot be separated from the chance variation of a single draw. Finally, the study was confined to single-cell tasks and did not consider spatial deconvolution. Identifying what drives the instability of benchmark conclusions requires varying one component of the simulation at a time, with replicate simulations to quantify uncertainty. For deconvolution, the component of most immediate interest is the expression profile assigned to each cell type, because it is the very quantity that deconvolution methods attempt to match.
+
+## 1.5 Where cell-type expression profiles come from
+
+Every simulator of spatial data must specify, for each gene and cell type, the mean expression from which counts are generated, and four sources of such profiles are currently available. Empirical profiles are averages computed on a real single-cell dataset and inherit both its realism and its idiosyncrasies. Parametric profiles are drawn from a statistical distribution, with marker genes and fold-changes fixed by the designer, which provides full control at the cost of realism; Crowell et al. (2023) excluded such de novo simulators from their comparison by design. Model-based profiles are estimated by a simulator such as scDesign3, which fits an interpretable statistical model to real data and can generate new single-cell and spatial data from it (Song et al. 2023). The fourth and most recent source consists of generative models trained on public archives of transcriptomic data.
+
+GEM-1 is an example of this last category. It is a generative model trained on public human transcriptomes, including single-cell data deposited in the CZ CELLxGENE archive up to July 2024, whose single-cell version returns a mean expression profile for a specified tissue and cell type without requiring any input data (Koytiger et al. 2025). Its developers report that its predictions approach the agreement observed between independent real samples with the same metadata, and if this held generally, such models could replace real reference data in simulation. The evidence, however, is still limited. The evaluation of GEM-1 was carried out by its developers on a model whose weights are not public and has not yet undergone peer review, and independent evaluations of other single-cell foundation models have been less favourable: scGPT and Geneformer were outperformed by simpler methods in a zero-shot setting (Kedzierska et al. 2025), and none of several deep-learning models, foundation models included, outperformed deliberately simple linear baselines in predicting the transcriptional effects of genetic perturbations (Ahlmann-Eltze et al. 2025). A model trained on public archives may also reproduce data it has already encountered, so that its profiles can be assessed fairly only against data made public after its training cutoff.
+
+The four sources thus embody different compromises between realism, control and independence from the data under study. Whether these differences matter for the conclusions of a deconvolution benchmark has not been established.
+
+## 1.6 Research question and approach of this thesis
+
+This thesis asks whether the source of cell-type expression profiles changes the conclusions of a spatial deconvolution benchmark. Two objectives follow from the argument developed above. The first concerns fidelity: how closely the profiles obtained from each source approximate real profiles of the same tissue and cell type from donors that were not used to construct them. The second concerns the sensitivity of the benchmark: whether the ranking and the error of the deconvolution methods change with the source, and which source yields the ranking closest to that obtained on pseudo-spots assembled from real cells of these held-out donors, which serve as the real anchor. The two objectives are evaluated separately because, as Crowell et al. (2023) showed, greater realism does not guarantee a more faithful ranking.
+
+The study is a pre-registered simulation study designed according to the ADEMP framework (Morris et al. 2019), and it is constructed to overcome the limitations identified in Section 1.4. Only the source of the mean expression varies between the arms of the study, while the pseudo-spot generator and the noise model are shared, so that any change in ranking can be attributed to the expression source. The four sources described in Section 1.5 are compared against a real anchor made of cells whose type, and hence the true spot composition, is known. Two internal controls frame the comparison: a negative control obtained by permuting gene labels within each cell type, which is expected to fail, and a positive control derived from a second independent donor, which measures donor-to-donor variability and therefore provides the scale on which the other sources are interpreted, in the spirit of the pseudoreplicate comparisons used to evaluate generative models (Koytiger et al. 2025). All performance measures are estimated over replicate simulations and reported with their Monte Carlo standard errors. Because benchmark conclusions may depend on the reference dataset as much as on the simulator (Crowell et al. 2023), the analysis is repeated in three tissues of different composition: colon and colorectal cancer, lymphoid tissue and brain. The deconvolution methods compared are RCTD, CARD, cell2location and NNLS, which span the range of modelling strategies described in Section 1.2 and include both the best-performing methods and the simple baseline of the Spotless benchmark.
+
+The answer to this question has a practical as well as a methodological purpose. It will indicate to those who design deconvolution benchmarks how much their conclusions depend on the expression source, and it will inform the choice of expression source for the next phase of the spatial simulator developed within the broader project of which this thesis is part.
+
+## 1.7 Structure of the thesis
+
+Chapter 2 describes the pre-registered study design: the data and their partition by donor, the data-generating mechanisms, the deconvolution methods and the performance measures. Chapter 3 presents the results for the two objectives and for the control arms. Chapter 4 discusses their implications for the design of deconvolution benchmarks, the limitations of the study and directions for future work.
+
+## References
+
+10x Genomics. Space Ranger 4.0 glossary (Visium spot size and spacing; Visium HD 2 µm grid). https://www.10xgenomics.com/support/software/space-ranger/4.0/getting-started/space-ranger-glossary (accessed 22 October 2026).
+
+Ahlmann-Eltze C, Huber W, Anders S. Deep-learning-based gene perturbation effect prediction does not yet outperform simple linear baselines. *Nature Methods* 2025;22:1657–1661. doi:10.1038/s41592-025-02772-6
+
+Cable DM, et al. Robust decomposition of cell type mixtures in spatial transcriptomics. *Nature Biotechnology* 2022;40:517–526. doi:10.1038/s41587-021-00830-w
+
+Crowell HL, Morillo Leonardo SX, Soneson C, Robinson MD. The shaky foundations of simulating single-cell RNA sequencing data. *Genome Biology* 2023;24:62. doi:10.1186/s13059-023-02904-1. Author Correction: *Genome Biology* 2024;25:178. doi:10.1186/s13059-024-03329-0. Code: https://github.com/HelenaLC/simulation-comparison
+
+Kedzierska KZ, Crawford L, Amini AP, Lu AX. Zero-shot evaluation reveals limitations of single-cell foundation models. *Genome Biology* 2025. doi:10.1186/s13059-025-03574-x
+
+Kleshchevnikov V, Shmatko A, Dann E, et al. Cell2location maps fine-grained cell types in spatial transcriptomics. *Nature Biotechnology* 2022. doi:10.1038/s41587-021-01139-4
+
+Koytiger G, Walsh AM, et al. Generative genomics accurately predicts future experimental results. *bioRxiv* 2025. doi:10.1101/2025.09.08.674753 (preprint, not peer reviewed).
+
+Li B, et al. Benchmarking spatial and single-cell transcriptomics integration methods for transcript distribution prediction and cell type deconvolution. *Nature Methods* 2022. doi:10.1038/s41592-022-01480-9
+
+Ma Y, Zhou X. Spatially informed cell-type deconvolution for spatial transcriptomics. *Nature Biotechnology* 2022;40:1349–1359. doi:10.1038/s41587-022-01273-7
+
+Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. *Statistics in Medicine* 2019;38:2074–2102. doi:10.1002/sim.8086
+
+Sang-aram C, et al. Spotless, a reproducible pipeline for benchmarking cell type deconvolution in spatial transcriptomics. *eLife* 2024;12:RP88431. doi:10.7554/eLife.88431
+
+Song D, et al. scDesign3 generates realistic in silico data for multimodal single-cell and spatial omics. *Nature Biotechnology* 2023 (online May 2023). doi:10.1038/s41587-023-01772-1
+
+Ståhl PL, et al. Visualization and analysis of gene expression in tissue sections by spatial transcriptomics. *Science* 2016;353:78–82. doi:10.1126/science.aaf2403
+
+Weber LM, et al. Essential guidelines for computational method benchmarking. *Genome Biology* 2019;20:125. doi:10.1186/s13059-019-1738-8
