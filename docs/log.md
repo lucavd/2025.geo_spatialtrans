@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-10-22 (apertura di S1.5b)
+
+* **Creazione**: file dello step [Con i tipi cellulari nei preset, il simulatore dà a ogni tipo la taglia di nucleo che ha nei tessuti veri? (S1.5b)](steps/S1.5b.md) con dubbi ricevuti (BL-099, BL-138, BL-055, BL-149, BL-150), definizioni operative, cancelli G-1…G-5, previsioni P-1…P-8, controprova CP-1, due decisioni per Luca (composizione del cervello, stroma misto), scritti prima di ogni simulazione; riferimenti per tipo, valori reali per ROI e stime a mano degli attesi in `results/S1.5b/`. Previsioni in attesa dell'ok di Luca.
+* **Creazione**: decisione tecnica [Tipi nei preset: gruppi di taglia, densità del tipo puro, distanza minima unica (DEC-016)](decisions/DEC-016.md).
+* **Nota**: i documenti di R6 datano la chiusura al 2026-10-23, ma i commit di chiusura sono del 2026-10-22 (orologio del server); le date di R6 non si correggono qui.
+
 ## 2026-10-23 (chiusura di R6)
 
 * **Chiusura**: [Di che tipo sono le cellule vere nei sei tessuti, e i tipi spiegano le taglie dei nuclei? (R6)](steps/R6.md) chiuso con l'approvazione di Luca («ok per tutte e 3 le questioni aperte, chiudi»); decisioni [I riferimenti per tipo cellulare vengono dalle etichette del criterio corretto (DEC-013)](decisions/DEC-013.md), [Nel colon l'epitelio e' tumorale o normale per l'istologia della ROI (DEC-014)](decisions/DEC-014.md), [Nel linfonodo i riferimenti per B e T restano provvisori e i linfociti hanno una sola taglia (DEC-015)](decisions/DEC-015.md). BIO_REFERENCES B-161…B-185 adottati; ROADMAP §7: R6 chiusa, prossima sessione proposta S1.5b (tipi nei preset).

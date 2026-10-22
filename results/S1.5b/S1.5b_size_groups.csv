@@ -1,0 +1,18 @@
+archetype,step,kind,a,b,ratio,margin,accepted
+A1,1,merge_main,immunitario,stromale e muscolo liscio,1.0,1.095,True
+A1,2,merge_main,epiteliale,immunitario|stromale e muscolo liscio,1.24,1.095,False
+A2,1,merge_main,epiteliale,fibroblasti,1.3353846153846156,1.161,False
+A3,1,merge_main,epiteliale,fibroblasti,1.0140515222482436,1.216,True
+A3,2,merge_main,endoteliale,epiteliale|fibroblasti,1.0408653846153848,1.216,True
+A3,3,merge_main,endoteliale|epiteliale|fibroblasti,immunitario,1.2336182336182338,1.216,False
+A4,1,merge_main,linfociti B,linfociti T,1.0467289719626167,1.062,True
+A4,2,assign_minor,endoteliali,linfociti B|linfociti T,0.9223744292237444,1.062,True
+A4,3,assign_minor,mieloidi,endoteliali|linfociti B|linfociti T,1.0412844036697249,1.062,True
+A4,4,assign_minor,plasmacellule,endoteliali|linfociti B|linfociti T|mieloidi,0.954337899543379,1.062,True
+A4,5,assign_minor,stromali,endoteliali|linfociti B|linfociti T|mieloidi|plasmacellule,0.963302752293578,1.062,True
+A5,1,merge_main,astrociti,oligodendrociti,1.6140776699029125,2.096,True
+A5,2,merge_main,astrociti|oligodendrociti,neuroni,3.58252427184466,2.096,False
+A5,3,assign_minor,microglia,astrociti|oligodendrociti,0.6513569937369519,2.096,True
+A5,4,assign_minor,vascolari,astrociti|microglia|oligodendrociti,0.678649237472767,2.096,True
+A6,1,merge_main,cardiomiociti,fibroblasti,1.0114068441064639,1.808,True
+A6,2,merge_main,cardiomiociti|fibroblasti,immunitari,1.1129707112970713,1.808,True
