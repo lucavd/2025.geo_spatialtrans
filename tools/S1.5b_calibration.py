@@ -2,15 +2,16 @@
 # Definizioni: docs/steps/S1.5b.md (regola dei gruppi di taglia, insieme di valutazione, densita' del tipo puro).
 # Ingressi (sola lettura): etichette R6 PH-1 (DEC-013), territori reali esportati da R6 (insieme di calibrazione di S1.4/R3b),
 #   tabella R6 dei riferimenti per tipo, scarto fra ROI dell'area nucleare mediana (R6, P-2), preset di S1.5.
-# Uso (root del repo): .venv/bin/python tools/S1.5b_calibration.py [--a5 r6|corrected]
+# Uso (root del repo): .venv/bin/python tools/S1.5b_calibration.py [--a5 corrected|r6]  (corrected richiede results/S1.5b/S1.5b_a5_composition.csv)
 import sys, json, numpy as np, pandas as pd
 M = "/mnt/micron/geo_spatialtrans/R6"; RES = "results/S1.5b"
 ARCH = ["A1", "A2", "A3", "A4", "A5", "A6"]
 # scarto fra ROI dell'area nucleare mediana (max/min dei 5 ROI), R6 P-2, da results/S1.5/S1.5_real_refs_roi.csv
 MARGIN = {"A1": 1.095, "A2": 1.161, "A3": 1.216, "A4": 1.062, "A5": 2.096, "A6": 1.808}
 # preset di S1.5 (R/04b0_tissue_presets.R): densita' manuale, densita' del modello di taglia, rho, beta, sigma
-PRESET = {"A1": (12419, 10591.0114668242, 0.380, 0.114, 0.475), "A2": (8924, 7723.28633246204, 0.510, 0.320, 0.547),
-          "A3": (3100, 4278.87001473923, 0.374, 0.147, 0.553), "A4": (28096, 27897.5, 0.679, 0.455, 0.210),
+# densita' del modello come nel pacchetto (.TP_TABLE$density_model, 1 decimale): stessa area di riferimento nella stima e nella conversione
+PRESET = {"A1": (12419, 10591.0, 0.380, 0.114, 0.475), "A2": (8924, 7723.3, 0.510, 0.320, 0.547),
+          "A3": (3100, 4278.9, 0.374, 0.147, 0.553), "A4": (28096, 27897.5, 0.679, 0.455, 0.210),
           "A5": (1185, 1039.7, 0.282, 0.621, 0.813), "A6": (988, 1062.4, 0.154, 0.122, 0.490)}
 UNTYPED = {"non risolto", "non classificabile"}
 EPI = {"epiteliale normale": "epiteliale", "epiteliale tumorale": "epiteliale"}   # DEC-014
@@ -65,7 +66,7 @@ def size_groups(lab, A):
     return groups, trace
 
 def main():
-    a5 = sys.argv[sys.argv.index("--a5") + 1] if "--a5" in sys.argv else "r6"
+    a5 = sys.argv[sys.argv.index("--a5") + 1] if "--a5" in sys.argv else "corrected"
     rows, traces, checks = [], [], []
     for A in ARCH:
         D, Dm, rho0, b0, s0 = PRESET[A]
@@ -94,6 +95,12 @@ def main():
                                  median_area_nuc=float(typed.area_um2[typed.type == t].median()), median_a_t_eval=float(m_t[t]),
                                  **{f"fraction_{k}": float(v.get(t, 0.0)) for k, v in comp.items()}))
     cal = pd.DataFrame(rows)
+    # composizione del cervello corretta per i nuclei persi da Cellpose (DEC-017; tools/S1.5b_a5_missed.py, valutatore Luca)
+    cal["fraction_r6"] = cal.fraction_tissue
+    if a5 == "corrected":
+        a5c = pd.read_csv(f"{RES}/S1.5b_a5_composition.csv").query("rater == 'Luca'").set_index("cell_type")
+        if not bool(a5c.passes.all()): raise SystemExit("A5: controllo del trasferimento non superato: composizione di R6 (DEC-017)")
+        k = cal.archetype == "A5"; cal.loc[k, "fraction_tissue"] = cal.loc[k, "cell_type"].map(a5c.fraction_corrected).values
     # territorio mediano delle celle interne simulate in S1.5 (braccio preserve_area, 50 unita' per tessuto): ancora del braccio ricentrato
     P = pd.read_csv("results/S1.5/S1.5_panel_units.csv"); P = P[P.arm == "preserve_area"]
     m_sim = (np.pi * P.median_eq_r ** 2).groupby(P.archetype).mean()

@@ -96,6 +96,8 @@ merge_small_components <- function(clust, pixel_size_um, min_region_area_um2, cl
 #'   costruita dal catalogo (un tipo per cluster); NULL con un catalogo di un tipo = quel tipo per tutti i cluster.
 #' @param pixel_size_um obbligatorio: numero (µm/px), `"estimate"` o `list(scalefactors_json = <file>)`.
 #' @param size_conversion conversione del modello di taglia dei preset (`tissue_preset_spec()`).
+#' @param types,size_arm,composition preset a un tipo (`"single"`, S1.5) o per tipo (`"multi"`, S1.5b), braccio del modello di taglia
+#'   e composizione (`tissue_preset_spec()`); con `"multi"` ogni cluster riceve la composizione del preset.
 #' @param small_components `"merge"` (BL-043) o `"exclude"`.
 #' @param stride passo dei pixel; NULL = attributo `stride` di `clust`, altrimenti 1 se i dati sono contigui, errore se
 #'   il passo rilevato e' > 1 (BL-042).
@@ -109,10 +111,11 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
                         pixel_size_um, corner_smoothing = 0, min_region_area_um2 = 100, random_seed = 42,
                         cluster_col = "intensity_cluster", stride = NULL, simplify_tol_um = 0.5,
                         small_components = c("merge", "exclude"), nucleus_model = "clip",
-                        size_conversion = c("preserve_area", "none"), validate = TRUE, strict = TRUE, keep_tiles = FALSE,
+                        size_conversion = c("preserve_area", "none"), types = c("single", "multi"), size_arm = NULL,
+                        composition = "tissue", validate = TRUE, strict = TRUE, keep_tiles = FALSE,
                         allow_estimate = FALSE, verbose = TRUE) {
   t0 <- proc.time()[["elapsed"]]
-  small_components <- match.arg(small_components); size_conversion <- match.arg(size_conversion)
+  small_components <- match.arg(small_components); size_conversion <- match.arg(size_conversion); types <- match.arg(types)
   if (missing(pixel_size_um))
     stop("place_cells(): `pixel_size_um` e' obbligatorio (decisione 10 / C-A): un numero, \"estimate\" o list(scalefactors_json = ...).", call. = FALSE)
   if (!is.data.frame(clust) || !all(c("x", "y", cluster_col) %in% names(clust)))
@@ -120,7 +123,8 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   # ---- catalogo e composizione ----
   spec <- NULL
   if (is.null(cell_types)) {
-    spec <- tissue_preset_spec(tissue_preset, size_conversion); ct <- spec$cell_types; c8 <- spec$c8_interval
+    spec <- tissue_preset_spec(tissue_preset, size_conversion, types = types, size_arm = size_arm, composition = composition)
+    ct <- spec$cell_types; c8 <- spec$c8_interval
   } else { ct <- cell_types; c8 <- NULL }
   if (!is.null(override_cell_types)) {
     for (k in seq_len(nrow(override_cell_types))) {
@@ -135,6 +139,9 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
       comp <- data.frame(cluster_id = cluster_to_dominant$cluster_id, cell_type = cluster_to_dominant$cell_type, fraction = 1)
     } else if (nrow(ct) == 1L) {
       comp <- data.frame(cluster_id = cids, cell_type = ct$cell_type, fraction = 1)
+    } else if (!is.null(spec) && !is.null(spec$composition)) {   # preset per tipo (S1.5b): stessa composizione in ogni cluster
+      comp <- data.frame(cluster_id = rep(cids, each = nrow(spec$composition)), cell_type = rep(spec$composition$cell_type, length(cids)),
+                         fraction = rep(spec$composition$fraction, length(cids)))
     } else stop("place_cells(): con piu' tipi nel catalogo servono `region_composition` o `cluster_to_dominant`.", call. = FALSE)
   } else comp <- region_composition
   if (!is.null(override_composition)) {
@@ -209,12 +216,15 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   cl_out$metadata <- list(pixel_size_um = px, pixel_size_source = src, pixel_size_estimate = est,
                           n_cells = nrow(cd), n_regions = nrow(rdf), tissue_preset_used = if (is.null(spec)) NA_character_ else tissue_preset,
                           preset_sources = if (is.null(spec)) NULL else spec$sources, size_conversion = if (is.null(spec)) NA_character_ else size_conversion,
+                          preset_types = if (is.null(spec)) NA_character_ else spec$types, size_arm = if (is.null(spec)) NA_character_ else spec$size_arm,
+                          composition_name = if (is.null(spec)) NA_character_ else spec$composition_name,
+                          type_sources = if (is.null(spec)) NULL else spec$type_sources,
                           corner_smoothing = corner_smoothing, min_region_area_um2 = min_region_area_um2, small_components = small_components,
                           stride = stride, cell_types_resolved = ct, region_composition_resolved = comp_used,
                           random_seed = random_seed, stage_seeds = ss, nucleus_model = nucleus_model,
                           merge_info = attr(cl_in, "merge_info"), excluded_df = reg$excluded_df,
                           seed_info = sc$info, tessellation_info = tv$info, geometry_info = dg$info,
-                          package_version = "geo.spatialtrans step1-cell-layer (S1.5)", timestamp = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z"),
+                          package_version = "geo.spatialtrans step1-cell-layer (S1.5b)", timestamp = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z"),
                           validation = val, elapsed_s = proc.time()[["elapsed"]] - t0)
   if (verbose) cat(sprintf("[place_cells] %s: %d regioni, %d cellule, scala %.4g um/px (%s), controlli %s, %.1f s\n",
                            if (is.null(spec)) "catalogo dell'utente" else tissue_preset, nrow(rdf), nrow(cd), px, src,
