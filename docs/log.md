@@ -1,5 +1,9 @@
 # Registro delle modifiche
 
+## 2026-10-23 (chiusura di R6)
+
+* **Chiusura**: [Di che tipo sono le cellule vere nei sei tessuti, e i tipi spiegano le taglie dei nuclei? (R6)](steps/R6.md) chiuso con l'approvazione di Luca («ok per tutte e 3 le questioni aperte, chiudi»); decisioni [I riferimenti per tipo cellulare vengono dalle etichette del criterio corretto (DEC-013)](decisions/DEC-013.md), [Nel colon l'epitelio e' tumorale o normale per l'istologia della ROI (DEC-014)](decisions/DEC-014.md), [Nel linfonodo i riferimenti per B e T restano provvisori e i linfociti hanno una sola taglia (DEC-015)](decisions/DEC-015.md). BIO_REFERENCES B-161…B-185 adottati; ROADMAP §7: R6 chiusa, prossima sessione proposta S1.5b (tipi nei preset).
+
 ## 2026-10-23 (risultati di R6)
 
 * **Aggiornamento**: [Di che tipo sono le cellule vere nei sei tessuti, e i tipi spiegano le taglie dei nuclei? (R6)](steps/R6.md): risultati di cancelli, previsioni e controprove, correzione post hoc del criterio di etichettatura (PH-1), revisione avversariale con tre correzioni ed esecuzione ripetuta, riassunto «In breve» con tre decisioni per Luca, dubbi rinviati (BL-147…BL-152). Decisione tecnica [Come si attribuisce l'espressione a 2 µm ai nuclei veri e come si classificano (DEC-012)](decisions/DEC-012.md). Report `reports/R6.html`.

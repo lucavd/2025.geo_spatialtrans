@@ -2,9 +2,9 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## R6 — 2026-10-22/23 — Classificazione per tipo dei nuclei reali dall'espressione a 2 µm (branch `step1-cell-layer`) — **in attesa delle decisioni di Luca**
+## R6 — 2026-10-22/23 — Classificazione per tipo dei nuclei reali dall'espressione a 2 µm (branch `step1-cell-layer`) — **chiusa**
 
-File dello step `docs/steps/R6.md`, report `reports/R6.html`; decisione tecnica DEC-012 (impronta, clustering, marcatori).
+File dello step `docs/steps/R6.md`, report `reports/R6.html`; decisione tecnica DEC-012 (impronta, clustering, marcatori); decisioni di Luca DEC-013 (riferimenti dal criterio corretto), DEC-014 (epitelio del colon per istologia), DEC-015 (linfonodo provvisorio, una taglia per i linfociti), 2026-10-23.
 
 ### Codice (nessun file degli step passati modificato)
 - `tools/R6_common.py` (impronte bin→nucleo: espansa, solo nucleo, spostata; aggregazione dei conteggi), `tools/R6_aggregate.py` (30 ROI × 3 impronte, appaiamento con le cellule di Space Ranger), `tools/R6_dexp.py` (espansione misurata da Space Ranger), `tools/R6_export_terr.R` (territori reali in parquet), `tools/R6_cluster.py` (Leiden + criterio pre-registrato), `tools/R6_catalogue.py`, `tools/R6_relabel.py` (PH-1), `tools/R6_analysis.py` (riferimenti per tipo, P-1…P-6, CP-1, CP-2, sensibilità; bootstrap a blocchi sulle ROI, B = 2000), `tools/R6_posthoc.py` (PH-2…PH-6), `tools/R6_figures.py`, `tools/R6_report_parts.py`; cancelli `tools/R6_test.py` (G-1), `tools/R6_md5.sh` (G-2), `tools/R6_repro.sh` (G-3), `tools/R6_check.py` (G-4).
