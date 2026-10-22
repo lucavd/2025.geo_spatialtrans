@@ -11,7 +11,7 @@ File dello step `docs/steps/R6.md`, report `reports/R6.html`; decisione tecnica 
 - Correzioni dopo la revisione avversariale: filtro Low UMI di Space Ranger (pandas 3), soglia del 5 % di P-2 su tutti i nuclei, bootstrap a due stadi per P-5.
 
 ### Risultati
-- Cancelli tutti superati; revisione: 316 numeri ricalcolati, 3 discrepanze corrette, 0 bug che cambiano i numeri nel codice.
+- Cancelli tutti superati; revisione: 316 numeri ricalcolati, 3 discrepanze corrette, di cui due causate da un bug vero in `tools/R6_analysis.py` (filtro «Low UMI» di Space Ranger inefficace in P-6, trovato dal revisore numerico) e una da una soglia applicata diversamente dalla pre-registrazione; il revisore del codice non ha trovato altri bug che cambino i numeri; analisi rieseguita dopo le correzioni.
 - Criterio di etichettatura pre-registrato difettoso (cellule di Paneth → «endoteliali», tre cluster di cardiomiociti «non risolti»); correzione PH-1 con accordo con Space Ranger 0.91 (cervello) e 0.79 (cuore); kappa 0.83 e 0.29 contro 0.13 e 0.10 con impronte spostate.
 - Neuroni 111 µm² contro glia 34 (P-1); i tipi spiegano la taglia in intestino, tumore e stroma del colon (P-2 confermata), non nel linfonodo (B e T uguali) né nel cuore; il nucleo del cardiomiocita non è più allungato (P-3 smentita); le quote del design smentite in 5 tessuti su 6 (P-5).
 - BIO_REFERENCES B-161…B-185 (riferimenti per tipo, provvisori fino alle decisioni); BACKLOG BL-147…BL-152; BL-099, BL-138, BL-064, BL-055 aggiornate.

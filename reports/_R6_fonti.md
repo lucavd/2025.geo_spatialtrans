@@ -17,5 +17,5 @@
 | intestino: epitelio 68 %, stroma e muscolo 21 %, immunitarie 10 % | R6_refs_type_ph1.csv A1 | 0.68, 0.21, 0.10 |
 | tumore del colon: epitelio 71 %, fibroblasti 20 % | R6_posthoc.csv PH-4 A2; R6_refs_type_ph1.csv A2 | 0.71 [0.63, 0.79]; 0.20 |
 | stroma: fibroblasti 32 %, epitelio 41 %, immunitarie 19 % | R6_refs_type_ph1.csv A3; PH-4 A3 | 0.32, 0.41, 0.19 |
-| linfonodo: B 61 % nei follicoli, 42 % nella paracorticale; 46 % senza tipo; 84 trascritti per nucleo | R6_posthoc.csv PH-5; R6_refs_type_ph1.csv A4 non risolto; median_umi | 0.61, 0.42; 0.46; umi mediano A4 84 |
+| linfonodo: B 61 % nei follicoli, 42 % nella paracorticale; 47 % senza tipo (46 % non risolti, 1 % non classificabili); 84 trascritti per nucleo | R6_posthoc.csv PH-5; R6_refs_type_ph1.csv A4 non risolto + non classificabile; median_umi | 0.61, 0.42; 0.471 = 0.458 + 0.014; umi mediano A4 84 |
 | cuore: cardiomiociti 76 %, fibroblasti 13 %, immunitarie e vascolari 11 % | R6_refs_type_ph1.csv A6 | 0.76, 0.13, 0.11 |

@@ -25,7 +25,7 @@
    - Intestino di topo: epitelio 68 % (ipotesi 88 %), stroma e muscolo liscio 21 %, immunitarie 10 %.
    - Tumore del colon: epitelio 71 % (ipotesi 70 %), fibroblasti 20 %. Il criterio di espressione per distinguere epitelio tumorale e normale non funziona: chiama «normale» l'epitelio delle aree che il patologo ha letto come tumore.
    - Stroma del tumore: fibroblasti 32 %, epitelio 41 %, immunitarie 19 %: le aree scelte come stroma contengono molte ghiandole tumorali.
-   - Linfonodo: fra i nuclei con un tipo, B 61 % nei follicoli e 42 % nella paracorticale; ma il 46 % dei nuclei resta senza tipo. Con 84 trascritti per nucleo il linfonodo è al limite di questo metodo.
+   - Linfonodo: fra i nuclei con un tipo, B 61 % nei follicoli e 42 % nella paracorticale; ma il 47 % dei nuclei resta senza tipo (46 % non risolti, 1 % con meno di 20 trascritti). Con 84 trascritti per nucleo il linfonodo è al limite di questo metodo.
    - Cuore: cardiomiociti 76 % (ipotesi 85 %), fibroblasti 13 %, immunitarie e vascolari 11 %.
 
 **Cosa devi decidere.**
