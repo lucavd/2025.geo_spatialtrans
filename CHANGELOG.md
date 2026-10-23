@@ -2,7 +2,7 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## S1.5b — 2026-10-22/23 — I tipi cellulari nei sei preset (branch `step1-cell-layer`) — **chiusa** (in attesa della lettura di Luca)
+## S1.5b — 2026-10-22/23 — I tipi cellulari nei sei preset (branch `step1-cell-layer`) — **chiusa**
 
 File dello step `docs/steps/S1.5b.md`, report `reports/S1.5b.html`; decisioni DEC-016 (gruppi di taglia, densità del tipo puro; tecnica), DEC-017 (composizione del cervello con i nuclei persi tipizzati dall'espressione; Luca), DEC-018 (stroma misto provvisorio; Luca), DEC-019 (braccio ricentrato, semina cieca al tipo, tipi predefiniti; tecnica). BIO_REFERENCES B-186…B-208. BACKLOG: chiuse BL-055, BL-138, BL-150, BL-099 (parte dei tipi); nuove BL-153…BL-156.
 

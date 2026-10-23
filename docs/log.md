@@ -2,6 +2,7 @@
 
 ## 2026-10-23 (risultati e chiusura di S1.5b)
 
+* **Chiusura**: [Con i tipi cellulari nei preset, il simulatore dà a ogni tipo la taglia di nucleo che ha nei tessuti veri? (S1.5b)](steps/S1.5b.md) chiuso con l'approvazione di Luca («va bene», lettura del riassunto «In breve» senza dubbi); nessuna decisione per Luca. ROADMAP §7: S1.5b chiusa, prossima sessione proposta Step 1.5 (semina eterogenea e dipendente dal tipo).
 * **Aggiornamento**: [Con i tipi cellulari nei preset, il simulatore dà a ogni tipo la taglia di nucleo che ha nei tessuti veri? (S1.5b)](steps/S1.5b.md): cancelli, regola del braccio, verdetti (banco v2 dopo la correzione della semina), deviazioni dichiarate, post hoc, revisione avversariale (due revisori, due giri), riassunto «In breve» senza decisioni per Luca, rinvii BL-153…BL-156. Decisione tecnica [Tipi nei preset: braccio ricentrato, semina cieca al tipo, tipi predefiniti (DEC-019)](decisions/DEC-019.md). Report `reports/S1.5b.html`. In attesa della lettura di Luca.
 
 ## 2026-10-22 (apertura di S1.5b)
