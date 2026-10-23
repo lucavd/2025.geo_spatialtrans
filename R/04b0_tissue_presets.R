@@ -54,6 +54,21 @@
   stringsAsFactors = FALSE
 )
 
+# ---- S1.5c: compartimenti per tipo (docs/steps/S1.5c.md; riferimenti B-209...B-231) ----
+# Per tipo: lunghezza di correlazione ell_um e ampiezza s del campo latente (calibrazione su tutte le 5 ROI, tools/S1.5c_calibration.py;
+# tipi minori s = 0, senza campo) e area nucleare mediana reale del tipo (tools/S1.5c_type_nuc_area.py), per la distanza minima per nucleo.
+.TP_COMPART <- data.frame(
+  preset = c("epithelial", "epithelial", "epithelial", "tumor_microenv", "tumor_microenv", "stromal_rich", "stromal_rich", "stromal_rich", "stromal_rich", "lymphoid", "lymphoid", "lymphoid", "lymphoid", "lymphoid", "lymphoid", "brain_cortex", "brain_cortex", "brain_cortex", "brain_cortex", "brain_cortex", "columnar_muscle", "columnar_muscle", "columnar_muscle"),
+  cell_type = c("epiteliale", "immunitario", "stromale e muscolo liscio", "epiteliale", "fibroblasti", "endoteliale", "epiteliale", "fibroblasti", "immunitario", "endoteliali", "linfociti B", "linfociti T", "mieloidi", "plasmacellule", "stromali", "astrociti", "microglia", "oligodendrociti", "vascolari", "neuroni", "cardiomiociti", "fibroblasti", "immunitari"),
+  ell_um = c(32, 32, 8, 128, 32, 32, 128, 512, 16, NA, 512, 16, NA, NA, NA, 8, NA, 512, NA, 128, 64, 512, 8),
+  s = c(5, 4, 6, 6, 4, 3.5, 6, 3, 2.5, 0, 4, 1, 0, 0, 0, 6, 0, 5, 0, 6, 3, 2, 5),
+  nuc_median_area_um2 = c(13.9398, 11.2418, 11.2418, 32.512, 24.3465, 31.1635, 32.4371, 31.9876, 26.2942, 15.1405, 16.7894, 16.0399, 17.0143, 15.6651, 15.7401, 49.9341, 23.4277, 30.9366, 23.3902, 110.831, 19.7178, 19.9427, 17.9185),
+  src = c("B-209", "B-210", "B-211", "B-212", "B-213", "B-214", "B-215", "B-216", "B-217", "B-218", "B-219", "B-220", "B-221", "B-222", "B-223", "B-224", "B-225", "B-226", "B-227", "B-228", "B-229", "B-230", "B-231"),
+  stringsAsFactors = FALSE
+)
+
+.TP_SPATIAL_DEFAULT <- "uniform"   # S1.5c: cambia solo con la regola 3 pre-registrata
+
 .TP_EPI_LABEL <- c(tumor_microenv = "tumorale", stromal_rich = "tumorale")   # DEC-014: istologia delle ROI (R2)
 
 .tp_mut <- function() Sys.getenv("S15B_MUTANT", "none")
@@ -112,13 +127,25 @@ tissue_presets <- function() .TP_TABLE$preset
 #' @param size_arm con `types = "multi"`: `"recentred"` (predefinito, NULL; intercetta per tipo ricentrata sul territorio simulato
 #'   tipico, vincitore della regola di S1.5b) o `"group"` (modello del gruppo di taglia com'e' stimato).
 #' @param composition `"tissue"`; per il linfonodo anche `"follicle"` e `"paracortex"` (DEC-015).
+#' @param spatial con `types = "multi"`: `"uniform"` (semina cieca al tipo di S1.5b) o `"compartments"` (S1.5c: tabella
+#'   `compartments` del preset, calibrata su tutte le ROI). NULL = predefinito del pacchetto (`.TP_SPATIAL_DEFAULT`).
+#' @param min_dist_mode `"tissue"` (d* del tessuto per tutti i tipi, DEC-009) o `"nucleus"` (S1.5c: d_t = kappa * 2 sqrt(a_t / pi),
+#'   kappa tale che sum f_t d_t = d*; solo con `spatial = "compartments"`).
 #' @return lista con `cell_types` (catalogo: una riga, o una per tipo con `size_group` ed `epithelium_label`), `composition` (con
 #'   `types = "multi"`: tipo, frazione), `type_sources` (fonti B-nnn per tipo), `c8_interval` (µm), `archetype`, `tissue`, `sources`
 #'   (data.frame parametro, valore, fonte), `size_conversion`.
 #' @export
 tissue_preset_spec <- function(preset, size_conversion = c("preserve_area", "none"), types = c("multi", "single"),
-                               size_arm = NULL, composition = c("tissue", "follicle", "paracortex")) {
+                               size_arm = NULL, composition = c("tissue", "follicle", "paracortex"), spatial = NULL,
+                               min_dist_mode = c("tissue", "nucleus")) {
   size_conversion <- match.arg(size_conversion); types <- match.arg(types); composition <- match.arg(composition)
+  min_dist_mode <- match.arg(min_dist_mode)
+  if (is.null(spatial)) spatial <- .TP_SPATIAL_DEFAULT
+  spatial <- match.arg(spatial, c("uniform", "compartments"))
+  if (types == "single" && (spatial == "compartments" || min_dist_mode == "nucleus"))
+    stop("tissue_preset_spec(): compartimenti e distanza per nucleo richiedono types = \"multi\" (S1.5c).", call. = FALSE)
+  if (min_dist_mode == "nucleus" && spatial != "compartments")
+    stop("tissue_preset_spec(): min_dist_mode = \"nucleus\" richiede spatial = \"compartments\" (S1.5c).", call. = FALSE)
   if (types == "multi") {
     if (is.null(size_arm)) size_arm <- "recentred"   # braccio vincente della regola pre-registrata di S1.5b (results/S1.5b/S1.5b_arm_rule.csv)
     if (!size_arm %in% c("group", "recentred"))
@@ -144,11 +171,20 @@ tissue_preset_spec <- function(preset, size_conversion = c("preserve_area", "non
                                p$src_density_model, p$src_phi, p$src_c8, p$src_c8), stringsAsFactors = FALSE)
   out <- list(cell_types = ct, c8_interval = c(p$c8_lo, p$c8_hi), archetype = p$archetype, tissue = p$tissue,
               sources = src, size_conversion = size_conversion, preset = preset, types = types, size_arm = NA_character_,
-              composition = NULL, composition_name = NA_character_)
+              composition = NULL, composition_name = NA_character_, spatial = if (types == "multi") spatial else "uniform",
+              min_dist_mode = min_dist_mode, compartments = NULL)
   if (types == "multi") {
     m <- .tp_multi(p, size_arm, composition)
     out$cell_types <- m$cell_types; out$composition <- m$composition; out$type_sources <- m$type_sources
     out$size_arm <- size_arm; out$composition_name <- composition
+    cp <- .TP_COMPART[.TP_COMPART$preset == preset, , drop = FALSE]
+    cp <- cp[match(out$cell_types$cell_type, cp$cell_type), , drop = FALSE]
+    out$compartments <- data.frame(cell_type = cp$cell_type, ell_um = cp$ell_um, s = cp$s, source = cp$src, stringsAsFactors = FALSE)
+    if (min_dist_mode == "nucleus") {
+      f <- out$composition$fraction[match(out$cell_types$cell_type, out$composition$cell_type)]
+      raw <- 2 * sqrt(cp$nuc_median_area_um2 / pi); kappa <- p$min_dist_um / sum(f * raw)
+      out$cell_types$min_dist_um <- kappa * raw; out$min_dist_kappa <- kappa
+    }
   }
   out
 }

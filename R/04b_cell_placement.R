@@ -100,6 +100,10 @@ merge_small_components <- function(clust, pixel_size_um, min_region_area_um2, cl
 #'   modello di taglia (NULL = `"recentred"`)
 #'   e composizione (`tissue_preset_spec()`); con `"multi"` ogni cluster riceve la composizione del preset, la semina e' cieca al
 #'   tipo (`seed_centroids(type_order = "blind")`) e `cell_df` riceve `size_group` ed `epithelium_label`.
+#' @param spatial,min_dist_mode semina (`"uniform"` o `"compartments"`, NULL = predefinito del preset) e distanza minima
+#'   (`"tissue"` o `"nucleus"`) dei preset per tipo (S1.5c, `tissue_preset_spec()`).
+#' @param labels con i compartimenti: `"field"` o `"blind"` (etichette permutate, controprova di S1.5c).
+#' @param override_compartments tabella `cell_type`, `ell_um`, `s` che sostituisce quella del preset (banco di S1.5c: pieghe).
 #' @param small_components `"merge"` (BL-043) o `"exclude"`.
 #' @param stride passo dei pixel; NULL = attributo `stride` di `clust`, altrimenti 1 se i dati sono contigui, errore se
 #'   il passo rilevato e' > 1 (BL-042).
@@ -114,8 +118,10 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
                         cluster_col = "intensity_cluster", stride = NULL, simplify_tol_um = 0.5,
                         small_components = c("merge", "exclude"), nucleus_model = "clip",
                         size_conversion = c("preserve_area", "none"), types = c("multi", "single"), size_arm = NULL,
-                        composition = "tissue", validate = TRUE, strict = TRUE, keep_tiles = FALSE,
+                        composition = "tissue", spatial = NULL, min_dist_mode = c("tissue", "nucleus"), labels = c("field", "blind"),
+                        override_compartments = NULL, validate = TRUE, strict = TRUE, keep_tiles = FALSE,
                         allow_estimate = FALSE, verbose = TRUE) {
+  min_dist_mode <- match.arg(min_dist_mode); labels <- match.arg(labels)
   t0 <- proc.time()[["elapsed"]]
   small_components <- match.arg(small_components); size_conversion <- match.arg(size_conversion); types <- match.arg(types)
   if (missing(pixel_size_um))
@@ -125,7 +131,8 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   # ---- catalogo e composizione ----
   spec <- NULL
   if (is.null(cell_types)) {
-    spec <- tissue_preset_spec(tissue_preset, size_conversion, types = types, size_arm = size_arm, composition = composition)
+    spec <- tissue_preset_spec(tissue_preset, size_conversion, types = types, size_arm = size_arm, composition = composition,
+                               spatial = spatial, min_dist_mode = min_dist_mode)
     ct <- spec$cell_types; c8 <- spec$c8_interval
   } else { ct <- cell_types; c8 <- NULL }
   if (!is.null(override_cell_types)) {
@@ -190,7 +197,13 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   comp_used$cluster_id <- reg$region_df$cluster_id[match(as.character(comp_used$cluster_id), as.character(reg$region_df$cluster_id))]
   # preset per tipo (S1.5b): semina cieca al tipo, cosi' il territorio non dipende dal tipo (revisione RC-01)
   t_order <- if (!is.null(spec) && identical(spec$types, "multi") && Sys.getenv("S15B_MUTANT", "none") != "M8") "blind" else "sequential"   # M8: mutante
-  sc <- seed_centroids(reg, ct, comp_used, random_seed = ss[["seed"]], type_order = t_order, verbose = FALSE)
+  sp_used <- if (!is.null(spec)) spec$spatial else if (is.null(spatial)) "uniform" else spatial
+  ctab <- if (!is.null(override_compartments)) override_compartments else if (!is.null(spec)) spec$compartments else NULL
+  sc <- if (sp_used == "compartments") {
+    if (is.null(ctab)) stop("place_cells(): spatial = \"compartments\" richiede una tabella dei compartimenti.", call. = FALSE)
+    seed_centroids(reg, ct, comp_used, random_seed = ss[["seed"]], spatial = "compartments", compartments = ctab,
+                   labels = labels, verbose = FALSE)
+  } else seed_centroids(reg, ct, comp_used, random_seed = ss[["seed"]], type_order = t_order, verbose = FALSE)
   tv <- tessellate_voronoi(sc$centroids, reg, corner_smoothing = corner_smoothing, keep_tiles = keep_tiles, verbose = FALSE)
   dg <- derive_cell_geometry(sc$centroids, tv, ct, random_seed = ss[["size"]], nucleus_model = nucleus_model, verbose = FALSE)
   cd <- dg$cell_df
@@ -225,12 +238,15 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
                           preset_types = if (is.null(spec)) NA_character_ else spec$types, size_arm = if (is.null(spec)) NA_character_ else spec$size_arm,
                           composition_name = if (is.null(spec)) NA_character_ else spec$composition_name,
                           type_sources = if (is.null(spec)) NULL else spec$type_sources,
+                          spatial = sp_used, min_dist_mode = if (is.null(spec)) NA_character_ else spec$min_dist_mode,
+                          labels = if (sp_used == "compartments") labels else NA_character_,
+                          compartments = if (sp_used == "compartments") ctab else NULL,
                           corner_smoothing = corner_smoothing, min_region_area_um2 = min_region_area_um2, small_components = small_components,
                           stride = stride, cell_types_resolved = ct, region_composition_resolved = comp_used,
                           random_seed = random_seed, stage_seeds = ss, nucleus_model = nucleus_model,
                           merge_info = attr(cl_in, "merge_info"), excluded_df = reg$excluded_df,
                           seed_info = sc$info, tessellation_info = tv$info, geometry_info = dg$info,
-                          package_version = "geo.spatialtrans step1-cell-layer (S1.5b)", timestamp = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z"),
+                          package_version = "geo.spatialtrans step1-cell-layer (S1.5c)", timestamp = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z"),
                           validation = val, elapsed_s = proc.time()[["elapsed"]] - t0)
   if (verbose) cat(sprintf("[place_cells] %s: %d regioni, %d cellule, scala %.4g um/px (%s), controlli %s, %.1f s\n",
                            if (is.null(spec)) "catalogo dell'utente" else tissue_preset, nrow(rdf), nrow(cd), px, src,

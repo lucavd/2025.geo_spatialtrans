@@ -33,6 +33,13 @@
 #'   probabilita' di accettazione >= 1e-3 l'arresto spurio ha probabilita' < e^-10).
 #' @param type_order `"sequential"` (predefinito: un compito RSA per tipo, in ordine di densita' decrescente) o `"blind"` (un compito
 #'   per regione, tipi assegnati dopo a caso con i conteggi ripartiti; richiede la stessa distanza minima per tutti i tipi; S1.5b).
+#' @param spatial `"uniform"` (predefinito: proposte uniformi nella regione, comportamento di S1.2-S1.5b invariato) o
+#'   `"compartments"` (S1.5c: campi latenti per tipo, tipo locale e densita' locale dal campo; definizione in docs/steps/S1.5c.md).
+#' @param compartments con `spatial = "compartments"`: data.frame `cell_type`, `ell_um` (lunghezza di correlazione del campo, µm),
+#'   `s` (ampiezza sul logaritmo delle probabilita'); i tipi assenti o con s = 0 non hanno campo.
+#' @param labels con `"compartments"`: `"field"` (tipo estratto da p(x) al momento della proposta) o `"blind"` (stesse posizioni,
+#'   etichette permutate dentro la regione; richiede la stessa distanza minima per tutti i tipi; controprova di S1.5c).
+#' @param n_features numero di caratteristiche di Fourier casuali per campo (256).
 #' @param verbose stampa un riepilogo.
 #' @return lista con `centroids` (data.frame `cell_id, region_id, x, y,
 #'   cell_type, cluster_id`), `region_df` (input + `target_density_weighted`,
@@ -47,8 +54,12 @@ seed_centroids <- function(regions,
                            max_attempts_factor = 1000,
                            max_consecutive_rejections = 10000L,
                            type_order = c("sequential", "blind"),
+                           spatial = c("uniform", "compartments"),
+                           compartments = NULL,
+                           labels = c("field", "blind"),
+                           n_features = 256L,
                            verbose = TRUE) {
-  type_order <- match.arg(type_order)
+  type_order <- match.arg(type_order); spatial <- match.arg(spatial); labels <- match.arg(labels)
   t0 <- proc.time()[["elapsed"]]
   a <- .sc_check_args(regions, cell_types, region_composition, random_seed,
                       dmin_factor, max_attempts_factor)
@@ -56,7 +67,11 @@ seed_centroids <- function(regions,
   rdf <- regions$region_df
   res <- .sc_with_seed(random_seed, {
     plan <- .sc_plan(rdf, type_df, a$composition)
-    if (type_order == "blind" && nrow(plan$tasks)) {
+    if (spatial == "compartments") {
+      pl <- .sc_place_compart(plan, regions$region_polygons, rdf, type_df, a$composition,
+                              .sc_check_compart(compartments, type_df), labels, as.integer(n_features),
+                              max_attempts_factor, max_consecutive_rejections)
+    } else if (type_order == "blind" && nrow(plan$tasks)) {
       bl <- .sc_blind_tasks(plan$tasks, type_df)
       pl <- .sc_place_all(bl$tasks, regions$region_polygons, rdf, type_df,
                           max_attempts_factor, max_consecutive_rejections)
@@ -71,8 +86,8 @@ seed_centroids <- function(regions,
   plan <- res$plan; pl <- res$pl
 
   n_cells  <- tabulate(match(pl$region_id, rdf$region_id), nbins = nrow(rdf))
-  n_failed <- tabulate(match(rep(plan$tasks$region_id, pl$task_failed), rdf$region_id),
-                       nbins = nrow(rdf))
+  n_failed <- if (spatial == "compartments") pl$region_failed else
+    tabulate(match(rep(plan$tasks$region_id, pl$task_failed), rdf$region_id), nbins = nrow(rdf))
   out_rdf <- rdf
   out_rdf$target_density_weighted <- plan$rho_mix
   out_rdf$lambda           <- plan$lambda
@@ -94,7 +109,8 @@ seed_centroids <- function(regions,
                     sum(n_failed), sum(n_failed > 0)), call. = FALSE)
   }
   info <- list(
-    random_seed = random_seed, dmin_factor = dmin_factor, type_order = type_order,
+    random_seed = random_seed, dmin_factor = dmin_factor, type_order = type_order, spatial = spatial,
+    labels = if (spatial == "compartments") labels else NA_character_, compartments = pl$compart_info,
     max_attempts_factor = max_attempts_factor,
     n_cells = nrow(centroids), n_target = sum(plan$n_region),
     n_failed = sum(n_failed), n_attempts = sum(pl$task_attempts),
@@ -420,4 +436,182 @@ seed_centroids <- function(regions,
   list(x = X[keep], y = Y[keep], type_idx = TI[keep], region_id = RI[keep],
        task_failed = task_failed, task_attempts = task_attempts,
        grid_cell_um = grid_cell, hardcore = hardcore)
+}
+
+
+# ---- semina a compartimenti (S1.5c) -----------------------------------------
+# Definizione: docs/steps/S1.5c.md, «Cosa si implementa». Per regione: un campo gaussiano latente per tipo con s > 0
+# (covarianza exp(-r^2 / (2 l^2)), caratteristiche di Fourier casuali), p_t(x) = softmax(log f_t + a_t + s_t Z_t(x)),
+# densita' locale lambda(x) proporzionale a 1 / sum_t p_t(x) / rho_t; a_t sulla griglia della regione in modo che le frazioni
+# attese per numero (pesate con lambda) siano f_t; numero di cellule della regione = quello del piano (densita' armonica).
+# Proposte uniformi, diradate con lambda / lambda_max, tipo estratto da p(x), poi la distanza minima della coppia (RSA).
+# Quote per tipo (deviazione D-1 dalla pre-registrazione, docs/steps/S1.5c.md): la proposta il cui tipo ha esaurito la quota e' rifiutata,
+# cosi' i conteggi per tipo sono quelli ripartiti dal piano (senza quote la distanza minima sfavoriva i tipi densi: test T6).
+
+#' Tabella dei compartimenti validata e allineata ai tipi usati (ell, s; s = 0 se assente).
+#' @keywords internal
+.sc_check_compart <- function(compartments, type_df) {
+  out <- data.frame(cell_type = type_df$cell_type, ell_um = NA_real_, s = 0, stringsAsFactors = FALSE)
+  if (is.null(compartments)) return(out)
+  if (!is.data.frame(compartments) || !all(c("cell_type", "ell_um", "s") %in% names(compartments)))
+    stop("seed_centroids(): `compartments` deve avere colonne cell_type, ell_um, s.", call. = FALSE)
+  if (anyDuplicated(compartments$cell_type)) stop("seed_centroids(): tipi duplicati in `compartments`.", call. = FALSE)
+  k <- match(out$cell_type, as.character(compartments$cell_type)); h <- !is.na(k)
+  out$ell_um[h] <- as.numeric(compartments$ell_um[k[h]]); out$s[h] <- as.numeric(compartments$s[k[h]])
+  bad <- out$s < 0 | !is.finite(out$s) | (out$s > 0 & !(is.finite(out$ell_um) & out$ell_um > 0))
+  if (any(bad)) stop("seed_centroids(): `compartments` con s < 0 o ell_um non positiva per s > 0: ", paste(out$cell_type[bad], collapse = ", "), call. = FALSE)
+  out
+}
+
+#' Parametri di un campo gaussiano a caratteristiche di Fourier casuali (omega ~ N(0, I / ell^2), b ~ U(0, 2 pi)).
+#' @keywords internal
+.sc_rff_draw <- function(ell, M) list(w = matrix(stats::rnorm(2L * M, 0, 1 / ell), ncol = 2L), b = stats::runif(M, 0, 2 * pi), M = M)
+
+#' Valore del campo nei punti (x, y): sqrt(2 / M) * sum_k cos(w_k . x + b_k); media 0, varianza 1.
+#' @keywords internal
+.sc_rff_eval <- function(f, x, y) {
+  if (!length(x)) return(numeric(0))
+  ang <- outer(x, f$w[, 1]) + outer(y, f$w[, 2]) + rep(f$b, each = length(x))
+  sqrt(2 / f$M) * rowSums(cos(ang))
+}
+
+#' Logit dei tipi nei punti: log f + s * Z (senza a); matrice n x K.
+#' @keywords internal
+.sc_eta <- function(fields, s, logf, x, y) {
+  eta <- matrix(logf, nrow = length(x), ncol = length(logf), byrow = TRUE)
+  for (t in seq_along(fields)) if (!is.null(fields[[t]])) eta[, t] <- eta[, t] + s[t] * .sc_rff_eval(fields[[t]], x, y)
+  eta
+}
+
+#' Probabilita' locali (softmax) e densita' relativa w = 1 / sum p / rho dati i logit e lo spostamento a.
+#' @keywords internal
+.sc_prob <- function(eta, a, rho) {
+  e <- sweep(eta, 2L, a, "+"); e <- e - apply(e, 1L, max); p <- exp(e); p <- p / rowSums(p)
+  list(p = p, w = 1 / as.vector(p %*% (1 / rho)))
+}
+
+#' Spostamenti a_t: frazioni attese per numero (pesate con w) = f sui punti della griglia.
+#' @keywords internal
+.sc_solve_a <- function(eta, f, rho, iters = 500L, tol = 1e-12) {
+  a <- numeric(length(f))
+  for (it in seq_len(iters)) {
+    pr <- .sc_prob(eta, a, rho); fr <- colSums(pr$w * pr$p) / sum(pr$w)
+    step <- log(f) - log(fr); a <- a + step
+    if (max(abs(step)) < tol) break
+  }
+  a - a[1]
+}
+
+#' Griglia di punti della regione per a_t e lambda_max: passo min(ell_min / 2, sqrt(area / 4000)), almeno 50 punti.
+#' @keywords internal
+.sc_grid_points <- function(poly, area, ell_min) {
+  bb <- sf::st_bbox(poly)
+  h <- min(if (is.finite(ell_min)) ell_min / 2 else Inf, sqrt(max(area, 1e-12) / 4000))
+  for (k in 1:6) {
+    gx <- seq(bb[["xmin"]] + h / 2, bb[["xmax"]], by = h); gy <- seq(bb[["ymin"]] + h / 2, bb[["ymax"]], by = h)
+    g <- expand.grid(x = gx, y = gy); ins <- .sc_in_polygon(poly, g$x, g$y)
+    if (sum(ins) >= 50L) return(g[ins, , drop = FALSE])
+    h <- h / 2
+  }
+  g[ins, , drop = FALSE]
+}
+
+#' Indice del tipo estratto da ogni riga di P (probabilita') con le uniformi u.
+#' @keywords internal
+.sc_draw_type <- function(P, u) {
+  K <- ncol(P); if (K == 1L) return(rep(1L, nrow(P)))
+  cp <- P[, 1]; out <- rep(1L, nrow(P))
+  for (t in 2:K) { out <- out + (u >= cp); cp <- cp + P[, t] }
+  pmin(out, K)
+}
+
+#' RSA a compartimenti su tutte le regioni (distanza minima globale come in .sc_place_all).
+#' @keywords internal
+.sc_place_compart <- function(plan, polys, rdf, type_df, comp, ctab, labels, M, max_attempts_factor, max_consecutive_rejections) {
+  nr <- nrow(rdf); ntot <- sum(plan$n_region)
+  X <- numeric(ntot); Y <- numeric(ntot); D <- numeric(ntot); TI <- integer(ntot); RI <- integer(ntot); RX <- integer(ntot)
+  region_failed <- integer(nr); attempts <- 0L; exceed <- 0L; info <- vector("list", nr); n_quota_rej <- 0L; n_thin_acc <- 0L
+  dtype <- type_df$min_dist_um
+  used <- sort(unique(match(comp$cell_type, type_df$cell_type)))
+  h <- if (length(used)) max(dtype[used]) else 0; hardcore <- h > 0; k <- 0L; grid_cell <- NA_real_
+  act <- which(plan$n_region > 0L)
+  if (hardcore && length(act)) {
+    bb_all <- sf::st_bbox(polys[act]); gx0 <- bb_all[["xmin"]]; gy0 <- bb_all[["ymin"]]
+    ext <- max(bb_all[["xmax"]] - gx0, bb_all[["ymax"]] - gy0)
+    grid_cell <- max(h, ext / 4000)
+    nx <- as.integer(floor((bb_all[["xmax"]] - gx0) / grid_cell)) + 1L; ny <- as.integer(floor((bb_all[["ymax"]] - gy0) / grid_cell)) + 1L
+    nxp <- nx + 2L; nyp <- ny + 2L
+    cnt <- integer(nxp * nyp); cellpts <- matrix(0L, nrow = nxp * nyp, ncol = 8L); offs <- .sc_neighbour_offsets(nxp)
+  }
+  cl <- as.character(rdf$cluster_id); comp_by <- split(comp, comp$cluster_id)
+  for (i in act) {
+    n <- plan$n_region[i]; d <- comp_by[[cl[i]]]
+    ti_r <- match(d$cell_type, type_df$cell_type); f <- d$fraction / sum(d$fraction); K <- length(ti_r)
+    rho <- type_df$density[ti_r]; s <- ctab$s[match(type_df$cell_type[ti_r], ctab$cell_type)]
+    ell <- ctab$ell_um[match(type_df$cell_type[ti_r], ctab$cell_type)]
+    tk <- plan$tasks[plan$tasks$region_idx == i, , drop = FALSE]                 # quote per tipo (ripartizione del piano, come S1.5b)
+    quota <- integer(K); quota[match(tk$type_idx, ti_r)] <- tk$n
+    fields <- vector("list", K)
+    for (t in seq_len(K)) if (s[t] > 0) fields[[t]] <- .sc_rff_draw(ell[t], M)
+    poly <- polys[i]; bb <- sf::st_bbox(poly)
+    gp <- .sc_grid_points(poly, rdf$area_um2[i], if (any(s > 0)) min(ell[s > 0]) else Inf)
+    eta_g <- .sc_eta(fields, s, log(f), gp$x, gp$y)
+    a <- .sc_solve_a(eta_g, f, rho)
+    wg <- .sc_prob(eta_g, a, rho)$w; wmax <- 1.1 * max(wg)
+    info[[i]] <- list(region_id = rdf$region_id[i], a = a, wmax = wmax, w_mean = mean(wg), n_grid = nrow(gp), n_fields = sum(s > 0))
+    bw <- bb[["xmax"]] - bb[["xmin"]]; bh <- bb[["ymax"]] - bb[["ymin"]]
+    p_in <- min(1, max(rdf$area_um2[i] / max(bw * bh, 1e-12), 1e-3)); p_thin <- max(mean(wg) / wmax, 1e-3)
+    max_att <- as.integer(min(max_attempts_factor * n + 1000, .Machine$integer.max - 1))
+    placed <- 0L; att <- 0L; empty_blocks <- 0L; rej_run <- 0L; dr <- dtype[ti_r]
+    while (placed < n && att < max_att && empty_blocks < 100L && rej_run < max_consecutive_rejections) {
+      need <- n - placed
+      block <- as.integer(min(max(ceiling(2 * need / (p_in * p_thin)), 64), 1e5))
+      cx <- stats::runif(block, bb[["xmin"]], bb[["xmax"]]); cy <- stats::runif(block, bb[["ymin"]], bb[["ymax"]])
+      ins <- .sc_in_polygon(poly, cx, cy); cx <- cx[ins]; cy <- cy[ins]
+      empty_blocks <- if (length(cx)) 0L else empty_blocks + 1L
+      if (!length(cx)) next
+      pr <- .sc_prob(.sc_eta(fields, s, log(f), cx, cy), a, rho)
+      u_thin <- stats::runif(length(cx)); u_type <- stats::runif(length(cx))
+      exceed <- exceed + sum(pr$w > wmax)
+      keep <- u_thin < pr$w / wmax
+      att <- att + length(cx)
+      if (!any(keep)) next
+      cx <- cx[keep]; cy <- cy[keep]
+      tl <- .sc_draw_type(pr$p[keep, , drop = FALSE], u_type[keep])
+      for (j in seq_along(cx)) {
+        x <- cx[j]; y <- cy[j]; tj <- tl[j]; dt <- dr[tj]; ok <- TRUE
+        n_thin_acc <- n_thin_acc + 1L
+        if (quota[tj] == 0L) { n_quota_rej <- n_quota_rej + 1L; next }   # quota del tipo esaurita: proposta rifiutata
+        if (hardcore) {
+          cid <- (as.integer((x - gx0) %/% grid_cell) + 2L) + (as.integer((y - gy0) %/% grid_cell) + 1L) * nxp
+          nb <- cid + offs
+          if (any(cnt[nb] > 0L)) {
+            ids <- cellpts[nb, , drop = FALSE]; ids <- ids[ids > 0L]
+            dx <- X[ids] - x; dy <- Y[ids] - y; thr <- .sc_pair_dist(dt, D[ids])
+            if (any(dx * dx + dy * dy < thr * thr)) ok <- FALSE
+          }
+        }
+        if (!ok) { rej_run <- rej_run + 1L; if (rej_run >= max_consecutive_rejections) break; next }
+        rej_run <- 0L; k <- k + 1L; quota[tj] <- quota[tj] - 1L
+        X[k] <- x; Y[k] <- y; D[k] <- dt; TI[k] <- ti_r[tj]; RI[k] <- rdf$region_id[i]; RX[k] <- i
+        if (hardcore) {
+          c1 <- cnt[cid] + 1L
+          if (c1 > ncol(cellpts)) cellpts <- cbind(cellpts, matrix(0L, nrow(cellpts), ncol(cellpts)))
+          cellpts[cid, c1] <- k; cnt[cid] <- c1
+        }
+        placed <- placed + 1L
+        if (placed == n) break
+      }
+    }
+    region_failed[i] <- n - placed; attempts <- attempts + att
+  }
+  keep <- seq_len(k); TI <- TI[keep]; RX <- RX[keep]
+  if (labels == "blind") {
+    if (length(unique(dtype[used])) > 1L) stop("seed_centroids(): labels = \"blind\" richiede la stessa distanza minima per tutti i tipi.", call. = FALSE)
+    for (i in unique(RX)) { w <- which(RX == i); if (length(w) > 1L) TI[w] <- TI[w][sample.int(length(w))] }
+  }
+  list(x = X[keep], y = Y[keep], type_idx = TI, region_id = RI[keep], region_failed = region_failed,
+       task_attempts = attempts, grid_cell_um = grid_cell, hardcore = hardcore,
+       compart_info = list(regions = Filter(Negate(is.null), info), n_exceed_wmax = exceed, n_quota_reject = n_quota_rej,
+                           n_thin_accept = n_thin_acc, table = ctab))
 }
