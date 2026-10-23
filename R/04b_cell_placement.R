@@ -96,7 +96,8 @@ merge_small_components <- function(clust, pixel_size_um, min_region_area_um2, cl
 #'   costruita dal catalogo (un tipo per cluster); NULL con un catalogo di un tipo = quel tipo per tutti i cluster.
 #' @param pixel_size_um obbligatorio: numero (µm/px), `"estimate"` o `list(scalefactors_json = <file>)`.
 #' @param size_conversion conversione del modello di taglia dei preset (`tissue_preset_spec()`).
-#' @param types,size_arm,composition preset a un tipo (`"single"`, S1.5) o per tipo (`"multi"`, S1.5b), braccio del modello di taglia
+#' @param types,size_arm,composition preset per tipo (`"multi"`, predefinito da S1.5b) o a un tipo (`"single"`, S1.5), braccio del
+#'   modello di taglia (NULL = `"recentred"`)
 #'   e composizione (`tissue_preset_spec()`); con `"multi"` ogni cluster riceve la composizione del preset, la semina e' cieca al
 #'   tipo (`seed_centroids(type_order = "blind")`) e `cell_df` riceve `size_group` ed `epithelium_label`.
 #' @param small_components `"merge"` (BL-043) o `"exclude"`.
@@ -112,7 +113,7 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
                         pixel_size_um, corner_smoothing = 0, min_region_area_um2 = 100, random_seed = 42,
                         cluster_col = "intensity_cluster", stride = NULL, simplify_tol_um = 0.5,
                         small_components = c("merge", "exclude"), nucleus_model = "clip",
-                        size_conversion = c("preserve_area", "none"), types = c("single", "multi"), size_arm = NULL,
+                        size_conversion = c("preserve_area", "none"), types = c("multi", "single"), size_arm = NULL,
                         composition = "tissue", validate = TRUE, strict = TRUE, keep_tiles = FALSE,
                         allow_estimate = FALSE, verbose = TRUE) {
   t0 <- proc.time()[["elapsed"]]

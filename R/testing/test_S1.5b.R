@@ -76,9 +76,15 @@ ng <- tapply(cal$size_group, cal$archetype, function(g) length(unique(g)))
 ck("T4c numero di gruppi per tessuto: 2, 2, 2, 1, 2, 1 (regola dei gruppi, docs/steps/S1.5b.md)", identical(as.integer(ng), c(2L, 2L, 2L, 1L, 2L, 1L)), paste(ng))
 
 # ---- T5: il preset a un tipo non cambia ----
-same <- all(vapply(tissue_presets(), function(p) identical(tissue_preset_spec(p)$cell_types, tissue_preset_spec(p, types = "single")$cell_types) &&
-                     nrow(tissue_preset_spec(p)$cell_types) == 1L && is.null(tissue_preset_spec(p)$composition), TRUE))
-ck("T5 types = \"single\" (predefinito durante il banco) restituisce il catalogo di un tipo di S1.5", same)
+same <- all(vapply(tissue_presets(), function(p) { s <- tissue_preset_spec(p, types = "single"); t <- TT[TT$preset == p, ]
+  nrow(s$cell_types) == 1L && is.null(s$composition) && identical(s$cell_types$cell_type, paste0(p, "_all")) &&
+    abs(s$cell_types$density - t$density) < 1e-12 && abs(s$cell_types$nucleus_area_slope - t$beta) < 1e-12 }, TRUE))
+ck("T5 types = \"single\" restituisce il catalogo di un tipo di S1.5 (valori della tabella del preset)", same)
+dflt <- tissue_preset_spec("brain_cortex"); L0 <- safe(suppressWarnings(place_cells(toy0 <- { cl <- expand.grid(x = 1:120, y = 1:120); cl$intensity_cluster <- 1L; cl },
+                                                                       "brain_cortex", pixel_size_um = 2, random_seed = 3, verbose = FALSE)))
+ck("T5b predefiniti dopo il verdetto: types = \"multi\", size_arm = \"recentred\" in tissue_preset_spec() e place_cells()",
+   identical(dflt$types, "multi") && identical(dflt$size_arm, "recentred") && isok(L0) && identical(L0$metadata$preset_types, "multi") &&
+   identical(L0$metadata$size_arm, "recentred"), msg(L0))
 
 # ---- T6: place_cells con i preset per tipo ----
 toy <- function(nx = 260, ny = 200) { cl <- expand.grid(x = 1:nx, y = 1:ny); cl$intensity_cluster <- ifelse(cl$x < nx * 0.45, 1L, 2L); cl }
@@ -123,8 +129,8 @@ e1 <- safe(tissue_preset_spec("epithelial", types = "multi", size_arm = "group",
 f1 <- tissue_preset_spec("lymphoid", types = "multi", size_arm = "group", composition = "follicle")$composition
 ck("T8 varianti del linfonodo: follicolo con B > T come le righe di BIO_REFERENCES; variante assente negli altri preset -> errore",
    !isok(e1) && f1$fraction[f1$cell_type == "linfociti B"] > f1$fraction[f1$cell_type == "linfociti T"])
-ck("T9 types = \"multi\" senza size_arm o con size_conversion = \"none\" -> errore",
-   !isok(safe(tissue_preset_spec("epithelial", types = "multi"))) && !isok(safe(tissue_preset_spec("epithelial", "none", types = "multi", size_arm = "group"))))
+ck("T9 types = \"multi\" con size_arm sconosciuto o con size_conversion = \"none\" -> errore",
+   !isok(safe(tissue_preset_spec("epithelial", types = "multi", size_arm = "x"))) && !isok(safe(tissue_preset_spec("epithelial", "none", types = "multi", size_arm = "group"))))
 
 # ---- T10: due taglie nel cervello e relazione fra i bracci ----
 g <- tissue_preset_spec("brain_cortex", types = "multi", size_arm = "group")$cell_types; rc <- tissue_preset_spec("brain_cortex", types = "multi", size_arm = "recentred")$cell_types

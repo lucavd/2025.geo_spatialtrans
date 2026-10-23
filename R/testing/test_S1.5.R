@@ -4,6 +4,7 @@
 .libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
 suppressPackageStartupMessages({ library(sf); library(geos) })
 for (f in sort(list.files("R", pattern = "^04b.*\\.R$", full.names = TRUE))) source(f)
+source("tools/S1.5_single_preset.R")   # S1.5b: i tipi sono predefiniti; qui si riproduce S1.5 a un tipo
 source("tools/S1.5_faults.R")
 MUT <- Sys.getenv("S15_MUTANT", "none")
 VIS <- "results/visualizations/S1.5"; dir.create(VIS, recursive = TRUE, showWarnings = FALSE)   # BL-013: fuori dai file tracciati

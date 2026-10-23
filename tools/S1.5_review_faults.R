@@ -5,6 +5,7 @@
 
 suppressPackageStartupMessages({ library(sf); library(geos); library(parallel) })
 for (f in sort(list.files("R", pattern = "^04b.*\\.R$", full.names = TRUE))) source(f)
+source("tools/S1.5_single_preset.R")   # S1.5b: i tipi sono predefiniti; qui si riproduce S1.5 a un tipo
 OUT <- "/mnt/micron/geo_spatialtrans/S1.5/postreview"; dir.create(OUT, showWarnings = FALSE); LAY <- "/mnt/micron/geo_spatialtrans/S1.5/layers"
 PRESET <- c(A1 = "epithelial", A2 = "tumor_microenv", A3 = "stromal_rich", A4 = "lymphoid", A5 = "brain_cortex", A6 = "columnar_muscle")
 sq <- function(p, delta) { h <- sqrt(delta) / 2; xy <- sf::st_coordinates(p)[1, 1:2]

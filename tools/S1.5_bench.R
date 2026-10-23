@@ -5,6 +5,7 @@
 .libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
 suppressPackageStartupMessages({ library(sf); library(geos); library(parallel); library(arrow) })
 for (f in sort(list.files("R", pattern = "^04b.*\\.R$", full.names = TRUE))) source(f)
+source("tools/S1.5_single_preset.R")   # S1.5b: i tipi sono predefiniti; qui si riproduce S1.5 a un tipo
 source("tools/R3_voronoi_metrics.R"); source("tools/S1.5_faults.R")
 data.table_ok <- requireNamespace("data.table", quietly = TRUE); if (data.table_ok) data.table::setDTthreads(1L)
 args <- commandArgs(TRUE); STAGE <- if (length(args)) args[1] else "none"

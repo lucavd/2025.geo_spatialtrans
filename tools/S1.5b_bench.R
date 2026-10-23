@@ -25,7 +25,7 @@ layer_md5 <- function(L) { f <- tempfile(); saveRDS(list(L$cell_df, sf::st_as_bi
 run_pc <- function(i, s, arm, w) {
   A <- rois$archetype[i]
   if (arm == "single") return(suppressWarnings(place_cells(clust_of(w), PRESET[[A]], pixel_size_um = w$px, min_region_area_um2 = 0, simplify_tol_um = 0,
-                               stride = 1L, small_components = "exclude", random_seed = seed_of(i, s), size_conversion = "preserve_area",
+                               stride = 1L, small_components = "exclude", random_seed = seed_of(i, s), size_conversion = "preserve_area", types = "single",
                                keep_tiles = TRUE, strict = FALSE, verbose = FALSE)))
   suppressWarnings(place_cells(clust_of(w), PRESET[[A]], pixel_size_um = w$px, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L,
                                small_components = "exclude", random_seed = seed_of(i, s), types = "multi", size_arm = arm,
@@ -107,8 +107,11 @@ if (STAGE == "check") {
   rep_ok <- vapply(seq_len(nrow(pick)), function(r) { i <- pick$roi_idx[r]; arm <- if (r %% 2) "group" else "recentred"
     w <- r3_roi_window(pick$archetype[r], pick$roi_id[r], rois); L <- run_pc(i, 3, arm, w)
     identical(layer_md5(L), U$md5[U$roi_idx == i & U$seed == 3 & U$arm == arm]) }, TRUE)
-  out <- data.frame(check = c("units", "no_error_C2_C3_C5_C9", "n_failed_total", "single_equals_S1.5_md5", "rerun_identical"),
-                    value = c(nrow(U), nrow(U) - e1, nf, compat, sum(rep_ok)), expected = c(900, 900, 0, 300, 6))
+  # dopo il cambio dei predefiniti (types = "multi"): il braccio a un tipo, chiesto in modo esplicito, resta S1.5 (6 unita', seme 5)
+  sgl_ok <- vapply(seq_len(nrow(pick)), function(r) { i <- pick$roi_idx[r]; w <- r3_roi_window(pick$archetype[r], pick$roi_id[r], rois)
+    identical(layer_md5(run_pc(i, 5, "single", w)), S$md5[S$roi_idx == i & S$seed == 5]) }, TRUE)
+  out <- data.frame(check = c("units", "no_error_C2_C3_C5_C9", "n_failed_total", "single_equals_S1.5_md5", "rerun_identical", "single_rerun_after_default_switch"),
+                    value = c(nrow(U), nrow(U) - e1, nf, compat, sum(rep_ok), sum(sgl_ok)), expected = c(900, 900, 0, 300, 6, 6))
   out$pass <- out$value == out$expected; write.csv(out, file.path(RES, "S1.5b_G3_check.csv"), row.names = FALSE); print(out)
   cat(sprintf("%s G-3 (md5 dei dati: stadio md5after)\n", if (all(out$pass)) "PASS" else "FAIL"))
 }

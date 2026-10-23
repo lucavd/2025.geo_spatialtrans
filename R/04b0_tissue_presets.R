@@ -108,19 +108,20 @@ tissue_presets <- function() .TP_TABLE$preset
 #'
 #' @param preset nome del preset (vedi `tissue_presets()`).
 #' @param size_conversion `"preserve_area"` (predefinito) o `"none"` (solo con `types = "single"`).
-#' @param types `"single"` (un tipo per tessuto, preset di S1.5, invariato) o `"multi"` (tipi cellulari, S1.5b).
-#' @param size_arm con `types = "multi"`: `"group"` (modello del gruppo di taglia com'e' stimato) o `"recentred"` (intercetta per tipo
-#'   ricentrata sul territorio simulato tipico).
+#' @param types `"multi"` (predefinito da S1.5b: tipi cellulari) o `"single"` (un tipo per tessuto, preset di S1.5, invariato).
+#' @param size_arm con `types = "multi"`: `"recentred"` (predefinito, NULL; intercetta per tipo ricentrata sul territorio simulato
+#'   tipico, vincitore della regola di S1.5b) o `"group"` (modello del gruppo di taglia com'e' stimato).
 #' @param composition `"tissue"`; per il linfonodo anche `"follicle"` e `"paracortex"` (DEC-015).
 #' @return lista con `cell_types` (catalogo: una riga, o una per tipo con `size_group` ed `epithelium_label`), `composition` (con
 #'   `types = "multi"`: tipo, frazione), `type_sources` (fonti B-nnn per tipo), `c8_interval` (µm), `archetype`, `tissue`, `sources`
 #'   (data.frame parametro, valore, fonte), `size_conversion`.
 #' @export
-tissue_preset_spec <- function(preset, size_conversion = c("preserve_area", "none"), types = c("single", "multi"),
+tissue_preset_spec <- function(preset, size_conversion = c("preserve_area", "none"), types = c("multi", "single"),
                                size_arm = NULL, composition = c("tissue", "follicle", "paracortex")) {
   size_conversion <- match.arg(size_conversion); types <- match.arg(types); composition <- match.arg(composition)
   if (types == "multi") {
-    if (is.null(size_arm) || !size_arm %in% c("group", "recentred"))
+    if (is.null(size_arm)) size_arm <- "recentred"   # braccio vincente della regola pre-registrata di S1.5b (results/S1.5b/S1.5b_arm_rule.csv)
+    if (!size_arm %in% c("group", "recentred"))
       stop("tissue_preset_spec(): con types = \"multi\" serve size_arm = \"group\" o \"recentred\" (S1.5b).", call. = FALSE)
     if (size_conversion != "preserve_area") stop("tissue_preset_spec(): con types = \"multi\" la conversione e' sempre \"preserve_area\".", call. = FALSE)
   }
