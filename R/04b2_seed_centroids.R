@@ -31,6 +31,8 @@
 #'   nel riquadro.
 #' @param max_consecutive_rejections vedi sopra (default 10 000: con
 #'   probabilita' di accettazione >= 1e-3 l'arresto spurio ha probabilita' < e^-10).
+#' @param type_order `"sequential"` (predefinito: un compito RSA per tipo, in ordine di densita' decrescente) o `"blind"` (un compito
+#'   per regione, tipi assegnati dopo a caso con i conteggi ripartiti; richiede la stessa distanza minima per tutti i tipi; S1.5b).
 #' @param verbose stampa un riepilogo.
 #' @return lista con `centroids` (data.frame `cell_id, region_id, x, y,
 #'   cell_type, cluster_id`), `region_df` (input + `target_density_weighted`,
@@ -44,7 +46,9 @@ seed_centroids <- function(regions,
                            dmin_factor = 2 / 3,
                            max_attempts_factor = 1000,
                            max_consecutive_rejections = 10000L,
+                           type_order = c("sequential", "blind"),
                            verbose = TRUE) {
+  type_order <- match.arg(type_order)
   t0 <- proc.time()[["elapsed"]]
   a <- .sc_check_args(regions, cell_types, region_composition, random_seed,
                       dmin_factor, max_attempts_factor)
@@ -52,8 +56,16 @@ seed_centroids <- function(regions,
   rdf <- regions$region_df
   res <- .sc_with_seed(random_seed, {
     plan <- .sc_plan(rdf, type_df, a$composition)
-    pl   <- .sc_place_all(plan$tasks, regions$region_polygons, rdf, type_df,
+    if (type_order == "blind" && nrow(plan$tasks)) {
+      bl <- .sc_blind_tasks(plan$tasks, type_df)
+      pl <- .sc_place_all(bl$tasks, regions$region_polygons, rdf, type_df,
                           max_attempts_factor, max_consecutive_rejections)
+      pl$type_idx <- .sc_blind_labels(pl, plan$tasks)
+      plan$tasks <- bl$tasks
+    } else {
+      pl <- .sc_place_all(plan$tasks, regions$region_polygons, rdf, type_df,
+                          max_attempts_factor, max_consecutive_rejections)
+    }
     list(plan = plan, pl = pl)
   })
   plan <- res$plan; pl <- res$pl
@@ -82,7 +94,7 @@ seed_centroids <- function(regions,
                     sum(n_failed), sum(n_failed > 0)), call. = FALSE)
   }
   info <- list(
-    random_seed = random_seed, dmin_factor = dmin_factor,
+    random_seed = random_seed, dmin_factor = dmin_factor, type_order = type_order,
     max_attempts_factor = max_attempts_factor,
     n_cells = nrow(centroids), n_target = sum(plan$n_region),
     n_failed = sum(n_failed), n_attempts = sum(pl$task_attempts),
@@ -247,6 +259,35 @@ seed_centroids <- function(regions,
   tasks <- tasks[order(tasks$type_idx, tasks$region_idx), , drop = FALSE]
   rownames(tasks) <- NULL
   list(rho_mix = rho_mix, lambda = lambda, n_region = n_region, tasks = tasks)
+}
+
+#' Semina cieca al tipo (S1.5b, revisione RC-01): un solo compito RSA per regione con tutte le cellule della regione; i tipi si
+#' assegnano dopo, permutando a caso le etichette ripartite (stessi conteggi per tipo). Richiede la stessa distanza minima per
+#' tutti i tipi della regione, altrimenti l'ordine di semina conta (BL-055) e si usa `type_order = "sequential"`.
+#' @keywords internal
+.sc_blind_tasks <- function(tasks, type_df) {
+  d <- type_df$min_dist_um[tasks$type_idx]
+  rng <- tapply(d, tasks$region_idx, function(v) max(v) - min(v))
+  if (any(rng > 0)) stop("seed_centroids(): type_order = \"blind\" richiede la stessa distanza minima per tutti i tipi di una regione.", call. = FALSE)
+  ri <- sort(unique(tasks$region_idx))
+  out <- data.frame(region_idx = ri, region_id = tasks$region_id[match(ri, tasks$region_idx)],
+                    type_idx = tasks$type_idx[match(ri, tasks$region_idx)],
+                    n = as.integer(tapply(tasks$n, tasks$region_idx, sum)[as.character(ri)]))
+  list(tasks = out)
+}
+
+#' Etichette dei tipi per la semina cieca: per regione, permutazione casuale delle etichette ripartite (in ordine di regione).
+#' Se la semina ha piazzato meno cellule del previsto, le etichette sono un campione senza reinserimento di quelle ripartite.
+#' @keywords internal
+.sc_blind_labels <- function(pl, tasks) {
+  ti <- pl$type_idx
+  for (rid in unique(tasks$region_id)) {
+    k <- which(pl$region_id == rid); if (!length(k)) next
+    tk <- tasks[tasks$region_id == rid, , drop = FALSE]
+    labs <- rep(tk$type_idx, tk$n)
+    ti[k] <- if (length(labs) == 1L) labs else sample(labs, length(k))
+  }
+  ti
 }
 
 #' Esegue expr con un seme fisso e ripristina lo stato globale del generatore.

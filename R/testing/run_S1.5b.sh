@@ -16,17 +16,22 @@ if [ "$mode" = test ]; then
   nf=$(grep -c '^FAIL' "$LOG/S1.5/test_S1.5.log" || true); ne=$(grep -E '^FAIL E10b? ' "$LOG/S1.5/test_S1.5.log" | wc -l)
   echo "test_S1.5: FAIL $nf (attesi 2: E10, E10b; trovati fra questi $ne)"
   [ "$nf" = 2 ] && [ "$ne" = 2 ] || fail=1
-  grep -q 'GATE G-1 PASS' "$LOG/run_S1.5.log" || { [ "$nf" = 2 ] || fail=1; }
+  # le altre parti della batteria di S1.5 devono passare davvero (revisione RC-02): test_S1.4d, regressioni S1.1-S1.4, test OKF
+  grep -q '^FAIL' "$LOG/S1.5/test_S1.4d.log" && { echo "FAIL test_S1.4d"; fail=1; }
+  grep -qE '^RESULT [0-9]+/[0-9]+ PASS' "$LOG/S1.5/test_S1.4d.log" || { echo "FAIL test_S1.4d senza riga RESULT"; fail=1; }
+  nreg=$(grep -c '^PASS regressione' "$LOG/run_S1.5.log" || true); [ "$nreg" = 4 ] || { echo "FAIL regressioni S1.1-S1.4: $nreg/4"; fail=1; }
+  grep -q '^FAIL' "$LOG/S1.5/test_okf.log" && { echo "FAIL test OKF"; fail=1; }
+  grep -qE '^RESULT ([0-9]+)/\1 PASS' "$LOG/S1.5/test_okf.log" || { echo "FAIL test OKF senza RESULT completo"; fail=1; }
   [ $fail = 0 ] && echo "GATE G-1 PASS" || echo "GATE G-1 FAIL"
 elif [ "$mode" = mutants ]; then
   base="$LOG/test_S1.5b.log"; [ -f "$base" ] || { echo "manca $base: eseguire prima 'test'"; exit 2; }
   grep '^FAIL' "$base" | cut -d' ' -f2 | sort -u > "$LOG/base_fail.txt"
   n=0
-  for m in M1 M2 M3 M4 M5 M6 M7; do
+  for m in M1 M2 M3 M4 M5 M6 M7 M8; do
     S15B_MUTANT=$m Rscript --vanilla R/testing/test_S1.5b.R > "$LOG/test_S1.5b_$m.log" 2>&1
     newf=$(grep '^FAIL' "$LOG/test_S1.5b_$m.log" | cut -d' ' -f2 | sort -u | comm -23 - "$LOG/base_fail.txt" | tr '\n' ' ')
     if [ -n "$newf" ]; then echo "PASS mutante $m rilevato da: $newf"; n=$((n+1)); else echo "FAIL mutante $m NON rilevato"; fail=1; fi
   done
-  echo "mutanti rilevati $n/7"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
+  echo "mutanti rilevati $n/8"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
 else echo "uso: run_S1.5b.sh test|mutants"; exit 2; fi
 exit $fail

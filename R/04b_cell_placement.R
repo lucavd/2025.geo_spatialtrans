@@ -97,7 +97,8 @@ merge_small_components <- function(clust, pixel_size_um, min_region_area_um2, cl
 #' @param pixel_size_um obbligatorio: numero (µm/px), `"estimate"` o `list(scalefactors_json = <file>)`.
 #' @param size_conversion conversione del modello di taglia dei preset (`tissue_preset_spec()`).
 #' @param types,size_arm,composition preset a un tipo (`"single"`, S1.5) o per tipo (`"multi"`, S1.5b), braccio del modello di taglia
-#'   e composizione (`tissue_preset_spec()`); con `"multi"` ogni cluster riceve la composizione del preset.
+#'   e composizione (`tissue_preset_spec()`); con `"multi"` ogni cluster riceve la composizione del preset, la semina e' cieca al
+#'   tipo (`seed_centroids(type_order = "blind")`) e `cell_df` riceve `size_group` ed `epithelium_label`.
 #' @param small_components `"merge"` (BL-043) o `"exclude"`.
 #' @param stride passo dei pixel; NULL = attributo `stride` di `clust`, altrimenti 1 se i dati sono contigui, errore se
 #'   il passo rilevato e' > 1 (BL-042).
@@ -186,7 +187,9 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   comp_used <- comp[as.character(comp$cluster_id) %in% as.character(reg$region_df$cluster_id), , drop = FALSE]
   if (!nrow(reg$region_df)) stop("place_cells(): nessuna regione sopra la soglia di area.", call. = FALSE)
   comp_used$cluster_id <- reg$region_df$cluster_id[match(as.character(comp_used$cluster_id), as.character(reg$region_df$cluster_id))]
-  sc <- seed_centroids(reg, ct, comp_used, random_seed = ss[["seed"]], verbose = FALSE)
+  # preset per tipo (S1.5b): semina cieca al tipo, cosi' il territorio non dipende dal tipo (revisione RC-01)
+  t_order <- if (!is.null(spec) && identical(spec$types, "multi") && Sys.getenv("S15B_MUTANT", "none") != "M8") "blind" else "sequential"   # M8: mutante
+  sc <- seed_centroids(reg, ct, comp_used, random_seed = ss[["seed"]], type_order = t_order, verbose = FALSE)
   tv <- tessellate_voronoi(sc$centroids, reg, corner_smoothing = corner_smoothing, keep_tiles = keep_tiles, verbose = FALSE)
   dg <- derive_cell_geometry(sc$centroids, tv, ct, random_seed = ss[["size"]], nucleus_model = nucleus_model, verbose = FALSE)
   cd <- dg$cell_df
@@ -195,6 +198,8 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   rdf <- sc$region_df
   rdf$dominant_cell_type <- dom$cell_type[match(rdf$cluster_id, dom$cluster_id)]
   cd$is_minority_type <- as.character(cd$cell_type) != rdf$dominant_cell_type[match(cd$region_id, rdf$region_id)]
+  for (nm in intersect(c("size_group", "epithelium_label"), names(ct)))      # preset per tipo (S1.5b, revisione RC-14)
+    cd[[nm]] <- ct[[nm]][match(as.character(cd$cell_type), ct$cell_type)]
   pf <- if ("pale_fraction" %in% names(ct)) ct$pale_fraction[match(as.character(cd$cell_type), ct$cell_type)] else rep(0, nrow(cd))
   pf[is.na(pf)] <- 0
   u <- .pc_with_seed(ss[["pale"]], stats::runif(nrow(cd)))

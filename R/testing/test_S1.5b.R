@@ -92,16 +92,26 @@ for (p in tissue_presets()) for (arm in ARMS) {
   comp <- L$region_composition
   for (r in seq_len(nrow(L$region_df))) {
     rr <- L$region_df[r, ]; n <- rr$n_cells; cdr <- L$cell_df[L$cell_df$region_id == rr$region_id, ]
-    cr <- comp[as.character(comp$cluster_id) == as.character(rr$cluster_id), ]
-    obs <- as.numeric(table(factor(as.character(cdr$cell_type), levels = cr$cell_type)))
-    if (any(abs(obs - n * cr$fraction) >= 1 + 1e-9)) bad6c <- c(bad6c, paste(p, arm, rr$region_id))
+    e <- expect_cat(p, arm)                                   # frazioni dalle righe di BIO_REFERENCES (revisione RC-03)
+    obs <- as.numeric(table(factor(as.character(cdr$cell_type), levels = e$cell_type)))
+    if (any(abs(obs - n * e$f) >= 1 + 1e-6)) bad6c <- c(bad6c, paste(p, arm, rr$region_id))
   }
   md <- L$metadata
   if (!identical(md$preset_types, "multi") || !identical(md$size_arm, arm) || is.null(md$type_sources)) bad6 <- c(bad6, paste(p, arm, "metadati"))
 }
 ck("T6 place_cells sui 6 preset per tipo e 2 bracci: nessun errore, controlli senza ERROR, metadati del preset", !length(bad6), bad6)
 ck("T6b nessuna cellula non piazzata (BL-055: distanza minima unica per tessuto)", !length(bad6b), bad6b)
-ck("T6c conteggi per tipo e regione entro 1 dalla ripartizione n * frazione (arrotondamento di Madow)", !length(bad6c), bad6c)
+ck("T6c conteggi per tipo e regione entro 1 dalla ripartizione n * frazione delle righe di BIO_REFERENCES (arrotondamento di Madow)", !length(bad6c), bad6c)
+# T6d: le varianti del linfonodo passano davvero da place_cells (revisione RC-04)
+Lf <- safe(suppressWarnings(place_cells(cl0, "lymphoid", pixel_size_um = 1, types = "multi", size_arm = "recentred", composition = "follicle", random_seed = 5, verbose = FALSE)))
+ok6d <- isok(Lf) && { e <- expect_cat("lymphoid", "recentred", "follicle"); bad <- FALSE
+  for (r in seq_len(nrow(Lf$region_df))) { rr <- Lf$region_df[r, ]; cdr <- Lf$cell_df[Lf$cell_df$region_id == rr$region_id, ]
+    obs <- as.numeric(table(factor(as.character(cdr$cell_type), levels = e$cell_type))); if (any(abs(obs - rr$n_cells * e$f) >= 1 + 1e-6)) bad <- TRUE }
+  !bad && identical(Lf$metadata$composition_name, "follicle") }
+ck("T6d place_cells con composition = \"follicle\": conteggi per tipo secondo la variante del follicolo di BIO_REFERENCES", ok6d, msg(Lf))
+ck("T6e cell_df dei preset per tipo con size_group ed epithelium_label del catalogo (revisione RC-14)",
+   isok(L) && all(c("size_group", "epithelium_label") %in% names(L$cell_df)) &&
+   identical(L$cell_df$size_group, L$cell_types_resolved$size_group[match(as.character(L$cell_df$cell_type), L$cell_types_resolved$cell_type)]))
 
 # ---- T7, T8, T9: epitelio, varianti, errori ----
 lab_ok <- TRUE
@@ -122,5 +132,33 @@ medA <- function(ct, t, A = 800) { k <- ct$cell_type == t; Ar <- 1e6 / ct$densit
 ck("T10 cervello: a parita' di territorio (800 um2) il nucleo mediano dei neuroni e' oltre 2.1 volte quello degli oligodendrociti, in entrambi i bracci",
    medA(g, "neuroni") / medA(g, "oligodendrociti") > 2.1 && medA(rc, "neuroni") / medA(rc, "oligodendrociti") > 2.1,
    sprintf("%.2f %.2f", medA(g, "neuroni") / medA(g, "oligodendrociti"), medA(rc, "neuroni") / medA(rc, "oligodendrociti")))
+
+# ---- T11: il braccio ricentrato da' al territorio simulato tipico la taglia del modello del gruppo al territorio reale del tipo ----
+bad11 <- character(0)
+for (p in tissue_presets()) { g <- tissue_preset_spec(p, types = "multi", size_arm = "recentred")$cell_types; b <- B[B$preset == p, ]
+  A0 <- 1e6 / TT$density_model[TT$preset == p]
+  for (k in seq_len(nrow(b))) { j <- match(b$type[k], g$cell_type); Ar <- 1e6 / g$density[j]
+    sim <- g$nucleus_to_eq_ratio[j]^2 * Ar * (b$m_sim[k] / Ar)^g$nucleus_area_slope[j]   # mediana del bersaglio a A = m_sim
+    real <- b$rho[k]^2 * A0 * (b$m_t[k] / A0)^b$beta[k]                                 # modello del gruppo a A = m_t
+    if (abs(sim / real - 1) > 1e-9) bad11 <- c(bad11, paste(p, b$type[k])) } }
+ck("T11 braccio ricentrato: bersaglio mediano a m_sim = modello del gruppo a m_t, per ogni tipo", !length(bad11), bad11)
+
+# ---- T12: il territorio non dipende dal tipo con la semina cieca; con la semina sequenziale si' (controllo positivo; revisione RC-01) ----
+sq <- sf::st_sfc(sf::st_polygon(list(rbind(c(0, 0), c(300, 0), c(300, 300), c(0, 300), c(0, 0)))))
+reg <- list(region_df = data.frame(region_id = 1L, cluster_id = 1L, area_um2 = 9e4), region_polygons = sq)
+ctx <- data.frame(cell_type = c("a", "b"), density = c(28000, 28000), min_dist_um = 4)
+cpx <- data.frame(cluster_id = 1L, cell_type = c("a", "b"), fraction = c(0.9, 0.1))
+terr_ratio <- function(ord) { r <- vapply(1:3, function(s) {
+    sc <- seed_centroids(reg, ctx, cpx, random_seed = 100 + s, type_order = ord, verbose = FALSE)
+    tv <- tessellate_voronoi(sc$centroids, reg, verbose = FALSE); a <- tv$territory_df$territory_area
+    inn <- !tv$territory_df$clipped; b <- sc$centroids$cell_type == "b"
+    c(mean(a[inn & b]), mean(a[inn])) }, c(0, 0)); sum(r[1, ] * 1) / sum(r[2, ]) }
+rb <- if (Sys.getenv("S15B_MUTANT", "none") == "M8") terr_ratio("sequential") else terr_ratio("blind"); rs <- terr_ratio("sequential")
+ck("T12 semina cieca: territorio medio del tipo seminato per ultimo / tutti entro 0.96-1.04; semina sequenziale (controllo) sotto 0.96",
+   rb > 0.96 && rb < 1.04 && rs < 0.96, sprintf("cieca %.3f, sequenziale %.3f", rb, rs))
+bad12 <- character(0)
+for (p in c("lymphoid", "epithelial")) { L1 <- suppressWarnings(place_cells(cl0, p, pixel_size_um = 1, types = "multi", size_arm = "group", random_seed = 9, verbose = FALSE, validate = FALSE))
+  if (!identical(L1$metadata$seed_info$type_order, "blind")) bad12 <- c(bad12, p) }
+ck("T12b place_cells con i preset per tipo usa la semina cieca (metadati della semina)", !length(bad12), bad12)
 
 cat(sprintf("RISULTATO test_S1.5b: %d/%d PASS\n", sum(unlist(res)), length(res)))
