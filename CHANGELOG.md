@@ -2,6 +2,21 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.5b — 2026-10-22/23 — I tipi cellulari nei sei preset (branch `step1-cell-layer`) — **chiusa** (in attesa della lettura di Luca)
+
+File dello step `docs/steps/S1.5b.md`, report `reports/S1.5b.html`; decisioni DEC-016 (gruppi di taglia, densità del tipo puro; tecnica), DEC-017 (composizione del cervello con i nuclei persi tipizzati dall'espressione; Luca), DEC-018 (stroma misto provvisorio; Luca), DEC-019 (braccio ricentrato, semina cieca al tipo, tipi predefiniti; tecnica). BIO_REFERENCES B-186…B-208. BACKLOG: chiuse BL-055, BL-138, BL-150, BL-099 (parte dei tipi); nuove BL-153…BL-156.
+
+### Codice
+- `R/04b0_tissue_presets.R`: tabella dei tipi `.TP_TYPES` (23 tipi, righe B-186…B-208), `tissue_preset_spec(types = "multi", size_arm = "recentred", composition = "tissue"|"follicle"|"paracortex")` predefinito; `types = "single"` = preset di S1.5 invariato.
+- `R/04b2_seed_centroids.R`: `type_order = "blind"` (una semina per regione, tipi permutati dopo).
+- `R/04b_cell_placement.R`: `place_cells(types, size_arm, composition)`, semina cieca con i preset per tipo, `size_group` ed `epithelium_label` in `cell_df`.
+- `tools/S1.5_single_preset.R`: gli script e i test di S1.5 restano a un tipo (md5 identici).
+- Test `R/testing/test_S1.5b.R` (22 asserzioni), runner `R/testing/run_S1.5b.sh` (8 mutanti; propaga i fallimenti di S1.4d, regressioni, OKF).
+- Strumenti `tools/S1.5b_*.py|R`: calibrazione, riferimenti reali, tipizzazione dei nuclei persi del cervello, attesi, banco (900 unità × 2 corse), analisi, controllo della calibrazione, figure, post hoc.
+
+### Risultati (banco v2, dopo la correzione della semina)
+- Taglia del nucleo per tipo confermata in 14 tipi su 17 (nullo senza tipi: 9); cellule quasi senza citoplasma nel tumore del colon 2.2 % (≤ 2.9 % reale); neuroni/glia 3.55; valle fra le due taglie del cervello non riprodotta (BL-154); rapporto nucleo/territorio per tipo smentito in 11 tipi su 17 (BL-153).
+
 ## R6 — 2026-10-22/23 — Classificazione per tipo dei nuclei reali dall'espressione a 2 µm (branch `step1-cell-layer`) — **chiusa**
 
 File dello step `docs/steps/R6.md`, report `reports/R6.html`; decisione tecnica DEC-012 (impronta, clustering, marcatori); decisioni di Luca DEC-013 (riferimenti dal criterio corretto), DEC-014 (epitelio del colon per istologia), DEC-015 (linfonodo provvisorio, una taglia per i linfociti), 2026-10-23.

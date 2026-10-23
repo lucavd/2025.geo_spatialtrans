@@ -1,0 +1,7 @@
+"check","value","expected","pass"
+"units",900,900,TRUE
+"no_error_C2_C3_C5_C9",900,900,TRUE
+"n_failed_total",0,0,TRUE
+"single_equals_S1.5_md5",300,300,TRUE
+"rerun_identical",6,6,TRUE
+"single_rerun_after_default_switch",6,6,TRUE

@@ -1,0 +1,10 @@
+PASS mutante M1 rilevato da: T1 T10 T11 
+PASS mutante M2 rilevato da: T1 T2 T3 
+PASS mutante M3 rilevato da: T1 T2 
+PASS mutante M4 rilevato da: T1 T10 T11 
+PASS mutante M5 rilevato da: T6e T7 
+PASS mutante M6 rilevato da: T1 T10 T11 
+PASS mutante M7 rilevato da: T1 T11 
+PASS mutante M8 rilevato da: T12 T12b 
+mutanti rilevati 8/8
+GATE G-2 PASS

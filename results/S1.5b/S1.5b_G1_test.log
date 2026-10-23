@@ -1,0 +1,37 @@
+PASS T0 righe B-186...B-208 presenti, 23 tipi, 6 tessuti 23
+PASS T1 catalogo per tipo (densita', rho, beta, sigma, frazione, gruppo, distanza minima, phi, pallidi) uguale a quello ricavato da BIO_REFERENCES, 6 preset x 2 bracci 
+PASS T2 media armonica della miscela = densita' manuale del tessuto (B-043...B-048), anche nelle varianti del linfonodo 
+PASS T3 composizioni che sommano a 1 (righe di BIO_REFERENCES entro 1e-5, catalogo entro 1e-12) 
+PASS T4 gruppi di taglia di BIO_REFERENCES uguali a results/S1.5b/S1.5b_type_calibration.csv 
+PASS T4b rho dei gruppi e frazioni di BIO_REFERENCES uguali alla calibrazione (6 cifre) 
+PASS T4c numero di gruppi per tessuto: 2, 2, 2, 1, 2, 1 (regola dei gruppi, docs/steps/S1.5b.md) 2 2 2 1 2 1
+PASS T5 types = "single" restituisce il catalogo di un tipo di S1.5 (valori della tabella del preset) 
+PASS T5b predefiniti dopo il verdetto: types = "multi", size_arm = "recentred" in tissue_preset_spec() e place_cells() 
+PASS T6 place_cells sui 6 preset per tipo e 2 bracci: nessun errore, controlli senza ERROR, metadati del preset 
+PASS T6b nessuna cellula non piazzata (BL-055: distanza minima unica per tessuto) 
+PASS T6c conteggi per tipo e regione entro 1 dalla ripartizione n * frazione delle righe di BIO_REFERENCES (arrotondamento di Madow) 
+PASS T6d place_cells con composition = "follicle": conteggi per tipo secondo la variante del follicolo di BIO_REFERENCES 
+PASS T6e cell_df dei 6 preset per tipo x 2 bracci con size_group (righe di BIO_REFERENCES) ed epithelium_label (DEC-014) per cellula (revisioni RC-14, V2-03) 
+PASS T6f riproducibilita' con i preset per tipo: stesso seme -> stesso md5 di cell_df, territori e nuclei (revisione V2-04) 
+PASS T7 epitelio del tumore e dello stroma qualificato «tumorale» per istologia (DEC-014), nessuna qualifica altrove 
+PASS T8 varianti del linfonodo: follicolo con B > T come le righe di BIO_REFERENCES; variante assente negli altri preset -> errore 
+PASS T9 types = "multi" con size_arm sconosciuto o con size_conversion = "none" -> errore 
+PASS T10 cervello: a parita' di territorio (800 um2) il nucleo mediano dei neuroni e' oltre 2.1 volte quello degli oligodendrociti, in entrambi i bracci 2.83 4.43
+PASS T11 braccio ricentrato: bersaglio mediano a m_sim = modello del gruppo a m_t, per ogni tipo 
+PASS T12 semina cieca: territorio medio del tipo seminato per ultimo / tutti entro 0.96-1.04; semina sequenziale (controllo) sotto 0.96 cieca 0.997, sequenziale 0.924
+PASS T12b place_cells con i preset per tipo usa la semina cieca (metadati della semina) 
+RISULTATO test_S1.5b: 22/22 PASS
+PASS O11 stesso seme -> uscita identica (md5 di cell_df e WKB) 
+FAIL E10 scala sbagliata di 10 volte: C8 scatta (WARN con scala dell'utente) 
+FAIL E10b con scala stimata C8 e' ERROR 
+test_S1.1 exit 0
+test_S1.2 exit 0
+test_S1.3 exit 0
+test_S1.4 exit 0
+PASS regressione results/S1.1/S1.1_test_results.csv identico a HEAD (colonne confrontate 6, escluse 0; righe di tempo confrontate solo sull'esito 0) FAIL 4 PASS 711 WARN 1
+PASS regressione results/S1.2/S1.2_test_results.csv identico a HEAD (colonne confrontate 6, escluse 0; righe di tempo confrontate solo sull'esito 2) PASS 77
+PASS regressione results/S1.3/S1.3_test_geos_none.csv identico a HEAD (colonne confrontate 8, escluse 0; righe di tempo confrontate solo sull'esito 0) INFO 52 PASS 294
+PASS regressione results/S1.4/S1.4_test_none.csv identico a HEAD (colonne confrontate 7, escluse 0; righe di tempo confrontate solo sull'esito 0) PASS 63
+GATE G-1 FAIL
+test_S1.5: FAIL 2 (attesi 2: E10, E10b; trovati fra questi 2)
+GATE G-1 PASS

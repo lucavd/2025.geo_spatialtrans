@@ -69,3 +69,21 @@ for ax, A in zip(axs.ravel(), cal.ARCH):
 fig.suptitle(f"Rapporto mediano nucleo/territorio per tipo: simulato {ARMLAB[WIN]} contro intervallo fra ROI reali")
 fig.tight_layout(); fig.savefig(f"{FIG}/S1.5b_fig3_nt_by_type.png", dpi=150); plt.close(fig)
 print(NN.groupby(["archetype", "cell_type", "source"]).nn_median.mean().unstack("source").round(2).to_string())
+
+# ---- D-desc-2: tempo di place_cells() per unita' (s), bracci per tipo contro il braccio a un tipo
+U = pd.read_csv(f"{RES}/S1.5b_panel_units.csv")
+tm = U.groupby(["archetype", "arm"]).elapsed_s.median().unstack("arm").round(1); tm.to_csv(f"{RES}/S1.5b_desc_time.csv"); print(tm.to_string())
+# ---- D-desc-3: un ROI per tessuto, H&E accanto ai centri simulati colorati per tipo (braccio vincente, seme 1)
+import tifffile
+rois = pd.read_csv("results/R2/R2_rois_checked.csv")
+fig, axs = plt.subplots(6, 2, figsize=(8, 23))
+for k, A in enumerate(cal.ARCH):
+    r = rois[rois.archetype == A].iloc[0]; img = tifffile.imread(f"/mnt/micron/geo_spatialtrans/R2/rois/{A}_{r.roi_id}.tif")
+    if img.ndim == 3 and img.shape[0] in (3, 4): img = np.moveaxis(img, 0, -1)
+    step = max(1, img.shape[0] // 900); im = img[::step, ::step, :3]; side = r.side_px * r.um_per_px
+    axs[k, 0].imshow(im, extent=[0, side, side, 0]); axs[k, 0].set_title(f"{TIS[A]} ({r.roi_id}): H&E"); axs[k, 0].set_xlabel("µm")
+    s = S[(S.archetype == A) & (S.roi_id == r.roi_id) & (S.arm == WIN)]
+    for t, g in s.groupby("cell_type"): axs[k, 1].scatter(g.x, g.y, s=1.5 if A in ("A1", "A4") else 4, label=f"{t} ({len(g)})")
+    axs[k, 1].set_xlim(0, side); axs[k, 1].set_ylim(side, 0); axs[k, 1].set_aspect("equal"); axs[k, 1].set_title("centri simulati per tipo (seme 1)")
+    axs[k, 1].legend(fontsize=6, markerscale=3, loc="upper right", frameon=True)
+fig.tight_layout(); fig.savefig(f"{FIG}/S1.5b_fig4_types_vs_he.png", dpi=110); plt.close(fig)

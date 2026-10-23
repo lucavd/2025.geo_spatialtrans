@@ -58,9 +58,10 @@ def size_groups(lab, A):
         if not ok: break
         groups[i] = sorted(groups[i] + groups[j]); del groups[j]
     gm = [lab.area_um2[lab.type.isin(g)].median() for g in groups]   # mediana dei soli tipi principali (revisione RV-1)
+    gmain = ["|".join(g) for g in groups]                                # etichetta: il gruppo dei soli principali (revisione V2-09)
     for t in minor:
         k = int(np.argmin([abs(np.log(med[t] / x)) for x in gm]))
-        trace.append(dict(archetype=A, step=len(trace) + 1, kind="assign_minor", a=t, b="|".join(groups[k]), ratio=med[t] / gm[k],
+        trace.append(dict(archetype=A, step=len(trace) + 1, kind="assign_minor", a=t, b=gmain[k], ratio=med[t] / gm[k],
                           margin=MARGIN[A], accepted=True))
         groups[k] = sorted(groups[k] + [t])
     return groups, trace

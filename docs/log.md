@@ -1,5 +1,9 @@
 # Registro delle modifiche
 
+## 2026-10-23 (risultati e chiusura di S1.5b)
+
+* **Aggiornamento**: [Con i tipi cellulari nei preset, il simulatore dà a ogni tipo la taglia di nucleo che ha nei tessuti veri? (S1.5b)](steps/S1.5b.md): cancelli, regola del braccio, verdetti (banco v2 dopo la correzione della semina), deviazioni dichiarate, post hoc, revisione avversariale (due revisori, due giri), riassunto «In breve» senza decisioni per Luca, rinvii BL-153…BL-156. Decisione tecnica [Tipi nei preset: braccio ricentrato, semina cieca al tipo, tipi predefiniti (DEC-019)](decisions/DEC-019.md). Report `reports/S1.5b.html`. In attesa della lettura di Luca.
+
 ## 2026-10-22 (apertura di S1.5b)
 
 * **Aggiornamento**: [S1.5b](steps/S1.5b.md): ok di Luca su previsioni e regola dei bracci («Approvo così»); decisioni [Cervello: i nuclei persi da Cellpose ricevono un tipo dall'espressione (DEC-017)](decisions/DEC-017.md) e [Stroma del tumore: preset misto come misurato (DEC-018)](decisions/DEC-018.md).

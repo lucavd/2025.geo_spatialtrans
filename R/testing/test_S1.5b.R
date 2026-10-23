@@ -88,11 +88,12 @@ ck("T5b predefiniti dopo il verdetto: types = \"multi\", size_arm = \"recentred\
 
 # ---- T6: place_cells con i preset per tipo ----
 toy <- function(nx = 260, ny = 200) { cl <- expand.grid(x = 1:nx, y = 1:ny); cl$intensity_cluster <- ifelse(cl$x < nx * 0.45, 1L, 2L); cl }
-cl0 <- toy(); bad6 <- character(0); bad6b <- character(0); bad6c <- character(0)
+cl0 <- toy(); Ls <- list(); bad6 <- character(0); bad6b <- character(0); bad6c <- character(0)
 for (p in tissue_presets()) for (arm in ARMS) {
   L <- safe(suppressWarnings(place_cells(cl0, p, pixel_size_um = if (p %in% c("brain_cortex", "columnar_muscle", "stromal_rich")) 2 else 1,
                                           types = "multi", size_arm = arm, random_seed = 5, verbose = FALSE)))
   if (!isok(L)) { bad6 <- c(bad6, paste(p, arm, msg(L))); next }
+  Ls[[paste(p, arm)]] <- L
   if (!L$metadata$validation$ok) bad6 <- c(bad6, paste(p, arm, "ERROR"))
   if (sum(L$region_df$n_failed) > 0) bad6b <- c(bad6b, paste(p, arm, "non piazzate", sum(L$region_df$n_failed)))
   comp <- L$region_composition
@@ -115,9 +116,15 @@ ok6d <- isok(Lf) && { e <- expect_cat("lymphoid", "recentred", "follicle"); bad 
     obs <- as.numeric(table(factor(as.character(cdr$cell_type), levels = e$cell_type))); if (any(abs(obs - rr$n_cells * e$f) >= 1 + 1e-6)) bad <- TRUE }
   !bad && identical(Lf$metadata$composition_name, "follicle") }
 ck("T6d place_cells con composition = \"follicle\": conteggi per tipo secondo la variante del follicolo di BIO_REFERENCES", ok6d, msg(Lf))
-ck("T6e cell_df dei preset per tipo con size_group ed epithelium_label del catalogo (revisione RC-14)",
-   isok(L) && all(c("size_group", "epithelium_label") %in% names(L$cell_df)) &&
-   identical(L$cell_df$size_group, L$cell_types_resolved$size_group[match(as.character(L$cell_df$cell_type), L$cell_types_resolved$cell_type)]))
+ok6e <- length(Ls) == 12 && all(vapply(names(Ls), function(k) { L <- Ls[[k]]; p <- sub(" .*", "", k); e <- expect_cat(p, "group")
+  want_g <- e$group[match(as.character(L$cell_df$cell_type), e$cell_type)]
+  want_l <- ifelse(as.character(L$cell_df$cell_type) == "epiteliale" & p %in% c("tumor_microenv", "stromal_rich"), "tumorale", NA_character_)
+  all(c("size_group", "epithelium_label") %in% names(L$cell_df)) && all(L$cell_df$size_group == want_g) && identical(unname(L$cell_df$epithelium_label), want_l) }, TRUE))
+ck("T6e cell_df dei 6 preset per tipo x 2 bracci con size_group (righe di BIO_REFERENCES) ed epithelium_label (DEC-014) per cellula (revisioni RC-14, V2-03)", ok6e)
+md5_of <- function(L) { f <- tempfile(); saveRDS(list(L$cell_df, sf::st_as_binary(L$cell_territories), sf::st_as_binary(L$cell_nuclei)), f, compress = FALSE); unname(tools::md5sum(f)) }
+Lr <- suppressWarnings(place_cells(cl0, "lymphoid", pixel_size_um = 1, types = "multi", size_arm = "recentred", random_seed = 5, verbose = FALSE))
+ck("T6f riproducibilita' con i preset per tipo: stesso seme -> stesso md5 di cell_df, territori e nuclei (revisione V2-04)",
+   identical(md5_of(Lr), md5_of(Ls[["lymphoid recentred"]])))
 
 # ---- T7, T8, T9: epitelio, varianti, errori ----
 lab_ok <- TRUE
