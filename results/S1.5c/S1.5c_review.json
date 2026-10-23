@@ -1,0 +1,302 @@
+{
+ "r1": {
+  "checks": [
+   {
+    "check": "1a. Verdetti P-1...P-10, tutti e 6 i bracci (stima, errore standard, n unità, lo, hi, esito), ricalcolati con codice mio (rv_verdicts.py) da metriche per unità, contatti e intervalli reali ricalcolati da me; confronto riga per riga con results/S1.5c/S1.5c_verdicts.csv",
+    "n_compared": 768,
+    "n_identical": 768,
+    "discrepancies": "Nessuna. Massima differenza 1.1e-16 su stima ed errore standard, 0 su lo/hi; n_units uguale 768/768; esito uguale 768/768. Il taglio a [0,1] non decide alcun esito (0 righe cambiano senza taglio). Conteggi confermate per braccio (P-1..P-7 / P-8): U 19/21, C-a 51/19, C-b 48/20, N-a 52/20, N-b 49/20, G 23/21. Provenienza degli intervalli: P-8a = P-1 di S1.5b (6/6 identici), P-8b = P-2 di S1.5b (17/17), P-4 = P-7 di S1.5b (17/17), intervalli di P-3 e P-7 nel codice = quelli scritti nel pre-registro (12/12 a 4 e 3 decimali).",
+    "verdict": "PASS"
+   },
+   {
+    "check": "1b. Metriche per unità dai parquet delle cellule (nn_median_all, cv_local4, nn_rel, markconn a 5 bin), 1800 unità, implementazione mia (sparse_distance_matrix e searchsorted invece di query_ball_point e digitize); confronto con S1.5c_unit_metrics.csv",
+    "n_compared": 34008,
+    "n_identical": 34008,
+    "discrepancies": "Nessuna (massimo 8.9e-16; 0 NaN discordanti). Per confrontare a 1e-9 ho adottato la convenzione dell'autore per il sottocampione di 1500 focali (default_rng(20261023) consumato in ordine sui tipi principali), letta dal suo codice. Sensibilità: con tutti i focali invece di 1500, markconn cambia in 7820 valori su 25340, |Δlog| massimo 0.034.",
+    "verdict": "PASS"
+   },
+   {
+    "check": "1c. Contatti per finestra (P-1) ricalcolati dal raster con codice mio (focali a distanza ≥ d_max dai lati e dalle esclusioni di Luca, contatto = n_c2 > 0); confronto con S1.5c_windows.csv",
+    "n_compared": 1440,
+    "n_identical": 1440,
+    "discrepancies": "Nessuna: n e n_contact identici in 1440/1440 righe (6 bracci × 24 finestre × 10 semi), s1 differenza 0. Il raster stesso (rasterizzazione dei nuclei) non è stato ricalcolato.",
+    "verdict": "PASS"
+   },
+   {
+    "check": "1d. Tabelle panel_units/panel_types contro i 1800 file gen/*.rds (tutte le colonne) e contro le statistiche ricalcolate dai parquet delle cellule (n, celle interne, area nucleare mediana, rapporto nucleo/territorio mediano, frazione ≥ 0.95, CV dei territori; per tipo: n, interne, mediane di area, rapporto, territorio)",
+    "n_compared": 8700,
+    "n_identical": 8700,
+    "discrepancies": "Nessuna: 1800 + 6900 righe, differenze ≤ 5e-12 (precisione di write.csv), 0 righe mancanti, 0 NaN discordanti; semi = 20261021 + 1000·i + s in 1800/1800; U = unità ricentrate di S1.5b per md5 300/300. Osservazione (non discrepanza): 86 md5 duplicati, tutti nel cuore: C-a = N-a e C-b = N-b in 43/50 unità ciascuno, cioè la distanza minima per nucleo nel cuore quasi non si attiva.",
+    "verdict": "PASS"
+   },
+   {
+    "check": "2. Tre regole di decisione (S1.5c_rules.csv) e conteggi della controprova CP-1 (S1.5c_cp1.csv), dai miei verdetti",
+    "n_compared": 81,
+    "n_identical": 81,
+    "discrepancies": "Nessuna: regole 3/3 (1: C-a 10 contro N-a 12, vince la distanza per nucleo; 2: N-a 14 contro N-b 13 in P-8b, P-8a 6 contro 6, vince N-a; 3: N-a 52 contro U 19 spaziali, taglie 20 contro 21, non adottata), CP-1 78/78 celle. Fragilità (non discrepanza): la regola 3 dipende da un solo verdetto, P-8b dei fibroblasti dello stroma nel braccio U, confermata con margine 0.15 errori standard (stima 35.5586, es 0.1336, estremo superiore 35.8258 contro 35.8456). Se fosse indeterminata, taglie 20 contro 20 e la regola darebbe 'adottata'. La regola 1 è robusta: i due verdetti a meno di 0.3 es dal confine (N-a P-5 immunitarie dell'intestino; C-a P-1 cervello) se ribaltati darebbero 13 contro 11, stesso vincitore.",
+    "verdict": "PASS"
+   },
+   {
+    "check": "3. Valori reali per ROI e intervalli reali delle metriche nuove (nn_rel, markconn a tutti i bin, cv_local4) dai nuclei veri con tipo; loader mio (unione territori-etichette per vicino più prossimo, distanza massima 0.0 µm, uno a uno)",
+    "n_compared": 660,
+    "n_identical": 660,
+    "discrepancies": "Nessuna: 546/546 valori per ROI (1 NaN in entrambi) e 114/114 righe di intervallo (min, max, media, conteggio) identici (differenza 0). Intervalli con 3 ROI soltanto: astrociti e oligodendrociti del cervello (nn_rel, markconn), come dichiarato nel pre-registro.",
+    "verdict": "PASS"
+   },
+   {
+    "check": "4. Rigenerazione di 12 unità con place_cells() come tools/S1.5c_bench.R (ROI 2 e 5 di ogni tessuto, semi 7 e 10; bracci U×3, N-a×3, G×3, C-a, C-b, N-b) e md5 di cell_df+territori+nuclei contro panel_units; in più confronto del parquet delle cellule e 8 metriche per unità ricalcolate dal layer con codice mio (eccentricità compresa)",
+    "n_compared": 12,
+    "n_identical": 12,
+    "discrepancies": "Nessuna: md5 12/12 identici, parquet delle cellule identici 12/12, 8 metriche × 12 unità identiche (differenza 0.0). Tempi 4-35 s per unità.",
+    "verdict": "PASS"
+   },
+   {
+    "check": "5. G-4 parte a: Monte Carlo indipendente (codice mio per campi di Fourier, softmax, spostamenti a_t ed etichette sulle posizioni dei nuclei veri; 120 repliche con campi indipendenti per ROI come in R e nel banco, 120 con campi condivisi fra ROI come nella calibrazione Python; 4 sottocampioni alternativi di focali) sui 79 bin controllati",
+    "n_compared": 79,
+    "n_identical": 79,
+    "discrepancies": "Il cancello come scritto resta fallito (75/79 entro 0.10; i bin fuori sono immunitarie dell'intestino 40-80 µm Δ=0.121, fibroblasti del tumore del colon 40-80 Δ=0.107 e 80-160 Δ=0.130, oligodendrociti del cervello 0-10 Δ=0.116). n_identical = bin in cui R a 10 repliche e Python a 3 repliche concordano entro 3 errori Monte Carlo: 79/79 (z massimo |z| < 3, deviazione standard di z 1.00). La mia curva reale con i focali di Python ricostruiti riproduce quella della calibrazione a 4e-15. Vedi g4_judgement.",
+    "verdict": "FAIL come scritto, spiegato da errore Monte Carlo (tolleranza pre-registrata incompatibile con il rumore del confronto)"
+   }
+  ],
+  "g4_judgement": "Il cancello G-4 parte a è fallito come scritto e va riportato così. Il fallimento però è spiegato: nasce da errore Monte Carlo, non da una differenza fra l'implementazione R e quella Python. La tolleranza di 0.10 era un errore di pre-registrazione: non teneva conto del rumore delle curve. (1) Un dettaglio di disegno che l'autore non dichiara: nella calibrazione Python, e anche nella sua indagine tools/S1.5c_g4_mc.py, il seme del campo dipende solo da (replica, tipo, ℓ). Le ROI reali usano coordinate locali che partono da 0 e arrivano a circa 1000 µm (fino a 888 µm in x nella ROI r4 del cervello; l'ho controllato su intestino, tumore del colon e cervello). Quindi le 5 ROI ricevono la stessa funzione di campo: le 3 repliche di riferimento sono 3 realizzazioni, non 15. Il controllo in R estrae invece campi indipendenti per ROI, come il banco. Con campi condivisi l'errore standard di log R a 3 repliche è in mediana 1.44 volte quello con campi indipendenti. Nei bin falliti vale 0.069-0.117, contro 0.016-0.052 della curva R a 10 repliche. Le stime dell'autore, ottenute da 5 lotti, sono vicine alle mie (rapporto mediano 1.08). (2) Con le varianze giuste, lo scarto standardizzato fra R a 10 repliche e Python a 3 repliche sui 79 bin ha media 0.22, deviazione standard 1.00 e nessun |z| > 3. I 4 bin falliti hanno z = 1.41, 1.51, 1.51 e -0.91. Con il solo errore Monte Carlo ci si aspettano in media 7.3 bin su 79 con |Δ log R| > 0.10; se ne osservano 4 (probabilità di almeno 4 circa 0.96). (3) La curva R non è distorta rispetto all'attesa del modello (240 repliche mie): z medio 0.05. La deviazione standard di z è 1.32: c'è una sovradispersione modesta, correlata fra i bin dello stesso tipo perché i bin condividono i campi, senza segno sistematico. (4) Il riferimento a 3 repliche tende debolmente verso il valore reale: in media +0.19 errori standard, p = 0.08 (Wilcoxon), e lo fa in tutti e 4 i bin falliti (1.0-1.5 es). Questo è compatibile con l'ottimizzazione fatta sulle stesse 3 realizzazioni (numeri casuali comuni), ma non è significativo. Il giudizio sulla spiegazione dell'autore («errore Monte Carlo del riferimento a 3 repliche») è quindi: corretta nella sostanza, con due precisazioni. La prima: l'errore del riferimento è più grande di quanto «3 repliche» faccia pensare, perché il campo è condiviso fra le ROI. La seconda: va scritto che la tolleranza era sbagliata in partenza. Un test corretto sarebbe uno z con l'errore Monte Carlo (che passerebbe) oppure un riferimento con almeno 30 repliche. C'è una conseguenza che va oltre G-4. Le curve «adattate» salvate in S1.5c_compartments_curves_<A>.csv sono stime a 3 realizzazioni: si scostano dall'attesa del modello con i parametri di tutte le ROI di 0.025 in mediana e fino a 0.178 in log (oligodendrociti 0-10 µm: 4.08 contro 3.42; 2 bin su 79 oltre 0.10; nei bin di P-6 al massimo 0.094). Anche la riduzione della perdita dichiarata (34-108 volte) è calcolata sulle stesse realizzazioni usate per ottimizzare, quindi è ottimistica. I verdetti del banco non ne risentono, perché il banco usa campi nuovi. File: review_recalc/out/rv_g4_judgement.csv, rv_g4_mc_*.csv, rv_g4_mc_shared_*.csv.",
+  "summary_it": "Ricalcolo indipendente (cancello G-5) di S1.5c al commit 0aaffb1: nessuna discrepanza. Verdetti P-1...P-10 dei 6 bracci identici in 768/768 righe (stima, errore standard, intervallo, esito, massimo 1.1e-16). Tre regole identiche 3/3 e controprova CP-1 identica 78/78 celle. Sono identici anche, ricalcolati con codice mio: le metriche per unità (34 008 valori), i contatti per finestra dal raster (1 440), i valori e gli intervalli reali delle metriche nuove (546 e 114), le tabelle panel contro i file gen (8 700 righe) e le 12 unità rigenerate con place_cells() (md5 12/12). G-4 parte a resta fallito come scritto (75/79). Il fallimento è spiegato dall'errore Monte Carlo: la tolleranza 0.10 era incompatibile con il rumore del confronto, che in media ne fa fallire circa 7 su 79 anche con implementazioni equivalenti. Il riferimento Python era più rumoroso del previsto perché usa lo stesso campo in tutte e 5 le ROI. Due osservazioni per Luca. Primo: la scelta di non cambiare il predefinito (regola 3, 20 contro 21 conferme di taglia) dipende da un solo verdetto a 0.15 errori standard dal confine (area nucleare dei fibroblasti dello stroma nel braccio uniforme); con un esito diverso la regola darebbe «adottata». Secondo: nel cuore la distanza minima per nucleo produce layer identici a quella del tessuto in 43 unità su 50 per ciascuna coppia di bracci. Le curve di calibrazione salvate sono stime a 3 realizzazioni, ottimistiche fino a 0.18 in log rispetto all'attesa del modello. Codice e uscite: /mnt/micron/geo_spatialtrans/S1.5c/review_recalc (README.md)."
+ },
+ "r2": {
+  "findings": [
+   {
+    "id": "RC-01",
+    "severity": "deviazione non dichiarata",
+    "where": "R/04b2_seed_centroids.R:584 (quota); docs/steps/S1.5c.md:100 (D-1); R/testing/test_S1.5c.R:75-76 (T6b)",
+    "description": "La deviazione D-1 (quote per tipo) e' dichiarata, ma la sua entita' no: D-1 e T6b affermano che le quote sono «quasi mai vincolanti» (1.7 % di proposte rifiutate per quota, misurato solo sul tumore del colon in un quadrato di 300 um). Nel banco le quote sono molto piu' vincolanti, soprattutto in linfonodo e cervello: il processo realizzato si allontana dalla definizione pre-registrata (tipo estratto da p(x) senza quote) piu' di quanto scritto.",
+    "evidence": "review_code/D1_layers_compart.csv (150 layer a compartimenti, seme 1): frazione rifiutata per quota / proposte accettate dal diradamento: mediana 0.066, media 0.088, massimo 0.336 (A4 p1, N-a); A5 r5 0.273; A4 p3 0.245. Effetto sulle statistiche per tipo (review_code/D4_quota_effect.csv, quadrati, preset su tutte le ROI, codice di produzione contro copia senza quote; quota rifiutata 0.12 in A5, 0.23 in A4): differenze entro circa 1 errore standard (oligodendrociti markconn 10-20: 3.98 +- 0.15 contro 4.16 +- 0.18; neuroni nn_rel 1.041 +- 0.004 contro 1.034 +- 0.005; linfociti B nn_rel 1.0022 +- 0.0018 contro 1.0002 +- 0.0013). Nel tumore del colon (D3a, quota rifiutata 0.011) densita' delle zone pure: epitelio 9697 contro 9611 /mm2 (ES ~55), fibroblasti 6124 contro 6357 (ES ~100). Nessuna distorsione rilevabile a questa precisione (provvisorio: 6-12 semi, quadrati, non le ROI vere).",
+    "fix": "Correggere il testo di D-1 con la distribuzione reale per tessuto; salvare n_quota_reject e n_thin_accept in S1.5c_panel_units.csv; estendere T6b ad A4 e A5 (o renderlo descrittivo); se si vuole chiudere il dubbio, sensibilita' di P-5/P-6 senza quote su un sottoinsieme di ROI."
+   },
+   {
+    "id": "RC-02",
+    "severity": "test debole",
+    "where": "R/testing/test_S1.5c.R:69-73 (T6); docs/steps/S1.5c.md:117 (G-1)",
+    "description": "Dopo D-1, T6 (composizione media su 200 semi entro 3 errori Monte Carlo da f) e' vera per costruzione: i conteggi per tipo sono la ripartizione di Madow del piano, la cui media e' f. Il test non controlla piu' la proprieta' pre-registrata (che il tipo estratto da p(x) riproduca f) ma solo la contabilita' delle quote.",
+    "evidence": "Log G-1: 0.7766 contro 0.7764, SE 0.0001 (la variabilita' residua e' solo quella dell'arrotondamento). I miei mutanti MR01 (quote disattivate) e MR12 (quota +1) sono rilevati solo da T6: il test vede la contabilita', non p(x).",
+    "fix": "Dichiarare che T6 ora verifica la contabilita' delle quote; aggiungere un test sulla composizione dei tipi estratti dalle proposte accettate dal diradamento (prima del controllo di quota) contro f, che e' la proprieta' garantita dagli a_t."
+   },
+   {
+    "id": "RC-03",
+    "severity": "test debole",
+    "where": "R/testing/test_S1.5c.R:15-18 (square), T3, T10, T11; R/04b2_seed_centroids.R:505-517, 538-547, 609-612",
+    "description": "Tutti i test usano una sola regione quadrata. Non sono coperti: distanza minima globale fra regioni diverse, permutazione cieca dentro la regione (non su tutto il tessuto), griglia di a_t e lambda_max ristretta al poligono. Il banco usa maschere irregolari con piu' regioni (fino a 4 nelle ROI rilanciate).",
+    "evidence": "Mutanti non rilevati (22/22 PASS): MR05 (etichette cieche permutate su tutto il tessuto), MR09 (griglia sul riquadro invece che nel poligono), MR10 (distanza minima azzerata a ogni regione). Il codice di produzione e' corretto sui dati del banco: 90 unita' C-a (semi 1-3) senza coppie sotto d* (min nn / d* = 1.000, D8); conteggi per tipo G = C-b in 43/43 unita'.",
+    "fix": "Aggiungere un test con due regioni adiacenti e un poligono a L o con buco: coppie fra regioni >= distanza della coppia; conteggi per tipo invariati per regione con labels = \"blind\"; frazioni pesate con lambda = f calcolate su punti dentro il poligono."
+   },
+   {
+    "id": "RC-04",
+    "severity": "test debole",
+    "where": "R/04b0_tissue_presets.R:183-187; R/testing/test_S1.5c.R:63-67 (T5), 42-49 (T3)",
+    "description": "L'associazione tipo -> distanza minima per nucleo non e' testata: T5 controlla solo sum f_t d_t = d*, che vale per qualunque permutazione delle aree perche' kappa rinormalizza; T3 usa la stessa tabella mutata. Il braccio con distanza per nucleo (N-a) vince la regola 1, quindi un errore qui cambierebbe una scelta senza far fallire i test.",
+    "evidence": "MR08 (aree nucleari in ordine inverso) non rilevato. Verifica diretta sul banco (D7, A5 seme 1): distanza minima osservata neuroni-neuroni 8.122 um, oligodendrociti 4.319, neuroni-oligodendrociti 6.213, contro 8.12, 4.29, 6.21 attesi da .TP_COMPART (kappa = 7/10.24); nel braccio U 7.02. Il codice di produzione e' corretto.",
+    "fix": "Test: per ogni preset, min_dist_um del tipo = kappa * 2 sqrt(a_t / pi) con a_t letto per nome da .TP_COMPART, e d_neuroni > d_oligodendrociti nel cervello."
+   },
+   {
+    "id": "RC-05",
+    "severity": "deviazione non dichiarata",
+    "where": "tools/S1.5c_calibration.py:73 (seme del campo [SEED, rep, t, l]), :28 (focali); tools/S1.5c_calcheck.R:25, 34; tools/S1.5c_g4_mc.py:29",
+    "description": "(a) Nella calibrazione Python il seme del campo non dipende dal ROI e le coordinate dei ROI sono locali (0-1000 um): le 5 ROI ricevono la stessa realizzazione del campo per ogni replica, quindi le «3 repliche» sono 3 realizzazioni condivise, non 15. Il controllo in R (G-4) estrae campi indipendenti per ROI e replica: le due curve hanno strutture Monte Carlo diverse. (b) I focali sono sottocampionati con generatori diversi (numpy choice contro sample.int), quindi anche le curve reali di R e di Python differiscono. Entrambe le cose consumano parte della tolleranza di 0.10 di G-4 e non sono «errore Monte Carlo del riferimento a 3 repliche» in senso stretto.",
+    "evidence": "Coordinate x_um, y_um in [0, 1000] per ogni ROI (A1, A2, A5). S1.5c_G4_calcheck.csv: |log R_real_R - log R_real_py| fino a 0.074 (A3 endoteliale 10-20), > 0.02 in 9 dei 79 bin controllati. Per i 4 bin falliti S1.5c_G4_mc.csv conferma che R a 10 repliche e' vicino a Python a 10 repliche (z = 0.89, -0.13, 0.99 dove riportati) mentre Python a 3 repliche se ne scosta (z fino a -2.89): l'attribuzione dell'autore e' sostenuta ma incompleta. La convergenza degli a_t in Python (40 iterazioni) non c'entra: errore relativo della composizione <= 9e-5, |delta log R| <= 2e-4 (D2).",
+    "fix": "Dichiarare i campi condivisi fra ROI; rifare G-4 con gli stessi indici dei focali (esportati da Python) e lo stesso schema di semi, oppure confrontare con la curva Python a 10 repliche; valutare una ricalibrazione con semi del campo specifici per ROI (la scelta dei parametri e' stata fatta su 3 sole realizzazioni)."
+   },
+   {
+    "id": "RC-06",
+    "severity": "deviazione non dichiarata",
+    "where": "tools/S1.5c_calibration.py:66; R/04b0_tissue_presets.R:44 (fraction A5)",
+    "description": "Nel cervello la composizione f usata nella calibrazione (frazioni grezze dei nuclei con tipo di R6) non e' quella del preset usata nel banco (corretta per i nuclei persi da Cellpose). s e ell sono calibrati con una base log f_t e usati con un'altra; il rapporto di connessione dipende da f. Negli altri 5 tessuti le due composizioni coincidono.",
+    "evidence": "S1.5c_compartments_A5.csv f_t: neuroni 0.652, oligodendrociti 0.198, astrociti 0.066; .TP_TYPES: 0.700, 0.168, 0.061.",
+    "fix": "Dichiararlo come limite della calibrazione del cervello; in alternativa verificare in R (come G-4) la curva con f del preset."
+   },
+   {
+    "id": "RC-07",
+    "severity": "minore",
+    "where": "tools/S1.5c_calibration.py:26-36, 48; tools/S1.5c_metrics.py:22-34",
+    "description": "Bersaglio della calibrazione e metrica di P-6 non sono la stessa quantita': la calibrazione usa come focali tutti i nuclei con tipo (al piu' 2000 per ROI) e divide per la frazione f del tessuto (tutte le ROI); markconn usa solo le celle interne e divide per la frazione del ROI. La documentazione dice «come nella calibrazione».",
+    "evidence": "A5: 4141 nuclei con tipo, 1992 interni (D9); A1 38681 contro 33200. Il ROI r1 del cervello (sostanza bianca) ha composizione molto diversa dalla media.",
+    "fix": "Scriverlo nel report accanto a P-6; opzionale: curva di calibrazione ricalcolata con focali interni e f per ROI, per separare il difetto di trasferimento dalla differenza di definizione."
+   },
+   {
+    "id": "RC-08",
+    "severity": "minore",
+    "where": "tools/S1.5c_metrics.py:31; tools/S1.5c_calibration.py:31",
+    "description": "np.digitize(d, BINS) - 1 restituisce 5 per d = 160 esatto (query_ball_point include il raggio): in metrics.py np.add.at va fuori indice (errore), in calibration.py l'indice L*NB+5 finisce nel bin 0-10 del tipo successivo (o fa fallire il reshape per l'ultimo tipo). Non osservato (i run sono finiti), ma le coordinate reali sono centroidi di pixel e distanze esatte sono possibili.",
+    "evidence": "Lettura del codice; nessun errore nei run.",
+    "fix": "b = np.minimum(np.digitize(d, BINS) - 1, NB - 1) o raggio strettamente < 160."
+   },
+   {
+    "id": "RC-09",
+    "severity": "minore",
+    "where": "R/04b2_seed_centroids.R:505-517, 557-578",
+    "description": "Se una regione e' cosi' piccola o sottile che nessun punto della griglia cade nel poligono dopo 6 dimezzamenti, .sc_grid_points restituisce 0 righe, .sc_solve_a produce NaN e if (!any(keep)) si ferma con «missing value». Non osservato nel banco (griglia minima 3959 punti nelle ROI rilanciate).",
+    "evidence": "Lettura del codice; D3b min_ngrid 3959-61959.",
+    "fix": "Ripiego: punto interno (st_point_on_surface) o a_t = 0 con avviso."
+   },
+   {
+    "id": "RC-10",
+    "severity": "minore",
+    "where": "R/04b2_seed_centroids.R:560",
+    "description": "lambda_max = 1.1 x massimo di w sulla griglia e' un'euristica, mentre esiste un limite esatto: w = 1 / sum p_t / rho_t <= max rho_t dei tipi della regione. Con l'euristica un superamento distorcerebbe il diradamento; nel banco non succede.",
+    "evidence": "n_exceed_wmax = 0 in tutte le 1500 unita' a compartimenti (S1.5c_panel_units.csv) e nei 150 layer (D1); wmax / max rho_t fra 0.54 e 1.10.",
+    "fix": "Nessuna correzione necessaria per i numeri; per robustezza usare min(1.1 max(wg), max(rho)) o direttamente max(rho)."
+   },
+   {
+    "id": "RC-11",
+    "severity": "minore",
+    "where": "tools/S1.5c_analysis.py:76-77; docs/steps/S1.5c.md:152 (CP-1)",
+    "description": "La controprova CP-1 confronta G con il braccio vincente (N-a), ma G ha le stesse posizioni di C-b (distanza del tessuto, taglia ricentrata), non di N-a. L'uguaglianza attesa di P-2 e P-7 vale esattamente solo contro C-b.",
+    "evidence": "D5: posizioni e territori G = C-b in 30/30 unita', etichette cambiate nel 49 %. S1.5c_cp1.csv: C-b P-4 7, P-5 9, P-6 24, P-2 1, P-7 3; G 6, 4, 4, 1, 3; N-a 8, 10, 23, 1, 3. La conclusione non cambia.",
+    "fix": "Riportare CP-1 anche contro C-b (confronto appaiato) e dire che contro N-a il confronto mescola distanza minima e modello di taglia."
+   },
+   {
+    "id": "RC-12",
+    "severity": "minore",
+    "where": "tools/S1.5c_analysis.py:69-71 (regola 3)",
+    "description": "La regola 3 e' implementata come scritta, ma il suo esito (non adottata) dipende da un solo elemento: le taglie danno 20 conferme a N-a e 21 a U e differiscono solo in P-8c (frazione di cellule quasi senza citoplasma nel tumore del colon). Non e' un errore; e' una fragilita' che il report deve dire.",
+    "evidence": "S1.5c_verdicts.csv: P-8c N-a 0.0343 (ES 0.0003) smentita, U 0.0223 confermata; P-8a 6/6 e P-8b 14 in entrambi. L'esito e' lontano dalla soglia (non dipende dall'errore Monte Carlo).",
+    "fix": "Scriverlo nel report; nessuna modifica alla regola dopo il risultato."
+   },
+   {
+    "id": "RC-13",
+    "severity": "minore",
+    "where": "R/testing/test_S1.5c.R:95-106 (T9); docs/steps/S1.5c.md:101 (D-2)",
+    "description": "D-2 descrive lo stimatore della densita' di T9 come «senza distorsione», ma la selezione dei centri con vicini tutti dello stesso tipo favorisce i vicinati meno affollati, e nelle zone «pure» p_t < 1 quindi lambda < rho_t: lo stimatore e' distorto verso il basso. Il risultato (3721 contro 4000, -7 %) passa una tolleranza del 10 %.",
+    "evidence": "Log G-1: 3721 / 998.",
+    "fix": "Correggere la frase di D-2; confrontare con la lambda attesa nei punti selezionati (w registrata) invece che con rho_t."
+   },
+   {
+    "id": "RC-14",
+    "severity": "minore",
+    "where": "tools/S1.5c_analysis.py:50-59; results/S1.5b/S1.5b_real_refs_roi_type.csv",
+    "description": "Regole di inclusione dei ROI diverse fra previsioni per tipo: per P-5 e P-6 gli intervalli reali usano solo i ROI con almeno 20 celle interne del tipo (cervello: 3 ROI per astrociti e oligodendrociti), per P-4 e P-8b tutti i 5 ROI, anche con 15-18 celle. Nel simulato, A5 r1 astrociti entra in P-5 con 3-8 semi su 10.",
+    "evidence": "S1.5b_real_refs_roi_type.csv A5 astrociti n = 24, 22, 15, 18, 42; oligodendrociti 222, 43, 17, 18, 90. D5: 6 combinazioni braccio x ROI x tipo con meno di 10 semi, tutte A5 r1 astrociti.",
+    "fix": "Dichiararlo nel report (ereditato da S1.5b); non cambiare dopo il risultato."
+   },
+   {
+    "id": "RC-15",
+    "severity": "minore",
+    "where": "tools/S1.5c_bench.R:33; tools/S1.5c_calibration.py:66",
+    "description": "Solo ell e s sono lascia-fuori-un-ROI. Composizione f, densita' del tipo puro rho_t (dai territori mediani di tutte le ROI) e modello di taglia vengono da tutte le ROI, come in S1.5b; anche f nella calibrazione delle pieghe include il ROI escluso. Lieve fuga di informazione per P-4, P-5, P-8b, gia' presente in S1.5b.",
+    "evidence": "Lettura del codice; T14: 28/30 pieghe diverse dalla tabella su tutte le ROI. La piega lascia-fuori e' davvero quella usata dal banco: rilancio indipendente di 6 unita' (una per tessuto, C-a, seme 1) con compart_for(loo) identico ai file cells del banco (posizioni e tipi), con parametri diversi da quelli su tutte le ROI in tutti e 6 i casi (D3b, D10).",
+    "fix": "Una frase nel report."
+   }
+  ],
+  "mutants": [
+   {
+    "id": "MR01",
+    "change": "R/04b2_seed_centroids.R: quote per tipo disattivate (D-1 annullata)",
+    "detected": true,
+    "by": "T6"
+   },
+   {
+    "id": "MR02",
+    "change": "R/04b2_seed_centroids.R: a_t risolti senza peso lambda (media semplice di p)",
+    "detected": true,
+    "by": "T2 T6b T9"
+   },
+   {
+    "id": "MR03",
+    "change": "R/04b2_seed_centroids.R: lambda_max = 0.5 x massimo sulla griglia (troppo basso)",
+    "detected": true,
+    "by": "T6b T9 T11b"
+   },
+   {
+    "id": "MR04",
+    "change": "R/04b2_seed_centroids.R: densita locale invertita (sum p/rho invece di 1/sum p/rho)",
+    "detected": true,
+    "by": "T6b T9"
+   },
+   {
+    "id": "MR05",
+    "change": "R/04b2_seed_centroids.R: etichette cieche permutate su tutto il tessuto invece che dentro la regione",
+    "detected": false,
+    "by": "non rilevato (22/22 PASS)"
+   },
+   {
+    "id": "MR06",
+    "change": "R/04b2_seed_centroids.R: normalizzazione RFF sqrt(1/M) (varianza 1/2)",
+    "detected": true,
+    "by": "T1a T9"
+   },
+   {
+    "id": "MR07",
+    "change": "R/04b0_tissue_presets.R: kappa con media non pesata delle distanze per nucleo",
+    "detected": true,
+    "by": "T5"
+   },
+   {
+    "id": "MR08",
+    "change": "R/04b0_tissue_presets.R: aree nucleari assegnate ai tipi in ordine inverso (distanza per nucleo)",
+    "detected": false,
+    "by": "non rilevato (22/22 PASS)"
+   },
+   {
+    "id": "MR09",
+    "change": "R/04b2_seed_centroids.R: griglia di a_t e lambda_max sul riquadro invece che nel poligono",
+    "detected": false,
+    "by": "non rilevato (22/22 PASS)"
+   },
+   {
+    "id": "MR10",
+    "change": "R/04b2_seed_centroids.R: distanza minima solo dentro la regione (non globale fra regioni)",
+    "detected": false,
+    "by": "non rilevato (22/22 PASS)"
+   },
+   {
+    "id": "MR11",
+    "change": "R/04b2_seed_centroids.R: tipo estratto da p(x) di un altro punto (righe disallineate)",
+    "detected": true,
+    "by": "T6b T8 T9"
+   },
+   {
+    "id": "MR12",
+    "change": "R/04b2_seed_centroids.R: quota per tipo +1 (composizione non piu esatta)",
+    "detected": true,
+    "by": "T6"
+   },
+   {
+    "id": "MR13",
+    "change": "tools/S1.5c_bench_lib.R: banco: piega lascia-fuori di un altro ROI (r1 o r2)",
+    "detected": true,
+    "by": "arresto (T14: compart_for(): piega loo_r1 assente per A4)"
+   },
+   {
+    "id": "MR14",
+    "change": "R/04b2_seed_centroids.R: un solo campo condiviso da tutti i tipi",
+    "detected": true,
+    "by": "T8 T9"
+   },
+   {
+    "id": "MR15",
+    "change": "R/04b2_seed_centroids.R: campo dell ultimo tipo ignorato in .sc_eta",
+    "detected": true,
+    "by": "T9"
+   },
+   {
+    "id": "MR16",
+    "change": "R/04b2_seed_centroids.R: distanza minima del ramo a compartimenti ridotta del 10 %",
+    "detected": true,
+    "by": "T3 T3b T7"
+   }
+  ],
+  "summary_it": "Revisione avversariale del codice di S1.5c (commit 0aaffb1, banco generato a be0b9a3: nessuna differenza nel codice R e nelle metriche fra i due commit). Non ho trovato errori che cambino numeri o verdetti. Ho verificato in modo indipendente che: il banco usa i parametri lascia-fuori del ROI simulato (6 unita' rilanciate identiche ai file del banco, con parametri diversi dalla tabella su tutte le ROI); semi = 20261021 + 1000 i + s; la regola della cella interna e' quella di R3 sia nel reale sia nel simulato; reale e simulato usano la stessa funzione (tools/S1.5c_metrics.py) sugli stessi insiemi (centri con territorio, focali interni); a_t convergono (al piu' 117 iterazioni, residuo < 1e-12) nelle ROI vere; nessun superamento di lambda_max in 1500 unita'; distanza minima globale rispettata; distanza per nucleo corretta per tipo; G ha le stesse posizioni di C-b e gli stessi conteggi per tipo; finestre 4 per seme, raster dai nuclei di S1.5c; regole 1-3 implementate come scritte (1: N 12 contro C 10; 2: N-a; 3: non adottata, decisa dal solo P-8c). Rilievi principali: le quote per tipo (D-1) sono molto piu' vincolanti nel banco di quanto dichiarato (rifiutate per quota fino al 34 %, mediana 7 %, contro l'1.7 % di T6b), senza pero' un effetto rilevabile su nn_rel e markconn in un esperimento dedicato (provvisorio); T6 dopo D-1 e' vero per costruzione; i test non coprono regioni multiple o poligoni irregolari ne' l'associazione tipo -> distanza per nucleo (4 miei mutanti su 16 non rilevati: MR05, MR08, MR09, MR10; il codice di produzione e' comunque corretto su questi punti, verificato sui dati del banco); la calibrazione Python riusa la stessa realizzazione del campo per tutte le ROI e i focali di R e Python differiscono, il che spiega in parte il fallimento di G-4 accanto all'errore Monte Carlo indicato dall'autore; nel cervello la composizione della calibrazione non e' quella del preset. Mutanti: 16 miei, 12 rilevati (uno per arresto); copia non modificata 22/22 PASS. File in /mnt/micron/geo_spatialtrans/S1.5c/review_code (mutants/, D1-D10)."
+ },
+ "dev1": [
+  "Contatti di P-1 ricalcolati dal raster dell'autore (raster/*.parquet, 240 file per braccio): la rasterizzazione dei nuclei non è stata rifatta.",
+  "Indicatore di cella interna preso dai parquet delle cellule del banco per tutte le 1800 unità; ricalcolato in modo indipendente solo nelle 12 unità rigenerate (12/12 identico).",
+  "frac_trunc, median_ecc_T e cv_terr_nofrag (P-9, P-10, descrittive) presi da panel_units, verificati contro gen/*.rds per tutte le 1800 unità; ricalcolati in modo indipendente dalla geometria solo nelle 12 unità rigenerate.",
+  "Riferimenti reali di S1.5 e S1.5b (S1.5_real_refs_roi.csv, S1.5b_real_refs_roi_type.csv) presi come dati; verificata solo la coincidenza degli intervalli con i verdetti di S1.5b (40/40) e con il pre-registro (12/12).",
+  "La convenzione del sottocampione di 1500 focali per markconn è stata copiata dal codice dell'autore (letto, non importato) per poter confrontare a 1e-9; la variante con tutti i focali è riportata come sensibilità.",
+  "G-4: ricalcolo con la mia implementazione Python del modello, non con le funzioni R del pacchetto; 120+120 repliche, 4 sottocampioni alternativi di focali a 30 repliche; tutti i 79 bin controllati, non solo i 4 falliti.",
+  "Rigenerazione limitata a 12 unità su 1800 (2 per tessuto, semi 7 e 10, come richiesto dal compito)."
+ ],
+ "dev2": [
+  "Layer-metadata checks (quota rejection, lambda_max, a_t) used only the seed-1 layers (150 of 1500 compartment units); a_t residuals were recomputed for 6 reruns (one ROI per tissue, arm C-a, seed 1).",
+  "Quota-effect experiments (D3a, D4) used synthetic squares with pooled preset parameters (A2 6 seeds, A5 12 seeds, A4 6 seeds), not the 30 real ROIs; their conclusion (no detectable effect) is provisional.",
+  "Min-distance check covered C-a seeds 1-3 (90 units); G vs C-b checks covered a 1-in-10 / 1-in-7 subsample of files; interior-count check 49 files.",
+  "I did not recompute the P-1...P-10 verdict numbers end to end (assigned to the recalculation reviewer); I checked the analysis logic and rules against the written definitions."
+ ]
+}

@@ -28,8 +28,13 @@ elif [ "$mode" = mutants ]; then
   FILE[M6]=R/04b2_seed_centroids.R; PAT[M6]='s/keep <- u_thin < pr\$w \/ wmax/keep <- u_thin <= 1/'
   FILE[M7]=R/04b2_seed_centroids.R; PAT[M7]='s/tl <- \.sc_draw_type\(pr\$p\[keep, , drop = FALSE\], u_type\[keep\]\)/tl <- .sc_draw_type(matrix(f, sum(keep), K, byrow = TRUE), u_type[keep])/'
   FILE[M8]=tools/S1.5c_bench_lib.R; PAT[M8]='s/fold = c\("loo", "pooled"\)/fold = c("pooled", "loo")/'
+  # M9-M12: mutanti del revisore del codice non rilevati al primo giro (MR05, MR08, MR09, MR10), aggiunti dopo la revisione
+  FILE[M9]=R/04b2_seed_centroids.R; PAT[M9]='s/for \(i in unique\(RX\)\) \{ w <- which\(RX == i\)/for (i in 1) { w <- seq_along(RX)/'
+  FILE[M10]=R/04b0_tissue_presets.R; PAT[M10]='s/raw <- 2 \* sqrt\(cp\$nuc_median_area_um2 \/ pi\)/raw <- rev(2 * sqrt(cp\$nuc_median_area_um2 \/ pi))/'
+  FILE[M11]=R/04b2_seed_centroids.R; PAT[M11]='s/g <- expand.grid\(x = gx, y = gy\); ins <- \.sc_in_polygon\(poly, g\$x, g\$y\)/g <- expand.grid(x = gx, y = gy); ins <- rep(TRUE, nrow(g))/'
+  FILE[M12]=R/04b2_seed_centroids.R; PAT[M12]='s/    poly <- polys\[i\]; bb <- sf::st_bbox\(poly\)\n/    poly <- polys[i]; bb <- sf::st_bbox(poly); cnt[] <- 0L\n/'
   n=0
-  for m in M1 M2 M3 M4 M5 M6 M7 M8; do
+  for m in M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12; do
     T=$(mktemp -d); mkdir -p "$T/R" "$T/tools"; cp R/04b*.R "$T/R/"; cp tools/S1.5c_bench_lib.R "$T/tools/"
     perl -pi -e "${PAT[$m]}" "$T/${FILE[$m]}"
     if cmp -s "$T/${FILE[$m]}" "${FILE[$m]}"; then echo "FAIL mutante $m: sostituzione non applicata"; fail=1; rm -rf "$T"; continue; fi
@@ -39,6 +44,6 @@ elif [ "$mode" = mutants ]; then
     if [ -n "$newf" ]; then echo "PASS mutante $m rilevato da: $newf"; n=$((n+1)); else echo "FAIL mutante $m NON rilevato"; fail=1; fi
     rm -rf "$T"
   done
-  echo "mutanti rilevati $n/8"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
+  echo "mutanti rilevati $n/12 (pre-registrati M1-M8; M9-M12 aggiunti dopo la revisione)"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
 else echo "uso: run_S1.5c.sh test|mutants"; exit 2; fi
 exit $fail

@@ -28,7 +28,7 @@ def roi_metrics(x, y, typ, interior, main_types, seed=20261023):
         for k, lst in zip(sub, tr.query_ball_point(P[sub], BINS[-1])):
             lst = np.asarray(lst, dtype=np.int64); lst = lst[(lst != k) & typed[lst]]
             if not len(lst): continue
-            b = np.digitize(np.hypot(*(P[lst] - P[k]).T), BINS) - 1
+            b = np.minimum(np.digitize(np.hypot(*(P[lst] - P[k]).T), BINS) - 1, len(BINS) - 2)   # d = 160 esatto nell'ultimo bin (revisione RC-08)
             np.add.at(num, b, tt[lst] == t); np.add.at(den, b, 1)
         for kb in range(len(BINS) - 1):
             out[("markconn", t, f"{int(BINS[kb])}-{int(BINS[kb+1])}")] = num[kb] / den[kb] / f_t if den[kb] else np.nan

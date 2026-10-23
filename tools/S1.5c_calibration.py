@@ -28,7 +28,7 @@ class ROI:
         n = len(P); foc = np.arange(n) if n <= NFOC else np.sort(rng.choice(n, NFOC, replace=False))
         tr = cKDTree(P); lists = tr.query_ball_point(P[foc], BINS[-1])
         fi = np.repeat(foc, [len(l) for l in lists]); j = np.concatenate([np.asarray(l, dtype=np.int64) for l in lists])
-        k = fi != j; fi, j = fi[k], j[k]; d = np.hypot(*(P[j] - P[fi]).T); self.fi, self.j, self.b = fi, j, np.digitize(d, BINS) - 1
+        k = fi != j; fi, j = fi[k], j[k]; d = np.hypot(*(P[j] - P[fi]).T); self.fi, self.j, self.b = fi, j, np.minimum(np.digitize(d, BINS) - 1, NB - 1)   # revisione RC-08
         self.real = self.counts(lab)
     def counts(self, L):
         idx = L[self.fi] * NB + self.b; same = (L[self.fi] == L[self.j]).astype(float)

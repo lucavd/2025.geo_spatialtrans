@@ -513,7 +513,9 @@ seed_centroids <- function(regions,
     if (sum(ins) >= 50L) return(g[ins, , drop = FALSE])
     h <- h / 2
   }
-  g[ins, , drop = FALSE]
+  if (any(ins)) return(g[ins, , drop = FALSE])
+  xy <- sf::st_coordinates(sf::st_point_on_surface(poly))   # regione troppo sottile per la griglia (revisione RC-09): un punto interno
+  data.frame(x = xy[1, 1], y = xy[1, 2])
 }
 
 #' Indice del tipo estratto da ogni riga di P (probabilita') con le uniformi u.
@@ -531,6 +533,7 @@ seed_centroids <- function(regions,
   nr <- nrow(rdf); ntot <- sum(plan$n_region)
   X <- numeric(ntot); Y <- numeric(ntot); D <- numeric(ntot); TI <- integer(ntot); RI <- integer(ntot); RX <- integer(ntot)
   region_failed <- integer(nr); attempts <- 0L; exceed <- 0L; info <- vector("list", nr); n_quota_rej <- 0L; n_thin_acc <- 0L
+  n_drawn <- integer(nrow(type_df))                     # tipi estratti da p(x) alle proposte accettate dal diradamento (prima di quote e RSA)
   dtype <- type_df$min_dist_um
   used <- sort(unique(match(comp$cell_type, type_df$cell_type)))
   h <- if (length(used)) max(dtype[used]) else 0; hardcore <- h > 0; k <- 0L; grid_cell <- NA_real_
@@ -578,6 +581,7 @@ seed_centroids <- function(regions,
       if (!any(keep)) next
       cx <- cx[keep]; cy <- cy[keep]
       tl <- .sc_draw_type(pr$p[keep, , drop = FALSE], u_type[keep])
+      n_drawn <- n_drawn + tabulate(ti_r[tl], nbins = length(n_drawn))
       for (j in seq_along(cx)) {
         x <- cx[j]; y <- cy[j]; tj <- tl[j]; dt <- dr[tj]; ok <- TRUE
         n_thin_acc <- n_thin_acc + 1L
@@ -613,5 +617,5 @@ seed_centroids <- function(regions,
   list(x = X[keep], y = Y[keep], type_idx = TI, region_id = RI[keep], region_failed = region_failed,
        task_attempts = attempts, grid_cell_um = grid_cell, hardcore = hardcore,
        compart_info = list(regions = Filter(Negate(is.null), info), n_exceed_wmax = exceed, n_quota_reject = n_quota_rej,
-                           n_thin_accept = n_thin_acc, table = ctab))
+                           n_thin_accept = n_thin_acc, n_drawn = stats::setNames(n_drawn, type_df$cell_type), table = ctab))
 }

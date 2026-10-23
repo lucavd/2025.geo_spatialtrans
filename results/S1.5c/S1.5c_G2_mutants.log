@@ -1,10 +1,14 @@
 PASS mutante M1 rilevato da: T8 T9 
-PASS mutante M2 rilevato da: T11b T9 
-PASS mutante M3 rilevato da: T11 T4 T6b T9 
+PASS mutante M2 rilevato da: T11b T17 T9 
+PASS mutante M3 rilevato da: T11 T17 T17b T4 T6b T9 
 PASS mutante M4 rilevato da: T3b 
 PASS mutante M5 rilevato da: T1b T8 T9 
-PASS mutante M6 rilevato da: T6b T9 
+PASS mutante M6 rilevato da: T17 T6b T9 
 PASS mutante M7 rilevato da: T8 T9 
 PASS mutante M8 rilevato da: T14 
-mutanti rilevati 8/8
+PASS mutante M9 rilevato da: T19 
+PASS mutante M10 rilevato da: T20 
+PASS mutante M11 rilevato da: T17b 
+PASS mutante M12 rilevato da: (arresto dei test)
+mutanti rilevati 12/12 (pre-registrati M1-M8; M9-M12 aggiunti dopo la revisione)
 GATE G-2 PASS

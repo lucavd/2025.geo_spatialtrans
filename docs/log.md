@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-10-23 (risultati di S1.5c)
+
+* **Aggiornamento**: [Se i centri delle cellule si raggruppano per tipo come nei tessuti veri, tornano i contatti fra nuclei, la variabilità dei territori e lo spazio attorno al nucleo per tipo? (S1.5c)](steps/S1.5c.md): cancelli (G-4 fallito come scritto, decisione a Luca), regole delle tre scelte, verdetti, deviazioni D-5...D-10, post hoc, revisione avversariale, riassunto «In breve», dubbi rinviati BL-157...BL-161.
+* **Creazione**: decisione tecnica [Semina a compartimenti per tipo: distanza minima per nucleo, modello di taglia del gruppo, opzione e non predefinito (DEC-020)](decisions/DEC-020.md).
+
 ## 2026-10-23 (apertura di S1.5c)
 
 * **Creazione**: file dello step [Se i centri delle cellule si raggruppano per tipo come nei tessuti veri, tornano i contatti fra nuclei, la variabilità dei territori e lo spazio attorno al nucleo per tipo? (S1.5c)](steps/S1.5c.md) con dubbi ricevuti (BL-143, BL-153, BL-051, BL-068, BL-055), esplorazione dichiarata, calibrazione dei compartimenti per tipo, cancelli, previsioni in attesa dell'ok di Luca, regole delle tre scelte.

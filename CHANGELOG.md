@@ -2,6 +2,22 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.5c, 2026-10-23: semina a compartimenti per tipo (branch `step1-cell-layer`), **in attesa della lettura di Luca**
+
+File dello step `docs/steps/S1.5c.md`, report `reports/S1.5c.html`; decisione tecnica DEC-020 (regole delle tre scelte).
+
+### Codice
+- `R/04b2_seed_centroids.R`: `seed_centroids(spatial = "compartments", compartments, labels = "field"|"blind")`: campi gaussiani latenti per tipo (caratteristiche di Fourier casuali), probabilità locali (softmax), densità locale dalla densità del tipo puro, spostamenti a_t sulla griglia della regione, diradamento, quote per tipo, distanza minima della coppia; contatori diagnostici; ripiego per regioni troppo sottili. Il modo `"uniform"` è invariato (300/300 unità identiche a S1.5b).
+- `R/04b0_tissue_presets.R`: tabella `.TP_COMPART` (23 tipi, B-209...B-231), `tissue_preset_spec(spatial, min_dist_mode = "tissue"|"nucleus")`, `.TP_SPATIAL_DEFAULT = "uniform"`.
+- `R/04b_cell_placement.R`: `place_cells(spatial, min_dist_mode, labels, override_compartments)`.
+- Test `R/testing/test_S1.5c.R` (28 asserzioni), runner `R/testing/run_S1.5c.sh` (12 mutanti come copie del codice, senza interruttori in produzione).
+- Strumenti `tools/S1.5c_*`: esplorazione, calibrazione, aree nucleari per tipo, metriche comuni a reale e simulato, riferimenti reali, banco (1 800 unità), contatti per finestra, metriche per unità, analisi, controllo della calibrazione e indagine Monte Carlo, post hoc, figure.
+
+### Risultati
+- Conferme spaziali 52 su 92 contro 19 della semina uniforme (raggruppamento dei tipi 23/34 contro 4/34); taglie invariate; controprova con i tipi mescolati superata.
+- Territori ancora troppo uniformi in 4 tessuti (coda dei territori grandi accanto agli spazi vuoti, PH-1); contatti del linfonodo invariati; cellule senza citoplasma del tumore del colon 3.4 %: la regola 3 lascia la semina uniforme come predefinita.
+- G-4 fallito come scritto (75/79), spiegato dall'errore Monte Carlo del riferimento; decisione a Luca. Revisione: ricalcolo identico, nessun errore che cambi numeri; 4 test aggiunti. Rinvii BL-157...BL-161.
+
 ## S1.5b — 2026-10-22/23 — I tipi cellulari nei sei preset (branch `step1-cell-layer`) — **chiusa**
 
 File dello step `docs/steps/S1.5b.md`, report `reports/S1.5b.html`; decisioni DEC-016 (gruppi di taglia, densità del tipo puro; tecnica), DEC-017 (composizione del cervello con i nuclei persi tipizzati dall'espressione; Luca), DEC-018 (stroma misto provvisorio; Luca), DEC-019 (braccio ricentrato, semina cieca al tipo, tipi predefiniti; tecnica). BIO_REFERENCES B-186…B-208. BACKLOG: chiuse BL-055, BL-138, BL-150, BL-099 (parte dei tipi); nuove BL-153…BL-156.

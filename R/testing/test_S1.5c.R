@@ -162,4 +162,41 @@ e3 <- safe(seed_centroids(square(100), ctp, comp1(c("p", "q"), c(0.5, 0.5)), spa
 ck("T15 errori: distanza per nucleo senza compartimenti; compartimenti a un tipo; ell negativa", !isok(e1) && !isok(e2) && !isok(e3))
 ck("T16 predefinito della semina dei preset = uniforme (prima della regola 3)", identical(tissue_preset_spec("epithelial")$spatial, "uniform"))
 
+# ---- test aggiunti dopo la revisione del codice (RC-02, RC-03, RC-04) ----
+# T17: tipi estratti da p(x) prima di quote e distanza minima: frazione pesata = f (regione a L; 100 semi), cioe' a_t e griglia nel poligono
+Lpoly <- sf::st_sfc(sf::st_polygon(list(rbind(c(0, 0), c(400, 0), c(400, 100), c(100, 100), c(100, 400), c(0, 400), c(0, 0)))))
+Lreg <- list(region_df = data.frame(region_id = 1L, cluster_id = 1L, area_um2 = as.numeric(sf::st_area(Lpoly))), region_polygons = Lpoly)
+ctL <- data.frame(cell_type = c("p", "q"), density = c(6000, 2000), min_dist_um = c(0, 0))
+cpL <- data.frame(cell_type = c("p", "q"), ell_um = c(60, 60), s = c(4, 0))
+dr <- t(vapply(1:100, function(k) { sc <- seed_centroids(Lreg, ctL, comp1(c("p", "q"), c(0.3, 0.7)), random_seed = 4000 + k, spatial = "compartments",
+  compartments = cpL, verbose = FALSE); nd <- sc$info$compartments$n_drawn; c(nd[["p"]] / sum(nd), sum(nd)) }, numeric(2)))
+ck("T17 tipi estratti da p(x) prima di quote e RSA: frazione = f entro 3 SE (regione a L, 100 semi)", abs(mean(dr[, 1]) - 0.3) < 3 * sd(dr[, 1]) / sqrt(100),
+   sprintf("%.4f contro 0.3 (SE %.4f)", mean(dr[, 1]), sd(dr[, 1]) / 10))
+binsd <- sqrt(0.3 * 0.7 / mean(dr[, 2]))
+ck("T17b per realizzazione la frazione estratta varia solo per campionamento (sd fra semi < 2 x binomiale): a_t risolti sul poligono", sd(dr[, 1]) < 2 * binsd,
+   sprintf("sd %.4f, binomiale %.4f", sd(dr[, 1]), binsd))
+# T18: due regioni adiacenti: la distanza minima vale anche fra cellule di regioni diverse
+two <- sf::st_sfc(sf::st_polygon(list(rbind(c(0, 0), c(100, 0), c(100, 100), c(0, 100), c(0, 0)))), sf::st_polygon(list(rbind(c(100, 0), c(200, 0), c(200, 100), c(100, 100), c(100, 0)))))
+reg2 <- list(region_df = data.frame(region_id = 1:2, cluster_id = c(1L, 2L), area_um2 = c(1e4, 1e4)), region_polygons = two)
+ct2b <- data.frame(cell_type = c("p", "q"), density = c(20000, 20000), min_dist_um = c(5, 5))
+comp2 <- data.frame(cluster_id = c(1L, 1L, 2L, 2L), cell_type = c("p", "q", "p", "q"), fraction = c(0.5, 0.5, 0.2, 0.8))
+sc2 <- seed_centroids(reg2, ct2b, comp2, random_seed = 18, spatial = "compartments", compartments = data.frame(cell_type = c("p", "q"), ell_um = 30, s = 2), verbose = FALSE)
+d2 <- nn_all(sc2$centroids$x, sc2$centroids$y); cross_r <- outer(sc2$centroids$region_id, sc2$centroids$region_id, "!=")
+ck("T18 distanza minima rispettata fra regioni diverse (due quadrati adiacenti)", min(d2[cross_r]) >= 5 - 1e-9 && min(d2) >= 5 - 1e-9, sprintf("min fra regioni %.3f", min(d2[cross_r])))
+# T19: etichette cieche permutate dentro la regione: conteggi per tipo invariati per regione
+sb <- seed_centroids(reg2, ct2b, comp2, random_seed = 18, spatial = "compartments", compartments = data.frame(cell_type = c("p", "q"), ell_um = 30, s = 2), labels = "blind", verbose = FALSE)
+ck("T19 labels = \"blind\": conteggi per tipo identici in ogni regione", identical(table(sc2$centroids$region_id, sc2$centroids$cell_type), table(sb$centroids$region_id, sb$centroids$cell_type)))
+# T20: distanza per nucleo associata al tipo giusto: d_t = kappa * 2 sqrt(a_t / pi) con a_t letto per nome; nel cervello d(neuroni) > d(oligodendrociti)
+bad20 <- character(0)
+for (A in names(PRE)) { sp <- tissue_preset_spec(PRE[[A]], types = "multi", size_arm = "group", spatial = "compartments", min_dist_mode = "nucleus")
+  cp <- .TP_COMPART[.TP_COMPART$preset == PRE[[A]], ]; a_t <- cp$nuc_median_area_um2[match(sp$cell_types$cell_type, cp$cell_type)]
+  if (max(abs(sp$cell_types$min_dist_um - sp$min_dist_kappa * 2 * sqrt(a_t / pi))) > 1e-12) bad20 <- c(bad20, A) }
+spb <- tissue_preset_spec("brain_cortex", types = "multi", size_arm = "group", spatial = "compartments", min_dist_mode = "nucleus")$cell_types
+ck("T20 distanza per nucleo per nome del tipo (6 preset); cervello: neuroni > oligodendrociti", !length(bad20) &&
+   spb$min_dist_um[spb$cell_type == "neuroni"] > spb$min_dist_um[spb$cell_type == "oligodendrociti"], bad20)
+# T21: regione troppo sottile per la griglia: un punto interno, nessun errore
+thin <- sf::st_sfc(sf::st_polygon(list(rbind(c(0, 0), c(300, 0), c(300, 0.05), c(0, 0.05), c(0, 0)))))
+e21 <- safe(.sc_grid_points(thin, 15, 4))
+ck("T21 griglia di una regione sottilissima: almeno un punto interno", isok(e21) && nrow(e21) >= 1, if (isok(e21)) nrow(e21) else msg(e21))
+
 n <- length(res); np <- sum(unlist(res)); cat(sprintf("RESULT %d/%d PASS\n", np, n))

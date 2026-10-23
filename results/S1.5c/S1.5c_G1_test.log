@@ -20,4 +20,10 @@ PASS T13 stesso seme, stessi centri e tipi
 PASS T14 il banco legge i parametri lascia-fuori del ROI (30/30; diversi da tutte le ROI in almeno 20) 30 / 28
 PASS T15 errori: distanza per nucleo senza compartimenti; compartimenti a un tipo; ell negativa 
 PASS T16 predefinito della semina dei preset = uniforme (prima della regola 3) 
-RESULT 22/22 PASS
+PASS T17 tipi estratti da p(x) prima di quote e RSA: frazione = f entro 3 SE (regione a L, 100 semi) 0.3000 contro 0.3 (SE 0.0027)
+PASS T17b per realizzazione la frazione estratta varia solo per campionamento (sd fra semi < 2 x binomiale): a_t risolti sul poligono sd 0.0267, binomiale 0.0246
+PASS T18 distanza minima rispettata fra regioni diverse (due quadrati adiacenti) min fra regioni 5.222
+PASS T19 labels = "blind": conteggi per tipo identici in ogni regione 
+PASS T20 distanza per nucleo per nome del tipo (6 preset); cervello: neuroni > oligodendrociti 
+PASS T21 griglia di una regione sottilissima: almeno un punto interno 4899
+RESULT 28/28 PASS
