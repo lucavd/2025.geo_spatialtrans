@@ -14,7 +14,7 @@ Any change after approval is a dated amendment (section 9), written before the r
 
 ### Hypotheses `[LUCA]`
 - **H1 (negative control).** Arm C− has the lowest fidelity in every tissue, and its method ranking differs from the anchor.
-- **H2 (positive control).** Arm E′ has the highest fidelity and the ranking closest to the anchor; no synthetic arm exceeds it beyond Monte Carlo error.
+- **H2 (positive control, donor-to-donor benchmark).** Arm E′ shows how close a second real donor gets to the held-out donor, in fidelity and in ranking agreement with the anchor. It gives the scale on which the other arms are read: a source close to E′ is as good as real data from another person. The leakage rule concerns the synthetic sources P, M and G (not E, which is real data). A synthetic arm may reach or exceed E′ without anything being wrong: M (fitted on the training donors) and G (trained on public archives) are estimated from many donors, so they give a population-average profile, which can be closer to a new donor than one other donor is. Exceeding E′ therefore triggers the leakage check in section 9 but is not, by itself, evidence of leakage. *(Wording changed from PROTOCOLLO §5.2 "il tetto ottenibile": Pierangela's decision, 2026-10-23, after a literature check: GEM-1 "pseudoreplicate" benchmark, "technical duplicate" baselines, noise ceiling.)*
 - **H3 (main question).** At least one synthetic arm (P, M, G) gives a method ranking that differs from the anchor ranking.
 - Thresholds that turn "differs" and "closest" into decisions: `[LUCA]` (see section 6.4).
 
@@ -28,7 +28,7 @@ Any change after approval is a dated amendment (section 9), written before the r
 | M | scDesign3 trained on the training split | Model-based middle ground |
 | G | GEM-1-sc, "mean estimation" mode, from CL/UBERON metadata | Generative model (optional, gate G0 by 30/10) |
 | C− | E profiles with gene labels permuted within each cell type | Negative control: must fail |
-| E′ | Means from a second, independent real donor | Positive control: the attainable ceiling |
+| E′ | Means from a second, independent real donor | Positive control: benchmark of donor-to-donor variability |
 
 - P parameters (gamma shape/rate, number of markers, fold-change): `[REAL DATA]` (matched to the E arm's mean–variance range).
 - C− permutation: one new permutation per replicate, or one fixed per study? Proposal: one per replicate, so the result does not depend on one particular shuffle. `[LUCA]`
@@ -76,16 +76,16 @@ PROTOCOLLO §5.2 does not mention this step; it is proposed to Luca. The same mi
 
 | Method | Package / language | Notes |
 |---|---|---|
-| RCTD | spacexr (R) | mode: `[LUCA]` (doublet vs full) |
-| CARD | CARD (R) | uses spatial coordinates: pseudo-spots have none → setting `[LUCA]` |
-| cell2location | Python, GPU on the server | n_sim may be lower; fixed by dated amendment in the first days on the server (DECISIONS 2026-10-14) |
+| RCTD | spacexr (R) | mode: `[LUCA]`. Cable et al. 2022 recommend doublet mode only when pixels rarely hold three or more cell types (Slide-seq), otherwise full mode (e.g. Visium); our pseudo-spots mix several cell types, so the proposal is `doublet_mode = "full"` (package default is "doublet", so it must be set). No coordinates needed: `SpatialRNA(..., use_fake_coords = TRUE)` (checked in the source, 2026-10-23). See `letture.md` |
+| CARD | CARD (R) | needs spatial coordinates: `createCARDObject()` stops without `spatial_location` (checked in the source, 2026-10-23). Pseudo-spots have none, so coordinates must be assigned (e.g. a grid with random placement) → setting `[LUCA]`. Its advantage depends on spatial correlation (Ma & Zhou 2022), so without it CARD should behave as a non-spatial method. Alternatives that need no coordinates: SPOTlight (below), or SpatialDWLS / MuSiC, which rank above CARD and SPOTlight in independent benchmarks (Li 2022; Sang-aram 2024; see `letture.md`, 2026-10-23) |
+| cell2location | Python, GPU on the server | n_sim may be lower; fixed by dated amendment in the first days on the server (DECISIONS 2026-10-14). Needs raw counts. Hyper-parameters: `N_cells_per_location` set to the true cells-per-spot level of each condition (§2.2) `[LUCA]`; `detection_alpha` 20 or 200 `[LUCA]` |
 | NNLS | baseline (R) | |
-| SPOTlight | R, optional | first to be cut if late |
+| SPOTlight | R, optional | first to be cut if late. Needs no spot coordinates (checked in the source, 2026-10-23), so it is the alternative to CARD if Luca prefers (Open question 5a). Needs marker genes from the training split (`mgs`); proportions under 1% set to zero (`min_prop = 0.01`) |
 
 - Every method receives the same reference: the scRNA training split, identical for all arms.
 - Package versions frozen in `renv.lock` (and the Python environment for cell2location: `[LUCA]`).
 - Default parameters unless stated here, as in Crowell et al. 2023 ("methods were run using default parameters and, if available, following recommendations given by the authors"); any tuning is pre-registered: `[PILOT]`.
-- Built-in spot filters kept at their defaults (checked in the package source on GitHub, `master`; to re-check against the versions in `renv.lock`): RCTD drops spots with fewer than 100 UMI (`create.RCTD(UMI_min = 100)`, spacexr `R/spacexr.R`); CARD drops spots with fewer than 100 total counts and genes detected in 5 spots or fewer (`createCARDObject`, CARD `R/utilities.R`); cell2location: to check; NNLS: none. Spots dropped this way are failures (7.2).
+- Built-in spot filters kept at their defaults (checked in the package source on GitHub, `master`; to re-check against the versions in `renv.lock`): RCTD drops spots with fewer than 100 UMI (`create.RCTD(UMI_min = 100)`, spacexr `R/spacexr.R`); CARD drops spots with fewer than 100 total counts and genes detected in 5 spots or fewer (`createCARDObject`, CARD `R/utilities.R`); cell2location: no spot filter (only a gene filter on the reference, `filter_genes(cell_count_cutoff=5, cell_percentage_cutoff2=0.03, nonz_mean_cutoff=1.12)` in the official tutorial; checked 2026-10-23); NNLS: none; SPOTlight: none. RCTD also needs at least 25 reference cells per cell type (`CELL_MIN_INSTANCE = 25`) and integer counts (`require_int = TRUE`). Spots dropped this way are failures (7.2).
 - Fallback without VPN by 30/10: ADEMP approved with a CPU pilot (RCTD, CARD, NNLS).
 
 ## 5. Performance measures
@@ -142,7 +142,7 @@ PROTOCOLLO §5.2 has no quality filter on the pseudo-spots, and we add none: the
 ## 9. Counter-proofs (PROTOCOLLO §5.6)
 
 1. **C−** must give low fidelity and rankings different from the anchor. If rankings do not change even with meaningless profiles, the benchmark is insensitive to expression level: that is a result and is reported.
-2. **E′** is the ceiling. A synthetic source that exceeds it suggests leakage (same donor in training and test, or GEM-1 training data overlapping ours) and is investigated before going on.
+2. **E′** is the benchmark of donor-to-donor variability, not a hard ceiling. If a synthetic source (P, M or G) exceeds it beyond Monte Carlo error, we check for leakage before going on: (a) the automatic donor-split test (point 3); (b) for arm G, that the held-out and E′ donors were deposited after the GEM-1 training cutoff. If both checks pass, the result stands and is reported, with the explanation (for M or G: a population-average profile, estimated from many donors, can be closer to a new donor than a single other donor is; P, built de novo, has no such explanation, so a P result above E′ is examined further). *(Softened from PROTOCOLLO §5.6 "indica un probabile leakage": Pierangela's decision, 2026-10-23.)*
 3. **Donor split** checked by an automatic test: no donor ID appears in two splits.
 
 ## 10. Pilot (Week 2)

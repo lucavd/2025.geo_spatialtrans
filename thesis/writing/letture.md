@@ -66,3 +66,125 @@ Format: question · data · main result · limit · what we need from it.
     - **Tissues:** rankings depended on the reference dataset, which agrees with the protocol's choice of three tissues and with reporting results for each tissue.
     - **Filtering:** they filtered the real references only, not the simulated data (Additional file 1, §6.1.2: groups with fewer than 50 cells removed; genes kept if their count is greater than 1 in at least 10 cells; cells kept with at least 100 detected genes), and ran the methods with their default parameters. For us: no extra filter on the pseudo-spots and each deconvolution method with its defaults, built-in filters included (ADEMP §7.1), as the protocol already implies. Using the same three rules on our real data before building μ (cell types as groups) is a proposal for Luca (ADEMP §2.6).
     - **Uncertainty:** they compared rankings without uncertainty. Our protocol (§5.5, "Incertezza") requires a Monte Carlo SE for every measure (Morris 2019), so we avoid this weakness by design.
+
+## Cable, Murray, Zou, Goeva, Macosko, Chen, Irizarry 2022 — RCTD
+*Robust decomposition of cell type mixtures in spatial transcriptomics.* Nature Biotechnology 2022;40:517–526. doi:10.1038/s41587-021-00830-w. Peer reviewed. R package `spacexr`.
+
+1. **Question:** Can the cell-type proportions of spatial measurements that mix several cells be estimated from a single-cell reference?
+2. **Data:** Mouse brain single-cell and single-nucleus references; Slide-seq and Visium data; simulated mixtures built from single cells of the reference (pairs of cells, and three or four cell types per pixel with 10,000 UMIs "to model the conditions of Visium").
+3. **Main result:** The counts of each pixel are modelled as Poisson, with a mean equal to the pixel's total UMIs times a weighted mix of the reference cell-type profiles (average expression per cell type); the weights are the proportions. It recovered the true proportions of the simulated mixtures. "Doublet mode" allows at most two cell types per pixel; "full mode" allows any number, as in Visium.
+4. **Limit:** Validated mainly in mouse brain, on simulations built by the authors; cell types missing from the reference are a problem.
+5. **What we need from it:** It fits our pseudo-spots, which are the same kind of mixture as its simulations. Settings: `doublet_mode = "full"` (the package default is "doublet"); no coordinates needed (`SpatialRNA(..., use_fake_coords = TRUE)`); raw integer counts; at least 25 reference cells per cell type; spots and reference cells under 100 UMI are dropped (checked in the `spacexr` source, 2026-10-23).
+
+## Ma, Zhou 2022 — CARD
+*Spatially informed cell-type deconvolution for spatial transcriptomics.* Nature Biotechnology 2022;40:1349–1359. doi:10.1038/s41587-022-01273-7. Peer reviewed. R package `CARD`.
+
+1. **Question:** Does using the fact that neighbouring spots have similar cell-type compositions improve deconvolution, also when the single-cell reference does not match the tissue well?
+2. **Data:** Simulations built from real data, with a parameter that sets how spatially correlated the compositions are, five replicates per setting and six competing methods (among them RCTD, SPOTlight, cell2location, stereoscope, spatialDWLS, MuSiC); four real datasets, including mouse olfactory bulb and human pancreatic cancer.
+3. **Main result:** CARD is a non-negative matrix factorization of the spot data (normalized expression) into a reference matrix B, built from the single-cell data, times the proportions V. The proportions follow a **conditional autoregressive (CAR)** model: each spot's composition is pulled towards the weighted composition of the other spots, with weights from a Gaussian kernel of the distance between spots and a spatial autocorrelation parameter that sets the strength of the pull. CARD was the most accurate method in their simulations (median RMSE 0.079), also with mismatched references, but "the advantage of CARD over the other methods shows a clear dependency on spatial correlation". The reference matrix follows MuSiC: genes present in both datasets, cell-type-informative genes (mean in a cell type at least 1.25 log-fold above the other cell types), and removal of the 1% of genes with the highest dispersion.
+4. **Limit:** CARD models normalized data, not raw counts (the authors list a count model as future work). Its gain comes from spatial correlation, so with no spatial structure its advantage should disappear. The benchmark was run by the method's authors.
+5. **What we need from it:**
+    - **CARD without coordinates (ADEMP §4, Open question 5a):** the package **cannot run without coordinates**: `createCARDObject()` stops with "Please provide the matched spatial location data frame" when `spatial_location` is missing (checked in the source, `R/utilities.R`, 2026-10-23). Our pseudo-spots have no positions, so we must give it coordinates. How (for example a grid with spots placed at random, so that neighbours share nothing) is a design decision to discuss with Luca; the paper suggests that CARD would then behave as a non-spatial method.
+    - **Built-in filters** (checked in the source, 2026-10-23; ADEMP §4 confirmed): spots are kept only with total counts between 100 and 1,000,000 (`minCountGene = 100`, applied to spots despite its name); genes are kept only if detected in more than 5 spots (`minCountSpot = 5`, applied to genes despite its name). The package documentation describes the two parameters the other way round.
+    - **Replicates:** CARD's own simulations used five replicates per setting, an example of reporting variability that our Monte Carlo SE extends.
+
+## Kleshchevnikov, Shmatko, Dann et al. 2022 — cell2location
+*Cell2location maps fine-grained cell types in spatial transcriptomics.* Nature Biotechnology 2022;40:661–671. doi:10.1038/s41587-021-01139-4. Peer reviewed. Python package `cell2location` (scvi-tools, GPU).
+
+1. **Question:** Can a Bayesian model map fine-grained cell types, including rare ones, in spatial data more sensitively than existing tools?
+2. **Data:** A synthetic dataset of 2,500 locations built by combining cells of 49 mouse-brain cell types (from single-nucleus data) with different abundance patterns; paired Visium and single-nucleus data of the mouse brain; human lymph node and human gut. Compared with RCTD, SPOTlight, Seurat, stereoscope and **NNLS**.
+3. **Main result:** Two steps. First, a signature for each cell type is estimated from the single-cell or single-nucleus reference, by default with a negative binomial regression that can remove batch effects. Second, the spatial counts are modelled as negative binomial, with expected counts built from the signatures times the abundance of each cell type, plus gene-specific scaling, per-location detection sensitivity and an additive background term. It estimates absolute cell abundance per location, not only proportions. It was more accurate than the other methods on the synthetic data and resolved fine immune populations in lymph node and gut.
+4. **Limit:** Two hyper-parameters must be set by the user: the expected number of cells per location N̂ ("an appropriate setting of this prior is essential to inform the estimation of absolute cell type abundance values", although the model "is robust to a range of similar values"), and the regularization of detection sensitivity. It needs a GPU for large data. The synthetic benchmark was built by the authors.
+5. **What we need from it:**
+    - **Raw counts:** "Cell2location needs untransformed unnormalised spatial mRNA counts as input" (official tutorial).
+    - **Built-in filters** (ADEMP §4 said "to check"; checked 2026-10-23): **no spot-level filter.** The tutorial removes no spots; it only removes mitochondrial genes from the spatial data and filters genes of the reference with `filter_genes(adata_ref, cell_count_cutoff=5, cell_percentage_cutoff2=0.03, nonz_mean_cutoff=1.12)` (the function's own defaults are 15, 0.05 and 1.12; source `cell2location/utils/filtering.py`).
+    - **N̂ (`N_cells_per_location`):** the tutorial uses 30 and says to adapt it to each tissue. In our design the true number of cells per spot is known (the "cells per spot" factor, ADEMP §2.2), so N̂ can be set to the level of each condition; to fix in the ADEMP.
+    - **`detection_alpha`:** 20 (tutorial default for human Visium with technical variability) or 200 (low technical variability). Our pseudo-spots have no per-spot sensitivity variation beyond library size, so 200 may fit; to decide in the ADEMP.
+    - **NNLS:** cell2location's own benchmark already included NNLS as a comparison, which supports our baseline.
+
+## Elosua-Bayes, Nieto, Mereu, Gut, Heyn 2021 — SPOTlight
+*SPOTlight: seeded NMF regression to deconvolute spatial transcriptomics spots with single-cell transcriptomes.* Nucleic Acids Research 2021;49(9):e50. doi:10.1093/nar/gkab043. Peer reviewed. R/Bioconductor package `SPOTlight`. Optional method in the protocol (§5.4).
+
+1. **Question:** Can a non-negative matrix factorization (NMF), started from cell-type marker genes, deconvolute spots accurately, also with small or shallow single-cell references?
+2. **Data:** Synthetic mixtures of 2–8 cells taken from single-cell datasets (if a mixture had more than 25,000 UMIs it was down-sampled to 20,000 "to better simulate biological capture locations"); PBMC references from 13 single-cell technologies and at different sequencing depths; mouse brain and human pancreatic cancer spatial data. Compared with MuSiC, CIBERSORTx, DeconRNAseq, SCDC, RCTD and NMFreg, all "run with default settings".
+3. **Main result:** Two steps. First, NMF is trained on the single-cell reference, with each topic seeded with the marker genes of one cell type, giving a topic profile per cell type. Second, non-negative least squares (NNLS) maps each spot onto these topics, and a second NNLS turns the topic weights into cell-type proportions; weights below a minimum contribution are set to zero. Accuracy was high also with low cell numbers or shallow references. Performance was measured as presence/absence (sensitivity, specificity) and as proportions with the **Jensen–Shannon divergence**, the same measure as our §5.5.
+4. **Limit:** The results depend on user choices: the marker genes, the number of cells per cell type used for training, and the minimum contribution threshold. The benchmark was run by the method's authors.
+5. **What we need from it:**
+    - **No coordinates needed:** `SPOTlight()` has no coordinates argument; the spots are only the columns of the count matrix (checked in the package source, `R/SPOTlight.R`, `devel` branch, 2026-10-23). So SPOTlight can run on our pseudo-spots as designed. This is the alternative to CARD in Luca question 5a.
+    - **Built-in filters:** no spot filter in the function. Genes come from the marker list (`mgs`, required) and optional highly variable genes (`hvg`). Proportions under 1% are set to zero (`min_prop = 0.01`).
+    - **Extra choice it brings:** the marker genes must be computed by us on the training split (the paper used Seurat's `FindAllMarkers`); this must be fixed in the ADEMP if SPOTlight is used.
+    - **Our generator:** their synthetic mixtures (a few cells summed, then down-sampled to a fixed depth) are close to our pseudo-spots with the depth factor.
+
+## Song, Wang, Yan, Liu, Sun, Li 2024 — scDesign3
+*scDesign3 generates realistic in silico data for multimodal single-cell and spatial omics.* Nature Biotechnology 2024;42:247–252 (published online 11 May 2023). doi:10.1038/s41587-023-01772-1. Peer reviewed (Brief Communication). R/Bioconductor package `scDesign3`. Source of arm M (PROTOCOLLO §5.2).
+
+1. **Question:** Can one statistical model, fitted to real data, both generate realistic single-cell and spatial data (for benchmarking) and help interpret the real data (goodness-of-fit of clusters, trajectories, spatial locations)?
+2. **Data:** Many public single-cell, multi-omics and spatial datasets; comparison with ZINB-WaVE, muscat and SPARSim ("three top-performing simulators for discrete cell types" in earlier benchmarks) and with a deep-learning simulator, scGAN, judged against left-out real cells.
+3. **Main result:** For each gene, a GAMLSS model (a regression in which the mean, and possibly the dispersion and the zero inflation, depend on covariates) is fitted with a chosen distribution (Gaussian, Poisson, negative binomial, zero-inflated Poisson or zero-inflated NB). Cell type, pseudotime or spatial position enter as covariates, plus optional batch and condition. A copula (Gaussian, fast; or vine, slower) then adds the correlations between genes. Synthetic cells resembled left-out real cells better than the other simulators. One use shown in the paper: given single-cell and spot-level spatial data, scDesign3 generates spots with chosen cell-type proportions and was used to **benchmark deconvolution**, with results "consistent with a benchmark study" that CARD and RCTD outperformed SPOTlight in estimating proportions, while the three methods performed similarly in estimating each cell type's distribution across spots.
+4. **Limit:** Benchmarks were run by the authors. Realism was judged on whole datasets; Crowell et al. 2023 showed that realism does not guarantee a faithful method ranking. Model choices (distribution, covariates, copula) are left to the user, and fitting gene by gene can be slow on large data.
+5. **What we need from it:**
+    - **What μ arm M takes:** the mean of each gene in each cell type from the fitted marginal model; the copula and the dispersion are not used, because our noise model is the same for all arms (§5.2).
+    - **A point for the ADEMP review:** if the marginal model contains only cell type as a covariate, with a log link, the fitted mean of each cell type is equal to its average in the training data (the maximum-likelihood estimate in a regression with one categorical covariate is the group mean). In that case arm M would be almost identical to arm E. M differs from E only if the model includes other terms (for example library size, donor as batch, or a smoother), which must be decided and pre-registered. *(This reasoning is mine, not from the paper; to check in the scDesign3 vignette and with Luca.)*
+    - **Precedent:** scDesign3 itself was used to simulate spots and rank deconvolution methods, which is the use that our Objective 2 tests.
+
+---
+*Benchmarks and candidate extra methods (2026-10-23).*
+
+## Avila Cobos, Alquicira-Hernandez, Powell, Mestdagh, De Preter 2020 — bulk deconvolution benchmark
+*Benchmarking of cell type deconvolution pipelines for transcriptomics data.* Nature Communications 2020;11:5650. doi:10.1038/s41467-020-19015-1. Peer reviewed.
+
+1. **Question:** effect of transformation, normalization, marker selection, missing cell types and method on bulk deconvolution.
+2. **Data:** pseudo-bulk mixtures from five scRNA-seq datasets; real PBMC bulk with known proportions.
+3. **Main result:**
+    - linear scale always best (log hurts);
+    - best bulk methods: OLS, **nnls**, RLR, FARDEEP, CIBERSORT;
+    - best single-cell-reference methods: **DWLS, MuSiC, SCDC**, as good as the best bulk ones;
+    - a cell type missing from the reference worsens every method.
+4. **Limit:** bulk, not spots; no spatial methods.
+5. **What we need:** supports NNLS as a strong baseline and raw/linear counts as input; points to DWLS and MuSiC as candidates.
+
+## Huuki-Myers, Montgomery, … Maynard, Collado-Torres 2025 — brain bulk deconvolution benchmark
+*Benchmark of cellular deconvolution methods using a multi-assay dataset from postmortem human prefrontal cortex.* Genome Biology 2025;26:88. doi:10.1186/s13059-025-03552-3. Peer reviewed.
+
+1. **Question:** which of six methods (DWLS, Bisque, MuSiC, BayesPrism, CIBERSORTx, hspe) best estimates cell-type proportions in human DLPFC?
+2. **Data:** 22 DLPFC blocks; bulk RNA-seq (110 samples), snRNA-seq reference, real proportions from RNAScope/IF.
+3. **Main result:**
+    - **Bisque** (cor 0.54, RMSE 0.14) and **hspe** (0.53, 0.14) best, then CIBERSORTx;
+    - MuSiC, BayesPrism and DWLS poor here (cor ≤ 0.05);
+    - results depend on marker genes; Mean Ratio markers in R package `DeconvoBuddies`.
+4. **Limit:** bulk, not spots; one tissue; rankings differ from Avila Cobos (DWLS and MuSiC good there, poor here).
+5. **What we need:**
+    - same region as our brain data (PsychAD DLPFC); `DeconvoBuddies` Mean Ratio could supply marker genes (e.g. SPOTlight `mgs`);
+    - Bisque and hspe: not tested on spatial spots in any benchmark found; hspe is a v0.1 tarball (not on CRAN) → not proposed;
+    - shows that benchmarks disagree on rankings, which is our thesis question.
+
+## Spatial benchmarks checked online (for the method choice)
+- **Li et al. 2022**, Nature Methods, doi:10.1038/s41592-022-01480-9: 32 simulated + real datasets; best deconvolution = **cell2location, SpatialDWLS, RCTD**.
+- **Sang-aram et al. 2024 (Spotless)**, eLife, doi:10.7554/eLife.88431: 11 methods, 63 synthetic "silver standards" (half of each scRNA-seq dataset makes the spots, the other half is the reference, as in our design); best = **RCTD, cell2location**, then SpatialDWLS, stereoscope, MuSiC; over half of the methods did not beat NNLS; "we recommend RCTD as a good starting point". CARD not included.
+- **Conclusion:** our set already has the two top methods (RCTD, cell2location) + NNLS. Candidates that rank above CARD and SPOTlight: **SpatialDWLS** and **MuSiC** (entries below).
+
+## Dong, Yuan 2021 — SpatialDWLS (candidate)
+*SpatialDWLS: accurate deconvolution of spatial transcriptomic data.* Genome Biology 2021;22:145. doi:10.1186/s13059-021-02362-7. R, inside `Giotto` (`runDWLSDeconv`).
+
+1. **Question:** adapt DWLS (dampened weighted least squares, from bulk) to spots.
+2. **Data:** 71 simulated spots from mouse-cortex seqFISH+ cells (523 cells, 6 cell types, ~51.5 µm squares); Visium mouse brain and developing human heart (no ground truth). Compared with MuSiC, RCTD, SPOTlight, stereoscope.
+3. **Main result:** step 1 clusters spots and tests which cell types are enriched per cluster; step 2 DWLS only with those cell types. More accurate and faster than the others in their test (MuSiC and RCTD closest). Top 3 in Li 2022; just below RCTD/cell2location in Spotless.
+4. **Limit:** tiny own validation (71 spots, 6 types, authors' benchmark); needs a spot clustering (`cluster_column`) and a signature matrix (both our choices); heavy `Giotto` dependency.
+5. **What we need:**
+    - no coordinates needed: `createGiottoObject()` makes dummy locations (checked in `GiottoClass` source, 2026-10-23); clustering is on expression;
+    - `runDWLSDeconv(..., expression_values = "normalized", cluster_column = "leiden_clus", sign_matrix, n_cell = 50, cutoff = 2)` (Giotto source, `suite` branch); `n_cell` = cells per spot → set to our level;
+    - would replace CARD (needs coordinates).
+
+## Wang, Park, Susztak, Zhang, Li 2019 — MuSiC (candidate)
+*Bulk tissue cell type deconvolution with multi-subject single-cell expression reference.* Nature Communications 2019;10:380. doi:10.1038/s41467-018-08023-x. R package `MuSiC` (GitHub xuranw/MuSiC, v1.0.0).
+
+1. **Question:** bulk deconvolution that uses a single-cell reference from several subjects.
+2. **Data:** pancreas and kidney bulk + multi-subject scRNA-seq.
+3. **Main result:** weighted NNLS; genes weighted down if they vary a lot between subjects in the reference. Top in Avila Cobos; in Spotless above half of the spatial methods and top 3 on gold standards.
+4. **Limit:** bulk method; poor in Huuki-Myers (brain); low stability to the reference in Spotless.
+5. **What we need:**
+    - no coordinates (spots = columns of `bulk.mtx`);
+    - `music_prop(bulk.mtx, sc.sce, clusters, samples, markers = NULL, ...)` (source, 2026-10-23): needs per-cell **donor labels** (`samples`) → our training split has them, but with few training donors (lymphoid: 4) the between-donor weights are rough;
+    - linear (raw) counts; genes with zero mean in the spots are dropped.
+
+*Answer to the OSCA check (2026-10-23):* the built-in spot filters differ between methods: RCTD and CARD drop spots with fewer than 100 counts, cell2location drops none. None of the three published pipelines applies an adaptive (OSCA-style) spot filter. Keeping ADEMP §7.1 (no extra filter; spots a method drops count as failures) therefore matches what the published pipelines do. Whether to reopen the OSCA proposal is my decision.
