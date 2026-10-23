@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-10-23 (chiusura di S1.5c)
+
+* **Chiusura**: [Se i centri delle cellule si raggruppano per tipo come nei tessuti veri, tornano i contatti fra nuclei, la variabilità dei territori e lo spazio attorno al nucleo per tipo? (S1.5c)](steps/S1.5c.md) chiuso con l'approvazione di Luca («chiudi lo step», lettura del riassunto «In breve» senza dubbi nuovi); una decisione per Luca, registrata in [Il controllo della calibrazione rifatta nel pacchetto, fallito in S1.5c, è un errore della tolleranza pre-registrata, non una differenza fra le due implementazioni (DEC-021)](decisions/DEC-021.md). ROADMAP §7: S1.5c chiusa, prossima sessione proposta: semina eterogenea, parte 2 (BL-157 con BL-159, BL-160); la scelta resta di Luca.
+* **Aggiornamento**: figura 3 del report con la legenda sotto i pannelli (prima copriva la riga del cuore); nessun numero cambia.
+
 ## 2026-10-23 (risultati di S1.5c)
 
 * **Aggiornamento**: [Se i centri delle cellule si raggruppano per tipo come nei tessuti veri, tornano i contatti fra nuclei, la variabilità dei territori e lo spazio attorno al nucleo per tipo? (S1.5c)](steps/S1.5c.md): cancelli (G-4 fallito come scritto, decisione a Luca), regole delle tre scelte, verdetti, deviazioni D-5...D-10, post hoc, revisione avversariale, riassunto «In breve», dubbi rinviati BL-157...BL-161.

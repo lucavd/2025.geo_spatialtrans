@@ -58,8 +58,9 @@ for ax, pid, lab in [(axs[0], "P-2", "CV dei territori, simulato / vero - 1"), (
         for arm, c_, mk in [("U", "0.35", "x"), (WIN, COL[3], "o")]:
             q = r[r.arm == arm].iloc[0]; ax.errorbar(q.est, y + (-0.18 if arm == "U" else 0.18), xerr=2 * q.se, fmt=mk, color=c_, ms=3.5, lw=0.8, label=ARML[arm] if y == 0 else None)
     ax.set_yticks(range(6)); ax.set_yticklabels(list(TIS.values()) if pid == "P-2" else []); ax.invert_yaxis(); ax.set_xlabel(lab, fontsize=7.5)
-axs[0].legend(frameon=False, fontsize=6.5, loc="lower right")
-fig.tight_layout(); fig.savefig(f"{FIG}/S1.5c_fig3_tissue.png", dpi=180); plt.close(fig)
+h, l = axs[0].get_legend_handles_labels()
+fig.legend(h, l, frameon=False, fontsize=7, loc="lower center", ncol=len(l))
+fig.tight_layout(rect=(0, 0.07, 1, 1)); fig.savefig(f"{FIG}/S1.5c_fig3_tissue.png", dpi=180); plt.close(fig)
 # ---- figura 4: mappe dei tipi, un ROI per tessuto (vero, semina di oggi, compartimenti), riquadro di 300 um
 fig, axs = plt.subplots(6, 3, figsize=(8.5, 17))
 for i, A in enumerate(TIS):

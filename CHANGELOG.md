@@ -2,9 +2,9 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## S1.5c, 2026-10-23: semina a compartimenti per tipo (branch `step1-cell-layer`), **in attesa della lettura di Luca**
+## S1.5c, 2026-10-23: semina a compartimenti per tipo (branch `step1-cell-layer`), **chiusa**
 
-File dello step `docs/steps/S1.5c.md`, report `reports/S1.5c.html`; decisione tecnica DEC-020 (regole delle tre scelte).
+File dello step `docs/steps/S1.5c.md`, report `reports/S1.5c.html`; decisione tecnica DEC-020 (regole delle tre scelte); decisione di Luca DEC-021 (G-4 fallito come scritto è un errore della tolleranza pre-registrata, non blocca lo step). Letta da Luca il 2026-10-23 («chiudi lo step»).
 
 ### Codice
 - `R/04b2_seed_centroids.R`: `seed_centroids(spatial = "compartments", compartments, labels = "field"|"blind")`: campi gaussiani latenti per tipo (caratteristiche di Fourier casuali), probabilità locali (softmax), densità locale dalla densità del tipo puro, spostamenti a_t sulla griglia della regione, diradamento, quote per tipo, distanza minima della coppia; contatori diagnostici; ripiego per regioni troppo sottili. Il modo `"uniform"` è invariato (300/300 unità identiche a S1.5b).
