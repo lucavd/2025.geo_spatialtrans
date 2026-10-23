@@ -1,0 +1,547 @@
+archetype,roi_id,metric,cell_type,bin,value
+A1,r1,nn_median_all,,,4.547147305955733
+A1,r1,cv_local4,,,0.3865851569147481
+A1,r1,nn_rel,epiteliale,,0.9867999618994154
+A1,r1,markconn,epiteliale,0-10,1.2361538190814276
+A1,r1,markconn,epiteliale,10-20,1.1343721713451458
+A1,r1,markconn,epiteliale,20-40,1.0594361849886655
+A1,r1,markconn,epiteliale,40-80,1.004064783099078
+A1,r1,markconn,epiteliale,80-160,0.9843054471753849
+A1,r1,nn_rel,stromale e muscolo liscio,,1.1147962600637078
+A1,r1,markconn,stromale e muscolo liscio,0-10,2.573460342679163
+A1,r1,markconn,stromale e muscolo liscio,10-20,1.949050012578919
+A1,r1,markconn,stromale e muscolo liscio,20-40,1.3806480032283828
+A1,r1,markconn,stromale e muscolo liscio,40-80,1.1710862611836117
+A1,r1,markconn,stromale e muscolo liscio,80-160,1.0117378653446731
+A1,r1,nn_rel,immunitario,,0.9290190826891025
+A1,r1,markconn,immunitario,0-10,6.625069098600575
+A1,r1,markconn,immunitario,10-20,5.138289664467134
+A1,r1,markconn,immunitario,20-40,2.822886799259363
+A1,r1,markconn,immunitario,40-80,0.9925077616332962
+A1,r1,markconn,immunitario,80-160,1.028288086568355
+A1,r2,nn_median_all,,,4.643434931089911
+A1,r2,cv_local4,,,0.3598230211471898
+A1,r2,nn_rel,epiteliale,,0.988882241783144
+A1,r2,markconn,epiteliale,0-10,1.2695615989604498
+A1,r2,markconn,epiteliale,10-20,1.1209532512564229
+A1,r2,markconn,epiteliale,20-40,1.032407455880212
+A1,r2,markconn,epiteliale,40-80,1.020358227327896
+A1,r2,markconn,epiteliale,80-160,0.9725249623633775
+A1,r2,nn_rel,stromale e muscolo liscio,,1.0628919848253466
+A1,r2,markconn,stromale e muscolo liscio,0-10,2.5866584947690354
+A1,r2,markconn,stromale e muscolo liscio,10-20,1.8850331330592236
+A1,r2,markconn,stromale e muscolo liscio,20-40,1.2218169390544165
+A1,r2,markconn,stromale e muscolo liscio,40-80,1.172838907855048
+A1,r2,markconn,stromale e muscolo liscio,80-160,0.9665052453711658
+A1,r2,nn_rel,immunitario,,0.9654622925881057
+A1,r2,markconn,immunitario,0-10,5.366924650468858
+A1,r2,markconn,immunitario,10-20,4.145958281941451
+A1,r2,markconn,immunitario,20-40,2.3695424204680395
+A1,r2,markconn,immunitario,40-80,0.9249160363278471
+A1,r2,markconn,immunitario,80-160,0.9262653269628444
+A1,r3,nn_median_all,,,4.619844937775654
+A1,r3,cv_local4,,,0.37433873492044173
+A1,r3,nn_rel,epiteliale,,0.9878858305120563
+A1,r3,markconn,epiteliale,0-10,1.254204004425183
+A1,r3,markconn,epiteliale,10-20,1.1336987383167874
+A1,r3,markconn,epiteliale,20-40,1.04413256999224
+A1,r3,markconn,epiteliale,40-80,1.0145271811093681
+A1,r3,markconn,epiteliale,80-160,0.9906258507444954
+A1,r3,nn_rel,stromale e muscolo liscio,,1.1036138099788568
+A1,r3,markconn,stromale e muscolo liscio,0-10,2.6310998592934305
+A1,r3,markconn,stromale e muscolo liscio,10-20,1.8704315536094127
+A1,r3,markconn,stromale e muscolo liscio,20-40,1.0914096441997343
+A1,r3,markconn,stromale e muscolo liscio,40-80,1.0236660918333766
+A1,r3,markconn,stromale e muscolo liscio,80-160,0.9815748264168924
+A1,r3,nn_rel,immunitario,,0.949218430599391
+A1,r3,markconn,immunitario,0-10,6.023942221838187
+A1,r3,markconn,immunitario,10-20,4.641822449741761
+A1,r3,markconn,immunitario,20-40,2.6723261522919097
+A1,r3,markconn,immunitario,40-80,0.8079967955759342
+A1,r3,markconn,immunitario,80-160,1.0064425012599354
+A1,r4,nn_median_all,,,4.700510476702938
+A1,r4,cv_local4,,,0.4515692960339564
+A1,r4,nn_rel,epiteliale,,0.9856358868942737
+A1,r4,markconn,epiteliale,0-10,1.2714096021295662
+A1,r4,markconn,epiteliale,10-20,1.1727862361220507
+A1,r4,markconn,epiteliale,20-40,1.0691183643583324
+A1,r4,markconn,epiteliale,40-80,1.0423899468358435
+A1,r4,markconn,epiteliale,80-160,0.9854391832334987
+A1,r4,nn_rel,stromale e muscolo liscio,,1.0788887190793333
+A1,r4,markconn,stromale e muscolo liscio,0-10,2.472028269353519
+A1,r4,markconn,stromale e muscolo liscio,10-20,1.8971369003539318
+A1,r4,markconn,stromale e muscolo liscio,20-40,1.2882084271875456
+A1,r4,markconn,stromale e muscolo liscio,40-80,1.1457507910832392
+A1,r4,markconn,stromale e muscolo liscio,80-160,1.0619337686359571
+A1,r4,nn_rel,immunitario,,0.9620485988497902
+A1,r4,markconn,immunitario,0-10,8.916869515489552
+A1,r4,markconn,immunitario,10-20,6.675905048890772
+A1,r4,markconn,immunitario,20-40,3.0065627921693654
+A1,r4,markconn,immunitario,40-80,0.7537305703318626
+A1,r4,markconn,immunitario,80-160,1.0278744228817218
+A1,r5,nn_median_all,,,4.7152413662381925
+A1,r5,cv_local4,,,0.38702533644503684
+A1,r5,nn_rel,epiteliale,,0.9923015786589129
+A1,r5,markconn,epiteliale,0-10,1.256169136497136
+A1,r5,markconn,epiteliale,10-20,1.1421496968968323
+A1,r5,markconn,epiteliale,20-40,1.0460878175853385
+A1,r5,markconn,epiteliale,40-80,1.0472625536092248
+A1,r5,markconn,epiteliale,80-160,1.011558284967447
+A1,r5,nn_rel,stromale e muscolo liscio,,1.0840126833717223
+A1,r5,markconn,stromale e muscolo liscio,0-10,2.4604575407661837
+A1,r5,markconn,stromale e muscolo liscio,10-20,1.8695616903337322
+A1,r5,markconn,stromale e muscolo liscio,20-40,1.1819663462920347
+A1,r5,markconn,stromale e muscolo liscio,40-80,1.0363477700783754
+A1,r5,markconn,stromale e muscolo liscio,80-160,0.9283747502436046
+A1,r5,nn_rel,immunitario,,0.9060060959536345
+A1,r5,markconn,immunitario,0-10,6.691497072762754
+A1,r5,markconn,immunitario,10-20,4.972647634074586
+A1,r5,markconn,immunitario,20-40,2.668076327724509
+A1,r5,markconn,immunitario,40-80,0.8643605203184622
+A1,r5,markconn,immunitario,80-160,1.0349328941548601
+A2,r1,nn_median_all,,,6.056457701373977
+A2,r1,cv_local4,,,0.46513352686258996
+A2,r1,nn_rel,epiteliale,,0.9827024529974935
+A2,r1,markconn,epiteliale,0-10,1.295535270577773
+A2,r1,markconn,epiteliale,10-20,1.2233369057241328
+A2,r1,markconn,epiteliale,20-40,1.1204492375892494
+A2,r1,markconn,epiteliale,40-80,1.0604592362075855
+A2,r1,markconn,epiteliale,80-160,1.0448380216540483
+A2,r1,nn_rel,fibroblasti,,1.045748693677269
+A2,r1,markconn,fibroblasti,0-10,3.875463982647106
+A2,r1,markconn,fibroblasti,10-20,3.1670028693118724
+A2,r1,markconn,fibroblasti,20-40,2.304205993794401
+A2,r1,markconn,fibroblasti,40-80,1.5211285382300415
+A2,r1,markconn,fibroblasti,80-160,1.050607758155128
+A2,r2,nn_median_all,,,6.277377618369656
+A2,r2,cv_local4,,,0.4421473049488633
+A2,r2,nn_rel,epiteliale,,0.9908363733878549
+A2,r2,markconn,epiteliale,0-10,1.3791264343220906
+A2,r2,markconn,epiteliale,10-20,1.3201979686065173
+A2,r2,markconn,epiteliale,20-40,1.2050367136687523
+A2,r2,markconn,epiteliale,40-80,1.0695705909640076
+A2,r2,markconn,epiteliale,80-160,1.0074120954930457
+A2,r2,nn_rel,fibroblasti,,1.0106889233201137
+A2,r2,markconn,fibroblasti,0-10,3.3451625222933665
+A2,r2,markconn,fibroblasti,10-20,3.043619338236568
+A2,r2,markconn,fibroblasti,20-40,2.500824825419956
+A2,r2,markconn,fibroblasti,40-80,1.9406217275773319
+A2,r2,markconn,fibroblasti,80-160,1.4668312173407807
+A2,r3,nn_median_all,,,6.232823392926198
+A2,r3,cv_local4,,,0.42095503505956383
+A2,r3,nn_rel,epiteliale,,0.9928254688350748
+A2,r3,markconn,epiteliale,0-10,1.1211117279122702
+A2,r3,markconn,epiteliale,10-20,1.076189277826116
+A2,r3,markconn,epiteliale,20-40,1.0247127478758178
+A2,r3,markconn,epiteliale,40-80,0.9958458184410623
+A2,r3,markconn,epiteliale,80-160,0.9972416557448681
+A2,r3,nn_rel,fibroblasti,,1.0992141419268997
+A2,r3,markconn,fibroblasti,0-10,7.211627481603421
+A2,r3,markconn,fibroblasti,10-20,4.521348869765718
+A2,r3,markconn,fibroblasti,20-40,2.377256942036605
+A2,r3,markconn,fibroblasti,40-80,1.3410000403367186
+A2,r3,markconn,fibroblasti,80-160,1.2503003886480921
+A2,r4,nn_median_all,,,5.991708890448954
+A2,r4,cv_local4,,,0.5466777189816462
+A2,r4,nn_rel,epiteliale,,0.9713080288791545
+A2,r4,markconn,epiteliale,0-10,1.1264099786150295
+A2,r4,markconn,epiteliale,10-20,1.1111437616956643
+A2,r4,markconn,epiteliale,20-40,1.0785372752425344
+A2,r4,markconn,epiteliale,40-80,1.0542893366626018
+A2,r4,markconn,epiteliale,80-160,1.0389104568453413
+A2,r4,nn_rel,fibroblasti,,1.394819782277185
+A2,r4,markconn,fibroblasti,0-10,7.933807232317665
+A2,r4,markconn,fibroblasti,10-20,5.916228660380631
+A2,r4,markconn,fibroblasti,20-40,3.2289155178342517
+A2,r4,markconn,fibroblasti,40-80,1.884888616546286
+A2,r4,markconn,fibroblasti,80-160,1.3785227546605094
+A2,r5,nn_median_all,,,6.541786229320018
+A2,r5,cv_local4,,,0.6482942940340656
+A2,r5,nn_rel,epiteliale,,0.9075203739039103
+A2,r5,markconn,epiteliale,0-10,1.5388940410295224
+A2,r5,markconn,epiteliale,10-20,1.5158809489263645
+A2,r5,markconn,epiteliale,20-40,1.4561422130127772
+A2,r5,markconn,epiteliale,40-80,1.3603666974724304
+A2,r5,markconn,epiteliale,80-160,1.2505677320843929
+A2,r5,nn_rel,fibroblasti,,1.2557146892196112
+A2,r5,markconn,fibroblasti,0-10,2.726003390201225
+A2,r5,markconn,fibroblasti,10-20,2.543691923332858
+A2,r5,markconn,fibroblasti,20-40,2.1720245058667413
+A2,r5,markconn,fibroblasti,40-80,1.8206863311307775
+A2,r5,markconn,fibroblasti,80-160,1.5643731661523095
+A3,r1,nn_median_all,,,8.02337215310998
+A3,r1,cv_local4,,,0.46107842586211295
+A3,r1,nn_rel,epiteliale,,0.9220348386164012
+A3,r1,markconn,epiteliale,0-10,1.864178926097681
+A3,r1,markconn,epiteliale,10-20,1.8203603813991023
+A3,r1,markconn,epiteliale,20-40,1.7154642717026123
+A3,r1,markconn,epiteliale,40-80,1.6389045833606324
+A3,r1,markconn,epiteliale,80-160,1.5192979166757685
+A3,r1,nn_rel,fibroblasti,,1.250899067770618
+A3,r1,markconn,fibroblasti,0-10,2.5216863459241416
+A3,r1,markconn,fibroblasti,10-20,2.5291200305688677
+A3,r1,markconn,fibroblasti,20-40,2.3173107460544466
+A3,r1,markconn,fibroblasti,40-80,2.094294549619435
+A3,r1,markconn,fibroblasti,80-160,1.7085238347697622
+A3,r1,nn_rel,endoteliale,,1.0015565649730456
+A3,r1,markconn,endoteliale,0-10,8.833408307092517
+A3,r1,markconn,endoteliale,10-20,6.322476212747921
+A3,r1,markconn,endoteliale,20-40,3.2119822406003267
+A3,r1,markconn,endoteliale,40-80,2.1601543430918313
+A3,r1,markconn,endoteliale,80-160,1.4379833564683437
+A3,r1,nn_rel,immunitario,,1.0229126883301527
+A3,r1,markconn,immunitario,0-10,3.4145954156310414
+A3,r1,markconn,immunitario,10-20,2.8763967181605636
+A3,r1,markconn,immunitario,20-40,1.94881361860899
+A3,r1,markconn,immunitario,40-80,1.5134807429986024
+A3,r1,markconn,immunitario,80-160,1.0338103119124127
+A3,r2,nn_median_all,,,8.523441638134987
+A3,r2,cv_local4,,,0.5635762605914176
+A3,r2,nn_rel,epiteliale,,0.7737247534001124
+A3,r2,markconn,epiteliale,0-10,6.935462024580934
+A3,r2,markconn,epiteliale,10-20,5.947428283870836
+A3,r2,markconn,epiteliale,20-40,4.749348716384244
+A3,r2,markconn,epiteliale,40-80,3.186331876490518
+A3,r2,markconn,epiteliale,80-160,1.7341993062834065
+A3,r2,nn_rel,fibroblasti,,1.1509876480598253
+A3,r2,markconn,fibroblasti,0-10,1.2578410274210343
+A3,r2,markconn,fibroblasti,10-20,1.2677841759500963
+A3,r2,markconn,fibroblasti,20-40,1.1648847666718143
+A3,r2,markconn,fibroblasti,40-80,1.0966720800144356
+A3,r2,markconn,fibroblasti,80-160,1.0373103363044414
+A3,r2,nn_rel,endoteliale,,0.8746846220803777
+A3,r2,markconn,endoteliale,0-10,4.853115373412303
+A3,r2,markconn,endoteliale,10-20,3.605831136871823
+A3,r2,markconn,endoteliale,20-40,2.019044851006547
+A3,r2,markconn,endoteliale,40-80,1.2805313971844325
+A3,r2,markconn,endoteliale,80-160,1.1460778221299242
+A3,r2,nn_rel,immunitario,,0.9085794255162115
+A3,r2,markconn,immunitario,0-10,2.2257973284601658
+A3,r2,markconn,immunitario,10-20,1.8678849857910962
+A3,r2,markconn,immunitario,20-40,1.6231761221611587
+A3,r2,markconn,immunitario,40-80,1.4473726454615752
+A3,r2,markconn,immunitario,80-160,1.2001750908482145
+A3,r3,nn_median_all,,,7.822102013471728
+A3,r3,cv_local4,,,0.5973068203152513
+A3,r3,nn_rel,epiteliale,,0.9072685677041908
+A3,r3,markconn,epiteliale,0-10,3.150278254796935
+A3,r3,markconn,epiteliale,10-20,2.9789950182376326
+A3,r3,markconn,epiteliale,20-40,2.6934448158861555
+A3,r3,markconn,epiteliale,40-80,2.2887845799602324
+A3,r3,markconn,epiteliale,80-160,1.572738275856322
+A3,r3,nn_rel,fibroblasti,,1.1765603452726714
+A3,r3,markconn,fibroblasti,0-10,1.8909565726744657
+A3,r3,markconn,fibroblasti,10-20,1.8389412332703765
+A3,r3,markconn,fibroblasti,20-40,1.694355252413065
+A3,r3,markconn,fibroblasti,40-80,1.498855215798348
+A3,r3,markconn,fibroblasti,80-160,1.273050462901221
+A3,r3,nn_rel,endoteliale,,0.9196672802181937
+A3,r3,markconn,endoteliale,0-10,4.88647509578544
+A3,r3,markconn,endoteliale,10-20,3.7557197802197804
+A3,r3,markconn,endoteliale,20-40,2.335545372866128
+A3,r3,markconn,endoteliale,40-80,1.3846150566865405
+A3,r3,markconn,endoteliale,80-160,1.0071033857539315
+A3,r3,nn_rel,immunitario,,0.9854768394773835
+A3,r3,markconn,immunitario,0-10,2.516501539834432
+A3,r3,markconn,immunitario,10-20,2.0300139024344497
+A3,r3,markconn,immunitario,20-40,1.6381665506010346
+A3,r3,markconn,immunitario,40-80,1.342928100804299
+A3,r3,markconn,immunitario,80-160,1.1113121646686204
+A3,r4,nn_median_all,,,7.247255356758407
+A3,r4,cv_local4,,,0.7909927967177758
+A3,r4,nn_rel,epiteliale,,0.7955252336677477
+A3,r4,markconn,epiteliale,0-10,2.559581690976877
+A3,r4,markconn,epiteliale,10-20,2.5317601913038765
+A3,r4,markconn,epiteliale,20-40,2.4676311959337114
+A3,r4,markconn,epiteliale,40-80,2.3253535864961403
+A3,r4,markconn,epiteliale,80-160,2.1591246472261214
+A3,r4,nn_rel,fibroblasti,,1.333649967450136
+A3,r4,markconn,fibroblasti,0-10,2.151004101095927
+A3,r4,markconn,fibroblasti,10-20,2.125478346969111
+A3,r4,markconn,fibroblasti,20-40,2.0247566333172724
+A3,r4,markconn,fibroblasti,40-80,1.8897572307099129
+A3,r4,markconn,fibroblasti,80-160,1.6708650018174243
+A3,r4,nn_rel,endoteliale,,1.0844829884220764
+A3,r4,markconn,endoteliale,0-10,7.319142721530541
+A3,r4,markconn,endoteliale,10-20,5.696453093188724
+A3,r4,markconn,endoteliale,20-40,3.5987614753653103
+A3,r4,markconn,endoteliale,40-80,1.9214185859852975
+A3,r4,markconn,endoteliale,80-160,1.109838753017661
+A3,r4,nn_rel,immunitario,,1.0831572197137203
+A3,r4,markconn,immunitario,0-10,3.1637215204897267
+A3,r4,markconn,immunitario,10-20,2.7422912147395846
+A3,r4,markconn,immunitario,20-40,2.2232308694593677
+A3,r4,markconn,immunitario,40-80,1.673074044944915
+A3,r4,markconn,immunitario,80-160,1.3050594012577974
+A3,r5,nn_median_all,,,6.312511088233071
+A3,r5,cv_local4,,,0.7075877678421875
+A3,r5,nn_rel,epiteliale,,0.8848104488604388
+A3,r5,markconn,epiteliale,0-10,1.571203472257039
+A3,r5,markconn,epiteliale,10-20,1.5488461751809663
+A3,r5,markconn,epiteliale,20-40,1.5087100950261525
+A3,r5,markconn,epiteliale,40-80,1.4621020596186385
+A3,r5,markconn,epiteliale,80-160,1.3862502404078823
+A3,r5,nn_rel,fibroblasti,,1.6681196774596567
+A3,r5,markconn,fibroblasti,0-10,3.4627335263290173
+A3,r5,markconn,fibroblasti,10-20,3.4750921741001646
+A3,r5,markconn,fibroblasti,20-40,3.2474149218033173
+A3,r5,markconn,fibroblasti,40-80,2.723947911541412
+A3,r5,markconn,fibroblasti,80-160,2.1038431464748784
+A3,r5,nn_rel,endoteliale,,1.1980567457168667
+A3,r5,markconn,endoteliale,0-10,10.553856382978724
+A3,r5,markconn,endoteliale,10-20,7.230160788381742
+A3,r5,markconn,endoteliale,20-40,3.7207558190795273
+A3,r5,markconn,endoteliale,40-80,1.5924121567043619
+A3,r5,markconn,endoteliale,80-160,1.1439296427292263
+A3,r5,nn_rel,immunitario,,1.2720186455720959
+A3,r5,markconn,immunitario,0-10,4.945528573505889
+A3,r5,markconn,immunitario,10-20,3.9997081851908276
+A3,r5,markconn,immunitario,20-40,2.8152394800896925
+A3,r5,markconn,immunitario,40-80,1.8604414743449647
+A3,r5,markconn,immunitario,80-160,1.4247162688609272
+A4,f1,nn_median_all,,,4.6413447510544295
+A4,f1,cv_local4,,,0.24122719501832893
+A4,f1,nn_rel,linfociti B,,1.053215835245012
+A4,f1,markconn,linfociti B,0-10,1.2034421734426182
+A4,f1,markconn,linfociti B,10-20,1.1760172628646826
+A4,f1,markconn,linfociti B,20-40,1.1486439317844022
+A4,f1,markconn,linfociti B,40-80,1.1344745940750594
+A4,f1,markconn,linfociti B,80-160,1.1049846994010377
+A4,f1,nn_rel,linfociti T,,1.0133874116281354
+A4,f1,markconn,linfociti T,0-10,2.095655687240265
+A4,f1,markconn,linfociti T,10-20,1.971309471581961
+A4,f1,markconn,linfociti T,20-40,1.8420017826416744
+A4,f1,markconn,linfociti T,40-80,1.7712307103482772
+A4,f1,markconn,linfociti T,80-160,1.6583148263292982
+A4,f2,nn_median_all,,,4.628713906044201
+A4,f2,cv_local4,,,0.2230814907813759
+A4,f2,nn_rel,linfociti B,,1.0533905245573572
+A4,f2,markconn,linfociti B,0-10,1.3280890985616842
+A4,f2,markconn,linfociti B,10-20,1.2889037530170995
+A4,f2,markconn,linfociti B,20-40,1.2368943942128672
+A4,f2,markconn,linfociti B,40-80,1.204087130852452
+A4,f2,markconn,linfociti B,80-160,1.1842514268755922
+A4,f2,nn_rel,linfociti T,,1.0156075016691222
+A4,f2,markconn,linfociti T,0-10,1.7725903716037996
+A4,f2,markconn,linfociti T,10-20,1.6361312850762748
+A4,f2,markconn,linfociti T,20-40,1.5336505554499793
+A4,f2,markconn,linfociti T,40-80,1.4419349134798665
+A4,f2,markconn,linfociti T,80-160,1.3351892819319906
+A4,p1,nn_median_all,,,4.4460086794460025
+A4,p1,cv_local4,,,0.14920578873588833
+A4,p1,nn_rel,linfociti B,,1.055651530110175
+A4,p1,markconn,linfociti B,0-10,1.994119837782112
+A4,p1,markconn,linfociti B,10-20,1.840326330953765
+A4,p1,markconn,linfociti B,20-40,1.6976340233383242
+A4,p1,markconn,linfociti B,40-80,1.5637631881483014
+A4,p1,markconn,linfociti B,80-160,1.3842541231415926
+A4,p1,nn_rel,linfociti T,,1.027949094333642
+A4,p1,markconn,linfociti T,0-10,1.2633490481737084
+A4,p1,markconn,linfociti T,10-20,1.2112353484386913
+A4,p1,markconn,linfociti T,20-40,1.1906618596039307
+A4,p1,markconn,linfociti T,40-80,1.1637331358294016
+A4,p1,markconn,linfociti T,80-160,1.1435332956725874
+A4,p2,nn_median_all,,,4.452400885990057
+A4,p2,cv_local4,,,0.17654600524925956
+A4,p2,nn_rel,linfociti B,,1.049531942101293
+A4,p2,markconn,linfociti B,0-10,1.4752026020412403
+A4,p2,markconn,linfociti B,10-20,1.4104062538985753
+A4,p2,markconn,linfociti B,20-40,1.3311127915316219
+A4,p2,markconn,linfociti B,40-80,1.2454360911038374
+A4,p2,markconn,linfociti B,80-160,1.1452934017863723
+A4,p2,nn_rel,linfociti T,,1.0265499168544905
+A4,p2,markconn,linfociti T,0-10,1.503735982328751
+A4,p2,markconn,linfociti T,10-20,1.4138217706143144
+A4,p2,markconn,linfociti T,20-40,1.3368567585038538
+A4,p2,markconn,linfociti T,40-80,1.2654028758671123
+A4,p2,markconn,linfociti T,80-160,1.1891101633080776
+A4,p3,nn_median_all,,,4.520727096180815
+A4,p3,cv_local4,,,0.14114295977821517
+A4,p3,nn_rel,linfociti B,,1.0395480908493355
+A4,p3,markconn,linfociti B,0-10,1.7255636059544863
+A4,p3,markconn,linfociti B,10-20,1.5994693294784827
+A4,p3,markconn,linfociti B,20-40,1.508933696282326
+A4,p3,markconn,linfociti B,40-80,1.4256342790343552
+A4,p3,markconn,linfociti B,80-160,1.316397972252718
+A4,p3,nn_rel,linfociti T,,1.0248925926340646
+A4,p3,markconn,linfociti T,0-10,1.3622562732597567
+A4,p3,markconn,linfociti T,10-20,1.3077811074684744
+A4,p3,markconn,linfociti T,20-40,1.2548154574588224
+A4,p3,markconn,linfociti T,40-80,1.2087693297128552
+A4,p3,markconn,linfociti T,80-160,1.136936040426578
+A5,r1,nn_median_all,,,11.518111836125767
+A5,r1,cv_local4,,,0.6818293347101121
+A5,r1,nn_rel,neuroni,,1.1370444727844722
+A5,r1,markconn,neuroni,0-10,0.6460051027259299
+A5,r1,markconn,neuroni,10-20,1.491712932307849
+A5,r1,markconn,neuroni,20-40,1.386708136559386
+A5,r1,markconn,neuroni,40-80,1.3176573397558247
+A5,r1,markconn,neuroni,80-160,1.1517860899139358
+A5,r1,nn_rel,oligodendrociti,,0.5704798034199149
+A5,r1,markconn,oligodendrociti,0-10,2.606404603308628
+A5,r1,markconn,oligodendrociti,10-20,2.5364075278352547
+A5,r1,markconn,oligodendrociti,20-40,2.456640312433472
+A5,r1,markconn,oligodendrociti,40-80,2.249514142783852
+A5,r1,markconn,oligodendrociti,80-160,1.880447362055882
+A5,r1,nn_rel,astrociti,,0.9973086622071846
+A5,r1,markconn,astrociti,0-10,2.8227424749163883
+A5,r1,markconn,astrociti,10-20,1.7067745197168858
+A5,r1,markconn,astrociti,20-40,1.1467391304347825
+A5,r1,markconn,astrociti,40-80,1.515333850931677
+A5,r1,markconn,astrociti,80-160,1.4531586908248317
+A5,r2,nn_median_all,,,17.57718356542192
+A5,r2,cv_local4,,,0.29083936210737965
+A5,r2,nn_rel,neuroni,,1.0165493952793623
+A5,r2,markconn,neuroni,0-10,0.97301912568306
+A5,r2,markconn,neuroni,10-20,1.1731388559911902
+A5,r2,markconn,neuroni,20-40,1.0864223658434673
+A5,r2,markconn,neuroni,40-80,1.0432588609884295
+A5,r2,markconn,neuroni,80-160,1.0002243655032135
+A5,r2,nn_rel,oligodendrociti,,0.8506956385928379
+A5,r2,markconn,oligodendrociti,0-10,4.358173076923077
+A5,r2,markconn,oligodendrociti,10-20,2.856617647058824
+A5,r2,markconn,oligodendrociti,20-40,1.0187937062937065
+A5,r2,markconn,oligodendrociti,40-80,1.13818359375
+A5,r2,markconn,oligodendrociti,80-160,0.8969327176781002
+A5,r2,nn_rel,astrociti,,0.9206597138296859
+A5,r2,markconn,astrociti,0-10,
+A5,r2,markconn,astrociti,10-20,2.4903846153846154
+A5,r2,markconn,astrociti,20-40,0.7471153846153846
+A5,r2,markconn,astrociti,40-80,0.9261760966306422
+A5,r2,markconn,astrociti,80-160,0.7834384395394882
+A5,r3,nn_median_all,,,18.174377438847728
+A5,r3,cv_local4,,,0.3029246259279785
+A5,r3,nn_rel,neuroni,,1.0
+A5,r3,markconn,neuroni,0-10,0.5676151364036374
+A5,r3,markconn,neuroni,10-20,1.115692795286135
+A5,r3,markconn,neuroni,20-40,1.060774583618526
+A5,r3,markconn,neuroni,40-80,1.0480873100948145
+A5,r3,markconn,neuroni,80-160,1.0417042466906992
+A5,r4,nn_median_all,,,17.85384650022499
+A5,r4,cv_local4,,,0.4366675513615125
+A5,r4,nn_rel,neuroni,,0.9818308314595485
+A5,r4,markconn,neuroni,0-10,0.5515789473684211
+A5,r4,markconn,neuroni,10-20,1.181954887218045
+A5,r4,markconn,neuroni,20-40,1.0973821989528796
+A5,r4,markconn,neuroni,40-80,1.0465484764542936
+A5,r4,markconn,neuroni,80-160,1.0435583618042643
+A5,r5,nn_median_all,,,14.990132619051721
+A5,r5,cv_local4,,,0.3364888581361369
+A5,r5,nn_rel,neuroni,,1.0956928968832693
+A5,r5,markconn,neuroni,0-10,1.0856561634349031
+A5,r5,markconn,neuroni,10-20,1.1735012150308204
+A5,r5,markconn,neuroni,20-40,1.1422617526826777
+A5,r5,markconn,neuroni,40-80,1.0857998153877713
+A5,r5,markconn,neuroni,80-160,1.0703544857145513
+A5,r5,nn_rel,oligodendrociti,,0.6864320095408312
+A5,r5,markconn,oligodendrociti,0-10,4.146869896570496
+A5,r5,markconn,oligodendrociti,10-20,3.6616387478208137
+A5,r5,markconn,oligodendrociti,20-40,2.5516662327518875
+A5,r5,markconn,oligodendrociti,40-80,2.0070597441480675
+A5,r5,markconn,oligodendrociti,80-160,1.4565217115101434
+A5,r5,nn_rel,astrociti,,0.7055161221940139
+A5,r5,markconn,astrociti,0-10,7.269170579029735
+A5,r5,markconn,astrociti,10-20,1.2266725352112677
+A5,r5,markconn,astrociti,20-40,1.7681766273315571
+A5,r5,markconn,astrociti,40-80,0.8996820985704962
+A5,r5,markconn,astrociti,80-160,1.2755862548642216
+A6,r1,nn_median_all,,,15.284355671011358
+A6,r1,cv_local4,,,0.3746728292992664
+A6,r1,nn_rel,cardiomiociti,,1.1368653429737545
+A6,r1,markconn,cardiomiociti,0-10,0.9727968531551385
+A6,r1,markconn,cardiomiociti,10-20,1.0637913514734108
+A6,r1,markconn,cardiomiociti,20-40,1.0610775980257745
+A6,r1,markconn,cardiomiociti,40-80,1.0172667405040658
+A6,r1,markconn,cardiomiociti,80-160,1.0037468075045806
+A6,r1,nn_rel,fibroblasti,,0.7021517547918716
+A6,r1,markconn,fibroblasti,0-10,3.7305986696230597
+A6,r1,markconn,fibroblasti,10-20,3.002676977989292
+A6,r1,markconn,fibroblasti,20-40,1.519873532068654
+A6,r1,markconn,fibroblasti,40-80,1.3138532528776432
+A6,r1,markconn,fibroblasti,80-160,1.369577014682384
+A6,r1,nn_rel,immunitari,,0.6129665453849097
+A6,r1,markconn,immunitari,0-10,1.3734693877551019
+A6,r1,markconn,immunitari,10-20,4.598136645962732
+A6,r1,markconn,immunitari,20-40,2.1478723404255318
+A6,r1,markconn,immunitari,40-80,1.6932622601279315
+A6,r1,markconn,immunitari,80-160,1.5716503587736466
+A6,r2,nn_median_all,,,14.327782304699754
+A6,r2,cv_local4,,,0.33604735474462877
+A6,r2,nn_rel,cardiomiociti,,1.039757412224834
+A6,r2,markconn,cardiomiociti,0-10,0.8868778280542987
+A6,r2,markconn,cardiomiociti,10-20,1.1256526279150714
+A6,r2,markconn,cardiomiociti,20-40,1.0846032347970798
+A6,r2,markconn,cardiomiociti,40-80,1.0702571256809992
+A6,r2,markconn,cardiomiociti,80-160,1.034889740138731
+A6,r2,nn_rel,fibroblasti,,0.7272862475771948
+A6,r2,markconn,fibroblasti,0-10,3.2307692307692304
+A6,r2,markconn,fibroblasti,10-20,4.765694076038903
+A6,r2,markconn,fibroblasti,20-40,3.7321563682219416
+A6,r2,markconn,fibroblasti,40-80,3.4753831346709108
+A6,r2,markconn,fibroblasti,80-160,2.169251241107528
+A6,r2,nn_rel,immunitari,,0.7738942110711904
+A6,r2,markconn,immunitari,0-10,1.8014705882352942
+A6,r2,markconn,immunitari,10-20,2.582887700534759
+A6,r2,markconn,immunitari,20-40,1.1895424836601307
+A6,r2,markconn,immunitari,40-80,0.8391060371517027
+A6,r2,markconn,immunitari,80-160,1.0558596566179808
+A6,r3,nn_median_all,,,14.501156927454938
+A6,r3,cv_local4,,,0.30894386579515803
+A6,r3,nn_rel,cardiomiociti,,1.0385053151249826
+A6,r3,markconn,cardiomiociti,0-10,0.8917015038818611
+A6,r3,markconn,cardiomiociti,10-20,1.0804030383862437
+A6,r3,markconn,cardiomiociti,20-40,1.0409240839610912
+A6,r3,markconn,cardiomiociti,40-80,1.0234241003924078
+A6,r3,markconn,cardiomiociti,80-160,1.009341020348251
+A6,r3,nn_rel,fibroblasti,,1.0673301428293365
+A6,r3,markconn,fibroblasti,0-10,0.0
+A6,r3,markconn,fibroblasti,10-20,1.3807692307692307
+A6,r3,markconn,fibroblasti,20-40,1.1971987550022232
+A6,r3,markconn,fibroblasti,40-80,0.533802537668517
+A6,r3,markconn,fibroblasti,80-160,1.1022947640594698
+A6,r3,nn_rel,immunitari,,0.47956717904088353
+A6,r3,markconn,immunitari,0-10,4.8954545454545455
+A6,r3,markconn,immunitari,10-20,2.4594388864723795
+A6,r3,markconn,immunitari,20-40,1.4442850460003118
+A6,r3,markconn,immunitari,40-80,0.8188760330578512
+A6,r3,markconn,immunitari,80-160,0.8561635950956222
+A6,r4,nn_median_all,,,13.338663511495078
+A6,r4,cv_local4,,,0.3486937517758448
+A6,r4,nn_rel,cardiomiociti,,1.0753744961855984
+A6,r4,markconn,cardiomiociti,0-10,1.0297220715017785
+A6,r4,markconn,cardiomiociti,10-20,1.1712264376424097
+A6,r4,markconn,cardiomiociti,20-40,1.0815848433928275
+A6,r4,markconn,cardiomiociti,40-80,1.0453860298313145
+A6,r4,markconn,cardiomiociti,80-160,1.0116748123442176
+A6,r4,nn_rel,fibroblasti,,0.9427814473288987
+A6,r4,markconn,fibroblasti,0-10,2.5495356037151704
+A6,r4,markconn,fibroblasti,10-20,2.5447653154526058
+A6,r4,markconn,fibroblasti,20-40,2.108535274574946
+A6,r4,markconn,fibroblasti,40-80,1.7504114525694503
+A6,r4,markconn,fibroblasti,80-160,1.1609444348639006
+A6,r4,nn_rel,immunitari,,0.7216210661364387
+A6,r4,markconn,immunitari,0-10,2.624418604651163
+A6,r4,markconn,immunitari,10-20,1.9046080964685619
+A6,r4,markconn,immunitari,20-40,1.1894454382826476
+A6,r4,markconn,immunitari,40-80,1.0307982401005658
+A6,r4,markconn,immunitari,80-160,1.0382475349433895
+A6,r5,nn_median_all,,,12.95398210054757
+A6,r5,cv_local4,,,0.3087784579720749
+A6,r5,nn_rel,cardiomiociti,,1.0733173572874746
+A6,r5,markconn,cardiomiociti,0-10,1.0004527191443608
+A6,r5,markconn,cardiomiociti,10-20,1.0799692829740382
+A6,r5,markconn,cardiomiociti,20-40,1.0644491192821044
+A6,r5,markconn,cardiomiociti,40-80,1.0319325985060368
+A6,r5,markconn,cardiomiociti,80-160,0.9965814575865198
+A6,r5,nn_rel,fibroblasti,,0.7112143757068602
+A6,r5,markconn,fibroblasti,0-10,5.329297820823245
+A6,r5,markconn,fibroblasti,10-20,2.8979591836734695
+A6,r5,markconn,fibroblasti,20-40,1.3476523476523476
+A6,r5,markconn,fibroblasti,40-80,1.18005540166205
+A6,r5,markconn,fibroblasti,80-160,0.9117740962786903
+A6,r5,nn_rel,immunitari,,0.5485701343450115
+A6,r5,markconn,immunitari,0-10,3.104956268221574
+A6,r5,markconn,immunitari,10-20,1.946390496497106
+A6,r5,markconn,immunitari,20-40,0.6269623233908949
+A6,r5,markconn,immunitari,40-80,0.7386954781912763
+A6,r5,markconn,immunitari,80-160,0.9747001893540921

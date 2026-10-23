@@ -1,5 +1,9 @@
 # Registro delle modifiche
 
+## 2026-10-23 (apertura di S1.5c)
+
+* **Creazione**: file dello step [Se i centri delle cellule si raggruppano per tipo come nei tessuti veri, tornano i contatti fra nuclei, la variabilità dei territori e lo spazio attorno al nucleo per tipo? (S1.5c)](steps/S1.5c.md) con dubbi ricevuti (BL-143, BL-153, BL-051, BL-068, BL-055), esplorazione dichiarata, calibrazione dei compartimenti per tipo, cancelli, previsioni in attesa dell'ok di Luca, regole delle tre scelte.
+
 ## 2026-10-23 (risultati e chiusura di S1.5b)
 
 * **Chiusura**: [Con i tipi cellulari nei preset, il simulatore dà a ogni tipo la taglia di nucleo che ha nei tessuti veri? (S1.5b)](steps/S1.5b.md) chiuso con l'approvazione di Luca («va bene», lettura del riassunto «In breve» senza dubbi); nessuna decisione per Luca. ROADMAP §7: S1.5b chiusa, prossima sessione proposta Step 1.5 (semina eterogenea e dipendente dal tipo).
