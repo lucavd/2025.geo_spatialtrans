@@ -1,0 +1,181 @@
+desc,archetype,arm,est,se
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A1,U,-0.41620094357154835,0.01784597855480789
+D-desc-4 tempo mediano per unita' (s),A1,U,28.988499999999497,
+WARN medi per unita',A1,U,0.0,
+D-desc-3 gapratio_q05,A1,U,0.6387355427649479,0.0005486823312187613
+D-desc-3 gapratio_lt1,A1,U,0.3733973798695426,0.0014919800632984953
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A2,U,-0.41509348542437713,0.056810718256959276
+D-desc-4 tempo mediano per unita' (s),A2,U,16.817500000000102,
+WARN medi per unita',A2,U,0.0,
+D-desc-3 gapratio_q05,A2,U,0.5723352344050147,0.00092997109594042
+D-desc-3 gapratio_lt1,A2,U,0.5569514873011635,0.001144951108715679
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A3,U,-0.43485931759171315,0.0517937392605555
+D-desc-4 tempo mediano per unita' (s),A3,U,3.00899999999956,
+WARN medi per unita',A3,U,0.4,
+D-desc-3 gapratio_q05,A3,U,0.6409702656001658,0.0027167829525753867
+D-desc-3 gapratio_lt1,A3,U,0.2525189736954535,0.0014287759213542277
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A4,U,-0.4232929109248311,0.06388818952737209
+D-desc-4 tempo mediano per unita' (s),A4,U,27.2689999999991,
+WARN medi per unita',A4,U,0.0,
+D-desc-3 gapratio_q05,A4,U,0.8487676060111656,0.00015039405014756672
+D-desc-3 gapratio_lt1,A4,U,0.4592421314627358,0.0006343688779709279
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A5,U,-0.2712816985817904,0.048068837365506704
+D-desc-4 tempo mediano per unita' (s),A5,U,15.901999999999148,
+WARN medi per unita',A5,U,1.16,
+D-desc-3 gapratio_q05,A5,U,0.7398339030061785,0.003652845978490264
+D-desc-3 gapratio_lt1,A5,U,0.190124263676806,0.004438234578299712
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A6,U,-0.06400228386760085,0.020959080595577766
+D-desc-4 tempo mediano per unita' (s),A6,U,7.34349999999995,
+WARN medi per unita',A6,U,1.6,
+D-desc-3 gapratio_q05,A6,U,0.9097662352821991,0.010433827416275698
+D-desc-3 gapratio_lt1,A6,U,0.0670221404958711,0.0013803516055250994
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A1,C-a,-0.4089979393070359,0.018280612933946897
+D-desc-4 tempo mediano per unita' (s),A1,C-a,37.70949999999965,
+WARN medi per unita',A1,C-a,0.0,
+D-desc-3 gapratio_q05,A1,C-a,0.6318126475563745,0.0004179580813139704
+D-desc-3 gapratio_lt1,A1,C-a,0.3815721711325454,0.000822640921578014
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A2,C-a,-0.3637127729367429,0.061210602508427026
+D-desc-4 tempo mediano per unita' (s),A2,C-a,18.19650000000005,
+WARN medi per unita',A2,C-a,0.0,
+D-desc-3 gapratio_q05,A2,C-a,0.5573720470717056,0.000584372007035232
+D-desc-3 gapratio_lt1,A2,C-a,0.5912512597965079,0.0009379981287633431
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A3,C-a,-0.231277238879602,0.0707684189943825
+D-desc-4 tempo mediano per unita' (s),A3,C-a,13.067000000000249,
+WARN medi per unita',A3,C-a,0.4,
+D-desc-3 gapratio_q05,A3,C-a,0.5992941609085487,0.0012225787849906799
+D-desc-3 gapratio_lt1,A3,C-a,0.3166463306991364,0.0010416077971886083
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A4,C-a,-0.41800684834071955,0.0647369446523849
+D-desc-4 tempo mediano per unita' (s),A4,C-a,31.6700000000001,
+WARN medi per unita',A4,C-a,0.0,
+D-desc-3 gapratio_q05,A4,C-a,0.8511893390330005,0.00016460392699611286
+D-desc-3 gapratio_lt1,A4,C-a,0.4518723414384739,0.0007481354387449445
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A5,C-a,-0.22335468816753234,0.05661093668009398
+D-desc-4 tempo mediano per unita' (s),A5,C-a,23.406000000000148,
+WARN medi per unita',A5,C-a,1.12,
+D-desc-3 gapratio_q05,A5,C-a,0.7419809746868926,0.0026159945936018573
+D-desc-3 gapratio_lt1,A5,C-a,0.18446332032859172,0.002480255006104134
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A6,C-a,-0.04356265983356404,0.029680110105034015
+D-desc-4 tempo mediano per unita' (s),A6,C-a,11.418999999999851,
+WARN medi per unita',A6,C-a,1.6,
+D-desc-3 gapratio_q05,A6,C-a,0.879079675616597,0.013315035219470625
+D-desc-3 gapratio_lt1,A6,C-a,0.0737269407747094,0.0022130244349101683
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A1,C-b,-0.4089979393070359,0.018280612933946897
+D-desc-4 tempo mediano per unita' (s),A1,C-b,37.68049999999925,
+WARN medi per unita',A1,C-b,0.0,
+D-desc-3 gapratio_q05,A1,C-b,0.6368717263920216,0.0002997200380179327
+D-desc-3 gapratio_lt1,A1,C-b,0.3744353232706877,0.0008172798233423051
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A2,C-b,-0.3637127729367429,0.061210602508427026
+D-desc-4 tempo mediano per unita' (s),A2,C-b,18.358500000000298,
+WARN medi per unita',A2,C-b,0.0,
+D-desc-3 gapratio_q05,A2,C-b,0.5746704441715444,0.000536566261770267
+D-desc-3 gapratio_lt1,A2,C-b,0.5622954116899891,0.0010690141777777904
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A3,C-b,-0.231277238879602,0.0707684189943825
+D-desc-4 tempo mediano per unita' (s),A3,C-b,12.9379999999992,
+WARN medi per unita',A3,C-b,0.4,
+D-desc-3 gapratio_q05,A3,C-b,0.6346867006109896,0.0005467311762119327
+D-desc-3 gapratio_lt1,A3,C-b,0.27779975559422787,0.0013721148154625458
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A4,C-b,-0.41800684834071955,0.0647369446523849
+D-desc-4 tempo mediano per unita' (s),A4,C-b,31.70550000000005,
+WARN medi per unita',A4,C-b,0.0,
+D-desc-3 gapratio_q05,A4,C-b,0.8481915955639179,0.00017233339301342892
+D-desc-3 gapratio_lt1,A4,C-b,0.4583896424226463,0.0007229158954454734
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A5,C-b,-0.22335468816753234,0.05661093668009398
+D-desc-4 tempo mediano per unita' (s),A5,C-b,23.3834999999999,
+WARN medi per unita',A5,C-b,1.12,
+D-desc-3 gapratio_q05,A5,C-b,0.7309415001624288,0.0027889059914462336
+D-desc-3 gapratio_lt1,A5,C-b,0.19070116750755334,0.0023057273444417885
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A6,C-b,-0.04356265983356404,0.029680110105034015
+D-desc-4 tempo mediano per unita' (s),A6,C-b,11.5295000000001,
+WARN medi per unita',A6,C-b,1.6,
+D-desc-3 gapratio_q05,A6,C-b,0.8902589011603578,0.013789797518669331
+D-desc-3 gapratio_lt1,A6,C-b,0.07157218823243347,0.002462958669889849
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A1,N-a,-0.4093244686484489,0.01826375134620602
+D-desc-4 tempo mediano per unita' (s),A1,N-a,37.94599999999945,
+WARN medi per unita',A1,N-a,0.0,
+D-desc-3 gapratio_q05,A1,N-a,0.6338152155456467,0.0005225082793042078
+D-desc-3 gapratio_lt1,A1,N-a,0.38295092327798497,0.0013335313229136479
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A2,N-a,-0.3627122359222275,0.061242104244690204
+D-desc-4 tempo mediano per unita' (s),A2,N-a,18.36900000000015,
+WARN medi per unita',A2,N-a,0.0,
+D-desc-3 gapratio_q05,A2,N-a,0.5613677323143291,0.0012712980390076447
+D-desc-3 gapratio_lt1,A2,N-a,0.5924221077108053,0.0005931806432579978
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A3,N-a,-0.23094507889430696,0.07076808793433641
+D-desc-4 tempo mediano per unita' (s),A3,N-a,12.8904999999993,
+WARN medi per unita',A3,N-a,0.4,
+D-desc-3 gapratio_q05,A3,N-a,0.6030787272461986,0.0010815254781877685
+D-desc-3 gapratio_lt1,A3,N-a,0.3173376181954273,0.0016732036601665619
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A4,N-a,-0.4190681026061269,0.06432057455362584
+D-desc-4 tempo mediano per unita' (s),A4,N-a,31.7579999999998,
+WARN medi per unita',A4,N-a,0.0,
+D-desc-3 gapratio_q05,A4,N-a,0.8511304662040107,0.00019954570733604366
+D-desc-3 gapratio_lt1,A4,N-a,0.45183954192017906,0.0006621969472435892
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A5,N-a,-0.21952372594785557,0.056161698812420696
+D-desc-4 tempo mediano per unita' (s),A5,N-a,23.2800000000002,
+WARN medi per unita',A5,N-a,1.12,
+D-desc-3 gapratio_q05,A5,N-a,0.7954516401757844,0.0030298655990586955
+D-desc-3 gapratio_lt1,A5,N-a,0.16794228442686213,0.0031349135152083604
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A6,N-a,-0.043374822431122825,0.02973288489199778
+D-desc-4 tempo mediano per unita' (s),A6,N-a,11.45750000000045,
+WARN medi per unita',A6,N-a,1.6,
+D-desc-3 gapratio_q05,A6,N-a,0.8799837160789166,0.010793220791607204
+D-desc-3 gapratio_lt1,A6,N-a,0.0737717746165325,0.001915225260782768
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A1,N-b,-0.4093244686484489,0.01826375134620602
+D-desc-4 tempo mediano per unita' (s),A1,N-b,37.545500000000146,
+WARN medi per unita',A1,N-b,0.0,
+D-desc-3 gapratio_q05,A1,N-b,0.6382189851410619,0.000652431457258051
+D-desc-3 gapratio_lt1,A1,N-b,0.3754963015016437,0.0015003900383476385
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A2,N-b,-0.3627122359222275,0.061242104244690204
+D-desc-4 tempo mediano per unita' (s),A2,N-b,18.1139999999998,
+WARN medi per unita',A2,N-b,0.0,
+D-desc-3 gapratio_q05,A2,N-b,0.5775909836234876,0.00116912603902755
+D-desc-3 gapratio_lt1,A2,N-b,0.561962077522753,0.0005317803490061477
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A3,N-b,-0.23094507889430696,0.07076808793433641
+D-desc-4 tempo mediano per unita' (s),A3,N-b,12.96000000000095,
+WARN medi per unita',A3,N-b,0.4,
+D-desc-3 gapratio_q05,A3,N-b,0.6381046396937814,0.00026672483796900937
+D-desc-3 gapratio_lt1,A3,N-b,0.2768046436393835,0.0018278004273231771
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A4,N-b,-0.4190681026061269,0.06432057455362584
+D-desc-4 tempo mediano per unita' (s),A4,N-b,31.394000000000098,
+WARN medi per unita',A4,N-b,0.0,
+D-desc-3 gapratio_q05,A4,N-b,0.8491966548360456,0.00024939358773935885
+D-desc-3 gapratio_lt1,A4,N-b,0.4586201173352002,0.0005795362806573028
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A5,N-b,-0.21952372594785557,0.056161698812420696
+D-desc-4 tempo mediano per unita' (s),A5,N-b,23.257499999999702,
+WARN medi per unita',A5,N-b,1.12,
+D-desc-3 gapratio_q05,A5,N-b,0.7904629740375329,0.002585752459054018
+D-desc-3 gapratio_lt1,A5,N-b,0.17180533152334243,0.0035855495124026897
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A6,N-b,-0.043374822431122825,0.02973288489199778
+D-desc-4 tempo mediano per unita' (s),A6,N-b,11.4964999999995,
+WARN medi per unita',A6,N-b,1.6,
+D-desc-3 gapratio_q05,A6,N-b,0.8924298847766732,0.011356956518422853
+D-desc-3 gapratio_lt1,A6,N-b,0.0716081278034145,0.0021152199573520204
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A1,G,-0.4089979393070359,0.018280612933946897
+D-desc-4 tempo mediano per unita' (s),A1,G,37.7490000000007,
+WARN medi per unita',A1,G,0.0,
+D-desc-3 gapratio_q05,A1,G,0.6382568821380425,0.0005177282326104263
+D-desc-3 gapratio_lt1,A1,G,0.37464280743756406,0.001076474921822065
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A2,G,-0.3637127729367429,0.061210602508427026
+D-desc-4 tempo mediano per unita' (s),A2,G,18.48949999999965,
+WARN medi per unita',A2,G,0.0,
+D-desc-3 gapratio_q05,A2,G,0.5759082446744351,0.00039873412101055453
+D-desc-3 gapratio_lt1,A2,G,0.5612052750337261,0.0009272276830980396
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A3,G,-0.231277238879602,0.0707684189943825
+D-desc-4 tempo mediano per unita' (s),A3,G,13.094499999999499,
+WARN medi per unita',A3,G,0.8,
+D-desc-3 gapratio_q05,A3,G,0.6301133588162819,0.001432257099966393
+D-desc-3 gapratio_lt1,A3,G,0.2823532766320668,0.0014706692367740257
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A4,G,-0.41800684834071955,0.0647369446523849
+D-desc-4 tempo mediano per unita' (s),A4,G,31.62649999999985,
+WARN medi per unita',A4,G,0.0,
+D-desc-3 gapratio_q05,A4,G,0.8487633563390264,0.00015509375232087763
+D-desc-3 gapratio_lt1,A4,G,0.4595418525960328,0.0008622177477834824
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A5,G,-0.22335468816753234,0.05661093668009398
+D-desc-4 tempo mediano per unita' (s),A5,G,23.393,
+WARN medi per unita',A5,G,1.26,
+D-desc-3 gapratio_q05,A5,G,0.745781542432225,0.0038105648605263926
+D-desc-3 gapratio_lt1,A5,G,0.18662045284577528,0.0032807616317395054
+"D-desc-1 CV senza frammenti ricevuti, sim/reale - 1",A6,G,-0.04356265983356404,0.029680110105034015
+D-desc-4 tempo mediano per unita' (s),A6,G,11.44949999999995,
+WARN medi per unita',A6,G,1.6,
+D-desc-3 gapratio_q05,A6,G,0.8883381121488023,0.013572339445557122
+D-desc-3 gapratio_lt1,A6,G,0.07199712532572082,0.002265847175846476

@@ -1,0 +1,6 @@
+"check","value","expected","pass"
+"units",1800,1800,TRUE
+"no_error_C2_C3_C5_C9",1800,1800,TRUE
+"n_failed_total",0,0,TRUE
+"U_equals_S1.5b_recentred_md5",300,300,TRUE
+"rerun_identical",6,6,TRUE

@@ -11,12 +11,13 @@ MAIN = {"A1": ["epiteliale", "stromale e muscolo liscio", "immunitario"], "A2": 
         "A5": ["neuroni", "oligodendrociti", "astrociti"], "A6": ["cardiomiociti", "fibroblasti", "immunitari"]}
 CONTACT = {"A1": (0.366, 0.650), "A2": (0.217, 0.567), "A3": (0.083, 0.283), "A4": (0.350, 0.750), "A5": (0.000, 0.217), "A6": (0.000, 0.070)}  # B-127...B-132
 U = pd.read_csv(f"{RES}/S1.5c_panel_units.csv"); T = pd.read_csv(f"{RES}/S1.5c_panel_types.csv")
-UM = pd.read_csv(f"{RES}/S1.5c_unit_metrics.csv", keep_default_na=False, na_values=[""]); UM["bin"] = UM["bin"].astype(str).replace("nan", "")
+UM = pd.read_csv(f"{RES}/S1.5c_unit_metrics.csv", keep_default_na=False, na_values=[""]); UM[["cell_type", "bin"]] = UM[["cell_type", "bin"]].fillna("")   # pandas 3: astype(str) lascia NaN (D-5)
 W = pd.read_csv(f"{RES}/S1.5c_windows.csv")
-RI = pd.read_csv(f"{RES}/S1.5c_real_intervals.csv", keep_default_na=False, na_values=[""]); RI["bin"] = RI["bin"].astype(str).replace("nan", ""); RI["cell_type"] = RI["cell_type"].fillna("")
+RI = pd.read_csv(f"{RES}/S1.5c_real_intervals.csv", keep_default_na=False, na_values=[""]); RI[["cell_type", "bin"]] = RI[["cell_type", "bin"]].fillna("")
 RR = pd.read_csv("results/S1.5/S1.5_real_refs_roi.csv")
 RT = pd.read_csv("results/S1.5b/S1.5b_real_refs_roi_type.csv"); RT = RT[RT.level == "type"]
 assert (U.groupby(["arm", "archetype", "roi_id"]).seed.count() == 10).all() and U.arm.nunique() == 6, "servono 10 semi per ROI e braccio"
+assert UM.groupby(["arm", "metric"]).size().unstack().loc[:, ["cv_local4", "nn_rel"]].gt(0).all().all(), "metriche per unita' mancanti"
 def est(v):
     v = np.asarray(v, float); v = v[np.isfinite(v)]; return v.mean(), v.std(ddof=1) / np.sqrt(len(v)), len(v)
 def verdict(m, se, lo, hi, clip=False):
@@ -57,6 +58,7 @@ for arm in ARMS:
                 if len(ri): add("P-6", A, f"{t} {b}", arm, um[(um.archetype == A) & (um.metric == "markconn") & (um.cell_type == t) & (um.bin == b)].value,
                                 ri["min"].iloc[0], ri["max"].iloc[0], False, "fra ROI reali")
 V = pd.DataFrame(rows); V.to_csv(f"{RES}/S1.5c_verdicts.csv", index=False)
+assert (V.n_units > 0).all(), V[V.n_units == 0][["id", "archetype", "unit", "arm"]].drop_duplicates().to_string()
 conf = lambda arm, ids: int(((V.arm == arm) & V.id.isin(ids) & (V.verdict == "confermata")).sum())
 SPATIAL = ["P-1", "P-2", "P-3", "P-4", "P-5", "P-6", "P-7"]; SIZE = ["P-8a", "P-8b", "P-8c"]
 # regola 1: distanza minima (C-a contro N-a): P-1 + P-5; pareggio -> tessuto

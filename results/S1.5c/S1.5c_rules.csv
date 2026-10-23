@@ -1,0 +1,4 @@
+rule,a,a_value,b,b_value,counted,result
+1 distanza minima,C-a,10,N-a,12,P-1 + P-5 confermate,N (per nucleo)
+2 modello di taglia,N-a,14,N-b,13,P-8b confermate (P-8a: 6 contro 6),N-a
+3 predefinito,N-a,52,U,19,spaziali P-1...P-7 confermate; taglie P-8 20 contro 21,non adottata
