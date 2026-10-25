@@ -1,0 +1,51 @@
+claim,source_file,selector,recomputed,cited,match
+"A2 epithelium real_nc095 (LOO, real territories, group model)",S1.5d_size_check.csv,"A2 epiteliale, mean of 5 folds",0.02636133714362222,0.0264,True
+"A2 epithelium M0_nc095 (LOO, real territories, group model)",S1.5d_size_check.csv,"A2 epiteliale, mean of 5 folds",0.06869522964855282,0.0687,True
+"A2 epithelium M1_nc095 (LOO, real territories, group model)",S1.5d_size_check.csv,"A2 epiteliale, mean of 5 folds",0.05808916287335666,0.0581,True
+"A2 epithelium real_med (LOO, real territories, group model)",S1.5d_size_check.csv,"A2 epiteliale, mean of 5 folds",32.64681323413897,32.65,True
+"A2 epithelium M0_med (LOO, real territories, group model)",S1.5d_size_check.csv,"A2 epiteliale, mean of 5 folds",32.572518563570114,32.57,True
+"A2 epithelium M1_med (LOO, real territories, group model)",S1.5d_size_check.csv,"A2 epiteliale, mean of 5 folds",31.480506564799846,31.48,True
+"A2 epithelium real_q90 (LOO, real territories, group model)",S1.5d_size_check.csv,"A2 epiteliale, mean of 5 folds",68.09385106371647,68.09,True
+"A2 epithelium M0_q90 (LOO, real territories, group model)",S1.5d_size_check.csv,"A2 epiteliale, mean of 5 folds",67.79501090263525,67.80,True
+"A2 epithelium M1_q90 (LOO, real territories, group model)",S1.5d_size_check.csv,"A2 epiteliale, mean of 5 folds",69.57725038076073,69.58,True
+A2 epithelium M3_nc095,S1.5d_size_check_m3.csv,"A2 epiteliale, mean of 5 folds",0.02932703944597948,0.0293,True
+A2 epithelium M3_med,S1.5d_size_check_m3.csv,"A2 epiteliale, mean of 5 folds",32.65364719194376,32.65,True
+A2 epithelium M3_q90,S1.5d_size_check_m3.csv,"A2 epiteliale, mean of 5 folds",68.42067098467028,68.42,True
+A2 epithelium logit model nc>=0.95,S1.5d_explore_sizeform.csv,A2 epiteliale M2_nc095,0.01503340721717294,0.0150,True
+A2 epithelium logit model q90,S1.5d_explore_sizeform.csv,A2 epiteliale M2_q90_an,79.94982378228323,79.9,True
+A2 epithelium per-type heteroscedastic nc>=0.95,S1.5d_explore_sizeform.csv,A2 epiteliale M1_nc095,0.04671176067521054,0.047,True
+A2 group 1 residual skewness,S1.5d_size_resid.csv,A2 g1 skew,-0.4543512649460129,-0.45,True
+A2 group 1 q99 of standardized residuals,S1.5d_size_resid.csv,A2 g1 q99_z,2.101547562490956,2.10,True
+groups with negative skew (of 10),S1.5d_size_resid.csv,count skew<0,8.0,8,True
+A2 group 1 slope of log sigma (pooled),S1.5d_size_groups.csv,A2 g1 pooled c1,0.2667071720760676,0.267,True
+share of M0 excess removed by M1,S1.5d_size_check.csv,(M0-M1)/(M0-real),0.25053370119369206,0.25,True
+M0 / real tail ratio,S1.5d_size_check.csv,M0/real,2.60590839054508,2.6,True
+"A2 epithelium sigma, smallest territory quartile",S1.5d_explore_size_real.csv,sigma_q1,0.3932578944229328,0.39,True
+"A2 epithelium sigma, largest quartile",S1.5d_explore_size_real.csv,sigma_q4,0.5991242793991544,0.60,True
+"A2 epithelium homoscedastic lognormal tail, per type",S1.5d_explore_size_real.csv,frac_nc095_lognormal,0.0704159559311911,0.070,True
+A2 epithelium real tail,S1.5d_explore_size_real.csv,frac_nc095,0.0268755935422602,0.027,True
+types where sigma rises from Q1 to Q4 (of 20),S1.5d_explore_size_real.csv,"count sigma_q4>sigma_q1, typed",18.0,18,True
+S1.5c P-8c uniform,results/S1.5c/S1.5c_verdicts.csv,P-8c U est,0.0223445041592926,0.022,True
+S1.5c P-8c compartments N-a,results/S1.5c/S1.5c_verdicts.csv,P-8c N-a est,0.0342542907842519,0.034,True
+real q90 interval A5 astrociti min,S1.5d_real_q90.csv,q90_min,58.95980082830889,58.96,True
+real q90 interval A5 astrociti max,S1.5d_real_q90.csv,q90_max,65.06452804091907,65.06,True
+real q90 interval A3 endoteliale min,S1.5d_real_q90.csv,q90_min,54.536209349364775,54.5,True
+real q90 interval A3 endoteliale max,S1.5d_real_q90.csv,q90_max,63.45078203147248,63.5,True
+real q90 interval A6 immunitari min,S1.5d_real_q90.csv,q90_min,27.66492584349348,27.7,True
+real q90 interval A6 immunitari max,S1.5d_real_q90.csv,q90_max,33.87266530105787,33.9,True
+real q90 interval A1 immunitario min,S1.5d_real_q90.csv,q90_min,17.222414174180308,17.2,True
+real q90 interval A1 immunitario max,S1.5d_real_q90.csv,q90_max,18.51147215414506,18.5,True
+real q90 interval A3 fibroblasti min,S1.5d_real_q90.csv,q90_min,62.81402683989336,62.8,True
+real q90 interval A3 fibroblasti max,S1.5d_real_q90.csv,q90_max,72.17058253733246,72.2,True
+"M3 q90 inside real interval (of 17), real territories",S1.5d_size_check_m3.csv + S1.5d_real_q90.csv,count,12.0,12,True
+S1.5c bench minutes-worker per unit,"docs/steps/S1.5c.md (248.7 min, 3 workers, 1800 units)",248.7*3/1800,0.4144999999999999,0.41,True
+exploration A1 real H_rel_3.0,S1.5d_explore_space.csv,mean of ROI means,0.07927864656802158,0.079,True
+exploration A1 N-a H_rel_3.0,S1.5d_explore_space.csv,mean of ROI means,0.001054416691802022,0.0011,True
+exploration A2 real xcv2_50,S1.5d_explore_space.csv,mean of ROI means,0.22043435633959932,0.220,True
+exploration A6 real H_rel_3.0,S1.5d_explore_space.csv,mean of ROI means,0.009525203583111621,0.0095,True
+exploration A6 N-a H_rel_3.0,S1.5d_explore_space.csv,mean of ROI means,0.00674206872111133,0.0067,True
+exploration A3 real xcv2_50,S1.5d_explore_space.csv,mean of ROI means,0.4930610334303894,0.493,True
+real interval A1 frac_gt3 min,S1.5d_real_intervals.csv,min,0.0462868769074262,0.0463,True
+real interval A1 frac_gt3 max,S1.5d_real_intervals.csv,max,0.0603656897015326,0.0604,True
+real interval A1 H_rel_3.0 min,S1.5d_real_intervals.csv,min,0.0637651859825738,0.0638,True
+real interval A1 H_rel_3.0 max,S1.5d_real_intervals.csv,max,0.094289955888985,0.0943,True
