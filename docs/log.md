@@ -1,5 +1,9 @@
 # Registro delle modifiche
 
+## 2026-10-25 (apertura di S1.5d)
+
+* **Creazione**: file dello step [Se la semina lascia spazi vuoti dentro il tessuto e la densità varia anche senza dipendere dal tipo, tornano la variabilità dei territori e il numero di vicini dei tessuti veri? (S1.5d)](steps/S1.5d.md) con dubbi ricevuti (BL-157, BL-159, BL-160), esplorazione dichiarata (spazio vuoto, colore H&E dei vuoti, finestre contate a mano, variabilità della densità), modello dei vuoti e della densità, ricalibrazione dei compartimenti, cancelli, previsioni in attesa dell'ok di Luca, regole A e B.
+
 ## 2026-10-23 (chiusura di S1.5c)
 
 * **Chiusura**: [Se i centri delle cellule si raggruppano per tipo come nei tessuti veri, tornano i contatti fra nuclei, la variabilità dei territori e lo spazio attorno al nucleo per tipo? (S1.5c)](steps/S1.5c.md) chiuso con l'approvazione di Luca («chiudi lo step», lettura del riassunto «In breve» senza dubbi nuovi); una decisione per Luca, registrata in [Il controllo della calibrazione rifatta nel pacchetto, fallito in S1.5c, è un errore della tolleranza pre-registrata, non una differenza fra le due implementazioni (DEC-021)](decisions/DEC-021.md). ROADMAP §7: S1.5c chiusa, prossima sessione proposta: semina eterogenea, parte 2 (BL-157 con BL-159, BL-160); la scelta resta di Luca.
