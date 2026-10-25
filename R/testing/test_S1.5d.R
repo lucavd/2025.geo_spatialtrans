@@ -71,7 +71,7 @@ md7 <- vapply(list(c("A3", "r1", "N-a"), c("A6", "r1", "N-a"), c("A5", "r2", "U"
             keep_tiles = TRUE, strict = FALSE, verbose = FALSE)) else
        suppressWarnings(place_cells(clust_of(w), PRE[[A]], pixel_size_um = w$px, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L,
             small_components = "exclude", random_seed = 20261021 + 1000 * i + 1, types = "multi", size_arm = "group", spatial = "compartments",
-            min_dist_mode = "nucleus", override_compartments = compart_for(A, roi), keep_tiles = TRUE, strict = FALSE, verbose = FALSE))
+            min_dist_mode = "nucleus", override_compartments = compart_for(A, roi), override_heterogeneity = H(0, NA, 0, NA), keep_tiles = TRUE, strict = FALSE, verbose = FALSE))
   identical(layer_md5(L), U5$md5[U5$archetype == A & U5$roi_id == roi & U5$seed == 1 & U5$arm == arm]) }, TRUE)
 ck("T7b place_cells() predefinito = layer di S1.5c (md5; stroma e cuore a compartimenti, cervello uniforme; seme 1)", all(md7), md7)
 # ---- T8: lo spazio vuoto cresce con void_frac (5 valori, 20 semi) ----

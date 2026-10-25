@@ -54,26 +54,27 @@
   stringsAsFactors = FALSE
 )
 
-# ---- S1.5c: compartimenti per tipo (docs/steps/S1.5c.md; riferimenti B-209...B-231) ----
+# ---- S1.5c: compartimenti per tipo (docs/steps/S1.5c.md; riferimenti B-209...B-231; tipi principali ricalibrati in S1.5d, B-232...B-248) ----
 # Per tipo: lunghezza di correlazione ell_um e ampiezza s del campo latente (calibrazione su tutte le 5 ROI, tools/S1.5c_calibration.py;
 # tipi minori s = 0, senza campo) e area nucleare mediana reale del tipo (tools/S1.5c_type_nuc_area.py), per la distanza minima per nucleo.
 .TP_COMPART <- data.frame(
   preset = c("epithelial", "epithelial", "epithelial", "tumor_microenv", "tumor_microenv", "stromal_rich", "stromal_rich", "stromal_rich", "stromal_rich", "lymphoid", "lymphoid", "lymphoid", "lymphoid", "lymphoid", "lymphoid", "brain_cortex", "brain_cortex", "brain_cortex", "brain_cortex", "brain_cortex", "columnar_muscle", "columnar_muscle", "columnar_muscle"),
   cell_type = c("epiteliale", "immunitario", "stromale e muscolo liscio", "epiteliale", "fibroblasti", "endoteliale", "epiteliale", "fibroblasti", "immunitario", "endoteliali", "linfociti B", "linfociti T", "mieloidi", "plasmacellule", "stromali", "astrociti", "microglia", "oligodendrociti", "vascolari", "neuroni", "cardiomiociti", "fibroblasti", "immunitari"),
-  ell_um = c(32, 32, 8, 128, 32, 32, 128, 512, 16, NA, 512, 16, NA, NA, NA, 8, NA, 512, NA, 128, 64, 512, 8),
-  s = c(5, 4, 6, 6, 4, 3.5, 6, 3, 2.5, 0, 4, 1, 0, 0, 0, 6, 0, 5, 0, 6, 3, 2, 5),
+  ell_um = c(32, 16, 8, 256, 32, 16, 128, 64, 16, NA, 1024, 32, NA, NA, NA, 8, NA, 512, NA, 128, 64, 512, 8),
+  s = c(7, 7, 8, 6, 8, 3, 8, 3, 3, 0, 6, 1.5, 0, 0, 0, 5, 0, 1, 0, 3, 2, 1.5, 3.5),
   nuc_median_area_um2 = c(13.9398, 11.2418, 11.2418, 32.512, 24.3465, 31.1635, 32.4371, 31.9876, 26.2942, 15.1405, 16.7894, 16.0399, 17.0143, 15.6651, 15.7401, 49.9341, 23.4277, 30.9366, 23.3902, 110.831, 19.7178, 19.9427, 17.9185),
-  src = c("B-209", "B-210", "B-211", "B-212", "B-213", "B-214", "B-215", "B-216", "B-217", "B-218", "B-219", "B-220", "B-221", "B-222", "B-223", "B-224", "B-225", "B-226", "B-227", "B-228", "B-229", "B-230", "B-231"),
+  src = c("B-232", "B-234", "B-233", "B-235", "B-236", "B-239", "B-237", "B-238", "B-240", "B-218", "B-241", "B-242", "B-221", "B-222", "B-223", "B-245", "B-225", "B-244", "B-227", "B-243", "B-246", "B-247", "B-248"),
   stringsAsFactors = FALSE
 )
 
 .TP_SPATIAL_DEFAULT <- "uniform"   # S1.5c: cambia solo con la regola 3 pre-registrata
 
 # ---- S1.5d: eterogeneita' della semina (vuoti e densita' indipendenti dal tipo) e residui empirici del modello di taglia ----
-# Eterogeneita': calibrazione su tutte le ROI della famiglia vincente della regola A (docs/steps/S1.5d.md); prima della calibrazione tutto 0
-# (nessun effetto: la semina a compartimenti resta quella di S1.5c bit per bit).
-.TP_HET <- data.frame(preset = .TP_TABLE$preset, void_frac = 0, void_ell_um = NA_real_, dens_sigma = 0, dens_ell_um = NA_real_,
-                      src = "S1.5d, prima della calibrazione", stringsAsFactors = FALSE)
+# Eterogeneita': calibrazione su tutte le ROI della famiglia vincente della regola A (RV, docs/steps/S1.5d.md; tools/S1.5d_bio_rows.py).
+.TP_HET <- data.frame(preset = c("epithelial", "tumor_microenv", "stromal_rich", "lymphoid", "brain_cortex", "columnar_muscle"),
+                      void_frac = c(0.25, 0.1, 0.1, 0.025, 0.15, 0.025), void_ell_um = c(16.0, 32.0, 32.0, 16.0, 64.0, 32.0),
+                      dens_sigma = c(0.0, 0.0, 0.0, 0.0, 0.0, 0.0), dens_ell_um = c(NA, NA, NA, NA, NA, NA),
+                      src = c("B-259", "B-260", "B-261", "B-262", "B-263", "B-264"), stringsAsFactors = FALSE)
 .TP_SIZE_RESID_DEFAULT <- "gaussian"   # S1.5d: cambia solo con la regola C pre-registrata
 .TP_SIZE_RESID_FILE <- "size_resid.csv" # inst/extdata, generato da tools/S1.5d_size_resid_table.py
 

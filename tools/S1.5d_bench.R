@@ -30,7 +30,7 @@ ARMS <- data.frame(arm = c("U", "N", "R", "RV", "RD", "RVD", "VF", "W3", "U3", "
                    size_resid = c(rep("gaussian", 7), "empirical", "empirical", "empirical", if (is.na(WIN_C)) NA else WIN_C),
                    resid_mode = c(rep("decile", 9), "pooled", "decile"), quotas = c(rep(TRUE, 10), FALSE), stringsAsFactors = FALSE)
 het_of <- function(A, roi, fam) {
-  if (is.na(fam)) return(NULL)
+  if (is.na(fam)) return(data.frame(void_frac = 0, void_ell_um = NA_real_, dens_sigma = 0, dens_ell_um = NA_real_))   # esplicito: non dal preset (nota D-9)
   if (fam == "VF") { h <- het_for(A, roi, "RV"); h$void_ell_um <- 2; return(h) }     # CP-2: vuoti di RV con l = 2 um
   het_for(A, roi, fam)
 }
