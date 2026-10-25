@@ -70,6 +70,8 @@ def fit():
     pd.DataFrame(rows).to_csv(f"{RES}/S1.5d_het_loss.csv", index=False)
     for fam, b in best_rows.items(): pd.DataFrame(b).to_csv(f"{RES}/S1.5d_het_{fam}.csv", index=False)
     new = []
+    if os.path.exists(f"{RES}/S1.5d_het_grid_ext.csv"):                    # la griglia si estende una sola volta (pre-registrazione)
+        print("griglia gia' estesa: ottimi al bordo dopo l'estensione:", sorted({(A, fam, '|'.join(e)) for A, fam, e, b in ext})); ext = []
     for A, fam, edge, b in ext:                                        # estensione di un passo nella direzione del bordo, per tutte le pieghe del tessuto
         pv = sorted(set(G.void_frac[G.void_frac > 0])); lv = sorted(set(G.void_ell_um.dropna())); sd = sorted(set(G.dens_sigma[G.dens_sigma > 0])); ld = sorted(set(G.dens_ell_um.dropna()))
         if "void_frac_hi" in edge: pv = pv + [round(max(pv) + 0.05, 3)]
@@ -87,7 +89,7 @@ def fit():
     if new:
         N = pd.DataFrame(new).groupby("combo").agg({"void_frac": "first", "void_ell_um": "first", "dens_sigma": "first", "dens_ell_um": "first", "archetypes": lambda v: "|".join(sorted(set(v)))}).reset_index()
         N.to_csv(f"{RES}/S1.5d_het_grid_ext.csv", index=False); print("estensione:", len(N), "combinazioni per", sorted({a for a, *_ in ext}))
-    else: print("nessuna estensione")
+    elif not os.path.exists(f"{RES}/S1.5d_het_grid_ext.csv"): print("nessuna estensione")
     for fam in FAM: print(fam); print(pd.read_csv(f"{RES}/S1.5d_het_{fam}.csv").query("fold == 'pooled'").to_string(index=False))
 if __name__ == "__main__":
     st = sys.argv[1]
