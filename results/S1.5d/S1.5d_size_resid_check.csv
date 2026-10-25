@@ -1,0 +1,11 @@
+archetype,preset,size_group,n,types,resid_mean,resid_sd,sigma_g,ok
+A1,epithelial,1,22438,epiteliale,-1.4163845738883986e-06,0.45897718191500664,0.458977,True
+A1,epithelial,2,10762,immunitario|stromale e muscolo liscio,-9.607744713967822e-07,0.4604786322457099,0.460479,True
+A2,tumor_microenv,1,21060,epiteliale,1.45367433038309e-06,0.5042942021669392,0.504294,True
+A2,tumor_microenv,2,6273,fibroblasti,6.508798728531169e-07,0.5100438076426992,0.510044,True
+A3,stromal_rich,1,16260,endoteliale|epiteliale|fibroblasti,2.3457896682206477e-06,0.5495894916585117,0.549589,True
+A3,stromal_rich,2,3701,immunitario,1.6971655625779523e-07,0.5180840047689811,0.518084,True
+A4,lymphoid,1,99684,endoteliali|linfociti B|linfociti T|mieloidi|plasmacellule|stromali,-0.0009449015041434009,0.21041305103816765,0.21,True
+A5,brain_cortex,1,651,astrociti|microglia|oligodendrociti|vascolari,2.8302586638527584e-06,0.8673316967862983,0.867332,True
+A5,brain_cortex,2,1341,neuroni,-2.499522666901178e-06,0.4784537117421204,0.478454,True
+A6,columnar_muscle,1,2367,cardiomiociti|fibroblasti|immunitari,-0.003933349641667205,0.49001965777058637,0.49,True

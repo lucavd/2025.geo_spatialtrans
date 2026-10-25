@@ -46,6 +46,10 @@
 #' @param area_rel_tol tolleranza relativa obiettivo sull'area del nucleo ritagliato (> 0, < 1e-3); misurato in S1.4d: 94.1 % delle
 #'   celle reali entro 1e-7, tutte entro 7.4e-7; per nuclei sotto il µm² il rumore della griglia supera 1e-6.
 #' @param poi_precision_um precisione di `polylabelr::poi()` (µm).
+#' @param resid_table S1.5d: NULL (predefinito, residui gaussiani sigma * z) o tabella dei residui veri (`key`, `decile`, `x_lo`, `x_hi`,
+#'   `p`, `r`; `tools/S1.5d_size_resid_table.py`); i tipi con `nucleus_area_resid` = key usano r = quantile empirico in pnorm(z) del
+#'   decimo di log A_T (assoluto) della cella al posto di sigma * z; stessa z, quindi stessa estrazione casuale del modello gaussiano.
+#' @param resid_mode `"decile"` (predefinito) o `"pooled"` (residui di tutti i decimi insieme: controprova CP-3 di S1.5d).
 #' @param strict se TRUE (default) errore se un nucleo non e' dentro il proprio territorio (C3).
 #' @param verbose stampa un riepilogo.
 #' @return lista con `cell_df`, `cell_nuclei` (sfc, ordine di `cell_id`; sfc_POLYGON, oppure sfc_MULTIPOLYGON se
@@ -55,7 +59,9 @@
 derive_cell_geometry <- function(centroids, territories, cell_types, random_seed = 42,
                                  nucleus_model = c("clip", "scale"), nucleus_center = NULL, n_vertices = 32L,
                                  clamp_factor = 0.85, clip_inset_um = 1e-5, snap_grid_um = 1e-6, area_rel_tol = 1e-7,
-                                 poi_precision_um = 1e-3, strict = TRUE, verbose = TRUE) {
+                                 poi_precision_um = 1e-3, strict = TRUE, verbose = TRUE, resid_table = NULL,
+                                 resid_mode = c("decile", "pooled")) {
+  resid_mode <- match.arg(resid_mode)
   t0 <- proc.time()[["elapsed"]]
   nucleus_model <- match.arg(nucleus_model)
   if (is.null(nucleus_center)) nucleus_center <- if (nucleus_model == "clip") "generator" else "poi"
@@ -75,7 +81,7 @@ derive_cell_geometry <- function(centroids, territories, cell_types, random_seed
   if (!all(geos::geos_intersects(pts, gt))) stop("derive_cell_geometry(): centro del nucleo fuori dal territorio")
   d <- geos::geos_distance(pts, geos::geos_boundary(gt))
   if (any(d <= 0)) stop("derive_cell_geometry(): centro del nucleo sul bordo del territorio (d = 0) per ", sum(d <= 0), " cellule")
-  a_tgt <- .dcg_target_area(a_t, ct, ti, z)
+  a_tgt <- .dcg_target_area(a_t, ct, ti, z, resid_table, resid_mode)
   asp <- ct$nucleus_aspect[ti]
   theta <- .dcg_orientation(terr, ct, ti, u, asp)
   kp <- .dcg_poly_factor(n_vertices)
@@ -165,7 +171,7 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
   miss <- setdiff(used, ct$cell_type)
   if (length(miss)) stop("derive_cell_geometry(): tipi senza catalogo: ", paste(miss, collapse = ", "))
   dflt <- list(nucleus_to_eq_ratio = NA_real_, nucleus_radius = NA_real_, nucleus_area_slope = 1,
-               nucleus_area_sdlog = 0, nucleus_aspect = 1, nucleus_orient = "random", nucleus_nc_max = 1)
+               nucleus_area_sdlog = 0, nucleus_aspect = 1, nucleus_orient = "random", nucleus_nc_max = 1, nucleus_area_resid = NA_character_)
   for (nm in names(dflt)) if (!nm %in% names(ct)) ct[[nm]] <- dflt[[nm]]
   ct$nucleus_orient <- as.character(ct$nucleus_orient); ct$nucleus_orient[is.na(ct$nucleus_orient)] <- "random"
   if ("nucleus_shape" %in% names(ct)) {
@@ -204,13 +210,38 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
   list(x = vapply(p, function(q) q$x, 0), y = vapply(p, function(q) q$y, 0))
 }
 
-.dcg_target_area <- function(a_t, ct, ti, z) {
+.dcg_target_area <- function(a_t, ct, ti, z, resid_table = NULL, resid_mode = "decile") {
   rho <- ct$nucleus_to_eq_ratio[ti]; r_abs <- ct$nucleus_radius[ti]
   beta <- ct$nucleus_area_slope[ti]; sig <- ct$nucleus_area_sdlog[ti]
   a_ref <- 1e6 / ct$density[ti]
   abs_mode <- !is.na(r_abs) & r_abs > 0
   la <- ifelse(abs_mode, log(pi * r_abs^2), log(rho^2 * a_ref) + beta * (log(a_t) - log(a_ref)))
-  exp(la + sig * z)
+  eps <- sig * z
+  key <- if (!is.null(resid_table) && "nucleus_area_resid" %in% names(ct)) as.character(ct$nucleus_area_resid[ti]) else rep(NA_character_, length(ti))
+  use <- !is.na(key) & !abs_mode
+  if (any(use)) eps[use] <- .dcg_resid_draw(resid_table, key[use], log(a_t[use]), stats::pnorm(z[use]), resid_mode)
+  exp(la + eps)
+}
+
+#' Residuo empirico (S1.5d): quantile della tabella del gruppo nel decimo di log A_T, interpolato linearmente in u.
+#' @keywords internal
+.dcg_resid_draw <- function(tab, key, lx, u, mode) {
+  out <- numeric(length(key))
+  for (k in unique(key)) {
+    w <- which(key == k); tk <- tab[tab$key == k, , drop = FALSE]
+    if (!nrow(tk)) stop("derive_cell_geometry(): tabella dei residui senza la chiave ", k, call. = FALSE)
+    tk <- if (mode == "pooled") tk[tk$decile == 0L, , drop = FALSE] else tk[tk$decile > 0L, , drop = FALSE]
+    tk <- tk[order(tk$decile, tk$p), , drop = FALSE]
+    dec <- sort(unique(tk$decile)); np <- sum(tk$decile == dec[1])
+    Q <- matrix(tk$r, nrow = length(dec), ncol = np, byrow = TRUE)
+    if (mode == "pooled") di <- rep(1L, length(w)) else {
+      hi <- tk$x_hi[match(dec, tk$decile)]                                          # limiti superiori dei decimi (log A_T assoluto)
+      di <- findInterval(lx[w], hi[-length(hi)], left.open = TRUE) + 1L             # fuori dall'intervallo vero: decimo estremo
+    }
+    pos <- u[w] * (np - 1); j <- pmin(floor(pos), np - 2); fr <- pos - j
+    out[w] <- Q[cbind(di, j + 1L)] + fr * (Q[cbind(di, j + 2L)] - Q[cbind(di, j + 1L)])
+  }
+  out
 }
 
 .dcg_poly_factor <- function(nv) sqrt(2 * pi / (nv * sin(2 * pi / nv)))

@@ -1,0 +1,24 @@
+"preset","cell_type","fraction","size_group","rho_g","beta_g","sigma_g","archetype","density_model"
+"epithelial","epiteliale",0.685091,1,0.398694,0.159103,0.458977,"A1",10591
+"epithelial","immunitario",0.10098,2,0.341871,-0.00344299,0.460479,"A1",10591
+"epithelial","stromale e muscolo liscio",0.213929,2,0.341871,-0.00344299,0.460479,"A1",10591
+"tumor_microenv","epiteliale",0.776428,1,0.545033,0.406403,0.504294,"A2",7723.3
+"tumor_microenv","fibroblasti",0.223572,2,0.43163,0.322068,0.510044,"A2",7723.3
+"stromal_rich","endoteliale",0.0813992,1,0.383156,0.157005,0.549589,"A3",4278.9
+"stromal_rich","epiteliale",0.40709,1,0.383156,0.157005,0.549589,"A3",4278.9
+"stromal_rich","fibroblasti",0.325079,1,0.383156,0.157005,0.549589,"A3",4278.9
+"stromal_rich","immunitario",0.186432,2,0.338571,0.160364,0.518084,"A3",4278.9
+"lymphoid","endoteliali",0.0152395,1,0.679,0.455,0.21,"A4",27897.5
+"lymphoid","linfociti B",0.494632,1,0.679,0.455,0.21,"A4",27897.5
+"lymphoid","linfociti T",0.416747,1,0.679,0.455,0.21,"A4",27897.5
+"lymphoid","mieloidi",0.0202196,1,0.679,0.455,0.21,"A4",27897.5
+"lymphoid","plasmacellule",0.0319078,1,0.679,0.455,0.21,"A4",27897.5
+"lymphoid","stromali",0.0212537,1,0.679,0.455,0.21,"A4",27897.5
+"brain_cortex","astrociti",0.0610637,1,0.19996,0.588567,0.867332,"A5",1039.7
+"brain_cortex","microglia",0.0313428,1,0.19996,0.588567,0.867332,"A5",1039.7
+"brain_cortex","neuroni",0.699536,2,0.324497,0.20495,0.478454,"A5",1039.7
+"brain_cortex","oligodendrociti",0.168381,1,0.19996,0.588567,0.867332,"A5",1039.7
+"brain_cortex","vascolari",0.0396766,1,0.19996,0.588567,0.867332,"A5",1039.7
+"columnar_muscle","cardiomiociti",0.757619,1,0.154,0.122,0.49,"A6",1062.4
+"columnar_muscle","fibroblasti",0.12759,1,0.154,0.122,0.49,"A6",1062.4
+"columnar_muscle","immunitari",0.114791,1,0.154,0.122,0.49,"A6",1062.4

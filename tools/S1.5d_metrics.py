@@ -2,9 +2,10 @@
 (definizioni: docs/steps/S1.5d.md). Ingresso per ROI: centri (um), indicatore di cella interna, area del territorio, maschera di tessuto valido
 di R2 (results/R2/tissue_masks/<A>_<roi>_valid_ds4.png, pixel di circa 1.1 um).
 - H_rel_u: frazione dei pixel della maschera (ad almeno 30 um dal bordo del ROI) la cui distanza dal centro piu' vicino supera u volte la
-  mediana della distanza dal vicino piu' vicino delle celle interne (u = 1.5, 2, 3, 4). Adimensionale: non cambia se si tolgono centri a caso.
+  mediana della distanza dal vicino piu' vicino delle celle interne (u = 1.5, 2, 3, 4). Adimensionale; invariante al diradamento
+  indipendente solo per un processo di Poisson (non per centri con distanza minima: nota D-3 di docs/steps/S1.5d.md).
 - xcv2_q: CV^2 in eccesso dei conteggi in quadrati di lato q um interamente nella maschera ((varianza - media) / media^2; q = 25, 50, 100).
-  0 per un processo di Poisson; invariante se si tolgono centri a caso indipendentemente.
+  0 per un processo di Poisson; esattamente invariante al diradamento indipendente ((p^2 V + p(1-p) m - p m) / (p m)^2 = (V - m) / m^2).
 - nn_cv: CV della distanza dal vicino piu' vicino delle celle interne.
 - frac_gt3: frazione dei territori delle celle interne sopra 3 volte la mediana (come PH-1 di S1.5c)."""
 import numpy as np, pandas as pd
@@ -57,3 +58,15 @@ def position_metrics(x, y, interior, a_t, g):
         o[f"xcv2_{int(q)}"] = (cnt.var(ddof=1) - cnt.mean()) / cnt.mean() ** 2 if cnt.mean() > 0 else np.nan
     a = np.asarray(a_t, float)[I]; o["frac_gt3"] = float(np.mean(a / np.median(a) > 3))
     return o
+
+def interior_by_distance(x, y, g, edge_um=10.0):
+    """Regola della calibrazione dell'eterogeneita' (docs/steps/S1.5d.md): centro ad almeno edge_um dal bordo della maschera e FRAME_B dal bordo
+    del ROI. Distanza dal bordo = trasformata di distanza euclidea della maschera (pixel di circa 1.1 um), stessa regola per vero e simulato."""
+    from scipy.ndimage import distance_transform_edt
+    if not hasattr(g, "edt"): g.edt = distance_transform_edt(g.m) * g.px
+    ci = np.clip((np.asarray(x) / g.px).astype(int), 0, g.m.shape[1] - 1); ri = np.clip((np.asarray(y) / g.px).astype(int), 0, g.m.shape[0] - 1)
+    x = np.asarray(x); y = np.asarray(y)
+    return (g.edt[ri, ci] >= edge_um) & (x > FRAME_B) & (y > FRAME_B) & (x < g.side - FRAME_B) & (y < g.side - FRAME_B)
+CAL_TARGETS = ["H_rel_1.5", "H_rel_2.0", "H_rel_3.0", "H_rel_4.0", "xcv2_25", "xcv2_50", "xcv2_100", "nn_cv"]
+def calibration_metrics(x, y, g):
+    I = interior_by_distance(x, y, g); o = position_metrics(x, y, I, np.ones(len(x)), g); o.pop("frac_gt3"); o["n_interior_cal"] = int(I.sum()); return o

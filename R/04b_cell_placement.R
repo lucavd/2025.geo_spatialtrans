@@ -104,6 +104,10 @@ merge_small_components <- function(clust, pixel_size_um, min_region_area_um2, cl
 #'   (`"tissue"` o `"nucleus"`) dei preset per tipo (S1.5c, `tissue_preset_spec()`).
 #' @param labels con i compartimenti: `"field"` o `"blind"` (etichette permutate, controprova di S1.5c).
 #' @param override_compartments tabella `cell_type`, `ell_um`, `s` che sostituisce quella del preset (banco di S1.5c: pieghe).
+#' @param heterogeneity,override_heterogeneity,quotas S1.5d, solo con i compartimenti: NULL = tabella del preset; `override_heterogeneity`
+#'   (una riga `void_frac`, `void_ell_um`, `dens_sigma`, `dens_ell_um`) la sostituisce (banco: pieghe); `quotas` come `seed_centroids()`.
+#' @param size_resid,resid_mode S1.5d: residui del modello di taglia (`"gaussian"` o `"empirical"`, NULL = predefinito del preset) e
+#'   modo dei residui empirici (`"decile"`; `"pooled"` solo per la controprova CP-3).
 #' @param small_components `"merge"` (BL-043) o `"exclude"`.
 #' @param stride passo dei pixel; NULL = attributo `stride` di `clust`, altrimenti 1 se i dati sono contigui, errore se
 #'   il passo rilevato e' > 1 (BL-042).
@@ -119,9 +123,10 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
                         small_components = c("merge", "exclude"), nucleus_model = "clip",
                         size_conversion = c("preserve_area", "none"), types = c("multi", "single"), size_arm = NULL,
                         composition = "tissue", spatial = NULL, min_dist_mode = c("tissue", "nucleus"), labels = c("field", "blind"),
-                        override_compartments = NULL, validate = TRUE, strict = TRUE, keep_tiles = FALSE,
+                        override_compartments = NULL, override_heterogeneity = NULL, quotas = TRUE, size_resid = NULL,
+                        resid_mode = c("decile", "pooled"), validate = TRUE, strict = TRUE, keep_tiles = FALSE,
                         allow_estimate = FALSE, verbose = TRUE) {
-  min_dist_mode <- match.arg(min_dist_mode); labels <- match.arg(labels)
+  min_dist_mode <- match.arg(min_dist_mode); labels <- match.arg(labels); resid_mode <- match.arg(resid_mode)
   t0 <- proc.time()[["elapsed"]]
   small_components <- match.arg(small_components); size_conversion <- match.arg(size_conversion); types <- match.arg(types)
   if (missing(pixel_size_um))
@@ -132,7 +137,7 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   spec <- NULL
   if (is.null(cell_types)) {
     spec <- tissue_preset_spec(tissue_preset, size_conversion, types = types, size_arm = size_arm, composition = composition,
-                               spatial = spatial, min_dist_mode = min_dist_mode)
+                               spatial = spatial, min_dist_mode = min_dist_mode, size_resid = size_resid)
     ct <- spec$cell_types; c8 <- spec$c8_interval
   } else { ct <- cell_types; c8 <- NULL }
   if (!is.null(override_cell_types)) {
@@ -201,11 +206,14 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   ctab <- if (!is.null(override_compartments)) override_compartments else if (!is.null(spec)) spec$compartments else NULL
   sc <- if (sp_used == "compartments") {
     if (is.null(ctab)) stop("place_cells(): spatial = \"compartments\" richiede una tabella dei compartimenti.", call. = FALSE)
+    htab <- if (!is.null(override_heterogeneity)) override_heterogeneity else if (!is.null(spec)) spec$heterogeneity else NULL
     seed_centroids(reg, ct, comp_used, random_seed = ss[["seed"]], spatial = "compartments", compartments = ctab,
-                   labels = labels, verbose = FALSE)
+                   labels = labels, heterogeneity = htab, quotas = quotas, verbose = FALSE)
   } else seed_centroids(reg, ct, comp_used, random_seed = ss[["seed"]], type_order = t_order, verbose = FALSE)
   tv <- tessellate_voronoi(sc$centroids, reg, corner_smoothing = corner_smoothing, keep_tiles = keep_tiles, verbose = FALSE)
-  dg <- derive_cell_geometry(sc$centroids, tv, ct, random_seed = ss[["size"]], nucleus_model = nucleus_model, verbose = FALSE)
+  rtab <- if ("nucleus_area_resid" %in% names(ct) && any(!is.na(ct$nucleus_area_resid))) .tp_resid_table() else NULL   # S1.5d
+  dg <- derive_cell_geometry(sc$centroids, tv, ct, random_seed = ss[["size"]], nucleus_model = nucleus_model, verbose = FALSE,
+                             resid_table = rtab, resid_mode = resid_mode)
   cd <- dg$cell_df
   # tipo dominante per regione e nuclei pallidi
   dom <- comp_used[order(comp_used$cluster_id, -comp_used$fraction), ]; dom <- dom[!duplicated(dom$cluster_id), ]
@@ -241,12 +249,14 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
                           spatial = sp_used, min_dist_mode = if (is.null(spec)) NA_character_ else spec$min_dist_mode,
                           labels = if (sp_used == "compartments") labels else NA_character_,
                           compartments = if (sp_used == "compartments") ctab else NULL,
+                          heterogeneity = if (sp_used == "compartments") sc$info$compartments$heterogeneity else NULL, quotas = quotas,
+                          size_resid = if (is.null(spec)) (if (is.null(rtab)) "gaussian" else "empirical") else spec$size_resid, resid_mode = resid_mode,
                           corner_smoothing = corner_smoothing, min_region_area_um2 = min_region_area_um2, small_components = small_components,
                           stride = stride, cell_types_resolved = ct, region_composition_resolved = comp_used,
                           random_seed = random_seed, stage_seeds = ss, nucleus_model = nucleus_model,
                           merge_info = attr(cl_in, "merge_info"), excluded_df = reg$excluded_df,
                           seed_info = sc$info, tessellation_info = tv$info, geometry_info = dg$info,
-                          package_version = "geo.spatialtrans step1-cell-layer (S1.5c)", timestamp = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z"),
+                          package_version = "geo.spatialtrans step1-cell-layer (S1.5d)", timestamp = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z"),
                           validation = val, elapsed_s = proc.time()[["elapsed"]] - t0)
   if (verbose) cat(sprintf("[place_cells] %s: %d regioni, %d cellule, scala %.4g um/px (%s), controlli %s, %.1f s\n",
                            if (is.null(spec)) "catalogo dell'utente" else tissue_preset, nrow(rdf), nrow(cd), px, src,

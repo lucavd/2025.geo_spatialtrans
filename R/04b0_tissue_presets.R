@@ -69,6 +69,23 @@
 
 .TP_SPATIAL_DEFAULT <- "uniform"   # S1.5c: cambia solo con la regola 3 pre-registrata
 
+# ---- S1.5d: eterogeneita' della semina (vuoti e densita' indipendenti dal tipo) e residui empirici del modello di taglia ----
+# Eterogeneita': calibrazione su tutte le ROI della famiglia vincente della regola A (docs/steps/S1.5d.md); prima della calibrazione tutto 0
+# (nessun effetto: la semina a compartimenti resta quella di S1.5c bit per bit).
+.TP_HET <- data.frame(preset = .TP_TABLE$preset, void_frac = 0, void_ell_um = NA_real_, dens_sigma = 0, dens_ell_um = NA_real_,
+                      src = "S1.5d, prima della calibrazione", stringsAsFactors = FALSE)
+.TP_SIZE_RESID_DEFAULT <- "gaussian"   # S1.5d: cambia solo con la regola C pre-registrata
+.TP_SIZE_RESID_FILE <- "size_resid.csv" # inst/extdata, generato da tools/S1.5d_size_resid_table.py
+
+#' Tabella dei residui veri del modello di taglia (S1.5d): inst/extdata del pacchetto installato o della copia di lavoro.
+#' @keywords internal
+.tp_resid_table <- function() {
+  cand <- c(Sys.getenv("GEO_EXTDATA", ""), system.file("extdata", package = "geo.spatialtrans"), file.path(getwd(), "inst", "extdata"))
+  cand <- cand[nzchar(cand) & file.exists(file.path(cand, .TP_SIZE_RESID_FILE))]
+  if (!length(cand)) stop("tabella dei residui del modello di taglia non trovata (", .TP_SIZE_RESID_FILE, ").", call. = FALSE)
+  utils::read.csv(file.path(cand[1], .TP_SIZE_RESID_FILE), stringsAsFactors = FALSE)
+}
+
 .TP_EPI_LABEL <- c(tumor_microenv = "tumorale", stromal_rich = "tumorale")   # DEC-014: istologia delle ROI (R2)
 
 .tp_mut <- function() Sys.getenv("S15B_MUTANT", "none")
@@ -131,19 +148,24 @@ tissue_presets <- function() .TP_TABLE$preset
 #'   `compartments` del preset, calibrata su tutte le ROI). NULL = predefinito del pacchetto (`.TP_SPATIAL_DEFAULT`).
 #' @param min_dist_mode `"tissue"` (d* del tessuto per tutti i tipi, DEC-009) o `"nucleus"` (S1.5c: d_t = kappa * 2 sqrt(a_t / pi),
 #'   kappa tale che sum f_t d_t = d*; solo con `spatial = "compartments"`).
+#' @param size_resid con `types = "multi"`: `"gaussian"` (residui gaussiani del modello di taglia, sigma del gruppo) o `"empirical"`
+#'   (S1.5d: residui veri del gruppo per decimo di log A_T, colonna `nucleus_area_resid` del catalogo); NULL = predefinito del pacchetto.
 #' @return lista con `cell_types` (catalogo: una riga, o una per tipo con `size_group` ed `epithelium_label`), `composition` (con
 #'   `types = "multi"`: tipo, frazione), `type_sources` (fonti B-nnn per tipo), `c8_interval` (µm), `archetype`, `tissue`, `sources`
 #'   (data.frame parametro, valore, fonte), `size_conversion`.
 #' @export
 tissue_preset_spec <- function(preset, size_conversion = c("preserve_area", "none"), types = c("multi", "single"),
                                size_arm = NULL, composition = c("tissue", "follicle", "paracortex"), spatial = NULL,
-                               min_dist_mode = c("tissue", "nucleus")) {
+                               min_dist_mode = c("tissue", "nucleus"), size_resid = NULL) {
+  if (is.null(size_resid)) size_resid <- .TP_SIZE_RESID_DEFAULT
+  size_resid <- match.arg(size_resid, c("gaussian", "empirical"))
   size_conversion <- match.arg(size_conversion); types <- match.arg(types); composition <- match.arg(composition)
   min_dist_mode <- match.arg(min_dist_mode)
   if (is.null(spatial)) spatial <- .TP_SPATIAL_DEFAULT
   spatial <- match.arg(spatial, c("uniform", "compartments"))
   if (types == "single" && (spatial == "compartments" || min_dist_mode == "nucleus"))
     stop("tissue_preset_spec(): compartimenti e distanza per nucleo richiedono types = \"multi\" (S1.5c).", call. = FALSE)
+  if (types == "single" && size_resid == "empirical") stop("tissue_preset_spec(): size_resid = \"empirical\" richiede types = \"multi\" (S1.5d).", call. = FALSE)
   if (min_dist_mode == "nucleus" && spatial != "compartments")
     stop("tissue_preset_spec(): min_dist_mode = \"nucleus\" richiede spatial = \"compartments\" (S1.5c).", call. = FALSE)
   if (types == "multi") {
@@ -172,7 +194,7 @@ tissue_preset_spec <- function(preset, size_conversion = c("preserve_area", "non
   out <- list(cell_types = ct, c8_interval = c(p$c8_lo, p$c8_hi), archetype = p$archetype, tissue = p$tissue,
               sources = src, size_conversion = size_conversion, preset = preset, types = types, size_arm = NA_character_,
               composition = NULL, composition_name = NA_character_, spatial = if (types == "multi") spatial else "uniform",
-              min_dist_mode = min_dist_mode, compartments = NULL)
+              min_dist_mode = min_dist_mode, compartments = NULL, heterogeneity = NULL, size_resid = if (types == "multi") size_resid else "gaussian")
   if (types == "multi") {
     m <- .tp_multi(p, size_arm, composition)
     out$cell_types <- m$cell_types; out$composition <- m$composition; out$type_sources <- m$type_sources
@@ -180,6 +202,9 @@ tissue_preset_spec <- function(preset, size_conversion = c("preserve_area", "non
     cp <- .TP_COMPART[.TP_COMPART$preset == preset, , drop = FALSE]
     cp <- cp[match(out$cell_types$cell_type, cp$cell_type), , drop = FALSE]
     out$compartments <- data.frame(cell_type = cp$cell_type, ell_um = cp$ell_um, s = cp$s, source = cp$src, stringsAsFactors = FALSE)
+    hz <- .TP_HET[.TP_HET$preset == preset, , drop = FALSE]
+    out$heterogeneity <- hz[, c("void_frac", "void_ell_um", "dens_sigma", "dens_ell_um", "src")]
+    if (size_resid == "empirical") out$cell_types$nucleus_area_resid <- paste0(preset, ":", out$cell_types$size_group)
     if (min_dist_mode == "nucleus") {
       f <- out$composition$fraction[match(out$cell_types$cell_type, out$composition$cell_type)]
       raw <- 2 * sqrt(cp$nuc_median_area_um2 / pi); kappa <- p$min_dist_um / sum(f * raw)
