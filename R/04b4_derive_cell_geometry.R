@@ -50,6 +50,8 @@
 #'   `p`, `r`; `tools/S1.5d_size_resid_table.py`); i tipi con `nucleus_area_resid` = key usano r = quantile empirico in pnorm(z) del
 #'   decimo di log A_T (assoluto) della cella al posto di sigma * z; stessa z, quindi stessa estrazione casuale del modello gaussiano.
 #' @param resid_mode `"decile"` (predefinito) o `"pooled"` (residui di tutti i decimi insieme: controprova CP-3 di S1.5d).
+#'   Colonna opzionale del catalogo `nucleus_area_resid_shift`: spostamento di log A_T per la ricerca del decimo (revisione RC-03:
+#'   nel modello ricentrato log(m_t / m_sim)); assente o NA = 0.
 #' @param strict se TRUE (default) errore se un nucleo non e' dentro il proprio territorio (C3).
 #' @param verbose stampa un riepilogo.
 #' @return lista con `cell_df`, `cell_nuclei` (sfc, ordine di `cell_id`; sfc_POLYGON, oppure sfc_MULTIPOLYGON se
@@ -219,7 +221,9 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
   eps <- sig * z
   key <- if (!is.null(resid_table) && "nucleus_area_resid" %in% names(ct)) as.character(ct$nucleus_area_resid[ti]) else rep(NA_character_, length(ti))
   use <- !is.na(key) & !abs_mode
-  if (any(use)) eps[use] <- .dcg_resid_draw(resid_table, key[use], log(a_t[use]), stats::pnorm(z[use]), resid_mode)
+  sh <- if ("nucleus_area_resid_shift" %in% names(ct)) as.numeric(ct$nucleus_area_resid_shift[ti]) else rep(0, length(ti))   # revisione RC-03
+  sh[is.na(sh)] <- 0
+  if (any(use)) eps[use] <- .dcg_resid_draw(resid_table, key[use], log(a_t[use]) + sh[use], stats::pnorm(z[use]), resid_mode)
   exp(la + eps)
 }
 

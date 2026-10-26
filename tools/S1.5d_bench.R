@@ -22,13 +22,15 @@ PRESET <- c(A1 = "epithelial", A2 = "tumor_microenv", A3 = "stromal_rich", A4 = 
 rule_pick <- function(f) { if (!file.exists(f)) return(NA_character_); d <- read.csv(f, stringsAsFactors = FALSE); d$winner[1] }
 WIN_A <- rule_pick(file.path(RES, "S1.5d_ruleA.csv"))                # famiglia vincente della regola A (RV, RD o RVD)
 WIN_C <- rule_pick(file.path(RES, "S1.5d_ruleC.csv"))                # modello di taglia vincente della regola C sul vincente (gaussian o empirical)
-ARMS <- data.frame(arm = c("U", "N", "R", "RV", "RD", "RVD", "VF", "W3", "U3", "W3p", "Q"),
-                   spatial = c("uniform", rep("compartments", 7), "uniform", rep("compartments", 2)),
-                   comp = c(NA, "S1.5c", rep("S1.5d", 6), NA, "S1.5d", "S1.5d"),
-                   het = c(NA, NA, NA, "RV", "RD", "RVD", "VF", WIN_A, NA, WIN_A, WIN_A),
-                   size_arm = c("recentred", rep("group", 7), "recentred", "group", "group"),
-                   size_resid = c(rep("gaussian", 7), "empirical", "empirical", "empirical", if (is.na(WIN_C)) NA else WIN_C),
-                   resid_mode = c(rep("decile", 9), "pooled", "decile"), quotas = c(rep(TRUE, 10), FALSE), stringsAsFactors = FALSE)
+ARMS <- data.frame(arm = c("U", "N", "R", "RV", "RD", "RVD", "VF", "W3", "U3", "W3p", "Q", "U3c"),
+                   spatial = c("uniform", rep("compartments", 7), "uniform", rep("compartments", 2), "uniform"),
+                   comp = c(NA, "S1.5c", rep("S1.5d", 6), NA, "S1.5d", "S1.5d", NA),
+                   het = c(NA, NA, NA, "RV", "RD", "RVD", "VF", WIN_A, NA, WIN_A, WIN_A, NA),
+                   size_arm = c("recentred", rep("group", 7), "recentred", "group", "group", "recentred"),
+                   size_resid = c(rep("gaussian", 7), "empirical", "empirical", "empirical", if (is.na(WIN_C)) NA else WIN_C, "empirical"),
+                   resid_mode = c(rep("decile", 9), "pooled", "decile", "decile"), quotas = c(rep(TRUE, 10), FALSE, TRUE), stringsAsFactors = FALSE)
+# U3c (sensibilita' della revisione RC-03): come U3, con il decimo dei residui cercato sul territorio ricentrato log(A_T * m_t / m_sim)
+shift_of <- function(A) { ty <- .TP_TYPES[.TP_TYPES$preset == PRESET[[A]], ]; data.frame(cell_type = ty$cell_type, nucleus_area_resid_shift = log(ty$m_t / ty$m_sim)) }
 het_of <- function(A, roi, fam) {
   if (is.na(fam)) return(data.frame(void_frac = 0, void_ell_um = NA_real_, dens_sigma = 0, dens_ell_um = NA_real_))   # esplicito: non dal preset (nota D-9)
   if (fam == "VF") { h <- het_for(A, roi, "RV"); h$void_ell_um <- 2; return(h) }     # CP-2: vuoti di RV con l = 2 um
@@ -48,7 +50,8 @@ run_pc <- function(i, s, arm, w) {
   if (a$spatial == "uniform")
     return(suppressWarnings(place_cells(clust_of(w), PRESET[[A]], pixel_size_um = w$px, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L,
                                small_components = "exclude", random_seed = seed_of(i, s), types = "multi", size_arm = a$size_arm,
-                               spatial = "uniform", size_resid = a$size_resid, keep_tiles = TRUE, strict = FALSE, verbose = FALSE)))
+                               spatial = "uniform", size_resid = a$size_resid, override_cell_types = if (arm == "U3c") shift_of(A) else NULL,
+                               keep_tiles = TRUE, strict = FALSE, verbose = FALSE)))
   oc <- if (a$comp == "S1.5c") compart_for(A, roi) else compart_for_d(A, roi)
   suppressWarnings(place_cells(clust_of(w), PRESET[[A]], pixel_size_um = w$px, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L,
                                small_components = "exclude", random_seed = seed_of(i, s), types = "multi", size_arm = a$size_arm,

@@ -1,0 +1,13 @@
+PASS mutante M1 rilevato da: T1 T11b T3 T8 
+PASS mutante M2 rilevato da: T4 T8 
+FAIL mutante M3 NON rilevato
+PASS mutante M4 rilevato da: T17 
+FAIL mutante M5 NON rilevato
+PASS mutante M6 rilevato da: T18 
+PASS mutante M7 rilevato da: T10 
+PASS mutante M8 rilevato da: T11 T11b 
+PASS mutante M9 rilevato da: T13b 
+PASS mutante M10 rilevato da: T13b 
+PASS mutante M11 rilevato da: T13b T14b 
+mutanti rilevati 9/11 (M1-M8 dell'eterogeneita', M9-M11 dei residui)
+GATE G-2 FAIL

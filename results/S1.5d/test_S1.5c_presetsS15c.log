@@ -1,0 +1,29 @@
+PASS T1a media 0 e varianza 1 del campo (1 000 campi) media -0.052 var 0.999
+PASS T1b correlazione a distanza l = exp(-1/2) 0.606 contro 0.607 (3 SE 0.060)
+PASS T1c correlazione a distanza 3 l = exp(-9/2) 0.015
+PASS T2 frazioni attese pesate con lambda = f (1e-6) 1.78e-13
+PASS T3 distanza minima della coppia (d_i + d_j)/2 rispettata (A2, A5; tessuto e per nucleo) 0 0 0 0
+PASS T3b coppie miste piu' vicine di 5.4 um (media 4, massimo 6) min 4.089
+PASS T4 numero di cellule per regione uguale al modo uniforme (6 preset) 6
+PASS T5 sum f_t d_t = d* (1e-12, 6 preset) 8.9e-16
+PASS T6 frazione dell'epitelio (tumore del colon) entro 3 SE Monte Carlo da f (200 semi) 0.7766 contro 0.7764 (SE 0.0001)
+PASS T6b proposte rifiutate per quota esaurita < 5 % in media (tumore del colon, 20 semi): gli spostamenti a_t rendono le quote quasi mai vincolanti media 0.0167 massimo 0.0447
+PASS T7 s = 0: distanza dal vicino uguale in distribuzione al modo uniforme (KS, p > 0.001) p = 0.758
+PASS T8 s = 4: vicino dello stesso tipo > 0.7; s = 0: 0.45-0.55 0.869 / 0.505
+PASS T9 densita' nelle zone pure entro il 10 % di rho_t (4 000 e 1 000 /mm2) 3721 / 998; superamenti di lambda_max 0
+PASS T10 labels = "blind": posizioni identiche, conteggi per tipo identici, etichette diverse 
+PASS T10b etichette cieche con distanze per tipo diverse: errore seed_centroids(): labels = "blind" richiede la stessa distanza minima per tutti i tipi.
+PASS T11 place_cells() a compartimenti sui 6 preset x 2 distanze: 0 ERROR, 0 non piazzate 
+PASS T11b nessun superamento di lambda_max 0
+PASS T12 preset = BIO_REFERENCES (23 righe) = calibrazione su tutte le ROI; tipi minori s = 0 23
+PASS T13 stesso seme, stessi centri e tipi 
+PASS T14 il banco legge i parametri lascia-fuori del ROI (30/30; diversi da tutte le ROI in almeno 20) 30 / 28
+PASS T15 errori: distanza per nucleo senza compartimenti; compartimenti a un tipo; ell negativa 
+PASS T16 predefinito della semina dei preset = uniforme (prima della regola 3) 
+PASS T17 tipi estratti da p(x) prima di quote e RSA: frazione = f entro 3 SE (regione a L, 100 semi) 0.3000 contro 0.3 (SE 0.0027)
+PASS T17b per realizzazione la frazione estratta varia solo per campionamento (sd fra semi < 2 x binomiale): a_t risolti sul poligono sd 0.0267, binomiale 0.0246
+PASS T18 distanza minima rispettata fra regioni diverse (due quadrati adiacenti) min fra regioni 5.222
+PASS T19 labels = "blind": conteggi per tipo identici in ogni regione 
+PASS T20 distanza per nucleo per nome del tipo (6 preset); cervello: neuroni > oligodendrociti 
+PASS T21 griglia di una regione sottilissima: almeno un punto interno 4899
+RESULT 28/28 PASS

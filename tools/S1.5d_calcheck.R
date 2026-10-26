@@ -61,13 +61,18 @@ if (grepl("b", what)) {
   rois <- read.csv("results/R2/R2_rois_checked.csv")
   for (arm in c("R", "RV", "RD", "RVD", "VF", "W3", "W3p", "Q")) for (k in seq_len(nrow(rois))) {
     A <- rois$archetype[k]; r <- rois$roi_id[k]; f <- sprintf("%s/S1.5d/layers/%s_%s_%s.rds", M, A, r, arm); if (!file.exists(f)) next
-    L <- readRDS(f); got <- L$metadata$compartments; exp <- compart_for_d(A, r); m <- match(exp$cell_type, got$cell_type)
-    ok_c <- all(!is.na(m)) && all(got$s[m] == exp$s) && all(got$ell_um[m] %in% exp$ell_um)
+    L <- readRDS(f); got <- L$metadata$compartments                      # attesi letti dai CSV, senza le funzioni del banco (revisione RC-06)
+    cc <- read.csv(sprintf("%s/S1.5d_compartments_%s.csv", RES, A), stringsAsFactors = FALSE); exp <- cc[cc$fold == paste0("loo_", r), ]
+    m <- match(exp$cell_type, got$cell_type)
+    ok_c <- nrow(exp) > 0 && all(!is.na(m)) && all(got$s[m] == exp$s) && all(got$ell_um[m] == exp$ell_um)
     fam <- c(RV = "RV", RD = "RD", RVD = "RVD", VF = "RV")[arm]; if (arm %in% c("W3", "W3p", "Q")) fam <- read.csv(file.path(RES, "S1.5d_ruleA.csv"))$winner[1]
     h <- L$metadata$heterogeneity
     if (is.null(h)) h <- data.frame(void_frac = 0, void_ell_um = NA_real_, dens_sigma = 0, dens_ell_um = NA_real_)   # NULL = vuoti e densita' spenti (nota D-11)
-    ok_h <- if (arm == "R") h$void_frac == 0 && h$dens_sigma == 0 else { e <- het_for(A, r, fam); if (arm == "VF") e$void_ell_um <- 2
-      isTRUE(all.equal(c(h$void_frac, h$dens_sigma), c(e$void_frac, e$dens_sigma))) && (h$void_frac == 0 || h$void_ell_um == e$void_ell_um) && (h$dens_sigma == 0 || h$dens_ell_um == e$dens_ell_um) }
+    if (arm == "R") ok_h <- h$void_frac == 0 && h$dens_sigma == 0 else {
+      hh <- read.csv(sprintf("%s/S1.5d_het_%s.csv", RES, fam), stringsAsFactors = FALSE); e <- hh[hh$archetype == A & hh$fold == paste0("loo_", r), ]
+      if (arm == "VF") e$void_ell_um <- 2
+      ok_h <- nrow(e) == 1 && h$void_frac == e$void_frac && h$dens_sigma == e$dens_sigma &&
+        (e$void_frac == 0 || h$void_ell_um == e$void_ell_um) && (e$dens_sigma == 0 || h$dens_ell_um == e$dens_ell_um) }
     rows[[length(rows) + 1]] <- data.frame(part = "b", archetype = A, roi_id = r, cell_type = arm, bin = "", n_pairs_real = NA, R_real_py = NA, R_sim_R = NA, R_sim_py = NA,
       z = NA, value = as.numeric(ok_c && ok_h), tol = 1, checked = TRUE, pass = ok_c && ok_h)
   }

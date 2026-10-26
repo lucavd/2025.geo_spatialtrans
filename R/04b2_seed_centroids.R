@@ -611,7 +611,8 @@ seed_centroids <- function(regions,
       wg <- .sc_prob(eta_g, a, rho)$w * hg; wmax <- 1.1 * max(wg)
     }
     info[[i]] <- list(region_id = rdf$region_id[i], a = a, wmax = wmax, w_mean = mean(wg), n_grid = nrow(gp), n_fields = sum(s > 0),
-                      void_grid_frac = if (is.null(hg)) 0 else mean(hg == 0), field_void = fv, field_dens = fw)   # D-5: campi per i test
+                      void_grid_frac = if (is.null(hg)) 0 else mean(hg == 0), field_void = fv, field_dens = fw,   # D-5: campi per i test
+                      field_types = fields, ell_grid = ell_g, w_grid_max = max(wg), wmax_factor = wmax / max(wg))   # revisione: M3, M5, N6
     bw <- bb[["xmax"]] - bb[["xmin"]]; bh <- bb[["ymax"]] - bb[["ymin"]]
     p_in <- min(1, max(rdf$area_um2[i] / max(bw * bh, 1e-12), 1e-3)); p_thin <- max(mean(wg) / wmax, 1e-3)
     max_att <- as.integer(min(max_attempts_factor * n + 1000, .Machine$integer.max - 1))

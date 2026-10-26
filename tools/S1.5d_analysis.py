@@ -17,7 +17,7 @@ W = pd.read_csv(f"{RES}/S1.5d_windows.csv")
 RI = rd("results/S1.5c/S1.5c_real_intervals.csv"); RI[["cell_type", "bin"]] = RI[["cell_type", "bin"]].fillna("")
 RD_ = pd.read_csv(f"{RES}/S1.5d_real_intervals.csv"); Q90 = pd.read_csv(f"{RES}/S1.5d_real_q90.csv")
 RR = pd.read_csv("results/S1.5/S1.5_real_refs_roi.csv"); RT = pd.read_csv("results/S1.5b/S1.5b_real_refs_roi_type.csv"); RT = RT[RT.level == "type"]
-ARMS = [a for a in ["U", "N", "R", "RV", "RD", "RVD", "VF", "W3", "U3", "W3p", "Q"] if a in set(U.arm)]
+ARMS = [a for a in ["U", "N", "R", "RV", "RD", "RVD", "VF", "W3", "U3", "W3p", "Q", "U3c"] if a in set(U.arm)]
 assert (U.groupby(["arm", "archetype", "roi_id"]).seed.count() == 10).all(), "servono 10 semi per ROI e braccio"
 for a in ARMS: assert {"cv_local4", "nn_rel", "H_rel_3.0", "xcv2_50", "frac_gt3", "q90_an"} <= set(UM[UM.arm == a].metric), f"metriche mancanti nel braccio {a}"
 def est(v):
@@ -79,8 +79,10 @@ if STAGE in ("phase2", "final"):
         zb, ze = conf(base, SIZE_C), conf(emp, SIZE_C); sb, se_ = conf(base, SPATIAL), conf(emp, SPATIAL)
         return dict(base=base, emp=emp, size_base=zb, size_emp=ze, spatial_base=sb, spatial_emp=se_, winner="empirical" if (ze > zb and se_ >= sb) else "gaussian")
     C = pd.DataFrame([ruleC(winA, "W3"), ruleC("U", "U3")]); C.to_csv(f"{RES}/S1.5d_ruleC.csv", index=False); print(C.to_string(index=False))
+    if "U3c" in ARMS:                                                  # sensibilita' (revisione RC-03), non sostituisce la regola
+        Cs = pd.DataFrame([ruleC("U", "U3c")]); Cs.to_csv(f"{RES}/S1.5d_ruleC_sensitivity_U3c.csv", index=False); print("sensibilita' U3c:"); print(Cs.to_string(index=False))
 if STAGE == "final":
-    C = pd.read_csv(f"{RES}/S1.5d_ruleC.csv"); fin = "W3" if C.winner.iloc[0] == "empirical" else winA; ref = "U3" if C.winner.iloc[1] == "empirical" else "U"
+    C = pd.read_csv(f"{RES}/S1.5d_ruleC.csv"); C = C[C.emp.isin(["W3", "U3"])].reset_index(drop=True); fin = "W3" if C.winner.iloc[0] == "empirical" else winA; ref = "U3" if C.winner.iloc[1] == "empirical" else "U"
     sp_f, sp_r, sz_f, sz_r = conf(fin, SPATIAL), conf(ref, SPATIAL), conf(fin, SIZE), conf(ref, SIZE)
     B = pd.DataFrame([dict(final=fin, reference=ref, spatial_final=sp_f, spatial_ref=sp_r, size_final=sz_f, size_ref=sz_r, result="adottata" if (sp_f > sp_r and sz_f >= sz_r) else "non adottata")])
     B.to_csv(f"{RES}/S1.5d_ruleB.csv", index=False); print(B.to_string(index=False))
@@ -125,7 +127,7 @@ if STAGE == "final":
             d.append(dict(desc="D-desc-4 tempo mediano per unita' (s)", archetype=A, arm=arm, est=ua.elapsed_s.median(), se=np.nan))
             for mtr in ["gapratio_q05", "gapratio_lt1"]:
                 x = UM[(UM.arm == arm) & (UM.archetype == A) & (UM.metric == mtr)].groupby("roi_id").value.mean(); m, se, n = est(x)
-                d.append(dict(desc=f"D-desc-3b {mtr}", archetype=A, arm=arm, est=m, se=se))
+                d.append(dict(desc=f"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) {mtr}", archetype=A, arm=arm, est=m, se=se))
     pd.DataFrame(d).to_csv(f"{RES}/S1.5d_desc.csv", index=False)
     cnt = pd.DataFrame([dict(arm=a, **{p: conf(a, [p]) for p in SPATIAL + SIZE_C + ["P-9", "P-11", "P-12", "P-13"]}, spatial=conf(a, SPATIAL), size=conf(a, SIZE), size_C=conf(a, SIZE_C)) for a in ARMS])
     cnt.to_csv(f"{RES}/S1.5d_counts.csv", index=False); pd.set_option("display.width", 250); print(cnt.to_string(index=False))

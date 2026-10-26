@@ -28,20 +28,30 @@ elif [ "$mode" = mutants ]; then
   FILE[M6]=tools/S1.5d_bench_lib.R;  PAT[M6]='s/fold = c\("loo", "pooled"\)/fold = c("pooled", "loo")/g'
   FILE[M7]=R/04b2_seed_centroids.R;  PAT[M7]='s/if \(quotas && quota\[tj\] == 0L\)/if (quota[tj] == 0L)/'
   FILE[M8]=R/04b_cell_placement.R;   PAT[M8]='s/labels = labels, heterogeneity = htab, quotas = quotas, verbose = FALSE\)/labels = labels, heterogeneity = NULL, quotas = quotas, verbose = FALSE)/'
-  FILE[M9]=R/04b4_derive_cell_geometry.R; PAT[M9]='s/key\[use\], log\(a_t\[use\]\), stats::pnorm/key[use], log(a_t[use]) - log(a_ref[use]), stats::pnorm/'
+  FILE[M9]=R/04b4_derive_cell_geometry.R; PAT[M9]='s/key\[use\], log\(a_t\[use\]\) \+ sh\[use\], stats::pnorm/key[use], log(a_t[use]) - log(a_ref[use]) + sh[use], stats::pnorm/'
   FILE[M10]=R/04b0_tissue_presets.R; PAT[M10]='s/paste0\(preset, ":", out\$cell_types\$size_group\)/paste0(preset, ":", rev(out\$cell_types\$size_group))/'
   FILE[M11]=R/04b4_derive_cell_geometry.R; PAT[M11]='s/use <- !is\.na\(key\) & !abs_mode/use <- rep(FALSE, length(key))/'
-  n=0
-  for m in M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11; do
+  # M12-M20: mutanti del revisore del codice (N1-N6, N8, N12) e dello spostamento RC-03, aggiunti dopo la revisione
+  FILE[M12]=R/04b0_tissue_presets.R; PAT[M12]='s/hz <- \.TP_HET\[\.TP_HET\$preset == preset, , drop = FALSE\]/hz <- .TP_HET[1, , drop = FALSE]/'
+  FILE[M13]=R/04b_cell_placement.R; PAT[M13]='s/htab <- if \(!is\.null\(override_heterogeneity\)\) override_heterogeneity else if \(!is\.null\(spec\)\) spec\$heterogeneity else NULL/htab <- override_heterogeneity/'
+  FILE[M14]=R/04b_cell_placement.R; PAT[M14]='s/resid_table = rtab, resid_mode = resid_mode\)/resid_table = rtab, resid_mode = "decile")/'
+  FILE[M15]=R/04b_cell_placement.R; PAT[M15]='s/heterogeneity = htab, quotas = quotas, verbose = FALSE\)/heterogeneity = htab, quotas = TRUE, verbose = FALSE)/'
+  FILE[M16]=R/04b2_seed_centroids.R; PAT[M16]='s/if \(!any\(hg > 0\)\) \{ fv <- NULL; n_void_disabled/if (!any(hg > 0)) { n_void_disabled/'
+  FILE[M17]=R/04b2_seed_centroids.R; PAT[M17]='s/wg <- \.sc_prob\(eta_g, a, rho\)\$w \* hg; wmax <- 1\.1 \* max\(wg\)/wg <- .sc_prob(eta_g, a, rho)\$w * hg; wmax <- 1.0 * max(wg)/'
+  FILE[M18]=tools/S1.5d_bench_lib.R; PAT[M18]='s/het_for <- function\(A, roi, family, fold = c\("loo", "pooled"\)\)/het_for <- function(A, roi, family, fold = c("pooled", "loo"))/'
+  FILE[M19]=R/04b2_seed_centroids.R; PAT[M19]='s/h\[\.sc_rff_eval\(fv, x, y\) > het\$tau\] <- 0/h[abs(.sc_rff_eval(fv, x, y)) > het\$tau] <- 0/'
+  FILE[M20]=R/04b4_derive_cell_geometry.R; PAT[M20]='s/log\(a_t\[use\]\) \+ sh\[use\], stats::pnorm/log(a_t[use]), stats::pnorm/'
+  n=0; npre=0
+  for m in M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12 M13 M14 M15 M16 M17 M18 M19 M20; do
     T=$(mktemp -d); mkdir -p "$T/R" "$T/tools"; cp R/04b*.R "$T/R/"; cp tools/S1.5d_bench_lib.R "$T/tools/"
     perl -0pi -e "${PAT[$m]}" "$T/${FILE[$m]}"
     if cmp -s "$T/${FILE[$m]}" "${FILE[$m]}"; then echo "FAIL mutante $m: sostituzione non applicata"; fail=1; rm -rf "$T"; continue; fi
     S15D_RSRC="$T" Rscript --vanilla R/testing/test_S1.5d.R > "$LOG/test_S1.5d_$m.log" 2>&1
     newf=$(grep '^FAIL' "$LOG/test_S1.5d_$m.log" | cut -d' ' -f2 | sort -u | comm -23 - "$LOG/base_fail.txt" | tr '\n' ' ')
     if [ -z "$newf" ] && ! grep -q '^RESULT' "$LOG/test_S1.5d_$m.log"; then newf="(arresto dei test)"; fi
-    if [ -n "$newf" ]; then echo "PASS mutante $m rilevato da: $newf"; n=$((n+1)); else echo "FAIL mutante $m NON rilevato"; fail=1; fi
+    if [ -n "$newf" ]; then echo "PASS mutante $m rilevato da: $newf"; n=$((n+1)); case $m in M[1-9]|M1[01]) npre=$((npre+1));; esac; else echo "FAIL mutante $m NON rilevato"; fail=1; fi
     rm -rf "$T"
   done
-  echo "mutanti rilevati $n/11 (M1-M8 dell'eterogeneita', M9-M11 dei residui)"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
+  echo "mutanti rilevati $n/20 (pre-registrati M1-M11: $npre/11; M12-M20 aggiunti dopo la revisione)"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
 else echo "uso: run_S1.5d.sh test|mutants"; exit 2; fi
 exit $fail

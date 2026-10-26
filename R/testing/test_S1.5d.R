@@ -151,4 +151,58 @@ f18 <- vapply(c("A1", "A4"), function(A) isTRUE(safe({ d <- read.csv(sprintf("re
   key <- paste0("loo_", if (A == "A4") "f1" else "r1"); all(e$s == d$s[d$fold == key]) && isTRUE(all.equal(hh$void_frac, h$void_frac[h$archetype == A & h$fold == key])) })), TRUE)
 ck("T18 compart_for_d() e het_for() leggono la piega lascia-fuori della ROI", all(f18), names(f18)[!f18])
 
+# ==== test aggiunti dopo la revisione avversariale (rilievi RC-03...RC-10, mutanti M3, M5 non rilevati) ====
+# T2b (N12): frazione dei vuoti realizzata dal pacchetto sulla griglia della regione = void_frac (20 semi, 3 errori Monte Carlo)
+vg <- vapply(1:20, function(k) seed_h("A2", 600, 200 + k, H(0.15, 20))$info$compartments$regions[[1]]$void_grid_frac, 0)
+ck("T2b frazione dei vuoti del pacchetto sulla griglia = 0.15 (20 semi, 3 ES)", abs(mean(vg) - 0.15) < 3 * sd(vg) / sqrt(20), sprintf("%.4f (3 ES %.4f)", mean(vg), 3 * sd(vg) / sqrt(20)))
+# T18b (N8, RC-05): het_for() = riga della piega lascia-fuori per tutti e quattro i parametri, su pieghe in cui lascia-fuori != tutte le ROI
+hr <- read.csv("results/S1.5d/S1.5d_het_RV.csv", stringsAsFactors = FALSE); P4 <- c("void_frac", "void_ell_um", "dens_sigma", "dens_ell_um")
+diffk <- do.call(rbind, lapply(split(hr, hr$archetype), function(d) { p <- d[d$fold == "pooled", P4]; l <- d[d$fold != "pooled", ]
+  l[apply(l[, P4], 1, function(v) !isTRUE(all.equal(as.numeric(v), as.numeric(p), check.attributes = FALSE))), , drop = FALSE] }))
+ok18b <- nrow(diffk) > 0 && all(vapply(seq_len(nrow(diffk)), function(k) { e <- het_for(diffk$archetype[k], sub("^loo_", "", diffk$fold[k]), "RV")
+  isTRUE(all.equal(as.numeric(e[1, P4]), as.numeric(diffk[k, P4]), check.attributes = FALSE)) }, TRUE))
+ck("T18b het_for() = piega lascia-fuori per i 4 parametri (pieghe diverse da «pooled»)", ok18b, sprintf("%d pieghe", nrow(diffk)))
+# T19 (N1, N2, RC-07): eterogeneita' del preset per nome; place_cells() a compartimenti senza override usa quella del preset
+ok19 <- all(vapply(names(PRE), function(A) { h <- spec_c(A)$heterogeneity; r <- .TP_HET[.TP_HET$preset == PRE[[A]], ]
+  isTRUE(all.equal(as.numeric(h[1, P4]), as.numeric(r[1, P4]), check.attributes = FALSE)) }, TRUE))
+cl19 <- expand.grid(x = 1:200, y = 1:200); cl19$intensity_cluster <- 1L
+L19 <- suppressWarnings(place_cells(cl19, "epithelial", pixel_size_um = 1, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L, random_seed = 19,
+         size_arm = "group", spatial = "compartments", min_dist_mode = "nucleus", validate = FALSE, verbose = FALSE))
+h19 <- L19$metadata$heterogeneity
+ck("T19 eterogeneita' del preset per nome (6 preset); place_cells() senza override usa il preset (intestino 0.25)", ok19 && !is.null(h19) && h19$void_frac == .TP_HET$void_frac[.TP_HET$preset == "epithelial"])
+# T20 (N3) e T21 (N4): place_cells() inoltra resid_mode e quotas
+pcq <- function(...) suppressWarnings(place_cells(cl19, "lymphoid", pixel_size_um = 1, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L, random_seed = 20,
+         size_arm = "group", spatial = "compartments", min_dist_mode = "nucleus", override_heterogeneity = H(0, NA, 0, NA), validate = FALSE, verbose = FALSE, ...))
+d20 <- pcq(size_resid = "empirical", resid_mode = "decile"); p20 <- pcq(size_resid = "empirical", resid_mode = "pooled")
+ck("T20 place_cells() inoltra resid_mode: bersagli diversi e metadati «pooled»", p20$metadata$resid_mode == "pooled" && mean(p20$cell_df$nucleus_area_target != d20$cell_df$nucleus_area_target) > 0.9)
+q21 <- pcq(quotas = FALSE); y21 <- pcq(quotas = TRUE)
+ck("T21 place_cells() inoltra quotas = FALSE: 0 rifiuti per quota (con quote > 0)", q21$metadata$seed_info$compartments$n_quota_reject == 0 && y21$metadata$seed_info$compartments$n_quota_reject > 0,
+   sprintf("%d contro %d", q21$metadata$seed_info$compartments$n_quota_reject, y21$metadata$seed_info$compartments$n_quota_reject))
+# T22 (N5): regione tutta nei vuoti -> regione senza vuoti, nessuna cellula persa
+s22 <- NULL; for (k in 1:40) { s <- seed_centroids(square(100), data.frame(cell_type = "p", density = 2000, min_dist_um = 0), cp3, random_seed = 2200 + k, spatial = "compartments",
+  compartments = data.frame(cell_type = "p", ell_um = 20, s = 0), heterogeneity = H(0.9, 2000), verbose = FALSE)
+  if (s$info$compartments$n_void_disabled == 1L) { s22 <- s; break } }
+ck("T22 regione tutta nei vuoti: vuoti spenti, 0 cellule perse", !is.null(s22) && s22$info$n_failed == 0 && nrow(s22$centroids) == s22$region_df$n_target,
+   if (is.null(s22)) "nessuna regione tutta nei vuoti in 40 semi" else sprintf("%d / %d", nrow(s22$centroids), s22$region_df$n_target))
+# T23 (N6): lambda_max = 1.1 volte il massimo sulla griglia, in ogni regione (con e senza eterogeneita')
+f23 <- c(vapply(seed_h("A2", 300, 23, H(0.1, 16, 0.3, 40))$info$compartments$regions, function(r) r$wmax_factor, 0), vapply(seed_h("A2", 300, 23, NULL)$info$compartments$regions, function(r) r$wmax_factor, 0))
+ck("T23 lambda_max = 1.1 x massimo sulla griglia (con e senza eterogeneita')", all(abs(f23 - 1.1) < 1e-12), sprintf("%.6f", f23))
+# T24 (RC-03): con nucleus_area_resid_shift il decimo si cerca su log A_T + shift
+ct24 <- tissue_preset_spec("tumor_microenv", size_arm = "group", size_resid = "empirical")$cell_types[1, ]; ct24$nucleus_area_resid_shift <- 0.7
+z24 <- qnorm(c(0.1, 0.5, 0.9)); at24 <- rep(exp(3.5), 3)
+la24 <- log(ct24$nucleus_to_eq_ratio^2 * 1e6 / ct24$density) + ct24$nucleus_area_slope * (log(at24) - log(1e6 / ct24$density))
+e24 <- log(.dcg_target_area(at24, ct24, rep(1L, 3), z24, tab, "decile")) - la24; r24 <- .dcg_resid_draw(tab, rep(ct24$nucleus_area_resid, 3), rep(3.5 + 0.7, 3), pnorm(z24), "decile")
+ck("T24 spostamento del decimo nel modello ricentrato (RC-03)", max(abs(e24 - r24)) < 1e-12, sprintf("%.2e", max(abs(e24 - r24))))
+# T25 (M3): a_t registrati = soluzione con i pesi dell'eterogeneita' sulla griglia della regione
+s25 <- seed_h("A3", 400, 25, H(0.15, 16, 0.6, 20)); r25 <- s25$info$compartments$regions[[1]]; sp25 <- spec_c("A3"); ct25 <- sp25$cell_types
+cmp25 <- comp_of(sp25); ti25 <- match(cmp25$cell_type, s25$type_df$cell_type); f25 <- cmp25$fraction / sum(cmp25$fraction)
+s_t <- sp25$compartments$s[match(s25$type_df$cell_type[ti25], sp25$compartments$cell_type)]; rho25 <- s25$type_df$density[ti25]
+gp25 <- .sc_grid_points(square(400)$region_polygons[1], 400^2, r25$ell_grid); eta25 <- .sc_eta(r25$field_types, s_t, log(f25), gp25$x, gp25$y)
+h25 <- .sc_het_weight(.sc_check_het(H(0.15, 16, 0.6, 20)), r25$field_void, r25$field_dens, gp25$x, gp25$y); k25 <- h25 > 0
+a25 <- .sc_solve_a(eta25[k25, , drop = FALSE], f25, rho25, h = h25[k25])
+ck("T25 a_t della semina = soluzione pesata con l'eterogeneita' (1e-9)", max(abs(a25 - r25$a)) < 1e-9, sprintf("%.2e", max(abs(a25 - r25$a))))
+# T26 (M5): passo della griglia raffinato per la lunghezza del campo della densita'
+r26 <- seed_h("A2", 300, 26, H(0, NA, 0.3, 6))$info$compartments$regions[[1]]
+ck("T26 griglia della regione con la lunghezza del campo della densita' (6 um)", isTRUE(r26$ell_grid == 6), r26$ell_grid)
+
 n <- length(res); np <- sum(unlist(res)); cat(sprintf("RESULT %d/%d PASS\n", np, n))
