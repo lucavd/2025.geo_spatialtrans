@@ -2,9 +2,9 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## S1.5d, 2026-10-25/26: spazi vuoti e densità indipendenti dal tipo nella semina, modello di taglia dagli scarti veri (branch `step1-cell-layer`), **risultati; decisioni di Luca prese (DEC-023), in attesa della lettura del report**
+## S1.5d, 2026-10-25/26: spazi vuoti e densità indipendenti dal tipo nella semina, modello di taglia dagli scarti veri (branch `step1-cell-layer`), **chiusa**
 
-File dello step `docs/steps/S1.5d.md`, report `reports/S1.5d.html`; decisione tecnica DEC-022 (esito delle regole A, C, B); decisione di Luca DEC-023 (G-2 e G-3 falliti come scritti non bloccano, tre errori di pre-registrazione, regola C sulla semina uniforme come scritta). BIO_REFERENCES B-232...B-264. BACKLOG: chiusa BL-159; aggiornate BL-157, BL-158, BL-160; nuove BL-162...BL-165.
+File dello step `docs/steps/S1.5d.md`, report `reports/S1.5d.html`; decisione tecnica DEC-022 (esito delle regole A, C, B); decisione di Luca DEC-023 (G-2 e G-3 falliti come scritti non bloccano, tre errori di pre-registrazione, regola C sulla semina uniforme come scritta). Letta da Luca il 2026-10-26 («chiudi lo step»); prossimo step S1.5e (semina eterogenea, parte 3). BIO_REFERENCES B-232...B-264. BACKLOG: chiusa BL-159; aggiornate BL-157, BL-158, BL-160; nuove BL-162...BL-165.
 
 ### Codice
 - `R/04b2_seed_centroids.R`: `seed_centroids(heterogeneity = ..., quotas = ...)`: campo dei vuoti (soglia τ = Φ⁻¹(1 - φ_v)) e campo della densità exp(σ_d W), indipendenti dal tipo; a_t pesati con l'eterogeneità; griglia di lambda_max raffinata per ℓ_d; campi registrati nelle informazioni della semina.

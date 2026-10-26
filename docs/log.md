@@ -1,5 +1,9 @@
 # Registro delle modifiche
 
+## 2026-10-26 (chiusura di S1.5d)
+
+* **Chiusura**: [Se la semina lascia spazi vuoti dentro il tessuto e la densità varia anche senza dipendere dal tipo, tornano la variabilità dei territori e il numero di vicini dei tessuti veri? (S1.5d)](steps/S1.5d.md) chiuso con l'approvazione di Luca («chiudi lo step», lettura del riassunto «In breve» senza dubbi nuovi); decisioni di Luca in [S1.5d: i due cancelli falliti come scritti e le tre tolleranze sbagliate non bloccano lo step; nella semina uniforme resta il modello di taglia di oggi (DEC-023)](decisions/DEC-023.md). Prossimo step: S1.5e, semina eterogenea, parte 3.
+
 ## 2026-10-26 (decisioni di Luca su S1.5d)
 
 * **Creazione**: decisione di Luca [S1.5d: i due cancelli falliti come scritti e le tre tolleranze sbagliate non bloccano lo step; nella semina uniforme resta il modello di taglia di oggi (DEC-023)](decisions/DEC-023.md).
