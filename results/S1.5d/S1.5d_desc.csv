@@ -2,330 +2,360 @@ desc,archetype,arm,est,se
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A1,U,,
 D-desc-2 CV della distanza dal vicino,A1,U,0.36593614736627517,0.0003180680164086694
 D-desc-4 tempo mediano per unita' (s),A1,U,29.4085,
-D-desc-3b gapratio_q05,A1,U,0.6387355427649479,0.0005486823312187613
-D-desc-3b gapratio_lt1,A1,U,0.3733973798695426,0.0014919800632984953
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A1,U,0.6387355427649479,0.0005486823312187613
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A1,U,0.3733973798695426,0.0014919800632984953
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A2,U,,
 D-desc-2 CV della distanza dal vicino,A2,U,0.3260645725774,0.0005159335770321463
 D-desc-4 tempo mediano per unita' (s),A2,U,16.92150000000005,
-D-desc-3b gapratio_q05,A2,U,0.5723352344050147,0.00092997109594042
-D-desc-3b gapratio_lt1,A2,U,0.5569514873011635,0.001144951108715679
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A2,U,0.5723352344050147,0.00092997109594042
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A2,U,0.5569514873011635,0.001144951108715679
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A3,U,,
 D-desc-2 CV della distanza dal vicino,A3,U,0.4314466717951169,0.0004485094789473295
 D-desc-4 tempo mediano per unita' (s),A3,U,3.1205000000000203,
-D-desc-3b gapratio_q05,A3,U,0.6409702656001658,0.0027167829525753867
-D-desc-3b gapratio_lt1,A3,U,0.2525189736954535,0.0014287759213542277
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A3,U,0.6409702656001658,0.0027167829525753867
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A3,U,0.2525189736954535,0.0014287759213542277
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A4,U,,
 D-desc-2 CV della distanza dal vicino,A4,U,0.12190727042889568,3.0854113866666794e-05
 D-desc-4 tempo mediano per unita' (s),A4,U,30.81099999999995,
-D-desc-3b gapratio_q05,A4,U,0.8487676060111656,0.00015039405014756672
-D-desc-3b gapratio_lt1,A4,U,0.4592421314627358,0.0006343688779709279
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A4,U,0.8487676060111656,0.00015039405014756672
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A4,U,0.4592421314627358,0.0006343688779709279
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A5,U,,
 D-desc-2 CV della distanza dal vicino,A5,U,0.39747642276716516,0.0013375472026877918
 D-desc-4 tempo mediano per unita' (s),A5,U,16.7215,
-D-desc-3b gapratio_q05,A5,U,0.7398339030061785,0.003652845978490264
-D-desc-3b gapratio_lt1,A5,U,0.190124263676806,0.004438234578299712
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A5,U,0.7398339030061785,0.003652845978490264
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A5,U,0.190124263676806,0.004438234578299712
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A6,U,,
 D-desc-2 CV della distanza dal vicino,A6,U,0.5015148097869635,0.003409520355432371
 D-desc-4 tempo mediano per unita' (s),A6,U,7.5625,
-D-desc-3b gapratio_q05,A6,U,0.9097662352821991,0.010433827416275698
-D-desc-3b gapratio_lt1,A6,U,0.0670221404958711,0.0013803516055250994
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A6,U,0.9097662352821991,0.010433827416275698
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A6,U,0.0670221404958711,0.0013803516055250994
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A1,N,0.0328675590882634,
 D-desc-2 CV della distanza dal vicino,A1,N,0.366888557226957,0.0004990599036185019
 D-desc-4 tempo mediano per unita' (s),A1,N,41.093999999999895,
-D-desc-3b gapratio_q05,A1,N,0.6338152155456467,0.0005225082793042078
-D-desc-3b gapratio_lt1,A1,N,0.38295092327798497,0.0013335313229136479
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A1,N,0.6338152155456467,0.0005225082793042078
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A1,N,0.38295092327798497,0.0013335313229136479
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A2,N,0.022066301249907633,
 D-desc-2 CV della distanza dal vicino,A2,N,0.3309551621203241,0.00045801118324046103
 D-desc-4 tempo mediano per unita' (s),A2,N,19.0954999999999,
-D-desc-3b gapratio_q05,A2,N,0.5613677323143291,0.0012712980390076447
-D-desc-3b gapratio_lt1,A2,N,0.5924221077108053,0.0005931806432579978
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A2,N,0.5613677323143291,0.0012712980390076447
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A2,N,0.5924221077108053,0.0005931806432579978
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A3,N,0.04785204953542982,
 D-desc-2 CV della distanza dal vicino,A3,N,0.4770906507629614,0.0007503386300615724
 D-desc-4 tempo mediano per unita' (s),A3,N,14.654499999999949,
-D-desc-3b gapratio_q05,A3,N,0.6030787272461986,0.0010815254781877685
-D-desc-3b gapratio_lt1,A3,N,0.3173376181954273,0.0016732036601665619
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A3,N,0.6030787272461986,0.0010815254781877685
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A3,N,0.3173376181954273,0.0016732036601665619
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A4,N,0.1452038343038076,
 D-desc-2 CV della distanza dal vicino,A4,N,0.12246764111556978,0.0001118210853504129
 D-desc-4 tempo mediano per unita' (s),A4,N,33.49250000000015,
-D-desc-3b gapratio_q05,A4,N,0.8511304662040107,0.00019954570733604366
-D-desc-3b gapratio_lt1,A4,N,0.45183954192017906,0.0006621969472435892
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A4,N,0.8511304662040107,0.00019954570733604366
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A4,N,0.45183954192017906,0.0006621969472435892
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A5,N,0.08590211664664017,
 D-desc-2 CV della distanza dal vicino,A5,N,0.413168705691264,0.003272750280544723
 D-desc-4 tempo mediano per unita' (s),A5,N,25.60550000000015,
-D-desc-3b gapratio_q05,A5,N,0.7954516401757844,0.0030298655990586955
-D-desc-3b gapratio_lt1,A5,N,0.16794228442686213,0.0031349135152083604
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A5,N,0.7954516401757844,0.0030298655990586955
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A5,N,0.16794228442686213,0.0031349135152083604
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A6,N,0.03876935636222202,
 D-desc-2 CV della distanza dal vicino,A6,N,0.5119620099959581,0.0006620434678121631
 D-desc-4 tempo mediano per unita' (s),A6,N,13.825000000000049,
-D-desc-3b gapratio_q05,A6,N,0.8799837160789166,0.010793220791607204
-D-desc-3b gapratio_lt1,A6,N,0.0737717746165325,0.001915225260782768
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A6,N,0.8799837160789166,0.010793220791607204
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A6,N,0.0737717746165325,0.001915225260782768
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A1,R,0.025326297059996252,
 D-desc-2 CV della distanza dal vicino,A1,R,0.36757525957484855,0.000275047382794053
 D-desc-4 tempo mediano per unita' (s),A1,R,42.42750000000025,
-D-desc-3b gapratio_q05,A1,R,0.6337777358859163,0.0005224491470869323
-D-desc-3b gapratio_lt1,A1,R,0.3828666727721497,0.0007956944342248068
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A1,R,0.6337777358859163,0.0005224491470869323
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A1,R,0.3828666727721497,0.0007956944342248068
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A2,R,0.0249985768836885,
 D-desc-2 CV della distanza dal vicino,A2,R,0.3308352257203127,0.000487736473203654
 D-desc-4 tempo mediano per unita' (s),A2,R,19.1595000000001,
-D-desc-3b gapratio_q05,A2,R,0.5612383218853294,0.00043480772819280494
-D-desc-3b gapratio_lt1,A2,R,0.5924793031078398,0.0013264364887834573
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A2,R,0.5612383218853294,0.00043480772819280494
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A2,R,0.5924793031078398,0.0013264364887834573
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A3,R,0.049548905498445844,
 D-desc-2 CV della distanza dal vicino,A3,R,0.47785042690558094,0.0010726128654940821
 D-desc-4 tempo mediano per unita' (s),A3,R,7.183500000000155,
-D-desc-3b gapratio_q05,A3,R,0.6047189348573906,0.001294086277546724
-D-desc-3b gapratio_lt1,A3,R,0.3197055853889951,0.0010644588145855452
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A3,R,0.6047189348573906,0.001294086277546724
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A3,R,0.3197055853889951,0.0010644588145855452
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A4,R,0.08463552743683106,
 D-desc-2 CV della distanza dal vicino,A4,R,0.12222307396819325,7.683152701936102e-05
 D-desc-4 tempo mediano per unita' (s),A4,R,33.84850000000005,
-D-desc-3b gapratio_q05,A4,R,0.8507995780575965,0.00012058818197898984
-D-desc-3b gapratio_lt1,A4,R,0.4523026853160831,0.0005697093377591753
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A4,R,0.8507995780575965,0.00012058818197898984
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A4,R,0.4523026853160831,0.0005697093377591753
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A5,R,0.10295036827085602,
 D-desc-2 CV della distanza dal vicino,A5,R,0.410053266378159,0.0036765825213238724
 D-desc-4 tempo mediano per unita' (s),A5,R,22.1640000000001,
-D-desc-3b gapratio_q05,A5,R,0.7833629034593215,0.005701823085543381
-D-desc-3b gapratio_lt1,A5,R,0.1703862315046715,0.003966689269601863
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A5,R,0.7833629034593215,0.005701823085543381
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A5,R,0.1703862315046715,0.003966689269601863
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A6,R,0.04874164253967905,
 D-desc-2 CV della distanza dal vicino,A6,R,0.5109503470118053,0.0016360549304256138
 D-desc-4 tempo mediano per unita' (s),A6,R,9.965499999999924,
-D-desc-3b gapratio_q05,A6,R,0.8681178707652549,0.0065887795686682795
-D-desc-3b gapratio_lt1,A6,R,0.0743967389820445,0.0029309923616848564
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A6,R,0.8681178707652549,0.0065887795686682795
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A6,R,0.0743967389820445,0.0029309923616848564
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A1,RV,0.03817684027484757,
 D-desc-2 CV della distanza dal vicino,A1,RV,0.3518787354282112,0.0007289452803308104
 D-desc-4 tempo mediano per unita' (s),A1,RV,41.234000000000094,
-D-desc-3b gapratio_q05,A1,RV,0.6207963254498979,0.0011107027005961211
-D-desc-3b gapratio_lt1,A1,RV,0.4560148736635936,0.0007509392606659177
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A1,RV,0.6207963254498979,0.0011107027005961211
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A1,RV,0.4560148736635936,0.0007509392606659177
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A2,RV,0.02829707444699569,
 D-desc-2 CV della distanza dal vicino,A2,RV,0.3210178771408114,0.0018946978173114625
 D-desc-4 tempo mediano per unita' (s),A2,RV,19.833,
-D-desc-3b gapratio_q05,A2,RV,0.555694587158343,0.001587070738737273
-D-desc-3b gapratio_lt1,A2,RV,0.6358866911829056,0.006837468223586671
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A2,RV,0.555694587158343,0.001587070738737273
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A2,RV,0.6358866911829056,0.006837468223586671
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A3,RV,0.05432022847778548,
 D-desc-2 CV della distanza dal vicino,A3,RV,0.47929422429503327,0.0008407383706622763
 D-desc-4 tempo mediano per unita' (s),A3,RV,7.236000000000045,
-D-desc-3b gapratio_q05,A3,RV,0.5994374914887965,0.0021362297986099498
-D-desc-3b gapratio_lt1,A3,RV,0.3350909351733567,0.00414759624979996
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A3,RV,0.5994374914887965,0.0021362297986099498
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A3,RV,0.3350909351733567,0.00414759624979996
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A4,RV,0.11047873288775184,
 D-desc-2 CV della distanza dal vicino,A4,RV,0.11854247868704355,0.0005679472299608135
 D-desc-4 tempo mediano per unita' (s),A4,RV,39.123000000000005,
-D-desc-3b gapratio_q05,A4,RV,0.8485662398902825,0.0006445057877204444
-D-desc-3b gapratio_lt1,A4,RV,0.4588263384734838,0.0017555534693040927
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A4,RV,0.8485662398902825,0.0006445057877204444
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A4,RV,0.4588263384734838,0.0017555534693040927
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A5,RV,0.0873694755904905,
 D-desc-2 CV della distanza dal vicino,A5,RV,0.399179098091002,0.002115039682586658
 D-desc-4 tempo mediano per unita' (s),A5,RV,23.79299999999985,
-D-desc-3b gapratio_q05,A5,RV,0.7769617398188154,0.0020724822769728718
-D-desc-3b gapratio_lt1,A5,RV,0.18618658857872977,0.005642875961240534
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A5,RV,0.7769617398188154,0.0020724822769728718
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A5,RV,0.18618658857872977,0.005642875961240534
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A6,RV,0.06660021888680426,
 D-desc-2 CV della distanza dal vicino,A6,RV,0.5168428145378049,0.005670212653173634
 D-desc-4 tempo mediano per unita' (s),A6,RV,10.36700000000005,
-D-desc-3b gapratio_q05,A6,RV,0.8542818173432195,0.011857275422422969
-D-desc-3b gapratio_lt1,A6,RV,0.07894241237606778,0.0037176969309404753
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A6,RV,0.8542818173432195,0.011857275422422969
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A6,RV,0.07894241237606778,0.0037176969309404753
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A1,RD,0.0378202395490753,
 D-desc-2 CV della distanza dal vicino,A1,RD,0.4019636309576871,0.001878834026639349
 D-desc-4 tempo mediano per unita' (s),A1,RD,62.54449999999995,
-D-desc-3b gapratio_q05,A1,RD,0.6255189594928249,0.002240885656458923
-D-desc-3b gapratio_lt1,A1,RD,0.44528589160375665,0.01069324149503488
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A1,RD,0.6255189594928249,0.002240885656458923
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A1,RD,0.44528589160375665,0.01069324149503488
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A2,RD,0.03130567480072185,
 D-desc-2 CV della distanza dal vicino,A2,RD,0.37242453669701653,0.004544402420584997
 D-desc-4 tempo mediano per unita' (s),A2,RD,24.9665,
-D-desc-3b gapratio_q05,A2,RD,0.5680403500185622,0.0013954345567016829
-D-desc-3b gapratio_lt1,A2,RD,0.6169904486636312,0.0028742535686850654
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A2,RD,0.5680403500185622,0.0013954345567016829
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A2,RD,0.6169904486636312,0.0028742535686850654
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A3,RD,0.05597138467719,
 D-desc-2 CV della distanza dal vicino,A3,RD,0.4988217931902927,0.013878902179233925
 D-desc-4 tempo mediano per unita' (s),A3,RD,10.732,
-D-desc-3b gapratio_q05,A3,RD,0.6009831867712655,0.0018517771361070132
-D-desc-3b gapratio_lt1,A3,RD,0.33600909196811835,0.010143671676976147
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A3,RD,0.6009831867712655,0.0018517771361070132
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A3,RD,0.33600909196811835,0.010143671676976147
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A4,RD,0.2723222948048197,
 D-desc-2 CV della distanza dal vicino,A4,RD,0.1399054912958142,0.0006672436571727148
 D-desc-4 tempo mediano per unita' (s),A4,RD,128.52550000000002,
-D-desc-3b gapratio_q05,A4,RD,0.8531230203706242,0.00013108417592652726
-D-desc-3b gapratio_lt1,A4,RD,0.44206026854239344,0.0005801773297938332
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A4,RD,0.8531230203706242,0.00013108417592652726
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A4,RD,0.44206026854239344,0.0005801773297938332
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A5,RD,0.08974636926247741,
 D-desc-2 CV della distanza dal vicino,A5,RD,0.44437774046492756,0.006240494871513023
 D-desc-4 tempo mediano per unita' (s),A5,RD,24.94699999999995,
-D-desc-3b gapratio_q05,A5,RD,0.792183509695987,0.0044118552621774205
-D-desc-3b gapratio_lt1,A5,RD,0.1758447021035387,0.00567389372780994
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A5,RD,0.792183509695987,0.0044118552621774205
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A5,RD,0.1758447021035387,0.00567389372780994
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A6,RD,0.04874164253967905,
 D-desc-2 CV della distanza dal vicino,A6,RD,0.5109503470118053,0.0016360549304256138
 D-desc-4 tempo mediano per unita' (s),A6,RD,9.943500000000085,
-D-desc-3b gapratio_q05,A6,RD,0.8681178707652549,0.0065887795686682795
-D-desc-3b gapratio_lt1,A6,RD,0.0743967389820445,0.0029309923616848564
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A6,RD,0.8681178707652549,0.0065887795686682795
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A6,RD,0.0743967389820445,0.0029309923616848564
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A1,RVD,0.03312241942346173,
 D-desc-2 CV della distanza dal vicino,A1,RVD,0.358017198883068,0.0006259775126206905
 D-desc-4 tempo mediano per unita' (s),A1,RVD,62.17149999999995,
-D-desc-3b gapratio_q05,A1,RVD,0.619496626803729,0.0010602215765370597
-D-desc-3b gapratio_lt1,A1,RVD,0.47122956002300126,0.0010866136311988692
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A1,RVD,0.619496626803729,0.0010602215765370597
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A1,RVD,0.47122956002300126,0.0010866136311988692
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A2,RVD,0.030086541152136624,
 D-desc-2 CV della distanza dal vicino,A2,RVD,0.34400261616430344,0.007043813329660154
 D-desc-4 tempo mediano per unita' (s),A2,RVD,23.783499999999947,
-D-desc-3b gapratio_q05,A2,RVD,0.5621575422314251,0.002550149401210091
-D-desc-3b gapratio_lt1,A2,RVD,0.6218817651647639,0.003787279367068431
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A2,RVD,0.5621575422314251,0.002550149401210091
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A2,RVD,0.6218817651647639,0.003787279367068431
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A3,RVD,0.056468739961531206,
 D-desc-2 CV della distanza dal vicino,A3,RVD,0.48521500014804453,0.0027293044876831006
 D-desc-4 tempo mediano per unita' (s),A3,RVD,17.679499999999997,
-D-desc-3b gapratio_q05,A3,RVD,0.5953499514738482,0.0026315561854409445
-D-desc-3b gapratio_lt1,A3,RVD,0.3451340052458037,0.006535719601762363
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A3,RVD,0.5953499514738482,0.0026315561854409445
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A3,RVD,0.3451340052458037,0.006535719601762363
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A4,RVD,0.2723222948048197,
 D-desc-2 CV della distanza dal vicino,A4,RVD,0.1399054912958142,0.0006672436571727148
 D-desc-4 tempo mediano per unita' (s),A4,RVD,126.3985,
-D-desc-3b gapratio_q05,A4,RVD,0.8531230203706242,0.00013108417592652726
-D-desc-3b gapratio_lt1,A4,RVD,0.44206026854239344,0.0005801773297938332
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A4,RVD,0.8531230203706242,0.00013108417592652726
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A4,RVD,0.44206026854239344,0.0005801773297938332
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A5,RVD,0.10724328205033803,
 D-desc-2 CV della distanza dal vicino,A5,RVD,0.4080329456998856,0.004545678955140583
 D-desc-4 tempo mediano per unita' (s),A5,RVD,26.23850000000015,
-D-desc-3b gapratio_q05,A5,RVD,0.7699436328003746,0.0062924442149036594
-D-desc-3b gapratio_lt1,A5,RVD,0.19117015392108236,0.0052628210243999074
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A5,RVD,0.7699436328003746,0.0062924442149036594
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A5,RVD,0.19117015392108236,0.0052628210243999074
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A6,RVD,0.06660021888680426,
 D-desc-2 CV della distanza dal vicino,A6,RVD,0.5168428145378049,0.005670212653173634
 D-desc-4 tempo mediano per unita' (s),A6,RVD,11.11500000000005,
-D-desc-3b gapratio_q05,A6,RVD,0.8542818173432195,0.011857275422422969
-D-desc-3b gapratio_lt1,A6,RVD,0.07894241237606778,0.0037176969309404753
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A6,RVD,0.8542818173432195,0.011857275422422969
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A6,RVD,0.07894241237606778,0.0037176969309404753
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A1,VF,0.038304607608561775,
 D-desc-2 CV della distanza dal vicino,A1,VF,0.3740692688991672,0.00026535331788804354
 D-desc-4 tempo mediano per unita' (s),A1,VF,40.650499999999795,
-D-desc-3b gapratio_q05,A1,VF,0.6281311316003275,0.00042767800346165606
-D-desc-3b gapratio_lt1,A1,VF,0.3969508410086974,0.0011558449155155935
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A1,VF,0.6281311316003275,0.00042767800346165606
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A1,VF,0.3969508410086974,0.0011558449155155935
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A2,VF,0.02785888059714213,
 D-desc-2 CV della distanza dal vicino,A2,VF,0.3321674983155334,0.0002707140940445903
 D-desc-4 tempo mediano per unita' (s),A2,VF,19.49849999999985,
-D-desc-3b gapratio_q05,A2,VF,0.5604184797776526,0.0005773859074151012
-D-desc-3b gapratio_lt1,A2,VF,0.5962268658155184,0.0016829563519401118
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A2,VF,0.5604184797776526,0.0005773859074151012
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A2,VF,0.5962268658155184,0.0016829563519401118
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A3,VF,0.052277502744959015,
 D-desc-2 CV della distanza dal vicino,A3,VF,0.4771222055994687,0.0014555330500345969
 D-desc-4 tempo mediano per unita' (s),A3,VF,7.38549999999998,
-D-desc-3b gapratio_q05,A3,VF,0.6038732048781558,0.0006235947257229367
-D-desc-3b gapratio_lt1,A3,VF,0.31860216984830886,0.001275843352322427
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A3,VF,0.6038732048781558,0.0006235947257229367
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A3,VF,0.31860216984830886,0.001275843352322427
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A4,VF,0.14567282222522843,
 D-desc-2 CV della distanza dal vicino,A4,VF,0.12218770755383816,2.4948700806158204e-05
 D-desc-4 tempo mediano per unita' (s),A4,VF,38.2654999999999,
-D-desc-3b gapratio_q05,A4,VF,0.8507562772383321,0.00010934960737034575
-D-desc-3b gapratio_lt1,A4,VF,0.4533344725597459,0.0005390967967060251
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A4,VF,0.8507562772383321,0.00010934960737034575
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A4,VF,0.4533344725597459,0.0005390967967060251
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A5,VF,0.0849868026419814,
 D-desc-2 CV della distanza dal vicino,A5,VF,0.40554541054078275,0.0012429108040355526
 D-desc-4 tempo mediano per unita' (s),A5,VF,23.831000000000053,
-D-desc-3b gapratio_q05,A5,VF,0.7807207544997978,0.003733135483686898
-D-desc-3b gapratio_lt1,A5,VF,0.17231394921572632,0.002858385048532539
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A5,VF,0.7807207544997978,0.003733135483686898
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A5,VF,0.17231394921572632,0.002858385048532539
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A6,VF,0.04952351288376449,
 D-desc-2 CV della distanza dal vicino,A6,VF,0.5118827562469624,0.0036548049654631333
 D-desc-4 tempo mediano per unita' (s),A6,VF,10.1045,
-D-desc-3b gapratio_q05,A6,VF,0.8668690579839252,0.020773808497017446
-D-desc-3b gapratio_lt1,A6,VF,0.07504624837019687,0.003928556686117094
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A6,VF,0.8668690579839252,0.020773808497017446
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A6,VF,0.07504624837019687,0.003928556686117094
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A1,W3,0.03817684027484757,
 D-desc-2 CV della distanza dal vicino,A1,W3,0.3518787354282112,0.0007289452803308104
 D-desc-4 tempo mediano per unita' (s),A1,W3,40.3775,
-D-desc-3b gapratio_q05,A1,W3,0.6235010093341359,0.0011247615535116338
-D-desc-3b gapratio_lt1,A1,W3,0.46196726723346215,0.0007364204956534185
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A1,W3,0.6235010093341359,0.0011247615535116338
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A1,W3,0.46196726723346215,0.0007364204956534185
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A2,W3,0.02829707444699569,
 D-desc-2 CV della distanza dal vicino,A2,W3,0.3210178771408114,0.0018946978173114625
 D-desc-4 tempo mediano per unita' (s),A2,W3,20.0149999999999,
-D-desc-3b gapratio_q05,A2,W3,0.5519273733455076,0.001118370055215284
-D-desc-3b gapratio_lt1,A2,W3,0.6579751563726279,0.0056218656246938125
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A2,W3,0.5519273733455076,0.001118370055215284
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A2,W3,0.6579751563726279,0.0056218656246938125
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A3,W3,0.05432022847778548,
 D-desc-2 CV della distanza dal vicino,A3,W3,0.47929422429503327,0.0008407383706622763
 D-desc-4 tempo mediano per unita' (s),A3,W3,7.647499999999995,
-D-desc-3b gapratio_q05,A3,W3,0.5879380809321866,0.0015649263451126716
-D-desc-3b gapratio_lt1,A3,W3,0.34881156301099603,0.0039411275015410864
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A3,W3,0.5879380809321866,0.0015649263451126716
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A3,W3,0.34881156301099603,0.0039411275015410864
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A4,W3,0.11047873288775184,
 D-desc-2 CV della distanza dal vicino,A4,W3,0.11854247868704355,0.0005679472299608135
 D-desc-4 tempo mediano per unita' (s),A4,W3,34.66550000000005,
-D-desc-3b gapratio_q05,A4,W3,0.8592027757525541,0.0007919153339545034
-D-desc-3b gapratio_lt1,A4,W3,0.46252617982518196,0.0018006570276075408
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A4,W3,0.8592027757525541,0.0007919153339545034
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A4,W3,0.46252617982518196,0.0018006570276075408
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A5,W3,0.0873694755904905,
 D-desc-2 CV della distanza dal vicino,A5,W3,0.399179098091002,0.002115039682586658
 D-desc-4 tempo mediano per unita' (s),A5,W3,22.6840000000001,
-D-desc-3b gapratio_q05,A5,W3,0.7685146640566145,0.001407307699972912
-D-desc-3b gapratio_lt1,A5,W3,0.20514033244914845,0.006035487404628081
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A5,W3,0.7685146640566145,0.001407307699972912
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A5,W3,0.20514033244914845,0.006035487404628081
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A6,W3,0.06660021888680426,
 D-desc-2 CV della distanza dal vicino,A6,W3,0.5168428145378049,0.005670212653173634
 D-desc-4 tempo mediano per unita' (s),A6,W3,10.308,
-D-desc-3b gapratio_q05,A6,W3,0.8579447492037072,0.012991430664268519
-D-desc-3b gapratio_lt1,A6,W3,0.07784942174335599,0.003958499245031026
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A6,W3,0.8579447492037072,0.012991430664268519
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A6,W3,0.07784942174335599,0.003958499245031026
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A1,U3,,
 D-desc-2 CV della distanza dal vicino,A1,U3,0.36593614736627517,0.0003180680164086694
 D-desc-4 tempo mediano per unita' (s),A1,U3,29.292499999999997,
-D-desc-3b gapratio_q05,A1,U3,0.634742087231875,0.0006384256605183124
-D-desc-3b gapratio_lt1,A1,U3,0.38544198525666085,0.0011761339497291608
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A1,U3,0.634742087231875,0.0006384256605183124
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A1,U3,0.38544198525666085,0.0011761339497291608
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A2,U3,,
 D-desc-2 CV della distanza dal vicino,A2,U3,0.3260645725774,0.0005159335770321463
 D-desc-4 tempo mediano per unita' (s),A2,U3,17.073,
-D-desc-3b gapratio_q05,A2,U3,0.56259478992597,0.0006211433391355261
-D-desc-3b gapratio_lt1,A2,U3,0.5891771439440384,0.0010804858724450025
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A2,U3,0.56259478992597,0.0006211433391355261
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A2,U3,0.5891771439440384,0.0010804858724450025
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A3,U3,,
 D-desc-2 CV della distanza dal vicino,A3,U3,0.4314466717951169,0.0004485094789473295
 D-desc-4 tempo mediano per unita' (s),A3,U3,3.138500000000025,
-D-desc-3b gapratio_q05,A3,U3,0.6299410795617626,0.002572881966773769
-D-desc-3b gapratio_lt1,A3,U3,0.26056598244639784,0.001618787508060348
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A3,U3,0.6299410795617626,0.002572881966773769
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A3,U3,0.26056598244639784,0.001618787508060348
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A4,U3,,
 D-desc-2 CV della distanza dal vicino,A4,U3,0.12190727042889568,3.0854113866666794e-05
 D-desc-4 tempo mediano per unita' (s),A4,U3,28.683500000000052,
-D-desc-3b gapratio_q05,A4,U3,0.8596318914791296,0.00010353762717315757
-D-desc-3b gapratio_lt1,A4,U3,0.46244109290834945,0.0008134813411033448
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A4,U3,0.8596318914791296,0.00010353762717315757
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A4,U3,0.46244109290834945,0.0008134813411033448
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A5,U3,,
 D-desc-2 CV della distanza dal vicino,A5,U3,0.39747642276716516,0.0013375472026877918
 D-desc-4 tempo mediano per unita' (s),A5,U3,16.188499999999998,
-D-desc-3b gapratio_q05,A5,U3,0.7293779594912675,0.0017763264739787837
-D-desc-3b gapratio_lt1,A5,U3,0.20259882594771864,0.004888835266471376
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A5,U3,0.7293779594912675,0.0017763264739787837
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A5,U3,0.20259882594771864,0.004888835266471376
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A6,U3,,
 D-desc-2 CV della distanza dal vicino,A6,U3,0.5015148097869635,0.003409520355432371
 D-desc-4 tempo mediano per unita' (s),A6,U3,7.671999999999995,
-D-desc-3b gapratio_q05,A6,U3,0.9130701253875838,0.010550844251273672
-D-desc-3b gapratio_lt1,A6,U3,0.0662702460269545,0.0014905053473297867
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A6,U3,0.9130701253875838,0.010550844251273672
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A6,U3,0.0662702460269545,0.0014905053473297867
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A1,W3p,0.03817684027484757,
 D-desc-2 CV della distanza dal vicino,A1,W3p,0.3518787354282112,0.0007289452803308104
 D-desc-4 tempo mediano per unita' (s),A1,W3p,39.8915,
-D-desc-3b gapratio_q05,A1,W3p,0.6201189223616934,0.0011384172809007873
-D-desc-3b gapratio_lt1,A1,W3p,0.456945704322224,0.0007839691207005201
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A1,W3p,0.6201189223616934,0.0011384172809007873
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A1,W3p,0.456945704322224,0.0007839691207005201
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A2,W3p,0.02829707444699569,
 D-desc-2 CV della distanza dal vicino,A2,W3p,0.3210178771408114,0.0018946978173114625
 D-desc-4 tempo mediano per unita' (s),A2,W3p,19.619999999999997,
-D-desc-3b gapratio_q05,A2,W3p,0.5568306969107193,0.0015853577449343337
-D-desc-3b gapratio_lt1,A2,W3p,0.6381376765936357,0.006804233908613116
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A2,W3p,0.5568306969107193,0.0015853577449343337
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A2,W3p,0.6381376765936357,0.006804233908613116
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A3,W3p,0.05432022847778548,
 D-desc-2 CV della distanza dal vicino,A3,W3p,0.47929422429503327,0.0008407383706622763
 D-desc-4 tempo mediano per unita' (s),A3,W3p,7.01350000000001,
-D-desc-3b gapratio_q05,A3,W3p,0.5994760537488496,0.002262717542514504
-D-desc-3b gapratio_lt1,A3,W3p,0.3357816399385991,0.004236896916985564
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A3,W3p,0.5994760537488496,0.002262717542514504
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A3,W3p,0.3357816399385991,0.004236896916985564
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A4,W3p,0.11047873288775184,
 D-desc-2 CV della distanza dal vicino,A4,W3p,0.11854247868704355,0.0005679472299608135
 D-desc-4 tempo mediano per unita' (s),A4,W3p,34.527,
-D-desc-3b gapratio_q05,A4,W3p,0.8543370492486835,0.0006965045101696865
-D-desc-3b gapratio_lt1,A4,W3p,0.45709807505337074,0.001729664843321991
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A4,W3p,0.8543370492486835,0.0006965045101696865
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A4,W3p,0.45709807505337074,0.001729664843321991
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A5,W3p,0.0873694755904905,
 D-desc-2 CV della distanza dal vicino,A5,W3p,0.399179098091002,0.002115039682586658
 D-desc-4 tempo mediano per unita' (s),A5,W3p,22.442999999999998,
-D-desc-3b gapratio_q05,A5,W3p,0.785228743649377,0.0012674989264657172
-D-desc-3b gapratio_lt1,A5,W3p,0.18896649804343318,0.0058004635864502725
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A5,W3p,0.785228743649377,0.0012674989264657172
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A5,W3p,0.18896649804343318,0.0058004635864502725
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A6,W3p,0.06660021888680426,
 D-desc-2 CV della distanza dal vicino,A6,W3p,0.5168428145378049,0.005670212653173634
 D-desc-4 tempo mediano per unita' (s),A6,W3p,9.798,
-D-desc-3b gapratio_q05,A6,W3p,0.8544406203083683,0.010673496159633047
-D-desc-3b gapratio_lt1,A6,W3p,0.07882094099629006,0.003769364760102503
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A6,W3p,0.8544406203083683,0.010673496159633047
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A6,W3p,0.07882094099629006,0.003769364760102503
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A1,Q,0.0,
 D-desc-2 CV della distanza dal vicino,A1,Q,0.3519514598764319,0.0008942429815162929
 D-desc-4 tempo mediano per unita' (s),A1,Q,41.8955,
-D-desc-3b gapratio_q05,A1,Q,0.620825281239753,0.0010785213625818444
-D-desc-3b gapratio_lt1,A1,Q,0.45474312055388244,0.000724102702904146
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A1,Q,0.620825281239753,0.0010785213625818444
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A1,Q,0.45474312055388244,0.000724102702904146
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A2,Q,0.0,
 D-desc-2 CV della distanza dal vicino,A2,Q,0.3195691504801082,0.0015711874839567466
 D-desc-4 tempo mediano per unita' (s),A2,Q,19.5105,
-D-desc-3b gapratio_q05,A2,Q,0.5552503953527348,0.0016786239648949326
-D-desc-3b gapratio_lt1,A2,Q,0.6300702123571325,0.007092404840383999
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A2,Q,0.5552503953527348,0.0016786239648949326
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A2,Q,0.6300702123571325,0.007092404840383999
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A3,Q,0.0,
 D-desc-2 CV della distanza dal vicino,A3,Q,0.47317314129028176,0.0009403812577711438
 D-desc-4 tempo mediano per unita' (s),A3,Q,7.098,
-D-desc-3b gapratio_q05,A3,Q,0.6012262295221354,0.002296665078682768
-D-desc-3b gapratio_lt1,A3,Q,0.32937246708175294,0.004010366219006591
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A3,Q,0.6012262295221354,0.002296665078682768
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A3,Q,0.32937246708175294,0.004010366219006591
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A4,Q,0.0,
 D-desc-2 CV della distanza dal vicino,A4,Q,0.11848275730615229,0.0005086328999898543
 D-desc-4 tempo mediano per unita' (s),A4,Q,35.4015,
-D-desc-3b gapratio_q05,A4,Q,0.8484890388623159,0.0007536901726585882
-D-desc-3b gapratio_lt1,A4,Q,0.4594264903409783,0.0016565952552146167
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A4,Q,0.8484890388623159,0.0007536901726585882
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A4,Q,0.4594264903409783,0.0016565952552146167
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A5,Q,0.0,
 D-desc-2 CV della distanza dal vicino,A5,Q,0.4030477958144541,0.002171120847374164
 D-desc-4 tempo mediano per unita' (s),A5,Q,23.7215,
-D-desc-3b gapratio_q05,A5,Q,0.7779892421406016,0.0020776237576815215
-D-desc-3b gapratio_lt1,A5,Q,0.18540245185595472,0.0053634987725935815
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A5,Q,0.7779892421406016,0.0020776237576815215
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A5,Q,0.18540245185595472,0.0053634987725935815
 D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A6,Q,0.0,
 D-desc-2 CV della distanza dal vicino,A6,Q,0.5150498894851494,0.005515155665689441
 D-desc-4 tempo mediano per unita' (s),A6,Q,10.252,
-D-desc-3b gapratio_q05,A6,Q,0.8593598300213922,0.01426515400983682
-D-desc-3b gapratio_lt1,A6,Q,0.07825431022765272,0.003820993022807445
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A6,Q,0.8593598300213922,0.01426515400983682
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A6,Q,0.07825431022765272,0.003820993022807445
+D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A1,U3c,,
+D-desc-2 CV della distanza dal vicino,A1,U3c,0.36593614736627517,0.0003180680164086694
+D-desc-4 tempo mediano per unita' (s),A1,U3c,29.0065,
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A1,U3c,0.6409155838430719,0.0005850519395335192
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A1,U3c,0.3800284857931503,0.0011671926672238567
+D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A2,U3c,,
+D-desc-2 CV della distanza dal vicino,A2,U3c,0.3260645725774,0.0005159335770321463
+D-desc-4 tempo mediano per unita' (s),A2,U3c,16.967,
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A2,U3c,0.572360757454697,0.0006545650169531019
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A2,U3c,0.5819305049521029,0.0008512211554271304
+D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A3,U3c,,
+D-desc-2 CV della distanza dal vicino,A3,U3c,0.4314466717951169,0.0004485094789473295
+D-desc-4 tempo mediano per unita' (s),A3,U3c,3.089000000000005,
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A3,U3c,0.6470658292627088,0.002884054794759666
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A3,U3c,0.2546791016363511,0.0012054072647468311
+D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A4,U3c,,
+D-desc-2 CV della distanza dal vicino,A4,U3c,0.12190727042889568,3.0854113866666794e-05
+D-desc-4 tempo mediano per unita' (s),A4,U3c,27.82,
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A4,U3c,0.8589087914537114,0.00010124768007828134
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A4,U3c,0.4616179372750125,0.0007796943725282808
+D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A5,U3c,,
+D-desc-2 CV della distanza dal vicino,A5,U3c,0.39747642276716516,0.0013375472026877918
+D-desc-4 tempo mediano per unita' (s),A5,U3c,16.139,
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A5,U3c,0.7343745882247459,0.002757913180453097
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A5,U3c,0.19756502551177807,0.00437751780124847
+D-desc-1 rifiuti per quota / proposte accettate dal diradamento,A6,U3c,,
+D-desc-2 CV della distanza dal vicino,A6,U3c,0.5015148097869635,0.003409520355432371
+D-desc-4 tempo mediano per unita' (s),A6,U3c,7.531,
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_q05",A6,U3c,0.9168394446362151,0.00974340543431705
+"D-desc-7 (non pre-registrata, come D-desc-3 di S1.5c) gapratio_lt1",A6,U3c,0.06564527447598507,0.0013663812367535734

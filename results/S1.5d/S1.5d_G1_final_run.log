@@ -1,0 +1,69 @@
+# S1.5d G-1, corsa finale da repository pulito (commit 2866cd6), 2026-10-26
+## bash R/testing/run_S1.5d.sh test (riepilogo)
+PASS T1 nessun centro con V > tau (tumore del colon, vuoti 15 %, 20 um) max V 1.035, tau 1.036, n 1428
+PASS T2 frazione dei vuoti = 0.15 entro 3 errori Monte Carlo (200 campi) 0.1525 (3 ES 0.0043)
+PASS T3 densita' zone alte / basse di W = atteso entro il 10 % 3.605 contro 3.677
+PASS T4 numero di cellule per regione invariato con vuoti e densita' (6 preset) 
+PASS T5 distanza minima della coppia rispettata (A2, A4, A5, vuoti e densita') 0 0 0
+PASS T6 frazioni attese pesate = f con i pesi dell'eterogeneita' (1e-6) 1.64e-13
+PASS T7a heterogeneity NULL = tutto a zero (bit per bit, 3 preset; con T7b = S1.5c) 
+PASS T7b place_cells() predefinito = layer di S1.5c (md5; stroma e cuore a compartimenti, cervello uniforme; seme 1) TRUE TRUE TRUE
+PASS T8 H_rel_3 cresce con void_frac (intestino, 0...0.20, 20 semi) 0.0006 0.0060 0.0154 0.0319 0.0513
+PASS T9 superamenti di lambda_max <= 1e-3 delle proposte (l_d = 10 um, 1 mm^2) 0 / 185651
+PASS T10 quotas = FALSE: 0 rifiuti per quota (con quote > 0) 0 contro 6666
+PASS T11 place_cells() con eterogeneita' e residui empirici sui 6 preset: 0 ERROR, parametri registrati 
+PASS T11b override_heterogeneity cambia la semina di place_cells() (H_rel_3 piu' alto) 0.0674 contro 0.0006
+PASS T12 eterogeneita' dei 6 preset e md5 della tabella dei residui uguali alle righe di BIO_REFERENCES eterogeneita' TRUE, righe della tabella 10
+FAIL T13 residui del pacchetto = residui veri per gruppo e decimo (Kolmogorov <= 0.02, 10 gruppi x 10 decimi) max 0.0269 (brain_cortex:1 8)
+PASS T13b residui del pacchetto = quantili interpolati del decimo giusto (1e-9, 10 gruppi x 10 decimi) max 4.88e-15
+PASS T14a tabella data ma catalogo senza nucleus_area_resid: identico bit per bit 
+PASS T14b con i residui empirici i bersagli cambiano in almeno il 99 % delle cellule 1.0000
+PASS T15 log A_T fuori dall'intervallo vero: decimo 1 sotto, decimo 10 sopra 
+PASS T16 modo pooled: quantili del decimo 0 
+PASS T17 correlazione a distanza l del campo dei vuoti e della densita' = exp(-1/2) (300 regioni) 0.629, 0.639 (3 ES 0.109)
+PASS T18 compart_for_d() e het_for() leggono la piega lascia-fuori della ROI 
+PASS T2b frazione dei vuoti del pacchetto sulla griglia = 0.15 (20 semi, 3 ES) 0.1468 (3 ES 0.0123)
+PASS T18b het_for() = piega lascia-fuori per i 4 parametri (pieghe diverse da «pooled») 13 pieghe
+PASS T19 eterogeneita' del preset per nome (6 preset); place_cells() senza override usa il preset (intestino 0.25) 
+PASS T20 place_cells() inoltra resid_mode: bersagli diversi e metadati «pooled» 
+PASS T21 place_cells() inoltra quotas = FALSE: 0 rifiuti per quota (con quote > 0) 0 contro 3301
+PASS T22 regione tutta nei vuoti: vuoti spenti, 0 cellule perse 20 / 20
+PASS T23 lambda_max = 1.1 x massimo sulla griglia (con e senza eterogeneita') 1.100000 1.100000
+PASS T24 spostamento del decimo nel modello ricentrato (RC-03) 1.25e-16
+PASS T25 a_t della semina = soluzione pesata con l'eterogeneita' (1e-9) 0.00e+00
+PASS T26 griglia della regione con la lunghezza del campo della densita' (6 um) 6
+RESULT 31/32 PASS
+RESULT 27/28 PASS
+GATE G-1 FAIL
+GATE G-1 PASS
+GATE G-1 FAIL
+GATE G-1 FAIL
+## batteria di S1.5c con il codice di S1.5d e i preset di S1.5c (git show 2485475:R/04b0_tissue_presets.R)
+RESULT 28/28 PASS
+## batteria di S1.5c: fallimenti
+FAIL T12 preset = BIO_REFERENCES (23 righe) = calibrazione su tutte le ROI; tipi minori s = 0 23 B-209 B-210 B-211 B-212 B-213 B-214 B-215 B-216 B-217 B-219 B-220 B-224 B-226 B-228 B-229 B-230 B-231 A1 epiteliale A1 stromale e muscolo liscio A1 immunitario A2 epiteliale A2 fibroblasti A3 epiteliale A3 fibroblasti A3 endoteliale A3 immunitario A4 linfociti B A4 linfociti T A5 neuroni A5 oligodendrociti A5 astrociti A6 cardiomiociti A6 fibroblasti A6 immunitari
+## batteria di S1.5b (run_S1.5b.log)
+RISULTATO test_S1.5b: 22/22 PASS
+FAIL E10 scala sbagliata di 10 volte: C8 scatta (WARN con scala dell'utente) 
+FAIL E10b con scala stimata C8 e' ERROR 
+test_S1.1 exit 0
+test_S1.2 exit 0
+test_S1.3 exit 0
+test_S1.4 exit 0
+GATE G-1 FAIL
+test_S1.5: FAIL 2 (attesi 2: E10, E10b; trovati fra questi 2)
+GATE G-1 PASS
+## batteria di S1.5 (run_S1.5.log: S1.5, regressioni S1.1-S1.4, S1.4d, OKF)
+FAIL E10 scala sbagliata di 10 volte: C8 scatta (WARN con scala dell'utente) 
+FAIL E10b con scala stimata C8 e' ERROR 
+RESULT 81/83 PASS (mutante none)
+test_S1.1 exit 0
+test_S1.2 exit 0
+test_S1.3 exit 0
+test_S1.4 exit 0
+RESULT 36/36 PASS (mutante none)
+RESULT 8/8 PASS
+GATE G-1 FAIL
+## file riscritti dalle regressioni (ripristinati dal runner, D-13)
+ M results/S1.1/S1.1_per_input.csv
+ M results/S1.2/S1.2_test_results.csv

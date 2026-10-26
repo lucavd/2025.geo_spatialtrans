@@ -2,6 +2,23 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.5d, 2026-10-25/26: spazi vuoti e densità indipendenti dal tipo nella semina, modello di taglia dagli scarti veri (branch `step1-cell-layer`), **risultati, in attesa della lettura di Luca**
+
+File dello step `docs/steps/S1.5d.md`, report `reports/S1.5d.html`; decisione tecnica DEC-022 (esito delle regole A, C, B). BIO_REFERENCES B-232...B-264. BACKLOG: chiusa BL-159; aggiornate BL-157, BL-158, BL-160; nuove BL-162...BL-165.
+
+### Codice
+- `R/04b2_seed_centroids.R`: `seed_centroids(heterogeneity = ..., quotas = ...)`: campo dei vuoti (soglia τ = Φ⁻¹(1 - φ_v)) e campo della densità exp(σ_d W), indipendenti dal tipo; a_t pesati con l'eterogeneità; griglia di lambda_max raffinata per ℓ_d; campi registrati nelle informazioni della semina.
+- `R/04b4_derive_cell_geometry.R`: residui empirici del modello di taglia per gruppo e decimo di log A_T (`resid_table`, `resid_mode = "decile"|"pooled"`), stessa sequenza casuale del modello gaussiano; colonna facoltativa `nucleus_area_resid_shift` (braccio di sensibilità U3c).
+- `R/04b0_tissue_presets.R`: tabella `.TP_HET` (soli vuoti, B-259...B-264), compartimenti ricalibrati (B-232...B-248), `.TP_SIZE_RESID_DEFAULT = "gaussian"`, tabelle `inst/extdata/size_resid.csv`.
+- `R/04b_cell_placement.R`: `place_cells(override_heterogeneity, quotas, size_resid, resid_mode)`; documentazione: senza `override_heterogeneity` i compartimenti usano i vuoti del preset (RC-11).
+- Test `R/testing/test_S1.5d.R` (32 asserzioni), runner `R/testing/run_S1.5d.sh` (20 mutanti come copie del codice).
+- Strumenti `tools/S1.5d_*`: esplorazione, riferimenti veri, modello di taglia, calibrazioni, banco (3 600 unità), metriche, analisi, controllo della calibrazione, post hoc, figure, parti del report e registro delle verifiche.
+
+### Risultati
+- Con i soli vuoti: spazio vuoto 6/6 tessuti (S1.5c 3/6), territori grandi 4/6 (0/6), variabilità dei territori dell'intestino +0.02 (S1.5c -0.41); contatti sopra il vero in tumore del colon (0.686) e stroma (0.360). Regola A: soli vuoti, 11 contro 10.
+- Taglia: residui empirici per decimo di territorio riportano le cellule quasi senza citoplasma a 0.0221 (vuoti 0.0435), ma la regola C è in parità (34 contro 34): resta il gaussiano. La controprova senza decimi (0.0375) mostra che conta la dispersione che cresce col territorio.
+- Regola B: non adottata (58 contro 19, taglie 19 contro 21). G-2 9/11 come scritto (20/20 dopo la revisione); G-3 fallito (1 076 cellule non piazzate in bracci non vincenti); G-1 con due errori di tolleranza dichiarati prima. Revisione: 11 393 confronti identici, nessun errore che cambi i numeri.
+
 ## S1.5c, 2026-10-23: semina a compartimenti per tipo (branch `step1-cell-layer`), **chiusa**
 
 File dello step `docs/steps/S1.5c.md`, report `reports/S1.5c.html`; decisione tecnica DEC-020 (regole delle tre scelte); decisione di Luca DEC-021 (G-4 fallito come scritto è un errore della tolleranza pre-registrata, non blocca lo step). Letta da Luca il 2026-10-23 («chiudi lo step»).

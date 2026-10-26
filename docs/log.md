@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-10-26 (risultati di S1.5d)
+
+* **Aggiornamento**: [Se la semina lascia spazi vuoti dentro il tessuto e la densità varia anche senza dipendere dal tipo, tornano la variabilità dei territori e il numero di vicini dei tessuti veri? (S1.5d)](steps/S1.5d.md): cancelli (G-2 e G-3 falliti come scritti, decisioni a Luca), regole A, C, B, verdetti, controprove, braccio di sensibilità U3c, post hoc PH-2...PH-4, revisione avversariale, riassunto «In breve», dubbi rinviati BL-162...BL-165.
+* **Creazione**: decisione tecnica [Spazi vuoti nella semina a compartimenti: vuoti calibrati nei preset come opzione, compartimenti ricalibrati, modello di taglia gaussiano predefinito e residui empirici come opzione (DEC-022)](decisions/DEC-022.md).
+
 ## 2026-10-25 (apertura di S1.5d)
 
 * **Creazione**: file dello step [Se la semina lascia spazi vuoti dentro il tessuto e la densità varia anche senza dipendere dal tipo, tornano la variabilità dei territori e il numero di vicini dei tessuti veri? (S1.5d)](steps/S1.5d.md) con dubbi ricevuti (BL-157, BL-159, BL-160), esplorazione dichiarata (spazio vuoto, colore H&E dei vuoti, finestre contate a mano, variabilità della densità), modello dei vuoti e della densità, ricalibrazione dei compartimenti, cancelli, previsioni in attesa dell'ok di Luca, regole A e B.

@@ -1,0 +1,29 @@
+frase,fonte,valore_letto,valore_scritto,coincide
+spazio vuoto in tutti e sei i tessuti (prima in tre),"S1.5d_counts.csv, P-11 (RV, N)",6; 3,6; 3,True
+territori grandi in quattro tessuti (prima in nessuno),"S1.5d_counts.csv, P-13 (RV, N)",4; 0,4; 0,True
+intestino: variabilità dei territori da 41 % sotto a 2 % sopra,"S1.5d_verdicts.csv, P-2 A1 (N, RV)",41 %; 2 %,41 %; 2 %,True
+controprove dei vuoti fini e del cuore superate,"S1.5d_cp.csv, CP-1 e CP-2 giudicate",8/8,8/8,True
+contatti nel tumore del colon 69 % contro al più 57 %,"S1.5d_verdicts.csv, P-1 A2 RV (stima, estremo alto)",69 %; 57 %,69 %; 57 %,True
+contatti nello stroma 36 % contro al più 28 %,"S1.5d_verdicts.csv, P-1 A3 RV",36 %; 28 %,36 %; 28 %,True
+"vincono i soli vuoti, 11 contro 10",S1.5d_ruleA.csv,RV 11 10 10,RV 11 10 10,True
+cellule quasi senza citoplasma 4.3 % con i vuoti,"S1.5d_verdicts.csv, P-8c RV",4.3 %,4.3 %,True
+nelle cinque aree vere fra 1.5 e 2.9 %,"S1.5d_posthoc_p8c_real.csv, vero",1.5-2.9 %,1.5-2.9 %,True
+gli scarti veri per territorio le riportano al 2.2 %,"S1.5d_verdicts.csv, P-8c W3",2.2 %,2.2 %,True
+parità nella regola sulla taglia,"S1.5d_ruleC.csv, RV contro W3",34 34 gaussian,34 34 gaussian,True
+pesa la dipendenza dal territorio (controprova),"S1.5d_verdicts.csv, P-8c W3p",0.0375 smentita,0.0375 smentita,True
+nei territori piccoli il nucleo varia meno,"S1.5d_posthoc_size_tail.csv, tumor_microenv:1, sd dei decimi 1 e 10",0.38 0.61,0.38 0.61,True
+"disposizione 58 contro 19, taglia 19 contro 21",S1.5d_ruleB.csv,58 19 19 21 non adottata,58 19 19 21 non adottata,True
+due degli undici errori non riconosciuti,S1.5d_G2_official_run.log; S1.5d_G2_final_run.log,"9/11; finale 11/11, tutti 20/20","9/11; finale 11/11, tutti 20/20",True
+1 076 cellule in 5 simulazioni su 3 600,"S1.5d_panel_units.csv, n_failed",1076 5 3600,1076 5 3600,True
+tutte in versioni che non hanno vinto,"S1.5d_panel_units.csv, bracci con n_failed > 0",Q RD RVD,Q RD RVD,True
+i risultati non cambiano escludendole,review_recalc/sens_unplaced.csv (revisore),verdetti invariati (testo del revisore),verdetti invariati (testo del revisore),True
+"tre tolleranze scritte male: T13, T12 di S1.5c, G-4 c1",S1.5d_G1_final_run.log; S1.5d_G4_calcheck_c.csv,T13 True; T12 True; c1 0/10,T13 True; T12 True; c1 0/10,True
+semina uniforme: 37 contro 36; con la correzione 39 contro 37,S1.5d_ruleC.csv (U contro U3); S1.5d_ruleC_sensitivity_U3c.csv,37 36; 39 37 empirical,37 36; 39 37 empirical,True
+"con la correzione 0.7 %, sotto ogni area vera","S1.5d_verdicts.csv, P-8c U3c; S1.5d_posthoc_p8c_real.csv",0.7 % < 1.54 %,0.7 % < 1.54 %,True
+"G-3: U = S1.5c 300/300, N = N-a 300/300, rerun 8/8, superamenti 1.54e-4",S1.5d_G3_check.csv,300 300 8 0.000154,300 300 8 0.000154,True
+"G-4: parte a 333/333, parte b 240/240, c2 10/10",S1.5d_G4_calcheck_a/b/c.csv,333/333 240/240 10/10,333/333 240/240 10/10,True
+"G-1: test_S1.5d 31/32, S1.5c 27/28 (28/28 con i preset di S1.5c), S1.5b 22/22, S1.5 81/83, S1.4d 36/36, OKF 8/8",S1.5d_G1_final_run.log,31/32 27/28 28/28 22/22 81/83 36/36 8/8,31/32 27/28 28/28 22/22 81/83 36/36 8/8,True
+CP-3: area mediana diversa in 5 tessuti su 6 e in 16 tipi su 17,"S1.5d_cp.csv, CP-3",5/6 16/17,5/6 16/17,True
+"PH-2: vero 0.0269, gaussiano 0.0704, senza decimi 0.0640, con i decimi 0.0298; 77 %","S1.5d_posthoc_size_tail.csv, tumor_microenv:1",0.0269 0.0704 0.0640 0.0298 77 %,0.0269 0.0704 0.0640 0.0298 77 %,True
+"PH-3: 0.269, 0.230, 0.250","S1.5d_posthoc_size_q90.csv, lymphoid:1",0.269 0.230 0.250,0.269 0.230 0.250,True
+quote: dal 2.8 % all'11.0 %; senza quote 60 contro 58,S1.5d_desc.csv D-desc-1 (RV); S1.5d_counts.csv,2.8 % 11.0 %; 60 58,2.8 % 11.0 %; 60 58,True

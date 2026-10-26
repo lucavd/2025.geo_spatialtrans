@@ -1,6 +1,6 @@
 "check","value","expected","pass"
-"units",3300,3300,TRUE
-"no_error_C2_C3_C5_C9",3300,3300,TRUE
+"units",3600,3600,TRUE
+"no_error_C2_C3_C5_C9",3600,3600,TRUE
 "n_failed_total",1076,0,FALSE
 "U_equals_S1.5c_U_md5",300,300,TRUE
 "N_equals_S1.5c_Na_md5",300,300,TRUE

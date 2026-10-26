@@ -1,0 +1,22 @@
+PASS mutante M1 rilevato da: T1 T11b T3 T8 
+PASS mutante M2 rilevato da: T4 T8 
+PASS mutante M3 rilevato da: T25 
+PASS mutante M4 rilevato da: T17 
+PASS mutante M5 rilevato da: T26 
+PASS mutante M6 rilevato da: T18 T18b 
+PASS mutante M7 rilevato da: T10 T21 
+PASS mutante M8 rilevato da: T11 T11b T19 
+PASS mutante M9 rilevato da: T13b T24 
+PASS mutante M10 rilevato da: T13b 
+PASS mutante M11 rilevato da: T13b T14b T20 T24 
+PASS mutante M12 rilevato da: T19 
+PASS mutante M13 rilevato da: T19 
+PASS mutante M14 rilevato da: T20 
+PASS mutante M15 rilevato da: T21 
+PASS mutante M16 rilevato da: T22 
+PASS mutante M17 rilevato da: T23 
+PASS mutante M18 rilevato da: T18b 
+PASS mutante M19 rilevato da: T2b 
+PASS mutante M20 rilevato da: T24 
+mutanti rilevati 20/20 (pre-registrati M1-M11: 11/11; M12-M20 aggiunti dopo la revisione)
+GATE G-2 PASS

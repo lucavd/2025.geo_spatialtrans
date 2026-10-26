@@ -106,6 +106,9 @@ merge_small_components <- function(clust, pixel_size_um, min_region_area_um2, cl
 #' @param override_compartments tabella `cell_type`, `ell_um`, `s` che sostituisce quella del preset (banco di S1.5c: pieghe).
 #' @param heterogeneity,override_heterogeneity,quotas S1.5d, solo con i compartimenti: NULL = tabella del preset; `override_heterogeneity`
 #'   (una riga `void_frac`, `void_ell_um`, `dens_sigma`, `dens_ell_um`) la sostituisce (banco: pieghe); `quotas` come `seed_centroids()`.
+#'   Attenzione: con `spatial = "compartments"` e senza `override_heterogeneity` si usano i vuoti calibrati del preset (S1.5d, righe
+#'   B-259...B-264; per esempio intestino 0.25 con 16 um), quindi la semina NON e' quella di S1.5c. Per riprodurre S1.5c passare
+#'   `override_heterogeneity = data.frame(void_frac = 0, void_ell_um = 0, dens_sigma = 0, dens_ell_um = 0)` (test T7a, T19).
 #' @param size_resid,resid_mode S1.5d: residui del modello di taglia (`"gaussian"` o `"empirical"`, NULL = predefinito del preset) e
 #'   modo dei residui empirici (`"decile"`; `"pooled"` solo per la controprova CP-3).
 #' @param small_components `"merge"` (BL-043) o `"exclude"`.
