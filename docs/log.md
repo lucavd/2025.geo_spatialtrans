@@ -1,5 +1,9 @@
 # Registro delle modifiche
 
+## 2026-10-26 (decisioni di Luca su S1.5d)
+
+* **Creazione**: decisione di Luca [S1.5d: i due cancelli falliti come scritti e le tre tolleranze sbagliate non bloccano lo step; nella semina uniforme resta il modello di taglia di oggi (DEC-023)](decisions/DEC-023.md).
+
 ## 2026-10-26 (risultati di S1.5d)
 
 * **Aggiornamento**: [Se la semina lascia spazi vuoti dentro il tessuto e la densità varia anche senza dipendere dal tipo, tornano la variabilità dei territori e il numero di vicini dei tessuti veri? (S1.5d)](steps/S1.5d.md): cancelli (G-2 e G-3 falliti come scritti, decisioni a Luca), regole A, C, B, verdetti, controprove, braccio di sensibilità U3c, post hoc PH-2...PH-4, revisione avversariale, riassunto «In breve», dubbi rinviati BL-162...BL-165.
