@@ -1,0 +1,8 @@
+"check","value","expected","pass"
+"units",3300,3300,TRUE
+"no_error_C2_C3_C5_C9",3300,3300,TRUE
+"n_failed_total",1076,0,FALSE
+"U_equals_S1.5c_U_md5",300,300,TRUE
+"N_equals_S1.5c_Na_md5",300,300,TRUE
+"rerun_identical",8,8,TRUE
+"max_exceed_fraction",0.000153725856541257,0.001,TRUE

@@ -65,7 +65,8 @@ if (grepl("b", what)) {
     ok_c <- all(!is.na(m)) && all(got$s[m] == exp$s) && all(got$ell_um[m] %in% exp$ell_um)
     fam <- c(RV = "RV", RD = "RD", RVD = "RVD", VF = "RV")[arm]; if (arm %in% c("W3", "W3p", "Q")) fam <- read.csv(file.path(RES, "S1.5d_ruleA.csv"))$winner[1]
     h <- L$metadata$heterogeneity
-    ok_h <- if (arm == "R") is.null(h) else { e <- het_for(A, r, fam); if (arm == "VF") e$void_ell_um <- 2
+    if (is.null(h)) h <- data.frame(void_frac = 0, void_ell_um = NA_real_, dens_sigma = 0, dens_ell_um = NA_real_)   # NULL = vuoti e densita' spenti (nota D-11)
+    ok_h <- if (arm == "R") h$void_frac == 0 && h$dens_sigma == 0 else { e <- het_for(A, r, fam); if (arm == "VF") e$void_ell_um <- 2
       isTRUE(all.equal(c(h$void_frac, h$dens_sigma), c(e$void_frac, e$dens_sigma))) && (h$void_frac == 0 || h$void_ell_um == e$void_ell_um) && (h$dens_sigma == 0 || h$dens_ell_um == e$dens_ell_um) }
     rows[[length(rows) + 1]] <- data.frame(part = "b", archetype = A, roi_id = r, cell_type = arm, bin = "", n_pairs_real = NA, R_real_py = NA, R_sim_R = NA, R_sim_py = NA,
       z = NA, value = as.numeric(ok_c && ok_h), tol = 1, checked = TRUE, pass = ok_c && ok_h)

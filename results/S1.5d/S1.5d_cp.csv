@@ -1,0 +1,35 @@
+cp,item,value,pass,judged
+"CP-1 cuore, parametri di tutte le ROI",RV,"void_frac 0.025, dens_sigma 0",True,True
+"CP-1 cuore, parametri di tutte le ROI",RD,"void_frac 0, dens_sigma 0",True,False
+"CP-1 cuore, parametri di tutte le ROI",RVD,"void_frac 0.025, dens_sigma 0",True,False
+"CP-1 cuore, vincente - R appaiato",P-2,0.01527 +- 0.02,True,True
+"CP-1 cuore, vincente - R appaiato",P-7,0.005415 +- 0.0075,True,True
+"CP-1 cuore, vincente - R appaiato",P-11,0.0006308 +- 0.0037,True,True
+"CP-1 cuore, vincente - R appaiato",P-13,0.0006218 +- 0.0023,True,True
+CP-2 vuoti fini,P-11 confermate VF < RV,2 contro 6,True,True
+CP-2 vuoti fini,P-13 confermate VF < RV,0 contro 4,True,True
+CP-2 vuoti fini,P-11 intestino smentita in VF,smentita,True,True
+CP-3 residui senza decimi,P-8c' confermata in W3p,smentita,False,True
+CP-3 residui senza decimi,P-8a A1 W3p - W3,-0.01254 +- 0.013,True,True
+CP-3 residui senza decimi,P-8a A2 W3p - W3,-0.2764 +- 0.17,False,True
+CP-3 residui senza decimi,P-8a A3 W3p - W3,-0.1142 +- 0.065,False,True
+CP-3 residui senza decimi,P-8a A4 W3p - W3,0.08512 +- 0.011,False,True
+CP-3 residui senza decimi,P-8a A5 W3p - W3,-3.811 +- 0.25,False,True
+CP-3 residui senza decimi,P-8a A6 W3p - W3,0.2898 +- 0.032,False,True
+CP-3 residui senza decimi,P-8b A1 epiteliale W3p - W3,-0.03158 +- 0.012,False,True
+CP-3 residui senza decimi,P-8b A1 stromale e muscolo liscio W3p - W3,-0.05053 +- 0.034,False,True
+CP-3 residui senza decimi,P-8b A1 immunitario W3p - W3,0.005904 +- 0.063,True,True
+CP-3 residui senza decimi,P-8b A2 epiteliale W3p - W3,-0.5546 +- 0.23,False,True
+CP-3 residui senza decimi,P-8b A2 fibroblasti W3p - W3,0.5176 +- 0.082,False,True
+CP-3 residui senza decimi,P-8b A3 epiteliale W3p - W3,-1.097 +- 0.12,False,True
+CP-3 residui senza decimi,P-8b A3 fibroblasti W3p - W3,1.012 +- 0.05,False,True
+CP-3 residui senza decimi,P-8b A3 endoteliale W3p - W3,0.4299 +- 0.16,False,True
+CP-3 residui senza decimi,P-8b A3 immunitario W3p - W3,-0.1931 +- 0.055,False,True
+CP-3 residui senza decimi,P-8b A4 linfociti B W3p - W3,0.1198 +- 0.016,False,True
+CP-3 residui senza decimi,P-8b A4 linfociti T W3p - W3,0.05067 +- 0.014,False,True
+CP-3 residui senza decimi,P-8b A5 neuroni W3p - W3,-3.039 +- 0.45,False,True
+CP-3 residui senza decimi,P-8b A5 oligodendrociti W3p - W3,-9.311 +- 0.39,False,True
+CP-3 residui senza decimi,P-8b A5 astrociti W3p - W3,-8.874 +- 0.61,False,True
+CP-3 residui senza decimi,P-8b A6 cardiomiociti W3p - W3,0.2912 +- 0.021,False,True
+CP-3 residui senza decimi,P-8b A6 fibroblasti W3p - W3,0.1909 +- 0.15,False,True
+CP-3 residui senza decimi,P-8b A6 immunitari W3p - W3,0.2959 +- 0.16,False,True

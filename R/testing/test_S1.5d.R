@@ -55,9 +55,8 @@ h6 <- exp(0.6 * rnorm(5000)) * (runif(5000) > 0.2); k6 <- h6 > 0
 a <- .sc_solve_a(eta[k6, ], f, rho, h = h6[k6]); pr <- .sc_prob(eta[k6, ], a, rho); fr6 <- colSums(h6[k6] * pr$w * pr$p) / sum(h6[k6] * pr$w)
 ck("T6 frazioni attese pesate = f con i pesi dell'eterogeneita' (1e-6)", max(abs(fr6 - f)) < 1e-6, sprintf("%.2e", max(abs(fr6 - f))))
 # ---- T7: eterogeneita' NULL, a zero e del preset non calibrato identiche; layer identici a S1.5c (3 preset, seme 1) ----
-same7 <- vapply(c("A1", "A3", "A6"), function(A) { a <- seed_h(A, 300, 9, NULL); b <- seed_h(A, 300, 9, H(0, NA, 0, NA)); sp <- spec_c(A)
-  c3 <- seed_h(A, 300, 9, sp$heterogeneity); identical(a$centroids, b$centroids) && identical(a$centroids, c3$centroids) }, TRUE)
-ck("T7a heterogeneity NULL = tutto a zero = preset non calibrato (bit per bit, 3 preset)", all(same7), names(same7)[!same7])
+same7 <- vapply(c("A1", "A3", "A6"), function(A) { a <- seed_h(A, 300, 9, NULL); b <- seed_h(A, 300, 9, H(0, NA, 0, NA)); identical(a$centroids, b$centroids) }, TRUE)
+ck("T7a heterogeneity NULL = tutto a zero (bit per bit, 3 preset; con T7b = S1.5c)", all(same7), names(same7)[!same7])   # nota D-12: tolto «= preset non calibrato»
 rois <- read.csv("results/R2/R2_rois_checked.csv"); rois$side_um <- rois$side_px * rois$um_per_px
 U5 <- read.csv("results/S1.5c/S1.5c_panel_units.csv", stringsAsFactors = FALSE)
 clust_of <- function(w) { idx <- which(w$m, arr.ind = TRUE); data.frame(x = idx[, 2], y = idx[, 1], intensity_cluster = 1L) }
@@ -94,7 +93,7 @@ ck("T11 place_cells() con eterogeneita' e residui empirici sui 6 preset: 0 ERROR
 cl <- expand.grid(x = 1:300, y = 1:300); cl$intensity_cluster <- 1L
 pc11 <- function(h) suppressWarnings(place_cells(cl, "epithelial", pixel_size_um = 1, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L, random_seed = 12,
   size_arm = "group", spatial = "compartments", min_dist_mode = "nucleus", override_heterogeneity = h, validate = FALSE, verbose = FALSE))
-a11 <- pc11(NULL); b11 <- pc11(H(0.2, 16))
+a11 <- pc11(H(0, NA, 0, NA)); b11 <- pc11(H(0.2, 16))   # nota D-12: confronto con vuoti a zero, non con il preset
 ck("T11b override_heterogeneity cambia la semina di place_cells() (H_rel_3 piu' alto)", hrel3(b11$cell_df$x, b11$cell_df$y, 300) > 3 * hrel3(a11$cell_df$x, a11$cell_df$y, 300),
    sprintf("%.4f contro %.4f", hrel3(b11$cell_df$x, b11$cell_df$y, 300), hrel3(a11$cell_df$x, a11$cell_df$y, 300)))
 # ---- T12: valori dei preset uguali alle righe di BIO_REFERENCES (eterogeneita' e tabella dei residui) ----

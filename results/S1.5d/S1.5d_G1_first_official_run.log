@@ -1,0 +1,23 @@
+PASS T1 nessun centro con V > tau (tumore del colon, vuoti 15 %, 20 um) max V 1.035, tau 1.036, n 1428
+PASS T2 frazione dei vuoti = 0.15 entro 3 errori Monte Carlo (200 campi) 0.1525 (3 ES 0.0043)
+PASS T3 densita' zone alte / basse di W = atteso entro il 10 % 3.605 contro 3.677
+PASS T4 numero di cellule per regione invariato con vuoti e densita' (6 preset) 
+PASS T5 distanza minima della coppia rispettata (A2, A4, A5, vuoti e densita') 0 0 0
+PASS T6 frazioni attese pesate = f con i pesi dell'eterogeneita' (1e-6) 1.64e-13
+FAIL T7a heterogeneity NULL = tutto a zero = preset non calibrato (bit per bit, 3 preset) A1 A3 A6
+PASS T7b place_cells() predefinito = layer di S1.5c (md5; stroma e cuore a compartimenti, cervello uniforme; seme 1) TRUE TRUE TRUE
+PASS T8 H_rel_3 cresce con void_frac (intestino, 0...0.20, 20 semi) 0.0006 0.0060 0.0154 0.0319 0.0513
+PASS T9 superamenti di lambda_max <= 1e-3 delle proposte (l_d = 10 um, 1 mm^2) 0 / 185651
+PASS T10 quotas = FALSE: 0 rifiuti per quota (con quote > 0) 0 contro 6666
+PASS T11 place_cells() con eterogeneita' e residui empirici sui 6 preset: 0 ERROR, parametri registrati 
+FAIL T11b override_heterogeneity cambia la semina di place_cells() (H_rel_3 piu' alto) 0.0674 contro 0.0926
+PASS T12 eterogeneita' dei 6 preset e md5 della tabella dei residui uguali alle righe di BIO_REFERENCES eterogeneita' TRUE, righe della tabella 10
+FAIL T13 residui del pacchetto = residui veri per gruppo e decimo (Kolmogorov <= 0.02, 10 gruppi x 10 decimi) max 0.0269 (brain_cortex:1 8)
+PASS T13b residui del pacchetto = quantili interpolati del decimo giusto (1e-9, 10 gruppi x 10 decimi) max 4.88e-15
+PASS T14a tabella data ma catalogo senza nucleus_area_resid: identico bit per bit 
+PASS T14b con i residui empirici i bersagli cambiano in almeno il 99 % delle cellule 1.0000
+PASS T15 log A_T fuori dall'intervallo vero: decimo 1 sotto, decimo 10 sopra 
+PASS T16 modo pooled: quantili del decimo 0 
+PASS T17 correlazione a distanza l del campo dei vuoti e della densita' = exp(-1/2) (300 regioni) 0.629, 0.639 (3 ES 0.109)
+PASS T18 compart_for_d() e het_for() leggono la piega lascia-fuori della ROI 
+RESULT 19/22 PASS
