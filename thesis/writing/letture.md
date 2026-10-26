@@ -76,7 +76,7 @@ Format: question · data · main result · limit · what we need from it.
 4. **Limit:** Validated mainly in mouse brain, on simulations built by the authors; cell types missing from the reference are a problem.
 5. **What we need from it:** It fits our pseudo-spots, which are the same kind of mixture as its simulations. Settings: `doublet_mode = "full"` (the package default is "doublet"); no coordinates needed (`SpatialRNA(..., use_fake_coords = TRUE)`); raw integer counts; at least 25 reference cells per cell type; spots and reference cells under 100 UMI are dropped (checked in the `spacexr` source, 2026-10-23).
 
-## Ma, Zhou 2022 — CARD
+## Ma, Zhou 2022 — CARD (no longer in the study: it exploits spatial structure that our pseudo-spots do not have; DECISIONS 2026-10-26)
 *Spatially informed cell-type deconvolution for spatial transcriptomics.* Nature Biotechnology 2022;40:1349–1359. doi:10.1038/s41587-022-01273-7. Peer reviewed. R package `CARD`.
 
 1. **Question:** Does using the fact that neighbouring spots have similar cell-type compositions improve deconvolution, also when the single-cell reference does not match the tissue well?
@@ -102,7 +102,7 @@ Format: question · data · main result · limit · what we need from it.
     - **`detection_alpha`:** 20 (tutorial default for human Visium with technical variability) or 200 (low technical variability). Our pseudo-spots have no per-spot sensitivity variation beyond library size, so 200 may fit; to decide in the ADEMP.
     - **NNLS:** cell2location's own benchmark already included NNLS as a comparison, which supports our baseline.
 
-## Elosua-Bayes, Nieto, Mereu, Gut, Heyn 2021 — SPOTlight
+## Elosua-Bayes, Nieto, Mereu, Gut, Heyn 2021 — SPOTlight (no longer in the study, DECISIONS 2026-10-26)
 *SPOTlight: seeded NMF regression to deconvolute spatial transcriptomics spots with single-cell transcriptomes.* Nucleic Acids Research 2021;49(9):e50. doi:10.1093/nar/gkab043. Peer reviewed. R/Bioconductor package `SPOTlight`. Optional method in the protocol (§5.4).
 
 1. **Question:** Can a non-negative matrix factorization (NMF), started from cell-type marker genes, deconvolute spots accurately, also with small or shallow single-cell references?
@@ -160,10 +160,27 @@ Format: question · data · main result · limit · what we need from it.
 
 ## Spatial benchmarks checked online (for the method choice)
 - **Li et al. 2022**, Nature Methods, doi:10.1038/s41592-022-01480-9: 32 simulated + real datasets; best deconvolution = **cell2location, SpatialDWLS, RCTD**.
-- **Sang-aram et al. 2024 (Spotless)**, eLife, doi:10.7554/eLife.88431: 11 methods, 63 synthetic "silver standards" (half of each scRNA-seq dataset makes the spots, the other half is the reference, as in our design); best = **RCTD, cell2location**, then SpatialDWLS, stereoscope, MuSiC; over half of the methods did not beat NNLS; "we recommend RCTD as a good starting point". CARD not included.
-- **Conclusion:** our set already has the two top methods (RCTD, cell2location) + NNLS. Candidates that rank above CARD and SPOTlight: **SpatialDWLS** and **MuSiC** (entries below).
+- **Li et al. 2023**, Nature Communications 14:1548, doi:10.1038/s41467-023-37168-7 (a different paper from Li 2022): 18 methods, 50 real and simulated datasets; abstract: "CARD, Cell2location, and Tangram are the best methods for conducting the cellular deconvolution task" (checked 2026-10-26, as Luca asked). Used to state that CARD is excluded for design reasons, not for performance (DECISIONS 2026-10-26).
+- **Sang-aram et al. 2024 (Spotless)**, eLife, doi:10.7554/eLife.88431: full entry below.
+- **Conclusion (2026-10-23), now decided (DECISIONS 2026-10-26):** methods = RCTD, cell2location, spatialDWLS, MuSiC (second baseline), NNLS; CARD and SPOTlight are no longer in the study.
 
-## Dong, Yuan 2021 — SpatialDWLS (candidate)
+## Sang-aram, Browaeys, Seurinck, Saeys 2024 — Spotless
+*Spotless, a reproducible pipeline for benchmarking cell type deconvolution in spatial transcriptomics.* eLife 2023;12:RP88431 (Version of Record 24 May 2024). doi:10.7554/eLife.88431. Peer reviewed (eLife reviewed preprint). PDF: `literature/Spotless_elife-88431-v1.pdf`. Independent benchmark chosen with Luca (DECISIONS 2026-10-26).
+
+> **⚠ Still to be read in full by Pierangela.** Entry drafted by Claude on 2026-10-26 from the abstract, Results (pp. 1–7) and Appendix 1; to check and correct.
+
+1. **Question:** Which spatial deconvolution methods are accurate, stable when the reference changes, and scalable?
+2. **Data:** 11 methods. 63 "silver standards" made by their simulator synthspot from 7 scRNA-seq datasets (4 mouse brain, mouse kidney, mouse melanoma, human squamous cell carcinoma) × 9 abundance patterns, 10 replicates each, ~750 spots per replicate; 3 "gold standards" from seqFISH+ and STARMap (cells summed in 55 µm circles); 2 case studies (liver, melanoma). "Half of the cells from each scRNA-seq dataset were used to generate the synthetic spots and the other half used as the reference for deconvolution. This split was stratified by cell type."
+3. **Main result:** "cell2location and RCTD are the top-performing methods, but surprisingly, a simple regression model outperforms almost half of the dedicated spatial deconvolution methods". Silver standards: RCTD and cell2location first, then SpatialDWLS, stereoscope and MuSiC; "All other methods ranked worse than NNLS in at least one metric". Gold standards: cell2location, MuSiC and RCTD the only ones above NNLS in all three metrics. Stability: "Except for MuSiC", the better methods were also more stable to a change of reference; "both NNLS and MuSiC were consistently in the bottom three". Metrics: RMSE, AUPR, JSD; rankings from the median over 10 replicates.
+4. **Limit:** The split into reference and spots is **by cell** (stratified by cell type), not by donor, so reference and spots can share donors. Mostly mouse tissue. Performance varied a lot between replicates in the patterns with a dominant cell type. CARD not included.
+5. **What we need from it:**
+    - closest design to ours (single-cell data → synthetic spots → known truth), and the source of our baselines: NNLS beats about half of the methods; MuSiC strong on accuracy but unstable to the reference;
+    - our split by donor is stricter than their split by cell: a point to make in Methods/Discussion;
+    - same error measures as ours (RMSE, JSD); they also use AUPR (presence/absence);
+    - replicates: 10 per setting, rankings on the median; our n_sim instead comes from the Monte Carlo SE (Morris);
+    - their Appendix 1 validates the synthetic data with distributions of pairwise Spearman correlations (spots and genes, log CPM) and with mean–dispersion, library size and zero fractions: a possible model for our Check B.
+
+## Dong, Yuan 2021 — SpatialDWLS (in the study, DECISIONS 2026-10-26)
 *SpatialDWLS: accurate deconvolution of spatial transcriptomic data.* Genome Biology 2021;22:145. doi:10.1186/s13059-021-02362-7. R, inside `Giotto` (`runDWLSDeconv`).
 
 1. **Question:** adapt DWLS (dampened weighted least squares, from bulk) to spots.
@@ -174,8 +191,9 @@ Format: question · data · main result · limit · what we need from it.
     - no coordinates needed: `createGiottoObject()` makes dummy locations (checked in `GiottoClass` source, 2026-10-23); clustering is on expression;
     - `runDWLSDeconv(..., expression_values = "normalized", cluster_column = "leiden_clus", sign_matrix, n_cell = 50, cutoff = 2)` (Giotto source, `suite` branch); `n_cell` = cells per spot → set to our level;
     - would replace CARD (needs coordinates).
+    - **Update 2026-10-26:** we use the standalone R package `spatialDWLS` (drieslab, v0.1.1, published 2026-10-16; no Giotto; imports Matrix, MatrixGenerics, quadprog, stats). Its DESCRIPTION says it follows Dong & Yuan 2021 in the same two rounds. Main calls in the vignette: `dwls_signature(ref_normalised, sign_gene, cell_type)` and `dwls(spot_expr_log, signature, clusters, n_cell)`. It needs a cluster per spot ("any clustering of the spots works (e.g. Leiden on the expression)"). It is a new re-implementation, not the Giotto version tested in Li 2022 and Spotless: a limit to declare (ADEMP §11).
 
-## Wang, Park, Susztak, Zhang, Li 2019 — MuSiC (candidate)
+## Wang, Park, Susztak, Zhang, Li 2019 — MuSiC (in the study as second baseline, DECISIONS 2026-10-26)
 *Bulk tissue cell type deconvolution with multi-subject single-cell expression reference.* Nature Communications 2019;10:380. doi:10.1038/s41467-018-08023-x. R package `MuSiC` (GitHub xuranw/MuSiC, v1.0.0).
 
 1. **Question:** bulk deconvolution that uses a single-cell reference from several subjects.
@@ -184,7 +202,7 @@ Format: question · data · main result · limit · what we need from it.
 4. **Limit:** bulk method; poor in Huuki-Myers (brain); low stability to the reference in Spotless.
 5. **What we need:**
     - no coordinates (spots = columns of `bulk.mtx`);
-    - `music_prop(bulk.mtx, sc.sce, clusters, samples, markers = NULL, ...)` (source, 2026-10-23): needs per-cell **donor labels** (`samples`) → our training split has them, but with few training donors (lymphoid: 4) the between-donor weights are rough;
+    - `music_prop(bulk.mtx, sc.sce, clusters, samples, markers = NULL, ...)` (source, 2026-10-23): needs per-cell **donor labels** (`samples`) → our training split has them; with few training donors the between-donor weights are rough (the number of training donors per tissue is fixed in ADEMP §2.5);
     - linear (raw) counts; genes with zero mean in the spots are dropped.
 
 *Answer to the OSCA check (2026-10-23):* the built-in spot filters differ between methods: RCTD and CARD drop spots with fewer than 100 counts, cell2location drops none. None of the three published pipelines applies an adaptive (OSCA-style) spot filter. Keeping ADEMP §7.1 (no extra filter; spots a method drops count as failures) therefore matches what the published pipelines do. Whether to reopen the OSCA proposal is my decision.
