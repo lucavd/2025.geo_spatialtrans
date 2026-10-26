@@ -43,6 +43,12 @@
 #' @param heterogeneity con `"compartments"` (S1.5d): NULL (predefinito, comportamento di S1.5c bit per bit) o data.frame di una riga
 #'   `void_frac` (frazione attesa dell'area senza cellule), `void_ell_um`, `dens_sigma` (ampiezza sul logaritmo della densita'),
 #'   `dens_ell_um`: campo dei vuoti V e campo della densita' W, indipendenti dal tipo; definizione in docs/steps/S1.5d.md.
+#'   Colonne opzionali (S1.5e, docs/steps/S1.5e.md; assenti = S1.5d bit per bit): `void_mode` (`"move"`: il numero di cellule della
+#'   regione non cambia e le cellule si addensano fuori dai vuoti; `"remove"`: numero di cellule moltiplicato per 1 - v, v = frazione della
+#'   griglia della regione nei vuoti, cioe' la densita' vale nella parte non vuota), `void_aspect` (kappa >= 1: campo dei vuoti anisotropo,
+#'   lunghezze ell sqrt(kappa) e ell / sqrt(kappa), orientamento uniforme per regione), `dens_cap` (TRUE: fattore della densita' riscalato a
+#'   media 1 fuori dai vuoti e troncato a lambda_cap / lambda medio, lambda_cap = 0.8 * 0.547 / (pi dbar^2 / 4), dbar = media pesata delle
+#'   distanze minime dei tipi della regione).
 #' @param quotas con `"compartments"`: TRUE (predefinito, quote per tipo di S1.5c) o FALSE (nessun rifiuto per quota, banco di S1.5d).
 #' @param verbose stampa un riepilogo.
 #' @return lista con `centroids` (data.frame `cell_id, region_id, x, y,
@@ -102,6 +108,11 @@ seed_centroids <- function(regions,
   out_rdf$n_cells          <- n_cells
   out_rdf$n_failed         <- n_failed
   out_rdf$achieved_density <- if (nrow(rdf)) n_cells / rdf$area_um2 * 1e6 else numeric(0)
+  if (spatial == "compartments" && any(pl$n_removed > 0L)) {          # S1.5e, void_mode = "remove": bersaglio ridotto della parte nei vuoti
+    out_rdf$n_target <- plan$n_region - pl$n_removed
+    out_rdf$target_density_weighted <- plan$rho_mix * (1 - pl$void_v)
+    out_rdf$void_removed_frac <- pl$void_v; out_rdf$n_removed_void <- pl$n_removed
+  }
 
   centroids <- data.frame(
     cell_id    = seq_along(pl$x),
@@ -119,7 +130,7 @@ seed_centroids <- function(regions,
     random_seed = random_seed, dmin_factor = dmin_factor, type_order = type_order, spatial = spatial,
     labels = if (spatial == "compartments") labels else NA_character_, compartments = pl$compart_info,
     max_attempts_factor = max_attempts_factor,
-    n_cells = nrow(centroids), n_target = sum(plan$n_region),
+    n_cells = nrow(centroids), n_target = sum(out_rdf$n_target),
     n_failed = sum(n_failed), n_attempts = sum(pl$task_attempts),
     grid_cell_um = pl$grid_cell_um, hardcore = pl$hardcore,
     elapsed_s = proc.time()[["elapsed"]] - t0
@@ -549,14 +560,42 @@ seed_centroids <- function(regions,
   if (h$dens_sigma > 0 && !(is.finite(h$dens_ell_um) && h$dens_ell_um > 0)) stop("seed_centroids(): dens_ell_um > 0 con dens_sigma > 0.", call. = FALSE)
   if (h$void_frac == 0 && h$dens_sigma == 0) return(NULL)
   h$tau <- if (h$void_frac > 0) stats::qnorm(1 - h$void_frac) else Inf
+  # S1.5e: colonne opzionali; assenti o NA = comportamento di S1.5d
+  h$void_mode <- if ("void_mode" %in% names(het) && !is.na(het$void_mode[1])) as.character(het$void_mode[1]) else "move"
+  if (!h$void_mode %in% c("move", "remove")) stop("seed_centroids(): void_mode \"move\" o \"remove\".", call. = FALSE)
+  h$void_aspect <- if ("void_aspect" %in% names(het) && !is.na(het$void_aspect[1])) as.numeric(het$void_aspect[1]) else 1
+  if (!is.finite(h$void_aspect) || h$void_aspect < 1) stop("seed_centroids(): void_aspect >= 1.", call. = FALSE)
+  h$dens_cap <- if ("dens_cap" %in% names(het) && !is.na(het$dens_cap[1])) isTRUE(as.logical(het$dens_cap[1])) else FALSE
   h
 }
 
-#' Peso dell'eterogeneita' nei punti: exp(dens_sigma * W) * 1[V <= tau] (S1.5d).
+#' Campo anisotropo (S1.5e): omega = R(theta) diag(1 / (ell sqrt(k)), sqrt(k) / ell) z, z ~ N(0, I); stesse estrazioni di .sc_rff_draw
+#' (z, poi b), poi theta ~ U(0, pi). Con k = 1 non si usa (si chiama .sc_rff_draw: nessuna estrazione in piu').
 #' @keywords internal
-.sc_het_weight <- function(het, fv, fw, x, y) {
+.sc_rff_draw_aniso <- function(ell, k, M) {
+  z <- matrix(stats::rnorm(2L * M), ncol = 2L); b <- stats::runif(M, 0, 2 * pi); th <- stats::runif(1L, 0, pi)
+  u <- cbind(z[, 1] / (ell * sqrt(k)), z[, 2] * sqrt(k) / ell)
+  R <- matrix(c(cos(th), sin(th), -sin(th), cos(th)), 2L)                                 # colonne: asse lungo, asse corto
+  list(w = u %*% t(R), b = b, M = M, theta = th, kappa = k)
+}
+
+#' Scala del fattore della densita' con il tetto (S1.5e): s tale che mean(min(s * h0, H)) = 1 sui punti non vuoti (bisezione).
+#' H <= 1: tetto sotto la densita' media, fattore uniforme (s = 0, restituisce NA e il chiamante usa h = 1).
+#' @keywords internal
+.sc_cap_scale <- function(h0, H) {
+  if (!length(h0) || !is.finite(H)) return(1)
+  if (H <= 1) return(NA_real_)
+  lo <- 0; hi <- 1 / max(min(h0), 1e-300)
+  for (it in 1:200) { md <- (lo + hi) / 2; if (mean(pmin(md * h0, H)) < 1) lo <- md else hi <- md }
+  (lo + hi) / 2
+}
+
+#' Peso dell'eterogeneita' nei punti: exp(dens_sigma * W) * 1[V <= tau] (S1.5d); con il tetto (S1.5e) min(s * exp(dens_sigma * W), H).
+#' @keywords internal
+.sc_het_weight <- function(het, fv, fw, x, y, cap = NULL) {
   h <- rep(1, length(x))
   if (!is.null(fw)) h <- exp(het$dens_sigma * .sc_rff_eval(fw, x, y))
+  if (!is.null(fw) && !is.null(cap)) h <- if (is.na(cap$s)) rep(1, length(x)) else pmin(cap$s * h, cap$H)
   if (!is.null(fv)) h[.sc_rff_eval(fv, x, y) > het$tau] <- 0
   h
 }
@@ -568,7 +607,7 @@ seed_centroids <- function(regions,
   nr <- nrow(rdf); ntot <- sum(plan$n_region)
   X <- numeric(ntot); Y <- numeric(ntot); D <- numeric(ntot); TI <- integer(ntot); RI <- integer(ntot); RX <- integer(ntot)
   region_failed <- integer(nr); attempts <- 0L; exceed <- 0L; info <- vector("list", nr); n_quota_rej <- 0L; n_thin_acc <- 0L
-  n_void_disabled <- 0L
+  n_void_disabled <- 0L; n_removed <- integer(nr); void_v <- numeric(nr)
   n_drawn <- integer(nrow(type_df))                     # tipi estratti da p(x) alle proposte accettate dal diradamento (prima di quote e RSA)
   dtype <- type_df$min_dist_um
   used <- sort(unique(match(comp$cell_type, type_df$cell_type)))
@@ -593,7 +632,7 @@ seed_centroids <- function(regions,
     fields <- vector("list", K)
     for (t in seq_len(K)) if (s[t] > 0) fields[[t]] <- .sc_rff_draw(ell[t], M)
     fv <- fw <- NULL                                                              # S1.5d: campi dei vuoti e della densita', estratti solo se attivi
-    if (!is.null(het) && het$void_frac > 0) fv <- .sc_rff_draw(het$void_ell_um, M)
+    if (!is.null(het) && het$void_frac > 0) fv <- if (het$void_aspect > 1) .sc_rff_draw_aniso(het$void_ell_um, het$void_aspect, M) else .sc_rff_draw(het$void_ell_um, M)
     if (!is.null(het) && het$dens_sigma > 0) fw <- .sc_rff_draw(het$dens_ell_um, M)
     poly <- polys[i]; bb <- sf::st_bbox(poly)
     ell_g <- if (any(s > 0)) min(ell[s > 0]) else Inf
@@ -607,11 +646,26 @@ seed_centroids <- function(regions,
       hg <- .sc_het_weight(het, fv, fw, gp$x, gp$y)
       if (!any(hg > 0)) { fv <- NULL; n_void_disabled <- n_void_disabled + 1L; hg <- .sc_het_weight(het, NULL, fw, gp$x, gp$y) }   # regione tutta nei vuoti: senza vuoti
       k_in <- hg > 0
+      if (het$void_mode == "remove" && !is.null(fv)) {                   # S1.5e: le cellule della parte nei vuoti si tolgono (per tipo, valore atteso esatto)
+        v <- mean(!k_in); void_v[i] <- v
+        qn <- quota * (1 - v); q2 <- floor(qn) + as.integer(stats::runif(K) < qn - floor(qn))
+        n_removed[i] <- sum(quota) - sum(q2); n <- sum(q2)
+        quota <- q2
+      }
+      cap <- NULL
+      if (isTRUE(het$dens_cap) && !is.null(fw)) {                         # S1.5e: tetto della densita' locale (nota D-1 di docs/steps/S1.5e.md)
+        dbar <- sum(f * dtype[ti_r]); lam_cap <- 0.8 * 0.547 / (pi * dbar^2 / 4)
+        lam_bar <- n / (rdf$area_um2[i] * mean(k_in))
+        h0 <- exp(het$dens_sigma * .sc_rff_eval(fw, gp$x[k_in], gp$y[k_in]))
+        cap <- list(H = lam_cap / lam_bar); cap$s <- .sc_cap_scale(h0, cap$H)
+        hg <- .sc_het_weight(het, fv, fw, gp$x, gp$y, cap = cap); k_in <- hg > 0
+      }
       a <- .sc_solve_a(eta_g[k_in, , drop = FALSE], f, rho, h = hg[k_in])
       wg <- .sc_prob(eta_g, a, rho)$w * hg; wmax <- 1.1 * max(wg)
     }
     info[[i]] <- list(region_id = rdf$region_id[i], a = a, wmax = wmax, w_mean = mean(wg), n_grid = nrow(gp), n_fields = sum(s > 0),
                       void_grid_frac = if (is.null(hg)) 0 else mean(hg == 0), field_void = fv, field_dens = fw,   # D-5: campi per i test
+                      n_removed = n_removed[i], cap = if (is.null(het)) NULL else cap, n_plan = sum(tk$n),     # S1.5e
                       field_types = fields, ell_grid = ell_g, w_grid_max = max(wg), wmax_factor = wmax / max(wg))   # revisione: M3, M5, N6
     bw <- bb[["xmax"]] - bb[["xmin"]]; bh <- bb[["ymax"]] - bb[["ymin"]]
     p_in <- min(1, max(rdf$area_um2[i] / max(bw * bh, 1e-12), 1e-3)); p_thin <- max(mean(wg) / wmax, 1e-3)
@@ -625,7 +679,7 @@ seed_centroids <- function(regions,
       empty_blocks <- if (length(cx)) 0L else empty_blocks + 1L
       if (!length(cx)) next
       pr <- .sc_prob(.sc_eta(fields, s, log(f), cx, cy), a, rho)
-      if (!is.null(het)) pr$w <- pr$w * .sc_het_weight(het, fv, fw, cx, cy)
+      if (!is.null(het)) pr$w <- pr$w * .sc_het_weight(het, fv, fw, cx, cy, cap = cap)
       u_thin <- stats::runif(length(cx)); u_type <- stats::runif(length(cx))
       exceed <- exceed + sum(pr$w > wmax)
       keep <- u_thin < pr$w / wmax
@@ -666,7 +720,7 @@ seed_centroids <- function(regions,
     if (length(unique(dtype[used])) > 1L) stop("seed_centroids(): labels = \"blind\" richiede la stessa distanza minima per tutti i tipi.", call. = FALSE)
     for (i in unique(RX)) { w <- which(RX == i); if (length(w) > 1L) TI[w] <- TI[w][sample.int(length(w))] }
   }
-  list(x = X[keep], y = Y[keep], type_idx = TI, region_id = RI[keep], region_failed = region_failed,
+  list(x = X[keep], y = Y[keep], type_idx = TI, region_id = RI[keep], region_failed = region_failed, n_removed = n_removed, void_v = void_v,
        task_attempts = attempts, grid_cell_um = grid_cell, hardcore = hardcore,
        compart_info = list(regions = Filter(Negate(is.null), info), n_exceed_wmax = exceed, n_quota_reject = n_quota_rej,
                            n_thin_accept = n_thin_acc, n_drawn = stats::setNames(n_drawn, type_df$cell_type), table = ctab,

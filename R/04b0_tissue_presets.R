@@ -204,7 +204,7 @@ tissue_preset_spec <- function(preset, size_conversion = c("preserve_area", "non
     cp <- cp[match(out$cell_types$cell_type, cp$cell_type), , drop = FALSE]
     out$compartments <- data.frame(cell_type = cp$cell_type, ell_um = cp$ell_um, s = cp$s, source = cp$src, stringsAsFactors = FALSE)
     hz <- .TP_HET[.TP_HET$preset == preset, , drop = FALSE]
-    out$heterogeneity <- hz[, c("void_frac", "void_ell_um", "dens_sigma", "dens_ell_um", "src")]
+    out$heterogeneity <- hz[, c("void_frac", "void_ell_um", "dens_sigma", "dens_ell_um", intersect(c("void_mode", "void_aspect", "dens_cap"), names(hz)), "src")]   # S1.5e: colonne opzionali
     if (size_resid == "empirical") out$cell_types$nucleus_area_resid <- paste0(preset, ":", out$cell_types$size_group)
     if (min_dist_mode == "nucleus") {
       f <- out$composition$fraction[match(out$cell_types$cell_type, out$composition$cell_type)]
