@@ -57,9 +57,10 @@ def fam_X(L, A, fold): return (L.void_aspect == 1) & (L.dens_sigma == 0) & (L.ar
 def fam_XA(L, A, fold): return (L.void_aspect > 1) & (L.dens_sigma == 0) & (L.archetypes.isin(["", A]) | L.archetypes.str.contains(A)) & (L.rois == "")
 def edges(b, Lf, fam):
     e = []
-    if b.void_frac >= Lf.void_frac.max(): e.append("void_frac_hi")
-    if b.void_ell_um >= Lf.void_ell_um.max(): e.append("void_ell_hi")
-    if b.void_ell_um <= Lf.void_ell_um.min(): e.append("void_ell_lo")
+    # XAD: i vuoti sono fissati a quelli di XA della piega (un solo valore), quindi i bordi dei vuoti non si valutano
+    if fam != "XAD" and b.void_frac >= Lf.void_frac.max(): e.append("void_frac_hi")
+    if fam != "XAD" and b.void_ell_um >= Lf.void_ell_um.max(): e.append("void_ell_hi")
+    if fam != "XAD" and b.void_ell_um <= Lf.void_ell_um.min(): e.append("void_ell_lo")
     if fam == "XA" and b.void_aspect >= Lf.void_aspect.max(): e.append("void_aspect_hi")
     if fam == "XAD" and b.dens_sigma > 0:
         if b.dens_sigma >= Lf.dens_sigma.max(): e.append("dens_sigma_hi")
@@ -111,6 +112,22 @@ def fit():
                 for _, x in Lf.iterrows(): lrows.append(dict(family="XAD", archetype=A, fold=fold, combo=x.combo, loss=x.L))
                 best["XAD"].append(dict(archetype=A, fold=fold, **{c: b[c] for c in COLS}, loss=b.L, edge=ed))
         pd.DataFrame(best["XAD"]).to_csv(f"{RES}/S1.5e_het_XAD.csv", index=False); pd.DataFrame(lrows).to_csv(f"{RES}/S1.5e_het_loss.csv", index=False)
+        xb = pd.DataFrame(best["XAD"]); xe = xb[(xb.fold == "pooled") & (xb.edge != "")]
+        if len(xe) and not os.path.exists(f"{RES}/S1.5e_het_grid_xadext.csv"):   # un passo nella direzione del bordo della densita', tutte le pieghe del tessuto
+            new = []
+            for _, b in xe.iterrows():
+                A = b.archetype; sd = list(SD); ld = list(LD)
+                if "dens_sigma_hi" in b.edge: sd = sd + [round(max(sd) + 0.3, 3)]
+                if "dens_ell_hi" in b.edge: ld = ld + [max(ld) * 2]
+                if "dens_ell_lo" in b.edge: ld = [min(ld) / 2] + ld
+                for fold in folds(A):
+                    xa = XA[(XA.archetype == A) & (XA.fold == fold)].iloc[0]
+                    use = sorted(real[real.archetype == A].roi_id) if fold == "pooled" else [r for r in sorted(real[real.archetype == A].roi_id) if r != fold[4:]]
+                    for a_, l_ in itertools.product(sd, ld):
+                        r_ = row(xa.void_frac, xa.void_ell_um, xa.void_aspect, a_, l_, A, "|".join(use), tag=f"xad_{A}_{fold}_")
+                        if r_["combo"] not in set(G.combo): new.append(r_)
+            pd.DataFrame(new).to_csv(f"{RES}/S1.5e_het_grid_xadext.csv", index=False); print("estensione di XAD:", len(new), "combinazioni per", sorted(set(xe.archetype)))
+        elif len(xe): print("griglia di XAD gia' estesa; ottimi al bordo:", list(zip(xe.archetype, xe.edge)))
     for fam in best:
         if best[fam]: print(fam); print(pd.DataFrame(best[fam]).query("fold == 'pooled'")[["archetype"] + COLS[1:] + ["loss", "edge"]].to_string(index=False))
 if __name__ == "__main__":

@@ -20,9 +20,9 @@ if [ "$mode" = test ]; then
   D="$LOG/S1.5d"; B="$D/S1.5c/S1.5b"; S="$B/S1.5"
   while read -r f allowed; do
     [ -f "$f" ] || { echo "FAIL regressione: manca $f"; fail=1; continue; }
-    grep -q '^RESULT' "$f" || { echo "FAIL regressione: $f senza RESULT (batteria interrotta)"; fail=1; continue; }
+    grep -qE '^(RESULT|RISULTATO)' "$f" || { echo "FAIL regressione: $f senza RESULT (batteria interrotta)"; fail=1; continue; }
     got=$(fails_of "$f"); [ "$allowed" = "-" ] && allowed=""
-    if [ "$got" = "$allowed" ]; then echo "PASS regressione $(basename "$f"): $(grep '^RESULT' "$f" | tail -1) FAIL ammessi [${allowed}]"
+    if [ "$got" = "$allowed" ]; then echo "PASS regressione $(basename "$f"): $(grep -E '^(RESULT|RISULTATO)' "$f" | tail -1) FAIL ammessi [${allowed}]"
     else echo "FAIL regressione $(basename "$f"): FAIL trovati [${got}] ammessi [${allowed}]"; fail=1; fi
   done <<LIST
 $D/test_S1.5d.log T13
