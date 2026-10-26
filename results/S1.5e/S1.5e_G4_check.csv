@@ -1,0 +1,181 @@
+check,unit,value,pass
+a vero,A1_r1,4.440892098500626e-16,True
+a2 vero = esplorazione E4,A1_r1,0.0,True
+"a simulato (XA, seme 1)",A1_r1,4.440892098500626e-16,True
+a vero,A1_r2,8.881784197001252e-16,True
+a2 vero = esplorazione E4,A1_r2,5.551115123125783e-17,True
+"a simulato (XA, seme 1)",A1_r2,8.881784197001252e-16,True
+a vero,A1_r3,4.440892098500626e-15,True
+a2 vero = esplorazione E4,A1_r3,5.551115123125783e-17,True
+"a simulato (XA, seme 1)",A1_r3,8.881784197001252e-15,True
+a vero,A1_r4,1.3322676295501878e-15,True
+a2 vero = esplorazione E4,A1_r4,5.551115123125783e-17,True
+"a simulato (XA, seme 1)",A1_r4,2.398081733190338e-14,True
+a vero,A1_r5,4.440892098500626e-16,True
+a2 vero = esplorazione E4,A1_r5,5.551115123125783e-17,True
+"a simulato (XA, seme 1)",A1_r5,2.220446049250313e-15,True
+a vero,A2_r1,0.0,True
+a2 vero = esplorazione E4,A2_r1,0.0,True
+"a simulato (XA, seme 1)",A2_r1,0.0,True
+a vero,A2_r2,4.440892098500626e-16,True
+a2 vero = esplorazione E4,A2_r2,5.551115123125783e-17,True
+"a simulato (XA, seme 1)",A2_r2,2.220446049250313e-15,True
+a vero,A2_r3,4.440892098500626e-16,True
+a2 vero = esplorazione E4,A2_r3,5.551115123125783e-17,True
+"a simulato (XA, seme 1)",A2_r3,4.440892098500626e-15,True
+a vero,A2_r4,2.220446049250313e-16,True
+a2 vero = esplorazione E4,A2_r4,2.7755575615628914e-17,True
+"a simulato (XA, seme 1)",A2_r4,1.1102230246251565e-15,True
+a vero,A2_r5,0.0,True
+a2 vero = esplorazione E4,A2_r5,2.7755575615628914e-17,True
+"a simulato (XA, seme 1)",A2_r5,8.881784197001252e-16,True
+a vero,A3_r1,4.440892098500626e-16,True
+a2 vero = esplorazione E4,A3_r1,5.551115123125783e-17,True
+"a simulato (XA, seme 1)",A3_r1,0.0,True
+a vero,A3_r2,1.3322676295501878e-15,True
+a2 vero = esplorazione E4,A3_r2,5.551115123125783e-17,True
+"a simulato (XA, seme 1)",A3_r2,0.0,True
+a vero,A3_r3,2.220446049250313e-16,True
+a2 vero = esplorazione E4,A3_r3,2.220446049250313e-16,True
+"a simulato (XA, seme 1)",A3_r3,2.220446049250313e-16,True
+a vero,A3_r4,8.881784197001252e-16,True
+a2 vero = esplorazione E4,A3_r4,0.0,True
+"a simulato (XA, seme 1)",A3_r4,4.440892098500626e-16,True
+a vero,A3_r5,8.881784197001252e-16,True
+a2 vero = esplorazione E4,A3_r5,0.0,True
+"a simulato (XA, seme 1)",A3_r5,1.1102230246251565e-15,True
+a vero,A4_f1,1.3322676295501878e-15,True
+a2 vero = esplorazione E4,A4_f1,2.220446049250313e-16,True
+"a simulato (XA, seme 1)",A4_f1,0.0,True
+a vero,A4_f2,4.440892098500626e-16,True
+a2 vero = esplorazione E4,A4_f2,0.0,True
+"a simulato (XA, seme 1)",A4_f2,0.0,True
+a vero,A4_p1,0.0,True
+a2 vero = esplorazione E4,A4_p1,0.0,True
+"a simulato (XA, seme 1)",A4_p1,8.881784197001252e-16,True
+a vero,A4_p2,0.0,True
+a2 vero = esplorazione E4,A4_p2,0.0,True
+"a simulato (XA, seme 1)",A4_p2,6.661338147750939e-16,True
+a vero,A4_p3,0.0,True
+a2 vero = esplorazione E4,A4_p3,0.0,True
+"a simulato (XA, seme 1)",A4_p3,4.440892098500626e-16,True
+a vero,A5_r1,3.9968028886505635e-15,True
+a2 vero = esplorazione E4,A5_r1,5.551115123125783e-17,True
+"a simulato (XA, seme 1)",A5_r1,1.021405182655144e-14,True
+a vero,A5_r2,5.773159728050814e-15,True
+a2 vero = esplorazione E4,A5_r2,0.0,True
+"a simulato (XA, seme 1)",A5_r2,1.7763568394002505e-15,True
+a vero,A5_r3,1.7763568394002505e-15,True
+a2 vero = esplorazione E4,A5_r3,0.0,True
+"a simulato (XA, seme 1)",A5_r3,5.773159728050814e-15,True
+a vero,A5_r4,9.769962616701378e-15,True
+a2 vero = esplorazione E4,A5_r4,1.1102230246251565e-16,True
+"a simulato (XA, seme 1)",A5_r4,1.3322676295501878e-15,True
+a vero,A5_r5,1.7763568394002505e-14,True
+a2 vero = esplorazione E4,A5_r5,0.0,True
+"a simulato (XA, seme 1)",A5_r5,2.6645352591003757e-15,True
+a vero,A6_r1,1.7763568394002505e-15,True
+a2 vero = esplorazione E4,A6_r1,0.0,True
+"a simulato (XA, seme 1)",A6_r1,2.220446049250313e-16,True
+a vero,A6_r2,0.0,True
+a2 vero = esplorazione E4,A6_r2,0.0,True
+"a simulato (XA, seme 1)",A6_r2,0.0,True
+a vero,A6_r3,3.552713678800501e-15,True
+a2 vero = esplorazione E4,A6_r3,5.551115123125783e-17,True
+"a simulato (XA, seme 1)",A6_r3,1.3322676295501878e-15,True
+a vero,A6_r4,8.881784197001252e-16,True
+a2 vero = esplorazione E4,A6_r4,0.0,True
+"a simulato (XA, seme 1)",A6_r4,6.661338147750939e-16,True
+a vero,A6_r5,2.220446049250313e-16,True
+a2 vero = esplorazione E4,A6_r5,2.220446049250313e-16,True
+"a simulato (XA, seme 1)",A6_r5,2.220446049250313e-15,True
+b piega X,A1_r1,1.0,True
+b piega X,A1_r2,1.0,True
+b piega X,A1_r3,1.0,True
+b piega X,A1_r4,1.0,True
+b piega X,A1_r5,1.0,True
+b piega X,A2_r1,1.0,True
+b piega X,A2_r2,1.0,True
+b piega X,A2_r3,1.0,True
+b piega X,A2_r4,1.0,True
+b piega X,A2_r5,1.0,True
+b piega X,A3_r1,1.0,True
+b piega X,A3_r2,1.0,True
+b piega X,A3_r3,1.0,True
+b piega X,A3_r4,1.0,True
+b piega X,A3_r5,1.0,True
+b piega X,A4_f1,1.0,True
+b piega X,A4_f2,1.0,True
+b piega X,A4_p1,1.0,True
+b piega X,A4_p2,1.0,True
+b piega X,A4_p3,1.0,True
+b piega X,A5_r1,1.0,True
+b piega X,A5_r2,1.0,True
+b piega X,A5_r3,1.0,True
+b piega X,A5_r4,1.0,True
+b piega X,A5_r5,1.0,True
+b piega X,A6_r1,1.0,True
+b piega X,A6_r2,1.0,True
+b piega X,A6_r3,1.0,True
+b piega X,A6_r4,1.0,True
+b piega X,A6_r5,1.0,True
+b piega XA,A1_r1,1.0,True
+b piega XA,A1_r2,1.0,True
+b piega XA,A1_r3,1.0,True
+b piega XA,A1_r4,1.0,True
+b piega XA,A1_r5,1.0,True
+b piega XA,A2_r1,1.0,True
+b piega XA,A2_r2,1.0,True
+b piega XA,A2_r3,1.0,True
+b piega XA,A2_r4,1.0,True
+b piega XA,A2_r5,1.0,True
+b piega XA,A3_r1,1.0,True
+b piega XA,A3_r2,1.0,True
+b piega XA,A3_r3,1.0,True
+b piega XA,A3_r4,1.0,True
+b piega XA,A3_r5,1.0,True
+b piega XA,A4_f1,1.0,True
+b piega XA,A4_f2,1.0,True
+b piega XA,A4_p1,1.0,True
+b piega XA,A4_p2,1.0,True
+b piega XA,A4_p3,1.0,True
+b piega XA,A5_r1,1.0,True
+b piega XA,A5_r2,1.0,True
+b piega XA,A5_r3,1.0,True
+b piega XA,A5_r4,1.0,True
+b piega XA,A5_r5,1.0,True
+b piega XA,A6_r1,1.0,True
+b piega XA,A6_r2,1.0,True
+b piega XA,A6_r3,1.0,True
+b piega XA,A6_r4,1.0,True
+b piega XA,A6_r5,1.0,True
+b piega XAD,A1_r1,1.0,True
+b piega XAD,A1_r2,1.0,True
+b piega XAD,A1_r3,1.0,True
+b piega XAD,A1_r4,1.0,True
+b piega XAD,A1_r5,1.0,True
+b piega XAD,A2_r1,1.0,True
+b piega XAD,A2_r2,1.0,True
+b piega XAD,A2_r3,1.0,True
+b piega XAD,A2_r4,1.0,True
+b piega XAD,A2_r5,1.0,True
+b piega XAD,A3_r1,1.0,True
+b piega XAD,A3_r2,1.0,True
+b piega XAD,A3_r3,1.0,True
+b piega XAD,A3_r4,1.0,True
+b piega XAD,A3_r5,1.0,True
+b piega XAD,A4_f1,1.0,True
+b piega XAD,A4_f2,1.0,True
+b piega XAD,A4_p1,1.0,True
+b piega XAD,A4_p2,1.0,True
+b piega XAD,A4_p3,1.0,True
+b piega XAD,A5_r1,1.0,True
+b piega XAD,A5_r2,1.0,True
+b piega XAD,A5_r3,1.0,True
+b piega XAD,A5_r4,1.0,True
+b piega XAD,A5_r5,1.0,True
+b piega XAD,A6_r1,1.0,True
+b piega XAD,A6_r2,1.0,True
+b piega XAD,A6_r3,1.0,True
+b piega XAD,A6_r4,1.0,True
+b piega XAD,A6_r5,1.0,True

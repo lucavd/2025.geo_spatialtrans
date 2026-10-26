@@ -1,0 +1,34 @@
+cp,item,value,pass,judged
+"CP-1 cuore, parametri di XA su tutte le ROI",void_frac <= 0.05 e kappa <= 2,"void_frac 0.15, kappa 4",False,True
+"CP-1 cuore, vincente - RV appaiato per ROI",P-2,0 +- 0,True,True
+"CP-1 cuore, vincente - RV appaiato per ROI",P-7,0 +- 0,True,True
+"CP-1 cuore, vincente - RV appaiato per ROI",P-11,0 +- 0,True,True
+"CP-1 cuore, vincente - RV appaiato per ROI",P-13,0 +- 0,True,True
+CP-2 allungamento scelto dalla calibrazione di XA (tutte le ROI),A2 kappa <= 2,kappa 2,True,True
+CP-2 allungamento scelto dalla calibrazione di XA (tutte le ROI),A3 kappa <= 2,kappa 2,True,True
+CP-2 allungamento scelto dalla calibrazione di XA (tutte le ROI),A6 kappa <= 2,kappa 4,False,True
+CP-2 allungamento scelto dalla calibrazione di XA (tutte le ROI),A5 kappa >= 4,kappa 4,True,True
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",X A1,0.0152 +- 0.011 (oss. 0.495),False,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",X A2,-0.0072 +- 0.016 (oss. 0.637),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",X A3,0.0023 +- 0.025 (oss. 0.345),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",X A4,0.0751 +- 0.016 (oss. 0.782),False,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",X A5,0.0350 +- 0.023 (oss. 0.170),False,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",X A6,0.0084 +- 0.012 (oss. 0.079),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XA A1,-0.0191 +- 0.03 (oss. 0.455),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XA A2,-0.0080 +- 0.022 (oss. 0.635),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XA A3,0.0088 +- 0.018 (oss. 0.383),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XA A4,0.0697 +- 0.022 (oss. 0.771),False,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XA A5,0.0043 +- 0.017 (oss. 0.131),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XA A6,0.0018 +- 0.013 (oss. 0.079),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XAD A1,-0.0191 +- 0.03 (oss. 0.455),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XAD A2,0.0149 +- 0.017 (oss. 0.637),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XAD A3,0.0088 +- 0.011 (oss. 0.375),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XAD A4,0.0567 +- 0.019 (oss. 0.742),False,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XAD A5,-0.0016 +- 0.026 (oss. 0.125),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XAD A6,0.0018 +- 0.013 (oss. 0.079),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",RV A1,-0.0004 +- 0.019 (oss. 0.570),True,True
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",RV A2,-0.0033 +- 0.027 (oss. 0.697),True,True
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",RV A3,0.0008 +- 0.023 (oss. 0.400),True,True
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",RV A4,0.0017 +- 0.021 (oss. 0.833),True,True
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",RV A5,-0.0007 +- 0.022 (oss. 0.140),True,True
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",RV A6,-0.0002 +- 0.017 (oss. 0.072),True,True

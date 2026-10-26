@@ -1,0 +1,11 @@
+PASS mutante M1 rilevato da: T2a T2b T3 T9b 
+PASS mutante M2 rilevato da: T2a T3 
+PASS mutante M3 rilevato da: (arresto dei test)
+PASS mutante M4 rilevato da: T6 
+PASS mutante M5 rilevato da: T5 T7 
+PASS mutante M6 rilevato da: T8a T8b 
+PASS mutante M7 rilevato da: T11 
+PASS mutante M8 rilevato da: T9 T9b 
+PASS mutante M9 rilevato da: T3 
+mutanti rilevati 9/9
+GATE G-2 PASS

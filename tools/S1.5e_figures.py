@@ -15,6 +15,7 @@ ST = {"U": ("semina uniforme (predefinito)", "0.45", "x"), "RV": ("vuoti che spo
       "XAD": ("vuoti allungati + densità con tetto", COL[4], "D"), "Q": ("vincente senza quote", COL[8], "v")}
 V = pd.read_csv(f"{RES}/S1.5e_verdicts.csv"); ROIS = pd.read_csv("results/R2/R2_rois_checked.csv"); WIN = pd.read_csv(f"{RES}/S1.5e_ruleA.csv").winner.iloc[0]
 ARMS = [a for a in ["U", "RV", "X", "XA", "XAD"] if a in set(V.arm)]
+CMP = "XA" if WIN == "RV" else WIN          # braccio mostrato accanto a RV nelle figure 3 e 4: il vincente, o i vuoti allungati che tolgono cellule se vince RV
 def band(ax, y, lo, hi): ax.plot([lo, hi], [y, y], color="0.82", lw=6, solid_capstyle="butt", zorder=0)
 def panel(fig_name, items, arms):
     off = dict(zip(arms, np.linspace(-0.3, 0.3, len(arms))))
@@ -29,7 +30,7 @@ def panel(fig_name, items, arms):
                 q = r[r.arm == arm]
                 if not len(q): continue
                 q = q.iloc[0]; lb, c_, mk = ST[arm]
-                ax.errorbar(q.est, y + off[arm], xerr=2 * q.se, fmt=mk, color=c_, ms=4.2 if arm == WIN else 3.2, lw=0.9, label=lb if y == 0 else None, zorder=3)
+                ax.errorbar(q.est, y + off[arm], xerr=2 * q.se, fmt=mk, color=c_, ms=4.2 if arm in (WIN, CMP) else 3.2, lw=0.9, label=lb if y == 0 else None, zorder=3)
         ax.set_xlabel(lab, fontsize=7.5); ax.margins(x=0.06)
     axs[0].set_yticks(range(6)); axs[0].set_yticklabels(list(TIS.values())); axs[0].invert_yaxis()
     h, l = axs[0].get_legend_handles_labels(); fig.legend(h, l, frameon=False, fontsize=7, loc="upper center", ncol=len(arms), bbox_to_anchor=(0.5, 1.0))
@@ -45,11 +46,11 @@ fig, axs = plt.subplots(2, 3, figsize=(10, 5.6), sharey=True); axs = axs.ravel()
 for ax, A in zip(axs, TIS):
     m = E3[(E3.archetype == A) & (E3.source == "manual")].iloc[0]
     ax.plot(range(6), [m[f"s1_b{k}"] for k in range(6)], "k-o", ms=4, lw=1.2, label="vero (risposte di Luca, 60 focali)")
-    for arm in dict.fromkeys(["RV", WIN]):
+    for arm in ["RV", CMP]:
         z = WN[(WN.arm == arm) & (WN.archetype == A)].groupby("bin")[["n", "n_contact"]].sum()
         lb, c_, mk = ST[arm]; ax.plot(z.index, z.n_contact / z.n.where(z.n > 0), marker=mk, color=c_, ms=3.5, lw=1, label=lb)
     ax2 = ax.twinx(); ax2.bar(np.arange(6) - 0.2, [m[f"frac_b{k}"] for k in range(6)], width=0.35, color="0.85", zorder=0)
-    z = WN[(WN.arm == WIN) & (WN.archetype == A)].groupby("bin").n.sum(); ax2.bar(z.index + 0.2, z / z.sum(), width=0.35, color=ST[WIN][1], alpha=0.25, zorder=0)
+    z = WN[(WN.arm == "RV") & (WN.archetype == A)].groupby("bin").n.sum(); ax2.bar(z.index + 0.2, z / z.sum(), width=0.35, color=ST["RV"][1], alpha=0.25, zorder=0)
     ax2.set_ylim(0, 1.6); ax2.set_yticks([]); ax.set_zorder(ax2.get_zorder() + 1); ax.patch.set_visible(False)
     ax.set_title(TIS[A], fontsize=8, loc="left"); ax.set_xticks(range(6)); ax.set_xticklabels(lab, fontsize=7); ax.set_ylim(-0.02, 1.02)
 for ax in axs[3:]: ax.set_xlabel("distanza dal vicino più vicino (µm)")
@@ -63,7 +64,7 @@ for i, A in enumerate(TIS):
     rgb = C.load_roi(A, r); upp = ROIS[(ROIS.archetype == A) & (ROIS.roi_id == r)].um_per_px.iloc[0]
     axs[i, 0].imshow(rgb, extent=(0, rgb.shape[1] * upp, rgb.shape[0] * upp, 0), interpolation="lanczos"); axs[i, 0].set_title(f"{TIS[A]} ({r}): H&E", fontsize=7, loc="left")
     srcs = [("vero (nuclei segmentati)", e.x.values, e.y.values, e.interior.values)]
-    for arm in dict.fromkeys(["RV", WIN]):
+    for arm in ["RV", CMP]:
         c_ = pd.read_parquet(f"{OUT}/cells/{arm}/{A}_{r}_s01.parquet"); srcs.append((ST[arm][0], c_.x.values, c_.y.values, c_.interior.values))
     for j, (nm, x, y, it) in enumerate(srcs, start=1):
         ax = axs[i, j]; v = m5e.void_image(x, y, it.astype(bool), g)

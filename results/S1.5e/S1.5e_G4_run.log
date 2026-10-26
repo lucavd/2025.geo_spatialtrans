@@ -1,0 +1,9 @@
+                           sum  count
+check                                
+a simulato (XA, seme 1)     30     30
+a vero                      30     30
+a2 vero = esplorazione E4   30     30
+b piega X                   30     30
+b piega XA                  30     30
+b piega XAD                 30     30
+GATE G-4 PASS
