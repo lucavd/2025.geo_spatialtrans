@@ -26,6 +26,12 @@ CP-2 allungamento scelto dalla calibrazione di XA (tutte le ROI),A5 kappa >= 4,k
 "CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XAD A4,0.0567 +- 0.019 (oss. 0.742),False,False
 "CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XAD A5,-0.0016 +- 0.026 (oss. 0.125),True,False
 "CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XAD A6,0.0018 +- 0.013 (oss. 0.079),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XADs A1,0.0052 +- 0.023 (oss. 0.490),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XADs A2,0.0214 +- 0.015 (oss. 0.651),False,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XADs A3,0.0119 +- 0.016 (oss. 0.391),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XADs A4,0.0567 +- 0.019 (oss. 0.742),False,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XADs A5,-0.0077 +- 0.026 (oss. 0.118),True,False
+"CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",XADs A6,-0.0007 +- 0.013 (oss. 0.073),True,False
 "CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",RV A1,-0.0004 +- 0.019 (oss. 0.570),True,True
 "CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",RV A2,-0.0033 +- 0.027 (oss. 0.697),True,True
 "CP-3 i contatti seguono le distanze (osservato - previsto da RV per classe, semi)",RV A3,0.0008 +- 0.023 (oss. 0.400),True,True

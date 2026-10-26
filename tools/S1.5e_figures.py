@@ -12,9 +12,10 @@ plt.rcParams.update({"figure.facecolor": "white", "axes.facecolor": "white", "sa
 COL = plt.rcParams["axes.prop_cycle"].by_key()["color"]
 ST = {"U": ("semina uniforme (predefinito)", "0.45", "x"), "RV": ("vuoti che spostano le cellule (S1.5d)", COL[0], "s"),
       "X": ("vuoti tondi che tolgono cellule", COL[2], "^"), "XA": ("vuoti allungati che tolgono cellule", COL[1], "o"),
-      "XAD": ("vuoti allungati + densità con tetto", COL[4], "D"), "Q": ("vincente senza quote", COL[8], "v")}
+      "XAD": ("vuoti allungati + densità (anche nulla)", COL[4], "D"), "Q": ("vincente senza quote", COL[8], "v"),
+      "XADs": ("vuoti allungati + densità con tetto (pre-registrato)", COL[5], "P")}   # XADs: nota D-5
 V = pd.read_csv(f"{RES}/S1.5e_verdicts.csv"); ROIS = pd.read_csv("results/R2/R2_rois_checked.csv"); WIN = pd.read_csv(f"{RES}/S1.5e_ruleA.csv").winner.iloc[0]
-ARMS = [a for a in ["U", "RV", "X", "XA", "XAD"] if a in set(V.arm)]
+ARMS = [a for a in ["U", "RV", "X", "XA", "XAD", "XADs"] if a in set(V.arm)]
 CMP = "XA" if WIN == "RV" else WIN          # braccio mostrato accanto a RV nelle figure 3 e 4: il vincente, o i vuoti allungati che tolgono cellule se vince RV
 def band(ax, y, lo, hi): ax.plot([lo, hi], [y, y], color="0.82", lw=6, solid_capstyle="butt", zorder=0)
 def panel(fig_name, items, arms):
@@ -33,8 +34,8 @@ def panel(fig_name, items, arms):
                 ax.errorbar(q.est, y + off[arm], xerr=2 * q.se, fmt=mk, color=c_, ms=4.2 if arm in (WIN, CMP) else 3.2, lw=0.9, label=lb if y == 0 else None, zorder=3)
         ax.set_xlabel(lab, fontsize=7.5); ax.margins(x=0.06)
     axs[0].set_yticks(range(6)); axs[0].set_yticklabels(list(TIS.values())); axs[0].invert_yaxis()
-    h, l = axs[0].get_legend_handles_labels(); fig.legend(h, l, frameon=False, fontsize=7, loc="upper center", ncol=len(arms), bbox_to_anchor=(0.5, 1.0))
-    fig.subplots_adjust(left=0.1, right=0.99, top=0.86, bottom=0.16, wspace=0.08); fig.savefig(f"{FIG}/{fig_name}", dpi=200); plt.close(fig)
+    h, l = axs[0].get_legend_handles_labels(); fig.legend(h, l, frameon=False, fontsize=7, loc="upper center", ncol=3, bbox_to_anchor=(0.5, 1.0))
+    fig.subplots_adjust(left=0.1, right=0.99, top=0.80, bottom=0.16, wspace=0.08); fig.savefig(f"{FIG}/{fig_name}", dpi=200); plt.close(fig)
 panel("S1.5e_fig1_contacts_density.png", [("P-1", "nuclei a contatto (finestre contate a mano)"), ("P-15", "densità del ROI (nuclei / mm² di tessuto)"),
       ("P-2", "CV dei territori, simulato / vero - 1"), ("P-7", "CV del numero di vicini")], ARMS)
 panel("S1.5e_fig2_voids.png", [("P-11", "spazio vuoto (bersaglio)"), ("P-13", "territori > 3 volte la mediana"),

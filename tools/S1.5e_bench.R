@@ -20,9 +20,9 @@ rois$side_um <- rois$side_px * rois$um_per_px; rois$roi_idx <- seq_len(nrow(rois
 PRESET <- c(A1 = "epithelial", A2 = "tumor_microenv", A3 = "stromal_rich", A4 = "lymphoid", A5 = "brain_cortex", A6 = "columnar_muscle")
 rule_pick <- function(f) { if (!file.exists(f)) return(NA_character_); d <- read.csv(f, stringsAsFactors = FALSE); d$winner[1] }
 WIN_A <- rule_pick(file.path(RES, "S1.5e_ruleA.csv"))                # modello dei vuoti vincente della regola A (RV, X, XA o XAD)
-ARMS <- data.frame(arm = c("U", "RV", "X", "XA", "XAD", "Q"), spatial = c("uniform", rep("compartments", 5)),
-                   het = c(NA, "RV", "X", "XA", "XAD", WIN_A), size_arm = c("recentred", rep("group", 5)),
-                   quotas = c(rep(TRUE, 5), FALSE), stringsAsFactors = FALSE)
+ARMS <- data.frame(arm = c("U", "RV", "X", "XA", "XAD", "Q", "XADs"), spatial = c("uniform", rep("compartments", 6)),
+                   het = c(NA, "RV", "X", "XA", "XAD", WIN_A, "XADs"), size_arm = c("recentred", rep("group", 6)),
+                   quotas = c(rep(TRUE, 5), FALSE, TRUE), stringsAsFactors = FALSE)   # XADs: XAD come pre-registrato (densita' obbligatoria, nota D-5)
 het_of <- function(A, roi, fam) if (fam == "RV") het_for(A, roi, "RV") else het_for_e(A, roi, fam)   # RV: data.frame di S1.5d, 4 colonne (identita' con S1.5d)
 SEEDS <- 1:10; BASE <- 20261021
 seed_of <- function(i, s) BASE + 1000 * i + s
@@ -128,7 +128,7 @@ if (STAGE == "gen") {
 }
 if (STAGE == "check") {
   U <- read.csv(file.path(RES, "S1.5e_panel_units.csv"), stringsAsFactors = FALSE)
-  e1 <- sum(grepl("C2:ERROR|C3:ERROR|C5:ERROR|C9:ERROR", U$statuses)); nf <- sum(U$n_failed[U$arm %in% c("X", "XA", "XAD", "Q")])
+  e1 <- sum(grepl("C2:ERROR|C3:ERROR|C5:ERROR|C9:ERROR", U$statuses)); nf <- sum(U$n_failed[U$arm %in% c("X", "XA", "XAD", "XADs", "Q")])
   S <- read.csv("results/S1.5d/S1.5d_panel_units.csv", stringsAsFactors = FALSE)
   cmp <- function(a) { uu <- U[U$arm == a, ]; ss <- S[S$arm == a, ]; k <- match(paste(uu$archetype, uu$roi_id, uu$seed), paste(ss$archetype, ss$roi_id, ss$seed))
     sum(uu$md5 == ss$md5[k], na.rm = TRUE) }
@@ -139,7 +139,7 @@ if (STAGE == "check") {
   rep_ok <- vapply(seq_along(arms8), function(r) { i <- rows8$roi_idx[r]; arm <- arms8[r]
     w <- r3_roi_window(rows8$archetype[r], rows8$roi_id[r], rois); L <- run_pc(i, 3, arm, w)
     identical(layer_md5(L), U$md5[U$roi_idx == i & U$seed == 3 & U$arm == arm]) }, TRUE)
-  out <- data.frame(check = c("units", "no_error_C2_C3_C5_C9", "n_failed_X_XA_XAD_Q", "U_equals_S1.5d_U_md5", "RV_equals_S1.5d_RV_md5", "rerun_identical", "max_exceed_fraction"),
+  out <- data.frame(check = c("units", "no_error_C2_C3_C5_C9", "n_failed_X_XA_XAD_XADs_Q", "U_equals_S1.5d_U_md5", "RV_equals_S1.5d_RV_md5", "rerun_identical", "max_exceed_fraction"),
                     value = c(nrow(U), nrow(U) - e1, nf, cmp("U"), cmp("RV"), sum(rep_ok), exc),
                     expected = c(300 * length(unique(U$arm)), nrow(U), 0, 300, 300, 8, 1e-3))
   out$pass <- ifelse(out$check == "max_exceed_fraction", out$value <= out$expected, out$value == out$expected)

@@ -71,7 +71,7 @@ COLS = ["combo", "void_frac", "void_ell_um", "void_aspect", "void_mode", "dens_s
 def fit():
     real = pd.read_csv(f"{RES}/S1.5e_het_real.csv"); U = pd.read_csv(f"{MET}/all_units.csv"); G = grids()
     T = met.CAL_TARGETS_E; S = U.groupby(["combo", "archetype", "roi_id"]).agg({**{t: "mean" for t in T}, "n_failed": "max", "rep": "count"}).reset_index()
-    best = {"X": [], "XA": [], "XAD": []}; lrows = []; ext = []; xad = []
+    best = {"X": [], "XA": [], "XAD": [], "XADs": []}; lrows = []; ext = []; xad = []
     folds = lambda A: [f"loo_{r}" for r in sorted(real[real.archetype == A].roi_id)] + ["pooled"]
     for A in sorted(real.archetype.unique()):
         for fold in folds(A):
@@ -112,6 +112,12 @@ def fit():
                 for _, x in Lf.iterrows(): lrows.append(dict(family="XAD", archetype=A, fold=fold, combo=x.combo, loss=x.L))
                 best["XAD"].append(dict(archetype=A, fold=fold, **{c: b[c] for c in COLS}, loss=b.L, edge=ed))
         pd.DataFrame(best["XAD"]).to_csv(f"{RES}/S1.5e_het_XAD.csv", index=False); pd.DataFrame(lrows).to_csv(f"{RES}/S1.5e_het_loss.csv", index=False)
+        bs = []                                                          # XADs (nota D-5): come pre-registrato, solo sigma > 0 (XAD qui sopra ammette anche sigma = 0)
+        for A in sorted(real.archetype.unique()):
+            for fold in folds(A):
+                Lf = losses(real, S, G, A, fold, lambda L, A_, f_: L.combo.str.startswith(f"xad_{A_}_{f_}_")); b = Lf.iloc[0]
+                bs.append(dict(archetype=A, fold=fold, **{c: b[c] for c in COLS}, loss=b.L, edge=edges(b, Lf, "XAD")))
+        pd.DataFrame(bs).to_csv(f"{RES}/S1.5e_het_XADs.csv", index=False); best["XADs"] = bs
         xb = pd.DataFrame(best["XAD"]); xe = xb[(xb.fold == "pooled") & (xb.edge != "")]
         if len(xe) and not os.path.exists(f"{RES}/S1.5e_het_grid_xadext.csv"):   # un passo nella direzione del bordo della densita', tutte le pieghe del tessuto
             new = []

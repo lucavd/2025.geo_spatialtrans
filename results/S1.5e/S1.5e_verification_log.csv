@@ -1,0 +1,25 @@
+frase,fonte,valore_letto,valore_scritto,coincide
+6 cellule su 8 980 in un solo tessuto simulato dell'intestino,"S1.5e_panel_units.csv, n_failed > 0 (n + n_failed)",6 8980 1 A1,6 8980 1 A1,True
+"lo stesso tessuto simulato dello step precedente, identico bit per bit","S1.5e_panel_units.csv contro results/S1.5d/S1.5d_panel_units.csv, md5 di Q intestino r5 seme 5",True,True,True
+le varianti nuove non perdono nessuna cellula,"S1.5e_panel_units.csv, n_failed in X, XA, XAD, XADs",0,0,True
+"le varianti nuove 15 o 16 misure su 40, quella di oggi 19",S1.5e_ruleA.csv,RV 19 15 15 16 16 40,RV 19 15 15 16 16 40,True
+"nel caso che perdeva 533 cellule, con il tetto nessuna","S1.5e_test_S1.5e.log, T8b",533 0,533 0,True
+vicino a meno di 5 µm: si toccano 96 nuclei simulati su 100 contro 47 veri,"S1.5e_explore_contacts_summary.csv, tumore del colon, classe 0-5 µm, RV e manuale (17 focali)",96 47 17,96 47 17,True
+"tumore del colon: circa due su tre in ogni variante, contro al più 57 su 100","S1.5e_verdicts.csv, P-1 tumore del colon, RV e varianti nuove",0.62-0.69 57,0.62-0.69 57,True
+intestino: spazio vuoto 2 % delle finestre e 8 % del tessuto,"S1.5e_explore_density_ref.csv, intestino, media delle finestre",2 8,2 8,True
+"densità del conteggio manuale circa 12 400, più alta del tessuto intero","S1.5e_verdicts.csv, P-15 intestino RV (densità del preset) e intervallo vero",12419 > 11522,12419 > 11522,True
+"vuoti allungati: circa 9 970, appena sotto il minimo vero 9 975","S1.5e_verdicts.csv, P-15 intestino XA",9974 9975,9974 9975,True
+linfonodo: vuoti veri 0.2 % del tessuto,"S1.5e_explore_density_ref.csv, linfonodo",0.2,0.2,True
+"linfonodo: la calibrazione sceglie il 30 % di vuoti, più stretti della distanza fra due cellule","S1.5e_het_XA.csv, linfonodo pooled (asse corto = ℓ / √κ)",0.30 2.0,0.30 2.0,True
+linfonodo: toglie un terzo delle cellule,"S1.5e_desc.csv, D-desc-1b linfonodo, X e XA",0.30-0.32,0.30-0.32,True
+linfonodo: circa 19 000 contro almeno 21 500,"S1.5e_verdicts.csv, P-15 linfonodo X, XA, XADs",18933-19642 21533,18933-19642 21533,True
+cervello: circa 800 contro almeno 900,"S1.5e_verdicts.csv, P-15 cervello XA, XADs",795-799 917,795-799 917,True
+cuore: 15 % di vuoti dove i veri sono meno dell'1 %,"S1.5e_het_XA.csv, cuore pooled; S1.5e_explore_density_ref.csv, cuore",0.15 0.7,0.15 0.7,True
+cuore: con due ripetizioni le due scelte erano quasi pari (prima ripetizione),"S1.5e_posthoc_loss.csv, cuore, loss_rep1",52.9 55.0,52.9 55.0,True
+"cervello: area in vuoti molto allungati da un sesto a circa un quarto, contro almeno tre decimi","S1.5e_verdicts.csv, P-16 cervello RV, XA, XAD, XADs",0.166 0.245-0.286 0.305,0.166 0.245-0.286 0.305,True
+intestino: 43-48 vuoti contro 96-117,"S1.5e_verdicts.csv, P-17 intestino XA, XADs",43-48 96-117,43-48 96-117,True
+intestino: più di metà dell'area vuota in vuoti molto allungati contro al più il 45 %,"S1.5e_verdicts.csv, P-16 intestino XA, XADs",0.524-0.548 0.450,0.524-0.548 0.450,True
+contatti e distanze: tiene in 17 casi su 20 fuori dal linfonodo,"S1.5e_cp.csv, CP-3 sulle varianti nuove, senza il linfonodo",17/20,17/20,True
+linfonodo: si toccano 6-8 su 100 più di quanto dicono le distanze,"S1.5e_cp.csv, CP-3 linfonodo, varianti nuove",6-8 4/4,6-8 4/4,True
+senza numero imposto 60 contro 58 e 48 contro 46,S1.5e_ruleQ.csv,60 58 48 46 senza quote,60 58 48 46 senza quote,True
+"6 720 semine in 59 minuti, 0 errori",/mnt/micron/geo_spatialtrans/S1.5e/calpos_gen.log,6720 0 59,6720 0 59,True

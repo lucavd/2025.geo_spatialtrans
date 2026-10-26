@@ -8,8 +8,10 @@ PASS T6 orientamento del campo uniforme in (0, pi) (KS, p > 0.01) p 0.946, disti
 PASS T7 allungamento mediano dei vuoti crescente con kappa (1, 2, 4, 8) 1.92 2.54 4.85 8.79
 PASS T8a fattore della densita' con il tetto <= H in tutti i punti (linfonodo) max 1.240, H 1.240
 PASS T8b linfonodo p2 seme 4 con la densita' di S1.5d: cellule perse senza tetto > 0, con tetto 0 senza 533, con 0 (parametri 0/NA/0.9/80)
+PASS T8c tetto: media del fattore fuori dai vuoti = 1 (0.02, griglia diversa), H = 0.8 * saturazione / densita' media fuori dai vuoti (1e-6) media 1.0004, H 1.239553 contro 1.239553
+PASS T8d con togliere: n_target della regione = cellule piazzate + non piazzate (3 preset) 
 PASS T9 place_cells() con togliere, kappa e tetto sui 6 preset: 0 ERROR, parametri registrati 
 PASS T9b place_cells() inoltra void_mode: togliere riduce le cellule di circa il 20 % 883 contro 1117
 PASS T10 eterogeneita' dei 6 preset = righe di BIO_REFERENCES 
-PASS T11 het_for_e() legge la piega lascia-fuori della ROI (X, XA, XAD) 
-RESULT 14/14 PASS
+PASS T11 het_for_e() legge la piega lascia-fuori della ROI (X, XA, XAD, XADs), tutti i parametri 
+RESULT 16/16 PASS

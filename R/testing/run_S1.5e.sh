@@ -49,7 +49,12 @@ elif [ "$mode" = mutants ]; then
   FILE[M7]=tools/S1.5e_bench_lib.R;  PAT[M7]='s/het_for_e <- function\(A, roi, family, fold = c\("loo", "pooled"\)\)/het_for_e <- function(A, roi, family, fold = c("pooled", "loo"))/'
   FILE[M8]=R/04b_cell_placement.R;   PAT[M8]='s/labels = labels, heterogeneity = htab, quotas = quotas/labels = labels, heterogeneity = if (is.null(htab)) NULL else htab[, intersect(names(htab), c("void_frac", "void_ell_um", "dens_sigma", "dens_ell_um")), drop = FALSE], quotas = quotas/'
   FILE[M9]=R/04b2_seed_centroids.R;  PAT[M9]='s/        quota <- q2\n/        quota <- quota\n/'
-  MS="M1 M2 M3 M4 M5 M6 M7 M8 M9"; declare -A TD
+  # M10-M13: mutanti del revisore del codice (RC-5), aggiunti dopo la revisione
+  FILE[M10]=R/04b2_seed_centroids.R; PAT[M10]='s/cap\$s <- \.sc_cap_scale\(h0, cap\$H\)/cap\$s <- 1/'
+  FILE[M11]=R/04b2_seed_centroids.R; PAT[M11]='s/lam_bar <- n \/ \(rdf\$area_um2\[i\] \* mean\(k_in\)\)/lam_bar <- n \/ rdf\$area_um2[i]/'
+  FILE[M12]=R/04b2_seed_centroids.R; PAT[M12]='s/lam_cap <- 0\.8 \* 0\.547/lam_cap <- 1.0 * 0.547/'
+  FILE[M13]=R/04b2_seed_centroids.R; PAT[M13]='s/out_rdf\$n_target <- plan\$n_region - pl\$n_removed/out_rdf\$n_target <- plan\$n_region/'
+  MS="M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12 M13"; declare -A TD
   for m in $MS; do
     T=$(mktemp -d); TD[$m]=$T; mkdir -p "$T/R" "$T/tools"; cp R/04b*.R "$T/R/"; cp tools/S1.5e_bench_lib.R "$T/tools/"
     perl -0pi -e "${PAT[$m]}" "$T/${FILE[$m]}"
@@ -65,6 +70,6 @@ elif [ "$mode" = mutants ]; then
     if [ -n "$newf" ]; then echo "PASS mutante $m rilevato da: $newf"; n=$((n+1)); else echo "FAIL mutante $m NON rilevato"; fail=1; fi
     rm -rf "${TD[$m]}"
   done
-  echo "mutanti rilevati $n/9"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
+  echo "mutanti rilevati $n/13 (pre-registrati M1-M9; M10-M13 aggiunti dopo la revisione)"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
 else echo "uso: run_S1.5e.sh test|mutants"; exit 2; fi
 exit $fail

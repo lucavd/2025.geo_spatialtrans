@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-10-26 (risultati di S1.5e)
+
+* **Aggiornamento**: [Se i vuoti tolgono cellule invece di spostarle, e hanno la forma allungata dei vuoti veri, tornano la densità del tessuto, i contatti e la forma degli spazi vuoti? (S1.5e)](steps/S1.5e.md): esplorazione, calibrazioni, banco, cancelli (G-3 fallito come scritto), regole A, B, Q, controprove, post hoc, revisione avversariale e sue correzioni (note D-5, D-6), riassunto «In breve» con due decisioni per Luca, dubbi rinviati (BL-166...BL-169).
+* **Creazione**: decisione tecnica [S1.5e: nei preset restano i vuoti che spostano le cellule e la semina uniforme come predefinito; la regola sulle quote dice senza quote; vuoti che tolgono cellule, vuoti allungati e tetto della densità come opzioni (DEC-024)](decisions/DEC-024.md).
+
 ## 2026-10-26 (chiusura di S1.5d)
 
 * **Chiusura**: [Se la semina lascia spazi vuoti dentro il tessuto e la densità varia anche senza dipendere dal tipo, tornano la variabilità dei territori e il numero di vicini dei tessuti veri? (S1.5d)](steps/S1.5d.md) chiuso con l'approvazione di Luca («chiudi lo step», lettura del riassunto «In breve» senza dubbi nuovi); decisioni di Luca in [S1.5d: i due cancelli falliti come scritti e le tre tolleranze sbagliate non bloccano lo step; nella semina uniforme resta il modello di taglia di oggi (DEC-023)](decisions/DEC-023.md). Prossimo step: S1.5e, semina eterogenea, parte 3.

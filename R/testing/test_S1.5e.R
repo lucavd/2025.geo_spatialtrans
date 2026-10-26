@@ -78,6 +78,17 @@ sat <- function(cap) { h <- rd8; if (cap) h$dens_cap <- TRUE
                                   compartments = compart_for_d("A4", "p2"), heterogeneity = h, verbose = FALSE))$info$n_failed }
 f8 <- c(senza = sat(FALSE), con = sat(TRUE))
 ck("T8b linfonodo p2 seme 4 con la densita' di S1.5d: cellule perse senza tetto > 0, con tetto 0", f8[["senza"]] > 0 && f8[["con"]] == 0, sprintf("senza %d, con %d (parametri %s)", f8[["senza"]], f8[["con"]], paste(unlist(rd8), collapse = "/")))
+# ---- T8c (dopo la revisione, RC-5): il tetto riscala il fattore a media 1 sui punti non vuoti; H ricalcolato da zero; con "remove" n_target = cellule + non piazzate ----
+k8 <- r8$void_grid_frac; sp4 <- spec_c("A4"); f4 <- sp4$composition$fraction[match(sp4$cell_types$cell_type, sp4$composition$cell_type)]
+dbar <- sum(f4 * sp4$cell_types$min_dist_um); ggk <- expand.grid(x = seq(1, 399, 2), y = seq(1, 399, 2))
+inV <- .sc_rff_eval(r8$field_void, ggk$x, ggk$y) <= qnorm(1 - 0.05)
+lam_bar <- nrow(s8$centroids) / (400^2 * (1 - r8$void_grid_frac)); H_ref <- 0.8 * 0.547 / (pi * dbar^2 / 4) / lam_bar
+m8 <- mean(pmin(r8$cap$s * exp(0.9 * .sc_rff_eval(r8$field_dens, ggk$x[inV], ggk$y[inV])), r8$cap$H))
+ck("T8c tetto: media del fattore fuori dai vuoti = 1 (0.02, griglia diversa), H = 0.8 * saturazione / densita' media fuori dai vuoti (1e-6)",
+   abs(m8 - 1) < 0.02 && abs(r8$cap$H / H_ref - 1) < 1e-6 && s8$info$n_failed == 0, sprintf("media %.4f, H %.6f contro %.6f", m8, r8$cap$H, H_ref))
+nt <- vapply(c("A1", "A2", "A5"), function(A) { s <- seed_h(A, if (A == "A5") 600 else 300, 81, H(0.2, 16, mode = "remove")); r <- s$region_df
+  isTRUE(all(r$n_target == r$n_cells + r$n_failed)) && isTRUE(all(r$n_removed_void > 0)) }, TRUE)
+ck("T8d con togliere: n_target della regione = cellule piazzate + non piazzate (3 preset)", all(nt), names(nt)[!nt])
 # ---- T9: place_cells() sui 6 preset con le colonne nuove, senza ERROR; le colonne arrivano alla semina ----
 e9 <- vapply(names(PRE), function(A) { cl <- expand.grid(x = 1:260, y = 1:260); cl$intensity_cluster <- 1L
   L <- safe(suppressWarnings(place_cells(cl, PRE[[A]], pixel_size_um = 1, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L, random_seed = 11,
@@ -97,10 +108,12 @@ fmt <- function(h) { s <- sprintf("%g / %g / %g / %g", h$void_frac, h$void_ell_u
 h10 <- vapply(seq_len(nrow(.TP_HET)), function(k) identical(bval(.TP_HET$src[k]), fmt(.TP_HET[k, ])), TRUE)
 ck("T10 eterogeneita' dei 6 preset = righe di BIO_REFERENCES", all(h10), .TP_HET$src[!h10])
 # ---- T11: il banco legge la piega lascia-fuori della ROI per X, XA, XAD ----
-t11 <- vapply(c("X", "XA", "XAD"), function(fam) { f <- sprintf("results/S1.5e/S1.5e_het_%s.csv", fam); if (!file.exists(f)) return(FALSE)
+t11 <- vapply(c("X", "XA", "XAD", "XADs"), function(fam) { f <- sprintf("results/S1.5e/S1.5e_het_%s.csv", fam); if (!file.exists(f)) return(FALSE)
   d <- read.csv(f, stringsAsFactors = FALSE); ok <- TRUE
   for (A in unique(d$archetype)) for (roi in unique(rois$roi_id[rois$archetype == A])) { h <- het_for_e(A, roi, fam); e <- d[d$archetype == A & d$fold == paste0("loo_", roi), ]
-    ok <- ok && nrow(e) == 1 && isTRUE(all.equal(c(h$void_frac, h$void_aspect), c(e$void_frac, e$void_aspect))) }
+    ok <- ok && nrow(e) == 1 && isTRUE(all.equal(c(h$void_frac, h$void_aspect, h$void_ell_um, h$dens_sigma), c(e$void_frac, e$void_aspect, e$void_ell_um, e$dens_sigma))) &&
+      identical(is.na(h$dens_ell_um), is.na(e$dens_ell_um)) && (is.na(h$dens_ell_um) || h$dens_ell_um == e$dens_ell_um) && identical(h$dens_cap, as.logical(e$dens_cap)) &&
+      identical(h$void_mode, e$void_mode) }   # dopo la revisione (RC-10): tutti i parametri
   ok }, TRUE)
-ck("T11 het_for_e() legge la piega lascia-fuori della ROI (X, XA, XAD)", all(t11), names(t11)[!t11])
+ck("T11 het_for_e() legge la piega lascia-fuori della ROI (X, XA, XAD, XADs), tutti i parametri", all(t11), names(t11)[!t11])
 cat(sprintf("RESULT %d/%d PASS\n", sum(unlist(res)), length(res)))

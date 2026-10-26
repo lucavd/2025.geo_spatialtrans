@@ -19,7 +19,7 @@ RD_ = pd.read_csv("results/S1.5d/S1.5d_real_intervals.csv"); Q90 = pd.read_csv("
 RR = pd.read_csv("results/S1.5/S1.5_real_refs_roi.csv"); RT = pd.read_csv("results/S1.5b/S1.5b_real_refs_roi_type.csv"); RT = RT[RT.level == "type"]
 DR = pd.read_csv(f"{RES}/S1.5e_explore_density_ref.csv"); DR["est"] = DR.dens_seg_roi * DR.dens_manual_window / DR.dens_seg_window
 VS = pd.read_csv(f"{RES}/S1.5e_real_void_shape.csv")
-ARMS = [a for a in ["U", "RV", "X", "XA", "XAD", "Q"] if a in set(U.arm)]
+ARMS = [a for a in ["U", "RV", "X", "XA", "XAD", "XADs", "Q"] if a in set(U.arm)]
 assert (U.groupby(["arm", "archetype", "roi_id"]).seed.count() == 10).all(), "servono 10 semi per ROI e braccio"
 for a in ARMS: assert {"cv_local4", "nn_rel", "H_rel_3.0", "xcv2_50", "frac_gt3", "q90_an", "roi_density", "frac_elong_gt3", "n_comp"} <= set(UM[UM.arm == a].metric), f"metriche mancanti nel braccio {a}"
 def est(v):
@@ -27,7 +27,7 @@ def est(v):
 def verdict(m, se, lo, hi, clip=False):
     if not np.isfinite(m): return "non valutabile"
     a, b = m - 2 * se, m + 2 * se
-    if clip: a, b = max(a, 0.0), min(b, 1.0)
+    # nota D-6: nessun taglio a [0, 1] (la pre-registrazione non lo prevede; S1.5d lo applicava alle frazioni)
     if a >= lo and b <= hi: return "confermata"
     if b < lo or a > hi: return "smentita"
     return "indeterminata"
@@ -78,10 +78,11 @@ assert (V.n_units > 1).all(), V[V.n_units <= 1][["id", "archetype", "unit", "arm
 conf = lambda arm, ids: int(((V.arm == arm) & V.id.isin(ids) & (V.verdict == "confermata")).sum())
 SPATIAL = ["P-1", "P-2", "P-3", "P-4", "P-5", "P-6", "P-7"]; SIZE = ["P-8a", "P-8b", "P-8c"]; TYPES = ["P-4", "P-5", "P-6"]
 RULE_A = ["P-1", "P-2", "P-7", "P-13", "P-15", "P-16", "P-17"]
-CAND = [a for a in ["RV", "X", "XA", "XAD"] if a in ARMS]; npar = {"RV": 2, "X": 2, "XA": 3, "XAD": 5}; order = {"RV": 0, "X": 1, "XA": 2, "XAD": 3}
+CAND = [a for a in ["RV", "X", "XA", "XADs"] if a in ARMS]; npar = {"RV": 2, "X": 2, "XA": 3, "XADs": 5, "XAD": 5}; order = {"RV": 0, "X": 1, "XA": 2, "XADs": 3, "XAD": 3}   # XADs = XAD pre-registrato (D-5)
 cA = {f: conf(f, RULE_A) for f in CAND}; winA = sorted(cA, key=lambda f: (-cA[f], npar[f], order[f]))[0]
 nA = int((V.arm == CAND[0]).values[V.id.isin(RULE_A).values].sum())
-pd.DataFrame([dict(winner=winA, **cA, n_verdicts=nA, counted="P-1, P-2, P-7, P-13, P-15, P-16, P-17 confermate")]).to_csv(f"{RES}/S1.5e_ruleA.csv", index=False)
+sens = {f: conf(f, RULE_A) for f in ["XAD"] if f in ARMS}            # sensibilita': XAD con sigma = 0 ammesso (non pre-registrato)
+pd.DataFrame([dict(winner=winA, **cA, n_verdicts=nA, counted="P-1, P-2, P-7, P-13, P-15, P-16, P-17 confermate", **{f"sens_{k}": v for k, v in sens.items()})]).to_csv(f"{RES}/S1.5e_ruleA.csv", index=False)
 print("regola A:", cA, "su", nA, "verdetti ->", winA)
 if STAGE == "final":
     if "Q" in ARMS:
@@ -111,7 +112,7 @@ if STAGE == "final":
         k = pool.loc[A].void_aspect; ok = (k <= 2) if rule == "<= 2" else (k >= 4)
         cp.append(dict(cp="CP-2 allungamento scelto dalla calibrazione di XA (tutte le ROI)", item=f"{A} kappa {rule}", value=f"kappa {k:g}", pass_=bool(ok), judged=True))
     s1rv = WN[WN.arm == "RV"].groupby(["archetype", "bin"])[["n", "n_contact"]].sum(); s1rv = (s1rv.n_contact / s1rv.n).rename("s1_rv").reset_index()
-    for arm in [a for a in ["X", "XA", "XAD", "RV"] if a in ARMS]:
+    for arm in [a for a in ["X", "XA", "XAD", "XADs", "RV"] if a in ARMS]:
         x = WN[WN.arm == arm].groupby(["archetype", "seed", "bin"])[["n", "n_contact"]].sum().reset_index().merge(s1rv, on=["archetype", "bin"], how="left")
         x["s1_rv"] = x.s1_rv.fillna(0)
         for A in sorted(MAIN):

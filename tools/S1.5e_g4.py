@@ -4,7 +4,7 @@
     stessi pixel vuoti (la soglia 3 x mediana della distanza dal vicino e' la definizione, non la parte ricalcolata): <= 1e-9;
 (a2) controllo di coerenza: la forma dei vuoti veri di tools/S1.5e_metrics.py = valori dell'esplorazione E4 (results/S1.5e/S1.5e_explore_void_shape.csv);
 (b) il banco legge per ogni ROI i parametri della sua piega (X, XA, XAD): parametri registrati nel layer (results/S1.5e/S1.5e_panel_units.csv,
-    colonne het_*) = riga loo_<roi> di results/S1.5e/S1.5e_het_<famiglia>.csv, 30/30 per famiglia (tutti i semi).
+    colonne het_*) = riga loo_<roi> di results/S1.5e/S1.5e_het_<famiglia>.csv, 30/30 per famiglia (tutti i semi); dopo la revisione anche dens_ell_um, dens_cap e XADs.
 Uscite: results/S1.5e/S1.5e_G4_check.csv. Uso: .venv/bin/python tools/S1.5e_g4.py"""
 import importlib.util, numpy as np, pandas as pd
 from skimage.measure import label, regionprops
@@ -35,12 +35,13 @@ for A, roi in zip(R.archetype, R.roi_id):
     a = m5e.summarise(m5e.components(v, g.px)); b = shape_skimage(v, g.px)
     rows.append(dict(check="a simulato (XA, seme 1)", unit=f"{A}_{roi}", value=cmp(a, b), pass_=cmp(a, b) <= 1e-9))
 U = pd.read_csv(f"{RES}/S1.5e_panel_units.csv")
-for fam in ["X", "XA", "XAD"]:
+for fam in ["X", "XA", "XAD", "XADs"]:
     H = pd.read_csv(f"{RES}/S1.5e_het_{fam}.csv"); u = U[U.arm == fam]
     for A, roi in zip(R.archetype, R.roi_id):
         h = H[(H.archetype == A) & (H.fold == f"loo_{roi}")].iloc[0]; z = u[(u.archetype == A) & (u.roi_id == roi)]
         ok = len(z) == 10 and np.allclose(z.het_void_frac, h.void_frac) and np.allclose(z.het_void_aspect, h.void_aspect) \
-             and np.allclose(z.het_void_ell_um, h.void_ell_um) and np.allclose(z.het_dens_sigma, h.dens_sigma) and (z.het_void_mode == h.void_mode).all()
+             and np.allclose(z.het_void_ell_um, h.void_ell_um) and np.allclose(z.het_dens_sigma, h.dens_sigma) and (z.het_void_mode == h.void_mode).all() \
+             and np.allclose(z.het_dens_ell_um.astype(float), h.dens_ell_um, equal_nan=True) and (z.het_dens_cap.astype(str).str.upper() == str(bool(h.dens_cap)).upper()).all()   # dopo la revisione (RC-10)
         rows.append(dict(check=f"b piega {fam}", unit=f"{A}_{roi}", value=float(ok), pass_=bool(ok)))
 G = pd.DataFrame(rows).rename(columns={"pass_": "pass"}); G.to_csv(f"{RES}/S1.5e_G4_check.csv", index=False)
 print(G.groupby("check")["pass"].agg(["sum", "count"]).to_string()); print("GATE G-4", "PASS" if G["pass"].all() else "FAIL")

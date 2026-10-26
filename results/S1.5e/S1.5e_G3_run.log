@@ -1,9 +1,9 @@
-                   check value expected  pass
-1                  units  1800  1.8e+03  TRUE
-2   no_error_C2_C3_C5_C9  1800  1.8e+03  TRUE
-3    n_failed_X_XA_XAD_Q     6  0.0e+00 FALSE
-4   U_equals_S1.5d_U_md5   300  3.0e+02  TRUE
-5 RV_equals_S1.5d_RV_md5   300  3.0e+02  TRUE
-6        rerun_identical     8  8.0e+00  TRUE
-7    max_exceed_fraction     0  1.0e-03  TRUE
+                     check value expected  pass
+1                    units  2100  2.1e+03  TRUE
+2     no_error_C2_C3_C5_C9  2100  2.1e+03  TRUE
+3 n_failed_X_XA_XAD_XADs_Q     6  0.0e+00 FALSE
+4     U_equals_S1.5d_U_md5   300  3.0e+02  TRUE
+5   RV_equals_S1.5d_RV_md5   300  3.0e+02  TRUE
+6          rerun_identical     8  8.0e+00  TRUE
+7      max_exceed_fraction     0  1.0e-03  TRUE
 FAIL G-3 (md5 dei dati: stadio md5after)

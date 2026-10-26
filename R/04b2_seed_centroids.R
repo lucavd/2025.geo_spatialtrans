@@ -48,7 +48,8 @@
 #'   griglia della regione nei vuoti, cioe' la densita' vale nella parte non vuota), `void_aspect` (kappa >= 1: campo dei vuoti anisotropo,
 #'   lunghezze ell sqrt(kappa) e ell / sqrt(kappa), orientamento uniforme per regione), `dens_cap` (TRUE: fattore della densita' riscalato a
 #'   media 1 fuori dai vuoti e troncato a lambda_cap / lambda medio, lambda_cap = 0.8 * 0.547 / (pi dbar^2 / 4), dbar = media pesata delle
-#'   distanze minime dei tipi della regione).
+#'   distanze minime dei tipi della regione; il tetto vale sul fattore della densita', non sulla densita' locale, che con i compartimenti dei
+#'   tipi puo' superare lambda_cap di qualche per cento, revisione RC-4 di S1.5e).
 #' @param quotas con `"compartments"`: TRUE (predefinito, quote per tipo di S1.5c) o FALSE (nessun rifiuto per quota, banco di S1.5d).
 #' @param verbose stampa un riepilogo.
 #' @return lista con `centroids` (data.frame `cell_id, region_id, x, y,
