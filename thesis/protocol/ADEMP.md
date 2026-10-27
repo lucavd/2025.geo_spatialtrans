@@ -32,7 +32,7 @@ Any change after approval is a dated amendment (section 12), written before the 
 
 - P parameters (gamma shape/rate, number of markers, fold-change): `[REAL DATA]` (matched to the E arm's mean–variance range).
 - C− permutation: one new permutation per replicate, or one fixed per study? Proposal: one per replicate, so the result does not depend on one particular shuffle. `[LUCA]`
-- G is evaluated only in tissues whose held-out and E′ donors are post-cutoff and come from the same dataset as the other arms: brain (PsychAD) and lymphoid (Wells 2025). Colon (Pelka 2021) is so far "not evaluated" for G (DECISIONS 2026-10-26), but must be rechecked: Pelka appears on CELLxGENE only since 2025-08-05 (`data_inventory.xlsx`), so it may be post-cutoff under the criterion below. `[TO VERIFY]` Post-cutoff = not in the July 2024 version of CELLxGENE, the single-cell training data of GEM-1 (preprint, doi:10.1101/2025.09.08.674753, Methods; to be confirmed for the model served by the API at gate G0).
+- G is evaluated only in tissues whose held-out and E′ donors are post-cutoff and come from the same dataset as the other arms: brain (PsychAD) and lymphoid (Wells 2025). Post-cutoff = the processed count matrix with cell labels became public after July 2024, the CELLxGENE version used to train GEM-1-sc (preprint, doi:10.1101/2025.09.08.674753, Methods; to be confirmed for the model served by the API at gate G0); raw reads do not count, because GEM-1 learns from expression matrices with metadata (DECISIONS 2026-10-27, awaiting Luca). Both dates are recorded: PsychAD raw FASTQ 2024-04-22 (AD Knowledge Portal release 24.4), h5ad June 2025 (release 25.6) → post; Wells 2025 GEO GSE299043 2025-06-06 → post; Pelka 2021 GEO GSE178341 2021-08-26 → pre, so colon is "not evaluated" for G.
 - If G0 fails, G is dropped and the design has 5 arms. Cut rule if late: arm G, then the brain tissue (DECISIONS 2026-10-26).
 
 ### 2.2 Secondary factors (fully crossed, fixed grid)
@@ -42,7 +42,7 @@ Any change after approval is a dated amendment (section 12), written before the 
 | Cells per spot | 2 levels: `[REAL DATA]` |
 | Sequencing depth | 2 levels: `[REAL DATA]` |
 
-Full design: 5 arms (E, P, M, C−, E′) × 3 tissues × 2 × 2 = 60 DGMs, plus arm G on 2 tissues × 2 × 2 = 8 → **68 DGMs** (72 if colon also qualifies for G; 60 without G), plus the real anchor for each tissue × cells-per-spot × depth (12 conditions).
+Full design: 5 arms (E, P, M, C−, E′) × 3 tissues × 2 × 2 = 60 DGMs, plus arm G on 2 tissues × 2 × 2 = 8 → **68 DGMs** (60 without G), plus the real anchor for each tissue × cells-per-spot × depth (12 conditions).
 - Number of cell types per tissue and their labels: `[REAL DATA]`.
 - Number of spots per pseudo-dataset: `[PILOT]`.
 - Dirichlet concentration α (how mixed spots are): `[REAL DATA]` / `[LUCA]`.
@@ -53,7 +53,7 @@ Full design: 5 arms (E, P, M, C−, E′) × 3 tissues × 2 × 2 = 60 DGMs, plus
 3. Sum the cells of the spot.
 
 **Real anchor:** pseudo-spots built by summing **real cells** of the held-out donor, with the same Dirichlet compositions. The truth is known because each cell's type is known.
-- Colon: every pseudo-spot is built inside a single sample (normal or tumour), never mixing the two, because such a spot does not exist (DECISIONS 2026-10-26). Whether the simulated arms use one μ for normal + tumour or two separate ones depends on the Pelka reference choice: `[OPEN]`.
+- Every anchor pseudo-spot is built inside a single sample, because a real spot never mixes cells from two samples (DECISIONS 2026-10-26). Colon uses MMRp tumour samples only and lymphoid the thoracic lymph node only (DECISIONS 2026-10-26 "Dataset", refined 2026-10-27, awaiting Luca), so there is one μ per tissue.
 - How the depth factor applies to the anchor. Proposal: real cells already have their own counts, so downsample the anchor spots at random to the same target depth as the simulated arms. `[LUCA]`
 
 ### 2.4 Common random numbers
@@ -61,13 +61,18 @@ This follows from PROTOCOLLO §5.2 (only the source of μ changes; the anchor us
 
 ### 2.5 Data split
 Split by donor, never by cell (DECISIONS 2026-10-14 and 2026-10-26). One dataset per tissue; training, held-out and E′ are different donors of the same dataset (DECISIONS 2026-10-26). Training split → E, M, φ_g, P calibration and the reference given to every method. Held-out donor → Aim 1 target, noise ceiling and the anchor. Second independent donor → E′.
-- Colon: Pelka donors have a normal and a tumour sample; both samples of a donor always go to the same split (no pseudoreplication, no leakage).
+- Colon: MMRp tumour samples only (DECISIONS 2026-10-26 "Dataset", refined 2026-10-27, awaiting Luca). All samples of a donor go to the same split (e.g. C130 has two tumour lesions, C130_TA and C130_TB): no pseudoreplication, no leakage.
+- Lymphoid: thoracic lymph node only (DECISIONS 2026-10-26 "Dataset", refined 2026-10-27, awaiting Luca).
 
 | Tissue | Dataset | Chemistry | Donors: training | held-out | E′ |
 |---|---|---|---|---|---|
-| Brain | PsychAD (DLPFC) | 10x 3′ v3, single-nucleus | `[REAL DATA]` | `[REAL DATA]` | `[REAL DATA]` |
-| Colon/CRC | Pelka 2021, 3′ v2 subset | 10x 3′ v2 | `[REAL DATA]` | `[REAL DATA]` | `[REAL DATA]` |
-| Lymphoid | Wells 2025, lymph node | 10x 5′ v2 | `[REAL DATA]` | `[REAL DATA]` | `[REAL DATA]` |
+| Brain | PsychAD (DLPFC), healthy adults (~200 donors; exact count from `02_split.R`) | 10x 3′ v3, single-nucleus | ~198 (all others) | 1 | 1 |
+| Colon/CRC | Pelka 2021, 3′ v2 subset, MMRp tumours (20 donors) | 10x 3′ v2 | 18 | 1 | 1 |
+| Lymphoid | Wells 2025, thoracic lymph node (21 donors) | 10x 5′ v2 | 19 | 1 | 1 |
+
+- One held-out donor and one E′ donor per tissue, as in PROTOCOLLO §5.2 ("il donatore held-out", "un secondo donatore reale indipendente"). Same rule in every tissue: after the biological selection (healthy adults; MMRp tumours; thoracic lymph node), all other eligible donors go to training; no donor is dropped at random. Training sizes therefore differ between tissues, which does not affect the analyses, made separately by tissue (declared limit, §11). Counts from the CELLxGENE metadata (obs) of the three datasets, 2026-10-27; `02_split.R` recomputes them after the §2.6 filters.
+- **Which donors** (rule fixed before any result): held-out = the donor with the most cell types having ≥50 cells (§2.6), ties broken by the number of cells; E′ = the next one. This makes Aim 1 cover as many cell types as possible. In the metadata the best-covered donors have 22 and 21 cell types with ≥50 cells (colon, median 14 per donor) and 24 and 15 (lymphoid, median 10; the first, 778C, has 57,317 cells, an outlier to check in check B). Arm G additionally needs held-out and E′ donors whose processed data became public after July 2024 (§2.1): true for all Wells and PsychAD donors.
+- **Compute fallback (brain):** if the pilot shows that a step cannot handle the full training split (~1 million nuclei; e.g. scDesign3 for arm M, the cell2location reference), cells (not donors) are subsampled within the training split with a fixed seed, and this is written as a dated amendment (§12) before any result.
 
 Donor counts per split are filled by `scripts/02_split.R` (Luca's request, 2026-10-26); candidates and rules in `data_inventory.xlsx`, sheet `selected`.
 
@@ -106,7 +111,7 @@ PROTOCOLLO §5.2 does not mention this step; it is proposed to Luca. The same mi
 
 ### 5.1 Aim 1 — fidelity (per arm × tissue × cell type)
 - Correlation of log-means between source and held-out (PROTOCOLLO §5.5). Gene list: the §2.6 list chosen on the training split; Pearson or Spearman and the pseudocount: `[OPEN]`.
-- **Noise ceiling** (DECISIONS 2026-10-26): for each tissue and cell type, the cells of the held-out donor are split at random into two halves; the correlation r between the two half-profiles (same correlation, same genes as above) is corrected with Spearman–Brown, reliability = 2r / (1 + r); √reliability is the highest correlation any source can reach with the held-out. Repeated over B random splits (B and seed: `[PILOT]`), averaged. Cell types with few held-out cells get a lower ceiling; fidelity is read against it.
+- **Noise ceiling** (DECISIONS 2026-10-26): for each tissue and cell type, the cells of the held-out donor are split at random into two halves of equal size within each cell type (n_k/2 cells each; if n_k is odd, the extra cell goes to one of the two halves at random), so that Spearman–Brown's equal-halves assumption holds; the correlation r between the two half-profiles (same correlation, same genes as above) is corrected with Spearman–Brown, reliability = 2r / (1 + r); √reliability is the highest correlation any source can reach with the held-out. Repeated over B random splits (B and seed: `[PILOT]`), averaged. Cell types with few held-out cells get a lower ceiling; fidelity is read against it.
 - Overlap of the top-k markers (k: `[LUCA]`).
 - Cell-type separability (metric: `[LUCA]`).
 - Monte Carlo SE only where μ is random (P, M, C−, possibly G); E and E′ are fixed given the split. `[LUCA]`
@@ -158,7 +163,7 @@ PROTOCOLLO §5.2 has no quality filter on the pseudo-spots, and we add none: the
 
 1. **C−** must give low fidelity and rankings different from the anchor. If rankings do not change even with meaningless profiles, the benchmark is insensitive to expression level: that is a result and is reported.
 2. **E′** is the reference for donor-to-donor variability, not a ceiling: a synthetic source (P, M or G) above E′ is not evidence of leakage and is reported with its explanation (for M or G: a population-average profile, estimated from many donors, can be closer to a new donor than a single other donor is; P, built de novo, has no such explanation, so a P result above E′ is examined further). The ceiling is the noise ceiling of 5.1; a source above it beyond Monte Carlo error points to an error or leakage and is investigated before going on. *(Replaces PROTOCOLLO §5.6 point 2: DECISIONS 2026-10-26.)*
-3. **Leakage, checked on the provenance of the data** (DECISIONS 2026-10-26), always and not only when a source looks too good: (a) automatic test that no donor ID appears in two splits (for colon, both samples of a donor in the same split); (b) for arm G, only held-out and E′ donors not in the July 2024 version of CELLxGENE (GEM-1 cutoff, section 2.1).
+3. **Leakage, checked on the provenance of the data** (DECISIONS 2026-10-26), always and not only when a source looks too good: (a) automatic test that no donor ID appears in two splits (for colon, both samples of a donor in the same split); (b) for arm G, only held-out and E′ donors whose processed data became public after July 2024 (GEM-1 cutoff, section 2.1).
 
 ## 10. Pilot (Week 2)
 
@@ -169,6 +174,8 @@ Purpose: fill the `[PILOT]` placeholders, not to look at results.
 
 ## 11. Declared limits (for the Discussion)
 - Lymphoid data are 10x 5′ (Wells 2025): this may disadvantage GEM-1 for technical reasons (DECISIONS 2026-10-26).
+- PsychAD raw reads (pooled FASTQ) were public from 2024-04-22, before the GEM-1 cutoff; only the processed matrices are post-cutoff. GEM-1 is unlikely to have learnt from raw reads, but the residual risk is declared (DECISIONS 2026-10-27, awaiting Luca).
+- Training sizes differ between tissues (brain ~198 donors, colon 18, lymphoid 19), together with chemistry (nuclei 3′ v3, cells 3′ v2, cells 5′ v2): patterns compared between tissues confound tissue with training size and technology.
 - spatialDWLS is run through a new standalone re-implementation, not the Giotto version evaluated in earlier benchmarks.
 - Pseudo-spots have no geometry (PROTOCOLLO §8), which is why CARD is not included.
 
