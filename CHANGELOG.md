@@ -2,9 +2,9 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## S1.5e, 2026-10-26: vuoti che tolgono cellule e vuoti allungati nella semina (branch `step1-cell-layer`), **non chiusa** (in attesa di due decisioni di Luca)
+## S1.5e, 2026-10-26: vuoti che tolgono cellule e vuoti allungati nella semina (branch `step1-cell-layer`), **chiusa**
 
-File dello step `docs/steps/S1.5e.md`, report `reports/S1.5e.html`; decisione tecnica DEC-024 (esito delle regole A, B, Q; opzioni nuove).
+File dello step `docs/steps/S1.5e.md`, report `reports/S1.5e.html`; decisione tecnica DEC-024 (esito delle regole A, B, Q; opzioni nuove); decisione di Luca DEC-025 (i controlli falliti come scritti non bloccano; le quote si tolgono al consolidamento, BL-170). Letta da Luca il 2026-10-27 («vanno bene i tuoi consigli»).
 
 ### Codice
 - `R/04b2_seed_centroids.R`: colonne facoltative della tabella `heterogeneity`: `void_mode` («move» come S1.5d, «remove»: i vuoti tolgono cellule, numero per regione riferito all'area senza vuoti), `void_aspect` (campo dei vuoti anisotropo, orientamento per regione), `dens_cap` (tetto della densità all'80 % della saturazione, fattore riscalato a media 1 fuori dai vuoti). Senza le colonne la semina è identica a S1.5d (48/48 configurazioni, revisione).
@@ -15,7 +15,7 @@ File dello step `docs/steps/S1.5e.md`, report `reports/S1.5e.html`; decisione te
 ### Risultati
 - Regola A: restano i vuoti che spostano le cellule (19 contro 15, 15, 16 su 40). Regola B non adottata (58 contro 19, taglie 19 contro 21). Regola Q: senza quote (60 contro 58, 48 contro 46); applicazione: decisione di Luca.
 - I contatti in eccesso vengono dal disegno del nucleo (a parità di distanza 0.96 contro 0.47 nel tumore del colon), non dalla semina. Il conteggio manuale misura la densità del tessuto pieno. Togliere cellule porta la densità dell'intestino al limite basso del vero ma la peggiora nel linfonodo e nel cervello, dove la calibrazione usa i vuoti come sostituto di distanze irregolari; i vuoti allungati migliorano il cervello e sono troppo pochi e allungati nell'intestino.
-- Cancelli: G-1 PASS (16/16 dopo la revisione), G-2 9/9 (13/13), **G-3 fallito come scritto** (6 cellule non piazzate nella stessa unità di Q di S1.5d), G-4 PASS, G-5 16 942/16 945. CP-1, CP-2 fallite nel cuore (rumore della calibrazione), CP-3 vuota per costruzione (errore di pre-registrazione). Revisione: XAD rifatto come pre-registrato (XADs), nessun taglio degli intervalli (1 verdetto su 1 074 cambia), 4 mutanti nuovi rilevati. Rinvii BL-166...BL-169.
+- Cancelli: G-1 PASS (16/16 dopo la revisione), G-2 9/9 (13/13), **G-3 fallito come scritto** (6 cellule non piazzate nella stessa unità di Q di S1.5d), G-4 PASS, G-5 16 942/16 945. CP-1, CP-2 fallite nel cuore (rumore della calibrazione), CP-3 vuota per costruzione (errore di pre-registrazione). Revisione: XAD rifatto come pre-registrato (XADs), nessun taglio degli intervalli (1 verdetto su 1 074 cambia), 4 mutanti nuovi rilevati. Rinvii BL-166...BL-170.
 
 ## S1.5d, 2026-10-25/26: spazi vuoti e densità indipendenti dal tipo nella semina, modello di taglia dagli scarti veri (branch `step1-cell-layer`), **chiusa**
 

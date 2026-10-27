@@ -1,5 +1,13 @@
 # Registro delle modifiche
 
+## 2026-10-27 (chiusura di S1.5e)
+
+* **Chiusura**: [Se i vuoti tolgono cellule invece di spostarle, e hanno la forma allungata dei vuoti veri, tornano la densità del tessuto, i contatti e la forma degli spazi vuoti? (S1.5e)](steps/S1.5e.md) chiuso con l'approvazione di Luca («vanno bene i tuoi consigli», lettura del riassunto «In breve» senza dubbi nuovi); decisioni di Luca in [S1.5e: i tre controlli falliti come scritti non bloccano lo step; le quote per tipo si tolgono al consolidamento dello Step 1 (DEC-025)](decisions/DEC-025.md). Prossimo step: da scegliere (proposta S1.4e, contatti dei nuclei nel disegno del nucleo).
+
+## 2026-10-27 (decisioni di Luca su S1.5e)
+
+* **Creazione**: decisione di Luca [S1.5e: i tre controlli falliti come scritti non bloccano lo step; le quote per tipo si tolgono al consolidamento dello Step 1 (DEC-025)](decisions/DEC-025.md).
+
 ## 2026-10-26 (risultati di S1.5e)
 
 * **Aggiornamento**: [Se i vuoti tolgono cellule invece di spostarle, e hanno la forma allungata dei vuoti veri, tornano la densità del tessuto, i contatti e la forma degli spazi vuoti? (S1.5e)](steps/S1.5e.md): esplorazione, calibrazioni, banco, cancelli (G-3 fallito come scritto), regole A, B, Q, controprove, post hoc, revisione avversariale e sue correzioni (note D-5, D-6), riassunto «In breve» con due decisioni per Luca, dubbi rinviati (BL-166...BL-169).

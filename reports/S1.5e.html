@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-10-26">
+<meta name="dcterms.date" content="2026-10-27">
 
 <title>S1.5e: vuoti che tolgono cellule e vuoti allungati nella semina: tornano la densità del tessuto, i contatti e la forma degli spazi vuoti?</title>
 <style>
@@ -3114,7 +3114,7 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 26, 2026</p>
+      <p class="date">October 27, 2026</p>
     </div>
   </div>
   
@@ -3193,18 +3193,16 @@ vertical-align: -.125em;
 <ul>
 <li>«Approvo così» (previsioni, intervalli, regole A, B, Q, controprove CP-1…CP-3; 2026-10-26)</li>
 <li>«Quattro versioni dei vuoti, circa 7-9 ore» (perimetro del calcolo; 2026-10-26)</li>
+<li>«vanno bene i tuoi consigli» (decisione 1: G-3, CP-1, CP-2 e CP-3 falliti o vuoti come scritti non bloccano lo step; 2026-10-27, <a href="./decisions/DEC-025.md">DEC-025</a>)</li>
+<li>«vanno bene i tuoi consigli» (decisione 2: le quote per tipo si tolgono al consolidamento S1.6, BL-170; 2026-10-27, <a href="./decisions/DEC-025.md">DEC-025</a>)</li>
+<li>Lettura del riassunto «In breve» senza dubbi nuovi (2026-10-27). Step chiuso.</li>
+<li>Prossimo step: non ancora scelto da Luca; proposta e alternative nella sezione 7 di ROADMAP.</li>
 </ul>
 </section>
 <section id="dubbi-rinviati" class="level1">
 <h1>Dubbi rinviati</h1>
 <p>Ogni voce è in <code>docs/BACKLOG.md</code> con cosa serve per chiuderla.</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>voce</th>
@@ -3236,6 +3234,12 @@ vertical-align: -.125em;
 <td>BL-169</td>
 <td>strumenti della calibrazione: bordi bassi della griglia non segnalati (RC-9), varianza della perdita delle pieghe con tutte le 5 ROI (RC-8), <code>void_grid_frac</code> pesata per punti della griglia (RC-6), ottimi al bordo alto (κ 16 nel linfonodo, ℓ_d in cinque tessuti per XADs)</td>
 <td>non cambiano nessun verdetto di questo step</td>
+<td>S1.6 (consolidamento)</td>
+</tr>
+<tr class="odd">
+<td>BL-170</td>
+<td>applicare <code>quotas = FALSE</code> (regola Q di questo step) come comportamento della semina a compartimenti dei preset</td>
+<td>cambia i numeri casuali e rompe i controlli bit per bit con gli step precedenti; S1.6 rigenera comunque il banco (<a href="./decisions/DEC-025.md">DEC-025</a>)</td>
 <td>S1.6 (consolidamento)</td>
 </tr>
 </tbody>
