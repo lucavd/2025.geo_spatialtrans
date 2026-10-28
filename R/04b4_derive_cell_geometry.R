@@ -34,7 +34,11 @@
 #'   (µm, NA = usa rho); opzionali `nucleus_area_slope` (beta, default 1), `nucleus_area_sdlog` (sigma, default 0),
 #'   `nucleus_aspect` (>= 1, default 1 = cerchio), `nucleus_orient` (`"random"` default, `"territory"` = asse maggiore
 #'   del territorio, oppure un angolo in rad, numerico o stringa numerica), `nucleus_nc_max` (phi in (0, 1], default 1;
-#'   solo "clip").
+#'   solo "clip"). S1.4f, solo con `nucleus_orient = "territory"`: `nucleus_orient_conc` (lambda >= 0, default Inf = esattamente
+#'   lungo il territorio) e `nucleus_orient_law` (`"constant"` default, `"elongation"`, `"compression"`): angolo = asse del
+#'   territorio + delta, 2 delta ~ Cauchy avvolta di lunghezza risultante rho_i = 1 - exp(-lambda w_i), estratta dalla stessa u
+#'   dell'orientamento a caso (quantile in forma chiusa); w_i = 1, allungamento del territorio - 1 (radice del rapporto dei
+#'   momenti principali), oppure raggio equivalente dell'area bersaglio / distanza del centro dal bordo del territorio.
 #' @param random_seed seme; un solo flusso: `z <- rnorm(n)` e poi `u <- runif(n)`, in ordine di `cell_id`.
 #' @param nucleus_model `"clip"` (ritaglio nel territorio a pari area) o `"scale"` (scala con clamp).
 #' @param nucleus_center `"generator"` o `"poi"` (polo di inaccessibilita'); NULL = `"generator"` con "clip", `"poi"`
@@ -85,7 +89,7 @@ derive_cell_geometry <- function(centroids, territories, cell_types, random_seed
   if (any(d <= 0)) stop("derive_cell_geometry(): centro del nucleo sul bordo del territorio (d = 0) per ", sum(d <= 0), " cellule")
   a_tgt <- .dcg_target_area(a_t, ct, ti, z, resid_table, resid_mode)
   asp <- ct$nucleus_aspect[ti]
-  theta <- .dcg_orientation(terr, ct, ti, u, asp)
+  theta <- .dcg_orientation(terr, ct, ti, u, asp, d = d, a_tgt = a_tgt)
   kp <- .dcg_poly_factor(n_vertices)
   if (nucleus_model == "clip")
     return(.dcg_run_clip(cen, ct, ti, a_t, a_tgt, asp, theta, ctr, d, gt, kp, n_vertices, clip_inset_um, snap_grid_um,
@@ -173,9 +177,13 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
   miss <- setdiff(used, ct$cell_type)
   if (length(miss)) stop("derive_cell_geometry(): tipi senza catalogo: ", paste(miss, collapse = ", "))
   dflt <- list(nucleus_to_eq_ratio = NA_real_, nucleus_radius = NA_real_, nucleus_area_slope = 1,
-               nucleus_area_sdlog = 0, nucleus_aspect = 1, nucleus_orient = "random", nucleus_nc_max = 1, nucleus_area_resid = NA_character_)
+               nucleus_area_sdlog = 0, nucleus_aspect = 1, nucleus_orient = "random", nucleus_nc_max = 1, nucleus_area_resid = NA_character_,
+               nucleus_orient_conc = Inf, nucleus_orient_law = "constant")
   for (nm in names(dflt)) if (!nm %in% names(ct)) ct[[nm]] <- dflt[[nm]]
   ct$nucleus_orient <- as.character(ct$nucleus_orient); ct$nucleus_orient[is.na(ct$nucleus_orient)] <- "random"
+  if (!is.numeric(ct$nucleus_orient_conc)) stop("derive_cell_geometry(): nucleus_orient_conc deve essere numerico (lambda >= 0, Inf)")
+  ct$nucleus_orient_conc[is.na(ct$nucleus_orient_conc)] <- Inf
+  ct$nucleus_orient_law <- as.character(ct$nucleus_orient_law); ct$nucleus_orient_law[is.na(ct$nucleus_orient_law)] <- "constant"
   if ("nucleus_shape" %in% names(ct)) {
     bad <- (ct$nucleus_shape == "circle" & ct$nucleus_aspect != 1) | (ct$nucleus_shape == "ellipse" & ct$nucleus_aspect <= 1)
     if (any(bad, na.rm = TRUE)) stop("derive_cell_geometry(): nucleus_shape incoerente con nucleus_aspect per ",
@@ -194,6 +202,13 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
   om <- u$nucleus_orient
   okm <- om %in% c("random", "territory") | !is.na(suppressWarnings(as.numeric(om)))
   if (any(!okm)) stop("derive_cell_geometry(): nucleus_orient non valido: ", paste(om[!okm], collapse = ", "))
+  if (any(u$nucleus_orient_conc < 0)) stop("derive_cell_geometry(): nucleus_orient_conc (lambda) deve essere >= 0")
+  okl <- u$nucleus_orient_law %in% c("constant", "elongation", "compression")
+  if (any(!okl)) stop("derive_cell_geometry(): nucleus_orient_law non valida: ", paste(u$nucleus_orient_law[!okl], collapse = ", "))
+  part <- is.finite(u$nucleus_orient_conc) | u$nucleus_orient_law != "constant"
+  if (any(part & om != "territory"))
+    stop("derive_cell_geometry(): nucleus_orient_conc / nucleus_orient_law valgono solo con nucleus_orient = \"territory\" (tipi ",
+         paste(u$cell_type[part & om != "territory"], collapse = ", "), ")")
   ct
 }
 
@@ -250,18 +265,44 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
 
 .dcg_poly_factor <- function(nv) sqrt(2 * pi / (nv * sin(2 * pi / nv)))
 
-.dcg_orientation <- function(terr, ct, ti, u, asp) {
+.dcg_orientation <- function(terr, ct, ti, u, asp, d = NULL, a_tgt = NULL) {
   om <- ct$nucleus_orient[ti]
   th <- pi * u - pi / 2
   num <- suppressWarnings(as.numeric(om)); fx <- !is.na(num); th[fx] <- num[fx]
   tt <- om == "territory" & asp > 1
-  if (any(tt)) th[tt] <- .dcg_territory_axis(terr[tt])
+  if (any(tt)) {
+    it <- which(tt); lam <- ct$nucleus_orient_conc[ti][it]; pe <- is.finite(lam)
+    if (!any(pe)) th[it] <- .dcg_territory_axis(terr[it]) else {          # S1.4f: orientamento parziale
+      mo <- .dcg_territory_moments(terr[it]); th[it] <- mo$theta
+      ip <- it[pe]; w <- .dcg_orient_weight(ct$nucleus_orient_law[ti][ip], mo$aspect[pe], a_tgt[ip], d[ip])
+      rho <- 1 - exp(-lam[pe] * w)
+      th[ip] <- th[ip] + 0.5 * .dcg_wc_quantile(u[ip], rho)
+    }
+  }
   th[asp == 1] <- 0
   th
 }
 
+#' Peso w_i della concentrazione (S1.4f): "constant" 1; "elongation" allungamento del territorio - 1; "compression" raggio
+#' equivalente dell'area bersaglio / distanza del centro dal bordo del territorio.
+#' @keywords internal
+.dcg_orient_weight <- function(law, aspect_t, a_tgt, d) {
+  w <- rep(1, length(law))
+  el <- law == "elongation"; w[el] <- aspect_t[el] - 1
+  co <- law == "compression"; w[co] <- sqrt(a_tgt[co] / pi) / d[co]
+  w
+}
+
+#' Quantile della Cauchy avvolta su (-pi, pi) con centro 0 e lunghezza risultante media rho in [0, 1] (S1.4f):
+#' Q(u) = 2 atan((1 - rho) / (1 + rho) tan(pi (u - 1/2))); rho = 0 uniforme, rho = 1 punto in 0.
+#' @keywords internal
+.dcg_wc_quantile <- function(u, rho) 2 * atan((1 - rho) / (1 + rho) * tan(pi * (u - 0.5)))
+
 # asse maggiore del territorio dai momenti del secondo ordine (anello esterno meno buchi, tutte le parti)
-.dcg_territory_axis <- function(g) {
+.dcg_territory_axis <- function(g) .dcg_territory_moments(g)$theta
+
+# angolo dell'asse maggiore e allungamento (radice del rapporto degli autovalori) dai momenti del secondo ordine
+.dcg_territory_moments <- function(g) {
   co <- sf::st_coordinates(g)
   lv <- setdiff(colnames(co), c("X", "Y"))
   fid <- co[, lv[length(lv)]]
@@ -281,7 +322,8 @@ fit_nucleus_size_model <- function(a_n, a_t, a_ref, model = c("full", "beta1", "
   ixy <- rowsum((x * y2 + 2 * x * y + 2 * x2 * y2 + x2 * y) * cr, fid)[, 1] / 24
   cx <- sx / A; cy <- sy / A
   mxx <- ixx / A - cx^2; myy <- iyy / A - cy^2; mxy <- ixy / A - cx * cy
-  as.numeric(0.5 * atan2(2 * mxy, mxx - myy))
+  tq <- sqrt(((mxx - myy) / 2)^2 + mxy^2); l1 <- (mxx + myy) / 2 + tq; l2 <- pmax((mxx + myy) / 2 - tq, 1e-15)
+  list(theta = as.numeric(0.5 * atan2(2 * mxy, mxx - myy)), aspect = as.numeric(sqrt(l1 / l2)))
 }
 
 .dcg_polygons <- function(cx, cy, a, b, theta, nv) {
