@@ -1,0 +1,4 @@
+arm,score_P1_P2,P3_confirmed,P3_refuted,cond_a,cond_b,cond_c,winner,why
+K2,3,0,5,True,True,True,K2,"nessun braccio ammesso dalle condizioni (a), (b), (c)"
+ET,4,0,5,False,True,False,K2,"nessun braccio ammesso dalle condizioni (a), (b), (c)"
+EP,3,5,0,False,True,True,K2,"nessun braccio ammesso dalle condizioni (a), (b), (c)"

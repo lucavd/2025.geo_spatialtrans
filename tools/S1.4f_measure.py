@@ -12,7 +12,9 @@ import importlib.util, json, os, sys, glob
 import numpy as np, pandas as pd, shapely
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]; SRC = Path(os.environ.get("S14F_PYSRC", ROOT))
-_s = importlib.util.spec_from_file_location("m14e", ROOT / "tools/S1.4e_measure.py"); ME = importlib.util.module_from_spec(_s); _s.loader.exec_module(ME)
+if not (ROOT / "tools/S1.4e_measure.py").exists(): ROOT = Path.cwd()      # copia dei mutanti (run_S1.4f.sh): dati e strumenti dal repo
+_s = importlib.util.spec_from_file_location("m14e", ROOT / "tools/S1.4e_measure.py"); ME = importlib.util.module_from_spec(_s); sys.modules["m14e"] = ME
+_s.loader.exec_module(ME)                                                    # registrato: le sue funzioni passano ai processi di Pool
 M = Path("/mnt/micron/geo_spatialtrans/S1.4f"); E14 = Path("/mnt/micron/geo_spatialtrans/S1.4e"); RES = ROOT / "results/S1.4f"
 R2B = ROOT / "results/R2b"; R2C = ROOT / "results/R2c"
 SEEDS = [f"s{k:02d}" for k in range(1, 11)]; LAWS = ["V0", "V1", "V2"]; ARMS_B = ["K2", "ET"] + LAWS

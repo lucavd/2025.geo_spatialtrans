@@ -30,7 +30,7 @@ def ell(cx, cy, a, b, rot):
     return affinity.translate(affinity.rotate(affinity.scale(shapely.Point(0, 0).buffer(1, 64), a, b), rot, origin=(0, 0)), cx, cy)
 G = [ell(0, 0, 1, 1.6, 0), ell(4, 0, 1, 1.6, 0),            # coppia a 4 um, di fianco (asse lungo y, vicino lungo x): psi = 90
      ell(100, 0, 1.6, 1, 0), ell(105.5, 0, 1.6, 1, 0),        # coppia a 5.5 um, in fila: psi = 0
-     ell(200, 0, 1, 1.6, 0), ell(207, 0, 1, 1.6, 0)]          # coppia a 7 um, di fianco: psi = 90
+     ell(200, 0, 1, 1.6, 0), ell(206.5, 0, 1, 1.6, 0)]        # coppia a 6.5 um, di fianco: psi = 90 (D-1: a 7 um il mutante M6 non era rilevato)
 S = np.array([MS.ME.poly_shape(g) for g in G]); pr, p4 = MS.profile(S, np.ones(len(G), bool))
 ck("T9 profilo: < 5 um 1, 5-6 um 0, 6-8 um 1 (2 nuclei per classe)", pr == {"nn<5": (2, 1.0), "nn5-6": (2, 0.0), "nn6-8": (2, 1.0)}, f"{pr}")
 # ---- T11: verdetti e regola N2 su tabelle costruite a mano ----

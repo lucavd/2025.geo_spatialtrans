@@ -21,7 +21,7 @@ elif [ "$mode" = mutants ]; then
   for f in test_S1.4f.log test_S1.4f_py.log; do [ -f "$LOG/$f" ] || { echo "manca $LOG/$f: eseguire prima 'test'"; exit 2; }; done
   declare -A FILE PAT KIND
   FILE[M1]=R/04b4_derive_cell_geometry.R; KIND[M1]=R;  PAT[M1]='s/th\[ip\] <- th\[ip\] \+ 0\.5 \* \.dcg_wc_quantile/th[ip] <- th[ip] + 1.0 * .dcg_wc_quantile/'
-  FILE[M2]=R/04b4_derive_cell_geometry.R; KIND[M2]=R;  PAT[M2]='s/  w\[co\] <- sqrt\(a_tgt\[co\] \/ pi\) \/ d\[co\]\n  w\n\}/  w[co] <- sqrt(a_tgt[co] \/ pi) \/ d[co]\n  rep(1, length(law))\n}/'
+  FILE[M2]=R/04b4_derive_cell_geometry.R; KIND[M2]=R;  PAT[M2]='s/w\[co\] <- sqrt\(a_tgt\[co\] \/ pi\) \/ d\[co\]\n  w\n\}/w[co] <- sqrt(a_tgt[co] \/ pi) \/ d[co]\n  rep(1, length(law))\n}/'
   FILE[M3]=tools/S1.4f_calib.py;          KIND[M3]=py; PAT[M3]='s/train = \[x for x in rois if x != r\]/train = list(rois)/'
   FILE[M4]=R/04b4_derive_cell_geometry.R; KIND[M4]=R;  PAT[M4]='s/2 \* atan\(\(1 - rho\) \/ \(1 \+ rho\) \* tan/2 * atan((1 + rho) \/ (1 - rho) * tan/'
   FILE[M5]=tools/S1.4f_bench_lib.R;       KIND[M5]=R;  PAT[M5]='s/s14f_dedup <- function\(cc, r = 1\.0\)/s14f_dedup <- function(cc, r = 2.0)/'

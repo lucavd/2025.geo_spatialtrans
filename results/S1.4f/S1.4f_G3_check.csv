@@ -1,0 +1,13 @@
+"check","value","expected","pass"
+"B_units",300,300,TRUE
+"B_RV_equals_S1.5d_RV_md5",300,300,TRUE
+"cal_RV_equals_S1.5d_RV_md5",150,150,TRUE
+"B_K2_equals_S1.4e",300,300,TRUE
+"B_ET_equals_S1.4e",300,300,TRUE
+"A_K2_equals_S1.4e",240,240,TRUE
+"A_ET_equals_S1.4e",240,240,TRUE
+"cal_rows",5400,5400,TRUE
+"A_rows",1440,1440,TRUE
+"invariant_violations_cal",0,0,TRUE
+"invariant_violations_B",0,0,TRUE
+"invariant_violations_A",0,0,TRUE
