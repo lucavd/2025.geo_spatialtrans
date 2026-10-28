@@ -3,4 +3,10 @@ PASS T5 psi in fila = 0 gradi psi [0. 0.]
 PASS T5 allungamento ed eccentricita' dai momenti (ellisse 2 x 3.2 ruotata di 37 gradi) allungamento 1.6000, ecc 0.7806, angolo -53.00
 PASS T6 rettangoli a 2 px si toccano, a 3 px no coppie [(1, 2)]
 PASS T6 contatto di coppia = n_c2 > 0 per ogni nucleo (120 dischi casuali) 17 nuclei a contatto su 120
-RESULT 5/5 PASS
+PASS T5b due quadrati separati: centroide (5.5, 0.5) e asse lungo x, molto allungato centroide (5.500, 0.500), allungamento 17.35
+PASS T9 focali: a >= d_max dai lati e dalle esclusioni [1, 1, 0, 0, 1, 0, 0, 0]
+PASS T9 coppie con almeno un estremo focale (< 6 um), contatti dalle coppie del raster {'lt6': (2, 1), '6to10': (0, 0)}
+PASS T10 verdetti: dentro, fuori, a cavallo 
+PASS T10 regola N: +1 resta K2; +2 vince ET; il punteggio piu' alto vince K2 ET ER
+PASS T11 mappa punto di Luca -> nucleo (cuore, finestra 4, 11 esclusioni) 69/69
+RESULT 11/11 PASS

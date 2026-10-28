@@ -1,0 +1,21 @@
+what,rater,archetype,cls,n,value
+t_ms mediano per item,Luca,,,1607,928.0
+t_ms mediano per item,Federica,,,834,1035.5
+contatto sulle coppie comuni,Luca,A1,lt6,44,0.4090909090909091
+contatto sulle coppie comuni,Federica,A1,lt6,33,0.42424242424242425
+contatto sulle coppie comuni,Luca,A1,6to10,92,0.06521739130434782
+contatto sulle coppie comuni,Federica,A1,6to10,89,0.0449438202247191
+contatto sulle coppie comuni,Luca,A2,lt6,12,0.16666666666666666
+contatto sulle coppie comuni,Federica,A2,lt6,9,0.4444444444444444
+contatto sulle coppie comuni,Luca,A2,6to10,48,0.125
+contatto sulle coppie comuni,Federica,A2,6to10,43,0.2558139534883721
+contatto sulle coppie comuni,Luca,A3,lt6,9,0.5555555555555556
+contatto sulle coppie comuni,Federica,A3,lt6,7,0.5714285714285714
+contatto sulle coppie comuni,Luca,A3,6to10,13,0.07692307692307693
+contatto sulle coppie comuni,Federica,A3,6to10,12,0.08333333333333333
+contatto sulle coppie comuni,Luca,A4,lt6,80,0.1875
+contatto sulle coppie comuni,Federica,A4,lt6,72,0.125
+contatto sulle coppie comuni,Luca,A4,6to10,98,0.01020408163265306
+contatto sulle coppie comuni,Federica,A4,6to10,97,0.010309278350515464
+coppie di Luca in finestre senza Federica,Luca,A2,"A2_w1,A2_w3",233,
+coppie di Luca in finestre senza Federica,Luca,A3,"A3_w2,A3_w4",87,

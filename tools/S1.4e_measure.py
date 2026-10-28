@@ -31,9 +31,9 @@ def ring_moments(xy):
 
 def poly_shape(g):
     """Centroide, angolo dell'asse maggiore (rad, da +x verso +y), allungamento (sqrt degli autovalori) ed eccentricita' di un poligono."""
-    s = np.zeros(6)
-    for p in shapely.get_parts(g):
-        p = shapely.geometry.polygon.orient(p, 1.0); x0, y0 = p.exterior.coords[0]
+    s = np.zeros(6); parts = shapely.get_parts(g); x0, y0 = parts[0].exterior.coords[0]      # D-3: una sola origine per tutte le parti
+    for p in parts:
+        p = shapely.geometry.polygon.orient(p, 1.0)
         for r in [p.exterior] + list(p.interiors):
             xy = np.asarray(r.coords) - (x0, y0); s += ring_moments(xy)
     a = s[0]; cx, cy = s[1] / a, s[2] / a
@@ -147,13 +147,17 @@ def stage_shape(nc):
     print(d.groupby(["arm", "archetype"])[["p3", "p4"]].mean().unstack(0).round(3).to_string())
 
 # ---------------------------------------------------------------------------------------------------- cp1 (banco A)
+def luca_to_cell(mp):
+    """Mappa del banco A: indice del punto di Luca (R2b) -> cell_id del nucleo nato da quel punto."""
+    mm = mp[mp.src == "manual"].set_index("luca_idx").cell_id; assert mm.index.is_unique; return mm
+
 def stage_cp1():
     it = pd.read_csv(R2C / "R2c_items_Luca.csv"); a = pd.DataFrame(json.load(open(R2C / "annotations/R2c_answers_Luca.json"))["answers"])
     J = it.merge(a, on="item", validate="1:1"); J = J[J.kind == "pair"]; wins = pd.read_csv(R2B / "R2b_windows.csv").set_index("win_id")
+    # D-2: le coppie «non giudicabile» restano nel file (colonna answer); CP-1 pre-registrata le esclude (come R-1 e P-2), in tools/S1.4e_analysis.py
     rows = []
     for wid, g in J.groupby("win_id"):
-        w = wins.loc[wid]; mp = pd.read_parquet(M / "A" / "map" / f"{wid}.parquet"); mm = mp[mp.src == "manual"].set_index("luca_idx").cell_id
-        assert mm.index.is_unique
+        w = wins.loc[wid]; mp = pd.read_parquet(M / "A" / "map" / f"{wid}.parquet"); mm = luca_to_cell(mp)
         for arm in ARMS:
             for sd in SEEDS:
                 pr = pd.read_parquet(M / "A" / "pairs" / arm / f"{w.archetype}_{w.roi_id}_{wid}_{sd}.parquet")

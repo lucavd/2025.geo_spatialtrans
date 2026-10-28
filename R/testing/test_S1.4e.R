@@ -37,6 +37,10 @@ al <- c(0, 30, 75, 120) * pi / 180; xs <- seq(0, by = 100, length.out = 4)
 o2 <- derive_cell_geometry(cen_of(xs, rep(50, 4)), tess_of(lapply(1:4, function(k) rect(xs[k], 50, 30, 12, al[k]))), ct1(20, 1.6, "territory"), random_seed = 1, verbose = FALSE)
 d2 <- vapply(1:4, function(k) angdiff(axis_of(o2$cell_nuclei[[k]]), al[k]), 0) * 180 / pi
 ck("T2 asse del nucleo lungo l'asse del territorio (entro 1 grado)", all(d2 < 1), sprintf("scarti %s gradi", paste(round(d2, 3), collapse = " ")))
+hr <- sf::st_difference(rect(0, 0, 30, 12, 0.4), sf::st_buffer(sf::st_point(c(10 * cos(0.4), 10 * sin(0.4))), 1.5))   # territorio con un buco lontano dal centro
+o2b <- derive_cell_geometry(cen_of(0, 0), tess_of(list(hr)), ct1(20, 1.6, "territory"), random_seed = 1, verbose = FALSE)
+d2b <- angdiff(axis_of(sf::st_sfc(sf::st_polygon(list(sf::st_coordinates(o2b$cell_nuclei[[1]])[, 1:2])))[[1]]), 0.4) * 180 / pi
+ck("T2b territorio con un buco: asse del nucleo lungo l'asse del territorio (entro 1 grado)", sf::st_geometry_type(hr) == "POLYGON" && length(hr) == 2 && d2b < 1, sprintf("scarto %.3f gradi", d2b))
 # ---- T3: "random" da' orientamenti uniformi (2 000 nuclei, Kolmogorov-Smirnov p > 0.01) ----
 gx <- rep(0:49, 40) * 25; gy <- rep(0:39, each = 50) * 25
 o3 <- derive_cell_geometry(cen_of(gx, gy), tess_of(lapply(seq_along(gx), function(k) rect(gx[k], gy[k], 20, 20, 0))), ct1(20, 1.6, "random"), random_seed = 3, verbose = FALSE)
@@ -65,16 +69,19 @@ ck("T7 cataloghi dei bracci (K2 invariato; ER, ET allungamento 1/sqrt(1 - e^2) d
 ann <- jsonlite::fromJSON("results/R2b/annotations/R2b_annotations_Luca.json", simplifyVector = FALSE)$windows
 WIN <- read.csv("results/R2b/R2b_windows.csv", stringsAsFactors = FALSE); pts <- read.csv("results/R2b/R2b_points.csv", stringsAsFactors = FALSE)
 rois <- read.csv("results/R2/R2_rois_checked.csv")[, c("archetype", "roi_id", "um_per_px", "side_px")]; rois$side_um <- rois$side_px * rois$um_per_px
-for (wid in c("A2_w1", "A4_w2")) {
+for (wid in c("A2_w1", "A4_w2", "A6_w4")) {
   wv <- WIN[WIN$win_id == wid, ]; A <- wv$archetype; w <- r3_roi_window(A, wv$roi_id, rois)
   base <- if (A %in% c("A4", "A6")) "/mnt/micron/geo_spatialtrans/R3b/S1.4" else "/mnt/micron/geo_spatialtrans/S1.4"
   te <- readRDS(file.path(base, "real", sprintf("%s_%s_%s.rds", A, wv$roi_id, if (A %in% c("A4", "A6")) "consensus" else "cellpose_rgb")))
   pl <- pts[pts$rater == "Luca" & pts$win_id == wid, ]; cc <- centers_A(wv, te$cells[, c("x", "y")], pl, w, ann)
   s <- wv$side_um; inw <- cc$x >= wv$x0_um & cc$x < wv$x0_um + s & cc$y >= wv$y0_um & cc$y < wv$y0_um + s
   ex <- s14e_excl_um(wv, ann); co_in <- which(cc$src == "CO" & inw)
+  te_in <- te$cells$x >= wv$x0_um & te$cells$x < wv$x0_um + s & te$cells$y >= wv$y0_um & te$cells$y < wv$y0_um + s
+  n_te_ex <- if (is.null(ex) || !any(te_in)) 0L else sum(lengths(sf::st_intersects(sf::st_as_sf(te$cells[te_in, c("x", "y")], coords = c("x", "y")), ex)) > 0)
   ok_ex <- if (!length(co_in)) TRUE else !is.null(ex) && all(lengths(sf::st_intersects(sf::st_as_sf(cc[co_in, ], coords = c("x", "y")), ex)) > 0)
   ck(sprintf("T8 banco A %s: tutti i punti di Luca nella maschera, nessun centro del segmentatore nella finestra fuori dalle esclusioni", wid),
-     sum(cc$src == "manual") == sum(r3_in_mask(pl$x_um, pl$y_um, w$m, w$px)) && sum(cc$src == "manual") > 0 && ok_ex && sum(cc$src == "CO") > 0,
-     sprintf("manuali %d/%d, segmentatore nella finestra %d", sum(cc$src == "manual"), nrow(pl), length(co_in)))
+     sum(cc$src == "manual") == sum(r3_in_mask(pl$x_um, pl$y_um, w$m, w$px)) && sum(cc$src == "manual") > 0 && ok_ex && sum(cc$src == "CO") > 0 &&
+       length(co_in) == n_te_ex && (wid != "A6_w4" || n_te_ex > 0),
+     sprintf("manuali %d/%d, segmentatore nella finestra (nelle esclusioni) %d, attesi %d", sum(cc$src == "manual"), nrow(pl), length(co_in), n_te_ex))
 }
 cat(sprintf("RESULT %d/%d PASS\n", sum(unlist(res)), length(res)))

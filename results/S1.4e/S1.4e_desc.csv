@@ -35,6 +35,27 @@ P-2 classe lt6,A3,ET,0.6903222267963112,0.029780159936975723,10,
 P-2 classe 6to10,A3,ET,0.16067141630790943,0.005964448688086554,10,
 P-2 classe lt6,A4,ET,0.4496138015176149,0.009354495226722674,10,
 P-2 classe 6to10,A4,ET,0.003938838654887729,0.0009305314703345063,10,
+banco A < 6 um,A1,K2,0.45056179775280897,,89,
+banco A < 6 um,A1,ER,0.45280898876404496,,89,
+banco A < 6 um,A1,ET,0.3292134831460674,,89,
+banco A < 6 um,A1,manuale,0.34831460674157305,,89,
+banco A < 6 um,A2,K2,0.8633333333333333,,30,
+banco A < 6 um,A2,ER,0.8366666666666667,,30,
+banco A < 6 um,A2,ET,0.7166666666666667,,30,
+banco A < 6 um,A2,manuale,0.3,,30,
+banco A < 6 um,A3,K2,0.8647058823529412,,17,
+banco A < 6 um,A3,ER,0.7941176470588235,,17,
+banco A < 6 um,A3,ET,0.7352941176470589,,17,
+banco A < 6 um,A3,manuale,0.47058823529411764,,17,
+banco A < 6 um,A4,K2,0.41818181818181815,,121,
+banco A < 6 um,A4,ER,0.41735537190082644,,121,
+banco A < 6 um,A4,ET,0.3652892561983471,,121,
+banco A < 6 um,A4,manuale,0.256198347107438,,121,
+P-3 frazione (vero - ER) / (ET - ER),A1,vero,0.6208388737292528,,5,
+P-3 frazione (vero - ER) / (ET - ER),A2,vero,0.6894970478375891,,5,
+P-3 frazione (vero - ER) / (ET - ER),A3,vero,0.5250590614306708,,5,
+P-3 frazione (vero - ER) / (ET - ER),A4,vero,0.5265381311044656,,5,
+P-3 frazione (vero - ER) / (ET - ER),A6,vero,0.5113808457467638,,5,
 banco A curva,A1,manuale,0.4583333333333333,,48,<5
 banco A curva,A1,manuale,0.21951219512195122,,41,5-6
 banco A curva,A1,manuale,0.2,,30,6-7
@@ -66,87 +87,87 @@ banco A curva,A6,manuale,1.0,,1,<5
 banco A curva,A6,manuale,0.0,,3,7-8
 banco A curva,A6,manuale,0.0,,6,8-10
 banco A curva,A6,manuale,0.0,,101,>=10
-banco A curva,A1,ER,0.722,,50,<5
+banco A curva,A1,ER,0.7166666666666667,,48,<5
 banco A curva,A1,ER,0.14390243902439023,,41,5-6
-banco A curva,A1,ER,0.04516129032258064,,31,6-7
-banco A curva,A1,ER,0.004761904761904762,,42,7-8
-banco A curva,A1,ER,0.0,,80,8-10
-banco A curva,A1,ER,0.0,,12,>=10
-banco A curva,A1,ET,0.53,,50,<5
+banco A curva,A1,ER,0.043333333333333335,,30,6-7
+banco A curva,A1,ER,0.005,,40,7-8
+banco A curva,A1,ER,0.0,,78,8-10
+banco A curva,A1,ER,0.0,,11,>=10
+banco A curva,A1,ET,0.51875,,48,<5
 banco A curva,A1,ET,0.1073170731707317,,41,5-6
-banco A curva,A1,ET,0.00967741935483871,,31,6-7
-banco A curva,A1,ET,0.002380952380952381,,42,7-8
-banco A curva,A1,ET,0.0,,80,8-10
-banco A curva,A1,ET,0.0,,12,>=10
-banco A curva,A1,K2,0.724,,50,<5
+banco A curva,A1,ET,0.01,,30,6-7
+banco A curva,A1,ET,0.0025,,40,7-8
+banco A curva,A1,ET,0.0,,78,8-10
+banco A curva,A1,ET,0.0,,11,>=10
+banco A curva,A1,K2,0.7229166666666667,,48,<5
 banco A curva,A1,K2,0.13170731707317074,,41,5-6
-banco A curva,A1,K2,0.0064516129032258064,,31,6-7
-banco A curva,A1,K2,0.0,,42,7-8
-banco A curva,A1,K2,0.0,,80,8-10
-banco A curva,A1,K2,0.0,,12,>=10
-banco A curva,A2,ER,0.9333333333333333,,18,<5
-banco A curva,A2,ER,0.719047619047619,,21,5-6
-banco A curva,A2,ER,0.4,,14,6-7
-banco A curva,A2,ER,0.2777777777777778,,27,7-8
-banco A curva,A2,ER,0.05757575757575758,,66,8-10
-banco A curva,A2,ER,0.003914590747330961,,281,>=10
-banco A curva,A2,ET,0.8611111111111112,,18,<5
-banco A curva,A2,ET,0.5761904761904761,,21,5-6
-banco A curva,A2,ET,0.2785714285714286,,14,6-7
-banco A curva,A2,ET,0.18518518518518517,,27,7-8
-banco A curva,A2,ET,0.03333333333333333,,66,8-10
-banco A curva,A2,ET,0.002135231316725979,,281,>=10
-banco A curva,A2,K2,0.9555555555555556,,18,<5
-banco A curva,A2,K2,0.7857142857142857,,21,5-6
-banco A curva,A2,K2,0.4714285714285714,,14,6-7
-banco A curva,A2,K2,0.24444444444444444,,27,7-8
-banco A curva,A2,K2,0.045454545454545456,,66,8-10
-banco A curva,A2,K2,0.002491103202846975,,281,>=10
+banco A curva,A1,K2,0.0033333333333333335,,30,6-7
+banco A curva,A1,K2,0.0,,40,7-8
+banco A curva,A1,K2,0.0,,78,8-10
+banco A curva,A1,K2,0.0,,11,>=10
+banco A curva,A2,ER,0.9416666666666667,,12,<5
+banco A curva,A2,ER,0.7666666666666667,,18,5-6
+banco A curva,A2,ER,0.43636363636363634,,11,6-7
+banco A curva,A2,ER,0.2681818181818182,,22,7-8
+banco A curva,A2,ER,0.05737704918032787,,61,8-10
+banco A curva,A2,ER,0.003971119133574007,,277,>=10
+banco A curva,A2,ET,0.875,,12,<5
+banco A curva,A2,ET,0.6111111111111112,,18,5-6
+banco A curva,A2,ET,0.32727272727272727,,11,6-7
+banco A curva,A2,ET,0.19545454545454546,,22,7-8
+banco A curva,A2,ET,0.03278688524590164,,61,8-10
+banco A curva,A2,ET,0.0021660649819494585,,277,>=10
+banco A curva,A2,K2,0.9416666666666667,,12,<5
+banco A curva,A2,K2,0.8111111111111111,,18,5-6
+banco A curva,A2,K2,0.509090909090909,,11,6-7
+banco A curva,A2,K2,0.2409090909090909,,22,7-8
+banco A curva,A2,K2,0.040983606557377046,,61,8-10
+banco A curva,A2,K2,0.002527075812274368,,277,>=10
 banco A curva,A3,ER,0.94,,10,<5
 banco A curva,A3,ER,0.5857142857142857,,7,5-6
-banco A curva,A3,ER,0.5833333333333334,,6,6-7
-banco A curva,A3,ER,0.25,,4,7-8
-banco A curva,A3,ER,0.1,,20,8-10
-banco A curva,A3,ER,0.003703703703703704,,135,>=10
+banco A curva,A3,ER,0.52,,5,6-7
+banco A curva,A3,ER,0.26666666666666666,,3,7-8
+banco A curva,A3,ER,0.08888888888888889,,18,8-10
+banco A curva,A3,ER,0.0038461538461538464,,130,>=10
 banco A curva,A3,ET,0.91,,10,<5
 banco A curva,A3,ET,0.4857142857142857,,7,5-6
-banco A curva,A3,ET,0.16666666666666666,,6,6-7
-banco A curva,A3,ET,0.075,,4,7-8
-banco A curva,A3,ET,0.06,,20,8-10
-banco A curva,A3,ET,0.0,,135,>=10
+banco A curva,A3,ET,0.18,,5,6-7
+banco A curva,A3,ET,0.1,,3,7-8
+banco A curva,A3,ET,0.06111111111111111,,18,8-10
+banco A curva,A3,ET,0.0,,130,>=10
 banco A curva,A3,K2,0.98,,10,<5
 banco A curva,A3,K2,0.7,,7,5-6
-banco A curva,A3,K2,0.5666666666666667,,6,6-7
-banco A curva,A3,K2,0.25,,4,7-8
-banco A curva,A3,K2,0.06,,20,8-10
-banco A curva,A3,K2,0.0,,135,>=10
-banco A curva,A4,ER,0.7326923076923076,,52,<5
-banco A curva,A4,ER,0.1986111111111111,,72,5-6
+banco A curva,A3,K2,0.5,,5,6-7
+banco A curva,A3,K2,0.3333333333333333,,3,7-8
+banco A curva,A3,K2,0.06111111111111111,,18,8-10
+banco A curva,A3,K2,0.0,,130,>=10
+banco A curva,A4,ER,0.724,,50,<5
+banco A curva,A4,ER,0.20140845070422536,,71,5-6
 banco A curva,A4,ER,0.03670886075949367,,79,6-7
 banco A curva,A4,ER,0.0020833333333333333,,48,7-8
-banco A curva,A4,ER,0.0,,58,8-10
-banco A curva,A4,ET,0.6846153846153846,,52,<5
-banco A curva,A4,ET,0.14722222222222223,,72,5-6
+banco A curva,A4,ER,0.0,,57,8-10
+banco A curva,A4,ET,0.674,,50,<5
+banco A curva,A4,ET,0.14788732394366197,,71,5-6
 banco A curva,A4,ET,0.017721518987341773,,79,6-7
 banco A curva,A4,ET,0.0,,48,7-8
-banco A curva,A4,ET,0.0,,58,8-10
-banco A curva,A4,K2,0.75,,52,<5
-banco A curva,A4,K2,0.19027777777777777,,72,5-6
+banco A curva,A4,ET,0.0,,57,8-10
+banco A curva,A4,K2,0.74,,50,<5
+banco A curva,A4,K2,0.19154929577464788,,71,5-6
 banco A curva,A4,K2,0.030379746835443037,,79,6-7
 banco A curva,A4,K2,0.0,,48,7-8
-banco A curva,A4,K2,0.0,,58,8-10
+banco A curva,A4,K2,0.0,,57,8-10
 banco A curva,A5,ER,0.8,,2,6-7
 banco A curva,A5,ER,0.6,,2,7-8
 banco A curva,A5,ER,0.4,,4,8-10
-banco A curva,A5,ER,0.08461538461538462,,26,>=10
+banco A curva,A5,ER,0.08,,25,>=10
 banco A curva,A5,ET,0.75,,2,6-7
 banco A curva,A5,ET,0.55,,2,7-8
 banco A curva,A5,ET,0.4,,4,8-10
-banco A curva,A5,ET,0.05,,26,>=10
+banco A curva,A5,ET,0.052,,25,>=10
 banco A curva,A5,K2,0.85,,2,6-7
 banco A curva,A5,K2,0.55,,2,7-8
 banco A curva,A5,K2,0.45,,4,8-10
-banco A curva,A5,K2,0.07692307692307693,,26,>=10
+banco A curva,A5,K2,0.076,,25,>=10
 banco A curva,A6,ER,0.4,,1,<5
 banco A curva,A6,ER,0.13333333333333333,,3,7-8
 banco A curva,A6,ER,0.016666666666666666,,6,8-10

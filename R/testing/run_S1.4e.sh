@@ -26,9 +26,17 @@ elif [ "$mode" = mutants ]; then
   FILE[M4]=tools/S1.4e_measure.py;        KIND[M4]=py; PAT[M4]='s/np\.cos\(theta\) \* ux \+ np\.sin\(theta\) \* uy/np.sin(theta) * ux + np.cos(theta) * uy/'
   FILE[M5]=tools/S1.4e_measure.py;        KIND[M5]=py; PAT[M5]='s/^CHEB = 2 /CHEB = 3 /m'
   FILE[M6]=tools/S1.4e_bench_lib.R;       KIND[M6]=R;  PAT[M6]='s/keep_co <- !inwin\(co\$x, co\$y\) \| inex\(co\$x, co\$y\)/keep_co <- rep(TRUE, length(co\$x))/'
-  MS="M1 M2 M3 M4 M5 M6"; declare -A TD; n=0
+  # M7-M13: aggiunti dopo la revisione avversariale (G-5: parti del codice di misura e di analisi non coperte)
+  FILE[M7]=tools/S1.4e_measure.py;  KIND[M7]=py; PAT[M7]='s/    if u is not None: keep &= shapely\.distance/    if False: keep \&= shapely.distance/'
+  FILE[M8]=tools/S1.4e_measure.py;  KIND[M8]=py; PAT[M8]='s/pr = pr\[foc\[pr\[:, 0\]\] \| foc\[pr\[:, 1\]\]\]/pr = pr[foc[pr[:, 0]] \& foc[pr[:, 1]]]/'
+  FILE[M9]=tools/S1.4e_analysis.py; KIND[M9]=py; PAT[M9]='s/if a >= lo and b <= hi: return "confermata"/if a >= lo or b <= hi: return "confermata"/'
+  FILE[M10]=tools/S1.4e_analysis.py; KIND[M10]=py; PAT[M10]='s/sc\[a\] >= sc\["K2"\] \+ 2 and ok_b\(a\)\]/sc[a] >= sc["K2"] + 1 and ok_b(a)]/'
+  FILE[M11]=tools/S1.4e_measure.py; KIND[M11]=py; PAT[M11]='s/p = shapely\.geometry\.polygon\.orient\(p, 1\.0\)\n/p = shapely.geometry.polygon.orient(p, 1.0); x0, y0 = p.exterior.coords[0]\n/'
+  FILE[M12]=tools/S1.4e_measure.py; KIND[M12]=py; PAT[M12]='s/assert mm\.index\.is_unique; return mm/assert mm.index.is_unique; return mm + 1/'
+  FILE[M13]=tools/S1.4e_bench_lib.R; KIND[M13]=R; PAT[M13]='s/inex <- function\(x, y\) if \(is\.null\(ex\)\)/inex <- function(x, y) if (TRUE)/'
+  MS="M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12 M13"; declare -A TD; n=0
   for m in $MS; do
-    T=$(mktemp -d); TD[$m]=$T; mkdir -p "$T/R" "$T/tools"; cp R/04b*.R "$T/R/"; cp tools/S1.4e_bench_lib.R tools/S1.4e_measure.py tools/S1.4c_raster.py tools/R2c_candidates.py "$T/tools/"
+    T=$(mktemp -d); TD[$m]=$T; mkdir -p "$T/R" "$T/tools"; cp R/04b*.R "$T/R/"; cp tools/S1.4e_bench_lib.R tools/S1.4e_measure.py tools/S1.4e_analysis.py tools/S1.4c_raster.py tools/R2c_candidates.py "$T/tools/"
     perl -0pi -e "${PAT[$m]}" "$T/${FILE[$m]}"
     if cmp -s "$T/${FILE[$m]}" "${FILE[$m]}"; then echo "FAIL mutante $m: sostituzione non applicata"; fail=1; touch "$LOG/skip_$m"; continue; fi
     rm -f "$LOG/skip_$m"
@@ -44,6 +52,6 @@ elif [ "$mode" = mutants ]; then
     if [ -n "$newf" ]; then echo "PASS mutante $m rilevato da: $newf"; n=$((n+1)); else echo "FAIL mutante $m NON rilevato"; fail=1; fi
     rm -rf "${TD[$m]}"
   done
-  echo "mutanti rilevati $n/6"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
+  echo "mutanti rilevati $n/13 (pre-registrati M1-M6; M7-M13 aggiunti dopo la revisione)"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
 else echo "uso: run_S1.4e.sh test|mutants"; exit 2; fi
 exit $fail
