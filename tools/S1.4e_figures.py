@@ -18,9 +18,9 @@ def band_plot(pid, tissues, fname, ylab, title):
             ax.errorbar(k + (j - 1) * 0.2, q.est, yerr=2 * q.se, fmt="o", ms=4, color=COL[arm], label=LBL[arm] if k == 0 else None, capsize=2)
     ax.set_xticks(x, [TIS[A] for A in tissues], rotation=15); ax.set_ylabel(ylab); ax.set_title(title, loc="left"); ax.legend(frameon=False, fontsize=7)
     fig.tight_layout(); fig.savefig(F / fname, dpi=200); plt.close(fig)
-band_plot("P-1", list(TIS), "S1.4e_fig1_contacts.png", "nuclei a contatto (frazione)", "Nuclei con almeno un vicino a contatto, finestre contate a mano (banda: riferimento manuale)")
+band_plot("P-1", list(TIS), "S1.4e_fig1_contacts.png", "nuclei a contatto (frazione)", "Nuclei con almeno un vicino a contatto (banda: riferimento manuale)")
 band_plot("P-3", ["A1", "A2", "A3", "A4", "A6"], "S1.4e_fig3_alignment.png", "di traverso al vicino (frazione)",
-          "Nuclei allungati con il vicino a meno di 5 µm e asse lungo di traverso (banda: ROI vere)")
+          "Asse lungo di traverso al vicino a meno di 5 µm (banda: ROI vere)")
 c = D[D.desc == "banco A curva"]; LAB = ["<5", "5-6", "6-7", "7-8", "8-10"]
 fig, axs = plt.subplots(1, 4, figsize=(7.2, 2.4), sharey=True)
 for ax, A in zip(axs, ["A1", "A2", "A3", "A4"]):

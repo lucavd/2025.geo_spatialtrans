@@ -2,6 +2,19 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.4e, 2026-10-28: disegno del nucleo e contatti a parità di distanza (branch `step1-cell-layer`), **in attesa delle decisioni di Luca**
+
+File dello step `docs/steps/S1.4e.md`, report `reports/S1.4e.html`; decisione tecnica DEC-026 (regola N: resta il disco; coppie di CP-1). BL-166 chiusa in parte; nuove BL-171...BL-174; aggiornate BL-063, BL-123, BL-129, BL-142.
+
+### Codice
+- Nessuna modifica al pacchetto: le ellissi orientate a caso o lungo il territorio esistevano già come opzioni di `derive_cell_geometry()`.
+- `tools/S1.4e_bench_lib.R` (bracci K2, ER, ET; ridisegno dei nuclei di un livello di `place_cells()`; invarianti; centri del banco A), `tools/S1.4e_bench.R` (banchi A e B, controlli G-3, md5), `tools/S1.4e_measure.py` (contatto di coppia, P-1, P-2, CP-2, allineamento ed eccentricità, CP-1, G-4), `tools/S1.4e_analysis.py` (verdetti, regola N, controprove), `tools/S1.4e_refs.py`, `tools/S1.4e_explore*.py`, `tools/S1.4e_posthoc_raters.py`, `tools/S1.4e_figures.py`, `tools/S1.4e_report_parts.py`, `tools/run_S1.4e.sh`.
+- Test `R/testing/test_S1.4e.R` (20 asserzioni) e `tools/S1.4e_pairs_test.py` (11), runner `R/testing/run_S1.4e.sh` (13 mutanti).
+
+### Risultati
+- Ellisse lungo il territorio: nuclei a contatto da -0.080 a -0.098 nei quattro tessuti densi; ellisse a caso invariata; regola N 4 contro 3 (serviva +2): resta il disco. Allineamento dell'ellisse orientata oltre il vero in 5 tessuti su 5.
+- Sui punti di Luca, sotto 6 µm: intestino riprodotto (0.33 contro 0.35); tumore del colon e stroma ancora in eccesso (0.72 e 0.74 contro 0.30 e 0.47); nel tumore Luca e Federica divergono sulle stesse coppie (0.17 contro 0.44).
+
 ## S1.5e, 2026-10-26: vuoti che tolgono cellule e vuoti allungati nella semina (branch `step1-cell-layer`), **chiusa**
 
 File dello step `docs/steps/S1.5e.md`, report `reports/S1.5e.html`; decisione tecnica DEC-024 (esito delle regole A, B, Q; opzioni nuove); decisione di Luca DEC-025 (i controlli falliti come scritti non bloccano; le quote si tolgono al consolidamento, BL-170). Letta da Luca il 2026-10-27 («vanno bene i tuoi consigli»).

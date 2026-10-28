@@ -1,0 +1,20 @@
+frase,fonte,valore letto,testo
+intestino 0.57 → 0.47,"S1.4e_verdicts.csv, P-1 intestino, K2 ed ET",0.57 0.47,0.57 0.47
+tumore del colon 0.69 → 0.59 (vero al più 0.57),"S1.4e_verdicts.csv, P-1 tumore del colon",0.69 0.59 0.57,0.69 0.59 0.57
+stroma 0.36 → 0.28 (al più 0.28),"S1.4e_verdicts.csv, P-1 stroma",0.36 0.28 0.28,0.36 0.28 0.28
+linfonodo 0.83 → 0.73 (al più 0.75),"S1.4e_verdicts.csv, P-1 linfonodo",0.83 0.73 0.75,0.83 0.73 0.75
+tre tessuti passano «al limite»,"S1.4e_verdicts.csv, P-1 ET tumore, stroma, linfonodo",indeterminata indeterminata indeterminata,indeterminata indeterminata indeterminata
+"4 misure su 10, il disco 3",S1.4e_ruleN.csv,4 3 K2,4 3 K2
+ellisse a caso: al più 0.02 in più,"S1.4e_desc.csv, P-1 diff vs K2 (per seme), ER, tessuti densi",0.006 0.020,0.006 0.020
+"ellisse orientata toglie da 6 a 15 coppie su 100 (sotto 6 µm, stessi centri)","S1.4e_cp.csv, CP-1 ET-K2",6-15,6-15
+di traverso: 77-87 veri,"S1.4e_refs.csv, R-2 (stima)",77-87,77-87
+"86-94 con l'ellisse orientata, 61-75 a caso","S1.4e_verdicts.csv, P-3 ET ed ER",86-94 61-75,86-94 61-75
+circa a metà strada,"S1.4e_desc.csv, P-3 frazione (vero - ER) / (ET - ER)",0.51-0.69,0.51-0.69
+intestino 0.33 contro il tuo 0.35,"S1.4e_desc.csv, banco A < 6 um, intestino",0.33 0.35,0.33 0.35
+tumore del colon 0.72 contro 0.30; stroma 0.74 contro 0.47,"S1.4e_desc.csv, banco A < 6 um",0.72 0.30 0.74 0.47,0.72 0.30 0.74 0.47
+Cellpose 5 volte su 6 contro le tue 2 su 6,"explore/S1.4e_E12_pairs.csv, tumore < 5 µm, coppie agganciate",5/6 2/6,5/6 2/6
+Federica 44 su 100 contro le tue 17 (una decina di coppie),"S1.4e_PH1_raters.csv, tumore < 6 µm",44 17,44 17
+il disco resta fuori nel tumore del colon e nel linfonodo (CP-2),"S1.4e_cp.csv, CP-2 K2",smentita smentita,smentita smentita
+"circa 320 coppie (233 di tumore, 87 di stroma)",S1.4e_PH1_raters.csv,320 233 87,320 233 87
+circa un secondo per coppia,"S1.4e_PH1_raters.csv, t_ms mediano (Federica)",1.0,1.0
+"300 simulazioni 9.6 minuti, 24 finestre 5.8","logs genB.log, genA.log",9.6 5.8,9.6 5.8

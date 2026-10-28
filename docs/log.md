@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-10-28 (risultati di S1.4e)
+
+* **Creazione**: [A parità di distanza fra i centri, i nuclei simulati si toccano troppo: dipende dalla forma rotonda del nucleo, e un nucleo allungato e orientato come quelli veri lo corregge? (S1.4e)](steps/S1.4e.md): esplorazione dichiarata, pre-registrazione con l'ok di Luca («vai»), banco, cancelli G-1...G-5, regola N, controprove, post hoc, revisione avversariale; in attesa delle decisioni di Luca.
+* **Creazione**: decisione tecnica [S1.4e: nei preset resta il disco ritagliato e riportato all'area giusta; le ellissi orientate a caso o lungo il territorio restano opzioni; CP-1 si giudica sulle coppie giudicate (DEC-026)](decisions/DEC-026.md).
+
 ## 2026-10-27 (chiusura di S1.5e)
 
 * **Chiusura**: [Se i vuoti tolgono cellule invece di spostarle, e hanno la forma allungata dei vuoti veri, tornano la densità del tessuto, i contatti e la forma degli spazi vuoti? (S1.5e)](steps/S1.5e.md) chiuso con l'approvazione di Luca («vanno bene i tuoi consigli», lettura del riassunto «In breve» senza dubbi nuovi); decisioni di Luca in [S1.5e: i tre controlli falliti come scritti non bloccano lo step; le quote per tipo si tolgono al consolidamento dello Step 1 (DEC-025)](decisions/DEC-025.md). Prossimo step: da scegliere (proposta S1.4e, contatti dei nuclei nel disegno del nucleo).
