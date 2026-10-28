@@ -1,5 +1,9 @@
 # Registro delle modifiche
 
+## 2026-10-28 (chiusura di S1.4e)
+
+* **Chiusura**: [A parità di distanza fra i centri, i nuclei simulati si toccano troppo: dipende dalla forma rotonda del nucleo, e un nucleo allungato e orientato come quelli veri lo corregge? (S1.4e)](steps/S1.4e.md) chiuso con l'approvazione di Luca (lettura del riassunto «In breve» senza dubbi nuovi; «ok» sulla prima decisione, «mi sembra inutile» sulla seconda); decisioni di Luca in [S1.4e: il disco resta nei preset e il prossimo tentativo sul nucleo è un orientamento parziale; nessun secondo giudizio di Federica sui contatti del tumore del colon e dello stroma (DEC-027)](decisions/DEC-027.md). Prossimo step proposto: S1.4f, orientamento parziale del nucleo.
+
 ## 2026-10-28 (risultati di S1.4e)
 
 * **Creazione**: [A parità di distanza fra i centri, i nuclei simulati si toccano troppo: dipende dalla forma rotonda del nucleo, e un nucleo allungato e orientato come quelli veri lo corregge? (S1.4e)](steps/S1.4e.md): esplorazione dichiarata, pre-registrazione con l'ok di Luca («vai»), banco, cancelli G-1...G-5, regola N, controprove, post hoc, revisione avversariale; in attesa delle decisioni di Luca.

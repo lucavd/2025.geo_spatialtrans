@@ -2,9 +2,9 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## S1.4e, 2026-10-28: disegno del nucleo e contatti a parità di distanza (branch `step1-cell-layer`), **in attesa delle decisioni di Luca**
+## S1.4e, 2026-10-28: disegno del nucleo e contatti a parità di distanza (branch `step1-cell-layer`), **chiusa**
 
-File dello step `docs/steps/S1.4e.md`, report `reports/S1.4e.html`; decisione tecnica DEC-026 (regola N: resta il disco; coppie di CP-1). BL-166 chiusa in parte; nuove BL-171...BL-174; aggiornate BL-063, BL-123, BL-129, BL-142.
+File dello step `docs/steps/S1.4e.md`, report `reports/S1.4e.html`; decisione tecnica DEC-026 (regola N: resta il disco; coppie di CP-1); decisione di Luca DEC-027 (disco nei preset, orientamento parziale come prossimo tentativo; nessun secondo giudizio di Federica). Letta da Luca il 2026-10-28. BL-166 chiusa in parte; nuove BL-171...BL-174 (BL-172 chiusa per decisione di Luca); aggiornate BL-063, BL-123, BL-129, BL-142.
 
 ### Codice
 - Nessuna modifica al pacchetto: le ellissi orientate a caso o lungo il territorio esistevano già come opzioni di `derive_cell_geometry()`.
