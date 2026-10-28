@@ -1,0 +1,8 @@
+"check","value","expected","pass"
+"B_units",300,300,TRUE
+"RV_equals_S1.5d_RV_md5",300,300,TRUE
+"K2_redraw_equals_place_cells",300,300,TRUE
+"A_rows",720,720,TRUE
+"A_K2_equals_R3b_CP1",80,80,TRUE
+"invariant_violations_B",0,0,TRUE
+"invariant_violations_A",0,0,TRUE

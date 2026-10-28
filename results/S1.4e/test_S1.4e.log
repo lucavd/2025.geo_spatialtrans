@@ -1,0 +1,19 @@
+PASS T1 ridisegno = place_cells(): intestino, semina uniforme, residui gaussiani 601 nuclei
+PASS T1 ridisegno = place_cells(): tumore del colon, compartimenti e vuoti RV, residui gaussiani 432 nuclei
+PASS T1 ridisegno = place_cells(): cervello, semina uniforme, residui empirici 57 nuclei
+PASS T2 asse del nucleo lungo l'asse del territorio (entro 1 grado) scarti 0 0 0 0 gradi
+PASS T3 orientamenti uniformi con random (KS) p = 0.192, n = 2000
+PASS T4 ellisse random seme 1: dentro, nessuna sovrapposizione, area = A*, valida max errore relativo 3.49e-08, ritagliati 3/3
+PASS T4 ellisse random seme 2: dentro, nessuna sovrapposizione, area = A*, valida max errore relativo 6.27e-08, ritagliati 3/3
+PASS T4 ellisse random seme 3: dentro, nessuna sovrapposizione, area = A*, valida max errore relativo 6.95e-08, ritagliati 3/3
+PASS T4 ellisse random seme 4: dentro, nessuna sovrapposizione, area = A*, valida max errore relativo 4.21e-08, ritagliati 3/3
+PASS T4 ellisse random seme 5: dentro, nessuna sovrapposizione, area = A*, valida max errore relativo 7.94e-08, ritagliati 3/3
+PASS T4 ellisse territory seme 1: dentro, nessuna sovrapposizione, area = A*, valida max errore relativo 8.47e-08, ritagliati 3/3
+PASS T4 ellisse territory seme 2: dentro, nessuna sovrapposizione, area = A*, valida max errore relativo 8.47e-08, ritagliati 3/3
+PASS T4 ellisse territory seme 3: dentro, nessuna sovrapposizione, area = A*, valida max errore relativo 8.47e-08, ritagliati 3/3
+PASS T4 ellisse territory seme 4: dentro, nessuna sovrapposizione, area = A*, valida max errore relativo 8.47e-08, ritagliati 3/3
+PASS T4 ellisse territory seme 5: dentro, nessuna sovrapposizione, area = A*, valida max errore relativo 8.47e-08, ritagliati 3/3
+PASS T7 cataloghi dei bracci (K2 invariato; ER, ET allungamento 1/sqrt(1 - e^2) di B-115...B-120) ET A1 1.6667, ER A4 1.2500
+PASS T8 banco A A2_w1: tutti i punti di Luca nella maschera, nessun centro del segmentatore nella finestra fuori dalle esclusioni manuali 145/145, segmentatore nella finestra 0
+PASS T8 banco A A4_w2: tutti i punti di Luca nella maschera, nessun centro del segmentatore nella finestra fuori dalle esclusioni manuali 118/118, segmentatore nella finestra 0
+RESULT 18/18 PASS

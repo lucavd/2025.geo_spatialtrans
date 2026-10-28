@@ -1,0 +1,5 @@
+check,value,limit,pass_
+psi_median_abs_diff_deg_max_over_units,1.07908976835688,2.0,True
+ecc_median_abs_diff_max_over_units,0.0017153299864890448,0.02,True
+pair_contact_vs_nc2_agreement,1.0,1.0,True
+pair_contact_units,720.0,,True

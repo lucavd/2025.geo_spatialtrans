@@ -1,0 +1,4 @@
+arm,score_P1_P2,P3_confirmed,cond_a,cond_b,winner,why
+K2,3,0,True,True,K2,nessuna ellisse supera K2 di almeno 2 voci senza peggiorare un tessuto confermato
+ER,3,0,False,True,K2,nessuna ellisse supera K2 di almeno 2 voci senza peggiorare un tessuto confermato
+ET,4,0,False,True,K2,nessuna ellisse supera K2 di almeno 2 voci senza peggiorare un tessuto confermato

@@ -1,0 +1,6 @@
+PASS T5 psi di fianco = 90 gradi psi [90. 90.]
+PASS T5 psi in fila = 0 gradi psi [0. 0.]
+PASS T5 allungamento ed eccentricita' dai momenti (ellisse 2 x 3.2 ruotata di 37 gradi) allungamento 1.6000, ecc 0.7806, angolo -53.00
+PASS T6 rettangoli a 2 px si toccano, a 3 px no coppie [(1, 2)]
+PASS T6 contatto di coppia = n_c2 > 0 per ogni nucleo (120 dischi casuali) 17 nuclei a contatto su 120
+RESULT 5/5 PASS
