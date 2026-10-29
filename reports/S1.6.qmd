@@ -1,0 +1,113 @@
+---
+title: "S1.6: il codice delle cellule, ripulito dei difetti noti, simula ancora gli stessi tessuti?"
+subtitle: "geo_spatialtrans, report di step (protocollo v2)"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+execute:
+  echo: false
+  warning: false
+---
+
+```{r setup}
+#| include: false
+.libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({ library(knitr); library(ggplot2) })
+theme_set(theme_bw(base_size = 11))
+R <- "../results/S1.6"; rd <- function(f) read.csv(file.path(R, f), stringsAsFactors = FALSE, check.names = FALSE)
+TIS <- c(A1 = "intestino di topo", A2 = "tumore del colon", A3 = "stroma del tumore", A4 = "linfonodo", A5 = "cervello di topo", A6 = "cuore")
+P1 <- rd("S1.6_P1.csv"); CP1 <- rd("S1.6_CP1.csv")
+```
+
+{{< include _S1.6_inbreve.md >}}
+
+# Decisioni e verifiche di Luca
+
+{{< include _S1.6_verifiche.md >}}
+
+# Dubbi rinviati
+
+{{< include _S1.6_rinviati.md >}}
+
+# Cancelli e previsioni
+
+Pre-registrazione al commit `e262748`; ok di Luca il 2026-10-29 («Approvo, margine un quarto», commit `6dd14c3`). Codice e test al commit `1b1d11b`; banco, analisi e correzioni della revisione al commit `d066bc4`.
+
+Bracci: **U6** semina dei preset (predefinita) col codice di S1.6, confrontata con **U** di S1.5e; **Q6** semina a compartimenti con le opzioni nuove (senza quote, limite esatto), confrontata con **Q** di S1.5e (senza quote, limite della griglia). Equivalenza: differenza appaiata per ROI (per seme in P-1 della tabella P), media ± 2 errori standard contro un margine di ± un quarto della larghezza dell'intervallo vero di S1.5e.
+
+```{r p1fig}
+#| fig-width: 8
+#| fig-height: 9
+P1$tessuto <- TIS[P1$archetype]; P1$r <- P1$diff / P1$margin; P1$e <- 2 * P1$se / P1$margin
+P1$lab <- paste(P1$id, P1$unit); P1 <- P1[order(P1$archetype, P1$r), ]; P1$k <- ave(P1$r, P1$archetype, FUN = seq_along)
+ggplot(P1, aes(r, k, colour = verdict)) + geom_vline(xintercept = c(-1, 1), linetype = 2) + geom_vline(xintercept = 0, colour = "grey60") +
+  geom_errorbarh(aes(xmin = r - e, xmax = r + e), height = 0) + geom_point(size = 1) + facet_wrap(~ tessuto, ncol = 3, scales = "free_y") +
+  scale_colour_manual(values = c(confermata = "#1b7837", indeterminata = "#e08214", smentita = "#b2182b")) +
+  labs(x = "differenza Q6 - Q, in unità del margine (± 2 errori standard)", y = "misure del pannello (ordinate)", colour = "esito") +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), legend.position = "bottom")
+```
+
+Cosa guardare: 177 stime su 179 stanno dentro ± 1 margine (linee tratteggiate); le 10 arancioni hanno la barra che esce dal margine perché l'errore standard è grande. Due stime cadono fuori dal margine, entrambe fra le righe previste imprecise da E3 e con un errore standard più grande della stima: il 90° percentile dell'area degli astrociti del cervello (3.2 margini, ± 6.7) e il rapporto mediano nucleo/territorio delle cellule immunitarie dell'intestino (1.1 margini, ± 1.4). Sono tipi rari, con poche cellule per seme.
+
+```{r p1tab}
+kable(data.frame(tessuto = TIS[P1$archetype], misura = P1$id, unità = P1$unit, coppie = P1$n_pairs, differenza = sprintf("%.4g ± %.3g", P1$diff, 2 * P1$se),
+                 margine = sprintf("± %.4g", P1$margin), esito = P1$verdict, `prevista indeterminata (E3)` = P1$by_construction, check.names = FALSE)[P1$verdict != "confermata", ],
+      row.names = FALSE, caption = "P-1: le 10 righe non confermate (le 169 confermate nel file S1.6_P1.csv)")
+```
+
+# Controprove
+
+```{r cp}
+k <- CP1[(CP1$id == "P-15" & CP1$archetype %in% c("A1", "A4", "A5")) | (CP1$id == "P-17" & CP1$archetype == "A1") | (CP1$id == "P-3" & CP1$archetype == "A4"), ]
+kable(data.frame(tessuto = TIS[k$archetype], misura = k$id, differenza = sprintf("%.4g ± %.3g", k$diff, 2 * k$se), margine = sprintf("± %.4g", k$margin), esito = k$verdict),
+      row.names = FALSE, caption = "CP-1: le 5 righe pre-registrate del confronto XA - RV di S1.5e (attese smentite)")
+kable(table(CP1$verdict), col.names = c("esito", "righe"), caption = "CP-1: esiti delle 179 righe del confronto XA - RV")
+kable(rd("S1.6_CP2.csv"), digits = 3, row.names = FALSE, caption = "CP-2: quota di proposte accettate dal diradamento, Q6 su Q; bound_ratio_E4 = limite esatto / limite della griglia")
+```
+
+# Dopo il risultato: cancelli, correzioni e revisione avversariale
+
+{{< include _S1.6_dopo.md >}}
+
+```{r gates}
+kable(rd("S1.6_G3_check.csv"), row.names = FALSE, caption = "G-3: identità e invarianti del banco (righe desc_ descrittive)")
+kable(rd("S1.6_counts.csv"), row.names = FALSE, caption = "D-2: esiti P-1...P-17 per braccio (179 righe)")
+```
+
+# Cosa è girato
+
+- Banco: 30 ROI × 10 semi (seme = 20261021 + 1000 · i + s, come S1.5c-S1.5e) × 2 bracci = 600 unità in 11.9 minuti con 20 worker; con raster, metriche e finestre 23 minuti. md5 dei 91 file letti identici prima e dopo, rieseguito dopo le correzioni.
+- Test, mutanti e ambiente: due passate di circa un'ora (prima e dopo le correzioni della revisione).
+- Comandi esatti nella sezione «Riproduzione» del file dello step.
+
+# Appendice
+
+## Perimetro
+
+{{< include _S1.6_perimetro.md >}}
+
+## Dubbi ricevuti
+
+{{< include _S1.6_received.md >}}
+
+## Esplorazione prima della pre-registrazione
+
+{{< include _S1.6_explore.md >}}
+
+## Pre-registrazione (testo del file dello step)
+
+{{< include _S1.6_prereg.md >}}
+
+## Descrittive e riferimenti
+
+```{r desc}
+kable(rd("S1.6_desc.csv"), digits = 4, row.names = FALSE, caption = "D-1 (tempo mediano per unità: value = braccio di S1.6, ref = braccio di S1.5e) e D-3 (frazione realizzata: value = Q6, ref = RV con le quote, ref2 = Q)")
+rr <- rd("S1.6_real_refs_roi_type.csv"); kable(head(rr, 60), digits = 3, row.names = FALSE, caption = "E1: riferimenti veri per tipo sui nuclei con la forma di StarDist (linfonodo e cuore)")
+```
+
+## Da dove vengono i numeri del riassunto
+
+{{< include _S1.6_fonti.md >}}

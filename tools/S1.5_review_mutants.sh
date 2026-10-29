@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# OBSOLETO da S1.6 (DEC-030): i mutanti di S1.5 sono copie del codice in R/testing/mutants_S1.5.py, eseguite da R/testing/run_S1.5.sh; questo script resta per la riproduzione di S1.5.
 # tools/S1.5_review_mutants.sh - S1.5, controprova dopo la revisione: base + mutanti del revisore R01-R19 + mutanti dell'autore M1-M9
 # (copia di review_code/run_mutants.sh con R19 e la cartella postreview). Uso dalla root del repo: bash tools/S1.5_review_mutants.sh
 RC=/mnt/micron/geo_spatialtrans/S1.5/postreview; mkdir -p $RC/logs

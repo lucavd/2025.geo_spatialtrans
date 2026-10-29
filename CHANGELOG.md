@@ -2,6 +2,26 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.6, 2026-10-29: consolidamento del codice dello Step 1 (branch `step1-cell-layer`), **in attesa delle decisioni di Luca**
+
+File dello step `docs/steps/S1.6.md`, report `reports/S1.6.html`; decisione tecnica DEC-030 (S1.6: scelte tecniche del consolidamento dello Step 1 (limite esatto della semina, opzioni per gli step passati, riferimenti per tipo sull'insieme del modello, mutanti fuori dal codice, ambiente)). Due decisioni di Luca aperte (CP-1 fallita come scritta in 1 riga su 5; C7 con la densità della miscela nella semina cieca, design §6.1). BL-155, BL-156 (in attesa di Luca), BL-161, BL-163, BL-165, BL-169, BL-170, BL-173 (chiusa per spiegazione: non sono frammenti), BL-004, BL-008, BL-009, BL-012, BL-078, BL-164 chiuse o aggiornate; nuove BL-176...BL-179. README, CLAUDE.md, dossier per Daniele e merge in `dev` passano a S1.6b.
+
+### Codice
+- `R/04b2_seed_centroids.R`: quote per tipo spente per predefinito nella semina a compartimenti (`quotas = FALSE`, BL-170); limite esatto del diradamento max_t ρ_t (`thinning_bound = "exact"`, BL-161) con la griglia di S1.5c come opzione; validazione di `quotas` e `thinning_bound`; ordine dei tipi dei compartimenti nei metadati.
+- `R/04b_cell_placement.R`: argomento `type_order`, passaggio di quote e limite, avviso sull'ordine ignorato, metadati della semina.
+- `R/04b5_cell_layer_validation.R`: C7 con la densità della miscela nella semina cieca al tipo (BL-156, in attesa di Luca), argomento `type_order`.
+- `R/04b0_tissue_presets.R`, `R/04b6_estimate_pixel_size.R`, `R/04b4_derive_cell_geometry.R`: opzioni di sessione per gli step passati, documentazione (nuclei MULTIPOLYGON).
+- Test `R/testing/test_S1.6.R` (23 asserzioni), runner `R/testing/run_S1.6.sh` (test, mutanti, ambiente); mutanti come copie del codice (`tools/mutate.py`, `R/testing/mutants_S1.5.py`, `mutants_S1.5b.py`, `mutants_S1.6.py` N1-N16); test vecchi con le uscite in `GEO_TEST_OUT` (BL-165).
+- `tools/calibration_fit.py` e `tools/test_calibration_fit.py` (8 asserzioni; varianza delle pieghe sul solo addestramento, bordi della griglia segnalati, BL-169).
+- `DESCRIPTION` (Imports = 14 pacchetti usati), `renv.lock` (199 pacchetti), `.renvignore`; tolto `tools/S1.5_single_preset.R`.
+- Strumenti `tools/S1.6_*`: esplorazione E0-E5, riferimenti veri per tipo, banco (600 unità), metriche, finestre, analisi, controllo dell'ambiente.
+- Design `docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md` v1.8 allineato al codice, con i limiti dichiarati (§7.4).
+
+### Risultati
+- Semina dei preset identica bit per bit a S1.5e (300/300); semina a compartimenti senza quote con il limite esatto equivalente a S1.5e: 169 misure su 179 confermate, 10 indeterminate, 0 smentite.
+- Riferimenti per tipo del linfonodo e del cuore sui nuclei con la forma di StarDist: cambiano 6 verdetti di S1.5e; i frammenti di area nulla di BL-173 non esistono (532 259 erano i nuclei registrati come MULTIPOLYGON; davvero in due parti 180).
+- Cancelli G-1...G-5 PASS (G-4 dopo la correzione del controllo del restore); revisione avversariale: 1 bug nei test e 9 mutanti non rilevati su 10, corretti (16/16).
+
 ## S1.4f, 2026-10-29: nucleo orientato in parte lungo il territorio (branch `step1-cell-layer`), **chiusa**
 
 File dello step `docs/steps/S1.4f.md`, report `reports/S1.4f.html`; decisione tecnica DEC-028 (Cauchy avvolta; regola O: legge della compressione, per spareggio; regola N2: resta il disco). decisione di Luca DEC-029 (si chiude il lavoro sul disegno del nucleo, disco nei preset, eccesso di contatti come limite dichiarato). Letta da Luca il 2026-10-29. BL-171, BL-174, BL-166, BL-142 chiuse; nuova BL-175; aggiornate BL-063, BL-123.

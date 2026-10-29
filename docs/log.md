@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-10-29 (risultati di S1.6)
+
+* **Creazione**: [Il codice dello Step 1, ripulito dei difetti noti, simula ancora gli stessi tessuti? (S1.6)](steps/S1.6.md): perimetro scelto da Luca (S1.6 codice, S1.6b documenti e merge), esplorazione dichiarata E0-E5, pre-registrazione con l'ok di Luca («Approvo, margine un quarto»), banco, cancelli G-1...G-5, previsione P-1, controprove, revisione avversariale e sue correzioni; in attesa di due decisioni di Luca.
+* **Creazione**: decisione tecnica [S1.6: scelte tecniche del consolidamento dello Step 1 (limite esatto della semina, opzioni per gli step passati, riferimenti per tipo sull'insieme del modello, mutanti fuori dal codice, ambiente) (DEC-030)](decisions/DEC-030.md).
+* **Modifica**: design del livello cellulare v1.8 allineato al codice, con i limiti dichiarati; BACKLOG (voci del consolidamento chiuse o aggiornate, nuove BL-176...BL-179); BIO_REFERENCES B-265...B-269.
+
 ## 2026-10-29 (chiusura di S1.4f)
 
 * **Chiusura**: [Un nucleo orientato solo in parte lungo il suo territorio, quanto i nuclei veri, riproduce l'allineamento vero e toglie i contatti in eccesso? (S1.4f)](steps/S1.4f.md) chiuso con l'approvazione di Luca (lettura del riassunto «In breve» senza dubbi nuovi; «accetto suggerimento. chiudi»); decisione di Luca in [S1.4f: si chiude il lavoro sul disegno del nucleo; il disco resta nei preset e l'eccesso di contatti che resta è un limite dichiarato del simulatore (DEC-029)](decisions/DEC-029.md).

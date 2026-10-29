@@ -1,0 +1,13 @@
+frase,fonte,valore letto,testo
+300 simulazioni su 300 identiche bit per bit,"S1.6_G3_check.csv, U6_equals_S1.5e_U_md5",300,300
+"2 avvisi su 300 simulazioni prima, nessuno ora","S1.6_G3_check.csv, desc_C7_warn_U_S1.5e e desc_C7_warn_U6",2 0,2 0
+"179 misure: 169 confermate, 10 dove la precisione non basta","S1.6_P1.csv, esiti",179 169 10 0,179 169 10 0
+"dall'8 al 10 % di proposte in più in cinque tessuti, 11 % in meno nel cervello","S1.6_CP2.csv, ratio",8-10 11,8-10 11
+"cuore, predefinita: fibroblasti e immunitari indeterminati","S1.6_verdicts.csv, P-14 U6 cuore",indeterminata indeterminata,indeterminata indeterminata
+"zone dei tipi: linfociti B migliorano, T peggiorano","S1.6_explore_refs_verdicts.csv, P-14 Q linfonodo (vecchio → nuovo)","B smentita→confermata, T confermata→smentita","B smentita→confermata, T confermata→smentita"
+nuclei davvero in due parti 180 su quasi due milioni e mezzo,"S1.6_explore_parts_S1.4e_K2.csv, n_multipart, n_nuclei",180 2478884,180 2478884
+9 alterazioni su 10 del revisore passavano inosservate; ora i test le vedono tutte,review_code/rapporto.md (punto 4); tests2/G2.log,1 16/16,1 16/16
+in tutto in 34 misure su 179,"S1.6_CP1.csv, smentite",34 179,34 179
+"cervello: differenza circa 390 nuclei per mm², soglia 340, 4 aree confrontate","S1.6_CP1.csv, P-15 cervello (diff, margin, n_pairs)",390 340 4,390 340 4
+"600 simulazioni, con raster e misure, 23 minuti con 20 processori",logs/md5before.log → md5after.log (ora di modifica); WORKERS; gen.log,23 20 gen 11.9 min,23 20 gen 11.9 min
+"test, mutanti e ambiente: due giri di circa un'ora",tests/ e tests2/ (ora di modifica del primo e dell'ultimo file),52 55,52 55
