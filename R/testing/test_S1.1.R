@@ -26,6 +26,7 @@ source("tools/S1.1_moore_variant.R")
 IN  <- "/mnt/micron/geo_spatialtrans/S1.1/inputs"
 OUTD <- "/mnt/micron/geo_spatialtrans/S1.1/outputs"
 RES <- "results/S1.1"
+OUTD <- Sys.getenv("GEO_TEST_OUT", RES); dir.create(OUTD, showWarnings = FALSE, recursive = TRUE)   # S1.6 (BL-165): uscite fuori dai file versionati se GEO_TEST_OUT e' dato
 dir.create(OUTD, recursive = TRUE, showWarnings = FALSE)
 NCORES <- 12L
 TOL_SIMPL <- 0.5; MIN_AREA <- 100
@@ -190,7 +191,7 @@ names(res) <- ord
 errs <- Filter(function(z) !is.null(z$error), res)
 if (length(errs)) { for (z in errs) cat("ERRORE", z$id, z$error, "\n"); stop("input falliti") }
 per <- do.call(rbind, lapply(res, `[[`, "per_input")); per <- per[match(inputs$id, per$id), ]
-write.csv(per, file.path(RES, "S1.1_per_input.csv"), row.names = FALSE)
+write.csv(per, file.path(OUTD, "S1.1_per_input.csv"), row.names = FALSE)
 regions <- do.call(rbind, lapply(res, `[[`, "regions"))
 comps <- do.call(rbind, lapply(res, `[[`, "comps"))
 saveRDS(list(regions = regions, comps = comps), file.path(OUTD, "S1.1_regions_all.rds"))
@@ -293,7 +294,7 @@ add("C4b", "I6_syn6800x6500_c2", "stride atteso 6", gp("I6_syn6800x6500_c2")$str
 
 # CP-1 Moore
 moore <- do.call(rbind, lapply(res, `[[`, "moore"))
-write.csv(moore, file.path(RES, "S1.1_cp1_moore.csv"), row.names = FALSE)
+write.csv(moore, file.path(OUTD, "S1.1_cp1_moore.csv"), row.names = FALSE)
 cp1 <- aggregate(cbind(n_px, area_moore_px) ~ id, data = moore, FUN = sum)
 cp1$relerr <- (cp1$area_moore_px - cp1$n_px) / cp1$n_px
 for (k in seq_len(nrow(cp1))) {
@@ -312,7 +313,7 @@ cp3 <- do.call(rbind, lapply(c("A1", "A2A3", "A4", "A5", "A6"), function(a) {
              frac_excl_real = r$frac_area_excluded_100, frac_excl_null = n$frac_area_excluded_100,
              n_components_real = r$n_components, n_components_null = n$n_components)
 }))
-write.csv(cp3, file.path(RES, "S1.1_cp3_null.csv"), row.names = FALSE)
+write.csv(cp3, file.path(OUTD, "S1.1_cp3_null.csv"), row.names = FALSE)
 ok3 <- cp3$n_regions_real < cp3$n_regions_null & cp3$frac_excl_real < cp3$frac_excl_null
 add("CP-3", "real_full vs null_full", "n_regioni reale < nullo e frazione scartata reale < nullo",
     sprintf("%d/5", sum(ok3)), "5/5", pf(all(ok3)))
@@ -322,7 +323,7 @@ rec <- aggregate(n_px ~ cluster_id, data = z, FUN = sum)
 tr <- o$truth; tr$patch <- as.numeric(tr$patch)
 mm <- merge(tr, rec, by.x = "patch", by.y = "cluster_id", all = TRUE)
 write.csv(transform(mm, n_components = as.integer(table(z$cluster_id)[as.character(mm$patch)])),
-          file.path(RES, "S1.1_cp4_truth.csv"), row.names = FALSE)
+          file.path(OUTD, "S1.1_cp4_truth.csv"), row.names = FALSE)
 ncomp4 <- as.integer(table(z$cluster_id)[as.character(mm$patch)])
 add("CP-4b", "I5_syn600_c2_labels", "ogni patch e' esattamente 1 componente (aggiunta dopo la revisione: CP-4 da solo e' tautologico, RA-09)",
     sprintf("%d/%d", sum(ncomp4 == 1), nrow(tr)), sprintf("%d/%d", nrow(tr), nrow(tr)), pf(all(ncomp4 == 1) && nrow(z) == nrow(tr)))
@@ -343,10 +344,10 @@ desc <- do.call(rbind, lapply(split(regions, regions$id), function(r) {
 }))
 meta <- lapply(res, `[[`, "meta")
 desc$archetype <- vapply(desc$id, function(i) { m <- meta[[i]]; if (!is.null(m$archetype)) m$archetype else NA_character_ }, "")
-write.csv(desc, file.path(RES, "S1.1_checkB_descriptive.csv"), row.names = FALSE)
+write.csv(desc, file.path(OUTD, "S1.1_checkB_descriptive.csv"), row.names = FALSE)
 
 TT <- do.call(rbind, T)
-write.csv(TT, file.path(RES, "S1.1_test_results.csv"), row.names = FALSE)
+write.csv(TT, file.path(OUTD, "S1.1_test_results.csv"), row.names = FALSE)
 for (k in seq_len(nrow(TT))) cat(sprintf("%-4s %-9s %-24s %s = %s\n", TT$status[k], TT$check[k], TT$input[k], TT$metric[k], TT$value[k]))
 cat(sprintf("\n[test_S1.1] PASS %d · WARN %d · FAIL %d (asserzioni: %d)\n",
             sum(TT$status == "PASS"), sum(TT$status == "WARN"), sum(TT$status == "FAIL"), nrow(TT)))

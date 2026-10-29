@@ -59,7 +59,8 @@
 #' @param strict se TRUE (default) errore se un nucleo non e' dentro il proprio territorio (C3).
 #' @param verbose stampa un riepilogo.
 #' @return lista con `cell_df`, `cell_nuclei` (sfc, ordine di `cell_id`; sfc_POLYGON, oppure sfc_MULTIPOLYGON se
-#'   qualche nucleo ritagliato e' in piu' parti), `info`. Colonne di `cell_df`: schema del design §4.2 piu'
+#'   qualche nucleo ritagliato e' in piu' parti: allora tutti i nuclei dell'insieme sono di tipo MULTIPOLYGON e il numero di parti
+#'   si legge da `lengths()` o da `info$n_multipart`, non dal tipo; S1.6, BL-173), `info`. Colonne di `cell_df`: schema del design §4.2 piu'
 #'   `nucleus_area_target`, `nucleus_scale`, `center_dist`; con "scale" anche `nucleus_clamped`; con "clip" anche
 #'   `nucleus_area_cap` (A*), `nucleus_capped` (A* < A_N), `nucleus_clipped` (ritagliato a s = 1), `nucleus_n_iter`.
 derive_cell_geometry <- function(centroids, territories, cell_types, random_seed = 42,

@@ -8,6 +8,7 @@
 suppressPackageStartupMessages({ library(sf); library(geos); library(parallel); library(arrow) })
 for (f in sort(list.files("R", pattern = "^04b.*\\.R$", full.names = TRUE))) source(f)
 source("tools/R3_voronoi_metrics.R"); source("tools/S1.5d_bench_lib.R")
+options(geo.spatialtrans.quotas = TRUE, geo.spatialtrans.thinning_bound = "grid")   # S1.6: predefiniti di S1.5c-S1.5e, per riprodurre i numeri di questo step
 if (requireNamespace("data.table", quietly = TRUE)) data.table::setDTthreads(1L)
 args <- commandArgs(TRUE); combos <- read.csv(args[1], stringsAsFactors = FALSE)
 OUT <- "/mnt/micron/geo_spatialtrans/S1.5e/calpos"; dir.create(OUT, showWarnings = FALSE, recursive = TRUE)

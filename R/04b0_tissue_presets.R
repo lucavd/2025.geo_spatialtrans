@@ -89,36 +89,24 @@
 
 .TP_EPI_LABEL <- c(tumor_microenv = "tumorale", stromal_rich = "tumorale")   # DEC-014: istologia delle ROI (R2)
 
-.tp_mut <- function() Sys.getenv("S15B_MUTANT", "none")
-
 # Catalogo e composizione per tipo di un preset (S1.5b). Densita' del tipo puro rho_t = D * mbar / m_t (mbar = sum f_t m_t), cosi' la media
 # armonica della miscela vale D; modello di taglia portato a rho_t con "preserve_area" (stessa funzione A_N(A_T)); braccio "recentred":
 # intercetta spostata di (m_t / m_sim)^beta.
 .tp_multi <- function(p, size_arm, composition) {
   ty <- .TP_TYPES[.TP_TYPES$preset == p$preset, , drop = FALSE]
-  mut <- .tp_mut()
   fcol <- switch(composition, tissue = "fraction", follicle = "fraction_follicle", paracortex = "fraction_paracortex")
   f <- ty[[fcol]]
   if (anyNA(f)) stop("tissue_preset_spec(): composizione '", composition, "' non disponibile per il preset ", p$preset, call. = FALSE)
-  if (mut == "M2") f <- f * 0.9                                                     # mutante: frazioni non rinormalizzate
   if (abs(sum(f) - 1) > 1e-5) stop("tissue_preset_spec(): le frazioni del preset non sommano a 1 (", format(sum(f), digits = 8), ")", call. = FALSE)
   f <- f / sum(f)                                                                     # arrotondamento a 6 cifre della tabella
   rho_g <- ty$rho_g; beta_g <- ty$beta_g; sigma_g <- ty$sigma_g
-  if (mut == "M1" && p$preset == "brain_cortex") {                                  # mutante: modelli di neuroni e glia scambiati
-    gN <- ty$size_group[ty$cell_type == "neuroni"]; iN <- ty$size_group == gN; iG <- !iN
-    tmp <- c(rho_g[iN][1], beta_g[iN][1], sigma_g[iN][1])
-    rho_g[iN] <- rho_g[iG][1]; beta_g[iN] <- beta_g[iG][1]; sigma_g[iN] <- sigma_g[iG][1]
-    rho_g[iG] <- tmp[1]; beta_g[iG] <- tmp[2]; sigma_g[iG] <- tmp[3]
-  }
-  if (mut == "M6") { rho_g[] <- p$rho; beta_g[] <- p$beta; sigma_g[] <- p$sigma }   # mutante: gruppi di taglia ignorati
   mbar <- sum(f * ty$m_t)                                                             # composizione scelta: la miscela vale D
   d0 <- mbar / ty$m_t
-  dens <- if (mut == "M3") p$density * d0 / sum(f * d0) else p$density * d0           # M3: media aritmetica invece di armonica
-  conv <- if (mut == "M7") 1 else (dens / p$density_model)^((1 - beta_g) / 2)
+  dens <- p$density * d0
+  conv <- (dens / p$density_model)^((1 - beta_g) / 2)
   rho <- rho_g * conv
-  if (size_arm == "recentred") rho <- rho * (if (mut == "M4") ty$m_sim / ty$m_t else ty$m_t / ty$m_sim)^(beta_g / 2)
+  if (size_arm == "recentred") rho <- rho * (ty$m_t / ty$m_sim)^(beta_g / 2)
   epi <- ifelse(ty$cell_type == "epiteliale" & p$preset %in% names(.TP_EPI_LABEL), .TP_EPI_LABEL[p$preset], NA_character_)
-  if (mut == "M5") epi[!is.na(epi)] <- "normale"
   ct <- data.frame(cell_type = ty$cell_type, density = dens, min_dist_um = p$min_dist_um, nucleus_shape = "circle",
                    nucleus_radius = NA_real_, nucleus_to_eq_ratio = rho, nucleus_area_slope = beta_g, nucleus_area_sdlog = sigma_g,
                    nucleus_aspect = 1, nucleus_orient = "random", nucleus_nc_max = p$phi,
@@ -141,7 +129,8 @@ tissue_presets <- function() .TP_TABLE$preset
 #'
 #' @param preset nome del preset (vedi `tissue_presets()`).
 #' @param size_conversion `"preserve_area"` (predefinito) o `"none"` (solo con `types = "single"`).
-#' @param types `"multi"` (predefinito da S1.5b: tipi cellulari) o `"single"` (un tipo per tessuto, preset di S1.5, invariato).
+#' @param types `"multi"` (predefinito da S1.5b: tipi cellulari) o `"single"` (un tipo per tessuto, preset di S1.5, invariato). Il predefinito
+#'   si cambia per una sessione con `options(geo.spatialtrans.preset_types = "single")` (S1.6, BL-155: sostituisce `tools/S1.5_single_preset.R`).
 #' @param size_arm con `types = "multi"`: `"recentred"` (predefinito, NULL; intercetta per tipo ricentrata sul territorio simulato
 #'   tipico, vincitore della regola di S1.5b) o `"group"` (modello del gruppo di taglia com'e' stimato).
 #' @param composition `"tissue"`; per il linfonodo anche `"follicle"` e `"paracortex"` (DEC-015).
@@ -155,12 +144,12 @@ tissue_presets <- function() .TP_TABLE$preset
 #'   `types = "multi"`: tipo, frazione), `type_sources` (fonti B-nnn per tipo), `c8_interval` (µm), `archetype`, `tissue`, `sources`
 #'   (data.frame parametro, valore, fonte), `size_conversion`.
 #' @export
-tissue_preset_spec <- function(preset, size_conversion = c("preserve_area", "none"), types = c("multi", "single"),
+tissue_preset_spec <- function(preset, size_conversion = c("preserve_area", "none"), types = getOption("geo.spatialtrans.preset_types", "multi"),
                                size_arm = NULL, composition = c("tissue", "follicle", "paracortex"), spatial = NULL,
                                min_dist_mode = c("tissue", "nucleus"), size_resid = NULL) {
   if (is.null(size_resid)) size_resid <- .TP_SIZE_RESID_DEFAULT
   size_resid <- match.arg(size_resid, c("gaussian", "empirical"))
-  size_conversion <- match.arg(size_conversion); types <- match.arg(types); composition <- match.arg(composition)
+  size_conversion <- match.arg(size_conversion); types <- match.arg(types, c("multi", "single")); composition <- match.arg(composition)
   min_dist_mode <- match.arg(min_dist_mode)
   if (is.null(spatial)) spatial <- .TP_SPATIAL_DEFAULT
   spatial <- match.arg(spatial, c("uniform", "compartments"))
@@ -178,7 +167,6 @@ tissue_preset_spec <- function(preset, size_conversion = c("preserve_area", "non
   if (!is.character(preset) || length(preset) != 1L || !preset %in% .TP_TABLE$preset)
     stop("tissue_preset_spec(): preset sconosciuto; disponibili: ", paste(.TP_TABLE$preset, collapse = ", "), call. = FALSE)
   tb <- .TP_TABLE
-  if (Sys.getenv("S15_MUTANT", "none") == "M6") tb$phi[c(4, 6)] <- tb$phi[c(6, 4)]   # mutante: phi di linfonodo e cuore scambiati
   p <- tb[tb$preset == preset, ]
   rho <- if (size_conversion == "preserve_area") p$rho * (p$density / p$density_model)^((1 - p$beta) / 2) else p$rho
   ct <- data.frame(cell_type = paste0(preset, "_all"), density = p$density, min_dist_um = p$min_dist_um,

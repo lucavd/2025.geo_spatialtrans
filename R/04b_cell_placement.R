@@ -3,8 +3,6 @@
 # Catena: extract_regions -> seed_centroids -> tessellate_voronoi -> derive_cell_geometry -> validate_cell_layer.
 # Dipendenze: sf, geos, ggplot2 (solo plot_cell_layer); file R/04b0...R/04b6.
 
-.pc_mut <- function() Sys.getenv("S15_MUTANT", "none")
-
 #' Semi indipendenti per gli stadi dell'orchestratore
 #'
 #' `set.seed(random_seed); sample.int(.Machine$integer.max, 3L)`: semina, taglia dei nuclei, nuclei pallidi. Lo stato
@@ -15,7 +13,6 @@ stage_seeds <- function(random_seed) {
   on.exit(if (is.null(old)) rm(".Random.seed", envir = globalenv()) else assign(".Random.seed", old, envir = globalenv()))
   set.seed(random_seed)
   s <- sample.int(.Machine$integer.max, 3L)
-  if (.pc_mut() == "M4") s[2] <- s[1]
   c(seed = s[1], size = s[2], pale = s[3])
 }
 
@@ -96,7 +93,8 @@ merge_small_components <- function(clust, pixel_size_um, min_region_area_um2, cl
 #'   costruita dal catalogo (un tipo per cluster); NULL con un catalogo di un tipo = quel tipo per tutti i cluster.
 #' @param pixel_size_um obbligatorio: numero (µm/px), `"estimate"` o `list(scalefactors_json = <file>)`.
 #' @param size_conversion conversione del modello di taglia dei preset (`tissue_preset_spec()`).
-#' @param types,size_arm,composition preset per tipo (`"multi"`, predefinito da S1.5b) o a un tipo (`"single"`, S1.5), braccio del
+#' @param types,size_arm,composition preset per tipo (`"multi"`, predefinito da S1.5b; per una sessione `options(geo.spatialtrans.preset_types =
+#'   "single")`, S1.6) o a un tipo (`"single"`, S1.5), braccio del
 #'   modello di taglia (NULL = `"recentred"`)
 #'   e composizione (`tissue_preset_spec()`); con `"multi"` ogni cluster riceve la composizione del preset, la semina e' cieca al
 #'   tipo (`seed_centroids(type_order = "blind")`) e `cell_df` riceve `size_group` ed `epithelium_label`.
@@ -104,9 +102,15 @@ merge_small_components <- function(clust, pixel_size_um, min_region_area_um2, cl
 #'   (`"tissue"` o `"nucleus"`) dei preset per tipo (S1.5c, `tissue_preset_spec()`).
 #' @param labels con i compartimenti: `"field"` o `"blind"` (etichette permutate, controprova di S1.5c).
 #' @param override_compartments tabella `cell_type`, `ell_um`, `s` che sostituisce quella del preset (banco di S1.5c: pieghe).
-#' @param heterogeneity,override_heterogeneity,quotas S1.5d, solo con i compartimenti: NULL = tabella del preset; `override_heterogeneity`
+#' @param type_order semina dei tipi con `spatial = "uniform"`: NULL = cieca al tipo (`"blind"`) per i preset per tipo, in sequenza
+#'   (`"sequential"`) per i cataloghi dell'utente (come fino a S1.5e); `"blind"` anche per i cataloghi dell'utente (richiede la stessa distanza
+#'   minima per tutti i tipi: i territori non dipendono dall'ordine del catalogo); `"sequential"` (S1.6, BL-155).
+#' @param quotas,thinning_bound solo con i compartimenti, come `seed_centroids()`: predefiniti da S1.6 senza quote (regola Q di S1.5e,
+#'   DEC-025) e con il limite esatto del diradamento (BL-161); per riprodurre S1.5c-S1.5e `options(geo.spatialtrans.quotas = TRUE,
+#'   geo.spatialtrans.thinning_bound = "grid")` o gli argomenti espliciti.
+#' @param heterogeneity,override_heterogeneity S1.5d, solo con i compartimenti: NULL = tabella del preset; `override_heterogeneity`
 #'   (una riga `void_frac`, `void_ell_um`, `dens_sigma`, `dens_ell_um`; da S1.5e anche `void_mode`, `void_aspect`, `dens_cap`, vedi
-#'   `seed_centroids()`) la sostituisce (banco: pieghe); `quotas` come `seed_centroids()`.
+#'   `seed_centroids()`) la sostituisce (banco: pieghe).
 #'   Attenzione: con `spatial = "compartments"` e senza `override_heterogeneity` si usano i vuoti calibrati del preset (S1.5d, righe
 #'   B-259...B-264; per esempio intestino 0.25 con 16 um), quindi la semina NON e' quella di S1.5c. Per riprodurre S1.5c passare
 #'   `override_heterogeneity = data.frame(void_frac = 0, void_ell_um = 0, dens_sigma = 0, dens_ell_um = 0)` (test T7a, T19).
@@ -125,14 +129,18 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
                         pixel_size_um, corner_smoothing = 0, min_region_area_um2 = 100, random_seed = 42,
                         cluster_col = "intensity_cluster", stride = NULL, simplify_tol_um = 0.5,
                         small_components = c("merge", "exclude"), nucleus_model = "clip",
-                        size_conversion = c("preserve_area", "none"), types = c("multi", "single"), size_arm = NULL,
+                        size_conversion = c("preserve_area", "none"), types = getOption("geo.spatialtrans.preset_types", "multi"), size_arm = NULL,
                         composition = "tissue", spatial = NULL, min_dist_mode = c("tissue", "nucleus"), labels = c("field", "blind"),
-                        override_compartments = NULL, override_heterogeneity = NULL, quotas = TRUE, size_resid = NULL,
+                        override_compartments = NULL, override_heterogeneity = NULL, type_order = NULL,
+                        quotas = getOption("geo.spatialtrans.quotas", FALSE),
+                        thinning_bound = getOption("geo.spatialtrans.thinning_bound", "exact"), size_resid = NULL,
                         resid_mode = c("decile", "pooled"), validate = TRUE, strict = TRUE, keep_tiles = FALSE,
                         allow_estimate = FALSE, verbose = TRUE) {
   min_dist_mode <- match.arg(min_dist_mode); labels <- match.arg(labels); resid_mode <- match.arg(resid_mode)
   t0 <- proc.time()[["elapsed"]]
-  small_components <- match.arg(small_components); size_conversion <- match.arg(size_conversion); types <- match.arg(types)
+  small_components <- match.arg(small_components); size_conversion <- match.arg(size_conversion); types <- match.arg(types, c("multi", "single"))
+  thinning_bound <- match.arg(thinning_bound, c("exact", "grid"))
+  if (!is.null(type_order)) type_order <- match.arg(type_order, c("blind", "sequential"))
   if (missing(pixel_size_um))
     stop("place_cells(): `pixel_size_um` e' obbligatorio (decisione 10 / C-A): un numero, \"estimate\" o list(scalefactors_json = ...).", call. = FALSE)
   if (!is.data.frame(clust) || !all(c("x", "y", cluster_col) %in% names(clust)))
@@ -185,7 +193,7 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   } else if (is.numeric(pixel_size_um) && length(pixel_size_um) == 1L && is.finite(pixel_size_um) && pixel_size_um > 0) {
     px <- pixel_size_um
   } else stop("place_cells(): `pixel_size_um` non valido.", call. = FALSE)
-  px_used <- if (.pc_mut() == "M7") 1 else px
+  px_used <- px
   # ---- passo dei pixel (BL-042) ----
   if (is.null(stride)) {
     if (!is.null(attr(clust, "stride"))) stride <- as.integer(attr(clust, "stride")) else {
@@ -204,15 +212,15 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   comp_used <- comp[as.character(comp$cluster_id) %in% as.character(reg$region_df$cluster_id), , drop = FALSE]
   if (!nrow(reg$region_df)) stop("place_cells(): nessuna regione sopra la soglia di area.", call. = FALSE)
   comp_used$cluster_id <- reg$region_df$cluster_id[match(as.character(comp_used$cluster_id), as.character(reg$region_df$cluster_id))]
-  # preset per tipo (S1.5b): semina cieca al tipo, cosi' il territorio non dipende dal tipo (revisione RC-01)
-  t_order <- if (!is.null(spec) && identical(spec$types, "multi") && Sys.getenv("S15B_MUTANT", "none") != "M8") "blind" else "sequential"   # M8: mutante
+  # preset per tipo (S1.5b): semina cieca al tipo, cosi' il territorio non dipende dal tipo (revisione RC-01); S1.6: scelta esplicita
+  t_order <- if (!is.null(type_order)) type_order else if (!is.null(spec) && identical(spec$types, "multi")) "blind" else "sequential"
   sp_used <- if (!is.null(spec)) spec$spatial else if (is.null(spatial)) "uniform" else spatial
   ctab <- if (!is.null(override_compartments)) override_compartments else if (!is.null(spec)) spec$compartments else NULL
   sc <- if (sp_used == "compartments") {
     if (is.null(ctab)) stop("place_cells(): spatial = \"compartments\" richiede una tabella dei compartimenti.", call. = FALSE)
     htab <- if (!is.null(override_heterogeneity)) override_heterogeneity else if (!is.null(spec)) spec$heterogeneity else NULL
     seed_centroids(reg, ct, comp_used, random_seed = ss[["seed"]], spatial = "compartments", compartments = ctab,
-                   labels = labels, heterogeneity = htab, quotas = quotas, verbose = FALSE)
+                   labels = labels, heterogeneity = htab, quotas = quotas, thinning_bound = thinning_bound, verbose = FALSE)
   } else seed_centroids(reg, ct, comp_used, random_seed = ss[["seed"]], type_order = t_order, verbose = FALSE)
   tv <- tessellate_voronoi(sc$centroids, reg, corner_smoothing = corner_smoothing, keep_tiles = keep_tiles, verbose = FALSE)
   rtab <- if ("nucleus_area_resid" %in% names(ct) && any(!is.na(ct$nucleus_area_resid))) .tp_resid_table() else NULL   # S1.5d
@@ -231,14 +239,14 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   u <- .pc_with_seed(ss[["pale"]], stats::runif(nrow(cd)))
   cd$nucleus_pale <- u < pf
   nuc <- dg$cell_nuclei
-  if (.pc_mut() == "M5" && length(nuc) > 1) nuc <- nuc[c(2:length(nuc), 1)]
   cl_out <- list(cell_df = cd, region_df = rdf, region_polygons = reg$region_polygons, cell_territories = tv$cell_territories,
                  cell_nuclei = nuc, territory_df = tv$territory_df, region_check = tv$region_check,
                  region_composition = comp_used, cell_types_resolved = ct)
   if (keep_tiles) cl_out$tiles <- tv$tiles
   val <- NULL
   if (validate) {
-    val <- validate_cell_layer(cl_out, c8_interval = c8, pixel_size_source = src, min_region_area_um2 = min_region_area_um2)
+    val <- validate_cell_layer(cl_out, c8_interval = c8, pixel_size_source = src, min_region_area_um2 = min_region_area_um2,
+                               type_order = if (sp_used == "compartments") "compartments" else t_order)
     if (strict && !val$ok) {
       bad <- val$table[val$table$status == "ERROR", ]
       stop("place_cells(): controlli falliti: ", paste(bad$check, bad$value, collapse = " | "), call. = FALSE)
@@ -254,13 +262,15 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
                           labels = if (sp_used == "compartments") labels else NA_character_,
                           compartments = if (sp_used == "compartments") ctab else NULL,
                           heterogeneity = if (sp_used == "compartments") sc$info$compartments$heterogeneity else NULL, quotas = quotas,
+                          thinning_bound = if (sp_used == "compartments") thinning_bound else NA_character_,
+                          type_order = if (sp_used == "compartments") NA_character_ else t_order,
                           size_resid = if (is.null(spec)) (if (is.null(rtab)) "gaussian" else "empirical") else spec$size_resid, resid_mode = resid_mode,
                           corner_smoothing = corner_smoothing, min_region_area_um2 = min_region_area_um2, small_components = small_components,
                           stride = stride, cell_types_resolved = ct, region_composition_resolved = comp_used,
                           random_seed = random_seed, stage_seeds = ss, nucleus_model = nucleus_model,
                           merge_info = attr(cl_in, "merge_info"), excluded_df = reg$excluded_df,
                           seed_info = sc$info, tessellation_info = tv$info, geometry_info = dg$info,
-                          package_version = "geo.spatialtrans step1-cell-layer (S1.5d)", timestamp = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z"),
+                          package_version = "geo.spatialtrans step1-cell-layer (S1.6)", timestamp = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z"),
                           validation = val, elapsed_s = proc.time()[["elapsed"]] - t0)
   if (verbose) cat(sprintf("[place_cells] %s: %d regioni, %d cellule, scala %.4g um/px (%s), controlli %s, %.1f s\n",
                            if (is.null(spec)) "catalogo dell'utente" else tissue_preset, nrow(rdf), nrow(cd), px, src,

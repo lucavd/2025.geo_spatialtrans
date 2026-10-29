@@ -1,0 +1,4 @@
+# S1.6 (BL-012): cartelle che non fanno parte del pacchetto ne' dei suoi test; renv::dependencies() non le legge
+R/test functions/
+legacy/
+DS_review_aprile2026/

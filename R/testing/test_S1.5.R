@@ -1,12 +1,13 @@
 # R/testing/test_S1.5.R - S1.5: test di orchestratore, preset, controlli, scala, figura, casi limite (cancello G-1; mutanti G-2).
 # Pre-registrazione: docs/steps/S1.5.md (commit 6042a89, 710f5df). Uso (root del repo):
-#   R_LIBS_SITE=/nonexistent R_LIBS_USER=/nonexistent [S15_MUTANT=none|M1..M9] Rscript --vanilla R/testing/test_S1.5.R
+#   R_LIBS_SITE=/nonexistent R_LIBS_USER=/nonexistent [S15_RSRC=<cartella con R/>] Rscript --vanilla R/testing/test_S1.5.R
 .libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
 suppressPackageStartupMessages({ library(sf); library(geos) })
-for (f in sort(list.files("R", pattern = "^04b.*\\.R$", full.names = TRUE))) source(f)
-source("tools/S1.5_single_preset.R")   # S1.5b: i tipi sono predefiniti; qui si riproduce S1.5 a un tipo
+SRC <- Sys.getenv("S15_RSRC", ".")   # S1.6: i mutanti sono copie modificate del codice in SRC (R/testing/run_S1.5.sh mutants)
+for (f in sort(list.files(file.path(SRC, "R"), pattern = "^04b.*\\.R$", full.names = TRUE))) source(f)
+options(geo.spatialtrans.preset_types = "single")   # S1.6 (BL-155): preset a un tipo di S1.5, al posto di tools/S1.5_single_preset.R
 source("tools/S1.5_faults.R")
-MUT <- Sys.getenv("S15_MUTANT", "none")
+MUT <- if (SRC == ".") "none" else basename(SRC)
 VIS <- "results/visualizations/S1.5"; dir.create(VIS, recursive = TRUE, showWarnings = FALSE)   # BL-013: fuori dai file tracciati
 res <- list()
 ck <- function(name, ok, val = "") { ok <- isTRUE(ok); res[[length(res) + 1]] <<- ok

@@ -22,4 +22,5 @@ print(f"E2: area minima della parte principale {amin:.4g} um2; parti non princip
 edges = [0] + [10.0 ** k for k in range(-16, 3)]
 h = np.histogram(sec, bins=edges)[0]
 out = pd.DataFrame(dict(arm=ARM, lo=edges[:-1], hi=edges[1:], n_parts=h, n_nuclei=n, n_type_multipolygon=nt, n_multipart=nm)); os.makedirs("results/S1.6", exist_ok=True)
-out.to_csv(f"results/S1.6/S1.6_explore_parts_{BASE.split('/')[-3]}_{ARM}.csv", index=False); print(out[out.n_parts > 0].to_string(index=False))
+import re; STEP = re.search(r"S1\.\d[a-z]?", BASE).group(0)
+out.to_csv(f"results/S1.6/S1.6_explore_parts_{STEP}_{ARM}.csv", index=False); print(out[out.n_parts > 0].to_string(index=False))

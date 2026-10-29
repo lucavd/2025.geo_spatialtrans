@@ -10,6 +10,7 @@ suppressPackageStartupMessages({ library(sf); library(geos); library(parallel); 
 SRC <- Sys.getenv("S14E_RSRC", ".")
 for (f in sort(list.files(file.path(SRC, "R"), pattern = "^04b.*\\.R$", full.names = TRUE))) source(f)
 source("tools/R3_voronoi_metrics.R"); source("tools/S1.5c_bench_lib.R"); source("tools/S1.5d_bench_lib.R"); source(file.path(SRC, "tools/S1.4e_bench_lib.R"))
+options(geo.spatialtrans.quotas = TRUE, geo.spatialtrans.thinning_bound = "grid")   # S1.6: predefiniti di S1.5c-S1.5e, per riprodurre i numeri di questo step
 if (requireNamespace("data.table", quietly = TRUE)) data.table::setDTthreads(1L)
 args <- commandArgs(TRUE); STAGE <- if (length(args)) args[1] else "none"
 M <- "/mnt/micron/geo_spatialtrans"; OUT <- file.path(M, "S1.4e"); RES <- "results/S1.4e"

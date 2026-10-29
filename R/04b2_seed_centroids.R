@@ -50,7 +50,13 @@
 #'   media 1 fuori dai vuoti e troncato a lambda_cap / lambda medio, lambda_cap = 0.8 * 0.547 / (pi dbar^2 / 4), dbar = media pesata delle
 #'   distanze minime dei tipi della regione; il tetto vale sul fattore della densita', non sulla densita' locale, che con i compartimenti dei
 #'   tipi puo' superare lambda_cap di qualche per cento, revisione RC-4 di S1.5e).
-#' @param quotas con `"compartments"`: TRUE (predefinito, quote per tipo di S1.5c) o FALSE (nessun rifiuto per quota, banco di S1.5d).
+#' @param quotas con `"compartments"`: FALSE (predefinito da S1.6: nessun rifiuto per quota, regola Q di S1.5e, DEC-025) o TRUE (quote per tipo
+#'   di S1.5c: la proposta il cui tipo ha esaurito la quota e' rifiutata; comportamento di S1.5c-S1.5e). Predefinito di sessione: `options(geo.spatialtrans.quotas = )`.
+#' @param thinning_bound con `"compartments"`: limite del diradamento delle proposte. `"exact"` (predefinito da S1.6, BL-161): per regione
+#'   max_t rho_t dei tipi della regione (w = 1 / sum_t p_t / rho_t <= max_t rho_t), moltiplicato per il massimo del fattore della densita'
+#'   (1 senza campo della densita'; il tetto H con `dens_cap`); con un campo della densita' senza tetto non c'e' un limite finito utile e si usa
+#'   `"grid"` (registrato in `info$compartments$regions[[k]]$bound`). `"grid"`: 1.1 volte il massimo di w sulla griglia della regione
+#'   (euristica di S1.5c-S1.5e, per riprodurre i banchi passati). Predefinito di sessione: `options(geo.spatialtrans.thinning_bound = )`.
 #' @param verbose stampa un riepilogo.
 #' @return lista con `centroids` (data.frame `cell_id, region_id, x, y,
 #'   cell_type, cluster_id`), `region_df` (input + `target_density_weighted`,
@@ -70,9 +76,10 @@ seed_centroids <- function(regions,
                            labels = c("field", "blind"),
                            n_features = 256L,
                            heterogeneity = NULL,
-                           quotas = TRUE,
+                           quotas = getOption("geo.spatialtrans.quotas", FALSE),
+                           thinning_bound = getOption("geo.spatialtrans.thinning_bound", "exact"),
                            verbose = TRUE) {
-  type_order <- match.arg(type_order); spatial <- match.arg(spatial); labels <- match.arg(labels)
+  type_order <- match.arg(type_order); spatial <- match.arg(spatial); labels <- match.arg(labels); thinning_bound <- match.arg(thinning_bound, c("exact", "grid"))
   t0 <- proc.time()[["elapsed"]]
   a <- .sc_check_args(regions, cell_types, region_composition, random_seed,
                       dmin_factor, max_attempts_factor)
@@ -84,7 +91,7 @@ seed_centroids <- function(regions,
       pl <- .sc_place_compart(plan, regions$region_polygons, rdf, type_df, a$composition,
                               .sc_check_compart(compartments, type_df), labels, as.integer(n_features),
                               max_attempts_factor, max_consecutive_rejections,
-                              het = .sc_check_het(heterogeneity), quotas = isTRUE(quotas))
+                              het = .sc_check_het(heterogeneity), quotas = isTRUE(quotas), bound = thinning_bound)
     } else if (type_order == "blind" && nrow(plan$tasks)) {
       bl <- .sc_blind_tasks(plan$tasks, type_df)
       pl <- .sc_place_all(bl$tasks, regions$region_polygons, rdf, type_df,
@@ -466,6 +473,7 @@ seed_centroids <- function(regions,
 # Proposte uniformi, diradate con lambda / lambda_max, tipo estratto da p(x), poi la distanza minima della coppia (RSA).
 # Quote per tipo (deviazione D-1 dalla pre-registrazione, docs/steps/S1.5c.md): la proposta il cui tipo ha esaurito la quota e' rifiutata,
 # cosi' i conteggi per tipo sono quelli ripartiti dal piano (senza quote la distanza minima sfavoriva i tipi densi: test T6).
+# Da S1.6 le quote sono spente per predefinito (regola Q di S1.5e, DEC-025) e il diradamento usa il limite esatto max_t rho_t (BL-161).
 
 #' Tabella dei compartimenti validata e allineata ai tipi usati (ell, s; s = 0 se assente).
 #' @keywords internal
@@ -604,7 +612,7 @@ seed_centroids <- function(regions,
 #' RSA a compartimenti su tutte le regioni (distanza minima globale come in .sc_place_all).
 #' @keywords internal
 .sc_place_compart <- function(plan, polys, rdf, type_df, comp, ctab, labels, M, max_attempts_factor, max_consecutive_rejections,
-                              het = NULL, quotas = TRUE) {
+                              het = NULL, quotas = FALSE, bound = "exact") {
   nr <- nrow(rdf); ntot <- sum(plan$n_region)
   X <- numeric(ntot); Y <- numeric(ntot); D <- numeric(ntot); TI <- integer(ntot); RI <- integer(ntot); RX <- integer(ntot)
   region_failed <- integer(nr); attempts <- 0L; exceed <- 0L; info <- vector("list", nr); n_quota_rej <- 0L; n_thin_acc <- 0L
@@ -640,9 +648,10 @@ seed_centroids <- function(regions,
     if (!is.null(fw)) ell_g <- min(ell_g, het$dens_ell_um)
     gp <- .sc_grid_points(poly, rdf$area_um2[i], ell_g)
     eta_g <- .sc_eta(fields, s, log(f), gp$x, gp$y)
+    hmax <- 1                                                                      # massimo del fattore della densita' (S1.6, BL-161)
     if (is.null(het)) {
       hg <- NULL; a <- .sc_solve_a(eta_g, f, rho)
-      wg <- .sc_prob(eta_g, a, rho)$w; wmax <- 1.1 * max(wg)
+      wg <- .sc_prob(eta_g, a, rho)$w
     } else {
       hg <- .sc_het_weight(het, fv, fw, gp$x, gp$y)
       if (!any(hg > 0)) { fv <- NULL; n_void_disabled <- n_void_disabled + 1L; hg <- .sc_het_weight(het, NULL, fw, gp$x, gp$y) }   # regione tutta nei vuoti: senza vuoti
@@ -662,12 +671,16 @@ seed_centroids <- function(regions,
         hg <- .sc_het_weight(het, fv, fw, gp$x, gp$y, cap = cap); k_in <- hg > 0
       }
       a <- .sc_solve_a(eta_g[k_in, , drop = FALSE], f, rho, h = hg[k_in])
-      wg <- .sc_prob(eta_g, a, rho)$w * hg; wmax <- 1.1 * max(wg)
+      wg <- .sc_prob(eta_g, a, rho)$w * hg
+      if (!is.null(fw)) hmax <- if (is.null(cap)) NA_real_ else if (is.na(cap$s)) 1 else cap$H   # senza tetto: nessun limite finito utile
     }
+    b_used <- if (bound == "exact" && is.finite(hmax)) "exact" else "grid"
+    wmax <- if (b_used == "exact") max(rho) * hmax * (1 + 1e-12) else 1.1 * max(wg)    # 1e-12: arrotondamento di 1 / sum p / rho
     info[[i]] <- list(region_id = rdf$region_id[i], a = a, wmax = wmax, w_mean = mean(wg), n_grid = nrow(gp), n_fields = sum(s > 0),
                       void_grid_frac = if (is.null(hg)) 0 else mean(hg == 0), field_void = fv, field_dens = fw,   # D-5: campi per i test
                       n_removed = n_removed[i], cap = if (is.null(het)) NULL else cap, n_plan = sum(tk$n),     # S1.5e
-                      field_types = fields, ell_grid = ell_g, w_grid_max = max(wg), wmax_factor = wmax / max(wg))   # revisione: M3, M5, N6
+                      field_types = fields, ell_grid = ell_g, w_grid_max = max(wg), wmax_factor = wmax / max(wg),   # revisione: M3, M5, N6
+                      bound = b_used)                                                                                # S1.6
     bw <- bb[["xmax"]] - bb[["xmin"]]; bh <- bb[["ymax"]] - bb[["ymin"]]
     p_in <- min(1, max(rdf$area_um2[i] / max(bw * bh, 1e-12), 1e-3)); p_thin <- max(mean(wg) / wmax, 1e-3)
     max_att <- as.integer(min(max_attempts_factor * n + 1000, .Machine$integer.max - 1))
@@ -725,5 +738,5 @@ seed_centroids <- function(regions,
        task_attempts = attempts, grid_cell_um = grid_cell, hardcore = hardcore,
        compart_info = list(regions = Filter(Negate(is.null), info), n_exceed_wmax = exceed, n_quota_reject = n_quota_rej,
                            n_thin_accept = n_thin_acc, n_drawn = stats::setNames(n_drawn, type_df$cell_type), table = ctab,
-                           heterogeneity = het, quotas = quotas, n_void_disabled = n_void_disabled))
+                           heterogeneity = het, quotas = quotas, n_void_disabled = n_void_disabled, thinning_bound = bound))
 }

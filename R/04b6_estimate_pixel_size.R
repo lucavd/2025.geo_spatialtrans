@@ -3,7 +3,6 @@
 # e "nuclear_spacing" (nuclei contati sull'immagine con il laplaciano della gaussiana; scala = sqrt(N / (A_px * lambda))).
 # Definizioni operative in docs/steps/S1.5.md. Dipendenze: imager, jsonlite.
 
-.ep_mut <- function() Sys.getenv("S15_MUTANT", "none")
 
 #' Stima la scala dell'immagine (µm per pixel)
 #'
@@ -52,24 +51,22 @@ estimate_pixel_size <- function(clust, cell_types, cluster_to_dominant = NULL, m
   kstar <- which.max(energy); s_star <- sig[kstar]
   refuse <- function(why) list(pixel_size_um = NA_real_, method = method, n_features = NA_integer_, ci = c(NA_real_, NA_real_),
                                sigma_px = s_star, refused = TRUE, reason = why, detail = list(sigma = sig, energy = energy))
-  if (.ep_mut() != "M9") {
-    if (s_star < 1) return(refuse(sprintf("nuclei non risolti (scala caratteristica %.2f px < 1 px)", s_star)))
-    if (kstar == length(sig)) return(refuse("scala caratteristica all'estremo superiore della griglia"))
-  }
+  if (s_star < 1) return(refuse(sprintf("nuclei non risolti (scala caratteristica %.2f px < 1 px)", s_star)))
+  if (kstar == length(sig)) return(refuse("scala caratteristica all'estremo superiore della griglia"))
   r <- resp(s_star); w <- 2L * ceiling(s_star) + 1L
   rmax <- as.matrix(imager::dilate_square(imager::as.cimg(r), w))
   pos <- r[msk & r > 0]
   thr <- .ep_otsu(pos)
   pk <- which(r == rmax & r > thr & msk, arr.ind = TRUE)
   N <- nrow(pk)
-  if (N < 30 && .ep_mut() != "M9") return(refuse(sprintf("troppo pochi nuclei rilevati (%d < 30)", N)))
+  if (N < 30) return(refuse(sprintf("troppo pochi nuclei rilevati (%d < 30)", N)))
   s_hat <- sqrt(N / (A_px * lam))
   # controllo di coerenza (aggiunto in S1.5 dopo CP-1, nota D-11): il raggio dei nuclei visto dal laplaciano (sqrt(2) * s*,
   # in µm con la scala stimata) deve stare entro un fattore 2 dal raggio atteso dal catalogo (rho^2 * A_ref); altrimenti rifiuto
   ty_row <- if (is.null(cluster_to_dominant)) 1L else which(cell_types$cell_type == ty)
   rho <- if ("nucleus_to_eq_ratio" %in% names(cell_types)) cell_types$nucleus_to_eq_ratio[ty_row] else NA_real_
   r_obs <- sqrt(2) * s_star * s_hat; r_exp <- if (is.finite(rho)) sqrt(rho^2 * (1e6 / dens) / pi) else NA_real_
-  if (size_check && is.finite(r_exp) && .ep_mut() != "M9" && (r_obs / r_exp < 0.5 || r_obs / r_exp > 2))
+  if (size_check && is.finite(r_exp) && (r_obs / r_exp < 0.5 || r_obs / r_exp > 2))
     return(c(refuse(sprintf("taglia dei nuclei incoerente con il conteggio (raggio visto %.2f um, atteso %.2f um)", r_obs, r_exp))[-8],
              list(detail = list(sigma = sig, energy = energy, A_px = A_px, threshold = thr, n = N, s_count = s_hat, r_obs = r_obs, r_exp = r_exp))))
   # bootstrap su blocchi
@@ -96,10 +93,6 @@ estimate_pixel_size <- function(clust, cell_types, cluster_to_dominant = NULL, m
 
 .ep_metadata <- function(f) {
   if (is.null(f) || !file.exists(f)) stop("estimate_pixel_size(): serve un file scalefactors_json esistente.", call. = FALSE)
-  if (.ep_mut() == "M8") {   # mutante: tag di risoluzione del TIFF (96 dpi) invece dei metadati (BL-016)
-    return(list(pixel_size_um = 25400 / 96, method = "metadata", n_features = NA_integer_, ci = c(NA_real_, NA_real_),
-                sigma_px = NA_real_, refused = FALSE, reason = "", detail = list()))
-  }
   j <- jsonlite::fromJSON(f)
   mpp <- j$microns_per_pixel
   if (is.null(mpp) || !is.numeric(mpp) || !(mpp > 0)) stop("estimate_pixel_size(): microns_per_pixel assente in ", f, call. = FALSE)

@@ -7,6 +7,7 @@
 suppressPackageStartupMessages({ library(sf); library(geos); library(arrow); library(spatstat.geom) })
 for (f in sort(list.files("R", pattern = "^04b.*\\.R$", full.names = TRUE))) source(f)
 source("tools/S1.5c_bench_lib.R")
+options(geo.spatialtrans.quotas = TRUE, geo.spatialtrans.thinning_bound = "grid")   # S1.6: predefiniti di S1.5c-S1.5e, per riprodurre i numeri di questo step
 what <- commandArgs(TRUE); what <- if (length(what)) what[1] else "ab"
 RES <- "results/S1.5c"; M <- "/mnt/micron/geo_spatialtrans"
 UNTYPED <- c("non risolto", "non classificabile"); EPI <- c("epiteliale normale" = "epiteliale", "epiteliale tumorale" = "epiteliale")

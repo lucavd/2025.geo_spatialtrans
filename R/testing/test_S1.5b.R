@@ -1,8 +1,9 @@
 # R/testing/test_S1.5b.R - S1.5b: test dei preset per tipo (cancello G-1; mutanti G-2). Pre-registrazione: docs/steps/S1.5b.md.
-# Uso (root del repo): R_LIBS_SITE=/nonexistent R_LIBS_USER=/nonexistent [S15B_MUTANT=none|M1..M7] Rscript --vanilla R/testing/test_S1.5b.R
+# Uso (root del repo): R_LIBS_SITE=/nonexistent R_LIBS_USER=/nonexistent [S15B_RSRC=<cartella con R/>] Rscript --vanilla R/testing/test_S1.5b.R
 .libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
 suppressPackageStartupMessages({ library(sf); library(geos) })
-for (f in sort(list.files("R", pattern = "^04b.*\\.R$", full.names = TRUE))) source(f)
+SRC <- Sys.getenv("S15B_RSRC", ".")   # S1.6: i mutanti sono copie modificate del codice in SRC (R/testing/run_S1.5b.sh mutants)
+for (f in sort(list.files(file.path(SRC, "R"), pattern = "^04b.*\\.R$", full.names = TRUE))) source(f)
 res <- list()
 ck <- function(name, ok, val = "") { ok <- isTRUE(ok); res[[length(res) + 1]] <<- ok
   cat(sprintf("%s %s %s\n", if (ok) "PASS" else "FAIL", name, paste(val, collapse = " "))) }
@@ -166,7 +167,7 @@ terr_ratio <- function(ord) { r <- vapply(1:3, function(s) {
     tv <- tessellate_voronoi(sc$centroids, reg, verbose = FALSE); a <- tv$territory_df$territory_area
     inn <- !tv$territory_df$clipped; b <- sc$centroids$cell_type == "b"
     c(mean(a[inn & b]), mean(a[inn])) }, c(0, 0)); sum(r[1, ] * 1) / sum(r[2, ]) }
-rb <- if (Sys.getenv("S15B_MUTANT", "none") == "M8") terr_ratio("sequential") else terr_ratio("blind"); rs <- terr_ratio("sequential")
+rb <- terr_ratio("blind"); rs <- terr_ratio("sequential")   # S1.6: il mutante M8 agisce su place_cells() (T12b)
 ck("T12 semina cieca: territorio medio del tipo seminato per ultimo / tutti entro 0.96-1.04; semina sequenziale (controllo) sotto 0.96",
    rb > 0.96 && rb < 1.04 && rs < 0.96, sprintf("cieca %.3f, sequenziale %.3f", rb, rs))
 bad12 <- character(0)

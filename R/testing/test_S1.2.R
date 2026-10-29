@@ -34,6 +34,7 @@ source("tools/S1.2_mutants.R")
 E0 <- sc_env()
 IN  <- "/mnt/micron/geo_spatialtrans/S1.1/inputs"
 RES <- "results/S1.2"; dir.create(RES, showWarnings = FALSE, recursive = TRUE)
+OUTD <- Sys.getenv("GEO_TEST_OUT", RES); dir.create(OUTD, showWarnings = FALSE, recursive = TRUE)   # S1.6 (BL-165): uscite fuori dai file versionati se GEO_TEST_OUT e' dato
 NCORES <- 24L
 rows <- list()
 rec <- function(check, input, metric, value, threshold, status) {
@@ -348,6 +349,6 @@ o6 <- run_mix(sc_mutate(E0, "M6"))
 mrec("M6", "C-mix", sprintf("%.1f", o6$region_df$target_density_weighted), abs(o6$region_df$target_density_weighted - tgt) > 1e-9)
 
 res <- do.call(rbind, rows)
-write.csv(res, file.path(RES, "S1.2_test_results.csv"), row.names = FALSE)
-write.csv(do.call(rbind, mrows), file.path(RES, "S1.2_mutants.csv"), row.names = FALSE)
+write.csv(res, file.path(OUTD, "S1.2_test_results.csv"), row.names = FALSE)
+write.csv(do.call(rbind, mrows), file.path(OUTD, "S1.2_mutants.csv"), row.names = FALSE)
 cat(sprintf("\nTOTALE: %d asserzioni, %d PASS, %d WARN, %d FAIL\n", nrow(res), sum(res$status == "PASS"), sum(res$status == "WARN"), sum(res$status == "FAIL")))

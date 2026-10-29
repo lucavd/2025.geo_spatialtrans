@@ -4,7 +4,7 @@
 #                                            FAIL ammessi solo T13 di S1.5d (D-6 di S1.5d), T12 di S1.5c (D-10 di S1.5d), E10 ed E10b di S1.5 (DEC-011)
 #   bash R/testing/run_S1.5e.sh mutants   -> M1..M9 come copie modificate del codice in cartelle temporanee, in parallelo: ognuno deve far fallire
 #                                            almeno un'asserzione di test_S1.5e.R che passa senza mutante
-# Dopo le regressioni ripristina i due file che test_S1.1.R e test_S1.2.R riscrivono con tempi nuovi (BL-165, D-13 di S1.5d).
+# Da S1.6 i test di S1.1-S1.4 scrivono nella cartella dei log (BL-165): dopo le regressioni results/S1.1 e S1.2 devono restare intatti.
 set -u
 export R_LIBS_SITE=/nonexistent R_LIBS_USER=/nonexistent OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
 LOG=${S15E_LOG:-/mnt/micron/geo_spatialtrans/S1.5e/tests}; mkdir -p "$LOG"
@@ -16,7 +16,7 @@ if [ "$mode" = test ]; then
   grep -q '^FAIL' "$LOG/test_S1.5e.log" && fail=1
   grep -qE '^RESULT ([0-9]+)/\1 PASS' "$LOG/test_S1.5e.log" || fail=1
   S15D_LOG="$LOG/S1.5d" bash R/testing/run_S1.5d.sh test > "$LOG/run_S1.5d.log" 2>&1
-  git checkout -- results/S1.1/S1.1_per_input.csv results/S1.2/S1.2_test_results.csv 2>/dev/null
+  [ -z "$(git status --porcelain -- results/S1.1 results/S1.2)" ] || { echo "FAIL i test hanno modificato file versionati (BL-165)"; fail=1; }   # S1.6
   D="$LOG/S1.5d"; B="$D/S1.5c/S1.5b"; S="$B/S1.5"
   while read -r f allowed; do
     [ -f "$f" ] || { echo "FAIL regressione: manca $f"; fail=1; continue; }

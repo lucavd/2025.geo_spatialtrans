@@ -7,7 +7,7 @@ export R_LIBS_SITE=/nonexistent R_LIBS_USER=/nonexistent OMP_NUM_THREADS=1 OPENB
 LOG=${S15B_LOG:-/mnt/micron/geo_spatialtrans/S1.5b/tests}; mkdir -p "$LOG"
 mode=${1:-test}; fail=0
 if [ "$mode" = test ]; then
-  S15B_MUTANT=none Rscript --vanilla R/testing/test_S1.5b.R > "$LOG/test_S1.5b.log" 2>&1 || fail=1
+  Rscript --vanilla R/testing/test_S1.5b.R > "$LOG/test_S1.5b.log" 2>&1 || fail=1
   grep -E '^(PASS|FAIL)' "$LOG/test_S1.5b.log"; tail -1 "$LOG/test_S1.5b.log"
   grep -q '^FAIL' "$LOG/test_S1.5b.log" && fail=1
   S15_LOG="$LOG/S1.5" bash R/testing/run_S1.5.sh test > "$LOG/run_S1.5.log" 2>&1
@@ -26,12 +26,17 @@ if [ "$mode" = test ]; then
 elif [ "$mode" = mutants ]; then
   base="$LOG/test_S1.5b.log"; [ -f "$base" ] || { echo "manca $base: eseguire prima 'test'"; exit 2; }
   grep '^FAIL' "$base" | cut -d' ' -f2 | sort -u > "$LOG/base_fail.txt"
-  n=0
-  for m in M1 M2 M3 M4 M5 M6 M7 M8; do
-    S15B_MUTANT=$m Rscript --vanilla R/testing/test_S1.5b.R > "$LOG/test_S1.5b_$m.log" 2>&1
+  # S1.6 (BL-155): mutanti come copie modificate del codice (R/testing/mutants_S1.5b.py)
+  n=0; MS=$(python3 -B tools/mutate.py R/testing/mutants_S1.5b.py --list); nm=$(echo $MS | wc -w)
+  for m in $MS; do
+    T=$(mktemp -d)/$m
+    if ! python3 -B tools/mutate.py R/testing/mutants_S1.5b.py $m "$T" > /dev/null; then echo "FAIL mutante $m: sostituzione non applicata"; fail=1; continue; fi
+    S15B_RSRC="$T" Rscript --vanilla R/testing/test_S1.5b.R > "$LOG/test_S1.5b_$m.log" 2>&1
     newf=$(grep '^FAIL' "$LOG/test_S1.5b_$m.log" | cut -d' ' -f2 | sort -u | comm -23 - "$LOG/base_fail.txt" | tr '\n' ' ')
+    if [ -z "$newf" ] && ! grep -q '^RESULT' "$LOG/test_S1.5b_$m.log"; then newf="(arresto dei test)"; fi
     if [ -n "$newf" ]; then echo "PASS mutante $m rilevato da: $newf"; n=$((n+1)); else echo "FAIL mutante $m NON rilevato"; fail=1; fi
+    rm -rf "$(dirname "$T")"
   done
-  echo "mutanti rilevati $n/8"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
+  echo "mutanti rilevati $n/$nm"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
 else echo "uso: run_S1.5b.sh test|mutants"; exit 2; fi
 exit $fail

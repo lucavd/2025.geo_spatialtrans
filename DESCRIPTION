@@ -1,46 +1,41 @@
 Package: geo.spatialtrans
 Type: Package
-Title: Simulazione di Dati di Trascrittomica Spaziale
+Title: Simulazione di Dati Visium HD con un Livello Cellulare
 Version: 0.1.0
-Date: 2025-04-11
-Authors@R: 
-    person("Autore", "Principale", email = "autore@example.com", role = c("aut", "cre"))
-Description: Strumenti per la simulazione e l'analisi di dati di trascrittomica 
-    spaziale. Il pacchetto permette di generare dati simulati altamente 
-    configurabili per piattaforme come Visium HD, con controllo preciso su 
-    aspetti biologici e tecnici come correlazione spaziale, dropout e clustering.
-    Include moduli avanzati per ligando-recettore, dinamiche temporali, splicing
-    alternativo, pattern anisotropici, microambienti 3D e strumenti di validazione
-    per garantire la qualità delle simulazioni.
+Date: 2026-10-29
+Authors@R:
+    person("Luca", "Vedovelli", role = c("aut", "cre"))
+Description: Simulatore di dati di trascrittomica spaziale Visium HD per mettere alla prova i
+    metodi di analisi. Lo Step 1 costruisce un livello cellulare (regioni del tessuto, centri
+    delle cellule, territori di Voronoi, nuclei) con preset per sei tessuti tarati su dati 10x
+    reali; lo Step 2 portera' l'espressione dalla cellula alla griglia di 2 e 8 micron. I
+    riferimenti biologici e le loro fonti sono in docs/BIO_REFERENCES.md.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    future,
-    future.apply,
-    imager,
-    tidyverse,
-    MASS,
-    cluster,
     ClusterR,
-    tictoc,
-    gstat,
-    sp,
-    scales,
-    spatstat,
-    spdep,
-    fields,
-    ggplot2,
     dplyr,
-    tidyr
+    future,
+    geos,
+    ggplot2,
+    imager,
+    jsonlite,
+    Matrix,
+    pbapply,
+    png,
+    polylabelr,
+    scales,
+    sf,
+    wk
 Suggests:
-    testthat (>= 3.0.0),
+    arrow,
+    data.table,
     knitr,
+    quarto,
     rmarkdown,
-    withr,
-    supercells,
-    umap,
-    Rtsne
+    testthat (>= 3.0.0),
+    withr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3

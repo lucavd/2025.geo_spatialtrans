@@ -34,6 +34,7 @@ TV <- function(cen, reg, cs = 0, keep_tiles = FALSE) E$tessellate_voronoi(cen, r
                                                                          keep_tiles = keep_tiles, verbose = FALSE)
 IN  <- "/mnt/micron/geo_spatialtrans/S1.1/inputs"
 RES <- "results/S1.3"; dir.create(RES, showWarnings = FALSE, recursive = TRUE)
+OUTD <- Sys.getenv("GEO_TEST_OUT", RES); dir.create(OUTD, showWarnings = FALSE, recursive = TRUE)   # S1.6 (BL-165): uscite fuori dai file versionati se GEO_TEST_OUT e' dato
 NCORES <- 16L; TOL <- 1e-9
 rows <- list()
 rec <- function(check, input, metric, value, threshold, status) {
@@ -268,6 +269,6 @@ for (ec in err_cases) {
 
 tab <- do.call(rbind, rows)
 tab$backend <- BACK; tab$mutant <- MUT
-f <- file.path(RES, sprintf("S1.3_test_%s_%s.csv", BACK, MUT)); write.csv(tab, f, row.names = FALSE)
+f <- file.path(OUTD, sprintf("S1.3_test_%s_%s.csv", BACK, MUT)); write.csv(tab, f, row.names = FALSE)
 cat(sprintf("\nTOTALE %s/%s: %d PASS, %d FAIL, %d SKIP su %d -> %s\n", BACK, MUT, sum(tab$status == "PASS"), sum(tab$status == "FAIL"),
             sum(tab$status == "SKIP"), nrow(tab), f))
