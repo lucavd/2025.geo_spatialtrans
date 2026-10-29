@@ -2,9 +2,9 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## S1.4f, 2026-10-29: nucleo orientato in parte lungo il territorio (branch `step1-cell-layer`), **non chiusa** (in attesa della decisione di Luca)
+## S1.4f, 2026-10-29: nucleo orientato in parte lungo il territorio (branch `step1-cell-layer`), **chiusa**
 
-File dello step `docs/steps/S1.4f.md`, report `reports/S1.4f.html`; decisione tecnica DEC-028 (Cauchy avvolta; regola O: legge della compressione, per spareggio; regola N2: resta il disco). BL-171 e BL-174 chiuse; nuova BL-175; aggiornate BL-063, BL-123, BL-142, BL-166.
+File dello step `docs/steps/S1.4f.md`, report `reports/S1.4f.html`; decisione tecnica DEC-028 (Cauchy avvolta; regola O: legge della compressione, per spareggio; regola N2: resta il disco). decisione di Luca DEC-029 (si chiude il lavoro sul disegno del nucleo, disco nei preset, eccesso di contatti come limite dichiarato). Letta da Luca il 2026-10-29. BL-171, BL-174, BL-166, BL-142 chiuse; nuova BL-175; aggiornate BL-063, BL-123.
 
 ### Codice
 - `R/04b4_derive_cell_geometry.R`: orientamento parziale lungo il territorio (colonne opzionali del catalogo `nucleus_orient_conc`, `nucleus_orient_law`; leggi costante, allungamento, compressione; 2δ dalla Cauchy avvolta con la stessa u dell'orientamento a caso). Senza le colonne nuove l'output è identico bit per bit (G-3: K2 ed ET = S1.4e 300/300 e 240/240).

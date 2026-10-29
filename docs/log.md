@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-10-29 (chiusura di S1.4f)
+
+* **Chiusura**: [Un nucleo orientato solo in parte lungo il suo territorio, quanto i nuclei veri, riproduce l'allineamento vero e toglie i contatti in eccesso? (S1.4f)](steps/S1.4f.md) chiuso con l'approvazione di Luca (lettura del riassunto «In breve» senza dubbi nuovi; «accetto suggerimento. chiudi»); decisione di Luca in [S1.4f: si chiude il lavoro sul disegno del nucleo; il disco resta nei preset e l'eccesso di contatti che resta è un limite dichiarato del simulatore (DEC-029)](decisions/DEC-029.md).
+* **Creazione**: decisione di Luca [S1.4f: si chiude il lavoro sul disegno del nucleo; il disco resta nei preset e l'eccesso di contatti che resta è un limite dichiarato del simulatore (DEC-029)](decisions/DEC-029.md).
+
 ## 2026-10-29 (risultati di S1.4f)
 
 * **Creazione**: [Un nucleo orientato solo in parte lungo il suo territorio, quanto i nuclei veri, riproduce l'allineamento vero e toglie i contatti in eccesso? (S1.4f)](steps/S1.4f.md): esplorazione dichiarata (F1, F2), pre-registrazione con l'ok di Luca («vai»), taratura, regola O, banco, cancelli G-1...G-5, previsioni, regola N2, controprove, sensibilità S-1, post hoc PH-1 e PH-2, revisione avversariale e sue correzioni; in attesa di una decisione di Luca.
