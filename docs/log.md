@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-10-29 (risultati di S1.4f)
+
+* **Creazione**: [Un nucleo orientato solo in parte lungo il suo territorio, quanto i nuclei veri, riproduce l'allineamento vero e toglie i contatti in eccesso? (S1.4f)](steps/S1.4f.md): esplorazione dichiarata (F1, F2), pre-registrazione con l'ok di Luca («vai»), taratura, regola O, banco, cancelli G-1...G-5, previsioni, regola N2, controprove, sensibilità S-1, post hoc PH-1 e PH-2, revisione avversariale e sue correzioni; in attesa di una decisione di Luca.
+* **Creazione**: decisione tecnica [S1.4f: orientamento parziale con la Cauchy avvolta; la regola O sceglie la compressione; la regola N2 tiene il disco (DEC-028)](decisions/DEC-028.md).
+
 ## 2026-10-28 (chiusura di S1.4e)
 
 * **Chiusura**: [A parità di distanza fra i centri, i nuclei simulati si toccano troppo: dipende dalla forma rotonda del nucleo, e un nucleo allungato e orientato come quelli veri lo corregge? (S1.4e)](steps/S1.4e.md) chiuso con l'approvazione di Luca (lettura del riassunto «In breve» senza dubbi nuovi; «ok» sulla prima decisione, «mi sembra inutile» sulla seconda); decisioni di Luca in [S1.4e: il disco resta nei preset e il prossimo tentativo sul nucleo è un orientamento parziale; nessun secondo giudizio di Federica sui contatti del tumore del colon e dello stroma (DEC-027)](decisions/DEC-027.md). Prossimo step proposto: S1.4f, orientamento parziale del nucleo.

@@ -49,10 +49,10 @@ def stage_shape(bench, nc):
     D = pd.DataFrame([x for y in r for x in y]); D.to_csv(RES / f"S1.4f_shape_{bench}.csv", index=False); print(f"[shape {bench}] {len(jobs)} file, {len(D)} righe")
 
 # ---------------------------------------------------------------------------------------------------- pairs
-def stage_pairs(bench, nc):
+def stage_pairs(bench, nc, arms=None):
     from multiprocessing import Pool
     rois = ME.rois_table(); jobs = []
-    arms = ["EP"] if bench == "B" else ["K2", "ET", "EP"]
+    arms = arms or (["EP"] if bench == "B" else ["K2", "ET", "EP"])
     wins = pd.read_csv(R2B / "R2b_windows.csv"); wr = set(wins.archetype + "_" + wins.roi_id)
     for arm in arms:
         od = M / bench / "pairs" / arm; od.mkdir(parents=True, exist_ok=True)
@@ -64,22 +64,23 @@ def stage_pairs(bench, nc):
     print(f"[pairs {bench}] {len(jobs)} unita', {sum(x == 'ok' for x in r)} nuove")
 
 # ---------------------------------------------------------------------------------------------------- windows: P-1, P-2 (EP)
-def stage_windows():
+def stage_windows(arm="EP"):
     wins = pd.read_csv(R2B / "R2b_windows.csv"); dm = pd.read_csv(R2C / "R2c_dmax.csv").set_index("archetype")
     wjson = json.load(open(R2B / "annotations/R2b_annotations_Luca.json"))["windows"]; p1, p2 = [], []
     for wr in wins.itertuples():
         A = wr.archetype; dmax = float(dm.d_max_um[A]); ex = ME.K.exclusions_um(wjson, wr); u = shapely.union_all(ex) if ex else None
         for sd in SEEDS:
             key = f"{A}_{wr.roi_id}_{sd}.parquet"
-            t = pd.read_parquet(M / "B" / "raster" / "EP" / key); P = t[["cx", "cy"]].to_numpy(); foc = ME.focal_mask(P, wr, dmax, u); c = t.n_c2.values > 0
-            p1.append(dict(arm="EP", win_id=wr.win_id, archetype=A, roi=wr.roi_id, seed=sd, n=int(foc.sum()), n_contact=int(c[foc].sum()),
+            t = pd.read_parquet(M / "B" / "raster" / arm / key); P = t[["cx", "cy"]].to_numpy(); foc = ME.focal_mask(P, wr, dmax, u); c = t.n_c2.values > 0
+            p1.append(dict(arm=arm, win_id=wr.win_id, archetype=A, roi=wr.roi_id, seed=sd, n=int(foc.sum()), n_contact=int(c[foc].sum()),
                            n_conflict=int(t.n_conflict.iloc[0]) if len(t) else 0))
-            pr = pd.read_parquet(M / "B" / "pairs" / "EP" / key); M_ = int(max(t.label.max(), pr.label_j.max() if len(pr) else 0)) + 1
+            pr = pd.read_parquet(M / "B" / "pairs" / arm / key); M_ = int(max(t.label.max(), pr.label_j.max() if len(pr) else 0)) + 1
             cset = np.unique(pr.label_i.to_numpy().astype(np.int64) * M_ + pr.label_j.to_numpy()); ids = t.label.to_numpy().astype(np.int64)
             for c_, (n, k) in ME.pair_counts(P, ids, foc, cset, dmax, M_).items():
-                p2.append(dict(arm="EP", win_id=wr.win_id, archetype=A, seed=sd, noise="none", draw=0, cls=c_, n=n, n_contact=k))
-    a = pd.DataFrame(p1); a["s1"] = a.n_contact / a.n; a.to_csv(RES / "S1.4f_windows.csv", index=False)
-    pd.DataFrame(p2).to_csv(RES / "S1.4f_pairs_B.csv", index=False); print(a.groupby("archetype").s1.mean().round(3).to_string())
+                p2.append(dict(arm=arm, win_id=wr.win_id, archetype=A, seed=sd, noise="none", draw=0, cls=c_, n=n, n_contact=k))
+    sfx = "" if arm == "EP" else f"_PH2_{arm}"                      # PH-2 (post hoc): la legge perdente della regola O
+    a = pd.DataFrame(p1); a["s1"] = a.n_contact / a.n; a.to_csv(RES / f"S1.4f_windows{sfx}.csv", index=False)
+    pd.DataFrame(p2).to_csv(RES / f"S1.4f_pairs_B{sfx}.csv", index=False); print(a.groupby("archetype").s1.mean().round(3).to_string())
 
 # ---------------------------------------------------------------------------------------------------- cp1 (banchi A e A_dd)
 def stage_cp1():
@@ -113,23 +114,25 @@ def g4_one(f):
     A, roi, sd = os.path.basename(f)[:-8].split("_")
     return dict(law=os.path.basename(os.path.dirname(f)), archetype=A, roi_id=roi, n=len(t), max_axis_diff=float(dax.max()),
                 max_aspect_diff=float(np.abs(t.terr_aspect_pkg.to_numpy() - asp_t).max()), max_w_diff=float(np.abs(t.w_pkg.to_numpy() - w).max()),
-                max_dist_diff=float(np.abs(t.center_dist.to_numpy() - dist).max()), pit=pit[ok])
+                max_dist_diff=float(np.abs(t.center_dist.to_numpy() - dist).max()), pit=pit[ok], cosd=(np.cos(phi) - rho)[ok])
 
 def stage_g4():
     from multiprocessing import Pool
     from scipy.stats import kstest
     fs = sorted(glob.glob(str(M / "B" / "g4" / "*" / "*.parquet")))
     with Pool(15) as p: r = p.map(g4_one, fs)
-    U = pd.DataFrame([{k: v for k, v in x.items() if k != "pit"} for x in r]); U.to_csv(RES / "S1.4f_G4_units.csv", index=False)
+    U = pd.DataFrame([{k: v for k, v in x.items() if k not in ("pit", "cosd")} for x in r]); U.to_csv(RES / "S1.4f_G4_units.csv", index=False)
     ks = []
     for (law, A), idx in U.groupby(["law", "archetype"]).groups.items():
-        pit = np.concatenate([r[i]["pit"] for i in idx]); ks.append(dict(law=law, archetype=A, n=len(pit), ks_p=float(kstest(pit, "uniform").pvalue)))
+        pit = np.concatenate([r[i]["pit"] for i in idx]); cd = np.concatenate([r[i]["cosd"] for i in idx])     # revisione CR-04: E[cos 2 delta] = rho
+        ks.append(dict(law=law, archetype=A, n=len(pit), ks_p=float(kstest(pit, "uniform").pvalue), mean_cos_minus_rho=float(cd.mean()), z_cos=float(cd.mean() / (cd.std(ddof=1) / np.sqrt(len(cd))))))
     K = pd.DataFrame(ks); K.to_csv(RES / "S1.4f_G4_ks.csv", index=False)
     out = pd.DataFrame([dict(check="territory_axis_max_diff_rad", value=float(U.max_axis_diff.max()), limit=1e-9),
                         dict(check="territory_aspect_max_diff", value=float(U.max_aspect_diff.max()), limit=1e-9),
                         dict(check="weight_max_diff", value=float(U.max_w_diff.max()), limit=1e-9),
-                        dict(check="ks_uniform_min_p", value=float(K.ks_p.min()), limit=0.01)])
-    out["pass_"] = [out.value[0] <= 1e-9, out.value[1] <= 1e-9, out.value[2] <= 1e-9, out.value[3] > 0.01]
+                        dict(check="ks_uniform_min_p", value=float(K.ks_p.min()), limit=0.01),
+                        dict(check="mean_cos2delta_minus_rho_max_abs_z (dopo la revisione)", value=float(K.z_cos.abs().max()), limit=4.0)])
+    out["pass_"] = [out.value[0] <= 1e-9, out.value[1] <= 1e-9, out.value[2] <= 1e-9, out.value[3] > 0.01, out.value[4] < 4]
     out.to_csv(RES / "S1.4f_G4_check.csv", index=False); print(out.to_string()); print(K.round(4).to_string())
     print("GATE G-4", "PASS" if out.pass_.all() else "FAIL")
 
@@ -137,8 +140,8 @@ if __name__ == "__main__":
     a = sys.argv[1:]; RES.mkdir(parents=True, exist_ok=True)
     if a[0] == "shape": stage_shape(a[1], int(a[2]) if len(a) > 2 else 20)
     elif a[0] == "pairs":
-        ME.M = M; stage_pairs(a[1], int(a[2]) if len(a) > 2 else 20)
-    elif a[0] == "windows": stage_windows()
+        ME.M = M; stage_pairs(a[1], int(a[2]) if len(a) > 2 else 20, a[3:] or None)
+    elif a[0] == "windows": stage_windows(a[1] if len(a) > 1 else "EP")
     elif a[0] == "cp1": stage_cp1()
     elif a[0] == "g4": stage_g4()
     else: raise SystemExit("modo sconosciuto")

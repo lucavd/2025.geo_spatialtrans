@@ -10,10 +10,10 @@ st() { echo "== $1 $(date +%H:%M:%S)"; }
 [ -f "$O/md5_before.csv" ] || { st md5before; $RS md5before > "$O/logs/md5before.log" 2>&1; tail -1 "$O/logs/md5before.log"; }
 st calB;      $RS calB > "$O/logs/calB.log" 2>&1; tail -2 "$O/logs/calB.log"
 st shapecal;  [ -f results/S1.4f/S1.4f_shape_cal.csv ] || $PY tools/S1.4f_measure.py shape cal $NPY > "$O/logs/shape_cal.log" 2>&1; tail -1 "$O/logs/shape_cal.log"
-st calibrate; $PY tools/S1.4f_calib.py calibrate > "$O/logs/calibrate.log" 2>&1; tail -40 "$O/logs/calibrate.log"
+st calibrate; [ -f results/S1.4f/S1.4f_lambda.csv ] || $PY tools/S1.4f_calib.py calibrate > "$O/logs/calibrate.log" 2>&1; tail -40 "$O/logs/calibrate.log"
 st genB;      $RS genB > "$O/logs/genB.log" 2>&1; tail -2 "$O/logs/genB.log"
 st shapeB;    [ -f results/S1.4f/S1.4f_shape_B.csv ] || $PY tools/S1.4f_measure.py shape B $NPY > "$O/logs/shape_B.log" 2>&1; tail -1 "$O/logs/shape_B.log"
-st ruleO;     $PY tools/S1.4f_calib.py ruleO > "$O/logs/ruleO.log" 2>&1; tail -6 "$O/logs/ruleO.log"
+st ruleO;     [ -f results/S1.4f/S1.4f_ruleO.csv ] || $PY tools/S1.4f_calib.py ruleO > "$O/logs/ruleO.log" 2>&1; tail -6 "$O/logs/ruleO.log"
 W=$($PY -c "import pandas as pd; print(pd.read_csv('results/S1.4f/S1.4f_ruleO.csv').winner.iloc[0])"); echo "EP = $W"
 ln -sfn "$W" "$O/B/nuc/EP"
 st rasterEP;  $PY tools/S1.4c_raster.py sim "$O/B/nuc/EP" "$O/B/raster/EP" $NPY > "$O/logs/raster_EP.log" 2>&1; tail -1 "$O/logs/raster_EP.log"

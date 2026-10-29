@@ -2,6 +2,18 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
+## S1.4f, 2026-10-29: nucleo orientato in parte lungo il territorio (branch `step1-cell-layer`), **non chiusa** (in attesa della decisione di Luca)
+
+File dello step `docs/steps/S1.4f.md`, report `reports/S1.4f.html`; decisione tecnica DEC-028 (Cauchy avvolta; regola O: legge della compressione, per spareggio; regola N2: resta il disco). BL-171 e BL-174 chiuse; nuova BL-175; aggiornate BL-063, BL-123, BL-142, BL-166.
+
+### Codice
+- `R/04b4_derive_cell_geometry.R`: orientamento parziale lungo il territorio (colonne opzionali del catalogo `nucleus_orient_conc`, `nucleus_orient_law`; leggi costante, allungamento, compressione; 2δ dalla Cauchy avvolta con la stessa u dell'orientamento a caso). Senza le colonne nuove l'output è identico bit per bit (G-3: K2 ed ET = S1.4e 300/300 e 240/240).
+- `tools/S1.4f_bench_lib.R`, `tools/S1.4f_bench.R` (taratura, banchi A e B, G-3, md5), `tools/S1.4f_measure.py` (allineamento per classe di distanza, coppie, P-1, P-2, CP-1, G-4), `tools/S1.4f_calib.py` (taratura lascia-fuori-un-ROI, regola O), `tools/S1.4f_analysis.py` (verdetti, regola N2, controprove, S-1), `tools/S1.4f_refs.py`, `tools/S1.4f_explore*.py`, `tools/S1.4f_posthoc.py` (PH-1, PH-2), `tools/S1.4f_figures.py`, `tools/S1.4f_report_parts.py`, `tools/run_S1.4f.sh`.
+- Test `R/testing/test_S1.4f.R` (28 asserzioni) e `tools/S1.4f_test.py` (19), runner `R/testing/run_S1.4f.sh` (18 mutanti, 6 pre-registrati e 12 della revisione).
+
+### Risultati
+- Allineamento dei nuclei vicini confermato 5/5; contatti tolti circa la metà dell'ellisse orientata esattamente (tumore del colon 0.639, linfonodo 0.781, ancora smentiti; stroma 0.340 indeterminato); allineamento a 5-8 µm smentito per tutte le leggi (PH-1: i territori sono giusti, il nucleo vero segue il territorio solo vicino al vicino). Regola N2: resta il disco. Controprove superate; sensibilità ai doppioni al bordo senza effetto.
+
 ## S1.4e, 2026-10-28: disegno del nucleo e contatti a parità di distanza (branch `step1-cell-layer`), **chiusa**
 
 File dello step `docs/steps/S1.4e.md`, report `reports/S1.4e.html`; decisione tecnica DEC-026 (regola N: resta il disco; coppie di CP-1); decisione di Luca DEC-027 (disco nei preset, orientamento parziale come prossimo tentativo; nessun secondo giudizio di Federica). Letta da Luca il 2026-10-28. BL-166 chiusa in parte; nuove BL-171...BL-174 (BL-172 chiusa per decisione di Luca); aggiornate BL-063, BL-123, BL-129, BL-142.

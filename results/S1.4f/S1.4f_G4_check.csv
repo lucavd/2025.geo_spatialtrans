@@ -3,3 +3,4 @@ territory_axis_max_diff_rad,3.8347103270552907e-13,1e-09,True
 territory_aspect_max_diff,8.348877145181177e-13,1e-09,True
 weight_max_diff,8.348877145181177e-13,1e-09,True
 ks_uniform_min_p,0.0752779218645151,0.01,True
+mean_cos2delta_minus_rho_max_abs_z (dopo la revisione),1.2084221815256906,4.0,True

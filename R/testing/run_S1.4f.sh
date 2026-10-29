@@ -26,7 +26,20 @@ elif [ "$mode" = mutants ]; then
   FILE[M4]=R/04b4_derive_cell_geometry.R; KIND[M4]=R;  PAT[M4]='s/2 \* atan\(\(1 - rho\) \/ \(1 \+ rho\) \* tan/2 * atan((1 + rho) \/ (1 - rho) * tan/'
   FILE[M5]=tools/S1.4f_bench_lib.R;       KIND[M5]=R;  PAT[M5]='s/s14f_dedup <- function\(cc, r = 1\.0\)/s14f_dedup <- function(cc, r = 2.0)/'
   FILE[M6]=tools/S1.4f_measure.py;        KIND[M6]=py; PAT[M6]='s/"nn5-6": \(5, 6\), "nn6-8": \(6, 8\)/"nn5-6": (5, 7), "nn6-8": (7, 8)/'
-  MS="M1 M2 M3 M4 M5 M6"; declare -A TD; n=0
+  # M7-M18: mutanti X1-X12 della revisione avversariale (revisore del codice), aggiunti dopo la revisione
+  FILE[M7]=tools/S1.4f_analysis.py;  KIND[M7]=py; PAT[M7]='s/v\.std\(ddof=1\)/v.std(ddof=0)/'
+  FILE[M8]=tools/S1.4f_analysis.py;  KIND[M8]=py; PAT[M8]='s/ok_b = lambda a: not any\(V\[\(V\.arm == a\) & \(V\.id == "P-1"\) & V\.archetype\.isin\(k2c\)\]\.verdict == "smentita"\)/ok_b = lambda a: True/'
+  FILE[M9]=tools/S1.4f_analysis.py;  KIND[M9]=py; PAT[M9]='s/PA = PA\[PA\.answer != "unsure"\]; out = \[\]/out = []/'
+  FILE[M10]=tools/S1.4f_analysis.py; KIND[M10]=py; PAT[M10]='s/SH\["arm"\] = SH\.tag\.replace\(\{win: "EP"\}\)/SH["arm"] = SH.tag.replace({"V1": "EP"})/'
+  FILE[M11]=tools/S1.4f_measure.py;  KIND[M11]=py; PAT[M11]='s/base = interior & \(S\[:, 3\] >= 1\.2\)/base = (S[:, 3] >= 1.2)/'
+  FILE[M12]=tools/S1.4f_measure.py;  KIND[M12]=py; PAT[M12]='s/float\(np\.mean\(psi\[m\] > 45\)\)/float(np.mean(psi[m] > 30))/'
+  FILE[M13]=tools/S1.4f_calib.py;    KIND[M13]=py; PAT[M13]='s/np\.array\(GRID\)\[sh\.k - 1\]/np.array(GRID)[sh.k % 12]/'
+  FILE[M14]=tools/S1.4f_calib.py;    KIND[M14]=py; PAT[M14]='s/med = float\(np\.median\(\[x\["lambda"\]/med = float(np.mean([x["lambda"]/'
+  FILE[M15]=tools/S1.4f_bench_lib.R; KIND[M15]=py; PAT[M15]='s/S14F_GRID <- c\(0, 0\.1, 0\.2, 0\.35,/S14F_GRID <- c(0, 0.1, 0.2, 0.3,/'
+  FILE[M16]=tools/S1.4f_analysis.py; KIND[M16]=py; PAT[M16]='s/r = RF\[\(RF\.archetype == A\) & \(RF\.cls == c\)/r = RF[(RF.archetype == A) \& (RF.cls == "nn5-6")/'
+  FILE[M17]=R/04b4_derive_cell_geometry.R; KIND[M17]=R; PAT[M17]='s/theta <- \.dcg_orientation\(terr, ct, ti, u, asp, d = d, a_tgt = a_tgt\)/theta <- .dcg_orientation(terr, ct, ti, u, asp, d = d, a_tgt = pmin(a_tgt, 0.5 * a_t))/'
+  FILE[M18]=tools/S1.4f_calib.py;    KIND[M18]=py; PAT[M18]='s/inside=bool\(lo <= est <= hi\)/inside=bool(lo - 0.01 <= est <= hi + 0.01)/'
+  MS="M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12 M13 M14 M15 M16 M17 M18"; declare -A TD; n=0
   for m in $MS; do
     T=$(mktemp -d); TD[$m]=$T; mkdir -p "$T/R" "$T/tools"; cp R/04b*.R "$T/R/"; cp tools/S1.4f_bench_lib.R tools/S1.4f_calib.py tools/S1.4f_measure.py tools/S1.4f_analysis.py "$T/tools/"
     perl -0pi -e "${PAT[$m]}" "$T/${FILE[$m]}"
@@ -44,6 +57,6 @@ elif [ "$mode" = mutants ]; then
     if [ -n "$newf" ]; then echo "PASS mutante $m rilevato da: $newf"; n=$((n+1)); else echo "FAIL mutante $m NON rilevato"; fail=1; fi
     rm -rf "${TD[$m]}"
   done
-  echo "mutanti rilevati $n/6"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
+  echo "mutanti rilevati $n/18 (pre-registrati M1-M6; M7-M18 = mutanti della revisione)"; [ $fail = 0 ] && echo "GATE G-2 PASS" || echo "GATE G-2 FAIL"
 else echo "uso: run_S1.4f.sh test|mutants"; exit 2; fi
 exit $fail

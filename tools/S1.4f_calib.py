@@ -43,16 +43,22 @@ def loo(curves, real, A):
 
 def calibrate():
     refs = pd.read_csv(RES / "S1.4f_refs.csv"); real = roi_values(refs, "R-2", "nn<5")
-    sh = pd.read_csv(RES / "S1.4f_shape_cal.csv"); sh = sh[(sh.cls == "nn<5") & sh.seed.isin(CAL_SEEDS)].copy()
+    C, L = calibrate_tables(pd.read_csv(RES / "S1.4f_shape_cal.csv"), pd.read_csv(ROOT / "results/S1.4e/S1.4e_shape_B.csv"), real)
+    C.to_csv(RES / "S1.4f_cal_curves.csv", index=False); L.to_csv(RES / "S1.4f_lambda.csv", index=False)
+    print(L.pivot_table(index=["archetype", "roi_id"], columns="law", values="lambda").round(3).to_string()); print("clamped:", int(L.clamped.sum()))
+
+def calibrate_tables(sh, e, real):
+    """sh: S1.4f_shape_cal.csv; e: S1.4e_shape_B.csv (ET = t = 1); real: {archetipo: {roi: valore vero}}. -> (curve, tabella dei lambda)."""
+    sh = sh[(sh.cls == "nn<5") & sh.seed.isin(CAL_SEEDS)].copy()
     sh["law"] = sh.tag.str.split("_").str[0]; sh["k"] = sh.tag.str.split("_k").str[1].astype(int); sh["t"] = 1 - np.exp(-np.array(GRID)[sh.k - 1])
-    e = pd.read_csv(ROOT / "results/S1.4e/S1.4e_shape_B.csv"); e = e[(e.arm == "ET") & e.seed.isin(CAL_SEEDS)]
+    e = e[(e.arm == "ET") & e.seed.isin(CAL_SEEDS)]
     assert sh.groupby(["law", "archetype", "roi_id", "k"]).seed.nunique().eq(5).all() and e.groupby(["archetype", "roi_id"]).seed.nunique().eq(5).all()
     C = []
     for law in LAWS:
         a = sh[sh.law == law].groupby(["archetype", "roi_id", "t"]).p3.mean().reset_index()
         b = e.groupby(["archetype", "roi_id"]).p3.mean().reset_index(); b["t"] = 1.0
         cc = pd.concat([a, b], ignore_index=True); cc["law"] = law; C.append(cc)
-    C = pd.concat(C, ignore_index=True); C.to_csv(RES / "S1.4f_cal_curves.csv", index=False); rows = []
+    C = pd.concat(C, ignore_index=True); rows = []
     for law in LAWS:
         lr = []
         for A in CAL_T: lr += [dict(law=law, **x) for x in loo(C[(C.law == law) & (C.archetype == A)], real[A], A)]
@@ -60,8 +66,7 @@ def calibrate():
         for r in sorted(C[C.archetype == "A5"].roi_id.unique()):
             lr.append(dict(law=law, archetype="A5", roi_id=r, t=1 - np.exp(-med), **{"lambda": med}, clamped=False, target=np.nan, train="median of other tissues"))
         rows += lr
-    L = pd.DataFrame(rows); L.to_csv(RES / "S1.4f_lambda.csv", index=False)
-    print(L.pivot_table(index=["archetype", "roi_id"], columns="law", values="lambda").round(3).to_string()); print("clamped:", int(L.clamped.sum()))
+    return C, pd.DataFrame(rows)
 
 def rule_o(sh, refs):
     """sh: righe di S1.4f_shape_B.csv; restituisce (vincente, tabella per legge, tabella per casella)."""

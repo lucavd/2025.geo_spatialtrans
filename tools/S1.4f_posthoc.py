@@ -5,7 +5,8 @@ Quota dei territori allungati (>= 1.1) con l'asse maggiore di traverso al vicino
   veri: territori di Voronoi dei centroidi del segmentatore di forma (stessa selezione di F1: centro a >= 20 um dal bordo, territorio <= 4 x mediana);
   simulati: territori delle unita' del banco B, semi 1-5, cellule interne (asse e allungamento dai momenti del poligono, come G-4).
 Accanto: la stessa quota per i nuclei veri allungati (>= 1.2), dalla stessa selezione di cellule. Unita' = ROI (5 per tessuto).
-Uscita: results/S1.4f/S1.4f_PH1_territory_nn.csv. Uso: .venv/bin/python tools/S1.4f_posthoc.py [ncores]"""
+Uscita: results/S1.4f/S1.4f_PH1_territory_nn.csv. Uso: .venv/bin/python tools/S1.4f_posthoc.py [ncores]
+PH-2: .venv/bin/python tools/S1.4f_posthoc.py ph2 (dopo i contatti della legge V1: tools/S1.4f_measure.py pairs B 8 V1; windows V1)."""
 import importlib.util, glob, os, sys
 import numpy as np, pandas as pd, shapely
 from pathlib import Path
@@ -53,5 +54,23 @@ def main(nc):
     R = D.groupby(["source", "what", "archetype", "roi_id", "cls"]).frac.mean().groupby(["source", "what", "archetype", "cls"]).agg(["mean", "std", "count"])
     print(R.round(3).unstack("cls").to_string())
 
+def ph2():
+    """PH-2 (post hoc, dopo la revisione: regola O decisa dallo spareggio): P-1 e P-2 della legge perdente V1 con le stesse regole di
+    tools/S1.4f_analysis.py; uscita results/S1.4f/S1.4f_PH2_verdicts.csv."""
+    _a = importlib.util.spec_from_file_location("an14f", ROOT / "tools/S1.4f_analysis.py"); AN = importlib.util.module_from_spec(_a); _a.loader.exec_module(AN)
+    R1 = pd.read_csv(ROOT / "results/S1.4e/S1.4e_refs.csv"); rows = []
+    for arm, wf, pf in [("V1", "S1.4f_windows_PH2_V1.csv", "S1.4f_pairs_B_PH2_V1.csv"), ("EP", "S1.4f_windows.csv", "S1.4f_pairs_B.csv")]:
+        W = pd.read_csv(ROOT / "results/S1.4f" / wf); PB = pd.read_csv(ROOT / "results/S1.4f" / pf)
+        ps = W.groupby(["archetype", "seed"]).s1.mean().reset_index(); pb = PB.groupby(["archetype", "seed", "cls"])[["n", "n_contact"]].sum().reset_index(); pb["f"] = pb.n_contact / pb.n
+        for A in ["A1", "A2", "A3", "A4", "A5", "A6"]:
+            lo, hi = AN.CONTACT[A]; m, se, n = AN.est(ps[ps.archetype == A].s1); rows.append(dict(id="P-1", archetype=A, arm=arm, est=m, se=se, lo=lo, hi=hi, verdict=AN.verdict(m, se, lo, hi)))
+            if A in AN.DENSE:
+                r = R1[(R1.ref == "R-1") & (R1.archetype == A) & (R1.cls == "lt6")].iloc[0]; m, se, n = AN.est(pb[(pb.archetype == A) & (pb.cls == "lt6")].f)
+                rows.append(dict(id="P-2", archetype=A, arm=arm, est=m, se=se, lo=r.lo, hi=r.hi, verdict=AN.verdict(m, se, r.lo, r.hi)))
+    D = pd.DataFrame(rows); D.to_csv(ROOT / "results/S1.4f/S1.4f_PH2_verdicts.csv", index=False)
+    print(D.pivot_table(index=["id", "archetype"], columns="arm", values=["est", "verdict"], aggfunc="first").to_string())
+    print("confermate in P-1 e P-2:", D[D.verdict == "confermata"].groupby("arm").size().to_dict())
+
 if __name__ == "__main__":
-    main(int(sys.argv[1]) if len(sys.argv) > 1 else 15)
+    if len(sys.argv) > 1 and sys.argv[1] == "ph2": ph2()
+    else: main(int(sys.argv[1]) if len(sys.argv) > 1 else 15)

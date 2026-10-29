@@ -1,0 +1,19 @@
+frase,fonte,valore letto,testo
+intestino 0.57 → 0.51,"S1.4f_verdicts.csv, P-1 intestino, K2 ed EP",0.57 0.51,0.57 0.51
+tumore del colon 0.69 → 0.64 (vero al più 0.57),"S1.4f_verdicts.csv, P-1 tumore del colon",0.69 0.64 0.57,0.69 0.64 0.57
+stroma 0.36 → 0.34 (al più 0.28),"S1.4f_verdicts.csv, P-1 stroma",0.36 0.34 0.28,0.36 0.34 0.28
+linfonodo 0.83 → 0.78 (al più 0.75),"S1.4f_verdicts.csv, P-1 linfonodo",0.83 0.78 0.75,0.83 0.78 0.75
+circa metà dei contatti tolti dall'orientamento esatto; nello stroma un quarto,"S1.4f_desc.csv, quota dell'effetto di ET conservata da EP (intestino, tumore, linfonodo; stroma)",0.52-0.56 0.24,0.52-0.56 0.24
+"tumore del colon e linfonodo fuori dal vero, stroma al limite","S1.4f_verdicts.csv, P-1 EP",smentita smentita indeterminata,smentita smentita indeterminata
+"3 misure di contatto su 10, come il disco; ne servivano almeno 2 in più",S1.4f_ruleN2.csv,3 3 K2,3 3 K2
+allineamento dei nuclei vicini giusto in 5 tessuti su 5,"S1.4f_verdicts.csv, P-3 EP",5,5
+con tutte e tre le regole troppo allineati a 5-8 µm,"S1.4f_verdicts.csv, P-5 caselle smentite per V0, V1, V2",6 4 4,6 4 4
+"intestino a 6-8 µm: veri metà di traverso, come a caso; simulati 62 su 100",S1.4f_refs.csv R-4 intestino nn6-8 (stima); S1.4f_verdicts.csv P-5 EP intestino nn6-8,0.49 62,0.49 62
+asse del territorio di traverso circa 8 volte su 10 nei veri e nei simulati (6-8 µm),"S1.4f_PH1_territory_nn.csv, territori, tessuti densi, nn6-8",81-82 80-84,81-82 80-84
+sui tuoi punti toglie da 3 a 7 coppie su 100 sotto i 6 µm,"S1.4f_cp.csv, CP-1 EP-K2",3-7,3-7
+circa metà dell'orientamento esatto,"S1.4f_cp.csv, CP-1 (EP-K2)/(ET-K2)",0.44-0.48,0.44-0.48
+togliere i nuclei contati due volte non cambia il risultato,"S1.4f_S1.csv, contrasti entro 2 errori standard",8/8,8/8
+"tu 17 su 100, Federica 44 (stesse coppie vicine del tumore)","results/S1.4e/S1.4e_PH1_raters.csv, tumore < 6 µm",17 44,17 44
+"taratura 24,5 minuti, 300 simulazioni 12,2, 24 finestre 8,3","S1.4f_chain_run1.log (calB, genB), S1.4f_chain_run2.log (genA)",24.5 12.2 8.3,24.5 12.2 8.3
+catena circa un'ora con 20 processori,registro dei job del server: 2703 s (fino all'arresto dello stadio delle coppie) + 794 s (ripresa),58 min,58 min
+"test, mutanti e regressioni circa mezz'ora per passata; tre passate","registro dei job del server: 2278 s, 2170 s, 2046 s","34-38 min, 3","34-38 min, 3"

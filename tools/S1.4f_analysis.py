@@ -35,6 +35,26 @@ def rule_n2(V, arms=("K2", "ET", "EP")):
     T["winner"] = win; T["why"] = why
     return win, why, T
 
+def label_ep(SH, win):
+    """Etichetta EP = la legge vincente della regola O; la legge resta anche con il suo nome (righe duplicate con arm diverso)."""
+    SH = SH.copy(); SH["arm"] = SH.tag.replace({win: "EP"}); return pd.concat([SH, SH[SH.tag == win].assign(arm=win)], ignore_index=True)
+
+def p5_iv(RF, A, c):
+    """Intervallo R-4 (o R-2 per nn<5) della classe c del tessuto A."""
+    r = RF[(RF.archetype == A) & (RF.cls == c) & RF.ref.isin(["R-2", "R-4"])].iloc[0]; return float(r.lo), float(r.hi)
+
+def cp_rows(PA, bench, cid):
+    """Contrasti EP-K2 ed ET-K2 per tessuto denso (coppie giudicate, 'unsure' escluse, d < 6 um; unita' = finestra)."""
+    PA = PA[PA.answer != "unsure"]; out = []
+    pa = PA[(PA.bench == bench) & (PA.d_um < 6)].groupby(["archetype", "win_id", "arm"]).contact.mean().unstack("arm").reset_index()
+    for A in DENSE:
+        g = pa[pa.archetype == A]
+        for b in ["EP", "ET"]:
+            m, se, n = est(g[b] - g["K2"])
+            out.append(dict(id=cid, bench=bench, archetype=A, contrast=f"{b}-K2", est=m, se=se, n_units=n, lo2=m - 2 * se, hi2=m + 2 * se,
+                            below_zero=bool(m + 2 * se < 0), n_pairs=int(len(PA[(PA.bench == bench) & (PA.archetype == A) & (PA.arm == "K2") & (PA.d_um < 6)]) / 10)))
+    return out
+
 def main():
     rows = []
     def add(pid, A, arm, v, lo, hi, unit, src, cls=""):
@@ -42,7 +62,7 @@ def main():
     win = pd.read_csv(f"{RES}/S1.4f_ruleO.csv").winner.iloc[0]
     W = pd.concat([pd.read_csv(f"{E}/S1.4e_windows.csv").query("arm in ['K2', 'ET']"), pd.read_csv(f"{RES}/S1.4f_windows.csv")], ignore_index=True)
     PB = pd.concat([pd.read_csv(f"{E}/S1.4e_pairs_B.csv").query("arm in ['K2', 'ET'] and noise == 'none'"), pd.read_csv(f"{RES}/S1.4f_pairs_B.csv")], ignore_index=True)
-    SH = pd.read_csv(f"{RES}/S1.4f_shape_B.csv"); SH["arm"] = SH.tag.replace({win: "EP"}); SH = pd.concat([SH, SH[SH.tag == win].assign(arm=win)], ignore_index=True)
+    SH = label_ep(pd.read_csv(f"{RES}/S1.4f_shape_B.csv"), win)
     R1 = pd.read_csv(f"{E}/S1.4e_refs.csv"); RF = pd.read_csv(f"{RES}/S1.4f_refs.csv")
     iv = lambda D, ref, A, c: tuple(float(x) for x in D[(D.ref == ref) & (D.archetype == A) & (D.cls == c)].iloc[0][["lo", "hi"]])
     assert (W.groupby(["arm", "archetype"]).seed.nunique() == 10).all() and (SH.groupby(["arm", "archetype", "roi_id", "cls"]).seed.nunique() == 10).all()
@@ -60,7 +80,7 @@ def main():
     for arm in ["K2", "ET", "EP", "V0", "V1", "V2"]:
         for A in DENSE:
             for c in ["nn5-6", "nn6-8"]:
-                lo, hi = iv(RF, "R-4", A, c); add("P-5", A, arm, sr[(sr.arm == arm) & (sr.archetype == A) & (sr.cls == c)].p3, lo, hi, "ROI", "R-4", cls=c)
+                lo, hi = p5_iv(RF, A, c); add("P-5", A, arm, sr[(sr.arm == arm) & (sr.archetype == A) & (sr.cls == c)].p3, lo, hi, "ROI", "R-4", cls=c)
     V = pd.DataFrame(rows); V["ep_law"] = win; V.to_csv(f"{RES}/S1.4f_verdicts.csv", index=False)
     s4 = pd.read_csv(f"{E}/S1.4e_verdicts.csv"); chk = []
     for pid in ["P-1", "P-2", "P-3", "P-4"]:
@@ -70,15 +90,7 @@ def main():
     print(pd.DataFrame(chk).to_string())
     w2, why, RN = rule_n2(V[V.id.isin(["P-1", "P-2", "P-3"])]); RN.to_csv(f"{RES}/S1.4f_ruleN2.csv", index=False); print(RN.to_string())
     # ---- controprove e sensibilita' ----
-    PA = pd.read_csv(f"{RES}/S1.4f_pairs_A.csv"); PA = PA[PA.answer != "unsure"]; cp = []
-    for bench in ["A", "A_dd"]:
-        pa = PA[(PA.bench == bench) & (PA.d_um < 6)].groupby(["archetype", "win_id", "arm"]).contact.mean().unstack("arm").reset_index()
-        for A in DENSE:
-            g = pa[pa.archetype == A]
-            for b in ["EP", "ET"]:
-                m, se, n = est(g[b] - g["K2"])
-                cp.append(dict(id="CP-1" if bench == "A" else "S-1", bench=bench, archetype=A, contrast=f"{b}-K2", est=m, se=se, n_units=n, lo2=m - 2 * se, hi2=m + 2 * se,
-                               below_zero=bool(m + 2 * se < 0), n_pairs=int(len(PA[(PA.bench == bench) & (PA.archetype == A) & (PA.arm == "K2") & (PA.d_um < 6)]) / 10)))
+    PA = pd.read_csv(f"{RES}/S1.4f_pairs_A.csv"); cp = cp_rows(PA, "A", "CP-1") + cp_rows(PA, "A_dd", "S-1"); PA = PA[PA.answer != "unsure"]
     CP = pd.DataFrame(cp)
     a = CP[CP.bench == "A"].set_index(["archetype", "contrast"]); d = CP[CP.bench == "A_dd"].set_index(["archetype", "contrast"])
     S1 = (d.est - a.est).rename("delta").to_frame(); S1["se_A"] = a.se; S1["within_2se"] = S1.delta.abs() < 2 * S1.se_A

@@ -1,0 +1,192 @@
+== calB 00:33:32
+[calB] 150 unita', 0 errori, 0.0 min
+righe: 5400 
+== shapecal 00:33:36
+[shape cal] 5400 file, 16200 righe
+== calibrate 00:33:36
+law                  V0     V1     V2
+archetype roi_id                     
+A1        r1      0.852  1.223  0.832
+          r2      0.834  1.204  0.814
+          r3      0.876  1.268  0.858
+          r4      0.869  1.254  0.845
+          r5      0.849  1.216  0.829
+A2        r1      1.141  1.692  0.991
+          r2      1.024  1.481  0.890
+          r3      1.106  1.643  0.982
+          r4      0.947  1.330  0.813
+          r5      0.939  1.348  0.806
+A3        r1      0.504  0.542  0.421
+          r2      0.600  0.664  0.492
+          r3      0.567  0.647  0.469
+          r4      0.479  0.505  0.414
+          r5      0.486  0.496  0.411
+A4        f1      0.652  1.762  0.674
+          f2      0.630  1.687  0.649
+          p1      0.616  1.646  0.635
+          p2      0.641  1.714  0.660
+          p3      0.684  1.842  0.707
+A5        r1      0.684  1.223  0.674
+          r2      0.684  1.223  0.674
+          r3      0.684  1.223  0.674
+          r4      0.684  1.223  0.674
+          r5      0.684  1.223  0.674
+A6        r1      0.814  0.675  0.777
+          r2      0.453  0.352  0.417
+          r3      0.697  0.622  0.620
+          r4      0.493  0.477  0.468
+          r5      0.508  0.451  0.455
+clamped: 0
+== genB 00:33:36
+[genB] 300 unita', 0 errori, 0.0 min
+righe: 1500 
+== shapeB 00:33:40
+[shape B] 1500 file, 4500 righe
+== ruleO 00:33:40
+23  V2        A4  nn6-8  0.631  0.540  0.580  0.562   False   0.070
+  law  score  sum_absdev winner
+0  V2      3    0.411990     V2
+1  V1      3    0.444762     V2
+2  V0      1    0.560073     V2
+legge vincente: V2
+EP = V2
+== rasterEP 00:33:41
+[sim] 300 file, 0 nuovi
+== pairsB 00:33:41
+[pairs B] 240 unita', 240 nuove
+== windows 00:34:13
+archetype
+A1    0.514
+A2    0.639
+A3    0.340
+A4    0.781
+A5    0.129
+A6    0.065
+== genA 00:34:16
+[genA] 48 unita', 0 errori, 8.3 min
+righe: 1440 
+== pairsA 00:42:36
+[pairs A] 720 unita', 720 nuove
+== pairsA_dd 00:44:23
+[pairs A_dd] 720 unita', 720 nuove
+== cp1 00:46:09
+arm                 EP     ET     K2
+bench archetype                     
+A     A1         0.392  0.329  0.451
+      A2         0.790  0.717  0.863
+      A3         0.806  0.735  0.865
+      A4         0.401  0.365  0.418
+      A6         0.500  0.600  0.700
+A_dd  A1         0.392  0.329  0.451
+      A2         0.790  0.717  0.863
+      A3         0.806  0.735  0.865
+      A4         0.389  0.359  0.415
+      A6         0.500  0.600  0.700
+== g4 00:46:15
+                         check         value         limit  pass_
+0  territory_axis_max_diff_rad  3.834710e-13  1.000000e-09   True
+1    territory_aspect_max_diff  8.348877e-13  1.000000e-09   True
+2              weight_max_diff  8.348877e-13  1.000000e-09   True
+3             ks_uniform_min_p  7.527792e-02  1.000000e-02   True
+   law archetype       n    ks_p
+0   V0        A1   45364  0.1961
+1   V0        A2   37808  0.7638
+2   V0        A3   15429  0.4814
+3   V0        A4  139991  0.7251
+4   V0        A5    4722  0.4013
+5   V0        A6    4575  0.0753
+6   V1        A1   45364  0.1961
+7   V1        A2   37808  0.7638
+8   V1        A3   15429  0.4814
+9   V1        A4  139991  0.7251
+10  V1        A5    4722  0.4013
+11  V1        A6    4575  0.0753
+12  V2        A1   45274  0.1835
+13  V2        A2   37749  0.7439
+14  V2        A3   15427  0.4880
+15  V2        A4  139940  0.7374
+16  V2        A5    4702  0.4118
+17  V2        A6    4571  0.0809
+GATE G-4 PASS
+== check 00:46:24
+                        check value expected pass
+1                     B_units   300      300 TRUE
+2    B_RV_equals_S1.5d_RV_md5   300      300 TRUE
+3  cal_RV_equals_S1.5d_RV_md5   150      150 TRUE
+4           B_K2_equals_S1.4e   300      300 TRUE
+5           B_ET_equals_S1.4e   300      300 TRUE
+6           A_K2_equals_S1.4e   240      240 TRUE
+7           A_ET_equals_S1.4e   240      240 TRUE
+8                    cal_rows  5400     5400 TRUE
+9                      A_rows  1440     1440 TRUE
+10   invariant_violations_cal     0        0 TRUE
+11     invariant_violations_B     0        0 TRUE
+12     invariant_violations_A     0        0 TRUE
+PASS G-3 (md5 dei dati: stadio md5after)
+== md5after 00:46:26
+PASS md5 dei dati letti invariati: 4147/4147
+== analysis 00:46:40
+    id arm  max_abs_diff_vs_S14e
+0  P-1  K2          5.551115e-17
+1  P-1  ET          5.551115e-17
+2  P-2  K2          0.000000e+00
+3  P-2  ET          0.000000e+00
+4  P-3  K2          1.110223e-16
+5  P-3  ET          1.110223e-16
+6  P-4  K2          6.993104e-17
+7  P-4  ET          0.000000e+00
+  arm  score_P1_P2  P3_confirmed  P3_refuted  cond_a  cond_b  cond_c winner                                                    why
+0  K2            3             0           5    True    True    True     K2  nessun braccio ammesso dalle condizioni (a), (b), (c)
+1  ET            4             0           5   False    True   False     K2  nessun braccio ammesso dalle condizioni (a), (b), (c)
+2  EP            3             5           0   False    True    True     K2  nessun braccio ammesso dalle condizioni (a), (b), (c)
+CP-1: EP-K2 < 0 oltre 2 ES in 3/4 (attesa >= 2); EP-K2 >= ET-K2 in 4/4 (attesa >= 3) -> superata
+CP-2: V0 smentita in 6 / 8 caselle di P-5 (attesa >= 4)
+S-1: 8 / 8 contrasti entro 2 ES
+                     delta    se_A  within_2se
+archetype contrast                            
+A1        EP-K2     0.0000  0.0075        True
+          ET-K2     0.0000  0.0088        True
+A2        EP-K2     0.0000  0.0105        True
+          ET-K2     0.0000  0.0220        True
+A3        EP-K2     0.0000  0.0185        True
+          ET-K2     0.0000  0.0387        True
+A4        EP-K2    -0.0061  0.0145        True
+          ET-K2    -0.0028  0.0084        True
+verdict  confermata  indeterminata  smentita
+id  arm                                     
+P-1 EP            2              2         2
+    ET            2              4         0
+    K2            2              1         3
+P-2 EP            1              1         2
+    ET            2              1         1
+    K2            1              0         3
+P-3 EP            5              0         0
+    ET            0              0         5
+    K2            0              0         5
+P-4 EP            6              0         0
+    ET            6              0         0
+    K2            0              0         6
+P-5 EP            3              1         4
+    ET            0              0         8
+    K2            0              0         8
+    V0            1              1         6
+    V1            1              3         4
+    V2            3              1         4
+arm               EP     ET     K2
+id  archetype                     
+P-1 A1         0.514  0.472  0.569
+    A2         0.639  0.594  0.686
+    A3         0.340  0.279  0.360
+    A4         0.781  0.735  0.833
+    A5         0.129  0.113  0.144
+    A6         0.065  0.057  0.070
+P-2 A1         0.463  0.418  0.521
+    A2         0.792  0.743  0.865
+    A3         0.786  0.690  0.853
+    A4         0.493  0.450  0.549
+P-3 A1         0.767  0.860  0.995
+    A2         0.866  0.921  0.995
+    A3         0.845  0.941  0.999
+    A4         0.773  0.890  0.999
+    A6         0.796  0.915  1.000
+catena S1.4f finita 00:46:41

@@ -96,4 +96,18 @@ ck("T8 tolti i centri del segmentatore entro 1 um da un punto di Luca, tenuti qu
 ctz <- data.frame(cell_type = c("a", "b"), nucleus_aspect = 1, nucleus_orient = "random", stringsAsFactors = FALSE); lc <- law_catalog(ctz, "A3", "V2", 0.75)
 ck("T10 catalogo EP: allungamento vero, territorio, lambda e legge", all(abs(lc$nucleus_aspect - s14e_aspect("A3")) < 1e-12) && all(lc$nucleus_orient == "territory") &&
    all(lc$nucleus_orient_conc == 0.75) && all(lc$nucleus_orient_law == "compression"))
+# ---- T11: la compressione usa l'area bersaglio prima dei tetti (aggiunto dopo la revisione, mutante X11) ----
+t11 <- tess_of(list(rect(0, 0, 6, 4, 0.3), rect(20, 0, 7, 4, -0.5))); c11 <- cen_of(c(0, 20), c(0, 0))
+o11 <- derive_cell_geometry(c11, t11, ctp(25, 1.5, "territory", conc = 1.5, law = "compression", phi = 0.6), random_seed = 5, verbose = FALSE)
+set.seed(5); z <- rnorm(2); u <- runif(2); w11 <- sqrt(o11$cell_df$nucleus_area_target / pi) / o11$cell_df$center_dist
+e11 <- max(abs(axd(o11$cell_df$nucleus_orient - (c(0.3, -0.5) + 0.5 * .dcg_wc_quantile(u, 1 - exp(-1.5 * w11))))))
+ck("T11 compressione con l'area bersaglio prima del tetto (tetto attivo: A* < A bersaglio)", e11 < 1e-9 && all(o11$cell_df$nucleus_area_cap < o11$cell_df$nucleus_area_target),
+   sprintf("max %.1e", e11))
+# ---- T1b: K2 ridisegnato = place_cells() su altri due preset (aggiunto dopo la revisione) ----
+for (pr in list(list("epithelial", list(spatial = "uniform", size_resid = "gaussian")), list("brain_cortex", list(spatial = "uniform", size_resid = "empirical")))) {
+  Lb <- suppressWarnings(do.call(place_cells, c(list(sq, pr[[1]], pixel_size_um = 1, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L, small_components = "exclude",
+    random_seed = 11, types = "multi", size_arm = "group", keep_tiles = TRUE, strict = FALSE, verbose = FALSE), pr[[2]])))
+  ob <- redraw_nuclei(Lb, Lb$cell_types_resolved)
+  ck(paste("T1b K2 ridisegnato = place_cells():", pr[[1]]), identical(wkb(ob$cell_nuclei), wkb(Lb$cell_nuclei)), sprintf("%d nuclei", nrow(Lb$cell_df)))
+}
 cat(sprintf("RESULT %d/%d PASS\n", sum(unlist(res)), length(res)))
