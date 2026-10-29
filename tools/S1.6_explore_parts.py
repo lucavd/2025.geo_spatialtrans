@@ -19,7 +19,7 @@ n = sum(r[0] for r in res); nm = sum(r[1] for r in res); sec = np.concatenate([r
 nt = sum(r[4] for r in res)
 print(f"E2 {ARM}: unita' {len(fs)}, nuclei {n}, di tipo MULTIPOLYGON {nt}, nuclei in piu' parti {nm} ({nm / n:.6f}), parti non principali {len(sec)}")
 print(f"E2: area minima della parte principale {amin:.4g} um2; parti non principali: max {sec.max():.3g}, min {sec.min():.3g} um2")
-edges = [0] + [10.0 ** k for k in range(-16, 3)]
+edges = [0] + [10.0 ** k for k in range(-16, 3)] + [np.inf]   # revisione RN-02: classe [100, inf)
 h = np.histogram(sec, bins=edges)[0]
 out = pd.DataFrame(dict(arm=ARM, lo=edges[:-1], hi=edges[1:], n_parts=h, n_nuclei=n, n_type_multipolygon=nt, n_multipart=nm)); os.makedirs("results/S1.6", exist_ok=True)
 import re; STEP = re.search(r"S1\.\d[a-z]?", BASE).group(0)

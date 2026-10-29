@@ -37,11 +37,15 @@ if (st == "restore") {
   .libPaths(c(lib, LIB))                       # renv stesso viene dalla libreria del progetto; i pacchetti vanno in <lib>
   renv::restore(project = ".", lockfile = "renv.lock", library = lib, prompt = FALSE, clean = FALSE, repos = getOption("repos"))
   lk <- jsonlite::fromJSON("renv.lock", simplifyVector = FALSE)$Packages
-  ip <- installed.packages(lib.loc = lib)
+  # S1.6, nota D-1: i pacchetti raccomandati della libreria di sistema di R (.Library) alla versione del lockfile non vengono reinstallati da renv
+  ip <- installed.packages(lib.loc = lib); is_ <- installed.packages(lib.loc = .Library)
   want <- vapply(lk, function(p) p$Version, ""); have <- ip[match(names(want), rownames(ip)), "Version"]
-  bad <- names(want)[is.na(have) | have != want]
-  cat(sprintf("%s restore da zero: %d pacchetti nel lockfile, %d installati in %s alla versione registrata, %d diversi o mancanti, %.1f min\n",
-              if (!length(bad)) "PASS" else "FAIL", length(want), sum(!is.na(have) & have == want), lib, length(bad), as.numeric(difftime(Sys.time(), t0, units = "mins"))))
+  hsys <- is_[match(names(want), rownames(is_)), "Version"]; psys <- is_[match(names(want), rownames(is_)), "Priority"]
+  insys <- is.na(have) & !is.na(hsys) & hsys == want & !is.na(psys) & psys == "recommended"
+  bad <- names(want)[!(insys | (!is.na(have) & have == want))]
+  cat(sprintf("%s restore da zero: %d pacchetti nel lockfile; %d installati in %s alla versione registrata, %d raccomandati gia' nella libreria di sistema di R alla versione registrata (%s); %d diversi o mancanti; %.1f min\n",
+              if (!length(bad)) "PASS" else "FAIL", length(want), sum(!is.na(have) & have == want), lib, sum(insys), paste(names(want)[insys], collapse = ", "),
+              length(bad), as.numeric(difftime(Sys.time(), t0, units = "mins"))))
   if (length(bad)) print(data.frame(pkg = bad, lock = want[bad], installed = have[match(bad, names(want))]))
   quit(status = if (length(bad)) 1 else 0)
 }

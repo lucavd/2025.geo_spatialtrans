@@ -3,7 +3,7 @@
 #   bash R/testing/run_S1.6.sh test      -> test_S1.6.R e tools/test_calibration_fit.py (tutte PASS), poi la batteria di S1.4f (che include S1.4e,
 #                                           S1.5e, S1.5d, S1.5c, S1.5b, S1.5, S1.4d, S1.1-S1.4, OKF): FAIL ammessi solo T13 di S1.5d, T12 di S1.5c,
 #                                           E10 ed E10b di S1.5 (DEC-011); alla fine nessun file versionato modificato (BL-165)
-#   bash R/testing/run_S1.6.sh mutants   -> mutanti di S1.6 (N1-N6), S1.5 (M1-M9) e S1.5b (M1-M8) come copie modificate del codice (tools/mutate.py)
+#   bash R/testing/run_S1.6.sh mutants   -> mutanti di S1.6 (N1-N16), S1.5 (M1-M9) e S1.5b (M1-M8) come copie modificate del codice (tools/mutate.py)
 #   bash R/testing/run_S1.6.sh env       -> G-4: Imports di DESCRIPTION = pacchetti usati in R/*.R; restore da zero del lockfile in una libreria vuota;
 #                                           test_S1.6.R con quella libreria; controllo OKF
 set -u
@@ -12,7 +12,7 @@ LOG=${S16_LOG:-/mnt/micron/geo_spatialtrans/S1.6/tests}; mkdir -p "$LOG"
 mode=${1:-test}; fail=0
 fails_of() { grep '^FAIL' "$1" 2>/dev/null | awk '{print $2}' | sort -u | tr '\n' ' ' | sed 's/ $//'; }
 if [ "$mode" = test ]; then
-  st0=$(git status --porcelain --untracked-files=no)
+  st0=$(git status --porcelain --untracked-files=no); MARK=$(mktemp); touch "$MARK"   # revisione RC-04: anche i file nuovi in results/
   Rscript --vanilla R/testing/test_S1.6.R > "$LOG/test_S1.6.log" 2>&1 || fail=1
   grep -E '^(PASS|FAIL|RESULT)' "$LOG/test_S1.6.log"; grep -q '^FAIL' "$LOG/test_S1.6.log" && fail=1
   grep -qE '^RESULT ([0-9]+)/\1 PASS' "$LOG/test_S1.6.log" || fail=1
@@ -25,6 +25,9 @@ if [ "$mode" = test ]; then
   grep -E '^(PASS|FAIL) regressione' "$E/../run_S1.5e.log" 2>/dev/null | sed 's/^/[S1.5e] /'
   st1=$(git status --porcelain --untracked-files=no)
   if [ "$st0" = "$st1" ]; then echo "PASS nessun file versionato modificato dalla batteria (BL-165)"; else echo "FAIL la batteria ha modificato file versionati:"; diff <(echo "$st0") <(echo "$st1"); fail=1; fi
+  NEWF=$(find results -type f -newer "$MARK" | while read -r f; do git check-ignore -q "$f" || echo "$f"; done)   # escluse le cartelle ignorate apposta (BL-013)
+  nnew=$(printf '%s' "$NEWF" | grep -c . || true)
+  if [ "$nnew" = 0 ]; then echo "PASS nessun file scritto in results/ dalla batteria fuori dalle cartelle ignorate da git (revisione RC-04)"; else echo "FAIL file scritti in results/ dalla batteria: $nnew"; printf '%s\n' "$NEWF" | head -20; fail=1; fi
   [ $fail = 0 ] && echo "GATE G-1 PASS" || echo "GATE G-1 FAIL"
 elif [ "$mode" = mutants ]; then
   base="$LOG/test_S1.6.log"; [ -f "$base" ] || { echo "manca $base: eseguire prima 'test'"; exit 2; }

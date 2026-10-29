@@ -1,0 +1,12 @@
+"check","value","expected","pass"
+"units",600,600,TRUE
+"no_error_C2_C3_C5_C9",600,600,TRUE
+"U6_equals_S1.5e_U_md5",300,300,TRUE
+"Q6_exceed_wmax",0,0,TRUE
+"Q6_regions_grid_bound",0,0,TRUE
+"Q6_quotas_on",0,0,TRUE
+"rerun_identical",8,8,TRUE
+"legacy_RV_Q_of_S1.5e_md5",8,8,TRUE
+"desc_Q6_n_failed",0,NA,NA
+"desc_C7_warn_U6",0,NA,NA
+"desc_C7_warn_U_S1.5e",2,NA,NA

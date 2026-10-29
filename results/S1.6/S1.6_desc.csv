@@ -1,0 +1,36 @@
+desc,archetype,arm,value,ref,ref2
+D-1 tempo mediano per unita' (s),A1,U6,29.03,30.52549999999985,
+D-1 tempo mediano per unita' (s),A1,Q6,39.132000000000005,39.187000000000054,
+D-1 tempo mediano per unita' (s),A2,U6,16.809,18.270500000000048,
+D-1 tempo mediano per unita' (s),A2,Q6,18.811,18.994,
+D-1 tempo mediano per unita' (s),A3,U6,3.09349999999998,3.776499999999945,
+D-1 tempo mediano per unita' (s),A3,Q6,6.9615000000000045,6.7205000000000155,
+D-1 tempo mediano per unita' (s),A4,U6,27.988999999999997,31.939,
+D-1 tempo mediano per unita' (s),A4,Q6,33.2035,33.312,
+D-1 tempo mediano per unita' (s),A5,U6,16.0165,16.62199999999995,
+D-1 tempo mediano per unita' (s),A5,Q6,22.0365,22.128999999999998,
+D-1 tempo mediano per unita' (s),A6,U6,7.524500000000005,8.101999999999975,
+D-1 tempo mediano per unita' (s),A6,Q6,9.36149999999998,9.732500000000016,
+D-3 frazione realizzata del tipo (media delle unita'),A1,epiteliale,0.6808699321789643,0.6850806236060535,0.6816012334814134
+D-3 frazione realizzata del tipo (media delle unita'),A1,immunitario,0.09921582816537963,0.10097670296548841,0.09889242061494358
+D-3 frazione realizzata del tipo (media delle unita'),A1,stromale e muscolo liscio,0.21991423965565604,0.21394267342845807,0.21950634590364299
+D-3 frazione realizzata del tipo (media delle unita'),A2,epiteliale,0.7551825160056598,0.7764391281564551,0.7556478257446153
+D-3 frazione realizzata del tipo (media delle unita'),A2,fibroblasti,0.24481748399434017,0.22356087184354498,0.2443521742553847
+D-3 frazione realizzata del tipo (media delle unita'),A3,endoteliale,0.08290420369352787,0.08139547659217322,0.08326798020673784
+D-3 frazione realizzata del tipo (media delle unita'),A3,epiteliale,0.38810639439163824,0.40709420343284625,0.3892119444208054
+D-3 frazione realizzata del tipo (media delle unita'),A3,fibroblasti,0.33763520111131196,0.3250699990168422,0.33507937026843754
+D-3 frazione realizzata del tipo (media delle unita'),A3,immunitario,0.19135420080352195,0.1864403209581383,0.1924407051040192
+D-3 frazione realizzata del tipo (media delle unita'),A4,endoteliali,0.016166615110405513,0.01523952644879524,0.016100948403230852
+D-3 frazione realizzata del tipo (media delle unita'),A4,linfociti B,0.4961054189900436,0.4946300297273912,0.4966875981199958
+D-3 frazione realizzata del tipo (media delle unita'),A4,linfociti T,0.4135770673739245,0.4167494675798275,0.4129868184226386
+D-3 frazione realizzata del tipo (media delle unita'),A4,mieloidi,0.019787885627693003,0.02021696460289652,0.01960215916818191
+D-3 frazione realizzata del tipo (media delle unita'),A4,plasmacellule,0.0327270054019535,0.03190626511649504,0.03288942532157745
+D-3 frazione realizzata del tipo (media delle unita'),A4,stromali,0.021636007495979815,0.021257746524594466,0.021733050564375397
+D-3 frazione realizzata del tipo (media delle unita'),A5,astrociti,0.05987143983979609,0.06103528527116264,0.061777952245032734
+D-3 frazione realizzata del tipo (media delle unita'),A5,microglia,0.03223934891480802,0.03131111401198102,0.03321217169830768
+D-3 frazione realizzata del tipo (media delle unita'),A5,neuroni,0.6900746373118184,0.6995329526543408,0.6881802328245894
+D-3 frazione realizzata del tipo (media delle unita'),A5,oligodendrociti,0.17691405919722938,0.1683765044452355,0.17508798809276332
+D-3 frazione realizzata del tipo (media delle unita'),A5,vascolari,0.040900514736347995,0.03974414361728,0.04174165513930693
+D-3 frazione realizzata del tipo (media delle unita'),A6,cardiomiociti,0.7586570323182529,0.7575780475170528,0.7606432399521609
+D-3 frazione realizzata del tipo (media delle unita'),A6,fibroblasti,0.12511142882093412,0.12765808403994797,0.12695409735719648
+D-3 frazione realizzata del tipo (media delle unita'),A6,immunitari,0.11623153886081287,0.1147638684429992,0.11240266269064264

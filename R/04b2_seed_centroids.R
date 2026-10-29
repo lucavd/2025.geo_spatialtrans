@@ -57,6 +57,8 @@
 #'   (1 senza campo della densita'; il tetto H con `dens_cap`); con un campo della densita' senza tetto non c'e' un limite finito utile e si usa
 #'   `"grid"` (registrato in `info$compartments$regions[[k]]$bound`). `"grid"`: 1.1 volte il massimo di w sulla griglia della regione
 #'   (euristica di S1.5c-S1.5e, per riprodurre i banchi passati). Predefinito di sessione: `options(geo.spatialtrans.thinning_bound = )`.
+#'   Con il tetto della densita' il limite esatto max_t rho_t x H e' valido ma puo' essere molto piu' largo del massimo vero (fino a circa 50
+#'   volte nei preset, revisione RC-15 di S1.6): la semina resta esatta ma servono piu' proposte per cellula.
 #' @param verbose stampa un riepilogo.
 #' @return lista con `centroids` (data.frame `cell_id, region_id, x, y,
 #'   cell_type, cluster_id`), `region_df` (input + `target_density_weighted`,
@@ -80,6 +82,7 @@ seed_centroids <- function(regions,
                            thinning_bound = getOption("geo.spatialtrans.thinning_bound", "exact"),
                            verbose = TRUE) {
   type_order <- match.arg(type_order); spatial <- match.arg(spatial); labels <- match.arg(labels); thinning_bound <- match.arg(thinning_bound, c("exact", "grid"))
+  if (!is.logical(quotas) || length(quotas) != 1L || is.na(quotas)) stop("seed_centroids(): `quotas` deve essere TRUE o FALSE.", call. = FALSE)   # S1.6, RC-20
   t0 <- proc.time()[["elapsed"]]
   a <- .sc_check_args(regions, cell_types, region_composition, random_seed,
                       dmin_factor, max_attempts_factor)
@@ -135,7 +138,7 @@ seed_centroids <- function(regions,
                     sum(n_failed), sum(n_failed > 0)), call. = FALSE)
   }
   info <- list(
-    random_seed = random_seed, dmin_factor = dmin_factor, type_order = type_order, spatial = spatial,
+    random_seed = random_seed, dmin_factor = dmin_factor, type_order = if (spatial == "compartments") "compartments" else type_order, spatial = spatial,   # S1.6, RC-16
     labels = if (spatial == "compartments") labels else NA_character_, compartments = pl$compart_info,
     max_attempts_factor = max_attempts_factor,
     n_cells = nrow(centroids), n_target = sum(out_rdf$n_target),

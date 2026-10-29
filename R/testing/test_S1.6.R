@@ -24,10 +24,13 @@ side_of <- function(A) if (A %in% c("A5", "A6")) 600 else 300
 # ---- T1: predefiniti senza quote (BL-170, DEC-025) ----
 ck("T1a seed_centroids e place_cells: quote spente per predefinito (senza opzioni di sessione)",
    is.null(getOption("geo.spatialtrans.quotas")) && identical(eval(formals(seed_centroids)$quotas), FALSE) && identical(eval(formals(place_cells)$quotas), FALSE))
-q0 <- seed_c("A4", 400, 10, NULL); q1 <- seed_c("A4", 400, 10, NULL, quotas = TRUE)
-ck("T1b con il predefinito 0 rifiuti per quota; con quotas = TRUE rifiuti > 0 (linfonodo, 400 um)",
-   q0$info$compartments$n_quota_reject == 0 && !q0$info$compartments$quotas && q1$info$compartments$n_quota_reject > 0,
-   sprintf("rifiuti %d / %d", q0$info$compartments$n_quota_reject, q1$info$compartments$n_quota_reject))
+q0 <- lapply(names(PRE), function(A) seed_c(A, side_of(A), 10, NULL)); q1 <- seed_c("A4", 400, 10, NULL, quotas = TRUE)
+rej0 <- vapply(q0, function(s) s$info$compartments$n_quota_reject, 0); qon <- vapply(q0, function(s) isTRUE(s$info$compartments$quotas), TRUE)
+ck("T1b con il predefinito 0 rifiuti per quota nei 6 preset; con quotas = TRUE rifiuti > 0 (linfonodo, 400 um)",
+   all(rej0 == 0) && !any(qon) && q1$info$compartments$n_quota_reject > 0,
+   sprintf("rifiuti %s / %d", paste(rej0, collapse = ","), q1$info$compartments$n_quota_reject))
+ck("T1c quotas deve essere TRUE o FALSE (\"TRUE\" o NA rifiutati)", inherits(safe(seed_c("A2", 200, 1, NULL, quotas = "TRUE")), "t_err") &&
+   inherits(safe(seed_c("A2", 200, 1, NULL, quotas = NA)), "t_err"))
 # ---- T2: limite esatto del diradamento (BL-161) ----
 t2 <- do.call(rbind, lapply(names(PRE), function(A) do.call(rbind, lapply(1:3, function(s) {
   sc <- seed_c(A, side_of(A), 7000 + s, H(0.1, 16)); ci <- sc$info$compartments; r <- ci$regions[[1]]
@@ -49,6 +52,25 @@ cnt <- function(b) t(vapply(1:100, function(s) { sc <- seed_c("A2", 250, 8000 + 
 ce <- cnt("exact"); cg <- cnt("grid"); z <- (colMeans(ce) - colMeans(cg)) / sqrt(apply(ce, 2, var) / 100 + apply(cg, 2, var) / 100)
 ck("T2d stessa legge: conteggi medi per tipo con limite esatto e con la griglia entro 3 errori Monte Carlo (100 semi, tumore del colon)",
    all(abs(z) < 3), sprintf("z %.2f %.2f", z[1], z[2]))
+# T2e (revisione RC-03): senza eterogeneita' limite esatto; massimo indipendente di w su 2e5 punti <= limite
+t2e <- vapply(names(PRE), function(A) { sp <- spec_c(A); sc <- seed_c(A, side_of(A), 7100, NULL); r <- sc$info$compartments$regions[[1]]
+  f <- sp$composition$fraction[match(sc$type_df$cell_type, sp$composition$cell_type)]; f <- f / sum(f)
+  s <- sp$compartments$s[match(sc$type_df$cell_type, sp$compartments$cell_type)]; s[is.na(s)] <- 0
+  set.seed(7); x <- runif(2e5, 0, side_of(A)); y <- runif(2e5, 0, side_of(A))
+  w <- .sc_prob(.sc_eta(r$field_types, s, log(f), x, y), r$a, sc$type_df$density)$w
+  c(exact = r$bound == "exact", ok = max(w) <= r$wmax, ratio = max(w) / r$wmax, exceed = sc$info$compartments$n_exceed_wmax) }, numeric(4))
+ck("T2e senza eterogeneita': limite esatto e massimo di w su 2e5 punti indipendenti <= limite (6 preset)",
+   all(t2e["exact", ] == 1) && all(t2e["ok", ] == 1) && all(t2e["exceed", ] == 0), sprintf("%s %.3f", colnames(t2e), t2e["ratio", ]))
+# T2f (revisione RC-03): due regioni con tipi diversi: il limite usa i tipi della regione, non il catalogo
+two <- list(region_df = data.frame(region_id = 1:2, cluster_id = 1:2, area_um2 = c(4e4, 4e4)),
+  region_polygons = sf::st_sfc(sf::st_polygon(list(rbind(c(0, 0), c(200, 0), c(200, 200), c(0, 200), c(0, 0)))),
+                               sf::st_polygon(list(rbind(c(200, 0), c(400, 0), c(400, 200), c(200, 200), c(200, 0))))))
+ct2 <- data.frame(cell_type = c("a", "b", "c"), density = c(4000, 2000, 12000), min_dist_um = 3)
+cm2 <- data.frame(cluster_id = c(1L, 1L, 2L, 2L), cell_type = c("a", "b", "a", "c"), fraction = c(0.5, 0.5, 0.5, 0.5))
+s2f <- seed_centroids(two, ct2, cm2, random_seed = 5, spatial = "compartments", compartments = data.frame(cell_type = c("a", "b", "c"), ell_um = 20, s = 2), verbose = FALSE)
+w2 <- vapply(s2f$info$compartments$regions, function(r) r$wmax, 0)
+ck("T2f limite per regione = max rho_t dei tipi della regione (4000 e 12000, non 12000 e 12000)",
+   all(abs(w2 / (c(4000, 12000) * (1 + 1e-12)) - 1) < 1e-14) && s2f$info$compartments$n_exceed_wmax == 0, sprintf("%.6g", w2))
 # ---- T3: opzioni di sessione per riprodurre gli step passati ----
 op <- options(geo.spatialtrans.quotas = TRUE, geo.spatialtrans.thinning_bound = "grid")
 a3 <- seed_c("A3", 300, 31, H(0.1, 16)); options(op); b3 <- seed_c("A3", 300, 31, H(0.1, 16), quotas = TRUE, thinning_bound = "grid")
@@ -58,6 +80,22 @@ op <- options(geo.spatialtrans.preset_types = "single")
 s3 <- tissue_preset_spec("epithelial"); options(op); s3b <- tissue_preset_spec("epithelial", types = "single")
 ck("T3b options(preset_types = \"single\") = types = \"single\" (preset a un tipo di S1.5)", identical(s3, s3b) && identical(s3$types, "single") &&
    identical(tissue_preset_spec("epithelial")$types, "multi"))
+# T3c, T3d (revisione RC-02): place_cells() inoltra quotas, thinning_bound e legge l'opzione dei preset a un tipo
+pcc <- function(...) suppressWarnings(place_cells(clust_sq(300), "lymphoid", pixel_size_um = 1, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L,
+  spatial = "compartments", min_dist_mode = "nucleus", size_arm = "group", random_seed = 61, verbose = FALSE, strict = FALSE, ...))
+ci_d <- pcc()$metadata$seed_info$compartments; ci_l <- pcc(quotas = TRUE, thinning_bound = "grid")$metadata$seed_info$compartments
+op <- options(geo.spatialtrans.quotas = TRUE, geo.spatialtrans.thinning_bound = "grid"); ci_o <- pcc()$metadata$seed_info$compartments; options(op)
+bd <- function(ci) unique(vapply(ci$regions, function(z) z$bound, ""))
+ck("T3c place_cells(): predefiniti senza quote e limite esatto; argomenti e opzioni di sessione arrivano alla semina (linfonodo)",
+   !ci_d$quotas && identical(bd(ci_d), "exact") && ci_l$quotas && identical(bd(ci_l), "grid") && ci_l$n_quota_reject > 0 &&
+   ci_o$quotas && identical(bd(ci_o), "grid"), sprintf("%s/%s, %s/%s, %s/%s", ci_d$quotas, bd(ci_d), ci_l$quotas, bd(ci_l), ci_o$quotas, bd(ci_o)))
+pcs <- function(...) suppressWarnings(place_cells(clust_sq(200), "epithelial", pixel_size_um = 1, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L,
+  random_seed = 62, verbose = FALSE, strict = FALSE, ...))
+op <- options(geo.spatialtrans.preset_types = "single"); Lo <- pcs(); options(op); Le <- pcs(types = "single")
+lmd5 <- function(L) { f <- tempfile(); saveRDS(list(L$cell_df, sf::st_as_binary(L$cell_territories), sf::st_as_binary(L$cell_nuclei)), f, compress = FALSE)
+  on.exit(unlink(f)); unname(tools::md5sum(f)) }
+ck("T3d place_cells() con options(preset_types = \"single\") = types = \"single\" (md5), catalogo epithelial_all",
+   identical(lmd5(Lo), lmd5(Le)) && identical(Lo$cell_types_resolved$cell_type, "epithelial_all"))
 # ---- T4: C7 con la densita' della miscela quando la semina e' cieca al tipo (BL-156) ----
 L4 <- suppressWarnings(place_cells(clust_sq(600), "brain_cortex", pixel_size_um = 1, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L,
                                    random_seed = 44, verbose = FALSE, strict = FALSE))
@@ -70,11 +108,26 @@ v_bm <- c7(validate_cell_layer(L4m, type_order = "blind"))
 ck("T4a semina cieca (cervello, preset per tipo): C7 PASS con la densita' della miscela; tipo puro x 4 ignorato; miscela x 4 -> WARN",
    identical(L4$metadata$type_order, "blind") && v_b$status == "PASS" && grepl("miscela", v_b$threshold) && v_bx$status == "PASS" && v_bm$status == "WARN",
    sprintf("%s | %s | %s", v_b$status, v_bx$status, v_bm$status))
-ck("T4b semina in sequenza: C7 con la densita' del tipo (tipo x 4 -> WARN, design §6.2)", v_sx$status == "WARN" && !grepl("miscela", v_sx$threshold))
+ck("T4b semina in sequenza: C7 con la densita' del tipo (tipo x 4 -> WARN, design §6.1)", v_sx$status == "WARN" && !grepl("miscela", v_sx$threshold))
 L4s <- suppressWarnings(place_cells(clust_sq(300), "epithelial", pixel_size_um = 1, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L,
                                     types = "single", random_seed = 45, verbose = FALSE, strict = FALSE))
 ck("T4c preset a un tipo: semina in sequenza e C7 con la densita' del tipo, come in S1.5", identical(L4s$metadata$type_order, "sequential") &&
    !grepl("miscela", c7(L4s$metadata$validation)$threshold))
+# T4d (revisione RC-01, RC-16): compartimenti con la densita' del tipo; validate_cell_layer() senza type_order = validazione interna
+Lc <- pcc(); vci <- c7(Lc$metadata$validation); vcn <- c7(validate_cell_layer(Lc)); vbn <- c7(validate_cell_layer(L4))
+ck("T4d compartimenti: C7 con la densita' del tipo (anche senza type_order); semina cieca senza type_order = riga interna",
+   !grepl("miscela", vci$threshold) && identical(vci$threshold, vcn$threshold) && identical(vci$value, vcn$value) &&
+   identical(vbn$value, v_b$value) && identical(vbn$threshold, v_b$threshold) && identical(Lc$metadata$seed_info$type_order, "compartments"))
+# T4e (revisione RC-18): semina cieca nei 6 preset: C7 PASS con la densita' della miscela
+t4e <- vapply(names(PRE), function(A) { L <- suppressWarnings(place_cells(clust_sq(side_of(A)), PRE[[A]], pixel_size_um = 1, min_region_area_um2 = 0,
+  simplify_tol_um = 0, stride = 1L, random_seed = 47, verbose = FALSE, strict = FALSE)); v <- c7(L$metadata$validation)
+  paste(v$status, grepl("miscela", v$threshold)) }, "")
+ck("T4e semina cieca, 6 preset: C7 PASS con la miscela", all(t4e == "PASS TRUE"), t4e)
+w4f <- character(0)
+invisible(withCallingHandlers(place_cells(clust_sq(300), "lymphoid", pixel_size_um = 1, min_region_area_um2 = 0, simplify_tol_um = 0, stride = 1L,
+  spatial = "compartments", min_dist_mode = "nucleus", size_arm = "group", random_seed = 61, verbose = FALSE, strict = FALSE, type_order = "blind"),
+  warning = function(w) { w4f <<- c(w4f, conditionMessage(w)); invokeRestart("muffleWarning") }))
+ck("T4f place_cells(): type_order con i compartimenti e' ignorato con un avviso", any(grepl("type_order", w4f)))
 # ---- T5: type_order per i cataloghi dell'utente (BL-155) ----
 ctu <- data.frame(cell_type = c("a", "b"), density = c(9000, 3000), min_dist_um = 4, nucleus_shape = "circle", nucleus_radius = NA_real_,
                   nucleus_to_eq_ratio = 0.4, nucleus_area_slope = 0.2, nucleus_area_sdlog = 0.3, nucleus_aspect = 1, nucleus_orient = "random",
@@ -91,9 +144,11 @@ ck("T5b predefinito per i cataloghi dell'utente invariato (in sequenza)", identi
 # ---- T6: nessun interruttore dei mutanti nel codice di produzione (BL-155) ----
 src <- unlist(lapply(list.files(file.path(SRC, "R"), pattern = "\\.R$", full.names = TRUE), readLines))
 ck("T6 nessun Sys.getenv(\"S1...\") in R/*.R", !any(grepl("Sys.getenv\\(\"S1", src)), sum(grepl("Sys.getenv\\(\"S1", src)))
-# ---- T7: i test di S1.1-S1.4 scrivono solo nella cartella dei log (BL-165) ----
-ff <- function(f) if (file.exists(file.path(SRC, f))) file.path(SRC, f) else f        # i mutanti possono toccare anche i test (N6)
-tw <- unlist(lapply(sprintf("R/testing/test_S1.%d.R", 1:4), function(f) { x <- readLines(ff(f)); x[grepl("file.path\\(RES,", x) & grepl("write|row.names|_test_%s", x)] }))
+# ---- T7: i test di S1.1-S1.4 scrivono solo nella cartella dei log (BL-165; revisione RC-04, RC-05) ----
+ff <- function(f) if (file.exists(file.path(SRC, f))) file.path(SRC, f) else f        # i mutanti possono toccare anche i test (N6, N16)
+wr <- "write\\.csv|saveRDS|writeLines|write_parquet|png\\(|pdf\\(|ggsave|file\\.copy"
+tw <- unlist(lapply(sprintf("R/testing/test_S1.%d.R", 1:4), function(f) { x <- readLines(ff(f)); x[grepl(wr, x) & grepl("\\bRES\\b|results/", x)] }))
 ok7 <- all(vapply(sprintf("R/testing/test_S1.%d.R", 1:4), function(f) any(grepl("GEO_TEST_OUT", readLines(ff(f)))), TRUE))
-ck("T7 test_S1.1-S1.4: nessuna scrittura in results/ fuori da GEO_TEST_OUT", !length(tw) && ok7, tw)
+o11 <- readLines(ff("R/testing/test_S1.1.R")); okd <- any(grepl('^OUTD <- "/mnt/micron/geo_spatialtrans/S1.1/outputs"', o11)) && !any(grepl("^OUTD <- Sys.getenv", o11))
+ck("T7 test_S1.1-S1.4: nessuna scrittura in results/ (le tabelle vanno in GEO_TEST_OUT); le RDS di S1.1 restano in /mnt/micron", !length(tw) && ok7 && okd, tw)
 nf <- sum(!unlist(res)); cat(sprintf("RESULT %d/%d PASS\n", length(res) - nf, length(res)))

@@ -1,0 +1,67 @@
+P-1 righe 179 | {'confermata': 169, 'indeterminata': 10} | indeterminate fra le 12 di E3: 8 | indeterminate fuori dalle 12: 2
+  id archetype                            unit  n_pairs    diff     se  margin       verdict  by_construction
+ P-5        A1                      epiteliale        5 -0.0012 0.0008  0.0017 indeterminata             True
+ P-6        A1 stromale e muscolo liscio 10-20        5 -0.0033 0.0152  0.0199 indeterminata             True
+ P-4        A1                     immunitario        5  0.0037 0.0024  0.0034 indeterminata             True
+ P-1        A3                         tessuto       10 -0.0003 0.0318  0.0500 indeterminata             True
+P-8b        A5                       astrociti        5  0.4787 1.4722  1.4173 indeterminata             True
+P-14        A5                       astrociti        5  4.9459 5.1173  1.5262 indeterminata             True
+ P-6        A5                 astrociti 10-20        5  0.2538 0.3934  0.3159 indeterminata             True
+ P-6        A5                 astrociti 40-80        5 -0.0276 0.0655  0.1539 indeterminata            False
+ P-1        A6                         tessuto       10 -0.0169 0.0114  0.0175 indeterminata             True
+P-16        A6                         tessuto        5 -0.0222 0.0336  0.0637 indeterminata            False
+CP-1 attese smentite:
+  id archetype       diff       se    margin       verdict
+P-15        A1 -2445.2796  35.7243  386.8890      smentita
+P-15        A4 -9163.1026 403.0362 2303.3791      smentita
+P-15        A5  -389.5409  27.0473  339.5985 indeterminata
+P-17        A1   -44.3400   2.6957    5.2500      smentita
+ P-3        A4    -0.0823   0.0039    0.0130      smentita
+CP-1 fallita | smentite in tutto il confronto: 34 su 179
+CP-2
+           acc_Q6   acc_Q   ratio  bound_ratio_E4 expected    ok
+archetype                                                       
+A1         0.3248  0.2948  1.1017          0.9092   > 1.05  True
+A2         0.4654  0.4230  1.1002          0.9091   > 1.05  True
+A3         0.2396  0.2179  1.0996          0.9091   > 1.05  True
+A4         0.8777  0.8111  1.0822          0.9238   > 1.05  True
+A5         0.2164  0.2437  0.8881          1.1762   < 0.95  True
+A6         0.3012  0.2740  1.0994          0.9097   > 1.05  True
+CP-2 superata
+D-2 conteggi
+verdict                       confermata  indeterminata  smentita
+arm                                                              
+Q (S1.5e)                            120             20        39
+Q (S1.5e, riferimenti nuovi)         119             19        41
+Q6                                   119             17        43
+U (S1.5e)                             70             14        95
+U (S1.5e, riferimenti nuovi)          69             16        94
+U6                                    69             16        94
+D-2 U6: confermate spaziali 19, per tipo 14
+D-2 Q6: confermate spaziali 60, per tipo 48
+D-2 Q (S1.5e, riferimenti nuovi): confermate spaziali 60, per tipo 48
+D-2 Q (S1.5e): confermate spaziali 60, per tipo 48
+D-2 U6 contro U di S1.5e con gli stessi riferimenti: verdetti diversi 0 max |stima| 0.0
+D-2 Q6 contro Q di S1.5e con gli stessi riferimenti: verdetti diversi 6
+  id archetype             unit  est_s15e     est      lo      hi  verdict_s15e       verdict
+P-16        A1          tessuto    0.2100  0.2066  0.2294  0.4496 indeterminata      smentita
+ P-5        A1      immunitario    0.9150  0.9122  0.9060  0.9655    confermata indeterminata
+P-16        A3          tessuto    0.1745  0.1712  0.1878  0.3944 indeterminata      smentita
+P-13        A6          tessuto    0.0111  0.0114  0.0098  0.0307 indeterminata    confermata
+P-8b        A6       immunitari   21.4482 21.6771 16.7939 21.7796    confermata indeterminata
+ P-6        A6 immunitari 10-20    2.5772  2.6598  1.9046  4.5981 indeterminata    confermata
+D-1
+                            desc archetype arm  value   ref  ref2
+D-1 tempo mediano per unita' (s)        A1  U6  29.03 30.53   NaN
+D-1 tempo mediano per unita' (s)        A1  Q6  39.13 39.19   NaN
+D-1 tempo mediano per unita' (s)        A2  U6  16.81 18.27   NaN
+D-1 tempo mediano per unita' (s)        A2  Q6  18.81 18.99   NaN
+D-1 tempo mediano per unita' (s)        A3  U6   3.09  3.78   NaN
+D-1 tempo mediano per unita' (s)        A3  Q6   6.96  6.72   NaN
+D-1 tempo mediano per unita' (s)        A4  U6  27.99 31.94   NaN
+D-1 tempo mediano per unita' (s)        A4  Q6  33.20 33.31   NaN
+D-1 tempo mediano per unita' (s)        A5  U6  16.02 16.62   NaN
+D-1 tempo mediano per unita' (s)        A5  Q6  22.04 22.13   NaN
+D-1 tempo mediano per unita' (s)        A6  U6   7.52  8.10   NaN
+D-1 tempo mediano per unita' (s)        A6  Q6   9.36  9.73   NaN
+D-3 scarto massimo |Q6 - RV| 0.0213 |Q - RV| 0.0208 |Q6 - Q| 0.0038

@@ -141,6 +141,7 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   small_components <- match.arg(small_components); size_conversion <- match.arg(size_conversion); types <- match.arg(types, c("multi", "single"))
   thinning_bound <- match.arg(thinning_bound, c("exact", "grid"))
   if (!is.null(type_order)) type_order <- match.arg(type_order, c("blind", "sequential"))
+  if (!is.logical(quotas) || length(quotas) != 1L || is.na(quotas)) stop("place_cells(): `quotas` deve essere TRUE o FALSE.", call. = FALSE)   # S1.6, RC-20
   if (missing(pixel_size_um))
     stop("place_cells(): `pixel_size_um` e' obbligatorio (decisione 10 / C-A): un numero, \"estimate\" o list(scalefactors_json = ...).", call. = FALSE)
   if (!is.data.frame(clust) || !all(c("x", "y", cluster_col) %in% names(clust)))
@@ -216,6 +217,8 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
   t_order <- if (!is.null(type_order)) type_order else if (!is.null(spec) && identical(spec$types, "multi")) "blind" else "sequential"
   sp_used <- if (!is.null(spec)) spec$spatial else if (is.null(spatial)) "uniform" else spatial
   ctab <- if (!is.null(override_compartments)) override_compartments else if (!is.null(spec)) spec$compartments else NULL
+  if (sp_used == "compartments" && !is.null(type_order))
+    warning("place_cells(): `type_order` vale solo con spatial = \"uniform\"; con i compartimenti e' ignorato.", call. = FALSE)   # S1.6, RC-20
   sc <- if (sp_used == "compartments") {
     if (is.null(ctab)) stop("place_cells(): spatial = \"compartments\" richiede una tabella dei compartimenti.", call. = FALSE)
     htab <- if (!is.null(override_heterogeneity)) override_heterogeneity else if (!is.null(spec)) spec$heterogeneity else NULL
@@ -261,7 +264,8 @@ place_cells <- function(clust, tissue_preset = "epithelial", cell_types = NULL, 
                           spatial = sp_used, min_dist_mode = if (is.null(spec)) NA_character_ else spec$min_dist_mode,
                           labels = if (sp_used == "compartments") labels else NA_character_,
                           compartments = if (sp_used == "compartments") ctab else NULL,
-                          heterogeneity = if (sp_used == "compartments") sc$info$compartments$heterogeneity else NULL, quotas = quotas,
+                          heterogeneity = if (sp_used == "compartments") sc$info$compartments$heterogeneity else NULL,
+                          quotas = if (sp_used == "compartments") quotas else NA,
                           thinning_bound = if (sp_used == "compartments") thinning_bound else NA_character_,
                           type_order = if (sp_used == "compartments") NA_character_ else t_order,
                           size_resid = if (is.null(spec)) (if (is.null(rtab)) "gaussian" else "empirical") else spec$size_resid, resid_mode = resid_mode,

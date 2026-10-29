@@ -3,8 +3,8 @@
 S1.5e, P-1 e CP-3: frazione di nuclei simulati a contatto sulle finestre di R2c, e contatto per classe di distanza dal
 vicino (classi di tools/S1.5e_explore_contacts.py). Stessa regola dei focali di tools/S1.5d_windows.py (centroide raster a distanza >= d_max del
 tessuto dai lati e dalle esclusioni annotate da Luca; contatto = n_c2 > 0 del raster S1.4c); distanza dal vicino fra tutti i centri del raster.
-Bracci: variabile S15E_ARMS. Uscite: results/S1.5e/S1.5e_windows.csv (finestra x seme x braccio), S1.5e_windows_nn.csv (anche per classe).
-Uso: S15E_ARMS=U,RV,X,XA,XAD .venv/bin/python tools/S1.5e_windows.py"""
+Bracci: variabile S16_ARMS (predefinito U6,Q6). Uscite: results/S1.6/S1.6_windows.csv (finestra x seme x braccio), S1.6_windows_nn.csv (anche per classe).
+Uso: S16_ARMS=U6,Q6 .venv/bin/python tools/S1.6_windows.py"""
 import importlib.util, json, os
 import numpy as np, pandas as pd, shapely
 from pathlib import Path

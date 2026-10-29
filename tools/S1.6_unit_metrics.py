@@ -4,7 +4,7 @@ tools/S1.5d_metrics.py: P-5...P-7, P-11...P-14), piu' densita' del ROI (nuclei /
 (tools/S1.5e_metrics.void_shape con le celle interne della regola di R3 scritte dal banco: P-16, P-17). Stadio «real»: le stesse funzioni sui nuclei
 veri (results/S1.5e/S1.5e_real_void_shape.csv, per G-4). Ingresso: /mnt/micron/geo_spatialtrans/S1.5e/cells/<braccio>/*.parquet. Uscita: un csv per
 unita' in .../S1.5e/umet/<braccio>/ (rilanciabile) e results/S1.5e/S1.5e_unit_metrics.csv.
-Uso: .venv/bin/python tools/S1.5e_unit_metrics.py [worker] [bracci separati da virgole] | real"""
+Uso: .venv/bin/python tools/S1.6_unit_metrics.py [worker] [bracci separati da virgole] | real   (S1.6: uscite in /mnt/micron/geo_spatialtrans/S1.6 e results/S1.6/S1.6_unit_metrics.csv)"""
 import sys, os, glob, importlib.util, numpy as np, pandas as pd
 from multiprocessing import Pool
 from scipy.spatial import cKDTree
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "real":
         R = m5d.rois_table()
         with Pool(6) as p: r = pd.DataFrame(p.map(real_one, list(zip(R.archetype, R.roi_id))))
-        r.to_csv(f"{RES}/S1.5e_real_void_shape.csv", index=False); print(r.to_string()); sys.exit(0)
+        r.to_csv(f"{RES}/S1.6_real_void_shape.csv", index=False); print(r.to_string()); sys.exit(0)
     nw = int(sys.argv[1]) if len(sys.argv) > 1 else 6
     arms = sys.argv[2].split(",") if len(sys.argv) > 2 else None
     fs = sorted(glob.glob(f"{OUT}/cells/*/*.parquet")); fs = [f for f in fs if arms is None or f.split("/")[-2] in arms]

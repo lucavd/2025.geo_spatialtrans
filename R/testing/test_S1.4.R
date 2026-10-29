@@ -17,7 +17,7 @@ MUT <- Sys.getenv("S14_MUTANT", "none")
 E <- dcg_mutate(dcg_env(), MUT)
 DCG <- function(...) E$derive_cell_geometry(..., nucleus_model = "scale", verbose = FALSE)   # S1.4d: il predefinito e' "clip"
 RES <- "results/S1.4"; dir.create(RES, showWarnings = FALSE, recursive = TRUE)
-OUTD <- Sys.getenv("GEO_TEST_OUT", RES); dir.create(OUTD, showWarnings = FALSE, recursive = TRUE)   # S1.6 (BL-165): uscite fuori dai file versionati se GEO_TEST_OUT e' dato
+TOUT <- Sys.getenv("GEO_TEST_OUT", RES); dir.create(TOUT, showWarnings = FALSE, recursive = TRUE)   # S1.6 (BL-165, revisione RC-05): tabelle fuori dai file versionati se GEO_TEST_OUT e' dato
 TOL <- 1e-9; PREC <- 1e-3
 rows <- list()
 rec <- function(check, input, metric, value, threshold, status) {
@@ -254,5 +254,5 @@ for (ec in err_cases) {
 }
 
 tab <- do.call(rbind, rows); tab$mutant <- MUT
-f <- file.path(OUTD, sprintf("S1.4_test_%s.csv", MUT)); write.csv(tab, f, row.names = FALSE)
+f <- file.path(TOUT, sprintf("S1.4_test_%s.csv", MUT)); write.csv(tab, f, row.names = FALSE)
 cat(sprintf("\nTOTALE %s: %d PASS, %d FAIL su %d -> %s\n", MUT, sum(tab$status == "PASS"), sum(tab$status == "FAIL"), nrow(tab), f))
