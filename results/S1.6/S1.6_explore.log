@@ -1,0 +1,127 @@
+E0: righe S1.5e 1253, lib 1253, comuni 1253, solo una parte 0, verdetti diversi 0, max |est| 3.64e-12, max |se| 5.68e-14
+E1 frazione dell'insieme del modello fra le celle interne:
+archetype  n_interior  n_model_set   frac
+       A1       33203        33203 1.0000
+       A2       29948        29948 1.0000
+       A3       20018        20018 1.0000
+       A4      136225        99684 0.7318
+       A5        1993         1993 1.0000
+       A6        3231         2367 0.7326
+E1 controllo: celle interne = S1.5d_real_q90.csv, max scarto 3.552713678800501e-14
+                                     med_max            med_min            q90_max            q90_min          
+set                                 interior model_set interior model_set interior model_set interior model_set
+archetype cell_type                                                                                            
+A1        epiteliale                  15.064    15.064   13.565    13.565   27.130    27.130   24.282    24.282
+          immunitario                 11.916    11.916   10.942    10.942   18.511    18.511   17.222    17.222
+          stromale e muscolo liscio   12.066    12.066   10.118    10.118   22.873    22.873   19.860    19.860
+A2        epiteliale                  33.860    33.860   31.838    31.838   70.747    70.747   65.473    65.473
+          fibroblasti                 34.497    34.497   20.863    20.863   59.930    59.930   37.643    37.643
+A3        endoteliale                 37.643    37.643   25.620    25.620   63.451    63.451   54.536    54.536
+          epiteliale                  43.150    43.150   27.718    27.718   97.955    97.955   51.764    51.764
+          fibroblasti                 35.846    35.846   29.291    29.291   72.171    72.171   62.814    62.814
+          immunitario                 30.414    30.414   23.185    23.185   56.244    56.244   45.172    45.172
+A4        linfociti B                 17.239    17.689   16.265    16.565   31.315    30.356   22.486    21.586
+          linfociti T                 16.415    16.714   15.665    15.740   22.561    21.586   20.537    20.087
+A5        astrociti                   54.177    54.177   48.507    48.507   65.065    65.065   58.960    58.960
+          neuroni                    138.764   138.764   97.916    97.916  197.108   197.108  137.127   137.127
+          oligodendrociti             57.668    57.668    8.372     8.372  137.293   137.293   53.426    53.426
+A6        cardiomiociti               28.415    35.312   16.119    17.619   59.108    64.417   35.207    37.599
+          fibroblasti                 23.691    23.991   16.944    16.944   40.485    39.091   27.320    27.305
+          immunitari                  23.766    21.780   16.157    16.794   33.873    37.359   27.665    27.687
+E1b tessuto: scarto massimo dal riferimento di S1.5 per insieme
+                       d_an    d_nc
+archetype set                      
+A1        interior   0.0000  0.0000
+          model_set  0.0000  0.0000
+A2        interior   0.0000  0.0000
+          model_set  0.0000  0.0000
+A3        interior   0.0000  0.0000
+          model_set  0.0000  0.0000
+A4        interior   0.4497  0.0092
+          model_set  0.0000  0.0000
+A5        interior   0.0000  0.0000
+          model_set  0.0000  0.0000
+A6        interior   4.3859  0.0049
+          model_set  0.0000  0.0000
+E1b tipo: scarto massimo dal riferimento di S1.5b per insieme
+archetype  set      
+A1         interior     0.0000
+           model_set    0.0000
+A2         interior     0.0000
+           model_set    0.0000
+A3         interior     0.0000
+           model_set    0.0000
+A4         interior     0.0000
+           model_set    0.5247
+A5         interior     0.0000
+           model_set    0.0000
+A6         interior     0.0000
+           model_set    6.8975
+E1c: righe con riferimento cambiato: 30 ; verdetti cambiati: 6
+arm   id archetype          unit  est_old  se_old  lo_old  hi_old  lo_new  hi_new   verdict_old   verdict_new
+  U  P-4        A4   linfociti B   0.4831  0.0002  0.4215  0.4854  0.4298  0.4886    confermata    confermata
+  U P-8b        A4   linfociti B  16.8545  0.0081 16.2648 17.2391 16.5646 17.6889    confermata    confermata
+  U P-14        A4   linfociti B  22.5461  0.0059 22.4858 31.3153 21.5864 30.3559    confermata    confermata
+  U  P-4        A4   linfociti T   0.4550  0.0001  0.4553  0.4986  0.4592  0.4977      smentita      smentita
+  U P-8b        A4   linfociti T  15.8796  0.0047 15.6651 16.4147 15.7401 16.7145    confermata    confermata
+  U P-14        A4   linfociti T  21.2887  0.0130 20.5371 22.5608 20.0873 21.5864    confermata    confermata
+  U  P-4        A6 cardiomiociti   0.0257  0.0003  0.0215  0.0331  0.0228  0.0369    confermata    confermata
+  U P-8b        A6 cardiomiociti  21.6510  0.0874 16.1191 28.4147 17.6186 35.3121    confermata    confermata
+  U P-14        A6 cardiomiociti  40.6941  0.3075 35.2072 59.1085 37.5988 64.4165    confermata    confermata
+  U  P-4        A6   fibroblasti   0.0249  0.0004  0.0188  0.0370  0.0207  0.0413    confermata    confermata
+  U P-8b        A6   fibroblasti  20.8021  0.2095 16.9438 23.6914 16.9438 23.9913    confermata    confermata
+  U P-14        A6   fibroblasti  38.7660  0.2191 27.3201 40.4853 27.3051 39.0908    confermata indeterminata
+  U  P-4        A6    immunitari   0.0243  0.0003  0.0318  0.0480  0.0343  0.0443      smentita      smentita
+  U P-8b        A6    immunitari  20.2760  0.2673 16.1566 23.7663 16.7939 21.7796    confermata    confermata
+  U P-14        A6    immunitari  37.8273  0.4584 27.6649 33.8727 27.6874 37.3589      smentita indeterminata
+  Q  P-4        A4   linfociti B   0.4683  0.0007  0.4215  0.4854  0.4298  0.4886    confermata    confermata
+  Q P-8b        A4   linfociti B  16.3038  0.0215 16.2648 17.2391 16.5646 17.6889 indeterminata      smentita
+  Q P-14        A4   linfociti B  22.0206  0.0195 22.4858 31.3153 21.5864 30.3559      smentita    confermata
+  Q  P-4        A4   linfociti T   0.4779  0.0010  0.4553  0.4986  0.4592  0.4977    confermata    confermata
+  Q P-8b        A4   linfociti T  16.0332  0.0229 15.6651 16.4147 15.7401 16.7145    confermata    confermata
+  Q P-14        A4   linfociti T  21.6664  0.0292 20.5371 22.5608 20.0873 21.5864    confermata      smentita
+  Q  P-4        A6 cardiomiociti   0.0255  0.0002  0.0215  0.0331  0.0228  0.0369    confermata    confermata
+  Q P-8b        A6 cardiomiociti  21.9330  0.0377 16.1191 28.4147 17.6186 35.3121    confermata    confermata
+  Q P-14        A6 cardiomiociti  41.0098  0.2548 35.2072 59.1085 37.5988 64.4165    confermata    confermata
+  Q  P-4        A6   fibroblasti   0.0280  0.0006  0.0188  0.0370  0.0207  0.0413    confermata    confermata
+  Q P-8b        A6   fibroblasti  21.6560  0.2301 16.9438 23.6914 16.9438 23.9913    confermata    confermata
+  Q P-14        A6   fibroblasti  39.9573  0.1907 27.3201 40.4853 27.3051 39.0908    confermata      smentita
+  Q  P-4        A6    immunitari   0.0279  0.0007  0.0318  0.0480  0.0343  0.0443      smentita      smentita
+  Q P-8b        A6    immunitari  21.4482  0.1386 16.1566 23.7663 16.7939 21.7796    confermata    confermata
+  Q P-14        A6    immunitari  39.7879  0.6155 27.6649 33.8727 27.6874 37.3589      smentita      smentita
+E3: 2 ES tipici (10 semi) / margine (un quarto della larghezza), per previsione, braccio Q:
+      count    50%    max
+id                       
+P-1     6.0  0.732  2.086
+P-10    6.0  0.056  0.211
+P-11    6.0  0.296  0.409
+P-12    6.0  0.315  0.641
+P-13    6.0  0.354  0.744
+P-14   17.0  0.189  7.244
+P-15    6.0  0.000  0.002
+P-16    5.0  0.514  1.449
+P-17    5.0  0.551  0.708
+P-2     6.0  0.472  1.085
+P-3     6.0  0.081  0.263
+P-4    17.0  0.187  1.145
+P-5    17.0  0.181  1.243
+P-6    34.0  0.257  1.625
+P-7     6.0  0.074  0.519
+P-8a    6.0  0.074  0.103
+P-8b   17.0  0.113  1.888
+P-8c    1.0  0.062  0.062
+P-9     6.0  0.066  0.173
+E3: righe con 2 ES > margine: 21 su 358
+arm   id archetype                            unit    diff   se10  margin  ratio_2se_margin
+  Q  P-5        A1                      epiteliale -0.0021 0.0010  0.0017            1.2431
+  Q  P-6        A1 stromale e muscolo liscio 10-20 -0.0006 0.0143  0.0199            1.4392
+  Q  P-4        A1                     immunitario -0.0019 0.0019  0.0034            1.1449
+  Q  P-5        A1                     immunitario  0.0013 0.0079  0.0149            1.0627
+  Q  P-1        A3                         tessuto -0.0331 0.0401  0.0500            1.6032
+  Q P-16        A3                         tessuto  0.0188 0.0374  0.0516            1.4495
+  Q  P-2        A5                         tessuto  0.0205 0.0271  0.0500            1.0849
+  Q P-8b        A5                       astrociti  1.3729 1.3376  1.4173            1.8876
+  Q P-14        A5                       astrociti -3.7881 5.5278  1.5262            7.2440
+  Q  P-6        A5                 astrociti 10-20 -0.2166 0.2567  0.3159            1.6252
+  Q  P-1        A6                         tessuto -0.0028 0.0182  0.0175            2.0856
+  Q  P-6        A6             cardiomiociti 40-80 -0.0028 0.0072  0.0132            1.0796
