@@ -1,7 +1,8 @@
 # 2. Methods
 
 <!--
-Draft v0 (2026-10-27, Claude, for Pierangela to review). Written from thesis/protocol/ADEMP.md (draft v0.1, not yet approved) and thesis/DECISIONS.md, following the 9-section plan agreed on 2026-10-27.
+Draft v0.1 (2026-10-29: split paragraph updated to DECISIONS 2026-10-29; v0 of 2026-10-27, Claude, for Pierangela to review). Written from thesis/protocol/ADEMP.md (draft v0.1, not yet approved) and thesis/DECISIONS.md, following the 9-section plan agreed on 2026-10-27.
+TO UPDATE to ADEMP v0.4 (2026-10-30, DECISIONS 2026-10-30): GEM-1 criterion "not in CELLxGENE of July 2024", G on all three tissues, no G0 deadline (l.40); held-out group of 4 donors for Aim 1, E′ on all pairs, training 197/16/17 (l.48); factor levels 5/15 cells, 10,000/20,000 UMI, Dirichlet α = 1, thinning (l.68); φ ~ cell_type + donor; [LUCA] items now decided (RCTD full, rank all five, decision rule, oracle cells per spot, Pearson + Spearman).
 This chapter is the ADEMP rewritten as prose (PROTOCOLLO §8 item 2; final length 10–12 pages). It is not final: until Luca approves the ADEMP with a date, nothing here is pre-registered.
 Placeholders: *[to be fixed from the pilot]* = Week 2 pilot (ADEMP [PILOT]); *[from the real data]* = training split of the real data (ADEMP [REAL DATA]); *[pending Luca's approval]* = proposal not yet approved (ADEMP [LUCA]/[OPEN], or a DECISIONS row "waiting for Luca's approval").
 Every number has its source in the sentence (DOI, or dataset + metadata/script). [REF] marks a statement that still needs a checked source. New references not yet in the Introduction are listed at the end with their verification status.

@@ -27,6 +27,10 @@
 # 2026-10-27 coverage rule is replaced by donor QC + random draw, seed 20261029. The first run
 # (2026-10-27) used the old rule; its donors are not used.
 #   5. donors excluded by QC: brain 7, colon 0, lymphoid 0 (counted on the 2026-10-27 outputs).
+# Amendment 2026-10-30, written before the run (DECISIONS 2026-10-30, held-out group): 4 donors are
+# drawn instead of 2 (same seed); the 3rd and 4th complete the Aim 1 held-out group.
+#   6. the first two drawn are unchanged: held-out/E′ = brain Donor_207/Donor_680,
+#      colon C104/C105, lymphoid 583B/591C; training = eligible - excluded - 4.
 # Expected, not a stop: in brain no cell is removed by the 100-genes filter (PsychAD minimum is
 # 998 genes per nucleus in obs n_genes).
 #
@@ -52,6 +56,7 @@ source("R/assign_split.R")
 min_genes <- 100   # ADEMP §2.6.3
 min_cells <- 50    # ADEMP §2.6.1
 split_seed <- 20261029   # DECISIONS 2026-10-29; fixed before the run, never changed
+n_draw <- 4              # held-out group (DECISIONS 2026-10-30)
 
 # Age in years from the CELLxGENE development_stage label; month stages count as < 1 year,
 # "unknown" becomes NA (excluded).
@@ -69,20 +74,23 @@ tissues <- list(
     cols = c("disease", "development_stage"),
     keep = function(o) o$disease == "normal" & !is.na(age_years(o$development_stage)) &
                        age_years(o$development_stage) >= 18,
-    expected_donors = 208, expected_cells = NA, expected_excluded = 7),
+    expected_donors = 208, expected_cells = NA, expected_excluded = 7,
+    expected_pair = c("Donor_207", "Donor_680")),
   colon = list(
     counts = "/raw/X",      # X is normalised; raw counts in raw/X
     label = "ClusterMidway", sample = "biosample_id",
     cols = c("assay", "MMRStatusTumor", "disease"),
     keep = function(o) o$assay == "10x 3' v2" & o$MMRStatusTumor == "MMRp" &
                        o$disease == "colon adenocarcinoma",
-    expected_donors = 20, expected_cells = 89242, expected_excluded = 0),
+    expected_donors = 20, expected_cells = 89242, expected_excluded = 0,
+    expected_pair = c("C104", "C105")),
   lymphoid = list(
     counts = "/raw/X",
     label = "author_cell_type", sample = "library_id",
     cols = c("assay", "tissue"),
     keep = function(o) o$assay == "10x 5' v2" & o$tissue == "thoracic lymph node",
-    expected_donors = 21, expected_cells = 185437, expected_excluded = 0)
+    expected_donors = 21, expected_cells = 185437, expected_excluded = 0,
+    expected_pair = c("583B", "591C"))
 )
 
 summary_rows <- list()
@@ -119,7 +127,7 @@ for (tissue in names(tissues)) {
     cell_type = sel[[cfg$label]], n_genes = sel$n_genes, stringsAsFactors = FALSE)
 
   # 3. donor split
-  donors <- assign_split(cells, seed = split_seed, min_cells = min_cells)
+  donors <- assign_split(cells, seed = split_seed, min_cells = min_cells, n_draw = n_draw)
   n_excl <- sum(donors$split == "excluded")
   cat(sprintf("  donor QC: lower bound %.0f cells, %d donors excluded
 ",
@@ -130,8 +138,10 @@ for (tissue in names(tissues)) {
     "Check 2: donors lost or duplicated" = setequal(donors$donor_id, unique(cells$donor_id)),
     "Check 2: donor listed twice" = !anyDuplicated(donors$donor_id),
     "Check 2: not 1 held-out + 1 E′" = sum(donors$split == "heldout") == 1 && sum(donors$split == "eprime") == 1,
-    "Check 2: training != eligible - excluded - 2" =
-      sum(donors$split == "training") == n_donors - n_excl - 2)
+    "Check 6: training != eligible - excluded - 4" =
+      sum(donors$split == "training") == n_donors - n_excl - n_draw,
+    "Check 6: first two drawn donors changed" =
+      identical(c(donors$donor_id[donors$split == "heldout"], donors$donor_id[donors$split == "eprime"]), cfg$expected_pair))
   cells$split <- donors$split[match(cells$donor_id, donors$donor_id)]
   cells <- cells[cells$split != "excluded", ]   # excluded donors stay only in <tissue>_donors.csv
   stopifnot("Check 3: a donor in two splits" =
@@ -150,7 +160,7 @@ for (tissue in names(tissues)) {
   write.csv(cells, gz, row.names = FALSE)
   close(gz)
 
-  for (s in c("training", "heldout", "eprime")) {
+  for (s in c("training", "heldout", "eprime", paste0("group", 3:n_draw))) {
     tt <- types[types$split == s, ]
     summary_rows[[length(summary_rows) + 1]] <- data.frame(
       tissue = tissue, split = s,
