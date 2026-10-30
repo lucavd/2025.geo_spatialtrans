@@ -1,5 +1,13 @@
 # Registro delle modifiche
 
+## 2026-10-30 (R4)
+
+* **Chiusura**: [Quanti trascritti cadono in ogni quadratino di Visium HD nei sei tessuti veri, e come si distribuiscono fra nucleo, citoplasma e cellule? (R4)](steps/R4.md) chiuso con l'approvazione di Luca (risposte alle due decisioni del riassunto «In breve», senza dubbi nuovi).
+* **Creazione**: [Quanti trascritti cadono in ogni quadratino di Visium HD nei sei tessuti veri, e come si distribuiscono fra nucleo, citoplasma e cellule? (R4)](steps/R4.md): cancelli G-1...G-5, previsioni P-1...P-4 con l'ok di Luca («Approvo tutte e quattro»), controprove, post hoc PH-1...PH-4, revisione avversariale.
+* **Creazione**: decisione tecnica [R4: il rapporto nucleo/citoplasma di riferimento per lo Step 2 è quello pesato per cellula, con il rapporto pre-registrato come sensibilità (DEC-034)](decisions/DEC-034.md).
+* **Creazione**: decisione di Luca [R4: trascritti per cellula per tipo in tutti e sei i tessuti; alternanza di righe e colonne a 2 µm come strato tecnico che si può spegnere (DEC-035)](decisions/DEC-035.md).
+* **Modifica**: BIO_REFERENCES B-270...B-336; BACKLOG (chiuse BL-002, BL-011, BL-027, BL-089; nuove BL-192...BL-196); ROADMAP sezioni 6 e 7; CHANGELOG.
+
 ## 2026-10-30 (S1.6b)
 
 * **Chiusura**: [Il README, le istruzioni del progetto e il dossier per Daniele descrivono il codice com'è, e il ramo delle cellule entra in quello di sviluppo senza perdere nulla? (S1.6b)](steps/S1.6b.md) chiuso con l'approvazione di Luca (lettura del riassunto «In breve» senza dubbi nuovi; «ok approvo»). Prossimo step proposto: R4 oppure R5 (riferimenti reali prima dello Step 2); la scelta è di Luca.

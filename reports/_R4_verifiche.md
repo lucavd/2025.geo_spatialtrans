@@ -1,0 +1,3 @@
+- «Approvo tutte e quattro»: ok sulle previsioni P-1...P-4 e sulle soglie (uniforme in [0.909, 1.1]; zeri in eccesso in [-0.02, 0.02]; nessuna cellula sopra 50 000; 1.25 fra tipi), trascritto dalla chat, 2026-10-30.
+- Decisione 1, «Sì, valore per tipo in tutti e sei»: ogni tipo cellulare ha il suo numero di trascritti per cellula in tutti i preset, anche nel tumore del colon e nel linfonodo; supera la regola R-3 come scritta ([trascritti per tipo e strisce a 2 µm (DEC-035)](../docs/decisions/DEC-035.md)), 2026-10-30.
+- Decisione 2, «Sì, strato tecnico spegnibile»: lo Step 2 riproduce a 2 µm l'alternanza di righe e colonne, con un interruttore (DEC-035), 2026-10-30.
