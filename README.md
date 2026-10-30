@@ -31,9 +31,9 @@ estimated it. Nothing is set "from memory".
 5. `validate_cell_layer()` (`R/04b5_cell_layer_validation.R`): internal checks (geometry validity, area conservation, containment,
    densities and sizes against the preset); with `strict = TRUE` a failed check stops the run.
 
-The six presets live in `R/04b0_tissue_presets.R`. The scale is always given by the user (see below); `estimate_pixel_size()`
-(`R/04b6_estimate_pixel_size.R`) estimates it from the image, but it was wrong in five tissues out of six and `place_cells()` accepts it only
-with `allow_estimate = TRUE`. The design is `docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md` (version 1.9).
+The six presets live in `R/04b0_tissue_presets.R`. The scale comes from the user, as a number or read from Space Ranger's
+`scalefactors_json` (see below). `estimate_pixel_size()` (`R/04b6_estimate_pixel_size.R`) estimates it from the image, but it was wrong in
+five tissues out of six, so `place_cells()` accepts the estimate only with `allow_estimate = TRUE`. The design is `docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md` (version 1.9).
 
 ## Tissue presets
 

@@ -3097,7 +3097,7 @@ vertical-align: -.125em;
   <li><a href="#domande-candidate-per-daniele-revisore-statistico" id="toc-domande-candidate-per-daniele-revisore-statistico" class="nav-link" data-scroll-target="#domande-candidate-per-daniele-revisore-statistico">Domande candidate per Daniele (revisore statistico)</a></li>
   <li><a href="#come-rifare-i-conti" id="toc-come-rifare-i-conti" class="nav-link" data-scroll-target="#come-rifare-i-conti">7. Come rifare i conti</a></li>
   <li><a href="#appendice-a.-versioni-del-design" id="toc-appendice-a.-versioni-del-design" class="nav-link" data-scroll-target="#appendice-a.-versioni-del-design">Appendice A. Versioni del design</a></li>
-  <li><a href="#versioni-del-design-dello-step-1-livello-cellulare-da-1.0-a-1.8" id="toc-versioni-del-design-dello-step-1-livello-cellulare-da-1.0-a-1.8" class="nav-link" data-scroll-target="#versioni-del-design-dello-step-1-livello-cellulare-da-1.0-a-1.8">Versioni del design dello Step 1 (livello cellulare), da 1.0 a 1.8</a>
+  <li><a href="#versioni-del-design-dello-step-1-livello-cellulare-da-1.0-a-1.9" id="toc-versioni-del-design-dello-step-1-livello-cellulare-da-1.0-a-1.9" class="nav-link" data-scroll-target="#versioni-del-design-dello-step-1-livello-cellulare-da-1.0-a-1.9">Versioni del design dello Step 1 (livello cellulare), da 1.0 a 1.9</a>
   <ul class="collapse">
   <li><a href="#tabella-delle-versioni" id="toc-tabella-delle-versioni" class="nav-link" data-scroll-target="#tabella-delle-versioni">Tabella delle versioni</a></li>
   <li><a href="#discrepanze-fra-9-intestazione-e-testo" id="toc-discrepanze-fra-9-intestazione-e-testo" class="nav-link" data-scroll-target="#discrepanze-fra-9-intestazione-e-testo">Discrepanze fra §9, intestazione e testo</a></li>
@@ -3777,9 +3777,9 @@ Il file <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx</co
 <section id="appendice-a.-versioni-del-design" class="level1">
 <h1>Appendice A. Versioni del design</h1>
 </section>
-<section id="versioni-del-design-dello-step-1-livello-cellulare-da-1.0-a-1.8" class="level1">
-<h1>Versioni del design dello Step 1 (livello cellulare), da 1.0 a 1.8</h1>
-<p>File: <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md</code>, letto al commit <code>f3d8a19</code> (ramo <code>step1-cell-layer</code>). Fonti: §9 «Storico revisioni» (righe 453-470 del file) confrontato con <code>git log f3d8a19 -- &lt;file&gt;</code> (14 commit), <code>git show --numstat</code> per commit e <code>git diff 7836829 f3d8a19 -- &lt;file&gt;</code> (360 righe di diff; <code>git diff --numstat</code>: 131 righe aggiunte, 50 tolte; correzione della revisione di S1.6b, la prima stesura diceva 119 e 49 contando senza le righe vuote). Al commit <code>f3d8a19</code> l’ultimo commit che tocca il design è <code>775eec3</code> (2026-10-30); la v1.9 (S1.6b, <code>fdbb1e7</code> e successivi) è nell’ultima riga della tabella.</p>
+<section id="versioni-del-design-dello-step-1-livello-cellulare-da-1.0-a-1.9" class="level1">
+<h1>Versioni del design dello Step 1 (livello cellulare), da 1.0 a 1.9</h1>
+<p>File: <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md</code>, letto al commit <code>f3d8a19</code> (ramo <code>step1-cell-layer</code>). Fonti: §9 «Storico revisioni» (righe 453-470 del file) confrontato con <code>git log f3d8a19 -- &lt;file&gt;</code> (14 commit), <code>git show --numstat</code> per commit e <code>git diff 7836829 f3d8a19 -- &lt;file&gt;</code> (360 righe di diff; <code>git diff --numstat</code>: 131 righe aggiunte, 50 tolte; correzione della revisione di S1.6b: la prima stesura diceva 119 e 49 perché contava con <code>grep</code> le righe che iniziano con un solo <code>+</code> o <code>-</code>, escludendo le 12 righe vuote aggiunte e una riga tolta che inizia con <code>-</code>). Al commit <code>f3d8a19</code> l’ultimo commit che tocca il design è <code>775eec3</code> (2026-10-30); la v1.9 (S1.6b, <code>fdbb1e7</code> e successivi) è nell’ultima riga della tabella.</p>
 <section id="tabella-delle-versioni" class="level2">
 <h2 class="anchored" data-anchor-id="tabella-delle-versioni">Tabella delle versioni</h2>
 <table class="caption-top table">
@@ -3894,8 +3894,8 @@ Il file <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx</co
 <td><strong>1.9</strong></td>
 <td>2026-10-30</td>
 <td>S1.6b</td>
-<td><code>fdbb1e7</code> e la correzione della revisione (2026-10-30)</td>
-<td>—</td>
+<td><code>fdbb1e7</code>, <code>42224c7</code> (2026-10-30)</td>
+<td>+9/−6, +2/−2</td>
 <td>solo testo: annotazioni «[v1.9, S1.6b]» in sette punti (intestazione e stato, decisione 1, §4.6, §5.1, §5.2 passo 5, §8, riga di v1.7 dello storico) e riga di §9; nessun comportamento nuovo</td>
 </tr>
 </tbody>
