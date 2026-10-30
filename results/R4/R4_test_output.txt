@@ -1,0 +1,23 @@
+PASS  agg_2to8_values
+PASS  agg_2to8_total_conserved
+PASS  agg_2to8_boundary_rows_3_4_split
+PASS  strata_codes
+PASS  strata_shift_moves_mask
+PASS  ratio_recovers_2
+PASS  ratio_recovers_1
+PASS  ratio_nan_without_ring
+PASS  nb_zero_formula
+PASS  nb_zero_poisson_branch
+PASS  excess_zero_nb_near_0
+PASS  dropout_fraction_30pct
+PASS  excess_zero_detects_dropout
+PASS  weighted_moments_equal_replication
+PASS  boot_reproducible
+PASS  boot2_reproducible
+PASS  verdicts
+PASS  spectrum_noise_no_peak
+PASS  spectrum_lattice_peak
+PASS  mutant_strata_swapped_detected (1 asserzioni fallite)
+PASS  mutant_agg_offset_detected (2 asserzioni fallite)
+PASS  mutant_nb_as_poisson_detected (2 asserzioni fallite)
+R4_test: 22/22 PASS
