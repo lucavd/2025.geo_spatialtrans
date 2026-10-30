@@ -6,7 +6,7 @@ quadro del progetto per chi lo usa è in `README.md` (in inglese).
 
 ## Stato
 
-- Step 1 (livello cellulare, `R/04b*.R`): chiuso e consolidato, unito in `dev` (S1.6, S1.6b).
+- Step 1 (livello cellulare, `R/04b*.R`): consolidato in S1.6 e unito in `dev` in S1.6b.
 - Step 2 (griglia di Visium HD): da progettare. Il prossimo step lo sceglie Luca: proposta e alternative in `docs/ROADMAP.md`, sezione 7.
 - Il codice del 2025 (`R/01`-`R/03`, `R/04_clustering.R`, `R/05`-`R/06k`, `R/test functions/`) è la pipeline di espressione precedente:
   non è validata con il livello cellulare e non va estesa. `generate_synthetic_tissue()` e `cluster_image()` restano in uso per gli input
@@ -70,7 +70,8 @@ quarto render reports/<id>.qmd                   # report dello step
 - Nessun interruttore di prova nel codice di produzione: i mutanti sono copie modificate del codice (`tools/mutate.py`,
   `R/testing/mutants_<step>.py`).
 - Test in `R/testing/test_<step>.R`, eseguibili con un solo comando che stampa PASS o FAIL per asserzione e `RESULT n/m PASS`; runner dei
-  cancelli in `R/testing/run_<step>.sh`. I test non scrivono file versionati (log nella cartella dei log del run).
+  cancelli in `R/testing/run_<step>.sh` (alcuni test vecchi usano altri formati, per esempio `RISULTATO` in S1.5b). I test non scrivono file
+  versionati (log nella cartella dei log del run).
 - Un'opzione nuova che cambia il risultato predefinito è una decisione; per riprodurre gli step passati si aggiunge un argomento o
   un'opzione di sessione (`options(geo.spatialtrans.*)`), non si tocca il predefinito.
 
@@ -89,8 +90,9 @@ quarto render reports/<id>.qmd                   # report dello step
 ## Git
 
 - Remote https con credenziale del server (`origin`); il push via ssh verso GitHub non funziona dal server.
-- I rami `main`, `dev` e `step1-cell-layer` hanno regole di GitHub (niente cancellazioni né push forzati). Il push della credenziale del server
-  passa e stampa «Bypassed rule violations» o «Cannot update this protected ref»: verificare con `git ls-remote origin <ramo>`.
+- Un insieme di regole di GitHub vale per tutti i rami salvo il ramo della tesi «thesis/expression-sources»: creazione, aggiornamento, cancellazione e push non
+  fast-forward sono riservati a chi può aggirare le regole. La credenziale del server può: il push passa e stampa «Bypassed rule violations»
+  o «Cannot update this protected ref»; verificare con `git ls-remote origin <ramo>`. Mai push forzati.
 - Messaggi di commit `<id dello step>: <titolo>`; lavoro non committato sul server vuol dire che un'altra sessione è attiva: fermarsi e chiedere.
 
 ## Trappole note

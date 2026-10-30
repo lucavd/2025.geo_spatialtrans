@@ -87,8 +87,8 @@ La tabella delle versioni, letta dallo storico del design (§9) e controllata su
      sono unite al cluster vicino;
   4. il §5.2 dava la distanza minima come 2/3 del raggio equivalente, mentre i preset usano d*;
   5. il §4.6 parlava di una colonna `provisional` che non esiste più;
-  6. il §8 (estensioni future) non diceva cosa è stato poi implementato come opzione;
-  7. la riga di v1.7 dello storico descriveva modifiche entrate solo con v1.8.
+  6. il §8 (estensioni future, testo di v1.1) non diceva cosa è stato poi implementato;
+  7. la riga di v1.7 dello storico descriveva una modifica al §5.2 entrata solo con v1.8 e una al §8 mai fatta.
 
   Il file `docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx` è ancora la v1.0.
 
@@ -129,8 +129,9 @@ Fra queste, le lacune che contano per chi userà il simulatore:
   `tools/S1.4d_windows.py`), fuori dal codice del simulatore e fuori dalla batteria R.
 - **Requisiti per lo Step 2** (§7.1, §7.3, decisione 11 sulla diffusione): non sono ancora codice, come previsto.
 
-Questo step non cambia il codice: queste lacune sono registrate in `docs/BACKLOG.md` per il primo step che toccherà di nuovo il codice
-delle cellule.
+Questo step non cambia il codice: queste lacune sono registrate in `docs/BACKLOG.md` (voce BL-180, lacune di test e argomenti senza
+documentazione) per il primo step che toccherà di nuovo il codice delle cellule. La dipendenza della batteria da file che stanno solo sul
+server è la voce BL-181.
 
 # 5. Limiti dichiarati
 

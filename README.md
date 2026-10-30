@@ -27,12 +27,13 @@ estimated it. Nothing is set "from memory".
    between centres (uniform seeding by default; optional seeding by cell-type compartments, with voids and density heterogeneity).
 3. `tessellate_voronoi()` (`R/04b3_tessellate_voronoi.R`): Voronoi territories of the centres, clipped to the regions.
 4. `derive_cell_geometry()` (`R/04b4_derive_cell_geometry.R`): one nucleus per territory, drawn from a size model fitted on real
-   nuclei and clipped inside the territory while keeping the target area.
+   nuclei and clipped inside the territory while keeping the target area, up to a cap on the nucleus-to-territory ratio of each preset.
 5. `validate_cell_layer()` (`R/04b5_cell_layer_validation.R`): internal checks (geometry validity, area conservation, containment,
    densities and sizes against the preset); with `strict = TRUE` a failed check stops the run.
 
-The six presets live in `R/04b0_tissue_presets.R`; `estimate_pixel_size()` (`R/04b6_estimate_pixel_size.R`) reads the image scale when the
-user does not give it. The design is `docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md` (version 1.8).
+The six presets live in `R/04b0_tissue_presets.R`. The scale is always given by the user (see below); `estimate_pixel_size()`
+(`R/04b6_estimate_pixel_size.R`) estimates it from the image, but it was wrong in five tissues out of six and `place_cells()` accepts it only
+with `allow_estimate = TRUE`. The design is `docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md` (version 1.9).
 
 ## Tissue presets
 
@@ -66,8 +67,8 @@ Rscript --vanilla tools/restore_library.R
 ```
 
 `tools/restore_library.R` rebuilds the project library `renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu` from `renv.lock`
-(199 packages) using Posit Package Manager binaries for Ubuntu noble, then checks every version against the lockfile. Every script of the
-project calls `.libPaths()` on that folder and runs with `Rscript --vanilla`. On other systems the restore falls back to source packages.
+(199 packages) using Posit Package Manager binaries for Ubuntu noble, then checks every version against the lockfile. Run scripts with
+`Rscript --vanilla` and set `.libPaths()` to that folder, as in the quick start below. Other operating systems have not been tried.
 
 ## Quick start
 
@@ -95,7 +96,7 @@ ggplot2::ggsave("cell_layer_epithelial.png", p, width = 6, height = 6, dpi = 150
 ```
 <!-- quickstart:end -->
 
-`place_cells()` prints one line such as `[place_cells] epithelial: 1 regioni, 1118 cellule, scala 1 um/px (user), controlli 0 ERROR / 0 WARN`.
+`place_cells()` prints one line such as `[place_cells] epithelial: 1 regioni, 1118 cellule, scala 1 um/px (user), controlli 0 ERROR / 0 WARN, 1.8 s`.
 The same seed gives the same cells, bit for bit.
 
 ### Input from an image
@@ -117,7 +118,8 @@ becomes one or more tissue regions. The 2025 functions `generate_synthetic_tissu
 | `cell_types`, `region_composition` | `NULL` | a user catalogue of cell types and the composition of each cluster, instead of a preset |
 | `validate`, `strict` | `TRUE`, `TRUE` | run the internal checks; stop on a failed check |
 
-The full list, with the options kept to reproduce earlier steps, is in the roxygen header of `place_cells()`.
+The full list, with the options kept to reproduce earlier steps, is the signature of `place_cells()` in `R/04b_cell_placement.R`; its roxygen
+header documents most arguments but not yet all of them (for example `random_seed`, `validate` and `strict`).
 
 ### Output
 
@@ -145,7 +147,7 @@ environment. In a new clone on the server, after `tools/restore_library.R`, link
 
 ```bash
 bash tools/link_server_inputs.sh      # symbolic links to every git-ignored input of the tests (libraries, logs and caches excluded)
-bash R/testing/run_S1.6.sh test       # full regression battery of Step 1 (PASS/FAIL per assertion, about 20 minutes)
+bash R/testing/run_S1.6.sh test       # full regression battery of Step 1 (PASS/FAIL per assertion, about 35 minutes)
 bash R/testing/run_S1.6.sh mutants    # altered copies of the code that the tests must catch
 bash R/testing/run_S1.6.sh env        # DESCRIPTION vs code, restore from the lockfile into an empty library
 ```
@@ -172,4 +174,4 @@ Project documents are in Italian; code, tables and figures are in English.
 
 ## Licence and authors
 
-Authors and roles are in `DESCRIPTION`. The licence declared there is MIT.
+MIT licence (`LICENSE`, copyright Luca Vedovelli). Authors and roles are in `DESCRIPTION`.

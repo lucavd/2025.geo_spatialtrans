@@ -19,7 +19,9 @@ import argparse, os, re, subprocess, sys
 LIB = "renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu"
 IGNORED_OK = {LIB, "data/real/datasets", ".venv", "renv/library"}
 EXT = (".R", ".r", ".md", ".sh", ".py", ".qmd", ".csv", ".lock", ".json", ".html", ".txt", ".tsv", ".parquet", ".rds", ".js", ".docx")
-DEFAULT_FILES = ["README.md", "CLAUDE.md", "reports/S1.6b_guida_revisione.qmd"]
+DEFAULT_FILES = ["README.md", "CLAUDE.md", "reports/S1.6b_guida_revisione.qmd",
+                 # file inclusi nel dossier con {{< include >}} (revisione di S1.6b, L3)
+                 "results/S1.6b/S1.6b_questions.md", "results/S1.6b/S1.6b_design_changes.md", "results/S1.6b/S1.6b_limits.md"]
 NOT_PATHS = {"n/m"}
 
 def sh(*a):

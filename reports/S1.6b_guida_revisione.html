@@ -3257,15 +3257,15 @@ vertical-align: -.125em;
 <li>il §5.1 descriveva la ricerca delle componenti e i contorni della v1.0, e l’esclusione delle regioni piccole che oggi per predefinito sono unite al cluster vicino;</li>
 <li>il §5.2 dava la distanza minima come 2/3 del raggio equivalente, mentre i preset usano d*;</li>
 <li>il §4.6 parlava di una colonna <code>provisional</code> che non esiste più;</li>
-<li>il §8 (estensioni future) non diceva cosa è stato poi implementato come opzione;</li>
-<li>la riga di v1.7 dello storico descriveva modifiche entrate solo con v1.8.</li>
+<li>il §8 (estensioni future, testo di v1.1) non diceva cosa è stato poi implementato;</li>
+<li>la riga di v1.7 dello storico descriveva una modifica al §5.2 entrata solo con v1.8 e una al §8 mai fatta.</li>
 </ol>
 Il file <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx</code> è ancora la v1.0.</li>
 </ul>
 </section>
 <section id="dove-sta-ogni-parte-del-design" class="level1">
 <h1>3. Dove sta ogni parte del design</h1>
-<p>La mappa ha 54 righe: una per decisione del §2, per sezione di §3-§5 e §7, per controllo C1-C9 e per caso limite del §6.2. In 38 righe ci sono sia il codice che la realizza sia almeno un test che la controlla. Nelle altre 16 manca, del tutto o in parte, il codice (6 righe) o un test (14 righe). Dove manca il codice si tratta soprattutto di requisiti per lo Step 2 o di estensioni future; le righe senza test sono elencate nella sezione 4.</p>
+<p>La mappa ha 54 righe: una per decisione del §2, per sezione di §3-§5 e §7, per controllo C1-C9 e per caso limite del §6.2. In 39 righe ci sono sia il codice che la realizza sia almeno un test che la controlla. Nelle altre 15 manca, del tutto o in parte, il codice (6 righe) o un test (13 righe). Dove manca il codice si tratta soprattutto di requisiti per lo Step 2 o di estensioni future; le righe senza test sono elencate nella sezione 4.</p>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -3666,66 +3666,60 @@ Il file <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx</co
 <td style="text-align: left;">in parte</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">§4.4</td>
-<td style="text-align: left;">Catalogo cell_types</td>
-<td style="text-align: left;">c’è</td>
-<td style="text-align: left;">in parte</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">§5.4.7</td>
 <td style="text-align: left;">derive_cell_geometry() — 7 Operatore di osservazione dei ch…</td>
 <td style="text-align: left;">c’è</td>
 <td style="text-align: left;">in parte</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">§5.4.8</td>
 <td style="text-align: left;">derive_cell_geometry() — 8 Frazione di nuclei a contatto (S…</td>
 <td style="text-align: left;">c’è</td>
 <td style="text-align: left;">manca</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">§6.1 C5</td>
 <td style="text-align: left;">Sanity check C5 — area del nucleo positiva</td>
 <td style="text-align: left;">c’è</td>
 <td style="text-align: left;">in parte</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">§6.2 runner</td>
 <td style="text-align: left;">Test scripts — organizzazione e test di integrazione</td>
 <td style="text-align: left;">c’è</td>
 <td style="text-align: left;">in parte</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">§6.3</td>
 <td style="text-align: left;">Visualizzazione</td>
 <td style="text-align: left;">in parte</td>
 <td style="text-align: left;">c’è</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">§7.1</td>
 <td style="text-align: left;">Strutture dati consumate da Step 2</td>
 <td style="text-align: left;">in parte</td>
 <td style="text-align: left;">manca</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">§7.2</td>
 <td style="text-align: left;">Vincoli su Step 1</td>
 <td style="text-align: left;">c’è</td>
 <td style="text-align: left;">in parte</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">§7.3</td>
 <td style="text-align: left;">Pre-validazioni offerte a Step 2</td>
 <td style="text-align: left;">in parte</td>
 <td style="text-align: left;">in parte</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">§7.4</td>
 <td style="text-align: left;">Limiti dichiarati del livello cellulare</td>
 <td style="text-align: left;">c’è</td>
 <td style="text-align: left;">manca</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">§8</td>
 <td style="text-align: left;">Estensioni future (Step 1.5)</td>
 <td style="text-align: left;">in parte</td>
@@ -3742,7 +3736,7 @@ Il file <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx</co
 <li><strong>I passi 7 e 8 del §5.4</strong> dicono come si misurano i nuclei simulati per confrontarli con quelli veri: rasterizzazione con lo stesso operatore dei nuclei veri e frazione di nuclei a contatto per finestra. Vivono negli script Python degli step (<code>tools/S1.4c_raster.py</code>, <code>tools/S1.4d_windows.py</code>), fuori dal codice del simulatore e fuori dalla batteria R.</li>
 <li><strong>Requisiti per lo Step 2</strong> (§7.1, §7.3, decisione 11 sulla diffusione): non sono ancora codice, come previsto.</li>
 </ul>
-<p>Questo step non cambia il codice: queste lacune sono registrate in <code>docs/BACKLOG.md</code> per il primo step che toccherà di nuovo il codice delle cellule.</p>
+<p>Questo step non cambia il codice: queste lacune sono registrate in <code>docs/BACKLOG.md</code> (voce BL-180, lacune di test e argomenti senza documentazione) per il primo step che toccherà di nuovo il codice delle cellule. La dipendenza della batteria da file che stanno solo sul server è la voce BL-181.</p>
 </section>
 <section id="limiti-dichiarati" class="level1">
 <h1>5. Limiti dichiarati</h1>
@@ -3785,7 +3779,7 @@ Il file <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx</co
 </section>
 <section id="versioni-del-design-dello-step-1-livello-cellulare-da-1.0-a-1.8" class="level1">
 <h1>Versioni del design dello Step 1 (livello cellulare), da 1.0 a 1.8</h1>
-<p>File: <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md</code>, letto al commit <code>f3d8a19</code> (ramo <code>step1-cell-layer</code>). Fonti: §9 «Storico revisioni» (righe 453-470 del file) confrontato con <code>git log f3d8a19 -- &lt;file&gt;</code> (14 commit), <code>git show --numstat</code> per commit e <code>git diff 7836829 f3d8a19 -- &lt;file&gt;</code> (360 righe di diff; 49 righe tolte, 119 aggiunte). L’ultimo commit che tocca il design è <code>775eec3</code> (2026-10-30); <code>f3d8a19</code> non lo modifica.</p>
+<p>File: <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md</code>, letto al commit <code>f3d8a19</code> (ramo <code>step1-cell-layer</code>). Fonti: §9 «Storico revisioni» (righe 453-470 del file) confrontato con <code>git log f3d8a19 -- &lt;file&gt;</code> (14 commit), <code>git show --numstat</code> per commit e <code>git diff 7836829 f3d8a19 -- &lt;file&gt;</code> (360 righe di diff; <code>git diff --numstat</code>: 131 righe aggiunte, 50 tolte; correzione della revisione di S1.6b, la prima stesura diceva 119 e 49 contando senza le righe vuote). Al commit <code>f3d8a19</code> l’ultimo commit che tocca il design è <code>775eec3</code> (2026-10-30); la v1.9 (S1.6b, <code>fdbb1e7</code> e successivi) è nell’ultima riga della tabella.</p>
 <section id="tabella-delle-versioni" class="level2">
 <h2 class="anchored" data-anchor-id="tabella-delle-versioni">Tabella delle versioni</h2>
 <table class="caption-top table">
@@ -3854,7 +3848,7 @@ Il file <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx</co
 <td>S1.4</td>
 <td><code>88859ba</code> (2026-10-15)</td>
 <td>+12/−13</td>
-<td>§5.4 riscritta: modello di taglia (β, σ), clamp sul raggio circoscritto, ellisse per bisezione, centro POI o generatore; §4.4 colonne opzionali; §4.2 <code>nucleus_cx/cy</code></td>
+<td>§5.4 riscritta: modello di taglia (β, σ), clamp sul raggio circoscritto, ellisse per bisezione, centro POI o generatore; §4.4 colonne opzionali; §4.2 <code>nucleus_cx</code> e <code>nucleus_cy</code></td>
 </tr>
 <tr class="odd">
 <td><strong>1.5</strong></td>
@@ -3895,6 +3889,14 @@ Il file <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx</co
 <td><code>775eec3</code> (2026-10-30)</td>
 <td>+2/−2</td>
 <td>link a DEC-031 nel paragrafo di C7 (§6.1, riga 335) e nella riga di §9; il numero di versione non cambia</td>
+</tr>
+<tr class="even">
+<td><strong>1.9</strong></td>
+<td>2026-10-30</td>
+<td>S1.6b</td>
+<td><code>fdbb1e7</code> e la correzione della revisione (2026-10-30)</td>
+<td>—</td>
+<td>solo testo: annotazioni «[v1.9, S1.6b]» in sette punti (intestazione e stato, decisione 1, §4.6, §5.1, §5.2 passo 5, §8, riga di v1.7 dello storico) e riga di §9; nessun comportamento nuovo</td>
 </tr>
 </tbody>
 </table>
@@ -3997,7 +3999,7 @@ Il file <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx</co
 <td>L6</td>
 <td>Le regioni sotto soglia sono solo spazio extracellulare macro</td>
 <td>§5.1:265</td>
-<td>«nessun centroide viene piazzato lì e nessun territorio Voronoi le copre» (con <code>small_components = &quot;merge&quot;</code> predefinito le componenti piccole adiacenti a una grande vengono invece fuse: vedi <code>s16b_design_changes.md</code>)</td>
+<td>«nessun centroide viene piazzato lì e nessun territorio Voronoi le copre» (con <code>small_components = &quot;merge&quot;</code> predefinito le componenti piccole adiacenti a una grande vengono invece fuse: vedi <code>results/S1.6b/S1.6b_design_changes.md</code>)</td>
 </tr>
 <tr class="odd">
 <td>L7</td>
