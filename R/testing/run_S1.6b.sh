@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # R/testing/run_S1.6b.sh - S1.6b: cancelli G-2 (avvio rapido del README), G-3 (batteria nel clone nuovo), G-4 (merge). docs/steps/S1.6b.md.
 # Uso (da qualsiasi cartella):
-#   bash R/testing/run_S1.6b.sh clone <sha>   clone nuovo da GitHub in $S16B/clone al commit <sha>, libreria dal lockfile (tools/restore_library.R)
+#   bash R/testing/run_S1.6b.sh clone <sha>   clone nuovo da GitHub in $S16B/clone al commit <sha>, libreria dal lockfile (tools/restore_library.R),
+#                                             input dei test fuori da git collegati alla copia di lavoro del server (tools/link_server_inputs.sh)
 #   bash R/testing/run_S1.6b.sh quickstart    G-2: blocco dell'avvio rapido estratto dal README del clone, due esecuzioni isolate, stesso md5 di cell_df
 #   bash R/testing/run_S1.6b.sh battery       G-3: bash R/testing/run_S1.6.sh test nel clone (FAIL ammessi come in S1.6)
 #   bash R/testing/run_S1.6b.sh merge         G-4: dev = step1-cell-layer su GitHub, fast-forward da 7836829, main invariato, simulatore invariato
@@ -17,6 +18,7 @@ if [ "$mode" = clone ]; then
   echo "clone: $(git -C "$CL" rev-parse HEAD)"
   ( cd "$CL" && Rscript --vanilla tools/restore_library.R ) > "$S16B/restore.log" 2>&1 || fail=1
   tail -3 "$S16B/restore.log"; grep -q '^PASS restore' "$S16B/restore.log" || fail=1
+  ( cd "$CL" && bash tools/link_server_inputs.sh ) > "$S16B/link.log" 2>&1 || fail=1; tail -1 "$S16B/link.log"   # passo del README (S1.6b, esplorazione E1)
   [ $fail = 0 ] && echo "PASS clone e libreria" || echo "FAIL clone e libreria"
 elif [ "$mode" = quickstart ]; then
   cd "$CL" || exit 1
