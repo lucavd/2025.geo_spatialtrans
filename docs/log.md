@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-10-30 (chiusura di S1.6)
+
+* **Chiusura**: [Il codice dello Step 1, ripulito dei difetti noti, simula ancora gli stessi tessuti? (S1.6)](steps/S1.6.md) chiuso con l'approvazione di Luca (lettura del riassunto «In breve» senza dubbi nuovi; «ok vai»); decisione di Luca in [S1.6: il controllo fallito come scritto non blocca lo step; C7 usa la densità della miscela nella semina cieca al tipo e il design §6.1 cambia di conseguenza (DEC-031)](decisions/DEC-031.md). Prossimo step: S1.6b, documenti e merge dello Step 1.
+* **Creazione**: decisione di Luca [S1.6: il controllo fallito come scritto non blocca lo step; C7 usa la densità della miscela nella semina cieca al tipo e il design §6.1 cambia di conseguenza (DEC-031)](decisions/DEC-031.md).
+* **Modifica**: design del livello cellulare §6.1 (rimando alla decisione di Luca); BL-156 chiusa.
+
 ## 2026-10-29 (risultati di S1.6)
 
 * **Creazione**: [Il codice dello Step 1, ripulito dei difetti noti, simula ancora gli stessi tessuti? (S1.6)](steps/S1.6.md): perimetro scelto da Luca (S1.6 codice, S1.6b documenti e merge), esplorazione dichiarata E0-E5, pre-registrazione con l'ok di Luca («Approvo, margine un quarto»), banco, cancelli G-1...G-5, previsione P-1, controprove, revisione avversariale e sue correzioni; in attesa di due decisioni di Luca.

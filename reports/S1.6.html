@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-10-29">
+<meta name="dcterms.date" content="2026-10-30">
 
 <title>S1.6: il codice delle cellule, ripulito dei difetti noti, simula ancora gli stessi tessuti?</title>
 <style>
@@ -3108,7 +3108,7 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 29, 2026</p>
+      <p class="date">October 30, 2026</p>
     </div>
   </div>
   
@@ -3173,7 +3173,7 @@ vertical-align: -.125em;
 <li>Quando riprenderemo la semina con le zone dei tipi rifaremo la calibrazione dei vuoti con lo strumento corretto: nell’intestino il valore di oggi sta al bordo della griglia provata.</li>
 <li>I limiti noti delle cellule simulate sono ora scritti nel documento di progetto: troppi nuclei a contatto nel tumore del colon e nel linfonodo, territori troppo uniformi con la semina predefinita, cellule del cuore non allungate, densità riferita al tessuto pieno di cellule.</li>
 </ul>
-<p>Appena decidi questi 2 punti, lo step è chiuso.</p>
+<p>Luca ha deciso i 2 punti il 2026-10-30 («ok vai», sì a entrambi i consigli): lo step è chiuso.</p>
 <p><strong>Sui tempi di calcolo.</strong> La stima di circa 3 ore con al più 22 processori era mia, dai tempi del passo sui vuoti. Le 600 simulazioni, con raster e misure, hanno chiesto 23 minuti con 20 processori sul server del laboratorio. I test, le alterazioni del codice e la ricostruzione dell’ambiente hanno chiesto due giri di circa un’ora: il secondo dopo le correzioni chieste dalla revisione.</p>
 </section>
 </section>
@@ -3183,6 +3183,7 @@ vertical-align: -.125em;
 <li>«Due step: S1.6 codice, S1.6b documenti e merge» (perimetro; 2026-10-29)</li>
 <li>«No, step dedicato più avanti» (densità dei preset, BL-167; 2026-10-29)</li>
 <li>«Approvo, margine un quarto» (previsione, margine e controprove; 2026-10-29)</li>
+<li>«ok vai» (lettura del riassunto «In breve» senza dubbi nuovi; sì ai due consigli: CP-1 non bloccante, C7 con la densità della miscela e design §6.1 aggiornato; 2026-10-30) → <a href="./decisions/DEC-031.md">S1.6: il controllo fallito come scritto non blocca lo step; C7 usa la densità della miscela nella semina cieca al tipo e il design §6.1 cambia di conseguenza (DEC-031)</a></li>
 </ul>
 </section>
 <section id="dubbi-rinviati" class="level1">
@@ -3597,7 +3598,7 @@ vertical-align: -.125em;
 <section id="controprove-1" class="level3">
 <h3 class="anchored" data-anchor-id="controprove-1">Controprove</h3>
 <ul>
-<li><strong>CP-1, fallita come scritta in 1 riga su 5</strong> (<code>S1.6_CP1.csv</code>). Il confronto XA meno RV di S1.5e è smentito, come atteso, nella densità del ROI dell’intestino (-2 445 nuclei/mm², margine 387) e del linfonodo (-9 163, margine 2 303), nel numero di vuoti dell’intestino (-44.3, margine 5.25) e nel rapporto nucleo/territorio del linfonodo (-0.082, margine 0.013); nella densità del cervello è indeterminato: -389.5 ± 54.1 contro un margine di ± 339.6. In tutto il confronto le smentite sono 34 su 179: il confronto non è cieco. Errore di pre-registrazione: la differenza attesa del cervello (XA 795 contro RV 1 185, valori di S1.5e noti prima) non era stata confrontata con il margine; supera il margine solo del 15 %, meno di 2 errori standard. Decisione di Luca (riassunto).</li>
+<li><strong>CP-1, fallita come scritta in 1 riga su 5</strong> (<code>S1.6_CP1.csv</code>). Il confronto XA meno RV di S1.5e è smentito, come atteso, nella densità del ROI dell’intestino (-2 445 nuclei/mm², margine 387) e del linfonodo (-9 163, margine 2 303), nel numero di vuoti dell’intestino (-44.3, margine 5.25) e nel rapporto nucleo/territorio del linfonodo (-0.082, margine 0.013); nella densità del cervello è indeterminato: -389.5 ± 54.1 contro un margine di ± 339.6. In tutto il confronto le smentite sono 34 su 179: il confronto non è cieco. Errore di pre-registrazione: la differenza attesa del cervello (XA 795 contro RV 1 185, valori di S1.5e noti prima) non era stata confrontata con il margine; supera il margine solo del 15 %, meno di 2 errori standard. Decisione di Luca: non blocca (<a href="../docs/decisions/DEC-031.md">DEC-031</a>).</li>
 <li><strong>CP-2, superata</strong> (<code>S1.6_CP2.csv</code>): quota di proposte accettate dal diradamento, Q6 su Q, 1.102 intestino, 1.100 tumore del colon, 1.100 stroma, 1.082 linfonodo, 1.099 cuore (attese &gt; 1.05) e 0.888 cervello (attesa &lt; 0.95); i rapporti dei limiti di E4 davano 1/0.909 = 1.10 e 1/1.176 = 0.85.</li>
 </ul>
 </section>
@@ -3634,7 +3635,7 @@ vertical-align: -.125em;
 <tr class="odd">
 <td>RN-01</td>
 <td>CP-1 non superata come scritta</td>
-<td>scritto in «Controprove»; decisione di Luca</td>
+<td>scritto in «Controprove»; non blocca (DEC-031)</td>
 </tr>
 <tr class="even">
 <td>RN-02</td>
@@ -3669,7 +3670,7 @@ vertical-align: -.125em;
 <tr class="even">
 <td>RC-06</td>
 <td>C7 con la miscela contro il testo del design §6.1</td>
-<td>design v1.8 scritto; decisione di Luca (riassunto)</td>
+<td>design v1.8; accettato da Luca (DEC-031), BL-156 chiusa</td>
 </tr>
 <tr class="odd">
 <td>RC-07…RC-14, RC-21</td>

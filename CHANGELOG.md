@@ -2,9 +2,9 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## S1.6, 2026-10-29: consolidamento del codice dello Step 1 (branch `step1-cell-layer`), **in attesa delle decisioni di Luca**
+## S1.6, 2026-10-29: consolidamento del codice dello Step 1 (branch `step1-cell-layer`), **chiusa**
 
-File dello step `docs/steps/S1.6.md`, report `reports/S1.6.html`; decisione tecnica DEC-030 (S1.6: scelte tecniche del consolidamento dello Step 1 (limite esatto della semina, opzioni per gli step passati, riferimenti per tipo sull'insieme del modello, mutanti fuori dal codice, ambiente)). Due decisioni di Luca aperte (CP-1 fallita come scritta in 1 riga su 5; C7 con la densità della miscela nella semina cieca, design §6.1). BL-155, BL-156 (in attesa di Luca), BL-161, BL-163, BL-165, BL-169, BL-170, BL-173 (chiusa per spiegazione: non sono frammenti), BL-004, BL-008, BL-009, BL-012, BL-078, BL-164 chiuse o aggiornate; nuove BL-176...BL-179. README, CLAUDE.md, dossier per Daniele e merge in `dev` passano a S1.6b.
+File dello step `docs/steps/S1.6.md`, report `reports/S1.6.html`; decisione tecnica DEC-030 (S1.6: scelte tecniche del consolidamento dello Step 1 (limite esatto della semina, opzioni per gli step passati, riferimenti per tipo sull'insieme del modello, mutanti fuori dal codice, ambiente)). Decisione di Luca DEC-031 (CP-1 fallita come scritta in 1 riga su 5 non blocca; C7 con la densità della miscela nella semina cieca, design §6.1). Letta da Luca il 2026-10-30 («ok vai»). BL-155, BL-156, BL-161, BL-163, BL-165, BL-169, BL-170, BL-173 (chiusa per spiegazione: non sono frammenti), BL-004, BL-008, BL-009, BL-012, BL-078, BL-164 chiuse o aggiornate; nuove BL-176...BL-179. README, CLAUDE.md, dossier per Daniele e merge in `dev` passano a S1.6b.
 
 ### Codice
 - `R/04b2_seed_centroids.R`: quote per tipo spente per predefinito nella semina a compartimenti (`quotas = FALSE`, BL-170); limite esatto del diradamento max_t ρ_t (`thinning_bound = "exact"`, BL-161) con la griglia di S1.5c come opzione; validazione di `quotas` e `thinning_bound`; ordine dei tipi dei compartimenti nei metadati.
