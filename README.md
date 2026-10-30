@@ -158,10 +158,10 @@ The battery prints `GATE G-1 PASS` when every assertion passes except four known
 | path | content |
 |---|---|
 | `R/04b*.R` | the cell layer (Step 1) |
-| `R/testing/` | tests (`test_<step>.R`), gate scripts (`run_<step>.sh`), mutants (`mutants_<step>.py`) |
-| `tools/` | analysis, calibration and benchmark scripts of each step; `okf.py` checks the documentation bundle |
+| `R/testing/` | tests (`R/testing/test_<step>.R`), gate scripts (`R/testing/run_<step>.sh`), mutants (`R/testing/mutants_<step>.py`) |
+| `tools/` | analysis, calibration and benchmark scripts of each step; `tools/okf.py` checks the documentation bundle |
 | `results/<step>/` | versioned results tables of each step |
-| `reports/<step>.qmd`, `.html` | step reports (Italian) |
+| `reports/<step>.qmd` | step reports in Italian (Quarto source; the rendered `reports/<step>.html` sits next to it) |
 | `docs/superpowers/specs/` | design of Step 1 |
 | `docs/BIO_REFERENCES.md` | biological references with sources |
 | `docs/ROADMAP.md`, `docs/BACKLOG.md`, `CHANGELOG.md` | plan, open items, history |

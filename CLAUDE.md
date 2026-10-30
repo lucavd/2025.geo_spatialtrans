@@ -79,7 +79,7 @@ quarto render reports/<id>.qmd                   # report dello step
 - Report e documenti del progetto in italiano; codice, tabelle e figure in inglese.
 - Coordinamento: `docs/ROADMAP.md` (sezione 7 = stato delle sessioni e prossima proposta; sezione 6 = decisioni fino al 2026-10-20),
   `CHANGELOG.md`, `docs/BACKLOG.md`, `docs/BIO_REFERENCES.md`; design dello Step 1 in `docs/superpowers/specs/`.
-- Dal 2026-10-20 i documenti nuovi seguono l'Open Knowledge Format (OKF v0.2): `docs/steps/<id>.md` (uno per step), `docs/decisions/DEC-nnn.md`
+- Dal 2026-10-20 i documenti nuovi seguono l'Open Knowledge Format (OKF v0.2): `docs/steps/<id>.md` (uno per step), `docs/decisions/DEC-<nnn>.md`
   (una decisione per file, con chi l'ha presa e con quali parole), `docs/index.md`, `docs/log.md`. Frontmatter YAML con `type`, `title`,
   `description`, `status`, `generated`, `sources`; ogni codice di decisione è un link al suo file. Indici generati da `tools/okf.py`, mai a mano.
 - Una decisione vale quando è in `docs/decisions/` o nella tabella della sezione 6 di ROADMAP. Le scelte che cambiano il modello generativo,
@@ -98,7 +98,7 @@ quarto render reports/<id>.qmd                   # report dello step
 - `git log --oneline | head -1` in uno script con `pipefail` esce con 141: usare `git log --oneline -n 1`.
 - `grep -c` esce con 1 quando conta zero righe: aggiungere `|| true`.
 - `pkill -f <schema>` uccide anche la shell che lo lancia se lo schema compare nella riga di comando.
-- `sf::st_as_sfc()` su geometrie di `geos_set_precision()` eredita la precisione come fattore di scala: passare dal WKB (`geos_write_wkb()`).
+- `sf::st_as_sfc()` su geometrie di `geos::geos_set_precision()` eredita la precisione come fattore di scala: passare dal WKB (`geos::geos_write_wkb()`).
 - `sf::st_within(<molti poligoni piccoli>, <un poligono grande>)` non finisce: mettere il poligono grande per primo (`st_contains`, `st_intersects`).
 - `deldir` scala male oltre 1e5 punti; `sf::st_voronoi()` è decine di volte più veloce sugli stessi punti.
 - Le liste R indicizzate per nome sono lineari: oltre 1e5 elementi indicizzare per posizione.
