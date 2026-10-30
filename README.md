@@ -1,643 +1,175 @@
-# Advanced Spatial Transcriptomics Simulation Framework: Theoretical Foundations and Optimized Implementation
+# geo.spatialtrans: a Visium HD simulator with a cell layer
 
-## 1. Introduction to Spatial Transcriptomics and Simulation Challenges
+`geo.spatialtrans` simulates Visium HD spatial transcriptomics data in order to test analysis methods against a known truth.
+Its distinctive feature is an explicit **cell layer** between the tissue image and the 2 µm capture grid: every simulated cell has a
+position, a territory (a Voronoi tile clipped to its tissue region) and a nucleus, so that later steps can map transcripts from cells to
+2 µm spots and 8 µm bins with a known ground truth.
 
-### 1.1 Biological and Technical Context
+PI: Luca Vedovelli. Reviewer: Daniele Sabbatini.
 
-Spatial transcriptomics represents a revolutionary class of technologies that measure gene expression while preserving the spatial context of cells within tissues. Unlike conventional RNA sequencing methodologies (bulk or single-cell), spatial transcriptomics technologies—such as 10x Visium, Slide-seq, MERFISH, and Spatial Transcriptomics (ST)—provide crucial information about the spatial arrangement of gene expression patterns. This spatial information is essential for understanding complex tissue architecture, cell-cell interactions, developmental processes, and disease progression mechanisms that cannot be fully elucidated through spatially-agnostic approaches.
+## Status (2026-10-30)
 
-The technological landscape of spatial transcriptomics encompasses several methodological categories:
-- **In situ hybridization-based methods** (e.g., MERFISH, seqFISH+): Directly visualize and quantify transcripts within intact tissues using oligonucleotide probes
-- **In situ sequencing methods** (e.g., STARmap): Sequence RNA directly within tissue sections using localized amplification
-- **Spatial barcoding methods** (e.g., 10x Visium, Slide-seq): Capture and sequence mRNA using spatially barcoded capture spots or beads
-- **Computational integration methods**: Combine conventional single-cell RNA-seq with spatial reference data to infer spatial gene expression patterns
+| part | state |
+|---|---|
+| **Step 1, cell layer** (`R/04b*.R`) | complete and consolidated; six tissue presets calibrated on public 10x Visium HD datasets with H&E; merged into `dev` |
+| **Step 2, Visium HD grid** (expression from cells to 2 µm spots and 8 µm bins) | not started; design in preparation |
+| 2025 expression pipeline (`R/01`-`R/03`, `R/04_clustering.R`, `R/05`-`R/06k`, `R/test functions/`) | legacy code from before Step 1; not validated against the cell layer; it will be replaced by Step 2. Its README is kept in `docs/legacy/README_2025.md` |
 
-Each of these technologies offers unique trade-offs between spatial resolution, gene throughput, sensitivity, and tissue compatibility. The appropriate technology depends on the specific biological questions being addressed.
+Every biological value used by the presets has a row in `docs/BIO_REFERENCES.md` with a DOI or with the script and the dataset that
+estimated it. Nothing is set "from memory".
 
-### 1.2 The Critical Need for Sophisticated Simulation Frameworks
+## The cell layer
 
-The development of analytical methods for spatial transcriptomics data presents significant computational challenges that require rigorous benchmarking using data with known ground truth. However, experimental generation of ground truth spatial transcriptomics data is prohibitively expensive, time-consuming, and often practically infeasible due to technical limitations in simultaneously validating expression patterns for thousands of genes.
+`place_cells()` (`R/04b_cell_placement.R`) runs five stages:
 
-Computational simulations offer an alternative approach by generating synthetic data with known properties that can be used to benchmark analytical methods. However, existing simulation approaches have several fundamental limitations:
+1. `extract_regions()` (`R/04b1_extract_regions.R`): pixel clusters become tissue-region polygons in µm.
+2. `seed_centroids()` (`R/04b2_seed_centroids.R`): cell centres are drawn in each region at the target density, with a minimum distance
+   between centres (uniform seeding by default; optional seeding by cell-type compartments, with voids and density heterogeneity).
+3. `tessellate_voronoi()` (`R/04b3_tessellate_voronoi.R`): Voronoi territories of the centres, clipped to the regions.
+4. `derive_cell_geometry()` (`R/04b4_derive_cell_geometry.R`): one nucleus per territory, drawn from a size model fitted on real
+   nuclei and clipped inside the territory while keeping the target area.
+5. `validate_cell_layer()` (`R/04b5_cell_layer_validation.R`): internal checks (geometry validity, area conservation, containment,
+   densities and sizes against the preset); with `strict = TRUE` a failed check stops the run.
 
-- **Oversimplified statistical properties**: Many simulations use simple Poisson models that fail to capture the complex variance structure of real transcriptomic data
-- **Biologically unrealistic spatial patterns**: Simulations often use simplistic geometric patterns rather than mimicking the complex tissue architectures found in vivo
-- **Homogeneous technical artifacts**: Most simulations apply uniform dropout rates and noise models, whereas real data exhibits spatially variable technical artifacts
-- **Discrete boundaries**: Many simulations create sharp boundaries between cell types, whereas real tissues often have gradual transitions and interface regions
+The six presets live in `R/04b0_tissue_presets.R`; `estimate_pixel_size()` (`R/04b6_estimate_pixel_size.R`) reads the image scale when the
+user does not give it. The design is `docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md` (version 1.8).
 
-Our framework addresses these limitations by implementing sophisticated statistical models informed by the biological and technical characteristics of real spatial transcriptomics data, enabling more accurate evaluation of analytical methods.
+## Tissue presets
 
-### 1.3 Framework Philosophy: Balancing Complexity and Performance
+One preset per tissue archetype of the test panel. Each preset is calibrated on one public 10x Genomics Visium HD dataset with H&E
+(licence CC BY 4.0; map and checksums in `data/real/README.md`). The density is the manual count of nuclei in annotated windows of the
+real H&E (row of `docs/BIO_REFERENCES.md` in brackets).
 
-This framework represents a unique approach to spatial transcriptomics simulation, balancing biological realism with computational efficiency. After extensive development and validation, we have implemented a **streamlined yet comprehensive architecture** that maintains full biological accuracy while achieving remarkable performance improvements:
+| preset | tissue | reference dataset | target density (nuclei/mm²) |
+|---|---|---|---|
+| `epithelial` | mouse small intestine | `Visium_HD_Mouse_Small_Intestine` | 12 419 (B-043) |
+| `tumor_microenv` | human colorectal cancer | `Visium_HD_Human_Colon_Cancer` | 8 924 (B-044) |
+| `stromal_rich` | stroma of the colorectal cancer | `Visium_HD_Human_Colon_Cancer` (stromal regions) | 3 100 (B-045) |
+| `lymphoid` | human lymph node | `Visium_HD_Human_Lymph_Node_FFPE` | 28 096 (B-046) |
+| `brain_cortex` | mouse brain cortex | `Visium_HD_6p5mm_Mouse_Brain` | 1 185 (B-047) |
+| `columnar_muscle` | human heart | `Visium_HD_6p5mm_Human_Heart` | 988 (B-048) |
 
-- **Theoretical Foundation**: Statistical models are rigorously based on empirical observations from real datasets
-- **Biological Accuracy**: All essential biological mechanisms are preserved through 12 coordinated expression modules
-- **Computational Efficiency**: Optimized implementation achieves complete pipeline execution in <1 minute
-- **Controlled Complexity**: Parametrizable difficulty levels enable systematic algorithm benchmarking
-- **Future Extensibility**: Advanced biological modules are prepared for integration as optional features
+By default each preset has several cell types (for example epithelial, immune and stromal cells in the intestine), seeded without looking at
+the type; the cell-type labels are in Italian (`epiteliale`, `immunitario`, ...). The heart is a planned negative control: isotropic
+Voronoi territories cannot reproduce elongated cardiomyocytes.
 
-## 2. Framework Architecture and Theoretical Foundations
+## Installation
 
-### 2.1 Streamlined Modular Architecture with Preserved Biological Complexity
-
-This repository provides a comprehensive set of tools for simulating and analyzing spatial transcriptomics data with sophisticated statistical properties. Through extensive development and optimization, the framework has been restructured into a **streamlined yet theoretically rigorous architecture** that maintains full biological realism while achieving exceptional computational performance.
-
-The design philosophy emphasizes:
-- **Modularity**: Each component focuses on a specific biological or technical aspect within the pipeline
-- **Theoretical Rigor**: Statistical models are selected based on empirical observations from real data
-- **Biological Completeness**: All essential mechanisms for realistic spatial transcriptomics are preserved
-- **Computational Efficiency**: Optimized implementation enables rapid generation of large-scale datasets
-- **Benchmarking Capabilities**: Ground truth knowledge enables quantitative evaluation of analytical methods
-
-### 2.2 Core Pipeline Architecture
-
-The framework has been organized into a clear hierarchy of active core modules and future advanced features:
-
-```
-R/                                  # ACTIVE CORE PIPELINE (17 modules)
-├── 01_configuration.R              # Performance optimization and memory management
-├── 02_helper_functions.R           # Mathematical utilities and helper functions
-├── 03_image_processing.R           # Image loading, thresholding, and preprocessing
-├── 03b_generate_synthetic_tissue.R # Synthetic tissue generation (3 complexity levels)
-├── 04_clustering.R                 # Simplified spatial clustering (spatial k-means)
-├── 05_grid_sampling.R              # Grid creation for Visium-like technologies
-└── 06*_expression_*.R              # 12 ESSENTIAL EXPRESSION MODULES
-    ├── 06a_expression_params.R     # Parameter initialization and validation
-    ├── 06b_expression_baseline.R   # Cell type-specific baseline expression profiles
-    ├── 06c_spatial_distances.R     # Spatial distance calculations and local density
-    ├── 06d_dispersion_params.R     # Negative binomial dispersion parameters
-    ├── 06e_library_size.R          # Realistic library size generation with spatial effects
-    ├── 06f_dropout_models.R        # Expression-dependent dropout with ambient RNA
-    ├── 06g_gene_modules.R          # Gene co-expression modules and regulatory networks
-    ├── 06h_spatial_correlation.R   # Gaussian Random Field spatial correlation
-    ├── 06i_hybrid_cells.R          # Boundary cells with mixed phenotypes
-    ├── 06j_expression_generation.R # Final expression matrix generation
-    └── 06k_expression_profiles_wrapper.R  # MAIN COORDINATOR FUNCTION
-
-R/testing/                          # VALIDATION AND BENCHMARKING FRAMEWORK
-├── full_test.R                     # PRIMARY SCRIPT: Comprehensive pipeline validation
-├── visualize_clusters.R            # Publication-quality visualization generation
-└── *.rds, *.png                    # Generated results, benchmarks, and visualizations
-
-R/test functions/                   # FUTURE ADVANCED BIOLOGICAL MODULES (inactive)
-├── 06l_ligand_receptor_*.R         # Cell-cell communication modeling (future)
-├── 06m_temporal_dynamics_*.R       # RNA velocity and pseudotime (future)
-├── 06n_alternative_splicing_*.R    # Spatial isoform regulation (future)
-├── 06o_anisotropic_patterns_*.R    # Directional tissue structures (future)
-├── 06p_3d_microenvironment_*.R     # 3D tissue effects on 2D measurements (future)
-└── 07*_simulation_*.R              # Advanced simulation pipeline components (future)
-```
-
-### 2.3 Theoretical Justification for Modular Simplification
-
-The transition from a complex 38-module system to a streamlined 17-module architecture was guided by rigorous analysis of biological necessity and computational efficiency:
-
-**Preserved Essential Biology (12 Expression Modules)**:
-Each of the 12 expression modules (06a-06k) represents a **non-simplifiable biological mechanism** essential for realistic spatial transcriptomics simulation:
-- **Parameter Initialization (06a)**: Ensures consistent and biologically plausible parameter ranges
-- **Baseline Expression (06b)**: Implements cell type-specific expression profiles based on empirical distributions
-- **Spatial Distances (06c)**: Calculates neighborhood relationships essential for all spatial effects
-- **Dispersion Parameters (06d)**: Models the overdispersion characteristic of real transcriptomic data
-- **Library Size Generation (06e)**: Implements realistic sequencing depth variation with spatial correlation
-- **Dropout Models (06f)**: Simulates technical artifacts including expression-dependent and ambient RNA effects
-- **Gene Modules (06g)**: Models co-expression networks and regulatory relationships
-- **Spatial Correlation (06h)**: Implements Gaussian Random Field correlation structures
-- **Hybrid Cells (06i)**: Models realistic boundary effects and transitional cell states
-- **Expression Generation (06j)**: Coordinates final matrix assembly with all biological effects
-- **Wrapper Coordination (06k)**: Orchestrates the complete pipeline ensuring proper dependency ordering
-
-**Streamlined Clustering Approach**:
-The clustering module (04) was simplified from 540 lines with multiple algorithms to 64 lines with a single, highly optimized **spatial k-means** approach. This simplification was justified by:
-- **Deterministic Reproducibility**: Single algorithm ensures consistent results for benchmarking
-- **Parametric Control**: The `spatial_weight` parameter provides fine-grained difficulty control
-- **Computational Efficiency**: Vectorized implementation achieves rapid execution
-- **Biological Relevance**: Spatial k-means captures the essential balance between image intensity and spatial proximity
-
-## 3. Theoretical Foundations of Statistical Models
-
-### 3.1 Count Distribution Models and Biological Justification
-
-The core statistical challenge in transcriptomics simulation is accurately modeling the distribution of gene expression counts. Our framework implements multiple distributions based on extensive empirical observations from real spatial transcriptomics data:
-
-#### 3.1.1 Negative Binomial Distribution for Overdispersed Expression
-
-The primary distribution used in our simulation is the Negative Binomial (NB) distribution, which naturally models the overdispersion (variance > mean) consistently observed in transcriptomic data. The probability mass function is:
-
-$$P(X=k) = \binom{k+r-1}{k} p^r (1-p)^k$$
-
-Where:
-- $r$ is the dispersion parameter (called `size` in R)
-- $p$ is related to the mean $\mu$ by $p = \frac{r}{r+\mu}$
-
-The variance has the fundamental relationship:
-
-$$\text{Var}(X) = \mu + \frac{\mu^2}{r}$$
-
-This framework provides critical flexibility, as the variance structure can be modulated through the dispersion parameter $r$:
-- When $r \to \infty$, the NB approaches a Poisson distribution (variance = mean)
-- When $r$ is small, the variance can be much larger than the mean, matching empirical observations
-
-The biological justification for using the NB distribution includes:
-- **Stochastic transcriptional bursting**: Transcription occurs in episodic bursts rather than continuous production
-- **Regulatory network variability**: Cell-to-cell differences in regulatory network states create additional variance
-- **Microenvironmental heterogeneity**: Local variations in the cellular microenvironment affect gene expression even within the same nominal cell type
-
-#### 3.1.2 Spatially-Varying Dispersion Parameters
-
-Our framework implements spatially-varying dispersion to capture the observation that transcriptional variability differs across tissue regions:
-
-```r
-# Dispersion increases near tissue boundaries (lower r values = higher variance)
-dispersion_param <- dispersion_range[2] + 
-  cell_df$boundary_dist * (dispersion_range[1] - dispersion_range[2])
-```
-
-This spatial dependence is biologically justified by:
-- **Boundary stress effects**: Cells at tissue interfaces experience higher transcriptional variability
-- **Tissue integrity gradients**: Central tissue regions show more stable gene expression patterns
-- **Microenvironmental stability**: Dense tissue regions provide more consistent cellular environments
-
-### 3.2 Spatial Correlation Models and Gaussian Process Implementation
-
-Real tissues exhibit complex patterns of spatial correlation in gene expression due to intercellular communication, developmental gradients, and tissue organization. Our framework implements sophisticated spatial correlation models to capture these biological realities.
-
-#### 3.2.1 Gaussian Process with Exponential Covariance Function
-
-We implement a Gaussian Process (GP) model with an exponential covariance function to create spatially correlated random fields:
-
-$$C(d) = \sigma^2 \exp(-d/\rho)$$
-
-Where:
-- $d$ is the Euclidean distance between spatial locations
-- $\rho$ is the range parameter controlling the correlation length scale (typically 30-50μm)
-- $\sigma^2$ is the variance parameter controlling the magnitude of spatial variation
-
-The implementation uses the `gstat` package in R:
-
-```r
-gp_sim <- gstat(formula = z ~ 1, locations = ~x+y, dummy = TRUE,
-                beta = 0, model = vgm(psill = spatial_noise_intensity, 
-                                     range = spatial_range, 
-                                     model = "Exp"), 
-                nmax = 10)
-```
-
-The biological justification for using a GP with exponential covariance includes:
-- **Diffusion physics**: Molecular gradients in tissues often follow exponential decay patterns
-- **Paracrine signaling**: Secreted factors create correlation structures that decay with distance
-- **Tissue architecture**: Hierarchical organization creates multi-scale correlation patterns
-
-### 3.3 Technical Artifact Models with Spatial Dependencies
-
-Real spatial transcriptomics data contains various technical artifacts that can confound analysis. Our framework explicitly models these artifacts with spatial dependence to create realistic challenges for analytical methods.
-
-#### 3.3.1 Expression-Dependent Dropout with Spatial Effects
-
-Dropout (false zeros) in spatial transcriptomics combines expression-level dependency with spatial effects. Our model implements a logistic function for expression dependence combined with spatial boundary effects:
-
-```r
-# Expression-dependent component (logistic function)
-norm_expr <- scale01_vec(expression_data[, g])
-dropout_prob_expr <- 1 / (1 + exp((norm_expr - dropout_curve_midpoint) * 
-                                 dropout_curve_steepness))
-
-# Spatial component (higher dropout near boundaries)
-spatial_dropout <- base_dropout_rate * (1 + boundary_effect * (1 - boundary_dist))
-
-# Combined model
-dropout_prob <- 0.7 * dropout_prob_expr + 0.3 * spatial_dropout
-```
-
-This sophisticated model captures the dual nature of dropout in real data:
-- **Expression dependence**: Lower expressed genes have higher dropout probability following a sigmoidal relationship
-- **Spatial boundary effects**: Tissue edges and processing artifacts create spatial patterns in dropout rates
-- **Biological realism**: The combined model reproduces the complex dropout patterns observed in real datasets
-
-#### 3.3.2 Ambient RNA Contamination Modeling
-
-The framework models ambient RNA contamination using a distance-based diffusion model:
-
-```r
-# Ambient RNA spreads from cells with exponential decay
-ambient_effect <- ambient_contamination_rate * 
-  exp(-distance_to_nearest_cell / ambient_diffusion_distance)
-```
-
-This model captures:
-- **Molecular diffusion**: RNA released from lysed cells diffuses through tissue with distance decay
-- **Background contamination**: Uniform background level from experimental processing
-- **Spatial dependence**: Contamination effects are strongest near high-expression regions
-
-### 3.4 Gene Co-expression Modules and Regulatory Network Theory
-
-A fundamental biological feature implemented in this framework is the simulation of gene co-expression modules that realistically capture transcriptional programs. The implementation is based on extensive evidence from biological networks:
-
-#### 3.4.1 Hierarchical Module Organization
-
-```r
-cell_specific_params = list(
-  use_gene_modules = TRUE,
-  n_gene_modules = 8,             # Number of gene modules  
-  module_correlation = 0.75,       # Correlation strength within modules
-  module_hierarchical = TRUE,     # Enable hierarchical module structure
-  module_overlap = 0.1,           # Gene overlap between modules
-  n_latent_factors = 3,           # Number of latent regulatory factors
-  module_network_density = 0.2    # Connectivity between modules
-)
-```
-
-The gene module model implements:
-- **Realistic module size distributions**: Exponential distribution (many small, few large modules)
-- **Hierarchical organization**: Sub-modules within larger regulatory programs
-- **Module-module interactions**: Network connectivity representing pathway cross-talk
-- **Latent regulatory factors**: Unmeasured regulators that influence multiple modules
-- **Biologically realistic overlaps**: Genes can participate in multiple biological processes
-
-The biological justification includes:
-- **Scale-free network topology**: Gene regulatory networks follow power-law degree distributions
-- **Transcriptional hierarchies**: Master regulators control multiple downstream programs  
-- **Pathway integration**: Biological pathways have cross-talk and shared components
-- **Functional pleiotropy**: Individual genes often participate in multiple cellular processes
-
-#### 3.4.2 Latent Factor Model Implementation
-
-The framework implements a latent factor model where unmeasured regulatory factors influence groups of genes:
-
-```r
-# Latent factors influence groups of genes
-latent_factors <- matrix(rnorm(n_cells * n_latent), nrow = n_cells, ncol = n_latent)
-latent_to_module <- matrix(...)  # Maps factors to modules
-
-# Calculate module activities based on latent factors
-module_activities <- latent_factors %*% t(latent_to_module)
-
-# Module network propagates effects between modules  
-network_norm <- sweep(module_network, 1, rowSums(module_network) + 1e-10, "/")
-for (step in 1:2) {
-  module_activities <- 0.7 * orig_activities + 
-                      0.3 * (module_activities %*% network_norm)
-}
-```
-
-This approach captures:
-- **Hidden regulatory variables**: Many gene expression patterns are controlled by unmeasured factors
-- **Regulatory cascades**: Upstream factors influence downstream gene modules through network propagation
-- **Emergent correlation structure**: Complex correlation patterns emerge from simple regulatory rules
-
-## 4. Validation Against Real Spatial Transcriptomics Data
-
-### 4.1 Biological Parameter Validation
-
-The framework's parameters have been extensively validated against published spatial transcriptomics datasets, particularly high-quality Visium HD data:
-
-#### 4.1.1 Library Size Distribution Matching
-
-**Target Distribution**: 8,000 UMI/spot mean with 30% coefficient of variation
-- **Empirical Justification**: Analysis of published Visium HD datasets shows library sizes typically range from 3,000-20,000 UMI/spot
-- **Spatial Effects**: Library size correlation with tissue density (correlation coefficient ~0.3-0.5)
-- **Cell Type Effects**: Different cell types show characteristic RNA content differences
-
-**Validation Results**:
-```
-✓ UMI statistics: Mean=9,022, Median=7,100
-✓ UMI CV: 0.87 (realistic biological variability)
-✓ Range: 3,000-20,000 UMI/spot (matches empirical data)
-```
-
-#### 4.1.2 Sparsity Pattern Validation
-
-**Target Sparsity**: 85-92% zeros for quality-filtered spatial data
-- **Biological Basis**: Real spatial transcriptomics data shows high sparsity due to technical sensitivity limits
-- **Spatial Heterogeneity**: Central tissue regions show lower sparsity than boundaries
-- **Gene-Specific Effects**: Housekeeping genes show lower dropout than tissue-specific genes
-
-**Validation Results**:
-```
-✓ Sparsity: 89.2% (typical for filtered spatial data)
-✓ Spatial gradient: Lower sparsity in tissue centers
-✓ Gene-specific variation: Realistic dropout patterns
-```
-
-#### 4.1.3 Spatial Autocorrelation Validation
-
-**Target Autocorrelation**: Moran's I > 0.05 for significant spatial structure
-- **Biological Expectation**: Real tissues show significant spatial autocorrelation in gene expression
-- **Distance Dependence**: Correlation decays exponentially with distance (30-50μm range)
-- **Gene-Specific Patterns**: Different genes show varying degrees of spatial organization
-
-**Validation Results**:
-```
-✓ Moran's I: >0.05 (significant spatial autocorrelation)
-✓ Distance decay: Exponential with 40μm characteristic range
-✓ Gene-specific variation: Realistic spatial pattern diversity
-```
-
-### 4.2 Computational Performance Benchmarks
-
-The optimized framework achieves remarkable computational efficiency while maintaining full biological accuracy:
-
-#### 4.2.1 Execution Time Benchmarks
-
-**Full Pipeline Performance**:
-- **Complete simulation**: 0.79 minutes for 5,000×10,000 matrix
-- **Memory usage**: ~4 GB peak allocation with chunking
-- **Scalability**: Linear scaling up to 50,000 spots with automatic chunking
-- **Reproducibility**: Deterministic results with controlled random seeds
-
-**Comparison with Alternative Frameworks**:
-- **Previous version**: 15-30 minutes for equivalent simulation
-- **Other simulators**: Typically 1-3 hours for comparable biological complexity
-- **Memory efficiency**: 50-75% reduction through optimized chunking
-
-#### 4.2.2 Memory Optimization Strategies
-
-The framework implements sophisticated memory management:
-
-```r
-# Automatic chunking for large datasets
-chunk_size <- min(2000, ceiling(nrow(cell_df) / 4))
-n_chunks <- ceiling(nrow(cell_df) / chunk_size)
-
-# Memory-efficient matrix operations
-final_expr <- do.call(cbind, expression_chunks)
-```
-
-**Memory Management Features**:
-- **Automatic chunking**: Divides large simulations into manageable pieces
-- **Garbage collection**: Periodic cleanup during processing
-- **Sparse matrix support**: Efficient storage for high-sparsity data
-- **Vectorized operations**: Optimized R code minimizes memory allocation
-
-## 5. Practical Usage and Experimental Design
-
-### 5.1 Quick Start for Researchers
-
-**Primary Entry Point**: The framework is designed around a single, comprehensive test script that demonstrates all capabilities:
+The project is developed and tested on Ubuntu 24.04 (noble) with R 4.6.1 and the system libraries GDAL 3.8.4, GEOS 3.12.1 and PROJ 9.4.0.
+The code is loaded with `source()`: the package is not installed (there is no `NAMESPACE` yet).
 
 ```bash
-# Run complete biological validation with synthetic tissue
-Rscript R/testing/full_test.R
-
-# Run with custom tissue image  
-Rscript R/testing/full_test.R path/to/your/histological/image.png
+git clone https://github.com/lucavd/2025.geo_spatialtrans.git
+cd 2025.geo_spatialtrans
+git checkout dev
+Rscript --vanilla tools/restore_library.R
 ```
 
-**Expected Biological Validation Results**:
-```
-✓ Execution time: 0.79 minutes
-✓ Final dimensions: 5,000×10,000 (genes×spots)  
-✓ Sparsity: 89.2% (typical for filtered spatial data)
-✓ UMI statistics: Mean=9,022, Median=7,100
-✓ UMI CV: 0.87 (realistic biological variability)
-✓ Clusters found: 8/8 correctly assigned
-✓ Moran's I: >0.05 (significant spatial autocorrelation)
-✓ RESULT: PASS
-```
+`tools/restore_library.R` rebuilds the project library `renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu` from `renv.lock`
+(199 packages) using Posit Package Manager binaries for Ubuntu noble, then checks every version against the lockfile. Every script of the
+project calls `.libPaths()` on that folder and runs with `Rscript --vanilla`. On other systems the restore falls back to source packages.
 
-### 5.2 Algorithm Benchmarking and Method Development
+## Quick start
 
-#### 5.2.1 Controlled Difficulty Generation
+A 300 µm × 300 µm square of tissue with the intestine preset. From the repository root, after the installation:
 
-The framework provides parametric control over clustering difficulty through the `spatial_weight` parameter:
-
+<!-- quickstart:start -->
 ```r
-# Load pipeline functions
-files <- list.files("R", full.names = TRUE, pattern = "\\.R$")
-files <- files[!grepl("test functions", files)]
-for (file in sort(files)) { source(file) }
+.libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({ library(sf); library(geos) })
+for (f in sort(list.files("R", pattern = "^04b.*\\.R$", full.names = TRUE))) source(f)
 
-# Generate data with controllable difficulty
-spatial_weight <- 0.2  # Easy: clustering primarily by image intensity
-spatial_weight <- 0.6  # Medium: balanced spatial and intensity effects  
-spatial_weight <- 0.8  # Hard: clustering primarily by spatial proximity
+print(tissue_presets())                       # the six tissue presets
 
-# Generate benchmark dataset with known ground truth
-clust <- cluster_image(img_df_thresh, k_cell_types = 8, 
-                      spatial_weight = spatial_weight, random_seed = 42)
+# A 300 x 300 um square of tissue with 1 um pixels, all in one cluster.
+clust <- expand.grid(x = 1:300, y = 1:300)
+clust$intensity_cluster <- 1L
+
+cl <- place_cells(clust, tissue_preset = "epithelial", pixel_size_um = 1, random_seed = 42)
+
+nrow(cl$cell_df)                              # number of simulated cells
+head(cl$cell_df)
+cl$region_check                               # area of the region and of its territories
+p <- plot_cell_layer(cl, mode = "voronoi")
+ggplot2::ggsave("cell_layer_epithelial.png", p, width = 6, height = 6, dpi = 150)
 ```
+<!-- quickstart:end -->
 
-#### 5.2.2 Ground Truth Evaluation
+`place_cells()` prints one line such as `[place_cells] epithelial: 1 regioni, 1118 cellule, scala 1 um/px (user), controlli 0 ERROR / 0 WARN`.
+The same seed gives the same cells, bit for bit.
 
-The framework provides complete ground truth information for quantitative algorithm evaluation:
+### Input from an image
 
-```r
-# Access ground truth cluster assignments
-ground_truth <- cell_df$intensity_cluster
-your_algorithm_result <- your_clustering_method(expression_matrix)
+`clust` is a data frame of tissue pixels: integer `x` and `y` and a cluster column (`intensity_cluster` by default; set `cluster_col`).
+`pixel_size_um` is required: a number in µm per pixel, or `list(scalefactors_json = <file>)` to read it from Space Ranger. Each cluster
+becomes one or more tissue regions. The 2025 functions `generate_synthetic_tissue()` (`R/03b_generate_synthetic_tissue.R`) and
+`cluster_image()` (`R/04_clustering.R`) produce this format and built the synthetic inputs of the first cell-layer tests
+(`tools/S1.1_inputs.R`).
 
-# Standard evaluation metrics
-library(mclust)
-ari_score <- adjustedRandIndex(ground_truth, your_algorithm_result)
-nmi_score <- compare(ground_truth, your_algorithm_result, method = "nmi")
+### Main options of `place_cells()`
 
-# Spatial coherence evaluation  
-spatial_coherence <- calculate_spatial_coherence(your_algorithm_result, coordinates)
-```
+| argument | default | meaning |
+|---|---|---|
+| `tissue_preset` | `"epithelial"` | one of `tissue_presets()` |
+| `random_seed` | `42` | seed of the three stages (seeding, nucleus size, pale nuclei; `stage_seeds()`) |
+| `types` | `"multi"` | several cell types per preset; `"single"` = one type, as in the first calibration |
+| `spatial` | preset default (`"uniform"`) | `"compartments"` seeds cell types in spatial compartments, with voids |
+| `cell_types`, `region_composition` | `NULL` | a user catalogue of cell types and the composition of each cluster, instead of a preset |
+| `validate`, `strict` | `TRUE`, `TRUE` | run the internal checks; stop on a failed check |
 
-### 5.3 Educational Applications and Demonstration
+The full list, with the options kept to reproduce earlier steps, is in the roxygen header of `place_cells()`.
 
-#### 5.3.1 Visualization of Spatial Transcriptomics Concepts
+### Output
 
-The framework generates publication-quality visualizations that demonstrate key concepts:
+A `cell_layer` list (design §4.1): `cell_df` (one row per cell: position, type, territory area, nucleus geometry and area),
+`cell_territories` and `cell_nuclei` (`sf` polygons), `region_df` and `region_polygons`, `territory_df`, `region_check`,
+`region_composition`, `cell_types_resolved` and `metadata` (seeds, scale, check results, run time). `plot_cell_layer()` draws territories,
+types, density or regions.
+
+## Known limits of the simulated cells
+
+Declared in the design (§7.4) after comparison with the real tissues; keep them in mind when testing methods on the simulated data:
+
+- **too many nuclei touching each other** in dense tissues: colorectal cancer and lymph node, borderline in the stroma of the cancer;
+  none of the nucleus models tried brings them to the real values;
+- **territories too uniform** with the default uniform seeding (territory-area variability and number of neighbours below the real ones in
+  the intestine, the colorectal cancer and the lymph node); seeding by compartments with voids corrects part of it but is not the default;
+- **heart**: isotropic territories, while real cardiomyocytes are elongated (planned negative control);
+- **preset densities** refer to tissue fully covered by cells, as in the manual count, not to tissue with its voids.
+
+## Tests
+
+The test battery runs on the lab server only. Besides the code it reads the real datasets on the server's data volume, derived files of
+the reference steps that are too large for git (tissue masks and nuclei of the real regions, annotation windows) and the project's Python
+environment. In a new clone on the server, after `tools/restore_library.R`, link these inputs from the server's working copy:
 
 ```bash
-# Generate comprehensive visualization panel
-Rscript R/testing/visualize_clusters.R
+bash tools/link_server_inputs.sh      # symbolic links to every git-ignored input of the tests (libraries, logs and caches excluded)
+bash R/testing/run_S1.6.sh test       # full regression battery of Step 1 (PASS/FAIL per assertion, about 20 minutes)
+bash R/testing/run_S1.6.sh mutants    # altered copies of the code that the tests must catch
+bash R/testing/run_S1.6.sh env        # DESCRIPTION vs code, restore from the lockfile into an empty library
 ```
 
-**Generated Educational Materials**:
-- `combined_visualization.png`: Side-by-side tissue image and cluster assignments
-- `cluster_visualization.png`: Detailed cluster plot with 20,000 points and legend
-- `full_tissue_complex.png`: Synthetic tissue showing realistic biological complexity
+The battery prints `GATE G-1 PASS` when every assertion passes except four known failures recorded as pre-registration errors
+(`docs/decisions/DEC-011.md`, `docs/decisions/DEC-023.md`). The quick start above needs neither the data nor the links.
 
-#### 5.3.2 Parameter Exploration for Teaching
+## Repository map
 
-The framework enables systematic exploration of biological parameters:
+| path | content |
+|---|---|
+| `R/04b*.R` | the cell layer (Step 1) |
+| `R/testing/` | tests (`test_<step>.R`), gate scripts (`run_<step>.sh`), mutants (`mutants_<step>.py`) |
+| `tools/` | analysis, calibration and benchmark scripts of each step; `okf.py` checks the documentation bundle |
+| `results/<step>/` | versioned results tables of each step |
+| `reports/<step>.qmd`, `.html` | step reports (Italian) |
+| `docs/superpowers/specs/` | design of Step 1 |
+| `docs/BIO_REFERENCES.md` | biological references with sources |
+| `docs/ROADMAP.md`, `docs/BACKLOG.md`, `CHANGELOG.md` | plan, open items, history |
+| `docs/steps/`, `docs/decisions/`, `docs/index.md` | one file per step and per decision (Open Knowledge Format), index |
+| `data/real/README.md` | the real reference datasets, their checksums and scale |
 
-```r
-# Demonstrate effect of spatial correlation range
-spatial_ranges <- c(10, 30, 50, 100)  # μm
-for (range in spatial_ranges) {
-  sim_result <- generate_expression_profiles(
-    cell_df, n_genes = 1000, k_cell_types = 5,
-    spatial_params = list(spatial_range = range)
-  )
-  # Analyze and visualize spatial patterns
-}
+Project documents are in Italian; code, tables and figures are in English.
 
-# Demonstrate effect of dropout severity
-dropout_levels <- list(
-  low = c(0.1, 0.3),     # 10-30% dropout
-  medium = c(0.3, 0.6),  # 30-60% dropout  
-  high = c(0.5, 0.8)     # 50-80% dropout
-)
-```
+## Licence and authors
 
-## 6. Advanced Biological Modules: Theoretical Foundations for Future Development
-
-The framework includes sophisticated biological modules ready for integration as optional features. These modules are based on cutting-edge research in spatial biology and provide theoretical foundations for advanced simulations.
-
-### 6.1 Ligand-Receptor Interaction Networks
-
-#### 6.1.1 Theoretical Framework for Cell-Cell Communication
-
-The ligand-receptor interaction module implements a distance-weighted diffusion model based on the physics of molecular signaling:
-
-$$S_{ij} = \sum_{k} L_k \cdot e^{-d_{ik}/\lambda} \cdot w_{jk}$$
-
-Where:
-- $S_{ij}$ is the signaling effect of interaction $j$ on target cell $i$
-- $L_k$ is the ligand expression in source cell $k$
-- $d_{ik}$ is the distance between cells $i$ and $k$
-- $\lambda$ is the characteristic signaling distance (typically 20-50μm)
-- $w_{jk}$ is the interaction-specific weight based on receptor expression
-
-**Biological Justification**:
-- **Diffusion physics**: Secreted molecules follow exponential decay with distance
-- **Receptor-mediated specificity**: Only cells expressing appropriate receptors respond
-- **Dose-response relationships**: Signaling strength depends on ligand concentration
-- **Spatial organization**: Tissue architecture facilitates specific communication patterns
-
-### 6.2 Temporal Dynamics and RNA Velocity
-
-#### 6.2.1 Mathematical Foundation for Developmental Trajectories
-
-The temporal dynamics module implements RNA velocity concepts through the balance equation:
-
-$$\frac{du_i}{dt} = \alpha_i(t) - \gamma_i u_i$$
-$$\frac{ds_i}{dt} = \gamma_i u_i - \beta_i s_i$$
-
-Where:
-- $u_i$ and $s_i$ are unspliced and spliced mRNA abundances for gene $i$
-- $\alpha_i(t)$ is the time-dependent transcription rate
-- $\gamma_i$ is the splicing rate
-- $\beta_i$ is the degradation rate
-
-The velocity is given by: $v_i = \gamma_i u_i - \beta_i s_i$
-
-**Spatial Integration**:
-Pseudotime is modeled as a continuous field across tissue space, enabling simulation of:
-- **Developmental gradients**: Continuous differentiation processes
-- **Wound healing**: Regenerative processes with defined directionality
-- **Tissue morphogenesis**: Coordinated cellular state transitions
-
-### 6.3 Alternative Splicing Regulation
-
-#### 6.3.1 Spatial Regulation of Isoform Usage
-
-The alternative splicing module models spatially-regulated splicing decisions:
-
-$$P_{ij}(x,y) = \frac{e^{S_{ij}(x,y)}}{\sum_k e^{S_{ik}(x,y)}}$$
-
-Where $P_{ij}(x,y)$ is the probability of choosing splice variant $j$ for gene $i$ at spatial location $(x,y)$.
-
-**Biological Mechanisms Modeled**:
-- **Splicing factor gradients**: Spatial variation in splicing regulator expression
-- **Tissue-specific programs**: Cell type-dependent splicing preferences
-- **Environmental responses**: Stress-induced alternative splicing patterns
-
-## 7. Applications in Spatial Transcriptomics Research
-
-### 7.1 Method Development and Validation
-
-#### 7.1.1 Clustering Algorithm Benchmarking
-
-The framework provides standardized benchmarks for spatial clustering methods:
-
-- **Controlled ground truth**: Known cluster assignments enable quantitative evaluation
-- **Difficulty parameterization**: Systematic testing across complexity levels
-- **Realistic challenges**: Biological noise patterns that mirror real experimental conditions
-- **Scale testing**: Evaluation on datasets ranging from 1,000 to 50,000+ spots
-
-#### 7.1.2 Spatial Pattern Detection
-
-Researchers can validate methods for detecting spatial gene expression patterns:
-
-- **Known spatial structures**: Predefined correlation patterns for validation
-- **Pattern diversity**: Multiple correlation models (exponential, multiscale, non-stationary)
-- **Noise robustness**: Testing under realistic technical artifact conditions
-- **Statistical power**: Systematic evaluation of detection sensitivity
-
-### 7.2 Technology Development and Optimization
-
-#### 7.2.1 Platform Comparison Studies
-
-The framework enables systematic comparison of spatial transcriptomics technologies:
-
-- **Resolution effects**: Simulate different spot sizes and spacing
-- **Sensitivity comparisons**: Model different detection limits and dropout rates
-- **Throughput trade-offs**: Evaluate gene number vs. spatial resolution trade-offs
-- **Protocol optimization**: Test effects of different experimental parameters
-
-### 7.3 Hypothesis Generation and Experimental Design
-
-#### 7.3.1 Power Analysis for Spatial Studies
-
-Researchers can use the framework to design appropriately powered spatial transcriptomics experiments:
-
-- **Sample size determination**: Estimate required cell/spot numbers for detection
-- **Effect size estimation**: Determine minimal detectable spatial effects
-- **Technology selection**: Choose optimal platform for specific biological questions
-- **Cost-benefit analysis**: Balance sequencing depth vs. spatial coverage
-
-## 8. Conclusion and Future Directions
-
-This streamlined spatial transcriptomics simulation framework represents a unique balance of biological realism, theoretical rigor, and computational efficiency. Through extensive optimization and validation, we have created a tool that enables rapid generation of realistic spatial transcriptomics data while maintaining the sophisticated statistical properties necessary for rigorous method development and validation.
-
-### 8.1 Key Contributions to the Field
-
-**Methodological Innovations**:
-- **Optimized architecture**: 55% reduction in complexity while preserving full biological accuracy
-- **Performance breakthrough**: Sub-minute execution for large-scale simulations  
-- **Theoretical foundation**: Rigorous statistical models based on empirical observations
-- **Validation framework**: Comprehensive benchmarking against real data characteristics
-
-**Biological Accuracy Achievements**:
-- **Realistic statistical properties**: Negative binomial with spatially-varying dispersion
-- **Complex spatial patterns**: Gaussian Random Field correlation with biological parameters
-- **Technical artifact modeling**: Expression-dependent dropout and ambient RNA contamination
-- **Regulatory network simulation**: Gene co-expression modules with realistic network topology
-
-### 8.2 Impact on Spatial Transcriptomics Research
-
-The framework addresses critical needs in the rapidly expanding field of spatial transcriptomics:
-
-- **Method validation bottleneck**: Provides accessible ground truth data for algorithm development
-- **Educational resource**: Enables teaching of spatial transcriptomics concepts with realistic examples
-- **Technology development**: Supports comparison and optimization of experimental platforms
-- **Hypothesis generation**: Facilitates experimental design and power analysis
-
-### 8.3 Future Development Priorities
-
-**Advanced Biological Modules Integration**:
-- Integration of ligand-receptor interaction networks for cell-cell communication studies
-- Implementation of temporal dynamics for developmental and disease progression modeling
-- Addition of alternative splicing regulation for transcript diversity studies
-- Incorporation of anisotropic patterns for structured tissue modeling
-- Development of 3D microenvironment effects for complex tissue architecture
-
-**Methodological Enhancements**:
-- Multi-condition simulation for comparative studies
-- Batch effect modeling for meta-analysis validation
-- Single-cell resolution scaling for ultra-high-resolution technologies
-- Multi-modal integration for combined transcriptomic-proteomic simulations
-
-**Community Engagement and Accessibility**:
-- Development of user-friendly interfaces for non-computational researchers
-- Creation of standardized benchmark datasets for method comparison
-- Integration with popular spatial transcriptomics analysis packages
-- Establishment of community challenges using framework-generated data
-
-The framework represents a significant step forward in spatial transcriptomics methodology, providing researchers with the tools necessary to advance our understanding of tissue organization and spatial gene regulation through rigorous computational approaches.
-
----
-
-### Quick Start Reference
-
-**Complete pipeline validation**:
-```bash
-Rscript R/testing/full_test.R
-```
-
-**Expected result**: ✓ PASS in <1 minute with biologically realistic 5,000×10,000 expression matrix and comprehensive validation metrics.
+Authors and roles are in `DESCRIPTION`. The licence declared there is MIT.

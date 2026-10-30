@@ -12,8 +12,18 @@ n=0
 while IFS= read -r p; do
   p=${p%/}
   [ -e "$p" ] || [ -L "$p" ] && continue
-  mkdir -p "$(dirname "$p")" && ln -s "$SRC/$p" "$p" && n=$((n + 1)) && echo "link $p"
+  mkdir -p "$(dirname "$p")" || continue
+  if [ -d "$SRC/$p" ] && [ ! -L "$SRC/$p" ]; then
+    # cartella vera nella sorgente: le regole di .gitignore con la barra finale (logs/, .venv/) valgono solo per le cartelle, non per un
+    # link; si crea la cartella e si collegano i suoi elementi, cosi' git continua a ignorarli (esplorazione E1b di S1.6b)
+    mkdir -p "$p" && for e in "$SRC/$p"/* "$SRC/$p"/.[!.]* "$SRC/$p"/..?*; do [ -e "$e" ] || [ -L "$e" ] || continue; ln -s "$e" "$p/"; done
+  else
+    ln -s "$SRC/$p" "$p"
+  fi
+  n=$((n + 1)); echo "link $p"
 done < <(git -C "$SRC" status --ignored --porcelain | sed -n 's/^!! //p' |
          grep -vE '^(renv/library/|renv/staging/|logs/|\.Rproj\.user/|\.Rhistory$|\.aider|\.claude/|reports/.*_files/|reports/\.quarto/|\.quarto/)' |
          grep -v '__pycache__')
 echo "INFO collegati $n percorsi da $SRC"
+u=$(git status --porcelain --untracked-files=all | head -5)
+if [ -z "$u" ]; then echo "PASS nessun file non tracciato o modificato dopo i collegamenti (git status vuoto)"; else echo "FAIL git status non vuoto dopo i collegamenti:"; echo "$u"; exit 1; fi

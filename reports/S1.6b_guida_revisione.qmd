@@ -1,0 +1,182 @@
+---
+title: "Guida alla revisione del livello cellulare (Step 1)"
+subtitle: "geo_spatialtrans, per Daniele Sabbatini. Design v1.9, codice consolidato in S1.6, unito in dev in S1.6b"
+date: today
+lang: it
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute:
+  echo: false
+  warning: false
+---
+
+```{r setup}
+#| include: false
+.libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({ library(knitr) })
+R <- "../results/S1.6b"
+MAP <- read.csv(file.path(R, "S1.6b_design_map.csv"), stringsAsFactors = FALSE, check.names = FALSE)
+nf <- function(x) grepl("NOT FOUND", x, fixed = TRUE)
+n_rows <- nrow(MAP); n_nf_impl <- sum(nf(MAP$implemented_in)); n_nf_test <- sum(nf(MAP$tested_by))
+n_nf_any <- sum(nf(MAP$implemented_in) | nf(MAP$tested_by))
+source("../R/04b0_tissue_presets.R")
+TP <- .TP_TABLE
+```
+
+# A cosa serve questa guida
+
+Ad aprile hai rivisto la prima versione del design del livello cellulare (v1.0, commit `7836829`). I tuoi due commenti sono entrati
+nella versione 1.1: la scala in µm per pixel è obbligatoria (C-A) e la diffusione laterale degli mRNA è un requisito dello Step 2 (C-B).
+Da allora il livello cellulare è stato scritto, tarato su sei tessuti veri, controllato step per step contro le misure sugli stessi tessuti
+e consolidato. Il design oggi è alla versione 1.9.
+
+Questa guida serve a rivederlo senza ripercorrere gli step: cosa è cambiato dal testo che hai letto, dove sta nel codice e nei test ogni parte
+del design, cosa non è coperto, quali limiti abbiamo dichiarato e su quali punti ci serve il tuo giudizio. Le tabelle complete sono in appendice.
+Ogni riga rimanda a un file del repository (ramo `dev`), così puoi controllare da te.
+
+Due avvertenze. La mappa design → codice → test è stata costruita leggendo il codice e i registri degli step, non rieseguendo i test (la
+batteria completa gira a parte, nel report di questo step). Le righe del design citate nella mappa sono quelle della versione 1.8 (commit
+`f3d8a19`): la 1.9 aggiunge solo annotazioni e sposta di poche righe il testo.
+
+# 1. Cosa fa oggi il livello cellulare
+
+`place_cells()` (`R/04b_cell_placement.R`) prende una mappa di pixel con un cluster per pixel e la scala in µm per pixel, e restituisce:
+
+1. le regioni di tessuto come poligoni in µm (`extract_regions()`, `R/04b1_extract_regions.R`);
+2. i centri delle cellule, seminati in ogni regione alla densità del preset con una distanza minima fra centri (`seed_centroids()`,
+   `R/04b2_seed_centroids.R`);
+3. i territori di Voronoi dei centri, ritagliati nelle regioni (`tessellate_voronoi()`, `R/04b3_tessellate_voronoi.R`);
+4. un nucleo per territorio, con la taglia estratta da un modello stimato sui nuclei veri e la forma ritagliata nel territorio mantenendo
+   l'area voluta (`derive_cell_geometry()`, `R/04b4_derive_cell_geometry.R`);
+5. i controlli interni C1-C9 (`validate_cell_layer()`, `R/04b5_cell_layer_validation.R`).
+
+I sei preset (`R/04b0_tissue_presets.R`) coprono il pannello di tessuti fissato da Luca. Ogni numero ha una riga con la fonte in
+`docs/BIO_REFERENCES.md`; la tabella qui sotto è letta dal codice al momento del render.
+
+```{r presets}
+kable(data.frame(preset = TP$preset, tessuto = TP$tissue, `densità (nuclei/mm²)` = TP$density, fonte = TP$src_density,
+                 `distanza minima (µm)` = TP$min_dist_um, `fonte ` = TP$src_min_dist, check.names = FALSE),
+      align = "llrlrl")
+```
+
+La densità è il conteggio manuale dei nuclei su finestre annotate dell'H&E vera; la distanza minima è la distanza d* stimata sugli stessi
+tessuti. Per predefinito ogni preset ha più tipi cellulari, seminati senza guardare il tipo; la semina per compartimenti dei tipi, con vuoti
+e densità eterogenea, è un'opzione (`spatial = "compartments"`). Il cuore è un controllo negativo previsto: il Voronoi isotropo non fa
+cellule allungate.
+
+# 2. Cosa è cambiato dal design che hai letto
+
+La tabella delle versioni, letta dallo storico del design (§9) e controllata sui commit, è in appendice A. In sintesi:
+
+- **v1.1 (S0)**: i tuoi commenti C-A e C-B; il pannello da 3 a 6 tessuti; il controllo C8 sulla scala.
+- **v1.2-v1.3 (S1.2, S1.3)**: densità della miscela come media armonica; semina a numero fissato invece del Poisson-disk massimale; motore
+  GEOS (`sf::st_voronoi()`) invece di `deldir` per il Voronoi.
+- **v1.4-v1.5 (S1.4, S1.4d)**: il nucleo non è più una frazione fissa del territorio ma viene da un modello di taglia a due parametri
+  (pendenza e dispersione); il nucleo è ritagliato nel suo territorio e riportato all'area del modello.
+- **v1.6 (S1.5)**: firma implementata di `place_cells()` e dei controlli. La stima della scala dall'immagine è risultata inaffidabile ed è
+  fuori dall'uso raccomandato; C8 non può vedere una scala sbagliata, solo una densità scritta nell'unità sbagliata.
+- **v1.7-v1.8 (S1.5c-S1.6)**: tipi cellulari nei preset dai dati veri, semina cieca al tipo, semina a compartimenti come opzione; i limiti
+  dichiarati (§7.4).
+- **v1.9 (S1.6b)**: solo testo. La mappa preparata per questa guida ha trovato sette punti in cui il testo era rimasto indietro rispetto al
+  codice o a decisioni già prese; ora sono annotati nel design con la sigla «[v1.9, S1.6b]»:
+  1. l'intestazione diceva «Design v1.1»;
+  2. la decisione 1 dava al nucleo il 40-60 % del raggio equivalente;
+  3. il §5.1 descriveva la ricerca delle componenti e i contorni della v1.0, e l'esclusione delle regioni piccole che oggi per predefinito
+     sono unite al cluster vicino;
+  4. il §5.2 dava la distanza minima come 2/3 del raggio equivalente, mentre i preset usano d*;
+  5. il §4.6 parlava di una colonna `provisional` che non esiste più;
+  6. il §8 (estensioni future) non diceva cosa è stato poi implementato come opzione;
+  7. la riga di v1.7 dello storico descriveva modifiche entrate solo con v1.8.
+
+  Il file `docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx` è ancora la v1.0.
+
+# 3. Dove sta ogni parte del design
+
+La mappa ha `r n_rows` righe: una per decisione del §2, per sezione di §3-§5 e §7, per controllo C1-C9 e per caso limite del §6.2.
+In `r n_rows - n_nf_any` righe ci sono sia il codice che la realizza sia almeno un test che la controlla. Nelle altre `r n_nf_any` manca, del
+tutto o in parte, il codice (`r n_nf_impl` righe) o un test (`r n_nf_test` righe). Dove manca il codice si tratta soprattutto di requisiti per lo
+Step 2 o di estensioni future; le righe senza test sono elencate nella sezione 4.
+
+```{r map-short}
+short <- function(x, n = 90) ifelse(nchar(x) > n, paste0(substr(x, 1, n - 1), "…"), x)
+kable(data.frame(sezione = MAP$section, titolo = short(MAP$heading, 50), codice = short(MAP$implemented_in), test = short(MAP$tested_by, 70),
+                 check.names = FALSE))
+```
+
+La mappa completa, con la frase che riassume cosa specifica ogni sezione, gli step che l'hanno verificata e le righe lette, è in
+`results/S1.6b/S1.6b_design_map.csv`.
+
+# 4. Cosa non è coperto
+
+In tabella, «in parte» vuol dire che c'è una realizzazione o un test, ma non per tutto ciò che la sezione chiede (dettaglio nella mappa completa).
+
+```{r gaps}
+g <- MAP[nf(MAP$implemented_in) | nf(MAP$tested_by), c("section", "heading", "implemented_in", "tested_by")]
+lev <- function(x, rx) ifelse(!nf(x), "c'è", ifelse(grepl(rx, x), "in parte", "manca"))
+g$codice <- lev(g$implemented_in, "R/04b|::"); g$test <- lev(g$tested_by, "test_S|test_R|run_tests")
+kable(data.frame(sezione = g$section, titolo = short(g$heading, 60), codice = g$codice, test = g$test))
+```
+
+Fra queste, le lacune che contano per chi userà il simulatore:
+
+- **`override_cell_types` e `override_composition` di `place_cells()` non hanno alcun test** (nessun file in `R/testing/` li usa). Sono il
+  modo previsto dal design (§4.6) per personalizzare un preset.
+- **Il controllo C5** (area del nucleo positiva) è nel codice, ma nessun test lo fa scattare con un guasto costruito apposta.
+- **I passi 7 e 8 del §5.4** dicono come si misurano i nuclei simulati per confrontarli con quelli veri: rasterizzazione con lo stesso
+  operatore dei nuclei veri e frazione di nuclei a contatto per finestra. Vivono negli script Python degli step (`tools/S1.4c_raster.py`,
+  `tools/S1.4d_windows.py`), fuori dal codice del simulatore e fuori dalla batteria R.
+- **Requisiti per lo Step 2** (§7.1, §7.3, decisione 11 sulla diffusione): non sono ancora codice, come previsto.
+
+Questo step non cambia il codice: queste lacune sono registrate in `docs/BACKLOG.md` per il primo step che toccherà di nuovo il codice
+delle cellule.
+
+# 5. Limiti dichiarati
+
+Il §7.4 del design elenca ciò che il livello cellulare non riproduce, misurato contro i riferimenti veri:
+
+- **nuclei a contatto in eccesso** nei tessuti densi: nel tumore del colon 0.69 contro al più 0.57 del conteggio manuale, nel linfonodo 0.83
+  contro al più 0.75, al limite nello stroma del tumore; nessuno dei disegni del nucleo provati li porta nel vero;
+- **territori troppo uniformi** con la semina uniforme predefinita (variabilità delle aree e numero di vicini sotto il vero nell'intestino,
+  nel tumore del colon e nel linfonodo); la semina a compartimenti con i vuoti ne corregge una parte ma non è il predefinito;
+- **cuore**: territori isotropi, cellule vere allungate;
+- **densità dei preset** riferita al tessuto pieno di cellule del conteggio manuale, non al tessuto con i suoi vuoti.
+
+Gli altri limiti scritti nel design fuori dal §7.4 e le voci ancora aperte del BACKLOG che riguardano il codice delle cellule sono in
+appendice B (la scelta delle voci «di codice» è un giudizio voce per voce, dichiarato lì).
+
+# 6. Domande per te
+
+{{< include ../results/S1.6b/S1.6b_questions.md >}}
+
+# 7. Come rifare i conti
+
+Dal server del laboratorio, in un clone del ramo `dev`:
+
+```bash
+Rscript --vanilla tools/restore_library.R     # libreria R dal lockfile
+bash tools/link_server_inputs.sh              # input dei test fuori da git (dati veri, maschere di R2, ambiente Python)
+bash R/testing/run_S1.6.sh test               # batteria completa dello Step 1
+```
+
+I report di ogni step sono in `reports/` (HTML); le decisioni in `docs/decisions/`, una per file, con chi le ha prese e con quali parole.
+
+# Appendice A. Versioni del design
+
+{{< include ../results/S1.6b/S1.6b_design_changes.md >}}
+
+# Appendice B. Limiti e voci aperte
+
+{{< include ../results/S1.6b/S1.6b_limits.md >}}
+
+# Appendice C. Da dove vengono i numeri
+
+| numero | dove | fonte |
+|---|---|---|
+| densità e distanze minime dei preset | sezione 1 | `R/04b0_tissue_presets.R`, tabella `.TP_TABLE`, letta al render |
+| righe della mappa, righe senza codice o senza test | sezioni 3 e 4 | `results/S1.6b/S1.6b_design_map.csv`, calcolati al render |
+| contatti 0.69 contro 0.57, 0.83 contro 0.75 | sezione 5 | design §7.4 |
+| sette punti annotati in v1.9 | sezione 2 | design, righe con «[v1.9, S1.6b» |
+| nessun test per `override_cell_types` e `override_composition` | sezione 4 | ricerca su `R/testing/*.R` (report S1.6b) |
+| numeri delle domande | sezione 6 | le fonti citate in ogni domanda |

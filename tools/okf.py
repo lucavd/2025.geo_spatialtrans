@@ -49,6 +49,7 @@ EXEMPT = {
     "SPATIAL_TRANSCRIPTOMICS_VALIDATION_GUIDE.md": "Guida alla validazione dei dati di trascrittomica spaziale.",
     "sessions": "Note di sessione fino a R2c (protocollo v1).",
     "superpowers": "Design dello Step 1 (specifiche) e materiali collegati.",
+    "legacy": "README e CLAUDE.md del 2025 (pipeline di espressione precedente), conservati per provenienza (S1.6b).",
 }
 DIR_HEADINGS = {"steps": "Step", "decisions": "Decisioni"}
 DIR_DESCRIPTIONS = {
