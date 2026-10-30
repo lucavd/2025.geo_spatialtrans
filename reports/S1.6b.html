@@ -3127,14 +3127,15 @@ vertical-align: -.125em;
 <ul>
 <li>Su 54 parti, 39 hanno sia il codice sia un test. Le parti senza codice riguardano soprattutto la griglia di Visium HD, che non esiste ancora.</li>
 <li>Nessun test usa le due opzioni con cui si personalizza un tessuto, e nessun test fa scattare il controllo sull’area dei nuclei. Le ho annotate per il prossimo lavoro sul codice.</li>
-<li>La revisione indipendente ha trovato 29 imprecisioni in due giri, tutte corrette. La guida chiude con otto domande per Daniele.</li>
+<li>La revisione indipendente ha trovato 29 imprecisioni in due giri, tutte corrette.</li>
 </ul></li>
 </ol>
 <p><strong>Cosa devi decidere</strong></p>
-<p>Le tue scelte di oggi sono già applicate: indirizzo del manutentore, Daniele come revisore, licenza a tuo nome, lingue dei documenti, forma della guida.</p>
+<p>Le tue scelte di oggi sono registrate: indirizzo del manutentore, Daniele come revisore, licenza a tuo nome, lingue dei documenti, guida senza domande, densità del tessuto con i suoi vuoti. Tutte sono già applicate, tranne l’ultima, che cambia il modello e spetta allo step dedicato.</p>
 <p><strong>Comunque</strong></p>
 <ul>
-<li>La guida per Daniele è pronta: puoi mandargliela.</li>
+<li>La guida per Daniele è pronta: puoi mandargliela. Non contiene domande: come hai chiesto, le questioni di metodo che avevo scritto per lui le decideremo noi con i dati, ciascuna quando faremo il lavoro a cui serve (per esempio la precisione dei riferimenti prima del prossimo confronto sui nuclei a contatto).</li>
+<li>Hai scelto che il simulatore riproduca la densità del tessuto con i suoi vuoti, non quella del tessuto pieno di cellule contato a mano. Oggi i sei tessuti simulati usano la seconda: le densità cambieranno nello step dedicato alla densità dei tessuti, con i riferimenti da misurare sulle stesse aree vere.</li>
 <li>Prima di scrivere la griglia di Visium HD servono i due riferimenti reali previsti: quante molecole e quanti punti vuoti ci sono a 2 e a 8 µm, e quanto si spargono le molecole oltre la cellula. È l’osservazione di Daniele di aprile sulla diffusione.</li>
 <li>Quando torneremo sul codice delle cellule scriveremo i test che mancano. Quando convertiremo i documenti vecchi nel formato nuovo faremo due cose: decideremo con te cosa tenere dei file vecchi del 2025 (fra cui un report di 27 MB nella radice), e prepareremo un elenco dei file d’ingresso dei test con le loro impronte, perché si possano rifare anche fuori dal server.</li>
 </ul>
@@ -3189,6 +3190,13 @@ vertical-align: -.125em;
 <td>DOC1</td>
 <td>BL-183</td>
 </tr>
+<tr class="odd">
+<td>sette questioni di metodo (repliche, precisione dei riferimenti, statistiche spaziali, errore di misura nel modello di taglia, calibrazione dei vuoti, soglie su molte misure, verifica del controllo cambiato in S1.6)</td>
+<td>si decidono con i dati nel lavoro a cui servono (scelta di Luca)</td>
+<td>il calcolo scritto in ogni voce</td>
+<td>vari (scritti nelle voci)</td>
+<td>BL-185…BL-191</td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -3199,9 +3207,9 @@ vertical-align: -.125em;
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 1%">
-<col style="width: 44%">
-<col style="width: 54%">
+<col style="width: 0%">
+<col style="width: 18%">
+<col style="width: 81%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -3229,7 +3237,7 @@ vertical-align: -.125em;
 <tr class="even">
 <td style="text-align: left;">G-4</td>
 <td style="text-align: left;">dev = step1-cell-layer, fast-forward da 7836829, main invariato, simulatore invariato</td>
-<td style="text-align: left;">non ancora eseguito</td>
+<td style="text-align: left;">PASS dev = step1-cell-layer su GitHub (e398108fd1e8a51af7b7f8d162ca41b18f8bdf91) | PASS il vecchio dev (7836829c850cb3c1dd2f512470e52d7a851344f3) e’ antenato di dev (fast-forward) | PASS main invariato (ec29fd65e81078d2742dda5c45621bc5c96645ee) | PASS R/, inst/, renv.lock identici a S1.6 (775eec3), salvo R/testing/run_S1.6b.sh | PASS dopo il commit provato (a325d81914cc9c53343edc20dd3023f00ae730bb) solo docs/, reports/, CHANGELOG.md | GATE G-4 PASS</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">G-5</td>
@@ -3297,46 +3305,7 @@ vertical-align: -.125em;
 <p>Il controllo dei documenti deve bocciare il README e il CLAUDE.md del 2025, contro l’albero del commit provato.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>FAIL README.md@775eec3 funzione adjustedRandIndex()
-FAIL README.md@775eec3 funzione calculate_spatial_coherence()
-FAIL README.md@775eec3 funzione compare()
-FAIL README.md@775eec3 funzione gstat()
-FAIL README.md@775eec3 funzione vgm()
-FAIL README.md@775eec3 funzione your_clustering_method()
-FAIL CLAUDE.md@775eec3 percorso .rds
-FAIL CLAUDE.md@775eec3 percorso 01_configuration.R
-FAIL CLAUDE.md@775eec3 percorso 02_helper_functions.R
-FAIL CLAUDE.md@775eec3 percorso 03_image_processing.R
-FAIL CLAUDE.md@775eec3 percorso 03b_generate_synthetic_tissue.R
-FAIL CLAUDE.md@775eec3 percorso 04_clustering.R
-FAIL CLAUDE.md@775eec3 percorso 05_grid_sampling.R
-FAIL CLAUDE.md@775eec3 percorso 06_expression_profiles.R
-FAIL CLAUDE.md@775eec3 percorso 06a_expression_params.R
-FAIL CLAUDE.md@775eec3 percorso 06b_expression_baseline.R
-FAIL CLAUDE.md@775eec3 percorso 06c_spatial_distances.R
-FAIL CLAUDE.md@775eec3 percorso 06d_dispersion_params.R
-FAIL CLAUDE.md@775eec3 percorso 06e_library_size.R
-FAIL CLAUDE.md@775eec3 percorso 06f_dropout_models.R
-FAIL CLAUDE.md@775eec3 percorso 06g_gene_modules.R
-FAIL CLAUDE.md@775eec3 percorso 06h_spatial_correlation.R
-FAIL CLAUDE.md@775eec3 percorso 06i_hybrid_cells.R
-FAIL CLAUDE.md@775eec3 percorso 06j_expression_generation.R
-FAIL CLAUDE.md@775eec3 percorso 06k_expression_profiles_wrapper.R
-FAIL CLAUDE.md@775eec3 percorso 06l_ligand_receptor_interactions.R
-FAIL CLAUDE.md@775eec3 percorso 06m_temporal_dynamics.R
-FAIL CLAUDE.md@775eec3 percorso 06n_alternative_splicing.R
-FAIL CLAUDE.md@775eec3 percorso 06o_anisotropic_patterns.R
-FAIL CLAUDE.md@775eec3 percorso 06p_3d_microenvironment.R
-FAIL CLAUDE.md@775eec3 percorso 07*_simulation*.R
-FAIL CLAUDE.md@775eec3 percorso 08_validation_plots.R
-FAIL CLAUDE.md@775eec3 percorso full_simulation_data.rds
-FAIL CLAUDE.md@775eec3 percorso full_test.R
-FAIL CLAUDE.md@775eec3 percorso full_test_result.rds
-FAIL CLAUDE.md@775eec3 percorso visualize_clusters.R
-FAIL CLAUDE.md@775eec3 funzione devtools::build()
-FAIL CLAUDE.md@775eec3 funzione devtools::document()
-FAIL CLAUDE.md@775eec3 funzione ggsave()
-INFO riferimenti controllati 83, mancanti nel codice consolidato 39
+<pre><code>INFO riferimenti controllati 83, mancanti nel codice consolidato 39
 INFO README.md@775eec3 nomina un file R/04b*.R del livello cellulare: False
 INFO CLAUDE.md@775eec3 nomina un file R/04b*.R del livello cellulare: False
 PASS controprova: il controllo boccia i documenti del 2025</code></pre>
@@ -3728,9 +3697,9 @@ percorso_inesistente 1
 <td>24 + 5 discrepanze</td>
 </tr>
 <tr class="odd">
-<td>otto domande per Daniele</td>
-<td><code>results/S1.6b/S1.6b_questions.md</code></td>
-<td>8</td>
+<td>questioni di metodo da decidere con i dati</td>
+<td><code>docs/BACKLOG.md</code></td>
+<td>BL-185…BL-191; BL-167 resta di Luca</td>
 </tr>
 <tr class="even">
 <td>report di 27 MB nella radice</td>
