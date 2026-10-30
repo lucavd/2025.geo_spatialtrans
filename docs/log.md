@@ -2,6 +2,7 @@
 
 ## 2026-10-30 (S1.6b)
 
+* **Chiusura**: [Il README, le istruzioni del progetto e il dossier per Daniele descrivono il codice com'è, e il ramo delle cellule entra in quello di sviluppo senza perdere nulla? (S1.6b)](steps/S1.6b.md) chiuso con l'approvazione di Luca (lettura del riassunto «In breve» senza dubbi nuovi; «ok approvo»). Prossimo step proposto: R4 oppure R5 (riferimenti reali prima dello Step 2); la scelta è di Luca.
 * **Creazione**: [Il README, le istruzioni del progetto e il dossier per Daniele descrivono il codice com'è, e il ramo delle cellule entra in quello di sviluppo senza perdere nulla? (S1.6b)](steps/S1.6b.md): cancelli G-1...G-5 e controprova con l'ok di Luca («Approvo»), esplorazione E1-E2, cancelli superati, revisione avversariale in due giri; in attesa della lettura di Luca.
 * **Creazione**: decisione tecnica [S1.6b: scelte tecniche dei documenti e del merge dello Step 1 (libreria dal lockfile in un clone nuovo, input dei test collegati dal server, design annotato e non riscritto, documenti del 2025 conservati, portata del controllo dei documenti) (DEC-032)](decisions/DEC-032.md).
 * **Creazione**: decisione di Luca [S1.6b: scelte di Luca su manutentore, revisore, licenza, lingue dei documenti, forma del dossier per Daniele e densità di riferimento dei preset (DEC-033)](decisions/DEC-033.md).
