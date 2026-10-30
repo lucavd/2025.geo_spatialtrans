@@ -3093,8 +3093,7 @@ vertical-align: -.125em;
   <li><a href="#dove-sta-ogni-parte-del-design" id="toc-dove-sta-ogni-parte-del-design" class="nav-link" data-scroll-target="#dove-sta-ogni-parte-del-design">3. Dove sta ogni parte del design</a></li>
   <li><a href="#cosa-non-è-coperto" id="toc-cosa-non-è-coperto" class="nav-link" data-scroll-target="#cosa-non-è-coperto">4. Cosa non è coperto</a></li>
   <li><a href="#limiti-dichiarati" id="toc-limiti-dichiarati" class="nav-link" data-scroll-target="#limiti-dichiarati">5. Limiti dichiarati</a></li>
-  <li><a href="#domande-per-te" id="toc-domande-per-te" class="nav-link" data-scroll-target="#domande-per-te">6. Domande per te</a></li>
-  <li><a href="#domande-candidate-per-daniele-revisore-statistico" id="toc-domande-candidate-per-daniele-revisore-statistico" class="nav-link" data-scroll-target="#domande-candidate-per-daniele-revisore-statistico">Domande candidate per Daniele (revisore statistico)</a></li>
+  <li><a href="#questioni-di-metodo-aperte" id="toc-questioni-di-metodo-aperte" class="nav-link" data-scroll-target="#questioni-di-metodo-aperte">6. Questioni di metodo aperte</a></li>
   <li><a href="#come-rifare-i-conti" id="toc-come-rifare-i-conti" class="nav-link" data-scroll-target="#come-rifare-i-conti">7. Come rifare i conti</a></li>
   <li><a href="#appendice-a.-versioni-del-design" id="toc-appendice-a.-versioni-del-design" class="nav-link" data-scroll-target="#appendice-a.-versioni-del-design">Appendice A. Versioni del design</a></li>
   <li><a href="#versioni-del-design-dello-step-1-livello-cellulare-da-1.0-a-1.9" id="toc-versioni-del-design-dello-step-1-livello-cellulare-da-1.0-a-1.9" class="nav-link" data-scroll-target="#versioni-del-design-dello-step-1-livello-cellulare-da-1.0-a-1.9">Versioni del design dello Step 1 (livello cellulare), da 1.0 a 1.9</a>
@@ -3151,7 +3150,7 @@ vertical-align: -.125em;
 <section id="a-cosa-serve-questa-guida" class="level1">
 <h1>A cosa serve questa guida</h1>
 <p>Ad aprile hai rivisto la prima versione del design del livello cellulare (v1.0, commit <code>7836829</code>). I tuoi due commenti sono entrati nella versione 1.1: la scala in µm per pixel è obbligatoria (C-A) e la diffusione laterale degli mRNA è un requisito dello Step 2 (C-B). Da allora il livello cellulare è stato scritto, tarato su sei tessuti veri, controllato step per step contro le misure sugli stessi tessuti e consolidato. Il design oggi è alla versione 1.9.</p>
-<p>Questa guida serve a rivederlo senza ripercorrere gli step: cosa è cambiato dal testo che hai letto, dove sta nel codice e nei test ogni parte del design, cosa non è coperto, quali limiti abbiamo dichiarato e su quali punti ci serve il tuo giudizio. Le tabelle complete sono in appendice. Ogni riga rimanda a un file del repository (ramo <code>dev</code>), così puoi controllare da te.</p>
+<p>Questa guida serve a controllare che il codice faccia ciò che dice il design, senza ripercorrere gli step: cosa è cambiato dal testo che hai letto, dove sta nel codice e nei test ogni parte del design, cosa non è coperto e quali limiti abbiamo dichiarato. Le tabelle complete sono in appendice. Ogni riga rimanda a un file del repository (ramo <code>dev</code>), così puoi controllare da te.</p>
 <p>Due avvertenze. La mappa design → codice → test è stata costruita leggendo il codice e i registri degli step, non rieseguendo i test (la batteria completa gira a parte, nel report di questo step). Le righe del design citate nella mappa sono quelle della versione 1.8 (commit <code>f3d8a19</code>): la 1.9 aggiunge solo annotazioni e sposta di poche righe il testo.</p>
 </section>
 <section id="cosa-fa-oggi-il-livello-cellulare" class="level1">
@@ -3749,22 +3748,19 @@ Il file <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx</co
 </ul>
 <p>Gli altri limiti scritti nel design fuori dal §7.4 e le voci ancora aperte del BACKLOG che riguardano il codice delle cellule sono in appendice B (la scelta delle voci «di codice» è un giudizio voce per voce, dichiarato lì).</p>
 </section>
-<section id="domande-per-te" class="level1">
-<h1>6. Domande per te</h1>
-</section>
-<section id="domande-candidate-per-daniele-revisore-statistico" class="level1">
-<h1>Domande candidate per Daniele (revisore statistico)</h1>
-<p>Ogni domanda nasce da un limite, una voce aperta o una decisione citata; i riferimenti sono al commit <code>f3d8a19</code>. Sono proposte da scegliere, non un elenco da porre tutto.</p>
-<ol type="1">
-<li><p><strong>Repliche e semi.</strong> Ogni livello cellulare nasce da un solo <code>random_seed</code>, da cui <code>stage_seeds()</code> estrae tre semi (semina, taglia dei nuclei, nuclei pallidi; <code>R/04b_cell_placement.R</code> righe 11-17). In passato lo stesso seme in unità diverse ha prodotto numeri casuali comuni, e le aree di riferimento non erano repliche indipendenti (BL-058, <code>docs/BACKLOG.md</code> riga 64, aperta). Quando useremo il simulatore per confrontare metodi di analisi, come conviene strutturare le repliche (semi per unità, numero di repliche per tessuto, eventuale uso voluto dei numeri casuali comuni fra metodi) perché le differenze fra metodi abbiano un errore standard corretto?</p></li>
-<li><p><strong>Il riferimento dei contatti fra nuclei.</strong> Il limite principale dichiarato è l’eccesso di nuclei a contatto (design §7.4 riga 438: tumore del colon 0.69 contro al più 0.57, linfonodo 0.83 contro al più 0.75; DEC-029). Il riferimento è un conteggio manuale su poche finestre per tessuto, con intervallo da bootstrap a due stadi; il bootstrap a grappolo con 4 grappoli si è già mostrato anti-conservativo (BL-128, riga 134) e con 4 finestre l’intervallo sulla densità è 3-5 volte quello di Poisson (BL-041, riga 46). Con riferimenti di questa precisione, quale procedura raccomanderesti per dire che il simulatore è «fuori dal vero» e di quanto?</p></li>
-<li><p><strong>Quanto deve somigliare la disposizione delle cellule.</strong> Con la semina uniforme dei preset i territori sono troppo uniformi (variabilità delle aree e numero di vicini sotto il vero; design §7.4 riga 439; BL-143 riga 149, BL-157 riga 163, BL-068 riga 74), e il predefinito resta comunque la semina uniforme (regola B, DEC-020, DEC-022, DEC-024). Per un simulatore che serve a provare metodi di analisi spaziale, quali statistiche di riepilogo del processo di punti (g(r), CV locale delle aree, distribuzione del numero di vicini, altro) dovrebbero entrare nel confronto con il vero, e con quale tolleranza, perché una differenza residua sia irrilevante per i metodi che vogliamo provare?</p></li>
-<li><p><strong>Modello di taglia del nucleo con errore di misura.</strong> Il modello è log A_N = log(ρ²A_ref) + β(log A_T − log A_ref) + σz, stimato con minimi quadrati ordinari su nuclei e territori segmentati (<code>fit_nucleus_size_model()</code>, <code>R/04b4_derive_cell_geometry.R</code> righe 134-148; design §5.4 riga 298). Sia A_N sia A_T vengono da segmentazioni con errori noti: aree dei linfociti sottostimate rispetto alla letteratura (BL-025, riga 31), nuclei piccoli che gonfiano σ nel cervello (BL-154, riga 160). Con errore anche nel regressore, β è attenuato: ti pare necessario un modello con errori nelle variabili, o una correzione, prima di usare (β, σ) per simulare?</p></li>
-<li><p><strong>Calibrazione non identificata dei vuoti.</strong> La calibrazione dei vuoti nella semina a compartimenti sceglie in un caso parametri implausibili (nel linfonodo frazione 0.30 con asse corto 2 µm, sotto la distanza minima di 4 µm: BL-168, riga 174) e in un altro l’ottimo sta al bordo della griglia già estesa (BL-176, riga 182); i dati sono 5 aree di 1 mm² per tessuto. Come imposteresti questa calibrazione (funzione di perdita, validazione lasciando fuori un’area, intervalli per parametri al bordo, scelta fra parametrizzazioni non identificate)?</p></li>
-<li><p><strong>Controlli pre-registrati che falliscono «come scritti».</strong> Più volte un cancello è fallito come scritto ed è stato dichiarato errore della pre-registrazione, con decisione di Luca di non bloccare: C8 sulla scala (DEC-011), tolleranze in S1.5c-S1.5e (DEC-021, DEC-023, DEC-025), la controprova CP-1 di S1.6 (DEC-031); in S1.6 la previsione P-1 aveva 179 righe, 169 confermate, 10 indeterminate, 0 smentite (<code>docs/steps/S1.6.md</code> riga 153). Dal tuo punto di vista, come dovremmo scrivere le soglie (in errori standard, per permutazione, con controllo della molteplicità sulle 179 righe) perché un FAIL sia informativo e non diventi abituale ridichiararlo errore della soglia?</p></li>
-<li><p><strong>Un controllo cambiato dopo averne visto l’esito.</strong> In S1.6 il controllo C7 è passato dalla densità del tipo alla densità della miscela della regione per la semina cieca al tipo: 0 WARN su 300 unità contro 2 con la regola di prima (design §6.1 riga 335; DEC-031; BL-156). La motivazione è strutturale (con la semina cieca il territorio non dipende dal tipo), ma la modifica è arrivata dopo i 2 WARN del cervello. Ritieni la regola nuova un controllo ancora utile, e in generale che garanzie servono quando si cambia un controllo di integrità dopo averne visto l’esito?</p></li>
-<li><p><strong>Quale densità deve riprodurre il simulatore.</strong> La densità dei preset è quella del tessuto pieno di cellule del conteggio manuale, non del tessuto con i suoi vuoti (design §7.4 riga 441; BL-167, riga 173, aperta, «da decidere in uno step dedicato»; nell’intestino 12 419 nuclei/mm² nel preset contro 9 975-11 522 nelle aree). Per chi userà i dati simulati per provare metodi (per esempio stime di densità o di composizione), quale delle due grandezze è il bersaglio giusto, e conviene esporre entrambe come parametro?</p></li>
-</ol>
+<section id="questioni-di-metodo-aperte" class="level1">
+<h1>6. Questioni di metodo aperte</h1>
+<p>Le questioni di metodo emerse preparando questa guida non sono domande per il revisore: si decidono con i dati, e le decidiamo noi (scelta di Luca, 2026-10-30). Ognuna è una voce di <code>docs/BACKLOG.md</code> con il calcolo che la decide:</p>
+<ul>
+<li>come strutturare semi e repliche quando il simulatore servirà a confrontare metodi (BL-185);</li>
+<li>quando dire che il simulatore è «fuori dal vero» con riferimenti stimati su poche aree (BL-186);</li>
+<li>quali statistiche della disposizione delle cellule confrontare con il vero, e con quale tolleranza (BL-187);</li>
+<li>l’errore di misura nelle aree dei nuclei e dei territori che entrano nel modello di taglia (BL-188);</li>
+<li>la calibrazione dei vuoti della semina a compartimenti, che non trova un solo ottimo (BL-189);</li>
+<li>come scrivere le soglie di una previsione giudicata su molte misure insieme (BL-190);</li>
+<li>una verifica, su semi nuovi, del controllo della taglia dei territori cambiato in S1.6 (BL-191).</li>
+</ul>
+<p>Il riferimento di densità dei preset l’ha scelto Luca: il simulatore deve riprodurre la densità del tessuto con i suoi vuoti, non quella del tessuto pieno di cellule del conteggio manuale (2026-10-30). Le densità dei preset cambieranno in uno step dedicato (BL-167); fino ad allora vale il limite dichiarato nel §7.4.</p>
 </section>
 <section id="come-rifare-i-conti" class="level1">
 <h1>7. Come rifare i conti</h1>
@@ -4380,9 +4376,9 @@ Il file <code>docs/superpowers/specs/2026-04-29-step1-cell-layer-design.docx</co
 <td>ricerca su <code>R/testing/*.R</code> (report S1.6b)</td>
 </tr>
 <tr class="even">
-<td>numeri delle domande</td>
+<td>voci delle questioni aperte; scelta della densità</td>
 <td>sezione 6</td>
-<td>le fonti citate in ogni domanda</td>
+<td><code>docs/BACKLOG.md</code>, BL-167 e BL-185…BL-191; DEC-033</td>
 </tr>
 </tbody>
 </table>

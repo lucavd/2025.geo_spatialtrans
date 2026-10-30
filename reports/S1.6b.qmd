@@ -1,0 +1,118 @@
+---
+title: "S1.6b: i documenti del progetto descrivono il codice com'è, e il ramo delle cellule entra in quello di sviluppo senza perdere nulla?"
+subtitle: "geo_spatialtrans, report di step (protocollo v2)"
+date: today
+lang: it
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+execute:
+  echo: false
+  warning: false
+---
+
+```{r setup}
+#| include: false
+.libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({ library(knitr) })
+M <- "/mnt/micron/geo_spatialtrans/S1.6b"
+rl <- function(...) readLines(file.path(M, ...), warn = FALSE)
+pick <- function(x, rx) grep(rx, x, value = TRUE)
+secs <- function(d) { f <- if (file.exists(file.path(M, d, "G3_battery.log"))) "G3_battery.log" else "battery_mode.log"
+  as.integer(sub("battery seconds: ", "", pick(rl(d, f), "^battery seconds"))) }
+```
+
+{{< include _S1.6b_inbreve.md >}}
+
+# Dubbi rinviati
+
+{{< include _S1.6b_rinviati.md >}}
+
+# Cancelli e previsioni
+
+Pre-registrazione: cancelli e controprova al commit `7449e7c` (link dei codici di decisione corretti in `62a0bdd`); ok di Luca sull'assenza di
+previsioni e sulla controprova il 2026-10-30, «Approvo» (commit `f3d8a19`). Nessuna previsione con intervallo di rilevanza: lo step non cambia il
+modello generativo (G-4). Commit provato: `a325d81`.
+
+```{r gates}
+O2 <- "official2"
+g1 <- pick(rl(O2, "G1_doc.log"), "^RESULT"); g1m <- pick(rl(O2, "G1_mutants.log"), "^RESULT")
+g2 <- pick(rl(O2, "G2_quickstart.log"), "^(PASS|GATE)"); g3 <- pick(rl(O2, "G3_battery.log"), "^GATE G-3")
+g4 <- if (file.exists(file.path(M, "G4_merge.log"))) pick(rl("G4_merge.log"), "^(PASS|FAIL|GATE)") else "non ancora eseguito"
+kable(data.frame(
+  id = c("G-1", "G-2", "G-3", "G-4", "G-5"),
+  controllo = c("i documenti nominano solo file e funzioni che esistono; due mutanti rilevati",
+                "l'avvio rapido del README gira così com'è in un clone nuovo isolato; due esecuzioni, stesso md5 di cell_df",
+                "batteria dello Step 1 nel clone nuovo con i soli FAIL noti",
+                "dev = step1-cell-layer, fast-forward da 7836829, main invariato, simulatore invariato",
+                "numeri del dossier ricalcolati da revisori indipendenti; controllo OKF"),
+  esito = c(paste(g1, "|", g1m), paste(g2, collapse = " | "), g3, paste(g4, collapse = " | "),
+            "vedi «Revisione avversariale»: tutte le discrepanze chiuse; OKF 0 documenti in errore")))
+```
+
+Esito: **G-1, G-2, G-3, G-5 superati; G-4 nella tabella qui sopra**, letto dal log del controllo dopo il merge.
+
+Note sulla pre-registrazione, scritte e non corrette:
+
+- G-3 cita come fonte dei FAIL ammessi solo DEC-011; i quattro FAIL noti sono coperti da DEC-011 (E10, E10b di S1.5) e da DEC-023 (T12 di S1.5c,
+  T13 di S1.5d). È un errore di citazione, non di criterio: l'elenco dei FAIL ammessi è quello di `R/testing/run_S1.6.sh`.
+- Dopo la pre-registrazione il clone di G-2 e G-3 è stato completato con un passo che il README ora chiede (`tools/link_server_inputs.sh`),
+  perché senza di esso la batteria in un clone nuovo non può girare (esplorazione E1, sotto). Il criterio del cancello non è cambiato.
+- Dopo la prima revisione avversariale G-1 legge anche i tre file inclusi nel dossier: il controllo è diventato più largo, non più lasco.
+
+# Esplorazione E1: un clone nuovo può rifare i test?
+
+Tre prove in clone nuovo, prima del run ufficiale (cartelle `probe`, `probe2`, `probe3` del volume dati):
+
+```{r probes}
+st <- function(d) { x <- rl(d, "battery.log"); g <- pick(x, "^GATE G-1"); g[length(g)] }
+kable(data.frame(
+  prova = c("E1: clone nudo", "E1b: link alle cartelle ignorate", "E1c: link ai contenuti delle cartelle"),
+  commit = c("275028d", "93d204c", "2c7f64f"),
+  esito = c(st("probe"), st("probe2"), st("probe3")),
+  causa = c("il test di S1.5d si ferma: legge le maschere di R2, escluse da git; manca l'ambiente Python",
+            "git vede i link come file non tracciati (le regole con la barra finale valgono solo per le cartelle); la protezione di run_S1.5.sh si ferma",
+            paste("passa con i soli FAIL noti in", secs("probe3"), "s"))))
+```
+
+# Controprova
+
+Il controllo dei documenti deve bocciare il README e il CLAUDE.md del 2025, contro l'albero del commit provato.
+
+```{r cp}
+cp <- rl("official2", "CP_counterproof.log"); cat(pick(cp, "^(INFO|PASS) "), sep = "\n")
+cat(rl("official", "CP_breakdown.txt"), sep = "\n")
+```
+
+Superata. Dei 39 riferimenti mancanti, 29 sono nomi di file scritti senza cartella che esistono altrove e uno è la notazione `.rds`: imprecisioni
+di scrittura più che file scomparsi. Le funzioni mancanti sono 9 (per esempio `calculate_spatial_coherence()` non è definita da nessuna parte).
+Il criterio decisivo è il secondo: nessuno dei due documenti del 2025 nomina un file del livello cellulare.
+
+# Revisione avversariale
+
+{{< include _S1.6b_review.md >}}
+
+# Cosa è girato
+
+```{r ran}
+kable(data.frame(
+  cosa = c("libreria dal lockfile (clone di T2)", "avvio rapido, md5 di cell_df (clone di T)", "avvio rapido, md5 di cell_df (clone di T2)",
+           "batteria, clone di T (42224c7)", "batteria, clone di T2 (a325d81)", "batteria, prova E1c (2c7f64f)"),
+  valore = c(tail(pick(rl("official2", "restore.log"), "^PASS restore"), 1),
+             sub(".*\\((.*)\\)", "\\1", pick(rl("official", "G2_quickstart.log"), "^PASS stesso")),
+             sub(".*\\((.*)\\)", "\\1", pick(rl("official2", "G2_quickstart.log"), "^PASS stesso")),
+             paste(secs("official"), "s"), paste(secs("official2"), "s"), paste(secs("probe3"), "s"))))
+```
+
+Script: `tools/restore_library.R`, `tools/link_server_inputs.sh`, `tools/S1.6b_doc_check.py`, `R/testing/run_S1.6b.sh`; la batteria è
+`R/testing/run_S1.6.sh test`. Nessun seme nuovo: l'avvio rapido usa `random_seed = 42`. Processi: uno alla volta (carico del server circa 1).
+Dati reali: letti solo dai test esistenti, attraverso i link; nessun file di `data_real` scritto (i link puntano alla copia di lavoro, la batteria
+controlla che nessun file versionato cambi).
+
+# Appendice
+
+## Da dove vengono i numeri del riassunto
+
+{{< include _S1.6b_fonti.md >}}

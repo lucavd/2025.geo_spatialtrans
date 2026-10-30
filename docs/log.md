@@ -1,5 +1,12 @@
 # Registro delle modifiche
 
+## 2026-10-30 (S1.6b)
+
+* **Creazione**: [Il README, le istruzioni del progetto e il dossier per Daniele descrivono il codice com'è, e il ramo delle cellule entra in quello di sviluppo senza perdere nulla? (S1.6b)](steps/S1.6b.md): cancelli G-1...G-5 e controprova con l'ok di Luca («Approvo»), esplorazione E1-E2, cancelli superati, revisione avversariale in due giri; in attesa della lettura di Luca.
+* **Creazione**: decisione tecnica [S1.6b: scelte tecniche dei documenti e del merge dello Step 1 (libreria dal lockfile in un clone nuovo, input dei test collegati dal server, design annotato e non riscritto, documenti del 2025 conservati, portata del controllo dei documenti) (DEC-032)](decisions/DEC-032.md).
+* **Creazione**: decisione di Luca [S1.6b: scelte di Luca su manutentore, revisore, licenza, lingue dei documenti, forma del dossier per Daniele e densità di riferimento dei preset (DEC-033)](decisions/DEC-033.md).
+* **Modifica**: README, CLAUDE.md (quelli del 2025 in `legacy/`), design del livello cellulare v1.9, DESCRIPTION, LICENSE, BACKLOG; `dev` = `step1-cell-layer`.
+
 ## 2026-10-30 (chiusura di S1.6)
 
 * **Chiusura**: [Il codice dello Step 1, ripulito dei difetti noti, simula ancora gli stessi tessuti? (S1.6)](steps/S1.6.md) chiuso con l'approvazione di Luca (lettura del riassunto «In breve» senza dubbi nuovi; «ok vai»); decisione di Luca in [S1.6: il controllo fallito come scritto non blocca lo step; C7 usa la densità della miscela nella semina cieca al tipo e il design §6.1 cambia di conseguenza (DEC-031)](decisions/DEC-031.md). Prossimo step: S1.6b, documenti e merge dello Step 1.

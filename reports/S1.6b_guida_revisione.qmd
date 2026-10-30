@@ -32,8 +32,9 @@ nella versione 1.1: la scala in µm per pixel è obbligatoria (C-A) e la diffusi
 Da allora il livello cellulare è stato scritto, tarato su sei tessuti veri, controllato step per step contro le misure sugli stessi tessuti
 e consolidato. Il design oggi è alla versione 1.9.
 
-Questa guida serve a rivederlo senza ripercorrere gli step: cosa è cambiato dal testo che hai letto, dove sta nel codice e nei test ogni parte
-del design, cosa non è coperto, quali limiti abbiamo dichiarato e su quali punti ci serve il tuo giudizio. Le tabelle complete sono in appendice.
+Questa guida serve a controllare che il codice faccia ciò che dice il design, senza ripercorrere gli step: cosa è cambiato dal testo che
+hai letto, dove sta nel codice e nei test ogni parte del design, cosa non è coperto e quali limiti abbiamo dichiarato. Le tabelle complete
+sono in appendice.
 Ogni riga rimanda a un file del repository (ramo `dev`), così puoi controllare da te.
 
 Due avvertenze. La mappa design → codice → test è stata costruita leggendo il codice e i registri degli step, non rieseguendo i test (la
@@ -147,9 +148,22 @@ Il §7.4 del design elenca ciò che il livello cellulare non riproduce, misurato
 Gli altri limiti scritti nel design fuori dal §7.4 e le voci ancora aperte del BACKLOG che riguardano il codice delle cellule sono in
 appendice B (la scelta delle voci «di codice» è un giudizio voce per voce, dichiarato lì).
 
-# 6. Domande per te
+# 6. Questioni di metodo aperte
 
-{{< include ../results/S1.6b/S1.6b_questions.md >}}
+Le questioni di metodo emerse preparando questa guida non sono domande per il revisore: si decidono con i dati, e le decidiamo noi
+(scelta di Luca, 2026-10-30). Ognuna è una voce di `docs/BACKLOG.md` con il calcolo che la decide:
+
+- come strutturare semi e repliche quando il simulatore servirà a confrontare metodi (BL-185);
+- quando dire che il simulatore è «fuori dal vero» con riferimenti stimati su poche aree (BL-186);
+- quali statistiche della disposizione delle cellule confrontare con il vero, e con quale tolleranza (BL-187);
+- l'errore di misura nelle aree dei nuclei e dei territori che entrano nel modello di taglia (BL-188);
+- la calibrazione dei vuoti della semina a compartimenti, che non trova un solo ottimo (BL-189);
+- come scrivere le soglie di una previsione giudicata su molte misure insieme (BL-190);
+- una verifica, su semi nuovi, del controllo della taglia dei territori cambiato in S1.6 (BL-191).
+
+Il riferimento di densità dei preset l'ha scelto Luca: il simulatore deve riprodurre la densità del tessuto con i suoi vuoti, non quella
+del tessuto pieno di cellule del conteggio manuale (2026-10-30). Le densità dei preset cambieranno in uno step dedicato (BL-167); fino ad
+allora vale il limite dichiarato nel §7.4.
 
 # 7. Come rifare i conti
 
@@ -180,4 +194,4 @@ I report di ogni step sono in `reports/` (HTML); le decisioni in `docs/decisions
 | contatti 0.69 contro 0.57, 0.83 contro 0.75 | sezione 5 | design §7.4 |
 | sette punti annotati in v1.9 | sezione 2 | design, righe con «[v1.9, S1.6b» |
 | nessun test per `override_cell_types` e `override_composition` | sezione 4 | ricerca su `R/testing/*.R` (report S1.6b) |
-| numeri delle domande | sezione 6 | le fonti citate in ogni domanda |
+| voci delle questioni aperte; scelta della densità | sezione 6 | `docs/BACKLOG.md`, BL-167 e BL-185...BL-191; DEC-033 |
