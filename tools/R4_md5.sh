@@ -19,5 +19,6 @@ ls results/R2/nuclei/A[1235]_*_cellpose_rgb_native.parquet
 ls $M/R6/counts/*_exp.npz $M/R6/counts/*_nuc.npz $M/R6/counts/*_shift.npz $M/R6/counts/*_nuclei.parquet
 ls $M/R6/labels/A?_exp_umi20_seed20261022_nuclei_ph1.parquet
 echo results/R2/R2_rois_checked.csv; echo results/R6/R6_dexp.csv
+ls $M/R6/counts/*_genes.tsv
 } | sort -u | xargs md5sum > "$OUT"
 echo "$(wc -l < "$OUT") files -> $OUT"

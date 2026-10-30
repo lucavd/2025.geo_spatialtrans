@@ -1,8 +1,9 @@
 """tools/R4_posthoc.py — R4, analisi post hoc (dichiarate dopo i risultati, non previsioni).
-  roi <KEY> <outdir> : PH-1 rapporto nucleo/corona appaiato dentro la cellula (maschera vera e spostata); PH-4 parita' di riga e colonna
+  roi <KEY> <outdir> : PH-1 rapporto nucleo/corona pesato per cellula (rapporto fra le medie per cellula; maschera vera e spostata) e mediana
+                       dei rapporti per cellula (revisione F08); PH-4 parita' di riga e colonna
                        della griglia a 2 um (ROI e sezione intera, bin in tessuto). -> <outdir>/posthoc/<A>_<roi>_cells.parquet, <KEY>_parity.csv
-  p2 <outdir>        : PH-2 zeri in eccesso con binomiale negativa a fattore di taglia per cellula; PH-3 linfonodo con soglia 0.5 UMI per cellula
-                       (e dropout di controllo). Dalle matrici per cellula di R6 (identiche a quelle ricalcolate, cancello G-3c).
+  (PH-2 e PH-3, zeri in eccesso con fattore di taglia e soglia 0.5, sono calcolati in tools/R4_roi.py sulla stessa matrice e sullo stesso
+   dropout di P-2/CP-2, revisione F07; qui solo il riassunto, bootstrap sulle sole ROI)
   summary <outdir>   : tabelle <outdir>/tables/R4_PH*.csv"""
 import sys, os, json, glob
 import numpy as np, pandas as pd, scipy.sparse as sp, pyarrow.parquet as pq
@@ -24,20 +25,6 @@ def per_label(lab_nuc, lab_exp, keep, u):
         idx = pos.reindex(lab[sel]).to_numpy()
         out[f"umi_{nm}"] = np.bincount(idx, weights=u[sel], minlength=len(keep)); out[f"n_{nm}"] = np.bincount(idx, minlength=len(keep))
     return out
-
-def nb_sf_excess(X, s):
-    """PH-2: per gene, P(0) osservata meno P(0) di una binomiale negativa con media s_i * mu e theta dai momenti con fattore di taglia."""
-    X = X.tocsc(); n = X.shape[0]
-    mu = np.asarray(X.sum(axis=0)).ravel() / s.sum()
-    x2 = np.asarray(X.multiply(X).T @ np.ones(n)).ravel(); xs = np.asarray(X.T @ s).ravel()
-    resid = x2 - 2 * mu * xs + mu ** 2 * (s ** 2).sum() - mu * s.sum()          # sum (x - s mu)^2 - s mu
-    den = mu ** 2 * (s ** 2).sum()
-    theta = np.where(resid > 0, den / np.maximum(resid, 1e-300), np.inf)
-    nz = X.copy(); nz.data = (nz.data > 0).astype(float); z_obs = 1 - np.asarray(nz.sum(axis=0)).ravel() / n
-    lam = np.outer(s, mu)                                                         # cellule x geni
-    with np.errstate(over="ignore", invalid="ignore"):
-        p0 = np.where(np.isinf(theta)[None, :], np.exp(-lam), np.power(1 + lam / np.where(np.isinf(theta), 1, theta)[None, :], -np.where(np.isinf(theta), 1, theta)[None, :]))
-    return z_obs - p0.mean(axis=0)
 
 if MODE == "roi":
     KEY, OUT = ARGS; os.makedirs(f"{OUT}/posthoc", exist_ok=True)
@@ -73,33 +60,11 @@ if MODE == "roi":
         print(f"[{KEY}] {tag} done", flush=True)
     pd.DataFrame(par).to_csv(f"{OUT}/posthoc/{KEY}_parity.csv", index=False)
 
-elif MODE == "p2":
-    OUT, = ARGS; os.makedirs(f"{OUT}/posthoc", exist_ok=True); rows = []
-    for f in sorted(glob.glob(f"{OUT}/roi/*_cells.parquet")):
-        ce = pd.read_parquet(f); A, roi = ce.archetype.iloc[0], ce.roi_id.iloc[0]; tag = f"{A}_{roi}"
-        Mx = sp.load_npz(f"{M}/R6/counts/{tag}_exp.npz").tocsr()
-        ridx = int(pd.read_csv("results/R2/R2_rois_checked.csv").reset_index().query("archetype == @A and roi_id == @roi")["index"].iloc[0])
-        rng = np.random.default_rng([C.SEED, ridx, 3])
-        for t, g in ce[ce.interior & ~ce.cell_type.isin(list(C.NON_TYPES) + ["missing"])].groupby("cell_type"):
-            if len(g) < C.MIN_CELLS: continue
-            Xt = Mx[g.index.to_numpy()]
-            for thr in ((C.MIN_MEAN, 0.5) if A == "A4" else (C.MIN_MEAN,)):
-                for kind, Y in (("obs", Xt), ("drop", C.apply_dropout(Xt, C.DROPOUT, rng))):
-                    genes = C.eligible_genes(Y, thr)
-                    if not len(genes): continue
-                    lib = np.asarray(Y.sum(axis=1)).ravel().astype(float); s = lib / lib.mean()
-                    ok = s > 0
-                    ex_sf = nb_sf_excess(Y[ok][:, genes], s[ok]); ex_plain = C.excess_zeros(Y, genes)
-                    for gi, a_, b_ in zip(genes, ex_plain, ex_sf):
-                        rows.append({"archetype": A, "roi_id": roi, "cell_type": t, "min_mean": thr, "kind": kind, "gene_idx": int(gi),
-                                     "excess_nb": float(a_), "excess_nb_sizefactor": float(b_)})
-        print(f"p2 {tag}", flush=True)
-    pd.DataFrame(rows).to_parquet(f"{OUT}/posthoc/p2_sizefactor.parquet", index=False)
-
 elif MODE == "summary":
     OUT, = ARGS; TB = f"{OUT}/tables"; os.makedirs(TB, exist_ok=True)
     rng_for = lambda a, q: np.random.default_rng([C.SEED, ARCH.index(a), 1000 + q])
-    # PH-1
+    # PH-1: rapporto pesato per cellula (media per cellula della densita' nel nucleo / media per cellula della densita' nella corona) e
+    # mediana dei rapporti per cellula (cellule con UMI > 0 nella corona); entrambi con la maschera spostata come nullo
     rows, roi_rows = [], []
     for f in sorted(glob.glob(f"{OUT}/posthoc/A?_*_cells.parquet")):
         t = pd.read_parquet(f); A, roi = t.archetype.iloc[0], t.roi_id.iloc[0]
@@ -107,34 +72,54 @@ elif MODE == "summary":
         for mk in ("", "_shift"):
             ok = (t[f"n_nuc{mk}"] > 0) & (t[f"n_ring{mk}"] > 0)
             dn = t.loc[ok, f"umi_nuc{mk}"] / t.loc[ok, f"n_nuc{mk}"]; dr = t.loc[ok, f"umi_ring{mk}"] / t.loc[ok, f"n_ring{mk}"]
-            r[f"paired{mk}"] = float(dn.mean() / dr.mean()); r[f"n_cells{mk}"] = int(ok.sum())
+            r[f"cellweighted{mk}"] = float(dn.mean() / dr.mean()); r[f"n_cells{mk}"] = int(ok.sum())
+            pos = dr > 0
+            r[f"median_cell_ratio{mk}"] = float(np.median(dn[pos] / dr[pos])); r[f"n_cells_ratio{mk}"] = int(pos.sum())
             r[f"pooled{mk}"] = float(t[f"umi_nuc{mk}"].sum() / t[f"n_nuc{mk}"].sum() / (t[f"umi_ring{mk}"].sum() / t[f"n_ring{mk}"].sum()))
-        r["paired_star"] = r["paired"] / r["paired_shift"]; roi_rows.append(r)
+        r["cellweighted_star"] = r["cellweighted"] / r["cellweighted_shift"]; r["median_cell_ratio_star"] = r["median_cell_ratio"] / r["median_cell_ratio_shift"]
+        roi_rows.append(r)
     PR = pd.DataFrame(roi_rows); PR.to_csv(f"{TB}/R4_PH1_roi.csv", index=False)
     for a in ARCH:
         Ra = PR[PR.archetype == a]
-        for qi, col in enumerate(("paired", "paired_shift", "paired_star", "pooled", "pooled_shift")):
+        for qi, col in enumerate(("cellweighted", "cellweighted_shift", "cellweighted_star", "median_cell_ratio", "median_cell_ratio_shift",
+                                  "median_cell_ratio_star", "pooled", "pooled_shift")):
             e, lo, hi, _ = C.boot_one_stage(Ra[col].values, rng=rng_for(a, qi))
             rows.append({"archetype": a, "quantity": col, "estimate": e, "lo": lo, "hi": hi, "class_vs_0.909_1.1": C.verdict(lo, hi, 0.909, 1.1),
                          "class_vs_0.95_1.05": C.verdict(lo, hi, 0.95, 1.05)})
     pd.DataFrame(rows).to_csv(f"{TB}/R4_PH1.csv", index=False)
-    # PH-2 / PH-3
-    p2 = pd.read_parquet(f"{OUT}/posthoc/p2_sizefactor.parquet"); out = []
-    for (a, thr, kind), g in p2.groupby(["archetype", "min_mean", "kind"]):
-        rois_ = sorted(g.roi_id.unique())
-        for qi, col in enumerate(("excess_nb", "excess_nb_sizefactor")):
-            per = [g[g.roi_id == r_][col].to_numpy() for r_ in rois_]
-            e, lo, hi, _ = C.boot_one_stage(np.arange(len(per)), stat=lambda ix: np.median(np.concatenate([per[int(i)] for i in ix])), rng=rng_for(a, 10 + qi + (5 if kind == "drop" else 0) + (20 if thr < 1 else 0)))
-            out.append({"archetype": a, "min_mean": thr, "kind": kind, "model": col, "n_genes": int(g.gene_idx.nunique()), "n_pairs": int(len(g)),
-                        "estimate": e, "lo": lo, "hi": hi, "class_vs_pm0.02": C.verdict(lo, hi, -0.02, 0.02)})
+    # PH-2 / PH-3 dai file p2 dello stadio per ROI (stessi geni e stesso dropout di P-2/CP-2). Bootstrap sulle sole ROI: le classi NON sono
+    # confrontabili con i verdetti pre-registrati di P-2/CP-2 (bootstrap a due stadi); 'non valutabile' con meno di 10 geni, come in P-2.
+    out = []
+    for a in ARCH:
+        tags = sorted(os.path.basename(f)[:-7] for f in glob.glob(f"{OUT}/roi/{a}_*_p2.npz"))
+        for kind in ("obs", "drop"):
+            for model, gkey, ekey in (("NB with cell size factor, mean >= 2", "genes", "exsf"), ("NB one mean, mean >= 0.5", "genes05", "ex05"),
+                                      ("NB with cell size factor, mean >= 0.5", "genes05", "ex05sf")):
+                per, genes = [], set()
+                for t_ in tags:
+                    z = np.load(f"{OUT}/roi/{t_}_p2.npz"); xs = []
+                    for k in z.files:
+                        ty, kd, wh = k.split("|")
+                        if kd == kind and wh == ekey: xs.append(z[k])
+                        if kd == kind and wh == gkey: genes.update(z[k].tolist())
+                    per.append(np.concatenate(xs) if xs else np.zeros(0))
+                n_pairs = int(sum(len(x) for x in per))
+                if len(genes) < 10 or n_pairs == 0:
+                    out.append({"archetype": a, "kind": kind, "model": model, "n_genes": len(genes), "n_pairs": n_pairs, "estimate": np.nan, "lo": np.nan, "hi": np.nan,
+                                "class_vs_pm0.02_roi_bootstrap": "non valutabile"}); continue
+                q = 10 + ["obs", "drop"].index(kind) * 5 + ["genes", "genes05"].index(gkey) * 2 + (ekey.endswith("sf"))
+                e, lo, hi, _ = C.boot_one_stage(np.arange(len(per)), stat=lambda ix: np.median(np.concatenate([per[int(i)] for i in ix])), rng=rng_for(a, q))
+                out.append({"archetype": a, "kind": kind, "model": model, "n_genes": len(genes), "n_pairs": n_pairs, "estimate": e, "lo": lo, "hi": hi,
+                            "class_vs_pm0.02_roi_bootstrap": C.verdict(lo, hi, -0.02, 0.02)})
     pd.DataFrame(out).to_csv(f"{TB}/R4_PH2.csv", index=False)
     # PH-4
     par = pd.concat([pd.read_csv(f) for f in sorted(glob.glob(f"{OUT}/posthoc/*_parity.csv"))], ignore_index=True)
     w = []
     for (unit, ds), g in par.groupby(["unit", "dataset"]):
-        m = {(int(r.row_par), int(r.col_par)): r.mean_umi for r in g.itertuples()}
-        tot = np.mean(list(m.values()))
-        w.append({"unit": unit, "dataset": ds, "col_odd_over_even": (m[(0, 1)] + m[(1, 1)]) / (m[(0, 0)] + m[(1, 0)]),
-                  "row_odd_over_even": (m[(1, 0)] + m[(1, 1)]) / (m[(0, 0)] + m[(0, 1)]), "mean_umi": tot, **{f"mean_r{k[0]}c{k[1]}": v for k, v in m.items()}})
+        m = {(int(r.row_par), int(r.col_par)): (r.mean_umi, r.n_bins) for r in g.itertuples()}
+        def pooled(keys): return sum(m[k][0] * m[k][1] for k in keys) / sum(m[k][1] for k in keys)
+        w.append({"unit": unit, "dataset": ds, "col_odd_over_even": pooled([(0, 1), (1, 1)]) / pooled([(0, 0), (1, 0)]),          # media raggruppata (RV-2)
+                  "row_odd_over_even": pooled([(1, 0), (1, 1)]) / pooled([(0, 0), (0, 1)]), "mean_umi_per_bin": pooled(list(m)),
+                  **{f"mean_r{k[0]}c{k[1]}": v[0] for k, v in m.items()}, **{f"n_r{k[0]}c{k[1]}": int(v[1]) for k, v in m.items()}})
     pd.DataFrame(w).to_csv(f"{TB}/R4_PH4_parity.csv", index=False)
     print("posthoc summary written")

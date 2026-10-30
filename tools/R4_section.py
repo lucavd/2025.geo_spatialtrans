@@ -68,10 +68,13 @@ img[p2.array_row, p2.array_col] = p2.umi.to_numpy(); T[p2.array_row, p2.array_co
 dist = ndimage.distance_transform_edt(~T) * 2.0
 valid = (~T) & (dist >= 50.0)
 S, k = C.welch_spectrum(img, valid, tile=64, min_valid=1.0)
-spec = C.spectral_peak(S) if k >= 4 else {"ratio": float("nan"), "present": None, "fy": float("nan"), "fx": float("nan")}
+nanpk = {"ratio": float("nan"), "present": None, "fy": float("nan"), "fx": float("nan")}
+spec = C.spectral_peak(S) if k >= 4 else dict(nanpk)
+spec.update({f"offaxis_{kk}": v for kk, v in (C.spectral_peak(S, off_axis=True) if k >= 4 else nanpk).items()})
 spec.update({"n_tiles": int(k), "mean_umi_bg": float(img[valid].mean()) if valid.any() else float("nan")})
 St, kt = C.welch_spectrum(img, T, tile=64, min_valid=1.0)       # sensibilita': tessere interamente in tessuto
-spec_t = C.spectral_peak(St) if kt >= 4 else {"ratio": float("nan"), "present": None, "fy": float("nan"), "fx": float("nan")}
+spec_t = C.spectral_peak(St) if kt >= 4 else dict(nanpk)
+spec_t.update({f"offaxis_{kk}": v for kk, v in (C.spectral_peak(St, off_axis=True) if kt >= 4 else nanpk).items()})
 spec_t["n_tiles"] = int(kt)
 np.savez_compressed(f"{OUT}/section/{KEY}_spectrum.npz", bg=S, tissue=St)
 res["D5_background"] = spec; res["D5_tissue_tiles"] = spec_t

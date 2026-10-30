@@ -36,6 +36,11 @@ def p2_block(X, rng_b, rng_d):
             var = np.maximum(m2 - m1 ** 2, 0.0)
             reps = (z - C.nb_zero_expected(m1.ravel(), var.ravel()).reshape(m1.shape)).astype(np.float32)
         out[tag] = (genes, ex, reps)
+        # PH-2 (post hoc, dopo la revisione F06/F07): stessi geni e stessa matrice (stesso dropout), binomiale negativa con fattore di taglia
+        lib = np.asarray(Y.sum(axis=1)).ravel().astype(float); sf = lib / lib.mean(); ok = sf > 0
+        out[tag + "_sf"] = C.nb_sf_excess(Y[ok][:, genes], sf[ok]) if len(genes) else np.zeros(0)
+        g05 = C.eligible_genes(Y, 0.5)                       # PH-3: soglia 0.5 UMI per cellula (linfonodo e tutti, sensibilita')
+        out[tag + "_05"] = (g05, C.excess_zeros(Y, g05) if len(g05) else np.zeros(0), C.nb_sf_excess(Y[ok][:, g05], sf[ok]) if len(g05) else np.zeros(0))
     return out
 
 t0 = time.time()
@@ -120,9 +125,13 @@ for _, R in rois.iterrows():
         if len(g) < C.MIN_CELLS:
             p2_meta.append({"type": t, "n_cells": int(len(g)), "used": False}); continue
         res = p2_block(Cexp[g.index.to_numpy()], rng_b, rng_d)
-        for k, (genes, ex, reps) in res.items():
-            p2[f"{t}|{k}|genes"] = genes; p2[f"{t}|{k}|ex"] = ex; p2[f"{t}|{k}|reps"] = reps
-        p2_meta.append({"type": t, "n_cells": int(len(g)), "used": True, "n_genes_obs": int(len(res["obs"][0])), "n_genes_drop": int(len(res["drop"][0]))})
+        for k in ("obs", "drop"):
+            genes, ex, reps = res[k]
+            p2[f"{t}|{k}|genes"] = genes; p2[f"{t}|{k}|ex"] = ex; p2[f"{t}|{k}|reps"] = reps; p2[f"{t}|{k}|exsf"] = res[k + "_sf"]
+            g05, e05, e05sf = res[k + "_05"]
+            p2[f"{t}|{k}|genes05"] = g05; p2[f"{t}|{k}|ex05"] = e05; p2[f"{t}|{k}|ex05sf"] = e05sf
+        p2_meta.append({"type": t, "n_cells": int(len(g)), "used": True, "n_genes_obs": int(len(res["obs"][0])), "n_genes_drop": int(len(res["drop"][0])),
+                        "n_genes05_obs": int(len(res["obs_05"][0]))})
     np.savez_compressed(f"{OUT}/roi/{tag}_p2.npz", **p2)
     # 8 um nella ROI
     b8 = tp8[(tp8.pxl_row_in_fullres >= R.r0) & (tp8.pxl_row_in_fullres < R.r1) & (tp8.pxl_col_in_fullres >= R.c0) & (tp8.pxl_col_in_fullres < R.c1)]
@@ -133,10 +142,12 @@ for _, R in rois.iterrows():
     img = np.zeros((ar.max() - ar.min() + 1, ac.max() - ac.min() + 1)); val = np.zeros(img.shape, bool)
     img[ar - ar.min(), ac - ac.min()] = umi; val[ar - ar.min(), ac - ac.min()] = s == 0
     S, ktiles = C.welch_spectrum(img, val, tile=32, min_valid=0.5)
-    spec = C.spectral_peak(S) if ktiles >= 4 else {"ratio": float("nan"), "present": None, "fy": float("nan"), "fx": float("nan")}
-    spec["n_tiles"] = int(ktiles)
+    nanpk = {"ratio": float("nan"), "present": None, "fy": float("nan"), "fx": float("nan")}
+    spec = C.spectral_peak(S) if ktiles >= 4 else dict(nanpk)
+    spec_off = C.spectral_peak(S, off_axis=True) if ktiles >= 4 else dict(nanpk)
+    spec.update({f"offaxis_{k}": v for k, v in spec_off.items()}); spec["n_tiles"] = int(ktiles)
     np.savez_compressed(f"{OUT}/roi/{tag}_bins.npz", umi=umi, ngen=ngen, s=s, s_shift=s_sh, s4=s4, s4_shift=s4_sh, far=far, far_shift=far_sh,
-                        umi8=umi8, ngen8=ngen8, **({"s_sd": s_sd, "s_sd_shift": s_sd_sh} if keep_sd is not None else {}))
+                        umi8=umi8, ngen8=ngen8, x_um=cc * upp, y_um=rr * upp, side_um=np.float64(R.side_px * upp), **({"s_sd": s_sd, "s_sd_shift": s_sd_sh} if keep_sd is not None else {}))
     summ = {"archetype": A, "roi_id": roi, "roi_index": ridx, "n_genes": int(n_genes), "n_bins_box": int(len(box)), "n_bins_tissue": int(len(filt)),
             "n_bins8_tissue": int(len(b8)), "n_nuclei_keep": int(len(keep)), "d_exp_um": d_exp, "G3c": g3c, "p2_meta": p2_meta, "spectrum": spec,
             "elapsed_s": round(time.time() - t0, 1)}

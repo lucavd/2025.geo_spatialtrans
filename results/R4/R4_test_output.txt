@@ -1,3 +1,7 @@
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:3862: RuntimeWarning: Mean of empty slice
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
 PASS  agg_2to8_values
 PASS  agg_2to8_total_conserved
 PASS  agg_2to8_boundary_rows_3_4_split
@@ -17,7 +21,30 @@ PASS  boot2_reproducible
 PASS  verdicts
 PASS  spectrum_noise_no_peak
 PASS  spectrum_lattice_peak
+PASS  spectrum_parity_at_nyquist
+PASS  spectrum_offaxis_ignores_parity
+PASS  spectrum_offaxis_finds_diagonal
+PASS  spectrum_threshold_is_10
+PASS  ratio_is_ratio_of_means
+PASS  boot1_interval_95pct
+PASS  boot2_resamples_rois
+PASS  boot2_resamples_cells
+PASS  eligible_genes_by_mean_inclusive
+PASS  verdict_boundaries_inclusive
+PASS  plain_nb_biased_negative_with_size_factors
+PASS  sizefactor_nb_unbiased
+PASS  sizefactor_nb_detects_dropout
 PASS  mutant_strata_swapped_detected (1 asserzioni fallite)
 PASS  mutant_agg_offset_detected (2 asserzioni fallite)
-PASS  mutant_nb_as_poisson_detected (2 asserzioni fallite)
-R4_test: 22/22 PASS
+PASS  mutant_nb_as_poisson_detected (3 asserzioni fallite)
+PASS  mutant_ratio_of_medians_detected (1 asserzioni fallite)
+PASS  mutant_boot1_no_resampling_detected (1 asserzioni fallite)
+PASS  mutant_boot1_90pct_detected (1 asserzioni fallite)
+PASS  mutant_boot2_no_roi_stage_detected (1 asserzioni fallite)
+PASS  mutant_boot2_no_cell_stage_detected (1 asserzioni fallite)
+PASS  mutant_eligible_by_detection_detected (1 asserzioni fallite)
+PASS  mutant_eligible_strict_detected (1 asserzioni fallite)
+PASS  mutant_spectrum_without_nyquist_detected (2 asserzioni fallite)
+PASS  mutant_spectrum_threshold_3_detected (1 asserzioni fallite)
+PASS  mutant_verdict_strict_detected (1 asserzioni fallite)
+R4_test: 45/45 PASS

@@ -73,6 +73,41 @@ def suite(M, verbose=True):
     S1, _ = M.welch_spectrum(lat, valid); p1 = M.spectral_peak(S1)
     ck("spectrum_noise_no_peak", k == 64 and not p0["present"])
     ck("spectrum_lattice_peak", p1["present"] and abs(abs(p1["fy"]) - 0.125) < 0.02 and abs(abs(p1["fx"]) - 0.125) < 0.02)
+    # 8. (revisione F01, F10, F16) Nyquist e reticolo diagonale fuori dagli assi
+    par = rng.poisson(3.0, (512, 512)).astype(float) * np.where(xx % 2 == 1, 1.5, 1.0)
+    Sp, _ = M.welch_spectrum(par, valid); pp = M.spectral_peak(Sp); po = M.spectral_peak(Sp, off_axis=True)
+    ck("spectrum_parity_at_nyquist", pp["present"] and abs(abs(pp["fx"]) - 0.5) < 1e-9 and abs(pp["fy"]) < 1e-9)
+    ck("spectrum_offaxis_ignores_parity", not po["present"])
+    pd_ = par + 2.0 * (1 + np.cos(2 * np.pi * (yy + xx) / 8.0))
+    Sd, _ = M.welch_spectrum(pd_, valid); pdia = M.spectral_peak(Sd, off_axis=True)
+    ck("spectrum_offaxis_finds_diagonal", pdia["present"] and abs(abs(pdia["fy"]) - 0.125) < 0.02 and abs(abs(pdia["fx"]) - 0.125) < 0.02)
+    flat = np.ones((64, 64)); f5 = flat.copy(); f5[32 + 10, 32 + 10] = 5.0; f12 = flat.copy(); f12[32 + 10, 32 + 10] = 12.0
+    ck("spectrum_threshold_is_10", (not M.spectral_peak(f5)["present"]) and M.spectral_peak(f12)["present"])
+    # 9. rapporto come rapporto di medie (non di mediane)
+    ck("ratio_is_ratio_of_means", abs(M.density_ratio(np.array([0, 0, 0, 10, 1, 1, 1, 1]), np.array([1, 1, 1, 1, 2, 2, 2, 2])) - 2.5) < 1e-12)
+    # 10. bootstrap: ricampiona davvero le ROI e le cellule; intervallo al 95 %
+    v = np.random.default_rng(11).normal(0, 1, 400)
+    e1, l1, h1, _ = M.boot_one_stage(v, rng=np.random.default_rng(12))
+    se = v.std(ddof=1) / np.sqrt(len(v))
+    ck("boot1_interval_95pct", abs((h1 - l1) / (2 * 1.96 * se) - 1) < 0.12)
+    gb = [np.full(50, float(k)) for k in range(5)]                 # varianza solo fra ROI
+    gw = [np.random.default_rng(20 + k).normal(0, 1, 50) for k in range(5)]   # varianza solo dentro le ROI (ROI quasi uguali)
+    gw = [x - x.mean() for x in gw]
+    _, lb, hb, _ = M.boot_two_stage(gb, np.mean, B=300, rng=np.random.default_rng(13))
+    _, lw, hw, _ = M.boot_two_stage(gw, np.mean, B=300, rng=np.random.default_rng(14))
+    ck("boot2_resamples_rois", hb - lb > 0.5)
+    ck("boot2_resamples_cells", hw - lw > 0.05)
+    # 11. ammissione dei geni per media >= 2 (soglia inclusa)
+    Xe = sp.csr_matrix(np.column_stack([np.full(100, 2), np.r_[np.full(99, 2), 1], np.r_[np.full(50, 4), np.zeros(50)]]))
+    ck("eligible_genes_by_mean_inclusive", list(M.eligible_genes(Xe)) == [0, 2])
+    ck("verdict_boundaries_inclusive", M.verdict(0.909, 1.1, 0.909, 1.1) == "confermata" and M.verdict(1.1, 1.3, 0.909, 1.1) == "indeterminata")
+    # 12. (revisione F06) taglie diverse fra cellule: la binomiale negativa semplice vede zeri in difetto, quella con fattore di taglia no
+    sfac = np.exp(rng.normal(0, 0.6, nc)); sfac /= sfac.mean()
+    Xs = sp.csr_matrix(np.column_stack([rng.negative_binomial(thetas[g], thetas[g] / (thetas[g] + means[g] * sfac), nc) for g in range(ng)]))
+    gs = M.eligible_genes(Xs)
+    ck("plain_nb_biased_negative_with_size_factors", np.median(M.excess_zeros(Xs, gs)) < -0.005)
+    ck("sizefactor_nb_unbiased", abs(np.median(M.nb_sf_excess(Xs[:, gs], sfac))) < 0.003)
+    ck("sizefactor_nb_detects_dropout", np.median(M.nb_sf_excess(M.apply_dropout(Xs, 0.3, np.random.default_rng(5))[:, gs], sfac)) > 0.02)
     return out
 
 def mutant(name, attr, fn):
@@ -94,7 +129,45 @@ if __name__ == "__main__":
         return pd.DataFrame({"row": r, "col": c, "umi": np.asarray(umi, np.int64)}).groupby(["row", "col"], as_index=False)["umi"].sum()
     def m_nb(mean, var):                  # zeri attesi di Poisson al posto della binomiale negativa
         return np.exp(-np.asarray(mean, float))
-    muts = [("strata_swapped", "strata", m_strata), ("agg_offset", "aggregate_totals", m_agg), ("nb_as_poisson", "nb_zero_expected", m_nb)]
+    _o1, _o2, _oe, _osp, _over = C.boot_one_stage, C.boot_two_stage, C.eligible_genes, C.spectral_peak, C.verdict
+    def m_ratio_median(umi, s):           # rapporto di mediane
+        umi = np.asarray(umi, float); s = np.asarray(s); return float(np.median(umi[s == 1]) / max(np.median(umi[s == 2]), 1e-9))
+    def m_boot1_noresample(values, stat=np.mean, B=C.B, rng=None):
+        e = float(stat(np.asarray(values, float))); return e, e, e, np.full(B, e)
+    def m_boot1_90(values, stat=np.mean, B=C.B, rng=None):
+        v = np.asarray(values, float); rng = rng if rng is not None else np.random.default_rng(C.SEED)
+        reps = np.array([stat(v[i]) for i in rng.integers(0, len(v), size=(B, len(v)))])
+        return float(stat(v)), float(np.percentile(reps, 5)), float(np.percentile(reps, 95)), reps
+    def m_boot2_noroi(groups, stat, B=C.B, rng=None):
+        rng = rng if rng is not None else np.random.default_rng(C.SEED)
+        reps = np.array([stat(np.concatenate([g[rng.integers(0, len(g), len(g))] for g in groups])) for _ in range(B)])
+        return float(stat(np.concatenate(groups))), float(np.percentile(reps, 2.5)), float(np.percentile(reps, 97.5)), reps
+    def m_boot2_nocell(groups, stat, B=C.B, rng=None):
+        rng = rng if rng is not None else np.random.default_rng(C.SEED)
+        reps = np.array([stat(np.concatenate([groups[j] for j in rng.integers(0, len(groups), len(groups))])) for _ in range(B)])
+        return float(stat(np.concatenate(groups))), float(np.percentile(reps, 2.5)), float(np.percentile(reps, 97.5)), reps
+    def m_elig_detect(X, min_mean=C.MIN_MEAN):   # ammissione per frazione di cellule rilevate
+        _, _, z = C.weighted_moments(X); return np.flatnonzero(1 - z >= 0.5)
+    def m_elig_strict(X, min_mean=C.MIN_MEAN):
+        m1, _, _ = C.weighted_moments(X); return np.flatnonzero(m1 > min_mean)
+    def m_spec_nonyq(S, r_min=3, thr=10.0, off_axis=False):   # vecchio rilevatore senza Nyquist (F01)
+        n = S.shape[0]; cy = n // 2; yy, xx = np.indices(S.shape); rad = np.rint(np.hypot(yy - cy, xx - cy)).astype(int); ratio = np.zeros_like(S)
+        for r in range(r_min, cy):
+            m = rad == r; md = np.median(S[m]); ratio[m] = S[m] / md if md > 0 else 0
+        i = np.unravel_index(np.argmax(ratio), S.shape)
+        return {"ratio": float(ratio[i]), "present": bool(ratio[i] > thr), "fy": float((i[0] - cy) / n), "fx": float((i[1] - cy) / n)}
+    def m_spec_thr3(S, r_min=3, thr=10.0, off_axis=False): return _osp(S, r_min, 3.0, off_axis)
+    def m_verdict_strict(lo, hi, a, b):
+        if not (np.isfinite(lo) and np.isfinite(hi)): return "non valutabile"
+        if lo > a and hi < b: return "confermata"
+        if hi <= a or lo >= b: return "smentita"
+        return "indeterminata"
+    muts = [("strata_swapped", "strata", m_strata), ("agg_offset", "aggregate_totals", m_agg), ("nb_as_poisson", "nb_zero_expected", m_nb),
+            ("ratio_of_medians", "density_ratio", m_ratio_median), ("boot1_no_resampling", "boot_one_stage", m_boot1_noresample),
+            ("boot1_90pct", "boot_one_stage", m_boot1_90), ("boot2_no_roi_stage", "boot_two_stage", m_boot2_noroi),
+            ("boot2_no_cell_stage", "boot_two_stage", m_boot2_nocell), ("eligible_by_detection", "eligible_genes", m_elig_detect),
+            ("eligible_strict", "eligible_genes", m_elig_strict), ("spectrum_without_nyquist", "spectral_peak", m_spec_nonyq),
+            ("spectrum_threshold_3", "spectral_peak", m_spec_thr3), ("verdict_strict", "verdict", m_verdict_strict)]
     for nm, attr, fn in muts:
         nf = mutant(nm, attr, fn)
         res.append((f"mutant_{nm}_detected", nf > 0)); print(f"{'PASS' if nf > 0 else 'FAIL'}  mutant_{nm}_detected ({nf} asserzioni fallite)")

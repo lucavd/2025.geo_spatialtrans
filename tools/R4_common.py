@@ -92,6 +92,21 @@ def excess_zeros(X, genes, w=None):
     m1, var, z = weighted_moments(Xg, w)
     return z - nb_zero_expected(m1, var)
 
+def nb_sf_excess(X, s):
+    """PH-2: per gene, P(0) osservata meno P(0) media di una binomiale negativa con media s_i * mu per cellula
+    (s = fattore di taglia, media 1) e theta dai momenti con fattore di taglia; Poisson se il residuo e' <= 0."""
+    X = X.tocsc(); s = np.asarray(s, float); n = X.shape[0]
+    mu = np.asarray(X.sum(axis=0)).ravel() / s.sum()
+    x2 = np.asarray(X.multiply(X).T @ np.ones(n)).ravel(); xs = np.asarray(X.T @ s).ravel()
+    resid = x2 - 2 * mu * xs + mu ** 2 * (s ** 2).sum() - mu * s.sum()          # sum_i (x_i - s_i mu)^2 - s_i mu
+    den = mu ** 2 * (s ** 2).sum()
+    pois = resid <= 0
+    theta = np.where(pois, 1.0, den / np.where(pois, 1.0, resid))
+    nz = X.copy(); nz.data = (nz.data > 0).astype(float); z_obs = 1 - np.asarray(nz.sum(axis=0)).ravel() / n
+    lam = np.outer(s, mu)
+    p0 = np.where(pois[None, :], np.exp(-lam), np.power(1 + lam / theta[None, :], -theta[None, :]))
+    return z_obs - p0.mean(axis=0)
+
 def apply_dropout(X, frac, rng):
     """Azzera a caso una frazione `frac` dei valori non nulli (CP-2)."""
     Y = X.tocsr().copy()
@@ -148,14 +163,23 @@ def welch_spectrum(img, valid, tile=64, min_valid=1.0):
             acc += np.abs(np.fft.fftshift(np.fft.fft2(t * win))) ** 2; k += 1
     return (acc / k if k else acc), k
 
-def spectral_peak(S, r_min=3, thr=10.0):
-    """Rapporto massimo fra potenza e mediana della sua corona di frequenze (raggio intero), raggio >= r_min.
-    -> dict(ratio, present, fy, fx in cicli per bin)."""
+def spectral_peak(S, r_min=3, thr=10.0, off_axis=False):
+    """Rapporto massimo fra potenza e mediana della sua corona di frequenze (raggio intero), raggio >= r_min, fino agli angoli
+    (comprese le frequenze di Nyquist, +-0.5 cicli per bin: correzione F01 della revisione). off_axis=True esclude le righe e le colonne
+    dello spettro entro 2 campioni da fx = 0, fy = 0 o |f| = 0.5 (assi e Nyquist: strisce per riga/colonna e alternanza pari/dispari), per cercare un
+    reticolo diagonale (BL-089, F16). -> dict(ratio, present, fy, fx in cicli per bin)."""
     n = S.shape[0]; cy = n // 2
     yy, xx = np.indices(S.shape); rad = np.rint(np.hypot(yy - cy, xx - cy)).astype(int)
+    ok = np.ones(S.shape, bool)
+    if off_axis:                                   # banda di +-2 campioni attorno ad assi e linee di Nyquist (dispersione della finestra)
+        for k in (-2, -1, 0, 1, 2):
+            ok[(cy + k) % n, :] = ok[:, (cy + k) % n] = ok[k % n, :] = ok[:, k % n] = False
     ratio = np.zeros_like(S)
-    for r in range(r_min, cy):
-        m = rad == r; med = np.median(S[m])
+    for r in range(r_min, int(rad.max()) + 1):
+        m = (rad == r) & ok
+        if m.sum() < 4:
+            continue
+        med = np.median(S[m])
         if med > 0:
             ratio[m] = S[m] / med
     i = np.unravel_index(np.argmax(ratio), S.shape)

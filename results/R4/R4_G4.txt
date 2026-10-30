@@ -1,0 +1,2 @@
+R4_run done: /mnt/micron/geo_spatialtrans/R4/run2
+G-4 PASS: 14 tabelle identiche

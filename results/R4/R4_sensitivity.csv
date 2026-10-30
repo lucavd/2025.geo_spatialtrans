@@ -1,15 +1,34 @@
-archetype,sensitivity,estimate,lo,hi,verdict_as_P1,rule_R1
-A1,S-1 ring 4 um,1.0007281318098245,0.9801872116349879,1.0178753218647585,confermata,confermata
-A1,S-2 bins >= 2 um from nuclear edge,1.1273983073053624,1.011184475073363,1.2812903197786942,indeterminata,indeterminata
-A2,S-1 ring 4 um,0.84530374149889,0.8209342173570844,0.8706062251100205,smentita,smentita
-A2,S-2 bins >= 2 um from nuclear edge,0.8575808559633108,0.8306320651543974,0.8833273603886627,smentita,smentita
-A3,S-1 ring 4 um,0.9058775525683755,0.8654158241260866,0.942533348871621,indeterminata,indeterminata
-A3,S-2 bins >= 2 um from nuclear edge,1.0300995525295509,0.9438080409739908,1.1050706939682031,indeterminata,indeterminata
-A4,S-1 ring 4 um,0.7977244376388425,0.7914230295821277,0.8058621135747487,smentita,smentita
-A4,S-2 bins >= 2 um from nuclear edge,0.8367556282456909,0.7744951616707406,0.8987097046417543,smentita,smentita
-A4,S-3 StarDist-shaped nuclei only,0.7837398181085684,0.7749667573523333,0.7920479515401391,smentita,smentita
-A5,S-1 ring 4 um,1.2243572278995356,1.1979676353953672,1.2554003941511152,confermata,smentita
-A5,S-2 bins >= 2 um from nuclear edge,1.6441360310024542,1.5786148521971388,1.7211655369131225,confermata,smentita
-A6,S-1 ring 4 um,1.8278783365322055,1.6968027931870093,1.9572942711443262,confermata,smentita
-A6,S-2 bins >= 2 um from nuclear edge,3.9289211912044335,3.322413558543898,4.610548271735636,confermata,smentita
-A6,S-3 StarDist-shaped nuclei only,2.184416726646151,2.021752327762372,2.3781018887477066,confermata,smentita
+archetype,sensitivity,estimate,lo,hi,verdict_as_P1,rule_R1,rule_R3,types
+A1,"P-1 interval: estimate +- 2 SE (post hoc, review F09)",1.0287791994576267,1.004407928312064,1.0531504706031896,confermata,uniforme,,
+A1,"P-1 interval: estimate +- t(4) SE (post hoc, review F09)",1.0287791994576267,0.9949464512178536,1.0626119476973999,confermata,uniforme,,
+A1,S-1 ring 4 um,1.0007281318098245,0.9801872116349879,1.0178753218647585,confermata,uniforme,,
+A1,S-2 bins >= 2 um from nuclear edge,1.1273983073053624,1.011184475073363,1.2812903197786942,indeterminata,indeterminata (uniforme per difetto),,
+A1,"S-4 bins >= 8 um from the ROI edge (post hoc, review F15)",1.0273993485149315,1.0035947681172612,1.045267085536933,confermata,uniforme,,
+A2,"P-1 interval: estimate +- 2 SE (post hoc, review F09)",0.8716413896417798,0.843637569964118,0.8996452093194417,smentita,due densita,,
+A2,"P-1 interval: estimate +- t(4) SE (post hoc, review F09)",0.8716413896417798,0.832765855606337,0.9105169236772227,indeterminata,indeterminata (uniforme per difetto),,
+A2,S-1 ring 4 um,0.84530374149889,0.8209342173570844,0.8706062251100205,smentita,due densita,,
+A2,S-2 bins >= 2 um from nuclear edge,0.8575808559633108,0.8306320651543974,0.8833273603886627,smentita,due densita,,
+A2,"S-4 bins >= 8 um from the ROI edge (post hoc, review F15)",0.8718111510280842,0.8475399524666681,0.8955528807117579,smentita,due densita,,
+A2,"P-4 with the 5 % share among typed cells only (code before review, RV-1/F03)",3.479892761394102,2.9664016231629744,4.12501849112426,,,sopra 1.25,epiteliale normale;epiteliale tumorale;fibroblasti
+A3,"P-1 interval: estimate +- 2 SE (post hoc, review F09)",0.9693565131606272,0.9079457509809932,1.0307672753402612,indeterminata,indeterminata (uniforme per difetto),,
+A3,"P-1 interval: estimate +- t(4) SE (post hoc, review F09)",0.9693565131606272,0.8841047081305718,1.0546083181906827,indeterminata,indeterminata (uniforme per difetto),,
+A3,S-1 ring 4 um,0.9058775525683755,0.8654158241260866,0.942533348871621,indeterminata,indeterminata (uniforme per difetto),,
+A3,S-2 bins >= 2 um from nuclear edge,1.0300995525295509,0.9438080409739908,1.1050706939682031,indeterminata,indeterminata (uniforme per difetto),,
+A3,"S-4 bins >= 8 um from the ROI edge (post hoc, review F15)",0.9661772755092812,0.9097072890856059,1.0232363538436566,confermata,uniforme,,
+A4,"P-1 interval: estimate +- 2 SE (post hoc, review F09)",0.8006120700317855,0.7935854149659656,0.8076387250976054,smentita,due densita,,
+A4,"P-1 interval: estimate +- t(4) SE (post hoc, review F09)",0.8006120700317855,0.790857509000081,0.8103666310634899,smentita,due densita,,
+A4,S-1 ring 4 um,0.7977244376388425,0.7914230295821277,0.8058621135747487,smentita,due densita,,
+A4,S-2 bins >= 2 um from nuclear edge,0.8367556282456909,0.7744951616707406,0.8987097046417543,smentita,due densita,,
+A4,S-3 StarDist-shaped nuclei only,0.7837398181085684,0.7749667573523333,0.7920479515401391,smentita,due densita,,
+A4,"S-4 bins >= 8 um from the ROI edge (post hoc, review F15)",0.7988226770753071,0.7925713833505346,0.8066030788867453,smentita,due densita,,
+A5,"P-1 interval: estimate +- 2 SE (post hoc, review F09)",1.4816073897092088,1.4330489087462963,1.5301658706721213,confermata,due densita,,
+A5,"P-1 interval: estimate +- t(4) SE (post hoc, review F09)",1.4816073897092088,1.4141974113165494,1.5490173681018682,confermata,due densita,,
+A5,S-1 ring 4 um,1.2243572278995356,1.1979676353953672,1.2554003941511152,confermata,due densita,,
+A5,S-2 bins >= 2 um from nuclear edge,1.6441360310024542,1.5786148521971388,1.7211655369131225,confermata,due densita,,
+A5,"S-4 bins >= 8 um from the ROI edge (post hoc, review F15)",1.4895035166177188,1.4480371226505444,1.5320453404705452,confermata,due densita,,
+A6,"P-1 interval: estimate +- 2 SE (post hoc, review F09)",2.0640172884479995,1.8530882962468127,2.274946280649186,confermata,due densita,,
+A6,"P-1 interval: estimate +- t(4) SE (post hoc, review F09)",2.0640172884479995,1.7712009044773553,2.3568336724186434,confermata,due densita,,
+A6,S-1 ring 4 um,1.8278783365322055,1.6968027931870093,1.9572942711443262,confermata,due densita,,
+A6,S-2 bins >= 2 um from nuclear edge,3.9289211912044335,3.322413558543898,4.610548271735636,confermata,due densita,,
+A6,S-3 StarDist-shaped nuclei only,2.184416726646151,2.021752327762372,2.3781018887477066,confermata,due densita,,
+A6,"S-4 bins >= 8 um from the ROI edge (post hoc, review F15)",2.072289409278151,1.8947306994609767,2.249848119095325,confermata,due densita,,

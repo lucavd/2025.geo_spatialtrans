@@ -11,6 +11,8 @@ ARCH = ["A1", "A2", "A3", "A4", "A5", "A6"]; AIDX = {a: i for i, a in enumerate(
 KEYOF = {"A1": "A1", "A2": "A23", "A3": "A23", "A4": "A4", "A5": "A5", "A6": "A6"}
 rng_for = lambda a, q: np.random.default_rng([C.SEED, AIDX[a], q])
 INF = np.inf
+R1LAB = {"confermata": "uniforme", "smentita": "due densita", "indeterminata": "indeterminata (uniforme per difetto)", "non valutabile": "non valutabile"}
+def rule1(lo, hi): return R1LAB[C.verdict(lo, hi, 0.909, 1.1)]
 P1_RANGE = {a: ((1.1, INF) if a in ("A5", "A6") else (0.909, 1.1)) for a in ARCH}
 P4_EXPECT = {"A5": (1.25, INF), "A6": (1.25, INF)}
 
@@ -35,6 +37,8 @@ for f in sorted(glob.glob(f"{OUT}/roi/*_summary.json")):
     r["rho_obs"] = C.density_ratio(u, s); r["rho_shift"] = C.density_ratio(u, ssh); r["rho_star"] = r["rho_obs"] / r["rho_shift"]
     r["rho4_star"] = C.density_ratio(u, b["s4"]) / C.density_ratio(u, b["s4_shift"])
     r["rho_far_star"] = C.density_ratio(u[b["far"]], s[b["far"]]) / C.density_ratio(u[b["far_shift"]], ssh[b["far_shift"]])
+    eok = (b["x_um"] >= 8) & (b["y_um"] >= 8) & (b["x_um"] <= b["side_um"] - 8) & (b["y_um"] <= b["side_um"] - 8)   # S-4 (revisione F15)
+    r["rho_edge_star"] = C.density_ratio(u[eok], s[eok]) / C.density_ratio(u[eok], ssh[eok])
     r["rho_sd_star"] = (C.density_ratio(u, b["s_sd"]) / C.density_ratio(u, b["s_sd_shift"])) if "s_sd" in b.files else float("nan")
     r.update({f"spec_{k}": v for k, v in S["spectrum"].items()})
     r["G3c_all_identical"] = all(v["matrix_identical"] and v["table_identical"] for v in S["G3c"].values())
@@ -76,17 +80,23 @@ for a in ARCH:
     Ra = R[R.archetype == a]
     # P-1 e CP-1 (uno stadio sulle ROI)
     e, lo, hi, _ = C.boot_one_stage(Ra.rho_star.values, rng=rng_for(a, 1))
-    add("P-1", a, e, lo, hi, P1_RANGE[a], C.verdict(lo, hi, *P1_RANGE[a]), rule_R1=C.verdict(lo, hi, 0.909, 1.1), n_roi=len(Ra))
+    add("P-1", a, e, lo, hi, P1_RANGE[a], C.verdict(lo, hi, *P1_RANGE[a]), rule_R1=rule1(lo, hi), n_roi=len(Ra))
+    from scipy import stats as _st
+    v = Ra.rho_star.values; se = v.std(ddof=1) / np.sqrt(len(v))
+    for nm, mult in (("P-1 interval: estimate +- 2 SE (post hoc, review F09)", 2.0), ("P-1 interval: estimate +- t(4) SE (post hoc, review F09)", float(_st.t.ppf(0.975, len(v) - 1)))):
+        sens_rows.append({"archetype": a, "sensitivity": nm, "estimate": float(v.mean()), "lo": float(v.mean() - mult * se), "hi": float(v.mean() + mult * se),
+                          "verdict_as_P1": C.verdict(v.mean() - mult * se, v.mean() + mult * se, *P1_RANGE[a]), "rule_R1": rule1(v.mean() - mult * se, v.mean() + mult * se)})
     e, lo, hi, _ = C.boot_one_stage(Ra.rho_shift.values, rng=rng_for(a, 2))
     add("CP-1", a, e, lo, hi, (0.95, 1.05), "superata" if C.verdict(lo, hi, 0.95, 1.05) == "confermata" else "non superata", n_roi=len(Ra))
     e, lo, hi, _ = C.boot_one_stage(Ra.rho_obs.values, rng=rng_for(a, 3))
     ref(a, "rho_obs nucleus/ring UMI per bin (uncorrected)", e, lo, hi, "mean of ROIs, bootstrap ROIs")
-    for qi, (col, nm) in enumerate((("rho4_star", "S-1 ring 4 um"), ("rho_far_star", "S-2 bins >= 2 um from nuclear edge"), ("rho_sd_star", "S-3 StarDist-shaped nuclei only"))):
+    for qi, (col, nm) in enumerate((("rho4_star", "S-1 ring 4 um"), ("rho_far_star", "S-2 bins >= 2 um from nuclear edge"), ("rho_sd_star", "S-3 StarDist-shaped nuclei only"),
+                                   ("rho_edge_star", "S-4 bins >= 8 um from the ROI edge (post hoc, review F15)"))):
         v = Ra[col].values
         if np.all(np.isnan(v)): continue
         e, lo, hi, _ = C.boot_one_stage(v, rng=rng_for(a, 10 + qi))
         sens_rows.append({"archetype": a, "sensitivity": nm, "estimate": e, "lo": lo, "hi": hi, "verdict_as_P1": C.verdict(lo, hi, *P1_RANGE[a]),
-                          "rule_R1": C.verdict(lo, hi, 0.909, 1.1)})
+                          "rule_R1": rule1(lo, hi)})
     # descrittivi per bin (uno stadio)
     for qi, col in enumerate(["mean_umi2", "median_umi2", "q90_umi2", "q99_umi2", "cv_umi2", "frac_empty2", "mean_umi8", "median_umi8", "q90_umi8",
                               "q99_umi8", "cv_umi8", "frac_empty8", "mean_genes2", "mean_genes8", "sparsity2", "sparsity8",
@@ -110,34 +120,43 @@ for a in ARCH:
     Call = CE[CE.archetype == a]
     n_over = int((Call.umi_exp > 50000).sum())
     add("P-3", a, n_over, n_over, n_over, (0, 0), "confermata" if n_over == 0 else "smentita", max_cell_umi=float(Call.umi_exp.max()), n_cells=int(len(Call)))
-    # P-4 (due stadi: ROI, poi cellule; tipi con >= 5 % delle cellule interne tipizzate)
+    # P-4 (due stadi: ROI, poi cellule). Tipi con >= 5 % dei nuclei interni (denominatore: tutti i nuclei interni, come pre-registrato;
+    # correzione RV-1/F03 della revisione); sensibilita': quota fra le sole cellule tipizzate (versione del codice prima della revisione).
     Ct = Ca[~Ca.cell_type.isin(list(C.NON_TYPES) + ["missing"])]
-    share = Ct.cell_type.value_counts(normalize=True)
-    tsel = sorted(share[share >= C.MIN_TYPE_FRAC].index)
-    for t in sorted(share.index):
+    share_all = Ca.cell_type.value_counts(normalize=True); share_typed = Ct.cell_type.value_counts(normalize=True)
+    for t in sorted(share_typed.index):
         gt = [g[g.cell_type == t].umi_exp.to_numpy(float) for _, g in Ct.groupby("roi_id")]
         gt = [x for x in gt if len(x)]
-        e, lo, hi, _ = C.boot_two_stage(gt, np.median, B=C.B, rng=rng_for(a, 300 + sorted(share.index).index(t)))
+        e, lo, hi, _ = C.boot_two_stage(gt, np.median, B=C.B, rng=rng_for(a, 300 + sorted(share_typed.index).index(t)))
         dt = [(g[g.cell_type == t].umi_exp / g[g.cell_type == t].n_bins_exp.clip(lower=1)).to_numpy(float) for _, g in Ct.groupby("roi_id")]
         dt = [x for x in dt if len(x)]
-        ed, lod, hid, _ = C.boot_two_stage(dt, np.median, B=C.B, rng=rng_for(a, 400 + sorted(share.index).index(t)))
-        types_rows.append({"archetype": a, "cell_type": t, "share": float(share[t]), "n_cells": int((Ct.cell_type == t).sum()), "in_P4": t in tsel,
-                           "median_umi_cell": e, "lo": lo, "hi": hi, "median_umi_per_bin": ed, "lo_per_bin": lod, "hi_per_bin": hid})
-    per_roi = [(g.umi_exp.to_numpy(float), g.cell_type.to_numpy()) for _, g in Ct[Ct.cell_type.isin(tsel)].groupby("roi_id")]
-    def ratio_stat(u, t):
-        med = [np.median(u[t == k]) for k in tsel if (t == k).any()]
-        return max(med) / min(med) if len(med) == len(tsel) and min(med) > 0 else np.nan
-    est4 = ratio_stat(np.concatenate([x[0] for x in per_roi]), np.concatenate([x[1] for x in per_roi]))
-    rg = rng_for(a, 4); reps = np.empty(C.B)
-    for bb in range(C.B):
-        pick = rg.integers(0, len(per_roi), len(per_roi)); us, ts = [], []
-        for j in pick:
-            uu, tt = per_roi[j]; ii = rg.integers(0, len(uu), len(uu)); us.append(uu[ii]); ts.append(tt[ii])
-        reps[bb] = ratio_stat(np.concatenate(us), np.concatenate(ts))
-    lo4, hi4 = float(np.nanpercentile(reps, 2.5)), float(np.nanpercentile(reps, 97.5))
-    rule3 = {"confermata": "sopra 1.25", "smentita": "sotto 1.25", "indeterminata": "a cavallo di 1.25"}.get(C.verdict(lo4, hi4, 1.25, INF), "non valutabile")
+        ed, lod, hid, _ = C.boot_two_stage(dt, np.median, B=C.B, rng=rng_for(a, 400 + sorted(share_typed.index).index(t)))
+        types_rows.append({"archetype": a, "cell_type": t, "share": float(share_all[t]), "share_typed": float(share_typed[t]), "n_cells": int((Ct.cell_type == t).sum()),
+                           "in_P4": bool(share_all[t] >= C.MIN_TYPE_FRAC), "median_umi_cell": e, "lo": lo, "hi": hi,
+                           "median_umi_per_bin": ed, "lo_per_bin": lod, "hi_per_bin": hid})
+    def p4(tsel, q):
+        per_roi = [(g.umi_exp.to_numpy(float), g.cell_type.to_numpy()) for _, g in Ct[Ct.cell_type.isin(tsel)].groupby("roi_id")]
+        def ratio_stat(u, t):
+            med = [np.median(u[t == k]) for k in tsel if (t == k).any()]
+            return max(med) / min(med) if len(med) == len(tsel) and min(med) > 0 else np.nan
+        est = ratio_stat(np.concatenate([x[0] for x in per_roi]), np.concatenate([x[1] for x in per_roi]))
+        rg = rng_for(a, q); reps = np.empty(C.B)
+        for bb in range(C.B):
+            pick = rg.integers(0, len(per_roi), len(per_roi)); us, ts = [], []
+            for j in pick:
+                uu, tt = per_roi[j]; ii = rg.integers(0, len(uu), len(uu)); us.append(uu[ii]); ts.append(tt[ii])
+            reps[bb] = ratio_stat(np.concatenate(us), np.concatenate(ts))
+        return est, float(np.nanpercentile(reps, 2.5)), float(np.nanpercentile(reps, 97.5)), int(np.isnan(reps).sum())
+    R3 = {"confermata": "sopra 1.25", "smentita": "sotto 1.25", "indeterminata": "a cavallo di 1.25"}
+    tsel = sorted(t for t in share_typed.index if share_all[t] >= C.MIN_TYPE_FRAC)
+    est4, lo4, hi4, nn = p4(tsel, 4)
     add("P-4", a, est4, lo4, hi4, P4_EXPECT.get(a), C.verdict(lo4, hi4, *P4_EXPECT[a]) if a in P4_EXPECT else "nessuna attesa",
-        rule_R3=rule3, types=";".join(tsel), n_nan_reps=int(np.isnan(reps).sum()))
+        rule_R3=R3.get(C.verdict(lo4, hi4, 1.25, INF), "non valutabile"), types=";".join(tsel), n_nan_reps=nn)
+    tsel_t = sorted(share_typed[share_typed >= C.MIN_TYPE_FRAC].index)
+    if tsel_t != tsel:
+        e_, l_, h_, _ = p4(tsel_t, 7)
+        sens_rows.append({"archetype": a, "sensitivity": "P-4 with the 5 % share among typed cells only (code before review, RV-1/F03)", "estimate": e_, "lo": l_, "hi": h_,
+                          "verdict_as_P1": "", "rule_R1": "", "rule_R3": R3.get(C.verdict(l_, h_, 1.25, INF), "non valutabile"), "types": ";".join(tsel_t)})
     # P-2 e CP-2 (due stadi: ROI, poi cellule tramite le repliche salvate)
     tags = sorted(t for t in p2_all if t.startswith(a + "_"))
     for kind, pid in (("obs", "P-2"), ("drop", "CP-2")):

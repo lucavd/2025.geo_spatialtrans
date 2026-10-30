@@ -83,6 +83,7 @@ b5895942141202aa7a8770be1297cb07  /mnt/micron/geo_spatialtrans/R3b/nuclei/A4_p3_
 f9f42e96aa47c8c845cca1aefe134c73  /mnt/micron/geo_spatialtrans/R3b/nuclei/A6_r3_consensus_native.parquet
 277960ad6fc2154ee02172966b2c9452  /mnt/micron/geo_spatialtrans/R3b/nuclei/A6_r4_consensus_native.parquet
 57bb13f7e29954c34662fb96b74dc7c7  /mnt/micron/geo_spatialtrans/R3b/nuclei/A6_r5_consensus_native.parquet
+c9288e5bae4e78538605fa74ad40fb91  /mnt/micron/geo_spatialtrans/R6/counts/A1_genes.tsv
 f49e8a0ebdd2d24ce6b377e789c4ec4e  /mnt/micron/geo_spatialtrans/R6/counts/A1_r1_exp.npz
 719f1e4f7e5f7c7e9fc4713c42b47e12  /mnt/micron/geo_spatialtrans/R6/counts/A1_r1_nuclei.parquet
 058f53fe4e0cee7224e7fae9ddd381a8  /mnt/micron/geo_spatialtrans/R6/counts/A1_r1_nuc.npz
@@ -103,6 +104,7 @@ b51702483118f8c15808e5c9fe730f3e  /mnt/micron/geo_spatialtrans/R6/counts/A1_r4_s
 a037b36ef80d784bd049a1d74b5646fb  /mnt/micron/geo_spatialtrans/R6/counts/A1_r5_nuclei.parquet
 139e8788ae7b2bdd87bb5a5dffa45d75  /mnt/micron/geo_spatialtrans/R6/counts/A1_r5_nuc.npz
 de2f4a95fcd409ec749cbe27fa1cc487  /mnt/micron/geo_spatialtrans/R6/counts/A1_r5_shift.npz
+0eb83b6cb775fe85129c82d7d75bb233  /mnt/micron/geo_spatialtrans/R6/counts/A23_genes.tsv
 13d0df720e7edc5f829424d6765569de  /mnt/micron/geo_spatialtrans/R6/counts/A2_r1_exp.npz
 3c270eb84080f462b9165fbc699cd935  /mnt/micron/geo_spatialtrans/R6/counts/A2_r1_nuclei.parquet
 3b4978807ffbb04c6a3896ac060bf331  /mnt/micron/geo_spatialtrans/R6/counts/A2_r1_nuc.npz
@@ -151,6 +153,7 @@ dd4959498e29710a92ebc6d76c1667a6  /mnt/micron/geo_spatialtrans/R6/counts/A4_f2_e
 f88e5cdfec9c9967f2bbceb5e6bac565  /mnt/micron/geo_spatialtrans/R6/counts/A4_f2_nuclei.parquet
 3dfbb2ad8beea8678a7293ac9264eba4  /mnt/micron/geo_spatialtrans/R6/counts/A4_f2_nuc.npz
 63123a99749f0155d1694edd0e88472a  /mnt/micron/geo_spatialtrans/R6/counts/A4_f2_shift.npz
+0eb83b6cb775fe85129c82d7d75bb233  /mnt/micron/geo_spatialtrans/R6/counts/A4_genes.tsv
 f44fb6661754ee3c3375d1648ce078cc  /mnt/micron/geo_spatialtrans/R6/counts/A4_p1_exp.npz
 928bff86e7dc393c1d6418ffd7fe3ebd  /mnt/micron/geo_spatialtrans/R6/counts/A4_p1_nuclei.parquet
 0ef8ea53f5312d1f534c23a841b0ead6  /mnt/micron/geo_spatialtrans/R6/counts/A4_p1_nuc.npz
@@ -163,6 +166,7 @@ f13c5c55cc1f9841e32eff56be1de27a  /mnt/micron/geo_spatialtrans/R6/counts/A4_p3_e
 70ad8ff007331e0fbac11e7524441e2e  /mnt/micron/geo_spatialtrans/R6/counts/A4_p3_nuclei.parquet
 a323f8985a7f8b6410f40d94f9bae8b8  /mnt/micron/geo_spatialtrans/R6/counts/A4_p3_nuc.npz
 ca8994b66b80b6ad792a7107821aa04b  /mnt/micron/geo_spatialtrans/R6/counts/A4_p3_shift.npz
+9a966f1eee52e0bfe25c9ff599596832  /mnt/micron/geo_spatialtrans/R6/counts/A5_genes.tsv
 3e4d38c32bde78fc0ba27098f0762d9f  /mnt/micron/geo_spatialtrans/R6/counts/A5_r1_exp.npz
 85d8456ba6cfb098ff548be40b9d673f  /mnt/micron/geo_spatialtrans/R6/counts/A5_r1_nuclei.parquet
 e31d1a8763b0d71463ec2d1f7e03937f  /mnt/micron/geo_spatialtrans/R6/counts/A5_r1_nuc.npz
@@ -183,6 +187,7 @@ c8b5c20ba8a810ea8166cc0b10e72c0c  /mnt/micron/geo_spatialtrans/R6/counts/A5_r3_s
 de665a8102bddb1811705f0b6a0a4957  /mnt/micron/geo_spatialtrans/R6/counts/A5_r5_nuclei.parquet
 a06af7fe1bde29ec1d5361851fdf1e71  /mnt/micron/geo_spatialtrans/R6/counts/A5_r5_nuc.npz
 743ca168a75112b7aba6e30347bb7f5b  /mnt/micron/geo_spatialtrans/R6/counts/A5_r5_shift.npz
+0c240d02589156e7c6bbd83f24524c4d  /mnt/micron/geo_spatialtrans/R6/counts/A6_genes.tsv
 ab126d77b0d30bdfd97bb6033770be5e  /mnt/micron/geo_spatialtrans/R6/counts/A6_r1_exp.npz
 6ce7870fc56605d9aa5e7194a06e4f56  /mnt/micron/geo_spatialtrans/R6/counts/A6_r1_nuclei.parquet
 bf2d8774abbacba760791962d4375e3c  /mnt/micron/geo_spatialtrans/R6/counts/A6_r1_nuc.npz
