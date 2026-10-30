@@ -19,3 +19,4 @@ Scritti prima del protocollo v2; restano come sono fino alla migrazione (step DO
 * [SPATIAL_TRANSCRIPTOMICS_VALIDATION_GUIDE.md](SPATIAL_TRANSCRIPTOMICS_VALIDATION_GUIDE.md) - Guida alla validazione dei dati di trascrittomica spaziale.
 * [sessions](sessions/) - Note di sessione fino a R2c (protocollo v1).
 * [superpowers](superpowers/) - Design dello Step 1 (specifiche) e materiali collegati.
+* [legacy](legacy/) - README e CLAUDE.md del 2025 (pipeline di espressione precedente), conservati per provenienza (S1.6b).
