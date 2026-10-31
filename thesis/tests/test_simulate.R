@@ -30,3 +30,7 @@ ok(rmse(tr, tr) == 0 && jsd(tr, tr) == 0, "metrics are 0 on the truth")
 ok(abs(jsd(rbind(c(1, 0)), rbind(c(0, 1))) - 1) < 1e-12, "JSD of disjoint compositions = 1 (base 2)")
 e <- tr; e[1, ] <- NA; e[2, ] <- e[2, ] * 2
 ok(identical(unname(which(failed_spots(e))), 1:2), "failures: NA rows and sums != 1")
+set.seed(2)
+p <- c(A = 0.8, B = 0.15, C = 0.05)
+cv <- draw_compositions(4000, 10, types, alpha = 3 * p)   # alpha_k = K * p_k
+ok(all(abs(colMeans(cv / 10) - p) < 0.02), "vector alpha: mean composition = training shares")

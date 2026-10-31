@@ -3,11 +3,14 @@
 # by the anchor (common random numbers, ADEMP §2.4); only μ changes between arms.
 
 # Spot compositions: π_s ~ Dirichlet(alpha) over the spot types, then n_cells cells drawn
-# multinomially (Open Problems spatial-decomposition simulator, alpha = 1 by default).
-# Returns a spots x types matrix of cell counts; the truth is counts / n_cells.
+# multinomially (as in the Open Problems spatial-decomposition simulator). alpha is one value
+# (symmetric) or one value per type, e.g. alpha_k = K * p_k with p_k the training share of type k
+# (ADEMP §2.2, Pierangela 2026-10-31). Returns a spots x types matrix of cell counts; the truth is
+# counts / n_cells.
 draw_compositions <- function(n_spots, n_cells, types, alpha = 1) {
   k <- length(types)
-  g <- matrix(rgamma(n_spots * k, shape = alpha), n_spots, k)
+  alpha <- rep_len(alpha, k)
+  g <- matrix(rgamma(n_spots * k, shape = rep(alpha, each = n_spots)), n_spots, k)
   p <- g / rowSums(g)
   cnt <- t(vapply(seq_len(n_spots), function(s) as.vector(rmultinom(1, n_cells, p[s, ])), numeric(k)))
   dimnames(cnt) <- list(sprintf("spot%04d", seq_len(n_spots)), types)
@@ -71,6 +74,7 @@ anchor_spots <- function(held, held_type, comp) {
 
 # Depth: a spot above the target is thinned at random (binomial, each UMI kept with probability
 # target / total), as synthspot and Open Problems downsample; a spot below the target is kept.
+# The target is cells per spot x UMI per cell (ADEMP §2.2), so depth and cells per spot stay crossed.
 thin_to_depth <- function(x, target) {
   x <- methods::as(x, "CsparseMatrix")
   tot <- Matrix::colSums(x)

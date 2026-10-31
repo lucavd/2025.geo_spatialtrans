@@ -7,8 +7,11 @@
 #   arms E and C− (one new gene permutation per replicate), plus the real anchor (built from the
 #   pilot held-out donor), because n_sim takes the largest SD across the design (ADEMP §6) and
 #   the anchor is part of every condition;
-#   cells per spot 5 / 15; depth 10,000 / 20,000 UMI per spot (spots above are thinned);
-#   composition Dirichlet(alpha = 1) over the spot types, cells drawn multinomially;
+#   cells per spot 2 / 10 (synthspot bounds; 2 = Visium HD 8 um bin, 10 = standard Visium);
+#   depth per cell 175 / 4,900 UMI (10x Visium HD and standard Visium colorectal datasets, Space
+#   Ranger metrics); spot target = cells x UMI per cell, spots above are thinned (Pierangela 2026-10-31);
+#   composition Dirichlet(alpha_k = K * p_k), p_k = share of spot type k among training cells, then
+#   cells drawn multinomially (Pierangela 2026-10-31);
 #   500 spots per dataset; 10 replicates per condition;
 #   methods RCTD (full), spatialDWLS, MuSiC, NNLS on the training reference (<= 1,000 cells/type).
 # Seeds: one pilot seed (20261101), L'Ecuyer-CMRG; one stream per replicate job, one sub-stream
@@ -17,7 +20,9 @@
 # Pre-registered checks (written 2026-10-30 before the first run; stop if one fails):
 #   C1. truth: rows sum to 1, zero for reference types absent from the spots;
 #   C2. every dataset of a job has 500 spots and the same composition (common random numbers);
-#   C3. after thinning, no spot exceeds the target by more than 5% (binomial thinning is not exact);
+#   C3. after thinning, no spot exceeds the target by more than 5% + 50 UMI (binomial thinning is
+#       not exact, and small targets such as 350 UMI vary relatively more; margin set 2026-10-31,
+#       before any run);
 #   C4. C− μ has the same column sums as E μ;
 #   C5. no reference cell comes from the pilot held-out donor.
 # Reported: run time per method; failures per method x dataset (ADEMP §7.2); RNG state after each
@@ -40,12 +45,13 @@ out_dir <- file.path(data_dir, "derived", "pilot", tissue)
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 n_spots <- 500
-alpha <- 1
-levels_cells <- c(5, 15)
-levels_depth <- c(10000, 20000)
+levels_cells <- c(2, 10)
+levels_depth <- c(175, 4900)   # UMI per cell; spot target = n_cells x depth
 pilot_seed <- 20261101
 
 R0 <- readRDS(ref_file)
+n_train <- lengths(R0$L_by_type[R0$types_spot])          # training cells per spot type
+alpha <- length(n_train) * n_train / sum(n_train)          # alpha_k = K * p_k
 if (any(R0$ref_meta$donor_id %in% R0$donors$heldout)) stop("C5: held-out donor in the reference")
 
 grid <- expand.grid(rep = seq_len(n_rep), depth = levels_depth, n_cells = levels_cells)
@@ -57,11 +63,12 @@ for (i in seq_len(nrow(grid))) { grid$seed[[i]] <- s; s <- parallel::nextRNGStre
 
 run_job <- function(i) {
   g <- grid[i, ]
-  f <- file.path(out_dir, sprintf("c%02d_d%05d_r%02d.rds", g$n_cells, g$depth, g$rep))
+  f <- file.path(out_dir, sprintf("c%02d_d%04d_r%02d.rds", g$n_cells, g$depth, g$rep))
   if (file.exists(f)) return(f)
   R <- R0
   assign(".Random.seed", g$seed[[1]], envir = .GlobalEnv)
   ts <- R$types_spot
+  target <- g$n_cells * g$depth
   comp <- draw_compositions(n_spots, g$n_cells, ts, alpha)
   cells <- draw_cells(comp, R$L_by_type[ts])
   truth <- matrix(0, n_spots, length(R$types_ref), dimnames = list(rownames(comp), R$types_ref))
@@ -73,12 +80,12 @@ run_job <- function(i) {
   held_ok <- R$held_meta$cell_type %in% ts
   anc <- anchor_spots(R$held[, held_ok], R$held_meta$cell_type[held_ok], comp)
   data <- list(
-    E = thin_to_depth(simulate_arm(mu_E, R$phi, cells, rownames(comp)), g$depth),
-    Cminus = thin_to_depth(simulate_arm(mu_C, R$phi, cells, rownames(comp)), g$depth),
-    anchor = thin_to_depth(anc$counts, g$depth))
+    E = thin_to_depth(simulate_arm(mu_E, R$phi, cells, rownames(comp)), target),
+    Cminus = thin_to_depth(simulate_arm(mu_C, R$phi, cells, rownames(comp)), target),
+    anchor = thin_to_depth(anc$counts, target))
   for (d in names(data)) {
     if (ncol(data[[d]]) != n_spots) stop("C2: ", d)
-    if (max(Matrix::colSums(data[[d]])) > 1.05 * g$depth) stop("C3: ", d)
+    if (max(Matrix::colSums(data[[d]])) > 1.05 * target + 50) stop("C3: ", d)   # +50: binomial noise on small targets
   }
   ms <- g$seed[[1]]
   rows <- list(); props <- list()

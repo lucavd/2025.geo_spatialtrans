@@ -25,7 +25,8 @@
 #   4. φ: finite, >= 0, one per kept gene;
 #   5. reference: each type has min(ref_cap, n training cells) cells; held-out cells all from one donor.
 # Reported, not a stop: kept genes, φ range, library sizes, sums of n random training L
-# (can a spot of 5 / 15 cells reach the depth targets 10,000 / 20,000?), reuse per held-out cell.
+# (how often a spot of 2 / 10 cells is below its target = cells x 175 / 4,900 UMI, i.e. not thinned),
+# reuse per held-out cell.
 #
 # Settings (Pierangela, 2026-10-30): method reference capped at 1,000 cells per type.
 # φ: 20,000 training cells per tissue, stratified by type (DECISIONS 2026-10-29, refined 2026-10-30).
@@ -158,14 +159,29 @@ held <- take(held_rows); colnames(held) <- paste0("c", held_rows)
 held_meta <- cells[match(held_rows, cells$row), c("row", "donor_id", "cell_type")]
 if (length(unique(held_meta$donor_id)) != 1) stop("Check 5: held-out cells from more than one donor")
 
-# φ_g with glmGamPoi (~ cell_type + donor, L as size factor)
+# φ_g with glmGamPoi (~ cell_type + donor, L as size factor). Each gene is fitted on its own, so
+# the genes are split into chunks fitted in parallel; without shrinkage across genes
+# (overdispersion_shrinkage = FALSE: the raw per-gene φ is used) the result equals one single fit.
+# Workers: environment variable TESI_WORKERS (default: cores - 2, at most 30; server limit 32).
 t_phi <- proc.time()[["elapsed"]]
 Y <- as.matrix(take(phi_rows))
 cd <- data.frame(type = factor(cells$cell_type[match(phi_rows, cells$row)]),
                  donor = factor(cells$donor_id[match(phi_rows, cells$row)]))
-fit <- glmGamPoi::glm_gp(Y, design = ~ type + donor, col_data = cd, size_factors = L[phi_rows])
-phi <- setNames(fit$overdispersions, gk)
-rm(Y, fit); invisible(gc())
+sf <- L[phi_rows]
+workers <- as.integer(Sys.getenv("TESI_WORKERS", min(30, parallel::detectCores() - 2)))
+chunks <- split(seq_len(nrow(Y)), cut(seq_len(nrow(Y)), workers * 4, labels = FALSE))
+cat(sprintf("  fitting φ: %d genes x %d cells, %d coefficients, %d workers
+", nrow(Y), ncol(Y),
+            nlevels(cd$type) + nlevels(cd$donor) - 1, workers))
+cl <- parallel::makeCluster(workers)
+parallel::clusterCall(cl, function(lib) { .libPaths(lib); NULL }, .libPaths())
+phi_chunks <- parallel::parLapplyLB(cl, lapply(chunks, function(i) Y[i, , drop = FALSE]),
+  function(y, cd, sf) glmGamPoi::glm_gp(y, design = ~ type + donor, col_data = cd, size_factors = sf,
+                                        overdispersion_shrinkage = FALSE)$overdispersions,
+  cd = cd, sf = sf)
+parallel::stopCluster(cl)
+phi <- setNames(unlist(phi_chunks, use.names = FALSE), gk)
+rm(Y, phi_chunks); invisible(gc())
 if (length(phi) != length(gk) || any(!is.finite(phi)) || any(phi < 0)) stop("Check 4: φ")
 cat(sprintf("  φ on %d cells in %.1f min; median %.2f, IQR %.2f–%.2f\n", length(phi_rows),
             (proc.time()[["elapsed"]] - t_phi) / 60, median(phi), quantile(phi, .25), quantile(phi, .75)))
@@ -173,13 +189,14 @@ cat(sprintf("  φ on %d cells in %.1f min; median %.2f, IQR %.2f–%.2f\n", leng
 # Reports for the factor levels (ADEMP §2.2) and the anchor reuse (§2.2 note)
 set.seed(ref_seed + 1)
 Ls <- unlist(L_by_type[types_spot])
-for (n in c(5, 15)) {
+for (n in c(2, 10)) {
   s <- replicate(10000, sum(sample(Ls, n, replace = TRUE)))
-  cat(sprintf("  sum of %2d training library sizes (spot types): median %s; < 10,000: %.0f%%; < 20,000: %.0f%%\n",
-              n, format(round(median(s)), big.mark = ","), 100 * mean(s < 1e4), 100 * mean(s < 2e4)))
+  cat(sprintf("  sum of %2d training library sizes (spot types): median %s; below target %s: %.0f%%; below target %s: %.0f%%\n",
+              n, format(round(median(s)), big.mark = ","), format(n * 175, big.mark = ","), 100 * mean(s < n * 175),
+              format(n * 4900, big.mark = ","), 100 * mean(s < n * 4900)))
 }
 held_spot <- sum(held_meta$cell_type %in% types_spot)
-for (n in c(5, 15)) cat(sprintf("  anchor, 500 spots x %d cells: each held-out cell used %.1f times on average per replicate (%d cells)\n",
+for (n in c(2, 10)) cat(sprintf("  anchor, 500 spots x %d cells: each held-out cell used %.1f times on average per replicate (%d cells)\n",
                                 n, 500 * n / held_spot, held_spot))
 cat(sprintf("  library size per cell (training): median %s, IQR %s–%s\n",
             format(round(median(L[cells$row[cells$role == "train"]])), big.mark = ","),
