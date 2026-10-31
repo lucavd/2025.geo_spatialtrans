@@ -1,0 +1,6 @@
+dataset,grid,frac_in_tissue,tissue_mm2,glass_ge50um_mm2,edge_len_mm,edge_len_glass100_mm,frac_array_border_in_tissue,n_holes_sr,n_holes_ge100um2,n_holes_ge2500um2
+Visium_HD_Mouse_Small_Intestine,3350x3350,0.4883,21.92,17.61,173.3,45.4,0.0,25,25,24
+Visium_HD_Human_Colon_Cancer,3350x3350,0.7285,32.7,8.39,103.9,33.7,0.513,9,8,7
+Visium_HD_Human_Lymph_Node_FFPE,3350x3350,0.4885,21.93,17.2,149.5,49.5,0.193,14,14,12
+Visium_HD_6p5mm_Mouse_Brain,3350x3350,0.5652,25.37,16.96,59.1,33.9,0.004,12,12,4
+Visium_HD_6p5mm_Human_Heart,3350x3350,0.9459,42.46,1.25,35.9,12.7,0.843,9,9,8

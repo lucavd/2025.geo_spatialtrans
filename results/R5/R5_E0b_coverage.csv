@@ -1,0 +1,6 @@
+dataset,img,n_bins,n_raw,frac_all_in_img,frac_out_tissue_in_img,cols
+Visium_HD_Mouse_Small_Intestine,21943x23618,11222500,7111371,0.8649,0.7361,"barcode,in_tissue,array_row,array_col,pxl_row_in_fullres,pxl_col_in_fullres"
+Visium_HD_Human_Colon_Cancer,48740x75250,11222500,11222500,0.9212,0.7195,"barcode,in_tissue,array_row,array_col,pxl_row_in_fullres,pxl_col_in_fullres"
+Visium_HD_Human_Lymph_Node_FFPE,26128x28248,11222500,11222500,0.9657,0.9358,"barcode,in_tissue,array_row,array_col,pxl_row_in_fullres,pxl_col_in_fullres"
+Visium_HD_6p5mm_Mouse_Brain,22074x22354,11222500,11222500,0.819,0.5848,"barcode,in_tissue,array_row,array_col,pxl_row_in_fullres,pxl_col_in_fullres"
+Visium_HD_6p5mm_Human_Heart,49099x39139,11222500,11222500,1.0,1.0,"barcode,in_tissue,array_row,array_col,pxl_row_in_fullres,pxl_col_in_fullres"
