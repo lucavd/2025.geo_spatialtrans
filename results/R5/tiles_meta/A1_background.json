@@ -1,0 +1,13 @@
+{
+ "dataset": "Visium_HD_Mouse_Small_Intestine",
+ "b_far": 0.16145222298215922,
+ "n_bins": 1802781,
+ "rule": "distance >= 300 um",
+ "median_distance_um": 502.4937810560445,
+ "b_far_by_parity": [
+  0.13195642628084292,
+  0.21329805167151678,
+  0.11507840504278152,
+  0.1854690836763054
+ ]
+}

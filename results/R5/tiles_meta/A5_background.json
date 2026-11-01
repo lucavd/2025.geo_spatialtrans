@@ -1,0 +1,13 @@
+{
+ "dataset": "Visium_HD_6p5mm_Mouse_Brain",
+ "b_far": 0.3086890909119761,
+ "n_bins": 1260362,
+ "rule": "distance >= 300 um",
+ "median_distance_um": 402.0,
+ "b_far_by_parity": [
+  0.28716070385699416,
+  0.3389582619509905,
+  0.2762135182504001,
+  0.33239301648145914
+ ]
+}

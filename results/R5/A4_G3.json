@@ -1,0 +1,43 @@
+{
+ "dataset": "Visium_HD_Human_Lymph_Node_FFPE",
+ "n_features_raw": 39125,
+ "n_features_filtered": 18132,
+ "panel_subset_of_raw": true,
+ "G3a_as_written_all_raw_features_equal": false,
+ "G3a_as_written_n_bins_differing": 408027,
+ "G3a_as_written_umi_in_tissue_raw_all": 26637885,
+ "G3a_as_written_umi_in_tissue_filtered": 26150424,
+ "grid": [
+  3350,
+  3350
+ ],
+ "n_bins_positions": 11222500,
+ "n_barcodes_raw": 11222500,
+ "n_barcodes_filtered": 5482441,
+ "feature_types": [
+  "Gene Expression"
+ ],
+ "umi_raw_total": 26428039,
+ "umi_grid_total": 26428039,
+ "raw_barcodes_not_in_positions": 0,
+ "G3a_raw_equals_filtered_in_tissue": true,
+ "G3a_filtered_all_in_tissue": true,
+ "G3b_n_8um_bins_differing": 0,
+ "n_8um_bins": 702244,
+ "affine_M": [
+  [
+   -7.304871817283157,
+   0.01152554441595477
+  ],
+  [
+   0.01148688410595585,
+   7.305363829627999
+  ]
+ ],
+ "affine_t": [
+  24720.489732938586,
+  -853.8409774564512
+ ],
+ "affine_max_residual_px": 0.8202762255650669,
+ "elapsed_s": 228.5
+}

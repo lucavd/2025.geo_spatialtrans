@@ -1,0 +1,43 @@
+{
+ "dataset": "Visium_HD_Human_Colon_Cancer",
+ "n_features_raw": 39125,
+ "n_features_filtered": 18132,
+ "panel_subset_of_raw": true,
+ "G3a_as_written_all_raw_features_equal": false,
+ "G3a_as_written_n_bins_differing": 2707020,
+ "G3a_as_written_umi_in_tissue_raw_all": 274706421,
+ "G3a_as_written_umi_in_tissue_filtered": 269456396,
+ "grid": [
+  3350,
+  3350
+ ],
+ "n_bins_positions": 11222500,
+ "n_barcodes_raw": 11222500,
+ "n_barcodes_filtered": 8176117,
+ "feature_types": [
+  "Gene Expression"
+ ],
+ "umi_raw_total": 272612275,
+ "umi_grid_total": 272612275,
+ "raw_barcodes_not_in_positions": 0,
+ "G3a_raw_equals_filtered_in_tissue": true,
+ "G3a_filtered_all_in_tissue": true,
+ "G3b_n_8um_bins_differing": 0,
+ "n_8um_bins": 702244,
+ "affine_M": [
+  [
+   -7.303705041736116,
+   0.09637930748208312
+  ],
+  [
+   0.09626543050559011,
+   7.302874125894437
+  ]
+ ],
+ "affine_t": [
+  22375.088046889094,
+  40591.57881335037
+ ],
+ "affine_max_residual_px": 0.9384784053145268,
+ "elapsed_s": 224.5
+}

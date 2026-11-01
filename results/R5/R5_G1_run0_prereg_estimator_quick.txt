@@ -1,0 +1,105 @@
+PASS  T1 kernel sums to 1 (1.0, 1.0, 0.0, 30.0)  sum=1.00000000
+PASS  T1 kernel sums to 1 (2.0, 3.0, 0.05, 30.0)  sum=1.00000000
+PASS  T1 kernel sums to 1 (0.5, 0.5, 0.2, 80.0)  sum=1.00000000
+PASS  T2 half-plane blur matches Phi, sigma=0.5  max err=4.35e-03 tol=5e-03
+PASS  T2 half-plane blur matches Phi, sigma=2.0  max err=4.98e-04 tol=1e-03
+PASS  T3 shift delta = source moved by +delta  max err=1.09e-12
+PASS  T4 fit_ab recovers a, b on exact data  a=1.700000 b=0.250000
+PASS  T9 parity factors recovered within 3 %  est=[0.595, 0.996, 0.9, 1.508] max rel err=0.008
+PASS  T8 bootstrap reproducible with seed  (-0.13689968075963302, -0.5860977522601442, 0.3091327496291918)
+PASS  T7 nucleus/ring ratio inverted, r=0.7  r_hat=0.6960 rel err=-0.0057
+PASS  T7 nucleus/ring ratio inverted, r=1.0  r_hat=1.0220 rel err=+0.0220
+PASS  T7 nucleus/ring ratio inverted, r=2.0  r_hat=1.9833 rel err=-0.0084
+PASS  T7 nucleus/ring ratio inverted, r=4.0  r_hat=4.0474 rel err=+0.0119
+PASS  T7 module blur equals reference real-space blur  max rel diff=0.0109
+PASS  T5 sigma recovered [blob K2 sigma=(2.0,2.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.068 tol=0.250 sd=0.014
+FAIL  T5 w recovered [blob K2 sigma=(2.0,2.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=+0.0954 sd=0.0090
+PASS  T5 delta dr recovered [blob K2 sigma=(2.0,2.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.239 sd=0.577
+PASS  T5 delta dc recovered [blob K2 sigma=(2.0,2.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=+0.231 sd=0.486
+PASS  T6 K3 sigma_r recovered [blob K3 sigma=(2.0,2.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.186 tol=0.250 sd=0.191
+PASS  T6 K3 sigma_c recovered [blob K3 sigma=(2.0,2.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.075 tol=0.250 sd=0.125
+PASS  T6 K3 ratio sigma_r/sigma_c [blob K3 sigma=(2.0,2.0) w=0.05 delta=(0.0,0.0) n=2]  ratio=0.947 true=1.000
+PASS  T6 K3 sigma_r recovered [blob K3 sigma=(3.0,2.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.248 tol=0.300 sd=0.231
+PASS  T6 K3 sigma_c recovered [blob K3 sigma=(3.0,2.0) w=0.05 delta=(0.0,0.0) n=2]  bias=+0.161 tol=0.250 sd=0.106
+FAIL  T6 K3 ratio sigma_r/sigma_c [blob K3 sigma=(3.0,2.0) w=0.05 delta=(0.0,0.0) n=2]  ratio=1.272 true=1.500
+PASS  T5 sigma recovered [curve K2 sigma=(0.5,0.5) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.023 tol=0.175 sd=0.035
+PASS  T5 w recovered [curve K2 sigma=(0.5,0.5) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.0044 sd=0.0062
+PASS  T5 delta dr recovered [curve K2 sigma=(0.5,0.5) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.063 sd=0.073
+PASS  T5 delta dc recovered [curve K2 sigma=(0.5,0.5) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.046 sd=0.036
+PASS  T5 sigma recovered [curve K2 sigma=(0.5,0.5) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.017 tol=0.175 sd=0.229
+PASS  T5 w recovered [curve K2 sigma=(0.5,0.5) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.0000 sd=0.0000
+PASS  T5 delta dr recovered [curve K2 sigma=(0.5,0.5) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.131 sd=0.383
+PASS  T5 delta dc recovered [curve K2 sigma=(0.5,0.5) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.210 sd=0.114
+PASS  T5 sigma recovered [curve K2 sigma=(0.5,0.5) w=0.05 delta=(0.0,0.0) n=2]  bias=+0.002 tol=0.175 sd=0.148
+PASS  T5 w recovered [curve K2 sigma=(0.5,0.5) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.0078 sd=0.0029
+PASS  T5 delta dr recovered [curve K2 sigma=(0.5,0.5) w=0.05 delta=(0.0,0.0) n=2]  bias=+0.103 sd=0.008
+PASS  T5 delta dc recovered [curve K2 sigma=(0.5,0.5) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.088 sd=0.093
+PASS  T5 sigma recovered [curve K2 sigma=(0.5,0.5) w=0.05 delta=(1.5,-1.0) n=2]  bias=+0.060 tol=0.175 sd=0.083
+FAIL  T5 w recovered [curve K2 sigma=(0.5,0.5) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.0100 sd=0.0022
+PASS  T5 delta dr recovered [curve K2 sigma=(0.5,0.5) w=0.05 delta=(1.5,-1.0) n=2]  bias=+0.132 sd=0.009
+PASS  T5 delta dc recovered [curve K2 sigma=(0.5,0.5) w=0.05 delta=(1.5,-1.0) n=2]  bias=+0.127 sd=0.548
+PASS  T5 sigma recovered [curve K2 sigma=(1.0,1.0) w=0.0 delta=(0.0,0.0) n=2]  bias=-0.053 tol=0.200 sd=0.019
+PASS  T5 w recovered [curve K2 sigma=(1.0,1.0) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.0015 sd=0.0022
+PASS  T5 delta dr recovered [curve K2 sigma=(1.0,1.0) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.178 sd=0.234
+PASS  T5 delta dc recovered [curve K2 sigma=(1.0,1.0) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.007 sd=0.005
+PASS  T5 sigma recovered [curve K2 sigma=(1.0,1.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.034 tol=0.200 sd=0.008
+PASS  T5 w recovered [curve K2 sigma=(1.0,1.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.0000 sd=0.0000
+PASS  T5 delta dr recovered [curve K2 sigma=(1.0,1.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.195 sd=0.096
+PASS  T5 delta dc recovered [curve K2 sigma=(1.0,1.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.239 sd=0.118
+PASS  T5 sigma recovered [curve K2 sigma=(1.0,1.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.064 tol=0.200 sd=0.153
+PASS  T5 w recovered [curve K2 sigma=(1.0,1.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.0031 sd=0.0006
+PASS  T5 delta dr recovered [curve K2 sigma=(1.0,1.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.055 sd=0.199
+PASS  T5 delta dc recovered [curve K2 sigma=(1.0,1.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.056 sd=0.016
+PASS  T5 sigma recovered [curve K2 sigma=(1.0,1.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.078 tol=0.200 sd=0.027
+PASS  T5 w recovered [curve K2 sigma=(1.0,1.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.0074 sd=0.0009
+PASS  T5 delta dr recovered [curve K2 sigma=(1.0,1.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.064 sd=0.004
+PASS  T5 delta dc recovered [curve K2 sigma=(1.0,1.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=+0.199 sd=0.210
+PASS  T5 sigma recovered [curve K2 sigma=(2.0,2.0) w=0.0 delta=(0.0,0.0) n=2]  bias=-0.128 tol=0.250 sd=0.152
+PASS  T5 w recovered [curve K2 sigma=(2.0,2.0) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.0009 sd=0.0012
+FAIL  T5 delta dr recovered [curve K2 sigma=(2.0,2.0) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.330 sd=0.409
+PASS  T5 delta dc recovered [curve K2 sigma=(2.0,2.0) w=0.0 delta=(0.0,0.0) n=2]  bias=-0.013 sd=0.024
+PASS  T5 sigma recovered [curve K2 sigma=(2.0,2.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=-0.123 tol=0.250 sd=0.028
+PASS  T5 w recovered [curve K2 sigma=(2.0,2.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.0000 sd=0.0000
+PASS  T5 delta dr recovered [curve K2 sigma=(2.0,2.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.211 sd=0.060
+FAIL  T5 delta dc recovered [curve K2 sigma=(2.0,2.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.518 sd=1.139
+PASS  T5 sigma recovered [curve K2 sigma=(2.0,2.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.134 tol=0.250 sd=0.046
+PASS  T5 w recovered [curve K2 sigma=(2.0,2.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.0089 sd=0.0005
+PASS  T5 delta dr recovered [curve K2 sigma=(2.0,2.0) w=0.05 delta=(0.0,0.0) n=2]  bias=+0.037 sd=0.258
+FAIL  T5 delta dc recovered [curve K2 sigma=(2.0,2.0) w=0.05 delta=(0.0,0.0) n=2]  bias=+0.826 sd=0.565
+PASS  T5 sigma recovered [curve K2 sigma=(2.0,2.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.016 tol=0.250 sd=0.160
+PASS  T5 w recovered [curve K2 sigma=(2.0,2.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.0043 sd=0.0027
+PASS  T5 delta dr recovered [curve K2 sigma=(2.0,2.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=+0.241 sd=0.027
+PASS  T5 delta dc recovered [curve K2 sigma=(2.0,2.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.097 sd=0.101
+PASS  T5 sigma recovered [curve K2 sigma=(3.0,3.0) w=0.0 delta=(0.0,0.0) n=2]  bias=-0.163 tol=0.300 sd=0.153
+PASS  T5 w recovered [curve K2 sigma=(3.0,3.0) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.0081 sd=0.0089
+PASS  T5 delta dr recovered [curve K2 sigma=(3.0,3.0) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.176 sd=0.023
+FAIL  T5 delta dc recovered [curve K2 sigma=(3.0,3.0) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.676 sd=0.178
+FAIL  T5 sigma recovered [curve K2 sigma=(3.0,3.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=-0.345 tol=0.300 sd=0.111
+PASS  T5 w recovered [curve K2 sigma=(3.0,3.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.0047 sd=0.0066
+FAIL  T5 delta dr recovered [curve K2 sigma=(3.0,3.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=-0.739 sd=0.957
+PASS  T5 delta dc recovered [curve K2 sigma=(3.0,3.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.120 sd=0.198
+PASS  T5 sigma recovered [curve K2 sigma=(3.0,3.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.029 tol=0.300 sd=0.005
+PASS  T5 w recovered [curve K2 sigma=(3.0,3.0) w=0.05 delta=(0.0,0.0) n=2]  bias=+0.0042 sd=0.0073
+FAIL  T5 delta dr recovered [curve K2 sigma=(3.0,3.0) w=0.05 delta=(0.0,0.0) n=2]  bias=+0.610 sd=0.534
+FAIL  T5 delta dc recovered [curve K2 sigma=(3.0,3.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.384 sd=0.318
+PASS  T5 sigma recovered [curve K2 sigma=(3.0,3.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.265 tol=0.300 sd=0.042
+PASS  T5 w recovered [curve K2 sigma=(3.0,3.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.0063 sd=0.0038
+FAIL  T5 delta dr recovered [curve K2 sigma=(3.0,3.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.387 sd=0.048
+FAIL  T5 delta dc recovered [curve K2 sigma=(3.0,3.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=+0.387 sd=0.045
+FAIL  T5 sigma recovered [curve K2 sigma=(5.0,5.0) w=0.0 delta=(0.0,0.0) n=2]  bias=-0.429 tol=0.400 sd=0.079
+PASS  T5 w recovered [curve K2 sigma=(5.0,5.0) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.0000 sd=0.0000
+FAIL  T5 delta dr recovered [curve K2 sigma=(5.0,5.0) w=0.0 delta=(0.0,0.0) n=2]  bias=-0.499 sd=0.179
+FAIL  T5 delta dc recovered [curve K2 sigma=(5.0,5.0) w=0.0 delta=(0.0,0.0) n=2]  bias=+0.714 sd=0.289
+PASS  T5 sigma recovered [curve K2 sigma=(5.0,5.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=-0.294 tol=0.400 sd=0.021
+PASS  T5 w recovered [curve K2 sigma=(5.0,5.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.0022 sd=0.0031
+PASS  T5 delta dr recovered [curve K2 sigma=(5.0,5.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=-0.171 sd=0.668
+PASS  T5 delta dc recovered [curve K2 sigma=(5.0,5.0) w=0.0 delta=(1.5,-1.0) n=2]  bias=+0.146 sd=0.620
+PASS  T5 sigma recovered [curve K2 sigma=(5.0,5.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.318 tol=0.400 sd=0.207
+PASS  T5 w recovered [curve K2 sigma=(5.0,5.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.0034 sd=0.0105
+PASS  T5 delta dr recovered [curve K2 sigma=(5.0,5.0) w=0.05 delta=(0.0,0.0) n=2]  bias=+0.217 sd=0.622
+FAIL  T5 delta dc recovered [curve K2 sigma=(5.0,5.0) w=0.05 delta=(0.0,0.0) n=2]  bias=-0.933 sd=0.322
+FAIL  T5 sigma recovered [curve K2 sigma=(5.0,5.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.482 tol=0.400 sd=0.055
+PASS  T5 w recovered [curve K2 sigma=(5.0,5.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.0048 sd=0.0053
+FAIL  T5 delta dr recovered [curve K2 sigma=(5.0,5.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=-0.638 sd=0.112
+PASS  T5 delta dc recovered [curve K2 sigma=(5.0,5.0) w=0.05 delta=(1.5,-1.0) n=2]  bias=+0.121 sd=0.601
+R5_test: 85/104 PASS (548 s)

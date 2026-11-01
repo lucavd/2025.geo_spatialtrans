@@ -1,0 +1,13 @@
+{
+ "dataset": "Visium_HD_Human_Colon_Cancer",
+ "b_far": 0.19714853642503777,
+ "n_bins": 381839,
+ "rule": "distance >= 300 um",
+ "median_distance_um": 378.549864614954,
+ "b_far_by_parity": [
+  0.1550147199027753,
+  0.2503744200416837,
+  0.1477038170178435,
+  0.2354715716260946
+ ]
+}

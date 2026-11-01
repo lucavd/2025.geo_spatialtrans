@@ -1,0 +1,43 @@
+{
+ "dataset": "Visium_HD_6p5mm_Mouse_Brain",
+ "n_features_raw": 33715,
+ "n_features_filtered": 19070,
+ "panel_subset_of_raw": true,
+ "G3a_as_written_all_raw_features_equal": false,
+ "G3a_as_written_n_bins_differing": 196172,
+ "G3a_as_written_umi_in_tissue_raw_all": 210920068,
+ "G3a_as_written_umi_in_tissue_filtered": 210717110,
+ "grid": [
+  3350,
+  3350
+ ],
+ "n_bins_positions": 11222500,
+ "n_barcodes_raw": 11222500,
+ "n_barcodes_filtered": 6343031,
+ "feature_types": [
+  "Gene Expression"
+ ],
+ "umi_raw_total": 214517133,
+ "umi_grid_total": 214517133,
+ "raw_barcodes_not_in_positions": 0,
+ "G3a_raw_equals_filtered_in_tissue": true,
+ "G3a_filtered_all_in_tissue": true,
+ "G3b_n_8um_bins_differing": 0,
+ "n_8um_bins": 702244,
+ "affine_M": [
+  [
+   -7.297870208235051,
+   -0.008705936199570274
+  ],
+  [
+   -0.00851558073180995,
+   7.297681772944828
+  ]
+ ],
+ "affine_t": [
+  23413.347912602203,
+  197.5976319242877
+ ],
+ "affine_max_residual_px": 0.1823048565136105,
+ "elapsed_s": 289.6
+}

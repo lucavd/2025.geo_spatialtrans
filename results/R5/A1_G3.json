@@ -1,0 +1,43 @@
+{
+ "dataset": "Visium_HD_Mouse_Small_Intestine",
+ "n_features_raw": 32285,
+ "n_features_filtered": 19059,
+ "panel_subset_of_raw": true,
+ "G3a_as_written_all_raw_features_equal": false,
+ "G3a_as_written_n_bins_differing": 1592446,
+ "G3a_as_written_umi_in_tissue_raw_all": 148501101,
+ "G3a_as_written_umi_in_tissue_filtered": 137186173,
+ "grid": [
+  3350,
+  3350
+ ],
+ "n_bins_positions": 11222500,
+ "n_barcodes_raw": 7111371,
+ "n_barcodes_filtered": 5479660,
+ "feature_types": [
+  "Gene Expression"
+ ],
+ "umi_raw_total": 140573095,
+ "umi_grid_total": 140573095,
+ "raw_barcodes_not_in_positions": 0,
+ "G3a_raw_equals_filtered_in_tissue": true,
+ "G3a_filtered_all_in_tissue": true,
+ "G3b_n_8um_bins_differing": 0,
+ "n_8um_bins": 702244,
+ "affine_M": [
+  [
+   -7.303491366112403,
+   -0.04864732795250504
+  ],
+  [
+   -0.04860264702840442,
+   7.303717795786407
+  ]
+ ],
+ "affine_t": [
+  24543.62090703894,
+  -700.4525830576613
+ ],
+ "affine_max_residual_px": 0.4017335191258553,
+ "elapsed_s": 109.2
+}

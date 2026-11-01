@@ -1,0 +1,43 @@
+{
+ "dataset": "Visium_HD_6p5mm_Human_Heart",
+ "n_features_raw": 37082,
+ "n_features_filtered": 18085,
+ "panel_subset_of_raw": true,
+ "G3a_as_written_all_raw_features_equal": false,
+ "G3a_as_written_n_bins_differing": 2043438,
+ "G3a_as_written_umi_in_tissue_raw_all": 47759736,
+ "G3a_as_written_umi_in_tissue_filtered": 45298313,
+ "grid": [
+  3350,
+  3350
+ ],
+ "n_bins_positions": 11222500,
+ "n_barcodes_raw": 11222500,
+ "n_barcodes_filtered": 10615406,
+ "feature_types": [
+  "Gene Expression"
+ ],
+ "umi_raw_total": 45679334,
+ "umi_grid_total": 45679334,
+ "raw_barcodes_not_in_positions": 0,
+ "G3a_raw_equals_filtered_in_tissue": true,
+ "G3a_filtered_all_in_tissue": true,
+ "G3b_n_8um_bins_differing": 0,
+ "n_8um_bins": 702244,
+ "affine_M": [
+  [
+   7.305799924924394,
+   0.058809724811599295
+  ],
+  [
+   0.059058297005411556,
+   -7.305448637819098
+  ]
+ ],
+ "affine_t": [
+  13004.84625581328,
+  34387.92794668377
+ ],
+ "affine_max_residual_px": 0.022461948487034533,
+ "elapsed_s": 159.2
+}
