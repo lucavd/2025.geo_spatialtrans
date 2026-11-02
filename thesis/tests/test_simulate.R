@@ -18,7 +18,14 @@ ok(abs(mean(Matrix::colSums(x) / expected) - 1) < 0.05, "mean spot total = sum o
 y <- thin_to_depth(x, 4000)
 ok(all(Matrix::colSums(y) <= Matrix::colSums(x)) && all(Matrix::colSums(y)[Matrix::colSums(x) <= 4000] == Matrix::colSums(x)[Matrix::colSums(x) <= 4000]),
    "thinning only lowers totals and keeps spots below the target")
-ok(abs(mean(Matrix::colSums(y)[Matrix::colSums(x) > 4400]) / 4000 - 1) < 0.05, "thinned spots near the target")
+ok(all(Matrix::colSums(y)[Matrix::colSums(x) > 4000] == 4000), "thinned spots exactly at the target")
+ok(all(y <= x), "thinning never adds counts to a gene")
+# Proportions kept on average (DECISIONS 2026-11-02): thinning one spot R times, the mean count of
+# each gene must match x_g * t / T within 5 hypergeometric SEs of the mean
+j <- which.max(Matrix::colSums(x)); xs <- x[, j, drop = FALSE]; Tt <- sum(xs); tg <- 4000; R <- 500
+yb <- rowMeans(vapply(seq_len(R), function(r) as.vector(thin_to_depth(xs, tg)), numeric(G)))
+p <- as.vector(xs) / Tt; se <- sqrt(tg * p * (1 - p) * (Tt - tg) / (Tt - 1) / R)
+ok(all(abs(yb - tg * p)[p > 0] <= 5 * se[p > 0]) && all(yb[p == 0] == 0), "thinning keeps gene proportions on average")
 mc <- permute_mu(mu)
 ok(all(abs(colSums(mc) - colSums(mu)) < 1e-12) && !identical(mc, mu), "C−: permuted, column sums unchanged")
 held <- Matrix::Matrix(matrix(rpois(G * 30, 2), G, 30), sparse = TRUE); ht <- rep(types, each = 10)

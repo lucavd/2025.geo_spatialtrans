@@ -45,6 +45,8 @@ run_rctd <- function(spots, ref, ref_type, max_cores = 1) {
 
 # MuSiC (bulk method, second baseline): spots as bulk samples, training donors as samples.
 run_music <- function(spots, ref, ref_type, ref_donor) {
+  # MuSiC calls counts() unqualified: attach SingleCellExperiment (not loaded on PSOCK workers)
+  suppressPackageStartupMessages(library(SingleCellExperiment))
   timed({
     sce <- SingleCellExperiment::SingleCellExperiment(
       list(counts = ref), colData = S4Vectors::DataFrame(type = ref_type, donor = ref_donor))

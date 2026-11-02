@@ -20,9 +20,9 @@
 # Pre-registered checks (written 2026-10-30 before the first run; stop if one fails):
 #   C1. truth: rows sum to 1, zero for reference types absent from the spots;
 #   C2. every dataset of a job has 500 spots and the same composition (common random numbers);
-#   C3. after thinning, no spot exceeds the target by more than 5% + 50 UMI (binomial thinning is
-#       not exact, and small targets such as 350 UMI vary relatively more; margin set 2026-10-31,
-#       before any run);
+#   C3. after thinning, no spot exceeds the target (exact thinning since 2026-11-01: the first
+#       colon run, with binomial thinning and a margin of 5% + 50 UMI, failed C3 in 9 of 40 jobs
+#       by chance; pilot results are not study results);
 #   C4. C− μ has the same column sums as E μ;
 #   C5. no reference cell comes from the pilot held-out donor.
 # Reported: run time per method; failures per method x dataset (ADEMP §7.2); RNG state after each
@@ -85,7 +85,7 @@ run_job <- function(i) {
     anchor = thin_to_depth(anc$counts, target))
   for (d in names(data)) {
     if (ncol(data[[d]]) != n_spots) stop("C2: ", d)
-    if (max(Matrix::colSums(data[[d]])) > 1.05 * target + 50) stop("C3: ", d)   # +50: binomial noise on small targets
+    if (max(Matrix::colSums(data[[d]])) > target) stop("C3: ", d)
   }
   ms <- g$seed[[1]]
   rows <- list(); props <- list()
@@ -108,7 +108,9 @@ run_job <- function(i) {
         error = if (is.null(r$error)) NA else r$error, n_fail = sum(failed_spots(p)),
         rng_after = sum(as.numeric(.Random.seed)), stringsAsFactors = FALSE)
     }
-    ok <- !Reduce(`|`, lapply(est, failed_spots))   # spots returned by all methods (ADEMP §7.2)
+    fs <- lapply(est, failed_spots)
+    fs <- fs[!vapply(fs, all, logical(1))]          # a method failing on every spot does not empty the set
+    ok <- if (length(fs)) !Reduce(`|`, fs) else rep(FALSE, n_spots)   # spots returned by all methods (ADEMP §7.2)
     for (m in names(est)) {
       k <- which(vapply(rows, function(z) z$dataset == d && z$method == m, logical(1)))
       rows[[k]]$n_common <- sum(ok)
@@ -120,7 +122,7 @@ run_job <- function(i) {
   res <- do.call(rbind, rows)
   res <- cbind(tissue = tissue, n_cells = g$n_cells, depth = g$depth, rep = g$rep, res)
   spot_umi <- vapply(data, function(x) median(Matrix::colSums(x)), numeric(1))
-  saveRDS(list(metrics = res, spot_umi = spot_umi, anchor_cells_used = length(unique(anc$cells_used)),
+  saveRDS(list(metrics = res, props = props, truth = truth, spot_umi = spot_umi, anchor_cells_used = length(unique(anc$cells_used)),
                held_cells = sum(held_ok)), f)
   f
 }
@@ -128,10 +130,10 @@ run_job <- function(i) {
 cat(sprintf("[%s] pilot: %d jobs (%d reps x %d conditions), %d workers\n",
             tissue, nrow(grid), n_rep, nrow(grid) / n_rep, workers))
 t0 <- proc.time()[["elapsed"]]
-cl <- parallel::makeCluster(workers)
+cl <- parallel::makeCluster(workers, setup_strategy = "sequential")   # parallel start-up drops workers on Windows
 lib <- .libPaths()
 parallel::clusterCall(cl, function(lib) { .libPaths(lib); RNGkind("L'Ecuyer-CMRG"); NULL }, lib)
-parallel::clusterExport(cl, c("grid", "R0", "out_dir", "n_spots", "alpha", "tissue"))
+parallel::clusterExport(cl, c("grid", "R0", "out_dir", "n_spots", "alpha", "tissue", "run_job"))
 parallel::clusterEvalQ(cl, { for (f in c("R/simulate_spots.R", "R/deconvolve.R", "R/pilot_metrics.R")) source(f); NULL })
 done <- parallel::parLapplyLB(cl, seq_len(nrow(grid)), function(i)
   tryCatch(run_job(i), error = function(e) paste("ERROR", i, conditionMessage(e))))

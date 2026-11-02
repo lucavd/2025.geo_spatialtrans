@@ -72,15 +72,20 @@ anchor_spots <- function(held, held_type, comp) {
   list(counts = sum_by_spot(held[, idx, drop = FALSE], spot, spot_names), cells_used = idx)
 }
 
-# Depth: a spot above the target is thinned at random (binomial, each UMI kept with probability
-# target / total), as synthspot and Open Problems downsample; a spot below the target is kept.
-# The target is cells per spot x UMI per cell (ADEMP §2.2), so depth and cells per spot stay crossed.
+# Depth: a spot above the target is thinned to exactly `target` UMI, drawn at random without
+# replacement from its UMIs (Pierangela 2026-11-01; binomial thinning only matched the target on
+# average); a spot below the target is kept. The target is cells per spot x UMI per cell
+# (ADEMP §2.2), so depth and cells per spot stay crossed.
 thin_to_depth <- function(x, target) {
   x <- methods::as(x, "CsparseMatrix")
   tot <- Matrix::colSums(x)
-  p <- pmin(1, target / tot)
-  j <- rep(seq_len(ncol(x)), diff(x@p))
-  x@x <- as.numeric(rbinom(length(x@x), size = x@x, prob = p[j]))
+  for (j in which(tot > target)) {
+    idx <- (x@p[j] + 1):x@p[j + 1]
+    v <- x@x[idx]
+    keep <- sample.int(sum(v), target)                       # UMI ids kept
+    gene <- findInterval(keep, cumsum(v), left.open = TRUE) + 1
+    x@x[idx] <- as.numeric(tabulate(gene, nbins = length(v)))
+  }
   Matrix::drop0(x)
 }
 
