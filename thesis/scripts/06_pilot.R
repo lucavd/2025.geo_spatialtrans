@@ -28,14 +28,19 @@
 # Reported: run time per method; failures per method x dataset (ADEMP §7.2); RNG state after each
 # method (a method that resets the seed gives the same state in every replicate, ADEMP §8);
 # SD(RMSE_i), its upper 95% limit (chi-square, reps - 1 df) and n_sim from that upper limit
-# (DECISIONS 2026-10-30) for target MCSE 0.005 / 0.0025 / 0.001.
+# (DECISIONS 2026-10-30) for target MCSE 0.005 / 0.0025 / 0.001; spots at the target depth
+# (thinned) and below it, per dataset (exact thinning amendment, DECISIONS 2026-11-02).
+# Progress: one line per job start and end in <tissue>_progress.log, next to the summary.
 #
-# Usage (working directory = thesis/):  Rscript scripts/06_pilot.R <tissue> [workers] [reps]
+# Usage (working directory = thesis/):  Rscript scripts/06_pilot.R <tissue> [workers] [reps] [depth]
+#   "depth" rebuilds the spots from the same seeds and only counts spot depths, without deconvolution.
 
 args <- commandArgs(trailingOnly = TRUE)
 tissue <- if (length(args) >= 1) args[1] else "colon"
 workers <- if (length(args) >= 2) as.integer(args[2]) else 8
 n_rep <- if (length(args) >= 3) as.integer(args[3]) else 10
+mode <- if (length(args) >= 4) args[4] else "full"
+stopifnot(mode %in% c("full", "depth"))
 
 data_dir <- Sys.getenv("TESI_DATA")
 stopifnot("TESI_DATA non impostata" = nzchar(data_dir), dir.exists(data_dir))
@@ -43,6 +48,8 @@ stopifnot("Run from the thesis/ folder" = file.exists("thesis.Rproj"))
 ref_file <- file.path(data_dir, "derived", "reference", paste0(tissue, "_pilot.rds"))
 out_dir <- file.path(data_dir, "derived", "pilot", tissue)
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+log_file <- file.path(dirname(out_dir), paste0(tissue, "_progress.log"))
+depth_file <- file.path(dirname(out_dir), paste0(tissue, "_pilot_depth.csv"))
 
 n_spots <- 500
 levels_cells <- c(2, 10)
@@ -64,7 +71,11 @@ for (i in seq_len(nrow(grid))) { grid$seed[[i]] <- s; s <- parallel::nextRNGStre
 run_job <- function(i) {
   g <- grid[i, ]
   f <- file.path(out_dir, sprintf("c%02d_d%04d_r%02d.rds", g$n_cells, g$depth, g$rep))
-  if (file.exists(f)) return(f)
+  if (mode == "full" && file.exists(f)) return(f)
+  job <- sprintf("job %d/%d (cells %d, depth %d, rep %d)", i, nrow(grid), g$n_cells, g$depth, g$rep)
+  log_line <- function(msg) cat(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), msg, "\n", file = log_file, append = TRUE)
+  log_line(paste("start", job))
+  t_job <- proc.time()[["elapsed"]]
   R <- R0
   assign(".Random.seed", g$seed[[1]], envir = .GlobalEnv)
   ts <- R$types_spot
@@ -79,14 +90,22 @@ run_job <- function(i) {
   if (any(abs(colSums(mu_C) - colSums(mu_E)) > 1e-9)) stop("C4")
   held_ok <- R$held_meta$cell_type %in% ts
   anc <- anchor_spots(R$held[, held_ok], R$held_meta$cell_type[held_ok], comp)
+  raw_umi <- list()
+  thin <- function(d, x) { raw_umi[[d]] <<- Matrix::colSums(x); thin_to_depth(x, target) }   # same RNG order as before
   data <- list(
-    E = thin_to_depth(simulate_arm(mu_E, R$phi, cells, rownames(comp)), target),
-    Cminus = thin_to_depth(simulate_arm(mu_C, R$phi, cells, rownames(comp)), target),
-    anchor = thin_to_depth(anc$counts, target))
+    E = thin("E", simulate_arm(mu_E, R$phi, cells, rownames(comp))),
+    Cminus = thin("Cminus", simulate_arm(mu_C, R$phi, cells, rownames(comp))),
+    anchor = thin("anchor", anc$counts))
   for (d in names(data)) {
     if (ncol(data[[d]]) != n_spots) stop("C2: ", d)
     if (max(Matrix::colSums(data[[d]])) > target) stop("C3: ", d)
   }
+  depth <- data.frame(tissue = tissue, n_cells = g$n_cells, depth = g$depth, rep = g$rep,
+    dataset = names(raw_umi), target = target,
+    n_at_target = vapply(raw_umi, function(u) sum(u >= target), numeric(1)),   # thinned to the target
+    n_below = vapply(raw_umi, function(u) sum(u < target), numeric(1)),        # left below it
+    median_raw_umi = vapply(raw_umi, median, numeric(1)), row.names = NULL)
+  if (mode == "depth") { log_line(paste("depth only, done", job)); return(depth) }
   ms <- g$seed[[1]]
   rows <- list(); props <- list()
   for (d in names(data)) {
@@ -122,25 +141,37 @@ run_job <- function(i) {
   res <- do.call(rbind, rows)
   res <- cbind(tissue = tissue, n_cells = g$n_cells, depth = g$depth, rep = g$rep, res)
   spot_umi <- vapply(data, function(x) median(Matrix::colSums(x)), numeric(1))
-  saveRDS(list(metrics = res, props = props, truth = truth, spot_umi = spot_umi, anchor_cells_used = length(unique(anc$cells_used)),
-               held_cells = sum(held_ok)), f)
+  saveRDS(list(metrics = res, props = props, truth = truth, spot_umi = spot_umi, depth = depth,
+               anchor_cells_used = length(unique(anc$cells_used)), held_cells = sum(held_ok)), f)
+  log_line(sprintf("done %s in %.1f min", job, (proc.time()[["elapsed"]] - t_job) / 60))
   f
 }
 
-cat(sprintf("[%s] pilot: %d jobs (%d reps x %d conditions), %d workers\n",
-            tissue, nrow(grid), n_rep, nrow(grid) / n_rep, workers))
+report_depth <- function(dp) {
+  write.csv(dp, depth_file, row.names = FALSE)
+  cat("\nSpots at the target depth (thinned) and below it, summed over replicates:\n")
+  print(aggregate(cbind(n_at_target, n_below) ~ dataset + depth + n_cells, dp, sum))
+  cat("Depth counts written to", depth_file, "\n")
+}
+
+cat(sprintf("[%s] pilot (%s): %d jobs (%d reps x %d conditions), %d workers\n",
+            tissue, mode, nrow(grid), n_rep, nrow(grid) / n_rep, workers))
+cat("Progress log:", log_file, "\n")
+cat(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), sprintf("run start, mode %s, %d jobs, %d workers", mode, nrow(grid), workers),
+    "\n", file = log_file, append = TRUE)
 t0 <- proc.time()[["elapsed"]]
 cl <- parallel::makeCluster(workers, setup_strategy = "sequential")   # parallel start-up drops workers on Windows
 lib <- .libPaths()
 parallel::clusterCall(cl, function(lib) { .libPaths(lib); RNGkind("L'Ecuyer-CMRG"); NULL }, lib)
-parallel::clusterExport(cl, c("grid", "R0", "out_dir", "n_spots", "alpha", "tissue", "run_job"))
+parallel::clusterExport(cl, c("grid", "R0", "out_dir", "n_spots", "alpha", "tissue", "mode", "log_file", "run_job"))
 parallel::clusterEvalQ(cl, { for (f in c("R/simulate_spots.R", "R/deconvolve.R", "R/pilot_metrics.R")) source(f); NULL })
 done <- parallel::parLapplyLB(cl, seq_len(nrow(grid)), function(i)
   tryCatch(run_job(i), error = function(e) paste("ERROR", i, conditionMessage(e))))
 parallel::stopCluster(cl)
-errs <- grep("^ERROR", unlist(done), value = TRUE)
+errs <- grep("^ERROR", unlist(Filter(is.character, done)), value = TRUE)
 if (length(errs)) { cat(errs, sep = "\n"); stop(length(errs), " jobs failed a check") }
 cat(sprintf("  done in %.1f min\n", (proc.time()[["elapsed"]] - t0) / 60))
+if (mode == "depth") { report_depth(do.call(rbind, done)); quit(save = "no") }
 
 # Summary
 out <- lapply(list.files(out_dir, pattern = "^c.*\\.rds$", full.names = TRUE), readRDS)
@@ -161,5 +192,7 @@ cat(sprintf("Anchor: %d held-out cells of spot types\n", out[[1]]$held_cells))
 cat("\nRun time (s) per method, mean over all jobs:\n"); print(round(tapply(m$seconds, m$method, mean, na.rm = TRUE), 1))
 cat("\nLargest SD(RMSE_i) per method (over conditions and datasets):\n"); print(signif(cbind(sd = tapply(agg$sd_rmse, agg$method, max), upper95 = tapply(agg$sd_rmse_upper, agg$method, max)), 3))
 cat("\nFailed spots and errors per method x dataset:\n"); print(aggregate(cbind(fail_spots, errors) ~ method + dataset, agg, sum))
+dp <- do.call(rbind, lapply(out, `[[`, "depth"))   # NULL for jobs run before 2026-11-02
+if (!is.null(dp)) report_depth(dp)
 if (any(agg$same_rng_state)) cat("\nWARNING: a method leaves the same RNG state in two replicates (seed reset?)\n")
 cat("\nSummary written to", file.path(dirname(out_dir), paste0(tissue, "_pilot_summary.csv")), "\n")
