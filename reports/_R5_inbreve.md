@@ -10,7 +10,7 @@
    - Nessuna direzione privilegiata fra righe e colonne della griglia.
    - La larghezza dipende da come si traccia il bordo nell'immagine: con un bordo tracciato in modo diverso cresce di 0.6-2 µm.
 2. **Dentro il tessuto la sfocatura è molto più stretta, sotto 1 µm quasi ovunque.**
-   - La differenza osservata fra nucleo e citoplasma si spiega con una sfocatura di 0.6-0.8 µm nel tumore, 0.7-2.5 µm nel cervello, circa mezzo µm o meno nello stroma e nel linfonodo. La procedura ritrova i valori giusti su dati costruiti apposta.
+   - La differenza osservata fra nucleo e citoplasma si spiega con una sfocatura di 0.56-0.84 µm nel tumore, 0.7-2.5 µm nel cervello, circa mezzo µm o meno nello stroma e nel linfonodo. La procedura ritrova i valori giusti su dati costruiti apposta.
    - Con la larghezza dei bordi, la differenza osservata nel linfonodo sarebbe impossibile: nessun rapporto vero la produce.
    - Viceversa, imporre una sfocatura stretta ai bordi peggiora molto l'adattamento: i bordi sono davvero sfumati su 3-5 µm. Sono due scale diverse, e non sappiamo ancora perché (bordo del tessuto sottile o sfrangiato, bordo dell'immagine impreciso, trasporto sul vetro libero).
 3. **Prima della diffusione il nucleo è un po' più diverso dal citoplasma di quanto si osserva.**

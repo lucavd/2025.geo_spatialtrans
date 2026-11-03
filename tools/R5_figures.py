@@ -96,8 +96,8 @@ if os.path.exists(f"{O}/tables/R5_PH2_inner_summary.csv"):
         h = H[H.a == a]; hs = h[h.sigma_in_star.notna()]; hn = h[h.sigma_in_star.isna()]
         ax.plot(np.full(len(hs), i + 0.15), hs.sigma_in_star, "D", ms=3, color="#D55E00", label="inner blur σ_in (PH-2, per ROI)" if i == 0 else None)
         below = hn[hn.result.str.contains("below grid")]
-        ax.plot(np.full(len(below), i + 0.15), np.full(len(below), 0.25), "v", ms=4, mfc="none", color="#D55E00", label="no solution ≥ 0.25 µm" if i == 0 else None)
-        if len(below): ax.text(i + 0.27, 0.25, f"×{len(below)}", va="center", fontsize=6, color="#D55E00")
+        ax.plot(np.full(len(below), i + 0.15), np.full(len(below), 0.18), "v", ms=4, mfc="none", color="#D55E00", label="no solution ≥ 0.25 µm (drawn at 0.18)" if i == 0 else None)
+        if len(below): ax.text(i + 0.27, 0.18, f"×{len(below)}", va="center", fontsize=6, color="#D55E00")
         other = len(hn) - len(below)
         if other: ax.text(i + 0.15, 6.5, f"{other} ROI\nno solution", ha="center", fontsize=5)
     ax.set_yscale("log"); ax.set_ylim(0.15, 9); ax.set_yticks([0.25, 0.5, 1, 2, 4, 8]); ax.set_yticklabels(["0.25", "0.5", "1", "2", "4", "8"]); ax.minorticks_off(); ax.set_xticks(range(6)); ax.set_xticklabels([TIS[a] for a in A], rotation=30, ha="right")
