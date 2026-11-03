@@ -47,16 +47,22 @@ def _irfft(F, ps):
 def _rfft(x, ps):
     return sfft.rfft2(np.asarray(x, DT), s=ps, workers=1)
 
+def kernel_lin(rule, prm, kr, kc):
+    """Nucleo delle regole lineari (C0, C1), nello stesso ordine di operazioni di R5 kernel_ft (identita' esatta C1(q=1) = C0 = R5)."""
+    w, ell = prm["w"], prm["ell"]
+    if rule == "C0":
+        return C.kernel_ft(kr, kc, prm["sigma"], prm["sigma"], w, ell)
+    q = prm["q"]
+    g = (1.0 - q) * _G(kr, kc, SIG_IN) + q * _G(kr, kc, prm["sigma_m"])
+    return g if w <= 0 else (1.0 - w) * g + w * C.exp_ft(kr, kc, ell)
+
 def field_ft(rule, prm, Tft, kr, kc, ps, X=None):
     """Trasformata del campo dei conteggi (prima di bin, scarto e parita') secondo la regola."""
+    kr, kc = kr.astype(DT, copy=False), kc.astype(DT, copy=False)
+    if rule in ("C0", "C1"):
+        return Tft * kernel_lin(rule, prm, kr, kc)
     w, ell = prm["w"], prm["ell"]
     E = C.exp_ft(kr, kc, ell) if w > 0 else 0.0
-    if rule == "C0":
-        return Tft * C.kernel_ft(kr, kc, prm["sigma"], prm["sigma"], w, ell)
-    if rule == "C1":
-        q = prm["q"]
-        K = (1.0 - w) * ((1.0 - q) * _G(kr, kc, SIG_IN) + q * _G(kr, kc, prm["sigma_m"])) + w * E
-        return Tft * K
     if rule == "C2":
         pi = np.where(X["f"] > 0.5, np.exp(-X["din"] / prm["D"]), 0.0).astype(DT)
         Te = _rfft(X["T"] * pi, ps); Ti = Tft - Te
@@ -68,16 +74,23 @@ def field_ft(rule, prm, Tft, kr, kc, ps, X=None):
         return _rfft(Lf, ps)
     raise ValueError(rule)
 
-def sample_bins(Fft, kr, kc, ps, region_bins, dr, dc):
-    """Come R5 expected_bins: integrazione sul bin, scarto delta, campionamento al centro del bin."""
-    F = Fft * (C.box_ft(kr, kc) * C.shift_ft(kr, kc, dr - SUB_UM / 2, dc - SUB_UM / 2)).astype(CT)
+def _sample(F, ps, region_bins):
     h = _irfft(F, ps)
     j0 = SUB // 2 - 1
     return h[j0: region_bins[0] * SUB: SUB, j0: region_bins[1] * SUB: SUB].astype(np.float64)
 
+def sample_bins(Fft, kr, kc, ps, region_bins, dr, dc):
+    """Come R5 expected_bins: integrazione sul bin, scarto delta, campionamento al centro del bin."""
+    kr, kc = kr.astype(DT, copy=False), kc.astype(DT, copy=False)
+    return _sample(Fft * (C.box_ft(kr, kc) * C.shift_ft(kr, kc, dr - SUB_UM / 2, dc - SUB_UM / 2)).astype(CT), ps, region_bins)
+
 def g_rule(rule, prm, P, X=None):
-    return sample_bins(field_ft(rule, prm, P["Tft"], P["kr"], P["kc"], P["pshape"], X), P["kr"], P["kc"], P["pshape"],
-                       P["region_bins"], prm["dr"], prm["dc"])
+    kr, kc, ps = P["kr"], P["kc"], P["pshape"]
+    if rule in ("C0", "C1"):        # stesso ordine di R5 expected_bins: Tft * (nucleo * bin * scarto)
+        k_r, k_c = kr.astype(DT, copy=False), kc.astype(DT, copy=False)
+        K = (kernel_lin(rule, prm, k_r, k_c) * C.box_ft(k_r, k_c) * C.shift_ft(k_r, k_c, prm["dr"] - SUB_UM / 2, prm["dc"] - SUB_UM / 2)).astype(CT)
+        return _sample(K * P["Tft"], ps, P["region_bins"])     # K * Tft: e' l'ordine che NumPy usa in R5 (elisione del temporaneo); conta a 32 bit
+    return sample_bins(field_ft(rule, prm, P["Tft"], kr, kc, ps, X), kr, kc, ps, P["region_bins"], prm["dr"], prm["dc"])
 
 def to_prm(rule, th):
     th = np.asarray(th, float)
@@ -286,9 +299,9 @@ def half_factors(U, M_half, m_excl, other, axis):
     """Fattore di ogni riga (axis=0) o colonna (axis=1) dai soli bin di M_half, con campo m e fattori dell'altro asse fissati."""
     Y = U.astype(float)
     if axis == 0:
-        num = (Y * M_half).sum(1); den = (m_excl * np.exp(other)[None, :] * M_half).sum(1); n = M_half.sum(1)
+        num = (Y * M_half).sum(1); den = (m_excl * np.exp(np.nan_to_num(other))[None, :] * M_half).sum(1); n = M_half.sum(1)
     else:
-        num = (Y * M_half).sum(0); den = (m_excl * np.exp(other)[:, None] * M_half).sum(0); n = M_half.sum(0)
+        num = (Y * M_half).sum(0); den = (m_excl * np.exp(np.nan_to_num(other))[:, None] * M_half).sum(0); n = M_half.sum(0)
     with np.errstate(divide="ignore", invalid="ignore"):
         f = np.log(num / den)
     return np.where((den > 0) & (num > 0), f, np.nan), n
@@ -377,3 +390,33 @@ def bin8(U2):
     """Somma 2 -> 8 µm: ogni bin di 8 µm somma i 16 bin di 2 µm (righe e colonne a blocchi di 4)."""
     n0, n1 = U2.shape[0] // 4, U2.shape[1] // 4
     return U2[:n0 * 4, :n1 * 4].reshape(n0, 4, n1, 4).sum(axis=(1, 3))
+
+
+# ------------------------------------------------------------------ M2: partenze (come pre-registrate)
+def starts_for(rule, k2, ph5=None):
+    """Partenze dell'adattamento: soluzione C0 (K2 di R5) della finestra, griglia grossolana sui parametri nuovi, partenza stretta
+    (PH-5 di R5 se c'e', altrimenti w, ell, scarto di C0). 'keep' = sempre ottimizzata (equivalente a C0 o al nucleo stretto)."""
+    base = {k: float(k2[k]) for k in ("w", "ell", "dr", "dc")}
+    nar = {k: float(ph5[k]) for k in ("w", "ell", "dr", "dc")} if ph5 else dict(base)
+    s0 = float(k2["sigma"])
+    if rule == "C1":
+        return ([dict(base, q=1.0, sigma_m=s0, keep=True)] + [dict(base, q=q, sigma_m=s) for q in (0.2, 0.5, 0.8) for s in (2.0, 3.5, 5.0)]
+                + [dict(nar, q=0.0, sigma_m=3.5, keep=True)])
+    if rule == "C2":
+        return ([dict(base, sigma_e=s0, D=1e4, keep=True)] + [dict(base, sigma_e=s0, D=D) for D in (2.0, 5.0, 15.0, 50.0)]
+                + [dict(nar, sigma_e=s0, D=0.5, keep=True)])
+    if rule == "C3":
+        return [dict(base, sigma_g=s) for s in (2.0, 5.0, 10.0)] + [dict(nar, sigma_g=0.05, keep=True)]
+    raise ValueError(rule)
+
+
+def half_split_factors(U, T, ax, sigma_um=10.0, n_iter=10):
+    """P-1 come pre-registrato: il fattore di ogni riga (ax=0) o colonna (ax=1) si stima due volte, con due adattamenti separati sulle due
+    meta' disgiunte dei bin di tessuto (sinistra/destra per le righe, sopra/sotto per le colonne): nessun campo, nessun fattore condiviso.
+    Ritorna (f1, f2, n1, n2): fattori delle due meta' (NaN dove mancano) e numero di bin di tessuto per meta'."""
+    A, Bm = half_masks(T, ax)
+    out = []
+    for Mh in (A, Bm):
+        al, be, _, _ = stripe_factors(U, Mh, sigma_um, n_iter)
+        out.append((al if ax == 0 else be, Mh.sum(1) if ax == 0 else Mh.sum(0)))
+    return out[0][0], out[1][0], out[0][1], out[1][1]
