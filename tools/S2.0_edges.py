@@ -101,6 +101,8 @@ if __name__ == "__main__":
             n = int(sys.argv[3]); jobs = [p for k in KEYS for p in [q for q in jobs if f"/{k}/" in q][:n]]
         jobs = [j for j in jobs if not os.path.exists(f"{OUT}/edges/{j.split('/')[-2]}_{os.path.basename(j)[:-4]}.json")]
         if os.environ.get("S20_REVERSE") == "1": jobs = jobs[::-1]          # secondo esecutore dalla fine (stesso risultato per finestra)
+        if os.environ.get("S20_MID") == "1": jobs = jobs[len(jobs) // 2:] + jobs[:len(jobs) // 2]   # terzo esecutore dalla meta'
+
         if os.environ.get("S20_NW"): nw = int(os.environ["S20_NW"])
         print(f"real jobs {len(jobs)} workers {nw}", flush=True); t0 = time.time()
         with Pool(nw) as pool:
