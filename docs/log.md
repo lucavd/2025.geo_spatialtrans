@@ -1,5 +1,13 @@
 # Registro delle modifiche
 
+## 2026-11-03 (R5)
+
+* **Chiusura**: [Di quanto si spostano i trascritti fra il tessuto e la griglia di Visium HD, con quale forma, e quanto è diverso davvero il nucleo dal citoplasma prima dello spostamento? (R5)](steps/R5.md) chiuso con l'approvazione di Luca (risposte alle tre decisioni del riassunto «In breve», senza dubbi nuovi).
+* **Creazione**: [Di quanto si spostano i trascritti fra il tessuto e la griglia di Visium HD, con quale forma, e quanto è diverso davvero il nucleo dal citoplasma prima dello spostamento? (R5)](steps/R5.md): cancelli G-1...G-5, previsioni P-1...P-5 con l'ok di Luca («ok»), controprove CP-1...CP-3, post hoc PH-1...PH-5, revisione avversariale (due revisori; ottimizzatore corretto e calcolo rifatto due volte).
+* **Creazione**: decisione tecnica [R5: scelte tecniche della stima del nucleo di diffusione (DEC-036)](decisions/DEC-036.md).
+* **Creazione**: decisione di Luca [R5: diffusione a due livelli nello Step 2; chiusura con tre controlli falliti come scritti; cuore con la mediana delle altre sezioni (DEC-037)](decisions/DEC-037.md).
+* **Modifica**: BIO_REFERENCES B-337...B-373; BACKLOG (chiuse BL-088, BL-196; aggiornata BL-086; nuove BL-197...BL-202); ROADMAP sezioni 6 e 7; CHANGELOG.
+
 ## 2026-10-30 (R4)
 
 * **Chiusura**: [Quanti trascritti cadono in ogni quadratino di Visium HD nei sei tessuti veri, e come si distribuiscono fra nucleo, citoplasma e cellule? (R4)](steps/R4.md) chiuso con l'approvazione di Luca (risposte alle due decisioni del riassunto «In breve», senza dubbi nuovi).

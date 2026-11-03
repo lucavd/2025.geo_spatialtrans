@@ -1,0 +1,6 @@
+- «ok»: ok sulle previsioni e sui quattro intervalli proposti (trascritto dalla chat, 2026-10-31).
+- «fai girare tutto che vado a letto»: ok alla seconda esecuzione completa per G-4 (trascritto dalla chat, 2026-10-31).
+- «se il server non va usa lesexp-ts» (trascritto dalla chat, 2026-11-01).
+- Decisione 1, «Due livelli (Recommended)» (risposta alla domanda «Come deve spostare i trascritti il simulatore nello Step 2?», 2026-11-03): [diffusione a due livelli, chiusura con tre controlli falliti come scritti, cuore con la mediana delle altre sezioni (DEC-037)](/decisions/DEC-037.md).
+- Decisione 2, «Sì, chiudi (Recommended)» (2026-11-03): stessa decisione (DEC-037).
+- Decisione 3, «Mediana delle altre 4 (Recommended)» (2026-11-03): stessa decisione (DEC-037).
