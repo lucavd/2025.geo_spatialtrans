@@ -16,7 +16,8 @@
 #   <tissue>_pilot_rmse_methods.csv   one row per condition x dataset x method (+ null baseline)
 #   <tissue>_pilot_rmse_pairs.csv     one row per condition x dataset x pair of methods
 #   <tissue>_pilot_nsim.csv           n_sim and share of pairs with |mean D| >= δ, per δ
-#   <tissue>_pilot_tables.md          the same, formatted (mean (SD))
+#   <tissue>_pilot_tables.md          the same, formatted (mean (SD)); Tables 5–7 added 2026-11-03
+#   <tissue>_pilot_type_diagnostics.csv  per replicate: bias per spot type, proportion on absent types
 #
 # Usage (working directory = thesis/):  Rscript scripts/06b_pilot_nsim.R <tissue>
 
@@ -33,26 +34,39 @@ stopifnot("no pilot replicate files" = length(files) > 0)
 R0 <- readRDS(file.path(data_dir, "derived", "reference", paste0(tissue, "_pilot.rds")))
 p_null <- null_props(lengths(R0$L_by_type))
 stopifnot(abs(sum(p_null) - 1) < 1e-12, setequal(names(p_null), R0$types_ref))
+# UMI-fraction estimand (secondary, 2026-11-03): null baseline = share of all training UMI per type
+p_null_umi <- vapply(R0$L_by_type, sum, numeric(1)); p_null_umi <- p_null_umi / sum(p_null_umi)
 methods <- c("RCTD", "spatialDWLS", "MuSiC", "NNLS")
 deltas <- c(0.005, 0.01, 0.02, 0.03)
 up <- function(n) sqrt((n - 1) / qchisq(0.025, n - 1))   # upper 95% limit factor for an SD
 
 # Per replicate
-rows <- list()
+rows <- list(); brows <- list()
+ts <- R0$types_spot; absent <- setdiff(R0$types_ref, ts)
 for (f in files) {
   x <- readRDS(f); m0 <- x$metrics[1, ]
   for (ds in names(x$props)) {
     tr <- x$truth
+    tu <- if (is.null(x$truth_umi)) NULL else x$truth_umi[[ds]][, colnames(tr)]
     for (m in names(x$props[[ds]])) {
       est <- x$props[[ds]][[m]][, colnames(tr)]
       bad <- failed_spots(est); filled <- fill_failed(est, p_null)
       stopifnot(all(abs(rowSums(filled) - 1) < 1e-6), identical(filled[!bad, ], est[!bad, ]))
       rows[[length(rows) + 1]] <- data.frame(n_cells = m0$n_cells, depth = m0$depth, rep = m0$rep,
-        dataset = ds, method = m, rmse = rmse(filled, tr), fail_rate = mean(bad))
+        dataset = ds, method = m, rmse = rmse(filled, tr), fail_rate = mean(bad),
+        rmse_umi = if (is.null(tu)) NA else rmse(fill_failed(est, p_null_umi), tu))
+      # Diagnostics (2026-11-03): mean bias per spot type (cell truth, returned spots) and mean
+      # proportion given to reference types absent from the spots
+      if (any(!bad)) brows[[length(brows) + 1]] <- data.frame(n_cells = m0$n_cells, depth = m0$depth,
+        rep = m0$rep, dataset = ds, method = m, type = c(ts, absent),
+        value = c(colMeans(est[!bad, ts, drop = FALSE] - tr[!bad, ts, drop = FALSE]),
+                  colMeans(est[!bad, absent, drop = FALSE])),
+        kind = rep(c("bias", "absent"), c(length(ts), length(absent))))
     }
     nb <- matrix(p_null[colnames(tr)], nrow(tr), ncol(tr), byrow = TRUE)
     rows[[length(rows) + 1]] <- data.frame(n_cells = m0$n_cells, depth = m0$depth, rep = m0$rep,
-      dataset = ds, method = "null baseline", rmse = rmse(nb, tr), fail_rate = 0)
+      dataset = ds, method = "null baseline", rmse = rmse(nb, tr), fail_rate = 0,
+      rmse_umi = if (is.null(tu)) NA else rmse(matrix(p_null_umi[colnames(tr)], nrow(tr), ncol(tr), byrow = TRUE), tu))
   }
 }
 d <- do.call(rbind, rows)
@@ -61,7 +75,8 @@ key <- c("n_cells", "depth", "dataset")
 # Single methods
 sm <- do.call(rbind, lapply(split(d, d[c(key, "method")], drop = TRUE), function(z) data.frame(
   z[1, c(key, "method")], reps = nrow(z), mean_rmse = mean(z$rmse), sd_rmse = sd(z$rmse),
-  sd_rmse_upper = sd(z$rmse) * up(nrow(z)), mean_fail_rate = mean(z$fail_rate), sd_fail_rate = sd(z$fail_rate))))
+  sd_rmse_upper = sd(z$rmse) * up(nrow(z)), mean_fail_rate = mean(z$fail_rate), sd_fail_rate = sd(z$fail_rate),
+  mean_rmse_umi = mean(z$rmse_umi), sd_rmse_umi = sd(z$rmse_umi))))
 
 # Paired differences (methods only, same replicate)
 dm <- d[d$method %in% methods, ]
@@ -104,6 +119,23 @@ t2 <- md_table(sm[sm$method %in% methods, ], "method", "mean_fail_rate", "sd_fai
 t3 <- md_table(pm, "pair", "mean_diff", "sd_diff", unique(pm$pair)); t3[1] <- sprintf(t3[1], "Pair (m1 − m2)")
 t4 <- c("| δ | n_sim | Pairs with mean difference ≥ δ (E and anchor) |", "|---|---|---|",
   sprintf("| %.3f | %d | %.0f%% of %d |", ns$delta, ns$n_sim, 100 * ns$share_pairs_ge_delta, ns$n_pairs))
+t5 <- md_table(sm, "method", "mean_rmse_umi", "sd_rmse_umi", c(methods, "null baseline")); t5[1] <- sprintf(t5[1], "Method")
+# Tables 6–7: mean over replicates, one row per condition x dataset (E, anchor) x method, one column per type
+bd <- do.call(rbind, brows); bd <- bd[bd$dataset %in% c("E", "anchor"), ]
+type_table <- function(kind, types) {
+  z <- aggregate(value ~ n_cells + depth + dataset + method + type, bd[bd$kind == kind, ], mean)
+  w <- reshape(z, idvar = c("n_cells", "depth", "dataset", "method"), timevar = "type", direction = "wide")
+  names(w) <- sub("^value[.]", "", names(w))
+  if (kind == "absent") w$total <- rowSums(w[types])
+  w <- w[order(w$n_cells, w$depth, match(w$dataset, c("E", "anchor")), match(w$method, methods)), ]
+  cols <- c(types, if (kind == "absent") "total")
+  c(paste0("| Condition | Dataset | Method | ", paste(cols, collapse = " | "), " |"),
+    paste0("|---|---|---|", strrep("---|", length(cols))),
+    sprintf("| %d cells, %s UMI | %s | %s | %s |", w$n_cells, format(w$depth, big.mark = ","), w$dataset, w$method,
+      apply(w[cols], 1, function(v) paste(sprintf("%.3f", v), collapse = " | "))))
+}
+t6 <- type_table("bias", ts); t7 <- type_table("absent", absent)
+write.csv(bd, out("type_diagnostics.csv"), row.names = FALSE)
 reps <- unique(sm$reps); n_spots <- nrow(readRDS(files[1])$truth)
 md <- c(sprintf("# Pilot %s: RMSE, failures and n_sim", tissue), "",
   sprintf("Declared pilot (ADEMP §10): %d replicates x %d spots per condition and dataset; not study results. Generated by `scripts/06b_pilot_nsim.R` on %s.",
@@ -113,7 +145,13 @@ md <- c(sprintf("# Pilot %s: RMSE, failures and n_sim", tissue), "",
   "## Table 2. Failure rate per method (fraction of spots), mean (SD) over replicates", "", t2, "",
   "## Table 3. Paired difference in RMSE within replicate (m1 − m2), mean (SD) over replicates", "",
   "A negative value means that m1 has the lower error.", "", t3, "",
-  sprintf("## Table 4. Number of replicates: n_sim = (4 x SD_upper / δ)², SD_upper = %.4f (largest upper 95%% limit of SD(D) over pairs, conditions and datasets)", sd_max), "", t4, "")
+  sprintf("## Table 4. Number of replicates: n_sim = (4 x SD_upper / δ)², SD_upper = %.4f (largest upper 95%% limit of SD(D) over pairs, conditions and datasets)", sd_max), "", t4, "",
+  "## Table 5. RMSE against the UMI-fraction truth (secondary estimand, 2026-11-03), mean (SD) over replicates", "",
+  "Truth = share of the spot's UMI from each type (library sizes of its cells); failed spots and the null baseline use the share of all training UMI per type. RCTD weights are defined on this scale (Cable et al. 2022).", "",
+  if (all(is.na(sm$mean_rmse_umi))) "Not available: run `06_pilot.R <tissue> <workers> <reps> truth` first." else t5, "",
+  "## Table 6. Mean bias per spot type (estimate − cell truth), returned spots, mean over replicates (E and anchor)", "",
+  "Positive = the method gives the type more than its true share of cells.", "", t6, "",
+  "## Table 7. Mean proportion given to reference types absent from the spots (true share 0), returned spots, mean over replicates (E and anchor)", "", t7, "")
 writeLines(md, out("tables.md"), useBytes = TRUE)
 
 cat(sprintf("Largest SD_upper: paired difference %.4f, single method %.4f\n", sd_max,

@@ -69,7 +69,23 @@ anchor_spots <- function(held, held_type, comp) {
     pick <- pool[sample.int(length(pool), sum(n), replace = TRUE)]
     idx <- c(idx, pick); spot <- c(spot, rep(spot_names, n))
   }
-  list(counts = sum_by_spot(held[, idx, drop = FALSE], spot, spot_names), cells_used = idx)
+  list(counts = sum_by_spot(held[, idx, drop = FALSE], spot, spot_names), cells_used = idx,
+       spot = spot)
+}
+
+# UMI-fraction truth (secondary estimand, pilot 2026-11-03): share of the spot's UMI contributed
+# by each type = sum of the library sizes of its cells / sum over all cells of the spot. RCTD's
+# weights are defined on this scale ("proportion of the contribution of cell type k to pixel i",
+# Cable et al. 2022, doi:10.1038/s41587-021-00830-w, Methods). Simulated arms: L = drawn library
+# sizes (expected UMI, since every μ column sums to 1), so the truth is the same for all arms;
+# anchor: L = total counts of the real cells used. No random numbers are drawn.
+# Returns spots x types (all `types`, zero for types absent from the spots); rows sum to 1.
+umi_truth <- function(spot, type, L, spot_names, types) {
+  out <- matrix(0, length(spot_names), length(types), dimnames = list(spot_names, types))
+  s <- tapply(L, list(factor(spot, spot_names), factor(type, types)), sum)
+  s[is.na(s)] <- 0
+  out[] <- s
+  out / rowSums(out)
 }
 
 # Depth: a spot above the target is thinned to exactly `target` UMI, drawn at random without

@@ -41,3 +41,11 @@ set.seed(2)
 p <- c(A = 0.8, B = 0.15, C = 0.05)
 cv <- draw_compositions(4000, 10, types, alpha = 3 * p)   # alpha_k = K * p_k
 ok(all(abs(colMeans(cv / 10) - p) < 0.02), "vector alpha: mean composition = training shares")
+# UMI-share truth (2026-11-03): rows sum to 1; equal library sizes give the cell-share truth;
+# the anchor's spot vector matches its cells; a type with larger cells gets a larger share
+tu <- umi_truth(cells$spot, cells$type, cells$L, rownames(comp), types)
+eqL <- umi_truth(cells$spot, cells$type, rep(1, nrow(cells)), rownames(comp), types)
+ok(all(abs(rowSums(tu) - 1) < 1e-12) && max(abs(eqL - comp / rowSums(comp))) < 1e-12,
+   "UMI truth: rows sum to 1, equal L gives the cell truth")
+ok(length(a$spot) == length(a$cells_used) && all(table(factor(a$spot, rownames(comp))) == rowSums(comp)),
+   "anchor: one spot label per cell used")

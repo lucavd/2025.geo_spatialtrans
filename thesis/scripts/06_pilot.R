@@ -34,13 +34,15 @@
 #
 # Usage (working directory = thesis/):  Rscript scripts/06_pilot.R <tissue> [workers] [reps] [depth]
 #   "depth" rebuilds the spots from the same seeds and only counts spot depths, without deconvolution.
+#   "truth" rebuilds compositions, cells and anchor from the same seeds, checks that the cell truth
+#   equals the saved one and adds the UMI-fraction truth (truth_umi) to existing replicate files.
 
 args <- commandArgs(trailingOnly = TRUE)
 tissue <- if (length(args) >= 1) args[1] else "colon"
 workers <- if (length(args) >= 2) as.integer(args[2]) else 8
 n_rep <- if (length(args) >= 3) as.integer(args[3]) else 10
 mode <- if (length(args) >= 4) args[4] else "full"
-stopifnot(mode %in% c("full", "depth"))
+stopifnot(mode %in% c("full", "depth", "truth"))
 
 data_dir <- Sys.getenv("TESI_DATA")
 stopifnot("TESI_DATA non impostata" = nzchar(data_dir), dir.exists(data_dir))
@@ -90,6 +92,22 @@ run_job <- function(i) {
   if (any(abs(colSums(mu_C) - colSums(mu_E)) > 1e-9)) stop("C4")
   held_ok <- R$held_meta$cell_type %in% ts
   anc <- anchor_spots(R$held[, held_ok], R$held_meta$cell_type[held_ok], comp)
+  # UMI-fraction truth (secondary estimand, 2026-11-03); draws no random numbers, so the RNG
+  # stream of the rest of the job is unchanged. Arms E and C− share it (same cells and L).
+  held_used <- R$held[, held_ok][, anc$cells_used, drop = FALSE]
+  tu_arm <- umi_truth(cells$spot, cells$type, cells$L, rownames(comp), R$types_ref)
+  tu_anc <- umi_truth(anc$spot, R$held_meta$cell_type[held_ok][anc$cells_used],
+                      Matrix::colSums(held_used), rownames(comp), R$types_ref)
+  truth_umi <- list(E = tu_arm, Cminus = tu_arm, anchor = tu_anc)
+  if (any(vapply(truth_umi, function(t) any(abs(rowSums(t) - 1) > 1e-9), logical(1)))) stop("C1 (UMI truth)")
+  if (mode == "truth") {   # add the UMI truth to an existing replicate file; estimates untouched
+    x <- readRDS(f)
+    if (!identical(x$truth, truth)) stop("truth mode: regenerated cell truth differs from the saved one")
+    x$truth_umi <- truth_umi
+    saveRDS(x, f)
+    log_line(paste("truth only, done", job))
+    return(f)
+  }
   raw_umi <- list()
   thin <- function(d, x) { raw_umi[[d]] <<- Matrix::colSums(x); thin_to_depth(x, target) }   # same RNG order as before
   data <- list(
@@ -141,7 +159,7 @@ run_job <- function(i) {
   res <- do.call(rbind, rows)
   res <- cbind(tissue = tissue, n_cells = g$n_cells, depth = g$depth, rep = g$rep, res)
   spot_umi <- vapply(data, function(x) median(Matrix::colSums(x)), numeric(1))
-  saveRDS(list(metrics = res, props = props, truth = truth, spot_umi = spot_umi, depth = depth,
+  saveRDS(list(metrics = res, props = props, truth = truth, truth_umi = truth_umi, spot_umi = spot_umi, depth = depth,
                anchor_cells_used = length(unique(anc$cells_used)), held_cells = sum(held_ok)), f)
   log_line(sprintf("done %s in %.1f min", job, (proc.time()[["elapsed"]] - t_job) / 60))
   f
@@ -172,6 +190,7 @@ errs <- grep("^ERROR", unlist(Filter(is.character, done)), value = TRUE)
 if (length(errs)) { cat(errs, sep = "\n"); stop(length(errs), " jobs failed a check") }
 cat(sprintf("  done in %.1f min\n", (proc.time()[["elapsed"]] - t0) / 60))
 if (mode == "depth") { report_depth(do.call(rbind, done)); quit(save = "no") }
+if (mode == "truth") { cat("UMI truth added to", length(done), "replicate files\n"); quit(save = "no") }
 
 # Summary
 out <- lapply(list.files(out_dir, pattern = "^c.*\\.rds$", full.names = TRUE), readRDS)
