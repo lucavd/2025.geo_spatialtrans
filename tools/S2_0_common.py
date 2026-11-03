@@ -56,6 +56,25 @@ def kernel_lin(rule, prm, kr, kc):
     g = (1.0 - q) * _G(kr, kc, SIG_IN) + q * _G(kr, kc, prm["sigma_m"])
     return g if w <= 0 else (1.0 - w) * g + w * C.exp_ft(kr, kc, ell)
 
+_CACHE = {}
+def _sep(kr, kc):
+    """Frequenze 1D di righe e colonne (la griglia di R5 e' un prodotto esterno: kr colonna, kc riga)."""
+    return np.asarray(kr)[:, 0].astype(DT), np.asarray(kc)[0, :].astype(DT)
+
+def _G_sep(kr, kc, s):
+    """Gaussiana come prodotto esterno di due vettori (C2, C3: stessi valori della 2D a meno dell'arrotondamento)."""
+    a, b = _sep(kr, kc)
+    return np.exp(-2.0 * np.pi ** 2 * s ** 2 * a ** 2)[:, None] * np.exp(-2.0 * np.pi ** 2 * s ** 2 * b ** 2)[None, :]
+
+def _box_shift_sep(kr, kc, dr, dc, ps):
+    """Integrazione sul bin (in cache per griglia) per scarto separabile."""
+    key = ("box", ps, DT)
+    if key not in _CACHE:
+        a, b = _sep(kr, kc)
+        _CACHE[key] = (np.sinc(BIN_UM * a).astype(DT), np.sinc(BIN_UM * b).astype(DT))
+    ba, bb = _CACHE[key]; a, b = _sep(kr, kc)
+    return ((ba * np.exp(-2j * np.pi * a * dr))[:, None] * (bb * np.exp(-2j * np.pi * b * dc))[None, :]).astype(CT)
+
 def field_ft(rule, prm, Tft, kr, kc, ps, X=None):
     """Trasformata del campo dei conteggi (prima di bin, scarto e parita') secondo la regola."""
     kr, kc = kr.astype(DT, copy=False), kc.astype(DT, copy=False)
@@ -64,13 +83,13 @@ def field_ft(rule, prm, Tft, kr, kc, ps, X=None):
     w, ell = prm["w"], prm["ell"]
     E = C.exp_ft(kr, kc, ell) if w > 0 else 0.0
     if rule == "C2":
-        pi = np.where(X["f"] > 0.5, np.exp(-X["din"] / prm["D"]), 0.0).astype(DT)
+        pi = np.where(X["f"] > 0.5, np.exp(np.maximum(-X["din"] / prm["D"], -60.0)), 0.0).astype(DT)
         Te = _rfft(X["T"] * pi, ps); Ti = Tft - Te
-        return (1.0 - w) * (Te * _G(kr, kc, prm["sigma_e"]) + Ti * _G(kr, kc, SIG_IN)) + w * E * Tft
+        return (1.0 - w) * (Te * _G_sep(kr, kc, prm["sigma_e"]) + Ti * _G_sep(kr, kc, SIG_IN)) + w * E * Tft
     if rule == "C3":
-        Fin = _irfft(Tft * ((1.0 - w) * _G(kr, kc, SIG_IN) + w * E), ps)
+        Fin = _irfft(Tft * ((1.0 - w) * _G_sep(kr, kc, SIG_IN) + w * E), ps)
         out = Fin * (1.0 - X["f"])
-        Lf = Fin * X["f"] + _irfft(_rfft(out, ps) * _G(kr, kc, prm["sigma_g"]), ps)
+        Lf = Fin * X["f"] + _irfft(_rfft(out, ps) * _G_sep(kr, kc, prm["sigma_g"]), ps)
         return _rfft(Lf, ps)
     raise ValueError(rule)
 
@@ -80,9 +99,8 @@ def _sample(F, ps, region_bins):
     return h[j0: region_bins[0] * SUB: SUB, j0: region_bins[1] * SUB: SUB].astype(np.float64)
 
 def sample_bins(Fft, kr, kc, ps, region_bins, dr, dc):
-    """Come R5 expected_bins: integrazione sul bin, scarto delta, campionamento al centro del bin."""
-    kr, kc = kr.astype(DT, copy=False), kc.astype(DT, copy=False)
-    return _sample(Fft * (C.box_ft(kr, kc) * C.shift_ft(kr, kc, dr - SUB_UM / 2, dc - SUB_UM / 2)).astype(CT), ps, region_bins)
+    """Come R5 expected_bins: integrazione sul bin, scarto delta, campionamento al centro del bin (fattori separabili, per C2 e C3)."""
+    return _sample(Fft * _box_shift_sep(kr, kc, dr - SUB_UM / 2, dc - SUB_UM / 2, ps), ps, region_bins)
 
 def g_rule(rule, prm, P, X=None):
     kr, kc, ps = P["kr"], P["kc"], P["pshape"]
@@ -182,7 +200,7 @@ def make_blur(rule, prm, pos_um, d_img, fmask=None, pad_um=300.0, step=SUB_UM):
             cache["f"] = fm
             if rule == "C2":
                 din = ndimage.distance_transform_edt(fm > 0.5) * step
-                cache["pi"] = np.where(fm > 0.5, np.exp(-din / prm["D"]), 0.0)
+                cache["pi"] = np.where(fm > 0.5, np.exp(np.maximum(-din / prm["D"], -60.0)), 0.0)
     def blur(F):
         setup(F.shape)
         G = np.pad(np.asarray(F, np.float64), p, mode="reflect"); ps, kr, kc, E = cache["ps"], cache["kr"], cache["kc"], cache["E"]
