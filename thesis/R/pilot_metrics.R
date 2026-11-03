@@ -8,6 +8,18 @@ failed_spots <- function(est, tol = 1e-6) {
 
 rmse <- function(est, truth) sqrt(mean((est - truth)^2))
 
+# Null baseline (DECISIONS 2026-11-03, Luca): share of each cell type among all training cells
+# (full training split, not the capped reference), over all reference types.
+# n_train: named vector of training cells per reference type.
+null_props <- function(n_train) n_train / sum(n_train)
+
+# Main analysis (ADEMP §7.2): failed spots get the null-baseline proportions.
+fill_failed <- function(est, p_null) {
+  bad <- failed_spots(est)
+  if (any(bad)) est[bad, ] <- matrix(p_null[colnames(est)], sum(bad), ncol(est), byrow = TRUE)
+  est
+}
+
 # Mean over spots of the Jensen–Shannon divergence (base 2, between 0 and 1).
 jsd <- function(est, truth) {
   kl <- function(p, q) { i <- p > 0; sum(p[i] * log2(p[i] / q[i])) }

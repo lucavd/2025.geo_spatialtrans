@@ -132,7 +132,7 @@ Each pseudo-spot dataset contains S spots *[S from the pilot; 500 in the pilot, 
 
 $$\boldsymbol{\pi}_s \sim \mathrm{Dirichlet}(\boldsymbol{\alpha}), \qquad \alpha_k = K_s \, p_k,$$
 
-where p_k is the share of type k among the training cells of the spot types. With equal shares this reduces to the symmetric α = 1 used by the spatial-decomposition simulator of Open Problems [REF]. The n cells of the spot are then assigned to types by a multinomial draw with probabilities π_s, and the true composition is the fraction of cells of each type, π_sk = n_sk / n. Proportions taken from the training split make the spots resemble the tissue and limit the reuse of rare held-out cells in the anchor; they are taken from training rather than from the held-out donor so that the test donor does not shape its own test. Rare types consequently appear in few spots.
+where p_k is the share of type k among the training cells of the spot types. With equal shares this reduces to the symmetric α = 1 used by the spatial-decomposition simulator of Open Problems [REF]. The n cells of the spot are then assigned to types by a multinomial draw with probabilities π_s, and the true composition is the fraction of cells of each type, π_sk = n_sk / n. Proportions taken from the training split make the spots resemble the tissue and limit the reuse of rare held-out cells in the anchor; they are taken from training rather than from the held-out donor so that the test donor does not shape its own test. Because the α_k sum to K_s, the expected proportion of type k in a spot equals its share in the tissue, E[π_sk] = p_k. Rare types consequently appear in few spots.
 
 ### 2.5.3 Cells per spot and sequencing depth
 
@@ -217,7 +217,7 @@ The estimand of Aim 2 is the proportion π_sk of cell type k in spot s. For meth
 
 $$\mathrm{RMSE}_i = \sqrt{\frac{1}{S K_r}\sum_{s=1}^{S}\sum_{k=1}^{K_r}\left(\hat\pi_{sk} - \pi_{sk}\right)^2}, \qquad \mathrm{JSD}_i = \frac{1}{S}\sum_{s=1}^{S} \mathrm{JSD}\left(\hat{\boldsymbol{\pi}}_s,\, \boldsymbol{\pi}_s\right),$$
 
-where π_sk = 0 for reference types absent from the spots and JSD is the Jensen–Shannon divergence. Each measure is averaged over the n_sim replicates and reported with its Monte Carlo standard error, MCSE = SD_i / √n_sim (Morris et al. 2019). Errors are computed for every combination of method, arm and condition and for the anchor. RMSE is the primary measure and JSD the secondary measure.
+where π_sk = 0 for reference types absent from the spots and JSD is the Jensen–Shannon divergence. Each measure is averaged over the n_sim replicates and reported with its Monte Carlo standard error, MCSE = SD_i / √n_sim (Morris et al. 2019). Errors are computed for every combination of method, arm and condition and for the anchor. RMSE is the primary measure and JSD the secondary measure. The failure rate of each method is a further secondary measure (Section 2.8.5).
 
 ### 2.7.3 Rankings and their agreement
 
@@ -249,7 +249,7 @@ A pilot study, whose results are not part of the findings, provides the SD for n
 
 ### 2.8.5 Failures
 
-No quality filter is applied to the pseudo-spots, which are built from filtered cells; each method applies only its built-in filters. A failure is defined as a spot that a method discards or cannot process, a run that does not converge, or an estimated composition whose proportions do not sum to one within a tolerance *[tolerance pending Luca's approval]*. Failures are not discarded silently (Morris et al. 2019). They are counted for every combination of method, arm and condition and reported as a result. In the main analysis, methods are compared on the spots returned by all methods within a replicate; a method that fails on every spot of a replicate is excluded from this common set rather than emptying it. In a sensitivity analysis, failed spots receive the worst possible score and RMSE, τ and W are recomputed.
+No quality filter is applied to the pseudo-spots, which are built from filtered cells; each method applies only its built-in filters. A failure is defined as a spot that a method discards or cannot process, a run that does not converge, or an estimated composition whose proportions do not sum to one within a tolerance *[tolerance pending Luca's approval]*. Failures are not discarded silently (Morris et al. 2019). They are counted for every combination of method, arm and condition and reported as a result. In the main analysis, methods are compared on the spots returned by all methods within a replicate; a method that fails on every spot of a replicate is excluded from this common set rather than emptying it. In a sensitivity analysis, failed spots receive the worst possible score and RMSE, τ and W are recomputed. No method is excluded from a condition because of partial failures, since a method that fails more often under a given source of profiles is itself a finding, and excluding it would conceal poor performance linked to failure (Pawel et al. 2026). The failure rate, the fraction of spots on which a method fails within a replicate, is therefore a secondary performance measure, averaged over replicates with its Monte Carlo standard error and compared with the rate on the anchor, which gives the level of failure expected on real cells.
 
 ### 2.8.6 Control analyses
 
@@ -284,6 +284,8 @@ Li et al. 2023. *Nature Communications*. doi:10.1038/s41467-023-37168-7 (full au
 Moreno-Torres JG, et al. A unifying view on dataset shift in classification. *Pattern Recognition* 2012;45:521–530. doi:10.1016/j.patcog.2011.06.019
 
 Nili H, Wingfield C, Walther A, Su L, Marslen-Wilson W, Kriegeskorte N. A toolbox for representational similarity analysis. *PLoS Computational Biology* 2014. [REF: verify DOI and pages before citing].
+
+Pawel S, Bartoš F, Siepe BS, Lohmann A. Handling missingness, failures, and non-convergence in simulation studies: a review of current practices and recommendations. *The American Statistician* 2026;80:31–48. doi:10.1080/00031305.2025.2540002
 
 Pelka K, Hofree M, Chen JH, et al. Spatially organized multicellular immune hubs in human colorectal cancer. *Cell* 2021;184:4734–4752. doi:10.1016/j.cell.2021.08.003
 

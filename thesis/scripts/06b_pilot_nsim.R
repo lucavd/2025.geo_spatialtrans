@@ -1,0 +1,122 @@
+# 06b_pilot_nsim.R — pilot tables for n_sim (ADEMP §6, §7.2; DECISIONS 2026-11-03). Pilot numbers
+# never enter the thesis results: they fix n_sim and document the failure rule.
+#
+# Input: the replicate files written by 06_pilot.R (<TESI_DATA>/derived/pilot/<tissue>/c*_d*_r*.rds)
+# and the pilot reference (<TESI_DATA>/derived/reference/<tissue>_pilot.rds).
+# Rule of the main analysis: failed spots get the null-baseline proportions (share of each type
+# among all training cells, all reference types); the null baseline itself is reported as a
+# reference value, scored on every spot.
+# Measures per replicate: RMSE of each method and of the null baseline; failure rate; paired
+# difference D = RMSE(m1) − RMSE(m2) within the replicate. Across replicates: mean, SD and the
+# upper 95% limit of the SD (chi-square, reps − 1 df; DECISIONS 2026-10-30).
+# n_sim = (4 × SD_upper / δ)², from 2 × MCSE(D) ≤ δ/2, with SD_upper the largest over pairs,
+# conditions and datasets (DECISIONS 2026-11-03).
+#
+# Output (next to the pilot summary, outside git):
+#   <tissue>_pilot_rmse_methods.csv   one row per condition x dataset x method (+ null baseline)
+#   <tissue>_pilot_rmse_pairs.csv     one row per condition x dataset x pair of methods
+#   <tissue>_pilot_nsim.csv           n_sim and share of pairs with |mean D| >= δ, per δ
+#   <tissue>_pilot_tables.md          the same, formatted (mean (SD))
+#
+# Usage (working directory = thesis/):  Rscript scripts/06b_pilot_nsim.R <tissue>
+
+args <- commandArgs(trailingOnly = TRUE)
+tissue <- if (length(args) >= 1) args[1] else "colon"
+data_dir <- Sys.getenv("TESI_DATA")
+stopifnot("TESI_DATA non impostata" = nzchar(data_dir), dir.exists(data_dir))
+stopifnot("Run from the thesis/ folder" = file.exists("thesis.Rproj"))
+source("R/pilot_metrics.R")
+
+pilot_dir <- file.path(data_dir, "derived", "pilot")
+files <- list.files(file.path(pilot_dir, tissue), pattern = "^c\\d+_d\\d+_r\\d+\\.rds$", full.names = TRUE)
+stopifnot("no pilot replicate files" = length(files) > 0)
+R0 <- readRDS(file.path(data_dir, "derived", "reference", paste0(tissue, "_pilot.rds")))
+p_null <- null_props(lengths(R0$L_by_type))
+stopifnot(abs(sum(p_null) - 1) < 1e-12, setequal(names(p_null), R0$types_ref))
+methods <- c("RCTD", "spatialDWLS", "MuSiC", "NNLS")
+deltas <- c(0.005, 0.01, 0.02, 0.03)
+up <- function(n) sqrt((n - 1) / qchisq(0.025, n - 1))   # upper 95% limit factor for an SD
+
+# Per replicate
+rows <- list()
+for (f in files) {
+  x <- readRDS(f); m0 <- x$metrics[1, ]
+  for (ds in names(x$props)) {
+    tr <- x$truth
+    for (m in names(x$props[[ds]])) {
+      est <- x$props[[ds]][[m]][, colnames(tr)]
+      bad <- failed_spots(est); filled <- fill_failed(est, p_null)
+      stopifnot(all(abs(rowSums(filled) - 1) < 1e-6), identical(filled[!bad, ], est[!bad, ]))
+      rows[[length(rows) + 1]] <- data.frame(n_cells = m0$n_cells, depth = m0$depth, rep = m0$rep,
+        dataset = ds, method = m, rmse = rmse(filled, tr), fail_rate = mean(bad))
+    }
+    nb <- matrix(p_null[colnames(tr)], nrow(tr), ncol(tr), byrow = TRUE)
+    rows[[length(rows) + 1]] <- data.frame(n_cells = m0$n_cells, depth = m0$depth, rep = m0$rep,
+      dataset = ds, method = "null baseline", rmse = rmse(nb, tr), fail_rate = 0)
+  }
+}
+d <- do.call(rbind, rows)
+key <- c("n_cells", "depth", "dataset")
+
+# Single methods
+sm <- do.call(rbind, lapply(split(d, d[c(key, "method")], drop = TRUE), function(z) data.frame(
+  z[1, c(key, "method")], reps = nrow(z), mean_rmse = mean(z$rmse), sd_rmse = sd(z$rmse),
+  sd_rmse_upper = sd(z$rmse) * up(nrow(z)), mean_fail_rate = mean(z$fail_rate), sd_fail_rate = sd(z$fail_rate))))
+
+# Paired differences (methods only, same replicate)
+dm <- d[d$method %in% methods, ]
+pairs <- combn(methods, 2, simplify = FALSE)
+pm <- do.call(rbind, lapply(split(dm, dm[key], drop = TRUE), function(z) do.call(rbind, lapply(pairs, function(p) {
+  a <- z[z$method == p[1], ]; b <- z[z$method == p[2], ]
+  b <- b[match(a$rep, b$rep), ]; D <- a$rmse - b$rmse
+  data.frame(z[1, key], pair = paste(p[1], "-", p[2]), reps = length(D), mean_diff = mean(D),
+    sd_diff = sd(D), sd_diff_upper = sd(D) * up(length(D)))
+}))))
+
+# n_sim per δ; share of pairs above δ in the arms of the main analysis present in the pilot (E, anchor)
+sd_max <- max(pm$sd_diff_upper)
+main <- pm$dataset %in% c("E", "anchor")
+ns <- data.frame(delta = deltas, sd_diff_upper_max = sd_max, n_sim = ceiling((4 * sd_max / deltas)^2),
+  share_pairs_ge_delta = sapply(deltas, function(dl) mean(abs(pm$mean_diff[main]) >= dl)),
+  n_pairs = sum(main))
+
+ord <- function(z) z[order(z$n_cells, z$depth, match(z$dataset, c("E", "Cminus", "anchor"))), ]
+sm <- ord(sm); pm <- ord(pm); rownames(sm) <- rownames(pm) <- NULL
+out <- function(suffix) file.path(pilot_dir, paste0(tissue, "_pilot_", suffix))
+write.csv(sm, out("rmse_methods.csv"), row.names = FALSE)
+write.csv(pm, out("rmse_pairs.csv"), row.names = FALSE)
+write.csv(ns, out("nsim.csv"), row.names = FALSE)
+
+# Formatted tables: rows condition x method (or pair), columns E / C− / anchor, cells "mean (SD)"
+fmt <- function(m, s) sprintf("%.3f (%.3f)", m, s)
+md_table <- function(z, rowvar, mcol, scol, rowlabels) {
+  cond <- unique(z[c("n_cells", "depth")]); lines <- character()
+  for (i in seq_len(nrow(cond))) for (r in rowlabels) {
+    cell <- function(ds) { w <- z[z$n_cells == cond$n_cells[i] & z$depth == cond$depth[i] & z$dataset == ds & z[[rowvar]] == r, ]
+      if (nrow(w)) fmt(w[[mcol]], w[[scol]]) else "" }
+    lines <- c(lines, sprintf("| %d cells, %s UMI | %s | %s | %s | %s |", cond$n_cells[i],
+      format(cond$depth[i], big.mark = ","), r, cell("E"), cell("Cminus"), cell("anchor")))
+  }
+  c("| Condition | %s | E | C− | Anchor |", "|---|---|---|---|---|", lines)
+}
+t1 <- md_table(sm, "method", "mean_rmse", "sd_rmse", c(methods, "null baseline")); t1[1] <- sprintf(t1[1], "Method")
+t2 <- md_table(sm[sm$method %in% methods, ], "method", "mean_fail_rate", "sd_fail_rate", methods); t2[1] <- sprintf(t2[1], "Method")
+t3 <- md_table(pm, "pair", "mean_diff", "sd_diff", unique(pm$pair)); t3[1] <- sprintf(t3[1], "Pair (m1 − m2)")
+t4 <- c("| δ | n_sim | Pairs with mean difference ≥ δ (E and anchor) |", "|---|---|---|",
+  sprintf("| %.3f | %d | %.0f%% of %d |", ns$delta, ns$n_sim, 100 * ns$share_pairs_ge_delta, ns$n_pairs))
+reps <- unique(sm$reps); n_spots <- nrow(readRDS(files[1])$truth)
+md <- c(sprintf("# Pilot %s: RMSE, failures and n_sim", tissue), "",
+  sprintf("Declared pilot (ADEMP §10): %d replicates x %d spots per condition and dataset; not study results. Generated by `scripts/06b_pilot_nsim.R` on %s.",
+    reps, n_spots, format(Sys.Date())), "",
+  "Failed spots get the null-baseline proportions (share of each type among all training cells, all reference types; DECISIONS 2026-11-03). The null baseline row scores these proportions on every spot.", "",
+  "## Table 1. RMSE per method, mean (SD) over replicates", "", t1, "",
+  "## Table 2. Failure rate per method (fraction of spots), mean (SD) over replicates", "", t2, "",
+  "## Table 3. Paired difference in RMSE within replicate (m1 − m2), mean (SD) over replicates", "",
+  "A negative value means that m1 has the lower error.", "", t3, "",
+  sprintf("## Table 4. Number of replicates: n_sim = (4 x SD_upper / δ)², SD_upper = %.4f (largest upper 95%% limit of SD(D) over pairs, conditions and datasets)", sd_max), "", t4, "")
+writeLines(md, out("tables.md"), useBytes = TRUE)
+
+cat(sprintf("Largest SD_upper: paired difference %.4f, single method %.4f\n", sd_max,
+  max(sm$sd_rmse_upper[sm$method %in% methods])))
+print(ns, row.names = FALSE)
+cat("Written:", paste(basename(c(out("rmse_methods.csv"), out("rmse_pairs.csv"), out("nsim.csv"), out("tables.md")))), "\n")
