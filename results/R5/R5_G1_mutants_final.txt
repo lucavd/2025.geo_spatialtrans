@@ -1,0 +1,140 @@
+PASS  T1 kernel sums to 1 (1.0, 1.0, 0.0, 30.0)  sum=1.00000000
+PASS  T1 kernel sums to 1 (2.0, 3.0, 0.05, 30.0)  sum=1.00000012
+PASS  T1 kernel sums to 1 (0.5, 0.5, 0.2, 80.0)  sum=0.99999994
+PASS  T2 half-plane blur matches Phi, sigma=0.5  max err=4.35e-03 tol=5e-03
+PASS  T2 half-plane blur matches Phi, sigma=2.0  max err=4.98e-04 tol=1e-03
+PASS  T3 shift delta = source moved by +delta  max err=2.38e-07
+PASS  T4 fit_ab recovers a, b on exact data  a=1.700000 b=0.250000
+PASS  T9 parity factors recovered within 3 %  est=[0.595, 0.996, 0.9, 1.508] max rel err=0.008
+PASS  T8 bootstrap reproducible with seed  (-0.13689968075963302, -0.5860977522601442, 0.3091327496291918)
+PASS  T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))  max err/peak=0.0019
+PASS  T10b a 0.5 um row offset is detected by T10  err with +0.5 um rows=0.0964
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A1)  max |diff| px rows=0.003 cols=0.003 (0.5 px = 0.14 um)
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A6)  max |diff| px rows=0.000 cols=0.000 (0.5 px = 0.14 um)
+PASS  T12 synthetic tile identical across processes (PYTHONHASHSEED 1 vs 2)  286945.0 207344.0 | 286945.0 207344.0
+PASS  T7 nucleus/ring ratio inverted, r=0.7  r_hat=0.6822 rel err=-0.0255
+PASS  T7 nucleus/ring ratio inverted, r=1.0  r_hat=1.0063 rel err=+0.0063
+PASS  T7 nucleus/ring ratio inverted, r=2.0  r_hat=1.9615 rel err=-0.0192
+PASS  T7 nucleus/ring ratio inverted, r=4.0  r_hat=4.0177 rel err=+0.0044
+PASS  T7 module blur equals reference real-space blur  max rel diff=0.0109
+MUTANT M0 NOT DETECTED by: []
+PASS  T1 kernel sums to 1 (1.0, 1.0, 0.0, 30.0)  sum=1.00000000
+FAIL  T1 kernel sums to 1 (2.0, 3.0, 0.05, 30.0)  sum=1.05000007
+FAIL  T1 kernel sums to 1 (0.5, 0.5, 0.2, 80.0)  sum=1.20000029
+PASS  T2 half-plane blur matches Phi, sigma=0.5  max err=4.35e-03 tol=5e-03
+PASS  T2 half-plane blur matches Phi, sigma=2.0  max err=4.98e-04 tol=1e-03
+PASS  T3 shift delta = source moved by +delta  max err=2.38e-07
+PASS  T4 fit_ab recovers a, b on exact data  a=1.700000 b=0.250000
+PASS  T9 parity factors recovered within 3 %  est=[0.61, 0.997, 0.904, 1.488] max rel err=0.017
+PASS  T8 bootstrap reproducible with seed  (-0.13689968075963302, -0.5860977522601442, 0.3091327496291918)
+PASS  T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))  max err/peak=0.0019
+PASS  T10b a 0.5 um row offset is detected by T10  err with +0.5 um rows=0.0964
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A1)  max |diff| px rows=0.003 cols=0.003 (0.5 px = 0.14 um)
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A6)  max |diff| px rows=0.000 cols=0.000 (0.5 px = 0.14 um)
+PASS  T12 synthetic tile identical across processes (PYTHONHASHSEED 1 vs 2)  286945.0 207344.0 | 286945.0 207344.0
+PASS  T7 nucleus/ring ratio inverted, r=0.7  r_hat=0.6829 rel err=-0.0244
+PASS  T7 nucleus/ring ratio inverted, r=1.0  r_hat=1.0062 rel err=+0.0062
+PASS  T7 nucleus/ring ratio inverted, r=2.0  r_hat=1.9585 rel err=-0.0208
+PASS  T7 nucleus/ring ratio inverted, r=4.0  r_hat=4.0063 rel err=+0.0016
+FAIL  T7 module blur equals reference real-space blur  max rel diff=0.0581
+MUTANT M1 DETECTED by: ['T1 kernel sums to 1 (2.0, 3.0, 0.05, 30.0)', 'T1 kernel sums to 1 (0.5, 0.5, 0.2, 80.0)', 'T7 module blur equals reference real-space blur']
+PASS  T1 kernel sums to 1 (1.0, 1.0, 0.0, 30.0)  sum=1.00000000
+PASS  T1 kernel sums to 1 (2.0, 3.0, 0.05, 30.0)  sum=1.00000012
+PASS  T1 kernel sums to 1 (0.5, 0.5, 0.2, 80.0)  sum=0.99999994
+FAIL  T2 half-plane blur matches Phi, sigma=0.5  max err=1.68e-01 tol=5e-03
+FAIL  T2 half-plane blur matches Phi, sigma=2.0  max err=8.93e-02 tol=1e-03
+FAIL  T3 shift delta = source moved by +delta  max err=3.83e-02
+PASS  T4 fit_ab recovers a, b on exact data  a=1.700000 b=0.250000
+PASS  T9 parity factors recovered within 3 %  est=[0.602, 0.991, 0.906, 1.5] max rel err=0.009
+PASS  T8 bootstrap reproducible with seed  (-0.13689968075963302, -0.5860977522601442, 0.3091327496291918)
+FAIL  T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))  max err/peak=0.6651
+FAIL  T10b a 0.5 um row offset is detected by T10  err with +0.5 um rows=0.6840
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A1)  max |diff| px rows=0.003 cols=0.003 (0.5 px = 0.14 um)
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A6)  max |diff| px rows=0.000 cols=0.000 (0.5 px = 0.14 um)
+PASS  T12 synthetic tile identical across processes (PYTHONHASHSEED 1 vs 2)  286945.0 207344.0 | 286945.0 207344.0
+PASS  T7 nucleus/ring ratio inverted, r=0.7  r_hat=0.6822 rel err=-0.0255
+PASS  T7 nucleus/ring ratio inverted, r=1.0  r_hat=1.0063 rel err=+0.0063
+PASS  T7 nucleus/ring ratio inverted, r=2.0  r_hat=1.9615 rel err=-0.0192
+PASS  T7 nucleus/ring ratio inverted, r=4.0  r_hat=4.0177 rel err=+0.0044
+PASS  T7 module blur equals reference real-space blur  max rel diff=0.0109
+MUTANT M2 DETECTED by: ['T2 half-plane blur matches Phi, sigma=0.5', 'T2 half-plane blur matches Phi, sigma=2.0', 'T3 shift delta = source moved by +delta', 'T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))']
+PASS  T1 kernel sums to 1 (1.0, 1.0, 0.0, 30.0)  sum=1.00000000
+PASS  T1 kernel sums to 1 (2.0, 3.0, 0.05, 30.0)  sum=1.00000012
+PASS  T1 kernel sums to 1 (0.5, 0.5, 0.2, 80.0)  sum=0.99999994
+PASS  T2 half-plane blur matches Phi, sigma=0.5  max err=4.35e-03 tol=5e-03
+PASS  T2 half-plane blur matches Phi, sigma=2.0  max err=4.98e-04 tol=1e-03
+PASS  T3 shift delta = source moved by +delta  max err=2.38e-07
+PASS  T4 fit_ab recovers a, b on exact data  a=1.700000 b=0.250000
+FAIL  T9 parity factors recovered within 3 %  est=[1.0, 1.0, 1.0, 1.0] max rel err=0.667
+PASS  T8 bootstrap reproducible with seed  (-0.13689968075963302, -0.5860977522601442, 0.3091327496291918)
+PASS  T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))  max err/peak=0.0019
+PASS  T10b a 0.5 um row offset is detected by T10  err with +0.5 um rows=0.0964
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A1)  max |diff| px rows=0.003 cols=0.003 (0.5 px = 0.14 um)
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A6)  max |diff| px rows=0.000 cols=0.000 (0.5 px = 0.14 um)
+PASS  T12 synthetic tile identical across processes (PYTHONHASHSEED 1 vs 2)  286945.0 207344.0 | 286945.0 207344.0
+PASS  T7 nucleus/ring ratio inverted, r=0.7  r_hat=0.6822 rel err=-0.0255
+PASS  T7 nucleus/ring ratio inverted, r=1.0  r_hat=1.0063 rel err=+0.0063
+PASS  T7 nucleus/ring ratio inverted, r=2.0  r_hat=1.9615 rel err=-0.0192
+PASS  T7 nucleus/ring ratio inverted, r=4.0  r_hat=4.0177 rel err=+0.0044
+PASS  T7 module blur equals reference real-space blur  max rel diff=0.0109
+MUTANT M3 DETECTED by: ['T9 parity factors recovered within 3 %']
+PASS  T1 kernel sums to 1 (1.0, 1.0, 0.0, 30.0)  sum=1.00000000
+PASS  T1 kernel sums to 1 (2.0, 3.0, 0.05, 30.0)  sum=1.00000000
+PASS  T1 kernel sums to 1 (0.5, 0.5, 0.2, 80.0)  sum=1.00000000
+FAIL  T2 half-plane blur matches Phi, sigma=0.5  max err=2.25e-01 tol=5e-03
+FAIL  T2 half-plane blur matches Phi, sigma=2.0  max err=1.80e-01 tol=1e-03
+FAIL  T3 shift delta = source moved by +delta  max err=8.22e-03
+PASS  T4 fit_ab recovers a, b on exact data  a=1.700000 b=0.250000
+PASS  T9 parity factors recovered within 3 %  est=[0.602, 1.0, 0.897, 1.501] max rel err=0.004
+PASS  T8 bootstrap reproducible with seed  (-0.13689968075963302, -0.5860977522601442, 0.3091327496291918)
+FAIL  T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))  max err/peak=0.4648
+FAIL  T10b a 0.5 um row offset is detected by T10  err with +0.5 um rows=0.5141
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A1)  max |diff| px rows=0.003 cols=0.003 (0.5 px = 0.14 um)
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A6)  max |diff| px rows=0.000 cols=0.000 (0.5 px = 0.14 um)
+PASS  T12 synthetic tile identical across processes (PYTHONHASHSEED 1 vs 2)  286945.0 207344.0 | 286945.0 207344.0
+FAIL  T7 nucleus/ring ratio inverted, r=0.7  r_hat=nan rel err=+nan
+FAIL  T7 nucleus/ring ratio inverted, r=1.0  r_hat=0.9102 rel err=-0.0898
+FAIL  T7 nucleus/ring ratio inverted, r=2.0  r_hat=6.2222 rel err=+2.1111
+FAIL  T7 nucleus/ring ratio inverted, r=4.0  r_hat=nan rel err=+nan
+FAIL  T7 module blur equals reference real-space blur  max rel diff=0.9948
+MUTANT M4 DETECTED by: ['T2 half-plane blur matches Phi, sigma=0.5', 'T2 half-plane blur matches Phi, sigma=2.0', 'T3 shift delta = source moved by +delta', 'T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))']
+PASS  T1 kernel sums to 1 (1.0, 1.0, 0.0, 30.0)  sum=1.00000000
+PASS  T1 kernel sums to 1 (2.0, 3.0, 0.05, 30.0)  sum=1.00000012
+PASS  T1 kernel sums to 1 (0.5, 0.5, 0.2, 80.0)  sum=0.99999994
+PASS  T2 half-plane blur matches Phi, sigma=0.5  max err=4.35e-03 tol=5e-03
+PASS  T2 half-plane blur matches Phi, sigma=2.0  max err=4.98e-04 tol=1e-03
+PASS  T3 shift delta = source moved by +delta  max err=2.38e-07
+PASS  T4 fit_ab recovers a, b on exact data  a=1.700000 b=0.250000
+PASS  T9 parity factors recovered within 3 %  est=[0.595, 0.996, 0.9, 1.508] max rel err=0.008
+PASS  T8 bootstrap reproducible with seed  (-0.13689968075963302, -0.5860977522601442, 0.3091327496291918)
+PASS  T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))  max err/peak=0.0019
+PASS  T10b a 0.5 um row offset is detected by T10  err with +0.5 um rows=0.0964
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A1)  max |diff| px rows=0.003 cols=0.003 (0.5 px = 0.14 um)
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A6)  max |diff| px rows=0.000 cols=0.000 (0.5 px = 0.14 um)
+PASS  T12 synthetic tile identical across processes (PYTHONHASHSEED 1 vs 2)  286945.0 207344.0 | 286945.0 207344.0
+PASS  T7 nucleus/ring ratio inverted, r=0.7  r_hat=0.6955 rel err=-0.0064
+PASS  T7 nucleus/ring ratio inverted, r=1.0  r_hat=1.0050 rel err=+0.0050
+FAIL  T7 nucleus/ring ratio inverted, r=2.0  r_hat=1.9053 rel err=-0.0473
+FAIL  T7 nucleus/ring ratio inverted, r=4.0  r_hat=3.7910 rel err=-0.0522
+FAIL  T7 module blur equals reference real-space blur  max rel diff=0.1705
+MUTANT M5 DETECTED by: ['T7 nucleus/ring ratio inverted, r=2.0', 'T7 nucleus/ring ratio inverted, r=4.0', 'T7 module blur equals reference real-space blur']
+PASS  T1 kernel sums to 1 (1.0, 1.0, 0.0, 30.0)  sum=1.00000000
+PASS  T1 kernel sums to 1 (2.0, 3.0, 0.05, 30.0)  sum=1.00000012
+PASS  T1 kernel sums to 1 (0.5, 0.5, 0.2, 80.0)  sum=0.99999994
+PASS  T2 half-plane blur matches Phi, sigma=0.5  max err=4.35e-03 tol=5e-03
+PASS  T2 half-plane blur matches Phi, sigma=2.0  max err=4.98e-04 tol=1e-03
+PASS  T3 shift delta = source moved by +delta  max err=2.38e-07
+PASS  T4 fit_ab recovers a, b on exact data  a=1.700000 b=0.250000
+PASS  T9 parity factors recovered within 3 %  est=[0.608, 1.007, 0.903, 1.482] max rel err=0.013
+PASS  T8 bootstrap reproducible with seed  (-0.13689968075963302, -0.5860977522601442, 0.3091327496291918)
+FAIL  T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))  max err/peak=0.0964
+FAIL  T10b a 0.5 um row offset is detected by T10  err with +0.5 um rows=0.2007
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A1)  max |diff| px rows=0.003 cols=0.003 (0.5 px = 0.14 um)
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A6)  max |diff| px rows=0.000 cols=0.000 (0.5 px = 0.14 um)
+PASS  T12 synthetic tile identical across processes (PYTHONHASHSEED 1 vs 2)  286945.0 207344.0 | 286945.0 207344.0
+PASS  T7 nucleus/ring ratio inverted, r=0.7  r_hat=0.6822 rel err=-0.0255
+PASS  T7 nucleus/ring ratio inverted, r=1.0  r_hat=1.0063 rel err=+0.0063
+PASS  T7 nucleus/ring ratio inverted, r=2.0  r_hat=1.9615 rel err=-0.0192
+PASS  T7 nucleus/ring ratio inverted, r=4.0  r_hat=4.0177 rel err=+0.0044
+PASS  T7 module blur equals reference real-space blur  max rel diff=0.0109
+MUTANT X1 DETECTED by: ['T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))', 'T10b a 0.5 um row offset is detected by T10']

@@ -31,9 +31,9 @@ for ax, key in zip(axs, KEYS):
     for m in ("K1", "K2", "K3"):
         ax.semilogy(x[ok], acc[f"pred_{m}"][ok] / n[ok] / ref, "-", lw=1.0 if m != "K2" else 1.6, color=COL[m],
                     label={"K1": "Gaussian", "K2": "Gaussian + tail", "K3": "anisotropic + tail"}[m])
-    ax.axvline(0, color="k", lw=0.5); ax.set_title(f"{NAME[key]} ({int((T.key == key).sum())} tiles)", loc="left")
-    ax.set_xlabel("signed distance from H&E tissue edge (µm)")
-axs[0].set_ylabel("UMI per 2 µm bin / tissue level"); axs[0].legend(frameon=False, loc="lower left")
+    ax.axvline(0, color="k", lw=0.5); ax.set_title(f"{NAME[key].replace(' (tumour and stroma)', '')}, {int((T.key == key).sum())} tiles", loc="left")
+axs[0].set_ylabel("UMI per 2 µm bin / tissue level"); axs[0].legend(frameon=False, loc="upper right")
+fig.supxlabel("signed distance from the H&E tissue edge (µm; negative = inside tissue)", fontsize=8)
 fig.tight_layout(); fig.savefig(f"{FD}/R5_F1_edge_profiles.png", dpi=200)
 
 # F2: stime per tessera
@@ -56,24 +56,53 @@ axs[2].set_xlabel("shift along columns (µm)"); axs[2].set_ylabel("shift along r
 axs[2].legend(frameon=False, fontsize=6, markerscale=2)
 fig.tight_layout(); fig.savefig(f"{FD}/R5_F2_tile_estimates.png", dpi=200)
 
-# F3: rapporto nucleo/corona prima della diffusione e CP-1
+# F3: rapporto nucleo/corona: osservato (R4), prima della diffusione con il nucleo dei bordi (sensibilita' sulle ROI riuscite; come scritto
+# non calcolabile fuori dal cervello) e con la sfocatura interna di PH-2 (per ROI)
 if os.path.exists(f"{O}/tables/R5_predictions_nc.csv"):
     Q = pd.read_csv(f"{O}/tables/R5_predictions_nc.csv")
-    fig, axs = plt.subplots(1, 2, figsize=(9, 3.0))
-    A = ["A1", "A2", "A3", "A4", "A5", "A6"]
-    p5 = Q[Q.prediction == "P-5"].set_index("archetype").reindex(A)
-    x = np.arange(6)
-    axs[0].plot(x - 0.12, p5.r_obs_mean, "o", color="black", label="observed (R4, after diffusion)")
-    axs[0].errorbar(x + 0.12, p5.r_true, yerr=[p5.r_true - p5.lo, p5.hi - p5.r_true], fmt="s", color="#0072B2", capsize=2, label="before diffusion (this step)")
+    A = ["A1", "A2", "A3", "A4", "A5", "A6"]; x = np.arange(6)
+    sv = Q[(Q.prediction == "P-5") & Q.variant.str.startswith("sensitivity")].set_index("archetype").reindex(A)
+    fig, axs = plt.subplots(1, 2, figsize=(10, 3.2))
+    axs[0].plot(x - 0.18, sv.r_obs_mean, "o", color="black", label="observed (R4, after diffusion)")
+    ok = sv.estimate.notna()
+    axs[0].errorbar((x + 0.0)[ok], sv.estimate[ok], yerr=[(sv.estimate - sv.lo)[ok].clip(lower=0), (sv.hi - sv.estimate)[ok].clip(lower=0)], fmt="s", color="#0072B2",
+                    capsize=2, label="before diffusion, edge kernel (successful ROIs only)")
+    ph = f"{O}/tables/R5_PH2_inner_summary.csv"
+    if os.path.exists(ph):
+        H = pd.read_csv(ph); H["a"] = H.tag.str[:2]
+        for i, a in enumerate(A):
+            h = H[(H.a == a) & H.r_at_star.notna()]
+            axs[0].plot(np.full(len(h), i + 0.18), h.r_at_star, "D", ms=3, color="#D55E00", label="before diffusion, inner blur (PH-2, per ROI)" if i == 0 else None)
     axs[0].axhspan(0.909, 1.1, color="#999999", alpha=0.15); axs[0].set_yscale("log")
     axs[0].set_xticks(x); axs[0].set_xticklabels([TIS[a] for a in A], rotation=30, ha="right"); axs[0].set_ylabel("nucleus / ring density ratio")
-    axs[0].set_title("Nucleus vs cytoplasm density (grey: uniform)", loc="left"); axs[0].legend(frameon=False)
-    cp = Q[Q.prediction.str.startswith("CP-1")].set_index("archetype").reindex(A)
-    axs[1].errorbar(x, cp.ratio_pred_obs, yerr=[cp.ratio_pred_obs - cp.lo, cp.hi - cp.ratio_pred_obs], fmt="s", color="#0072B2", capsize=2)
+    axs[0].set_title("Nucleus vs cytoplasm density (grey: uniform)", loc="left"); axs[0].legend(frameon=False, fontsize=6)
+    cp = Q[Q.prediction.str.startswith("CP-1") & Q.variant.str.startswith("sensitivity")].set_index("archetype").reindex(A)
+    ok = cp.estimate.notna()
+    axs[1].errorbar(x[ok], cp.estimate[ok], yerr=[(cp.estimate - cp.lo)[ok].clip(lower=0), (cp.hi - cp.estimate)[ok].clip(lower=0)], fmt="s", color="#0072B2", capsize=2)
     axs[1].axhspan(0.909, 1.1, color="#0072B2", alpha=0.08); axs[1].axhline(1, color="k", lw=0.5)
     axs[1].set_xticks(x); axs[1].set_xticklabels([TIS[a] for a in A], rotation=30, ha="right")
-    axs[1].set_ylabel("predicted / observed ratio\nwithout bins within 2 µm of the nucleus edge"); axs[1].set_title("Check inside tissue (band: within a tenth)", loc="left")
+    axs[1].set_ylabel("predicted / observed ratio\nwithout bins within 2 µm of the nucleus edge"); axs[1].set_title("CP-1 with the edge kernel (band: within a tenth)", loc="left")
     fig.tight_layout(); fig.savefig(f"{FD}/R5_F3_nucleus_ratio.png", dpi=200)
+
+# F5: sfocatura interna (PH-2, per ROI) contro la larghezza ai bordi (P-1, per sezione)
+if os.path.exists(f"{O}/tables/R5_PH2_inner_summary.csv"):
+    H = pd.read_csv(f"{O}/tables/R5_PH2_inner_summary.csv"); H["a"] = H.tag.str[:2]
+    P = pd.read_csv(f"{O}/tables/R5_predictions_edges.csv"); sec = {"A1": "A1", "A2": "A23", "A3": "A23", "A4": "A4", "A5": "A5", "A6": "A6"}
+    A = ["A1", "A2", "A3", "A4", "A5", "A6"]
+    fig, ax = plt.subplots(figsize=(6.5, 3.2))
+    for i, a in enumerate(A):
+        r = P[(P.key == sec[a]) & (P.prediction == "P-1")].iloc[0]
+        ax.errorbar(i - 0.15, r.estimate, yerr=[[r.estimate - r.lo], [r.hi - r.estimate]], fmt="s", color="#0072B2", capsize=2, label="edge kernel σ (tissue → glass)" if i == 0 else None)
+        h = H[H.a == a]; hs = h[h.sigma_in_star.notna()]; hn = h[h.sigma_in_star.isna()]
+        ax.plot(np.full(len(hs), i + 0.15), hs.sigma_in_star, "D", ms=3, color="#D55E00", label="inner blur σ_in (PH-2, per ROI)" if i == 0 else None)
+        below = hn[hn.result.str.contains("below grid")]
+        ax.plot(np.full(len(below), i + 0.15), np.full(len(below), 0.25), "v", ms=4, mfc="none", color="#D55E00", label="no solution ≥ 0.25 µm" if i == 0 else None)
+        if len(below): ax.text(i + 0.27, 0.25, f"×{len(below)}", va="center", fontsize=6, color="#D55E00")
+        other = len(hn) - len(below)
+        if other: ax.text(i + 0.15, 6.5, f"{other} ROI\nno solution", ha="center", fontsize=5)
+    ax.set_yscale("log"); ax.set_ylim(0.15, 9); ax.set_yticks([0.25, 0.5, 1, 2, 4, 8]); ax.set_yticklabels(["0.25", "0.5", "1", "2", "4", "8"]); ax.minorticks_off(); ax.set_xticks(range(6)); ax.set_xticklabels([TIS[a] for a in A], rotation=30, ha="right")
+    ax.set_ylabel("Gaussian width (µm)"); ax.set_title("Blur at tissue edges vs inside tissue", loc="left"); ax.legend(frameon=False, fontsize=6)
+    fig.tight_layout(); fig.savefig(f"{FD}/R5_F5_inner_vs_edge.png", dpi=200)
 
 # F4: lumi
 if os.path.exists(f"{O}/tables/R5_CP2_lumens.csv"):

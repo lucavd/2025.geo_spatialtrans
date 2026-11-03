@@ -1,0 +1,21 @@
+{
+ "T1 kernel sums to 1 (1.0, 1.0, 0.0, 30.0)": true,
+ "T1 kernel sums to 1 (2.0, 3.0, 0.05, 30.0)": true,
+ "T1 kernel sums to 1 (0.5, 0.5, 0.2, 80.0)": true,
+ "T2 half-plane blur matches Phi, sigma=0.5": true,
+ "T2 half-plane blur matches Phi, sigma=2.0": true,
+ "T3 shift delta = source moved by +delta": true,
+ "T4 fit_ab recovers a, b on exact data": true,
+ "T9 parity factors recovered within 3 %": true,
+ "T8 bootstrap reproducible with seed": true,
+ "T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))": true,
+ "T10b a 0.5 um row offset is detected by T10": true,
+ "T11 sub-grid mapping centred on Space Ranger bin centres (A1)": true,
+ "T11 sub-grid mapping centred on Space Ranger bin centres (A6)": true,
+ "T12 synthetic tile identical across processes (PYTHONHASHSEED 1 vs 2)": true,
+ "T7 nucleus/ring ratio inverted, r=0.7": true,
+ "T7 nucleus/ring ratio inverted, r=1.0": true,
+ "T7 nucleus/ring ratio inverted, r=2.0": true,
+ "T7 nucleus/ring ratio inverted, r=4.0": true,
+ "T7 module blur equals reference real-space blur": true
+}

@@ -1,0 +1,11 @@
+tag,key,obs_star,obs_far,sigma_in_star,r_at_star,n_sigma,sigma_max_ok,result
+A1_r1,A1,0.9731789235437003,1.005446399867911,,,6,4.0,"no crossing, below grid? no crossing (closest at 0.5 um, d=-0.047)"
+A1_r2,A1,0.9683725936093118,1.0263269414135954,,,6,4.0,"no crossing, below grid? no crossing (closest at 0.5 um, d=-0.040)"
+A1_r3,A1,1.0009303347645337,0.9604653339659399,,,6,4.0,"no crossing (closest at 4 um, d=+0.009)"
+A1_r4,A1,0.9902991502780841,1.0398017649344344,,,6,4.0,"no crossing, below grid? no crossing (closest at 0.5 um, d=-0.046)"
+A1_r5,A1,0.9954602652827151,0.9924659244374961,3.503182575614521,0.6839573022847215,6,4.0,crossing
+A6_r1,A6,1.616538287609541,2.636059299133992,,,6,4.0,"no crossing (closest at 3 um, d=-0.324)"
+A6_r2,A6,2.005184531473632,4.266478595891492,,,6,4.0,"no crossing (closest at 3 um, d=-0.777)"
+A6_r3,A6,1.892047474734609,3.7703015179699784,,,6,4.0,"no crossing (closest at 3 um, d=-0.641)"
+A6_r4,A6,1.8424065502312021,3.832669221842406,,,6,4.0,"no crossing (closest at 3 um, d=-0.975)"
+A6_r5,A6,1.5640184397885701,3.0339915607304184,,,6,4.0,"no crossing (closest at 3 um, d=-0.864)"

@@ -20,5 +20,5 @@ same = [r4.get(p) == m for p, m in r5.items() if p in r4]
 dd = len(same) > 0 and all(same)
 lines.append(f"(d) posizioni dei bin a 2 µm con md5 uguali a quelle lette in R4: {sum(same)}/{len(same)} {'PASS' if dd else 'FAIL'}")
 ok_all &= nc_ok and dd
-lines.append(f"G-3: {'PASS' if ok_all else 'FAIL'}")
+lines.append(f"G-3: come scritto FALLITO ((a) con tutte le feature della grezza); con il pannello della filtrata (DV-1) {'PASS' if ok_all else 'FAIL'} (a, b, c, d)")
 open("results/R5/R5_G3.txt", "w").write("\n".join(lines) + "\n"); print("\n".join(lines))

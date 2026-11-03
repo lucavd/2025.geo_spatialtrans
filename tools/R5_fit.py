@@ -21,7 +21,7 @@ def region_P(y, f, rows, cols, valid, pf_from_glass=False):
         cls = C.parity_class(rows, cols)
         pf = C.parity_factors(y.astype(float), cls, (P["occ"] == 0) & (P["dist"] >= 10) & valid)
         P = C.prepare_region(y, f, rows, cols)          # densita' ricalcolata con i fattori del vetro
-        c = pf[cls]; rho = C.rho_field(y / c, (P["occ"] >= 1) & (P["dist"] <= -C.INTERIOR_UM))
+        c = pf[cls]; rho = C.rho_field(y / c, P["occ"] >= 1)     # come la primaria: tutti i bin interamente di tessuto (rilievo F13 corretto)
         P.update({"pf": pf, "c": c, "rho": rho, "Tft": C.source_ft(C.source_sub(f, rho), P["pshape"])})
     return P
 
@@ -61,19 +61,20 @@ def run_tile(args):
         P = region_P(y, f, rows, cols, valid)
         sel = C.likelihood_mask(P["occ"], P["dist"], TILE) & valid
         res = {"key": key, "tile": os.path.basename(path)[:-4], "b_far": bfar, "pf": P["pf"].tolist()}
-        k2 = C.fit_model("K2", P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel, C.STARTS["K2"], None)
-        k1 = C.fit_model("K1", P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel, C.STARTS["K1"], None)
-        st3 = dict(k2); st3["sigma_r"] = st3["sigma_c"] = k2["sigma"]
-        k3 = C.fit_model("K3", P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel, [st3], None)
+        # revisione numerica F-1: K2 con griglia di partenza (C.fit_k2_screened); K3 e sensibilita' partono da K2 e dalla seconda soluzione
+        k2, k1 = C.fit_k2_screened(P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel, None)
+        S2 = [k2] + ([dict(k2, **k2["alt"])] if k2.get("alt") else [])
+        st3 = [dict(k2, sigma_r=k2["sigma"], sigma_c=k2["sigma"]), dict(k2, sigma_r=k2["sigma"] * 1.3, sigma_c=k2["sigma"] / 1.3)]
+        k3 = C.fit_model("K3", P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel, st3, None)
         res.update({"K2": k2, "K1": k1, "K3": k3, "fisher_delta_K2": fisher_delta(P, k2, y, sel, k2["b"]), "profile": profile(P, y, sel, {"K1": k1, "K2": k2, "K3": k3})})
         # S-0: fondo fissato dal vetro lontano della sezione (variante scartata in G-1, qui come sensibilita')
-        res["S0_bfixed"] = C.fit_model("K2", P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel, [k2], bfar)
+        res["S0_bfixed"] = C.fit_model("K2", P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel, S2, bfar, polish=False)
         res["S0_fixed_ok"] = True
         # S-3: solo vetro; S-4: 200 µm centrali
         sel3 = C.likelihood_mask(P["occ"], P["dist"], TILE, glass_only=True) & valid
-        res["S3_glass"] = C.fit_model("K2", P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel3, [k2], None)
+        res["S3_glass"] = C.fit_model("K2", P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel3, S2, None, polish=False)
         sel4 = C.likelihood_mask(P["occ"], P["dist"], TILE200) & valid
-        res["S4_200um"] = C.fit_model("K2", P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel4, [k2], None) if sel4.sum() > 500 else None
+        res["S4_200um"] = C.fit_model("K2", P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel4, S2, None, polish=False) if sel4.sum() > 500 else None
         # CP-3: maschera spostata di +2 µm lungo le righe e -2 µm lungo le colonne (4 sottopixel)
         fs = np.zeros_like(f); fs[4:, :-4] = f[:-4, 4:]
         Ps = region_P(y, fs, rows, cols, valid)
@@ -83,11 +84,22 @@ def run_tile(args):
         # S-1: maschera alternativa
         Pa = region_P(y, fa, rows, cols, valid)
         sela = C.likelihood_mask(Pa["occ"], Pa["dist"], TILE) & valid
-        res["S1_altmask"] = C.fit_model("K2", Pa["Tft"], Pa["kr"], Pa["kc"], Pa["pshape"], Pa["region_bins"], y, Pa["c"], sela, [k2], None)
+        res["S1_altmask"] = C.fit_model("K2", Pa["Tft"], Pa["kr"], Pa["kc"], Pa["pshape"], Pa["region_bins"], y, Pa["c"], sela, S2, None, polish=False)
         # S-2: parita' dal vetro
         Pg = region_P(y, f, rows, cols, valid, pf_from_glass=True)
-        res["S2_parity_glass"] = C.fit_model("K2", Pg["Tft"], Pg["kr"], Pg["kc"], Pg["pshape"], Pg["region_bins"], y, Pg["c"], sel, [k2], None)
-        res["pf_glass"] = Pg["pf"].tolist()
+        res["S2_parity_glass"] = C.fit_model("K2", Pg["Tft"], Pg["kr"], Pg["kc"], Pg["pshape"], Pg["region_bins"], y, Pg["c"], sel, S2, None, polish=False)
+        res["pf_glass"] = Pg["pf"].tolist(); res["S2_fixed_ok"] = True
+        # S-W (revisione numerica F-2): limite w <= 0.5 della prima versione, come sensibilita'
+        # se K2 ha w <= 0.5 la soluzione e' gia' ammissibile e coincide con quella vincolata: si copia
+        wb = C.BOUNDS["w"]; C.BOUNDS["w"] = (0.0, min(0.5, wb[1]))
+        if k2["w"] <= 0.5:
+            res["SW_w05"] = dict(k2, copied_from_K2=True); C.BOUNDS["w"] = wb
+        else:
+          try:
+            res["SW_w05"] = C.fit_model("K2", P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel,
+                                        [dict(x, w=min(x["w"], 0.5)) for x in S2] + C.STARTS["K2"], None, polish=True)
+          finally:
+            C.BOUNDS["w"] = wb
         res["sec"] = round(time.time() - t0, 1)
     except Exception:
         res = {"key": key, "tile": os.path.basename(path)[:-4], "error": traceback.format_exc()}

@@ -13,6 +13,20 @@ ap = argparse.ArgumentParser(); ap.add_argument("--workers", type=int, default=2
 ap.add_argument("--quick", action="store_true"); ap.add_argument("--nrep", type=int, default=30); A = ap.parse_args()
 
 # ---------------------------------------------------------------- mutanti (applicati al modulo prima dei test)
+GEOM_CODE = {"curve": 1, "blob": 2, "lumen": 3, "straight": 4}
+def synth_seed(geom, s_r, s_c, w, dr, dc, rep):
+    return [C.SEED, int(s_r * 100), int(s_c * 100), int(w * 100), int((dr + 5) * 10), int((dc + 5) * 10), rep, GEOM_CODE[geom]]
+
+def t12_seed_reproducible():
+    # T12: la stessa tessera sintetica generata in due processi con PYTHONHASHSEED diversi e' identica
+    import subprocess
+    code = ("import sys, numpy as np; sys.path.insert(0, 'tools'); import R5_common as C; "
+            "rng = np.random.default_rng([C.SEED, 200, 200, 5, 65, 40, 3, 2]); "
+            "S = C.synth_tile(rng, 2.0, 2.0, 0.05, 30.0, 1.5, -1.0, geometry='blob'); print(float(S['y'].sum()), float(S['f_sub'].sum()))")
+    outs = [subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=dict(os.environ, PYTHONHASHSEED=h)).stdout.strip() for h in ("1", "2")]
+    ok = synth_seed("blob", 2.0, 2.0, 0.05, 1.5, -1.0, 3) == [C.SEED, 200, 200, 5, 65, 40, 3, 2]
+    check("T12 synthetic tile identical across processes (PYTHONHASHSEED 1 vs 2)", ok and outs[0] == outs[1] and outs[0] != "", outs[0] + " | " + outs[1])
+
 def apply_mutant(m):
     if m == "M1":     # nucleo non normalizzato: manca (1 - w)
         C.kernel_ft = lambda kr, kc, sr, sc, w=0.0, ell=30.0: C.gauss_ft(kr, kc, sr, sc) + (w * C.exp_ft(kr, kc, ell) if w > 0 else 0)
@@ -22,6 +36,10 @@ def apply_mutant(m):
         C.parity_factors = lambda U, cls, sel: np.ones(4)
     elif m == "M4":   # distanze in bin invece che in µm
         _fg = C.freq_grid; C.freq_grid = lambda shape, d=C.SUB_UM: _fg(shape, d / C.BIN_UM)
+    elif m == "X1":   # convenzione di campionamento sbagliata sulle sole righe (+0.25 µm; rilievo C10 della revisione)
+        _eb = C.expected_bins
+        def eb(Tft, kr, kc, pshape, region_bins, sr, sc, w, ell, dr, dc): return _eb(Tft, kr, kc, pshape, region_bins, sr, sc, w, ell, dr + 0.5, dc)
+        C.expected_bins = eb
     elif m == "M5":   # coda ignorata nel modello in avanti del rapporto
         _ba = C.blur_at; C.blur_at = lambda F, pos, sr, sc, w, ell, d, **k: _ba(F, pos, sr, sc, 0.0, ell, d, **k)
 if A.mutant:
@@ -89,11 +107,13 @@ def t9():
 # ---------------------------------------------------------------- T5, T5b, T6 recupero dei parametri
 def one_fit(args):
     geom, s_r, s_c, w, dr, dc, rep, model = args
-    rng = np.random.default_rng([C.SEED, int(s_r * 100), int(s_c * 100), int(w * 100), int((dr + 5) * 10), int((dc + 5) * 10), rep, hash(geom) % 1000])
+    # seme deterministico: la prima versione usava hash(geom), che cambia a ogni processo (PYTHONHASHSEED): tessere non riproducibili
+    rng = np.random.default_rng(synth_seed(geom, s_r, s_c, w, dr, dc, rep))
     S = C.synth_tile(rng, s_r, s_c, w, 30.0, dr, dc, geometry=geom)
     t0 = time.time()
     P = C.prepare_region(S["y"], S["f_sub"], S["rows"], S["cols"])
-    bfar = None if os.environ.get("R5_BFREE") == "1" else C.far_glass_background(S["y"], S["f_sub"], P["c"])
+    # stimatore pre-registrato: fondo b libero (default dopo la revisione); R5_BFIXED=1 = variante scartata (b dal vetro lontano)
+    bfar = C.far_glass_background(S["y"], S["f_sub"], P["c"]) if os.environ.get("R5_BFIXED") == "1" else None
     fit, P, sel = C.fit_region(S["y"], S["f_sub"], S["rows"], S["cols"], TILE, model="K2", P=P, b_fixed=bfar)
     if model == "K3":
         st = dict(fit); st["sigma_r"] = st["sigma_c"] = fit["sigma"]
@@ -181,6 +201,45 @@ def t7(quick):
     rel = np.max(np.abs(lam_mod[inner] / lam_ref[inner] - 1))
     check("T7 module blur equals reference real-space blur", rel < 0.02, f"max rel diff={rel:.4f}")
 
+
+# ---------------------------------------------------------------- T10, T11 (rinforzo dopo la revisione del codice, rilievi F03, F04, C10)
+def t10():
+    """expected_bins contro un'implementazione indipendente nello spazio reale (sottogriglia, convoluzione diretta, spostamento intero, media dei
+    4 x 4 sottopixel di ogni bin), con sorgente asimmetrica e scarto diverso sulle due righe/colonne: verifica le convenzioni ASSOLUTE su entrambi gli assi."""
+    rng = np.random.default_rng(10); nb = (50, 60); n = (nb[0] * C.SUB, nb[1] * C.SUB)
+    T = np.zeros(n); T[60:120, 40:200] = 1.0; T[150:170, 100:110] = 3.0; T += 0.2 * ndimage.gaussian_filter(rng.random(n), 2)
+    s, dr, dc = 1.5, 1.0, -1.5                       # multipli di 0.5 µm
+    ps = C.pad_shape(n, 120); kr, kc = C.freq_grid(ps)
+    g = C.expected_bins(C.source_ft(T, ps), kr, kc, ps, nb, s, s, 0.0, 30.0, dr, dc)
+    R_ = int(np.ceil(5 * s / C.SUB_UM)); yy, xx = np.mgrid[-R_:R_ + 1, -R_:R_ + 1] * C.SUB_UM
+    K = np.exp(-(yy ** 2 + xx ** 2) / (2 * s ** 2)); K /= K.sum()
+    H = signal.fftconvolve(np.pad(T, R_), K, mode="same")[R_:-R_, R_:-R_]
+    H = np.roll(H, (int(dr / C.SUB_UM), int(dc / C.SUB_UM)), axis=(0, 1))   # campo dei conteggi = campo H&E spostato di +delta
+    Hb = H.reshape(nb[0], C.SUB, nb[1], C.SUB).mean(axis=(1, 3))             # media sul quadratino (integrazione esatta sui sottopixel)
+    # il modulo integra il quadratino in modo continuo (sinc) su una sorgente a banda limitata: confronto lontano dai bordi, tolleranza relativa
+    inner = (slice(8, -8), slice(8, -8))
+    err = np.max(np.abs(g[inner] - Hb[inner])) / T.max()
+    check("T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))", err < 0.01, f"max err/peak={err:.4f}")
+    # mutante di convenzione su un solo asse: lo stesso confronto deve fallire
+    g2 = C.expected_bins(C.source_ft(T, ps), kr, kc, ps, nb, s, s, 0.0, 30.0, dr + 0.5, dc)
+    err2 = np.max(np.abs(g2[inner] - Hb[inner])) / T.max()
+    check("T10b a 0.5 um row offset is detected by T10", err2 > 3 * err and err2 > 0.01, f"err with +0.5 um rows={err2:.4f}")
+
+def t11():
+    """Mappatura griglia -> immagine dei dati veri: la media delle coordinate in pixel dei 4 x 4 sottopixel di ogni bin (sub_points + affine locale,
+    come in tools/R5_tiles.py) coincide con le coordinate del centro del bin di Space Ranger (tissue_positions), su una tessera per sezione."""
+    import glob, R5_tiles as T5
+    for key in ("A1", "A6"):
+        f = sorted(glob.glob(f"/mnt/micron/geo_spatialtrans/R5/run1/tiles/{key}/t*.npz"))[0]
+        z = np.load(f); Rr, Cr = int(z["R0"]), int(z["C0"]); M, t = z["M_local"], z["t_local"]
+        rr, cc = T5.sub_points(Rr, Cr, 300); RR, CC = np.meshgrid(rr, cc, indexing="ij")
+        PR = M[0, 0] * RR + M[0, 1] * CC + t[0]; PC = M[1, 0] * RR + M[1, 1] * CC + t[1]
+        mr = PR.reshape(300, 4, 300, 4).mean(axis=(1, 3)); mc = PC.reshape(300, 4, 300, 4).mean(axis=(1, 3))
+        PXR, PXC = T5.pixel_grids(T5.DS[key], 3350, 3350)
+        a0, b0 = max(Rr, 0), max(Cr, 0); a1, b1 = min(Rr + 300, 3350), min(Cr + 300, 3350)
+        er = np.nanmax(np.abs(mr[a0 - Rr:a1 - Rr, b0 - Cr:b1 - Cr] - PXR[a0:a1, b0:b1])); ec = np.nanmax(np.abs(mc[a0 - Rr:a1 - Rr, b0 - Cr:b1 - Cr] - PXC[a0:a1, b0:b1]))
+        check(f"T11 sub-grid mapping centred on Space Ranger bin centres ({key})", max(er, ec) < 0.5, f"max |diff| px rows={er:.3f} cols={ec:.3f} (0.5 px = 0.14 um)")
+
 # ---------------------------------------------------------------- T8 bootstrap riproducibile
 def t8():
     v = np.random.default_rng(8).normal(size=40)
@@ -191,7 +250,19 @@ if __name__ == "__main__":
     t0 = time.time()
     if os.environ.get("R5_ONLY_T7") == "1":
         t7(quick=False); print(f"T7 only: {sum(ok for _, ok, _ in RES)}/{len(RES)} PASS"); sys.exit(0)
-    t1(); t2(); t3(); t4(); t9(); t8()
+    if os.environ.get("R5_CHEAP") == "1" or A.mutant:
+        # test economici; un mutante e' rilevato se fallisce almeno un test che passa senza mutazioni (regola relativa, rilievo F02)
+        t1(); t2(); t3(); t4(); t9(); t8(); t10(); t11(); t12_seed_reproducible(); t7(quick=True)
+        base = {}
+        if os.path.exists("results/R5/R5_test_cheap_baseline.json"):
+            base = json.load(open("results/R5/R5_test_cheap_baseline.json"))
+        if not A.mutant:
+            json.dump({n: ok for n, ok, _ in RES}, open("results/R5/R5_test_cheap_baseline.json", "w"), indent=1)
+            print(f"cheap: {sum(ok for _, ok, _ in RES)}/{len(RES)} PASS"); sys.exit(0)
+        newly = [n for n, ok, _ in RES if not ok and base.get(n, False)]
+        print(f"MUTANT {A.mutant} {'DETECTED' if newly else 'NOT DETECTED'} by: {newly[:4]}")
+        sys.exit(0)
+    t1(); t2(); t3(); t4(); t9(); t8(); t12_seed_reproducible()
     if A.mutant:
         detected = not all(ok for _, ok, _ in RES)
         if not detected:

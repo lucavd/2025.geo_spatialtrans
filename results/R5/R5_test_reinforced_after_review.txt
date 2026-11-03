@@ -1,0 +1,26 @@
+PASS  T1 kernel sums to 1 (1.0, 1.0, 0.0, 30.0)  sum=1.00000000
+PASS  T1 kernel sums to 1 (2.0, 3.0, 0.05, 30.0)  sum=1.00000012
+PASS  T1 kernel sums to 1 (0.5, 0.5, 0.2, 80.0)  sum=0.99999994
+PASS  T2 half-plane blur matches Phi, sigma=0.5  max err=4.35e-03 tol=5e-03
+PASS  T2 half-plane blur matches Phi, sigma=2.0  max err=4.98e-04 tol=1e-03
+PASS  T3 shift delta = source moved by +delta  max err=2.38e-07
+PASS  T4 fit_ab recovers a, b on exact data  a=1.700000 b=0.250000
+PASS  T9 parity factors recovered within 3 %  est=[0.595, 0.996, 0.9, 1.508] max rel err=0.008
+PASS  T8 bootstrap reproducible with seed  (-0.13689968075963302, -0.5860977522601442, 0.3091327496291918)
+PASS  T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))  max err/peak=0.0019
+PASS  T10b a 0.5 um row offset is detected by T10  err with +0.5 um rows=0.0964
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A1)  max |diff| px rows=0.003 cols=0.003 (0.5 px = 0.14 um)
+PASS  T11 sub-grid mapping centred on Space Ranger bin centres (A6)  max |diff| px rows=0.000 cols=0.000 (0.5 px = 0.14 um)
+PASS  T7 nucleus/ring ratio inverted, r=0.7  r_hat=0.6822 rel err=-0.0255
+PASS  T7 nucleus/ring ratio inverted, r=1.0  r_hat=1.0063 rel err=+0.0063
+PASS  T7 nucleus/ring ratio inverted, r=2.0  r_hat=1.9615 rel err=-0.0192
+PASS  T7 nucleus/ring ratio inverted, r=4.0  r_hat=4.0177 rel err=+0.0044
+PASS  T7 module blur equals reference real-space blur  max rel diff=0.0109
+cheap: 18/18 PASS
+MUTANT M0 NOT DETECTED by: []
+MUTANT M1 DETECTED by: ['T1 kernel sums to 1 (2.0, 3.0, 0.05, 30.0)', 'T1 kernel sums to 1 (0.5, 0.5, 0.2, 80.0)', 'T7 module blur equals reference real-space blur']
+MUTANT M2 DETECTED by: ['T2 half-plane blur matches Phi, sigma=0.5', 'T2 half-plane blur matches Phi, sigma=2.0', 'T3 shift delta = source moved by +delta', 'T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))']
+MUTANT M3 DETECTED by: ['T9 parity factors recovered within 3 %']
+MUTANT M4 DETECTED by: ['T2 half-plane blur matches Phi, sigma=0.5', 'T2 half-plane blur matches Phi, sigma=2.0', 'T3 shift delta = source moved by +delta', 'T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))']
+MUTANT M5 DETECTED by: ['T7 nucleus/ring ratio inverted, r=2.0', 'T7 nucleus/ring ratio inverted, r=4.0', 'T7 module blur equals reference real-space blur']
+MUTANT X1 DETECTED by: ['T10 expected_bins = independent real-space model (absolute, both axes, delta=(1,-1.5))', 'T10b a 0.5 um row offset is detected by T10']

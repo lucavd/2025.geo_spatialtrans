@@ -26,11 +26,13 @@ def load_tiles(key):
         d = json.load(open(f))
         if "error" in d: errs += 1; continue
         r = {"key": key, "tile": d["tile"], "b_far": d["b_far"]}
-        for m in ("K1", "K2", "K3", "S0_bfixed", "S1_altmask", "S2_parity_glass", "S3_glass", "S4_200um", "CP3_shift"):
+        for m in ("K1", "K2", "K3", "S0_bfixed", "S1_altmask", "S2_parity_glass", "S3_glass", "S4_200um", "CP3_shift", "SW_w05"):
             if d.get(m) is None: continue
-            for k in ("sigma", "sigma_r", "sigma_c", "w", "ell", "dr", "dc", "a", "b", "nll", "converged", "n_bins"):
+            for k in ("sigma", "sigma_r", "sigma_c", "w", "ell", "dr", "dc", "a", "b", "nll", "converged", "n_bins", "nit"):
                 r[f"{m}_{k}"] = d[m][k]
         I = np.array(d["fisher_delta_K2"]); r.update({"I_rr": I[0, 0], "I_rc": I[0, 1], "I_cc": I[1, 1]})
+        z = np.load(f.replace(".json", ".npz"))               # tessuto H&E nei bin fuori dall'array (rilievo F14)
+        occ = C.bin_occupancy(z["f_sub"].astype(float)); r["tissue_outside_array"] = bool(((~z["inarr_bin"]) & (occ > 0)).any())
         rows.append(r)          # senza tempi di calcolo: le tabelle devono essere identiche fra esecuzioni (G-4)
     return pd.DataFrame(rows), errs
 
@@ -73,12 +75,30 @@ if MODE == "edges":
         dF = np.linalg.solve(I, v_)
         # sensibilita'
         for m, lab in (("K2", "primary (as pre-registered: b free, rho from all tissue bins)"), ("S0_bfixed", "S-0 b fixed from far glass"), ("S1_altmask", "S-1 alternative H&E mask"),
-                       ("S2_parity_glass", "S-2 parity from glass"), ("S3_glass", "S-3 glass-only likelihood"), ("S4_200um", "S-4 central 200 um"), ("K1", "K1 Gaussian only")):
+                       ("S2_parity_glass", "S-2 parity from glass"), ("S3_glass", "S-3 glass-only likelihood"), ("S4_200um", "S-4 central 200 um"), ("SW_w05", "S-W w <= 0.5 (bound of the first version)"), ("K1", "K1 Gaussian only")):
             if f"{m}_sigma" not in T: continue
             sub = T.dropna(subset=[f"{m}_sigma"])
             sens.append({"key": key, "variant": lab, "n_tiles": len(sub), "sigma": sub[f"{m}_sigma"].median(), "w": sub[f"{m}_w"].median() if f"{m}_w" in sub else 0.0,
                          "ell": sub[f"{m}_ell"].median(), "dr": sub[f"{m}_dr"].median(), "dc": sub[f"{m}_dc"].median(), "a": sub[f"{m}_a"].median(), "b": sub[f"{m}_b"].median()})
         sens.append({"key": key, "variant": "Fisher-weighted delta (K2)", "n_tiles": n, "dr": dF[0], "dc": dF[1]})
+        # robustezza (dopo la revisione del codice, rilievi F06, F14, F16, F21)
+        good = T.K2_converged.astype(bool) & (T.K2_w < C.BOUNDS["w"][1] - 0.001) & (T.K2_dr.abs() < 5.99) & (T.K2_dc.abs() < 5.99) & (T.K2_ell > 5.01) & (T.K2_sigma > 0.21) & (T.K2_sigma < 9.99)
+        sub = T[good]
+        sens.append({"key": key, "variant": "K2 converged and not at bounds", "n_tiles": int(good.sum()), "sigma": sub.K2_sigma.median(), "w": sub.K2_w.median(),
+                     "ell": sub.K2_ell.median(), "dr": sub.K2_dr.median(), "dc": sub.K2_dc.median(), "a": sub.K2_a.median(), "b": sub.K2_b.median()})
+        sub = T[~T.tissue_outside_array.astype(bool)]
+        sens.append({"key": key, "variant": "tiles without tissue outside the array", "n_tiles": len(sub), "sigma": sub.K2_sigma.median(), "w": sub.K2_w.median(),
+                     "ell": sub.K2_ell.median(), "dr": sub.K2_dr.median(), "dc": sub.K2_dc.median(), "a": sub.K2_a.median(), "b": sub.K2_b.median()})
+        k3ok = (T.K3_nit > 0) & (T.K3_sigma_r > 0.21) & (T.K3_sigma_c > 0.21) & (T.K3_sigma_r < 9.99) & (T.K3_sigma_c < 9.99)
+        rr3 = (T.K3_sigma_r / T.K3_sigma_c)[k3ok].to_numpy()
+        lo3, hi3, _ = boot_stat(len(rr3), lambda ix: np.median(rr3[ix]), rng=rng_for(key, 8)) if len(rr3) > 1 else (np.nan, np.nan, None)
+        sens.append({"key": key, "variant": "P-3 ratio, K3 moved from start and not at bounds", "n_tiles": int(k3ok.sum()), "ratio_K3": float(np.median(rr3)) if len(rr3) else np.nan,
+                     "ratio_lo": lo3, "ratio_hi": hi3})
+        nrm_t = np.hypot(dr, dc); lo4, hi4, _ = boot_stat(n, lambda ix: np.median(nrm_t[ix]), rng=rng_for(key, 9))
+        sens.append({"key": key, "variant": "P-4 alternative: median of per-tile |delta|", "n_tiles": n, "abs_delta": float(np.median(nrm_t)), "abs_delta_lo": lo4, "abs_delta_hi": hi4})
+        sens.append({"key": key, "variant": "fits at bounds or not converged (counts)", "n_tiles": n, "n_K2_w_at_bound": int((T.K2_w >= C.BOUNDS["w"][1] - 0.001).sum()), "n_K2_w_above_0.5": int((T.K2_w > 0.5).sum()), "n_K2_delta_at_bound": int(((T.K2_dr.abs() >= 5.99) | (T.K2_dc.abs() >= 5.99)).sum()), "n_K2_ell_at_lower_bound": int((T.K2_ell <= 5.01).sum()),
+                     "n_K2_sigma_at_bound": int(((T.K2_sigma <= 0.21) | (T.K2_sigma >= 9.99)).sum()), "n_K2_not_converged": int((~T.K2_converged.astype(bool)).sum()),
+                     "n_K3_nit0": int((T.K3_nit == 0).sum()), "n_tissue_outside_array": int(T.tissue_outside_array.astype(bool).sum())})
         # CP-3
         ddr = (T.CP3_shift_dr - T.K2_dr).to_numpy(); ddc = (T.CP3_shift_dc - T.K2_dc).to_numpy()
         lr, hr, _ = boot_stat(n, lambda ix: np.median(ddr[ix]), rng=rng_for(key, 5)); lc, hc, _ = boot_stat(n, lambda ix: np.median(ddc[ix]), rng=rng_for(key, 6))
@@ -140,21 +160,44 @@ elif MODE == "nc":
         rg = np.random.default_rng([C.SEED, 600 + ["A1", "A2", "A3", "A4", "A5", "A6"].index(a)])
         n, J = len(tags), Dr.shape[1]
         ix = rg.integers(0, n, size=(C.B, n)); jj = rg.integers(0, J, size=C.B)
-        rr = np.array([np.mean(Dr.to_numpy()[ix[b], jj[b]]) for b in range(C.B)])
-        cpr = np.array([np.mean(Dp.to_numpy()[ix[b], jj[b]]) / np.mean(obsf[ix[b]]) for b in range(C.B)])
-        e = float(np.mean(P.r_true)); lo, hi = np.percentile(rr, [2.5, 97.5])
-        cls = C.verdict(lo, hi, 0.909, 1.1)
-        side = "sotto" if e < 1 else "sopra"
-        got = {"confermata": "uniforme", "smentita": f"due densita ({side})", "indeterminata": "a cavallo"}[cls]
-        v = "confermata" if got == expected[a] else ("indeterminata" if got == "a cavallo" else "smentita")
-        r_obs = float(np.mean(obs))
-        out.append({"archetype": a, "prediction": "P-5", "r_obs_mean": r_obs, "r_true": e, "lo": lo, "hi": hi, "class": got, "expected": expected[a], "verdict": v,
-                    "farther_from_1": bool(abs(np.log(e)) > abs(np.log(r_obs))), "n_roi": n, "n_draws": J,
-                    "r_true_K1": float(np.mean(Fa[Fa.kernel == "K1"].r_true))})
-        e2 = float(np.mean(P.pred_star_far) / np.mean(obsf)); lo2, hi2 = np.percentile(cpr, [2.5, 97.5])
-        out.append({"archetype": a, "prediction": "CP-1" if a in ("A2", "A4", "A5", "A6") else "CP-1 (descrittiva)", "r_obs_mean": float(np.mean(obsf)),
-                    "r_true": float(np.mean(P.pred_star_far)), "lo": lo2, "hi": hi2, "class": "pred/obs", "expected": "[0.909, 1.1]",
-                    "verdict": C.verdict(lo2, hi2, 0.909, 1.1), "ratio_pred_obs": e2, "n_roi": n, "n_draws": J})
+        Drn, Dpn = Dr.to_numpy(), Dp.to_numpy()
+        with np.errstate(all="ignore"):
+            rr = np.array([np.nanmean(Drn[ix[b], jj[b]]) for b in range(C.B)])
+            cpr = np.array([np.nanmean(Dpn[ix[b], jj[b]]) / np.mean(obsf[ix[b]]) for b in range(C.B)])
+        n_fail = int(P.r_true.isna().sum()); frac_fail_draws = float(np.mean(~np.isfinite(Drn)))
+        r_obs = float(np.mean(obs)); rK1 = Fa[Fa.kernel == "K1"].set_index("tag").reindex(tags).r_true
+        cp1_name = "CP-1" if a in ("A2", "A4", "A5", "A6") else "CP-1 (descrittiva)"
+        # revisione numerica F-8: (1) come scritto = media di TUTTE le ROI (e delle repliche): se una ROI o una replica non si inverte la
+        # stima o l'intervallo non esistono ("non calcolabile come scritto"); (2) sensibilita' dichiarata = sole ROI riuscite (nanmean)
+        with np.errstate(all="ignore"):
+            rr_all = np.array([np.mean(Drn[ix[b], jj[b]]) for b in range(C.B)])
+            cp_all = np.array([np.mean(Dpn[ix[b], jj[b]]) / np.mean(obsf[ix[b]]) for b in range(C.B)])
+        for variant, est, reps, est_cp, reps_cp in (
+                ("as written (all ROIs)", float(np.mean(P.r_true.to_numpy())), rr_all, float(np.mean(P.pred_star_far.to_numpy()) / np.mean(obsf)), cp_all),
+                ("sensitivity: successful ROIs only (nanmean)", float(np.nanmean(P.r_true)) if n_fail < n else np.nan, rr,
+                 float(np.nanmean(P.pred_star_far) / np.mean(obsf[P.pred_star_far.notna().to_numpy()])) if n_fail < n else np.nan, cpr)):
+            fin = np.isfinite(reps); fin_cp = np.isfinite(reps_cp)
+            ok_int = fin.all() if variant.startswith("as written") else fin.any()
+            lo, hi = (np.nanpercentile(reps, [2.5, 97.5]) if ok_int else (np.nan, np.nan))
+            if not np.isfinite(est) or not ok_int:
+                got, v, farther = "non calcolabile", "non calcolabile come scritto" if variant.startswith("as written") else "non calcolabile", np.nan
+            else:
+                cls = C.verdict(lo, hi, 0.909, 1.1); side = "sotto" if est < 1 else "sopra"
+                got = {"confermata": "uniforme", "smentita": f"due densita ({side})", "indeterminata": "a cavallo"}[cls]
+                farther = bool(abs(np.log(est)) > abs(np.log(r_obs)))
+                v = "confermata" if got == expected[a] else ("indeterminata" if got == "a cavallo" else "smentita")
+                if v == "confermata" and expected[a] != "uniforme" and not farther:
+                    v = "smentita"     # pre-registrato: due densita' con r_vero piu' lontano da 1 dell'osservato (rilievo F09)
+            out.append({"archetype": a, "prediction": "P-5", "variant": variant, "r_obs_mean": r_obs, "estimate": est, "lo": lo, "hi": hi,
+                        "median_reps": float(np.nanmedian(reps)) if fin.any() else np.nan, "frac_nan_reps": float(np.mean(~fin)),
+                        "class": got, "expected": expected[a], "verdict": v, "farther_from_1": farther, "n_roi": n, "n_roi_failed": n_fail,
+                        "frac_failed_draws": frac_fail_draws, "n_draws": J, "r_true_K1_mean": float(np.mean(rK1)) if rK1.notna().all() else np.nan})
+            ok_cp = fin_cp.all() if variant.startswith("as written") else fin_cp.any()
+            lo2, hi2 = (np.nanpercentile(reps_cp, [2.5, 97.5]) if ok_cp else (np.nan, np.nan))
+            v2 = C.verdict(lo2, hi2, 0.909, 1.1) if (np.isfinite(est_cp) and ok_cp) else ("non calcolabile come scritto" if variant.startswith("as written") else "non calcolabile")
+            out.append({"archetype": a, "prediction": cp1_name, "variant": variant, "r_obs_mean": float(np.mean(obsf)), "estimate": est_cp, "lo": lo2, "hi": hi2,
+                        "median_reps": float(np.nanmedian(reps_cp)) if fin_cp.any() else np.nan, "frac_nan_reps": float(np.mean(~fin_cp)),
+                        "class": "pred/obs", "expected": "[0.909, 1.1]", "verdict": v2, "n_roi": n, "n_roi_failed": n_fail, "n_draws": J})
     pd.DataFrame(out).to_csv(f"{TB}/R5_predictions_nc.csv", index=False)
     print(pd.DataFrame(out).round(4).to_string())
 

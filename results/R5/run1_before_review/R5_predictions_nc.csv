@@ -1,0 +1,13 @@
+archetype,prediction,r_obs_mean,r_true,lo,hi,class,expected,verdict,farther_from_1,n_roi,n_draws,r_true_K1,ratio_pred_obs
+A1,P-5,0.985648253495669,0.14620555002066155,,,a cavallo,uniforme,indeterminata,True,5,20,,
+A1,CP-1 (descrittiva),1.0049012729238753,0.9408268533931271,,,pred/obs,"[0.909, 1.1]",indeterminata,,5,20,,0.9362380949679601
+A2,P-5,0.846990190334876,0.1522334603948517,,,a cavallo,due densita (sotto),indeterminata,True,5,20,0.13489248669200302,
+A2,CP-1,0.778145346115043,0.6853203293170819,,,pred/obs,"[0.909, 1.1]",indeterminata,,5,20,,0.8807099248727787
+A3,P-5,0.8917971487150366,0.35986663466220364,,,a cavallo,due densita (sotto),indeterminata,True,5,20,0.24911911375152007,
+A3,CP-1 (descrittiva),0.88050706446274,0.8170280190833297,,,pred/obs,"[0.909, 1.1]",indeterminata,,5,20,,0.9279062622647515
+A4,P-5,0.7880335162940042,,,,a cavallo,due densita (sotto),indeterminata,False,5,20,,
+A4,CP-1,0.6933659896682917,,,,pred/obs,"[0.909, 1.1]",indeterminata,,5,20,,
+A5,P-5,1.382732527732906,1.7766831750187344,1.6199212227097657,1.955858923015398,due densita (sopra),due densita (sopra),confermata,True,5,20,2.398491070219323,
+A5,CP-1,1.5407902163170135,1.580585250911788,1.0069776237272727,1.047811558334291,pred/obs,"[0.909, 1.1]",confermata,,5,20,,1.0258276786634182
+A6,P-5,1.7840390567675108,12.039284782571439,,,a cavallo,due densita (sopra),indeterminata,True,5,20,,
+A6,CP-1,3.5079000391136566,2.1839722911716777,,,pred/obs,"[0.909, 1.1]",indeterminata,,5,20,,0.6225868088657119

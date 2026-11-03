@@ -4,6 +4,7 @@ Pre-registrazione: docs/steps/R5.md (cancelli c5c9fce, ok di Luca ceca77b).
 Convenzioni. Coordinate in µm nel sistema della griglia (righe, colonne di array); bin di 2 µm, sottogriglia di 0.5 µm (4 x 4 per bin).
 La regione di lavoro parte dallo spigolo di un bin. Il campo dei conteggi è il campo H&E sfocato e spostato di delta:
 lambda(x) = c_p(x) * [a * (K * T)(x - delta) + b]."""
+import os
 import numpy as np
 from scipy import fft as sfft, optimize, ndimage
 
@@ -16,7 +17,8 @@ RHO_SIGMA_UM = 10.0          # lisciatura della densita' del tessuto (convoluzio
 EDGE_IN_UM = 10.0            # bin di tessuto entro 10 um dal bordo entrano nella verosimiglianza
 INTERIOR_UM = 15.0           # variante provata e scartata in G-1 (densita' dai soli bin a >= 15 µm dal bordo; R5_RHO_INTERIOR=1)
 FAR_GLASS_UM = 200.0         # variante provata e scartata in G-1 (fondo fissato dal vetro lontano); sui dati veri resta come sensibilita' S-0
-BOUNDS = {"sigma": (0.2, 10.0), "w": (0.0, 0.5), "ell": (5.0, 200.0), "delta": (-6.0, 6.0)}
+BOUNDS = {"sigma": (0.2, 10.0), "w": (0.0, float(os.environ.get("R5_WMAX", "1.0"))), "ell": (5.0, 200.0), "delta": (-6.0, 6.0)}
+# revisione numerica F-2: la prima versione aveva w <= 0.5 (non pre-registrato); ora w in [0, 1], 0.5 come sensibilita' (R5_WMAX=0.5)
 
 # ------------------------------------------------------------------ Fourier
 def freq_grid(shape, d=SUB_UM):
@@ -149,6 +151,10 @@ def fit_ab(y, g, c, a0=None, b0=None, iters=60):
         a, b, f = an, bn, fn
         if small:
             break
+    if b <= 1e-9 * (1 + 1e-6):          # revisione numerica F-3: Newton congiunto bloccato con b al limite -> a da solo
+        a2, b2, f2 = fit_a(y, g, c, 1e-9)
+        if f2 < f:
+            a, b, f = a2, b2, f2
     return a, b, f
 
 MODELS = {"K1": ("sigma", "dr", "dc"), "K2": ("sigma", "w", "ell", "dr", "dc"), "K3": ("sigma_r", "sigma_c", "w", "ell", "dr", "dc")}
@@ -159,7 +165,7 @@ def _to_params(model, th):
         sr, sc = np.exp(p["sigma_r"]), np.exp(p["sigma_c"])
     else:
         sr = sc = np.exp(p["sigma"])
-    w = 0.0 if model == "K1" else BOUNDS["w"][1] / (1.0 + np.exp(-p["w"]))
+    w = 0.0 if model == "K1" else float(np.clip(p["w"], BOUNDS["w"][0], BOUNDS["w"][1]))   # F-1: w diretto, non logistico
     ell = 30.0 if model == "K1" else np.exp(p["ell"])
     return sr, sc, w, ell, p["dr"], p["dc"]
 
@@ -167,17 +173,17 @@ def _theta0(model, start):
     s = start
     if model == "K1":
         return [np.log(s["sigma"]), s["dr"], s["dc"]]
-    lw = np.log(max(s["w"], 1e-4) / (BOUNDS["w"][1] - max(s["w"], 1e-4)))
+    lw = float(np.clip(s["w"], 0.0, BOUNDS["w"][1]))
     if model == "K2":
         return [np.log(s["sigma"]), lw, np.log(s["ell"]), s["dr"], s["dc"]]
     return [np.log(s.get("sigma_r", s["sigma"])), np.log(s.get("sigma_c", s["sigma"])), lw, np.log(s["ell"]), s["dr"], s["dc"]]
 
 def _bounds(model):
     lg = (np.log(BOUNDS["sigma"][0]), np.log(BOUNDS["sigma"][1])); d = BOUNDS["delta"]
-    lw = (-12.0, 12.0); le = (np.log(BOUNDS["ell"][0]), np.log(BOUNDS["ell"][1]))
+    lw = BOUNDS["w"]; le = (np.log(BOUNDS["ell"][0]), np.log(BOUNDS["ell"][1]))
     return {"K1": [lg, d, d], "K2": [lg, lw, le, d, d], "K3": [lg, lg, lw, le, d, d]}[model]
 
-def fit_model(model, Tft, kr, kc, pshape, region_bins, y, c, sel, starts, b_fixed=None):
+def fit_model(model, Tft, kr, kc, pshape, region_bins, y, c, sel, starts, b_fixed=None, polish=True):
     """Massima verosimiglianza di Poisson sui bin `sel` (maschera della regione); a, b profilati. Ritorna il migliore fra gli avvii."""
     yv, cv = y[sel].astype(float), c[sel].astype(float)
     cache = {}
@@ -190,18 +196,57 @@ def fit_model(model, Tft, kr, kc, pshape, region_bins, y, c, sel, starts, b_fixe
         a, b, f = fit_ab(yv, g, cv) if b_fixed is None else fit_a(yv, g, cv, b_fixed)
         cache[key] = (f, a, b)
         return f
-    best = None
+    best, allres = None, []
     for st in starts:
         res = optimize.minimize(obj, _theta0(model, st), method="L-BFGS-B", bounds=_bounds(model),
                                 options={"maxiter": 500, "ftol": 1e-9, "gtol": 1e-5, "eps": 1e-3})
+        allres.append(res)
         if best is None or res.fun < best.fun:
             best = res
+    # rifinitura dal punto migliore (controllo di accettazione della revisione: senza, 15/37 tessere finivano poco sopra l'ottimo)
+    for meth, opts in () if not polish else (("Nelder-Mead", {"xatol": 1e-4, "fatol": 1e-5, "maxfev": 400}),
+                       ("L-BFGS-B", {"maxiter": 500, "ftol": 1e-12, "gtol": 1e-7, "eps": 1e-4})):
+        res = optimize.minimize(obj, best.x, method=meth, bounds=_bounds(model), options=opts)
+        if res.fun < best.fun - 1e-9:
+            res.success = bool(best.success) if meth == "Nelder-Mead" else bool(res.success)
+            res.nit = int(getattr(res, "nit", 0)); best = res
+    alt = None
+    for res in sorted(allres, key=lambda r: r.fun):
+        if np.max(np.abs(res.x - best.x)) > 1e-2:
+            q = _to_params(model, res.x)
+            alt = {"sigma_r": float(q[0]), "sigma_c": float(q[1]), "sigma": float(np.sqrt(q[0] * q[1])), "w": float(q[2]), "ell": float(q[3]),
+                   "dr": float(q[4]), "dc": float(q[5]), "nll": float(res.fun)}
+            break
     sr, sc, w, ell, dr, dc = _to_params(model, best.x)
     obj(best.x)
     f, a, b = cache[tuple(np.round(best.x, 12))]
     return {"model": model, "sigma_r": float(sr), "sigma_c": float(sc), "sigma": float(np.sqrt(sr * sc)), "w": float(w), "ell": float(ell),
             "dr": float(dr), "dc": float(dc), "a": float(a), "b": float(b), "nll": float(f), "converged": bool(best.success),
-            "nit": int(best.nit), "nfev": int(best.nfev), "n_bins": int(sel.sum()), "b_fixed": b_fixed is not None}
+            "nit": int(best.nit), "nfev": int(best.nfev), "n_bins": int(sel.sum()), "b_fixed": b_fixed is not None,
+            "n_starts": len(starts), "alt": alt}
+
+SCREEN = {"sigma": [0.5, 1.5, 3.0, 5.0, 8.0], "w": [0.02, 0.1, 0.3, 0.6], "ell": [6.0, 15.0, 40.0, 120.0]}
+
+def screen_starts(Tft, kr, kc, pshape, region_bins, y, c, sel, deltas, n_best=3, b_fixed=None):
+    """Revisione numerica F-1: verosimiglianza di K2 (a, b profilati) su una griglia grossolana di (sigma, w, ell) per ogni scarto in
+    `deltas`; ritorna i n_best punti migliori come punti di partenza."""
+    yv, cv = y[sel].astype(float), c[sel].astype(float); out = []
+    for dr, dc in deltas:
+        for sg in SCREEN["sigma"]:
+            for w in [x for x in SCREEN["w"] if x <= BOUNDS["w"][1]]:
+                for ell in SCREEN["ell"]:
+                    g = expected_bins(Tft, kr, kc, pshape, region_bins, sg, sg, w, ell, dr, dc)[sel]
+                    f = (fit_ab(yv, g, cv) if b_fixed is None else fit_a(yv, g, cv, b_fixed))[2]
+                    out.append((f, {"sigma": sg, "w": w, "ell": ell, "dr": float(dr), "dc": float(dc)}))
+    out.sort(key=lambda t: t[0])
+    return [d for _, d in out[:n_best]]
+
+def fit_k2_screened(Tft, kr, kc, pshape, region_bins, y, c, sel, b_fixed=None):
+    """K2 primario: K1 (2 avvii) per lo scarto; avvii = i 2 fissi + i 3 migliori della griglia con scarto 0 e scarto di K1. Ritorna (K2, K1)."""
+    k1 = fit_model("K1", Tft, kr, kc, pshape, region_bins, y, c, sel, STARTS["K1"], b_fixed)
+    deltas = [(0.0, 0.0), (k1["dr"], k1["dc"])]
+    starts = STARTS["K2"] + screen_starts(Tft, kr, kc, pshape, region_bins, y, c, sel, deltas, 3, b_fixed)
+    return fit_model("K2", Tft, kr, kc, pshape, region_bins, y, c, sel, starts, b_fixed), k1
 
 def predict(fit, Tft, kr, kc, pshape, region_bins, c):
     g = expected_bins(Tft, kr, kc, pshape, region_bins, fit["sigma_r"], fit["sigma_c"], fit["w"], fit["ell"], fit["dr"], fit["dc"])
@@ -327,7 +372,10 @@ def fit_region(y, f_sub, rows, cols, tile, model="K2", n_rl=0, glass_only=False,
     """Adattamento completo di una regione: sorgente, verosimiglianza sulla tessera, n_rl passi di correzione della densita'."""
     P = P if P is not None else prepare_region(y, f_sub, rows, cols, pad_sub)
     sel = sel if sel is not None else likelihood_mask(P["occ"], P["dist"], tile, glass_only)
-    fit = fit_model(model, P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel, starts or STARTS[model], b_fixed)
+    if starts is None and model == "K2":
+        fit, _ = fit_k2_screened(P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel, b_fixed)
+    else:
+        fit = fit_model(model, P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel, starts or STARTS[model], b_fixed)
     for _ in range(n_rl):
         P = rl_update(P, fit, y, f_sub)
         fit = fit_model(model, P["Tft"], P["kr"], P["kc"], P["pshape"], P["region_bins"], y, P["c"], sel, [fit], b_fixed)
