@@ -9,7 +9,7 @@ import numpy as np, pandas as pd
 sys.path.insert(0, "tools")
 import S2_0_common as S
 OUT, STAGE = sys.argv[1], sys.argv[2]
-RES = "results/S2.0"; os.makedirs(RES, exist_ok=True)
+RES = os.environ.get("S20_RES", "results/S2.0"); os.makedirs(RES, exist_ok=True)   # G-4: la seconda esecuzione scrive altrove
 R5RUN = "/mnt/micron/geo_spatialtrans/R5/run3"
 SEC = ["A1", "A23", "A4", "A5", "A6"]
 SEC_NAME = {"A1": "intestino", "A23": "tumore del colon (e stroma)", "A4": "linfonodo", "A5": "cervello", "A6": "cuore"}
@@ -80,7 +80,7 @@ def stage_edges():
 
 def stage_inner():
     rows = [json.load(open(f)) for f in sorted(glob.glob(f"{OUT}/inner/*.json"))]
-    T = pd.DataFrame(rows); T.to_csv(f"{RES}/S2.0_inner_roi.csv", index=False)
+    T = pd.DataFrame(rows).drop(columns=["sec"], errors="ignore"); T.to_csv(f"{RES}/S2.0_inner_roi.csv", index=False)
     out = []
     for A in ("A1", "A2", "A3", "A4", "A5", "A6"):
         for rl in ("C0", "C0_r5u", "C1", "C2", "C3"):
