@@ -128,5 +128,75 @@ def stage_inner():
     json.dump(ra, open(f"{RES}/S2.0_RA.json", "w"), indent=1)
     print(json.dumps(ra, indent=1)[:3000])
 
+
+def stage_final():
+    P = []
+    # M1: strisce (P-1, P-2, R-B)
+    rb = {"nonperiodic": {}, "parity_spatial": {}}
+    for k in SEC:
+        js = json.load(open(f"{OUT}/stripes/{k}.json"))
+        for ax in ("rows", "cols"):
+            r = js[ax]; vd = verdict(r["sd_lo"], r["sd_hi"], 0.0, 0.05)
+            P.append({"id": "P-1", "quantity": f"SD riproducibile dei fattori non periodici ({ax})", "unit": k, "estimate": r["sd_repro"], "lo": r["sd_lo"],
+                      "hi": r["sd_hi"], "interval": "[0, 0.05]", "verdict": vd, "extra": f"parita' {r['odd_over_even']:.3f}; r fra meta' {r['corr_halves']:.3f}; passo 1 {r['lag1_repro']:.3f}"})
+            rb["nonperiodic"][f"{k}_{ax}"] = {"verdict": vd, "sd": r["sd_repro"], "lag1": r["lag1_repro"]}
+        for ax in ("cols", "rows"):
+            r = js["tiles"][ax]; vd = verdict(r["sd_lo"], r["sd_hi"], 0.0, 0.05)
+            P.append({"id": "P-2", "quantity": f"SD riproducibile fra tessere del log dispari/pari ({ax})", "unit": k, "estimate": r["sd_between_repro"],
+                      "lo": r["sd_lo"], "hi": r["sd_hi"], "interval": "[0, 0.05]", "verdict": vd, "extra": f"mediana {r['median_ratio']:.3f} (p10 {r['p10_ratio']:.3f}, p90 {r['p90_ratio']:.3f}); tessere {js['tiles']['n_tiles']}"})
+            rb["parity_spatial"][f"{k}_{ax}"] = vd
+    v1 = [x["verdict"] for x in rb["nonperiodic"].values()]
+    rb["nonperiodic_layer"] = "fattori casuali per riga e colonna" if "smentita" in v1 else ("solo parita'" if all(v == "confermata" for v in v1) else "opzione spenta")
+    rb["parity_spatial_sections"] = sorted({k.split("_")[0] for k, v in rb["parity_spatial"].items() if v == "smentita"})
+    json.dump(rb, open(f"{RES}/S2.0_RB.json", "w"), indent=1)
+    # P-3: controllo interno della regola C1 (due popolazioni)
+    I = pd.read_csv(f"{RES}/S2.0_inner_summary.csv")
+    for A_ in ("A2", "A5"):
+        x = I[(I.archetype == A_) & (I.rule == "C1")].iloc[0]
+        P.append({"id": "P-3", "quantity": "previsto/osservato senza i bin entro 2 µm dal bordo del nucleo, regola C1", "unit": A_, "estimate": x.ratio_mean,
+                  "lo": x.lo, "hi": x.hi, "interval": "[0.909, 1.1]", "verdict": x.verdict,
+                  "extra": f"ROI non invertibili {int(x.n_not_invertible)}/5; sulle ROI riuscite {x.ratio_mean_ok_only:.3f} [{x.lo_ok_only:.3f}, {x.hi_ok_only:.3f}]"})
+    # M3: P-4 e R-C
+    D = pd.DataFrame([json.load(open(f)) for f in sorted(glob.glob(f"{OUT}/disp/*.json"))])
+    D.drop(columns=["sec", "psi_sim_reps"], errors="ignore").to_csv(f"{RES}/S2.0_disp_roi.csv", index=False)
+    rc = {}
+    for A_ in ("A1", "A2", "A3", "A4", "A5", "A6"):
+        t = D[D.archetype == A_]
+        m, lo, hi = boot_mean(t.ratio.to_numpy(float)); vd = verdict(lo, hi, 0.909, 1.1)
+        vm, vlo, vhi = boot_mean(t.v.to_numpy(float))
+        P.append({"id": "P-4", "quantity": "indice di dispersione dentro il nucleo, osservato/simulato", "unit": A_, "estimate": m, "lo": lo, "hi": hi,
+                  "interval": "[0.909, 1.1]", "verdict": vd, "extra": f"v {vm:.4f} [{vlo:.4f}, {vhi:.4f}]; psi oss {t.psi_obs.mean():.3f}, sim {t.psi_sim.mean():.3f}; r da {', '.join(sorted(set(t.r_source)))}"})
+        rc[A_] = {"verdict": vd, "ratio": m, "v": vm, "v_lo": vlo, "v_hi": vhi}
+    vs = [x["verdict"] for x in rc.values()]
+    over = [a for a, x in rc.items() if x["verdict"] == "smentita" and x["ratio"] > 1.1]
+    rc["layer"] = "rumore gamma dentro la cellula, v per tessuto" if over else ("nessuno strato" if all(v == "confermata" for v in vs) else "opzione spenta")
+    rc["tissues_over"] = over
+    json.dump(rc, open(f"{RES}/S2.0_RC.json", "w"), indent=1)
+    # CP-1: lumi con la regola vincente
+    ra = json.load(open(f"{RES}/S2.0_RA.json")); win = ra["winner"]
+    rows = []; cp_fail = 0
+    for k in SEC:
+        for rl in ("C0", win):
+            f = f"{OUT}/lumens/{k}_{rl}.csv"
+            if not os.path.exists(f): continue
+            L = pd.read_csv(f)
+            if len(L) == 0: continue
+            for lo_, hi_ in ((2, 4), (4, 8), (8, 16), (16, 32)):
+                o, p = L[f"obs_{lo_}_{hi_}"].to_numpy(float), L[f"pred_{lo_}_{hi_}"].to_numpy(float)
+                rng = np.random.default_rng(S.SEED); idx = rng.integers(0, len(L), (S.B, len(L)))
+                with np.errstate(divide="ignore", invalid="ignore"):
+                    reps = o[idx].sum(1) / p[idx].sum(1)
+                est = o.sum() / p.sum(); lo, hi = np.nanpercentile(reps, 2.5), np.nanpercentile(reps, 97.5)
+                vd = verdict(lo, hi, 0.8, 1.25)
+                judged = (rl == win and k != "A5" and hi_ <= 8)
+                if judged and vd == "smentita": cp_fail += 1
+                rows.append({"key": k, "rule": rl, "band": f"{lo_}-{hi_}", "n_lumens": len(L), "obs_over_pred": est, "lo": lo, "hi": hi, "verdict": vd, "judged_CP1": judged})
+    Lm = pd.DataFrame(rows); Lm.to_csv(f"{RES}/S2.0_CP1_lumens.csv", index=False)
+    P.append({"id": "CP-1", "quantity": f"lumi interni, osservati/previsti con {win}, fasce 2-4 e 4-8 µm", "unit": "A1, A23, A4, A6", "estimate": float(cp_fail),
+              "lo": np.nan, "hi": np.nan, "interval": "0 celle smentite su 8", "verdict": "superata" if cp_fail == 0 else "fallita", "extra": f"celle smentite {cp_fail}"})
+    pd.DataFrame(P).to_csv(f"{RES}/S2.0_predictions.csv", index=False)
+    print(pd.DataFrame(P)[["id", "unit", "estimate", "lo", "hi", "verdict"]].round(4).to_string(index=False))
+    print(json.dumps({"RB": rb["nonperiodic_layer"], "RB_spatial": rb["parity_spatial_sections"], "RC": rc["layer"], "RC_over": over}))
+
 if __name__ == "__main__":
-    {"edges": stage_edges, "inner": stage_inner}[STAGE]()
+    {"edges": stage_edges, "inner": stage_inner, "final": stage_final}[STAGE]()

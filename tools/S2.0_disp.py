@@ -38,6 +38,8 @@ def rule_prm(PJ, A, rule):
 import pyarrow.parquet as pq
 OUT, PJF, RULE = sys.argv[1], sys.argv[2], sys.argv[3]
 NREP = 5
+STRIPES = os.environ.get("S20_STRIPES") == "1"          # post hoc PH-2 (dichiarata dopo P-4)
+DDIR = "disp_stripes" if STRIPES else "disp"
 
 def roi_rowscols(Rw):
     sq = f"{NC.D}/{NC.DS[Rw.archetype]}/binned_outputs_x/binned_outputs/square_002um"
@@ -53,12 +55,16 @@ def cv8(u, rows, cols):
 
 def job(args):
     tag, Rw = args
-    fo = f"{OUT}/disp/{tag}.json"
+    fo = f"{OUT}/{DDIR}/{tag}.json"
     if os.path.exists(fo): return fo
     t0 = time.time()
     try:
         PJ = json.load(open(PJF)); prm = rule_prm(PJ, Rw.archetype, RULE)
         Dd, IX, IXf, Dobs, am, acell, S_, U5, base = NC.prep(tag, Rw)
+        if STRIPES:      # post hoc PH-2: fattori di cattura per riga e colonna stimati sulla sezione (M1, adattamento completo con la parita')
+            rows0, cols0 = roi_rowscols(Rw)
+            Fz = np.load(f"{OUT}/stripes/{NC.KEY[Rw.archetype]}_factors.npz")
+            cf = np.exp(np.nan_to_num(Fz["alpha"])[rows0] + np.nan_to_num(Fz["beta"])[cols0]); Dd = dict(Dd); Dd["c"] = cf / cf.mean()
         Ui = np.random.default_rng([S.SEED, int(Rw.name)]).uniform(size=U5.shape)
         di = NC.d_image(Dd, prm)
         fm = roi_tissue(Rw, Dd) if RULE in ("C2", "C3") else None
@@ -87,10 +93,10 @@ def job(args):
     json.dump(res, open(fo + ".tmp", "w")); os.replace(fo + ".tmp", fo); return fo
 
 if __name__ == "__main__":
-    os.makedirs(f"{OUT}/disp", exist_ok=True)
+    os.makedirs(f"{OUT}/{DDIR}", exist_ok=True)
     rois = pd.read_csv("results/R2/R2_rois_checked.csv")
     jobs = [(f"{Rw.archetype}_{Rw.roi_id}", Rw) for _, Rw in rois.iterrows()]
-    jobs = [j for j in jobs if not os.path.exists(f"{OUT}/disp/{j[0]}.json")]
+    jobs = [j for j in jobs if not os.path.exists(f"{OUT}/{DDIR}/{j[0]}.json")]
     nw = int(open(f"{OUT}/WORKERS").read().strip()) if os.path.exists(f"{OUT}/WORKERS") else 8
     print(f"disp jobs {len(jobs)} workers {nw} rule {RULE}", flush=True); t0 = time.time()
     with Pool(nw) as p:
