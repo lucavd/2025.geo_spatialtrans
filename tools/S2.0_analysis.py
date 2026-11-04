@@ -181,16 +181,17 @@ def stage_final():
             if not os.path.exists(f): continue
             L = pd.read_csv(f)
             if len(L) == 0: continue
+            g = L.groupby("tile").sum(numeric_only=True); n = len(g)      # come R5 (tools/R5_analysis.py, modo lumens): bootstrap per tessere
+            import R5_common as C5
             for lo_, hi_ in ((2, 4), (4, 8), (8, 16), (16, 32)):
-                o, p = L[f"obs_{lo_}_{hi_}"].to_numpy(float), L[f"pred_{lo_}_{hi_}"].to_numpy(float)
-                rng = np.random.default_rng(S.SEED); idx = rng.integers(0, len(L), (S.B, len(L)))
-                with np.errstate(divide="ignore", invalid="ignore"):
-                    reps = o[idx].sum(1) / p[idx].sum(1)
-                est = o.sum() / p.sum(); lo, hi = np.nanpercentile(reps, 2.5), np.nanpercentile(reps, 97.5)
+                o, p = g[f"obs_{lo_}_{hi_}"].to_numpy(), g[f"pred_{lo_}_{hi_}"].to_numpy()
+                rng = np.random.default_rng([C5.SEED, SEC.index(k), 40 + lo_]); idx = rng.integers(0, n, size=(C5.B, n))
+                reps = np.array([o[ix].sum() / max(p[ix].sum(), 1e-12) for ix in idx])
+                est = o.sum() / p.sum(); lo, hi = float(np.percentile(reps, 2.5)), float(np.percentile(reps, 97.5))
                 vd = verdict(lo, hi, 0.8, 1.25)
                 judged = (rl == win and k != "A5" and hi_ <= 8)
                 if judged and vd == "smentita": cp_fail += 1
-                rows.append({"key": k, "rule": rl, "band": f"{lo_}-{hi_}", "n_lumens": len(L), "obs_over_pred": est, "lo": lo, "hi": hi, "verdict": vd, "judged_CP1": judged})
+                rows.append({"key": k, "rule": rl, "band": f"{lo_}-{hi_}", "n_lumens": len(L), "n_tiles": n, "obs_over_pred": est, "lo": lo, "hi": hi, "verdict": vd, "judged_CP1": judged})
     Lm = pd.DataFrame(rows); Lm.to_csv(f"{RES}/S2.0_CP1_lumens.csv", index=False)
     P.append({"id": "CP-1", "quantity": f"lumi interni, osservati/previsti con {win}, fasce 2-4 e 4-8 µm", "unit": "A1, A23, A4, A6", "estimate": float(cp_fail),
               "lo": np.nan, "hi": np.nan, "interval": "0 celle smentite su 8", "verdict": "superata" if cp_fail == 0 else "fallita", "extra": f"celle smentite {cp_fail}"})
