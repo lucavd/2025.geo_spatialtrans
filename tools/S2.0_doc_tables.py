@@ -52,6 +52,23 @@ j = L[L.judged_CP1 & (L.rule == "C2")]
 bl = add("A1, A2-A3, A4, A6", "lumi interni: UMI osservati/previsti con la regola C2 a 2-4 e 4-8 µm dal bordo (CP-1)",
          "; ".join(f"{k} {b} {f2(o)}" for k, b, o in zip(j.key, j.band, j.obs_over_pred)), "0 smentite su 8 rispetto a [0.8, 1.25]; " + "; ".join(f"{k} {b} [{f2(lo)}, {f2(hi)}]" for k, b, lo, hi in zip(j.key, j.band, j.lo, j.hi)),
          "rapporto", "tools/S2.0_lumens.py, S2.0_analysis.py@S2.0 (results/S2.0/S2.0_CP1_lumens.csv) + lumi di R5 CP-2", "bootstrap per tessere come R5; C0 riproduce R5 CP-2 esattamente; cervello (2 lumi) descrittivo")
+# PH-5: parte fine delle strisce, maschera senza righe e colonne a zero UMI; passo 1 per il generatore dalla calibrazione sintetica
+P5 = pd.read_csv(f"{RES}/S2.0_PH5_sections.csv"); CB = pd.read_csv(f"{RES}/S2.0_PH5_calib.csv")
+cm = CB.groupby("rho_true").lag1_repro_hp.mean(); cb_b, cb_a = np.polyfit(cm.index.values, cm.values, 1)
+def rho_gen(l): return float(np.clip((l - cb_a) / cb_b, -0.49, 0.49))
+def extrap(l): return l < cm.min() - 1e-9
+def p5(k, ax, it=10): return P5[(P5.key == k) & (P5.axis == ax) & (P5.n_iter == it)].iloc[0]
+bph5 = {}
+for k in SEC:
+    r, c_ = p5(k, "rows"), p5(k, "cols"); r20, c20 = p5(k, "rows", 20), p5(k, "cols", 20)
+    arch = "A2, A3" if k == "A23" else k
+    gr, gc = rho_gen(r.lag1_repro_hp), rho_gen(c_.lag1_repro_hp)
+    ex = [nm for nm, l in (("righe", r.lag1_repro_hp), ("colonne", c_.lag1_repro_hp)) if extrap(l)]
+    bph5[k] = add(arch, "strisce a 2 µm, parte fine (scarto dalla media mobile su 21 righe o colonne; righe e colonne con 0 UMI tolte dalla maschera): parità dispari/pari (righe; colonne), SD riproducibile (log), passo 1 misurato e passo 1 per il generatore",
+                  f"parità {f3(r.odd_over_even)}; {f3(c_.odd_over_even)}. SD {f3(r.sd_repro_hp)}; {f3(c_.sd_repro_hp)}. passo 1 {f2(r.lag1_repro_hp)}; {f2(c_.lag1_repro_hp)} (generatore {f2(gr)}; {f2(gc)})",
+                  f"20 iterazioni: SD {f3(r20.sd_repro_hp)}; {f3(c20.sd_repro_hp)}, passo 1 {f2(r20.lag1_repro_hp)}; {f2(c20.lag1_repro_hp)}; r fra metà {f2(r.corr_halves_hp)}; {f2(c_.corr_halves_hp)}; righe/colonne a 0 UMI tolte {int(r.zero_rows_removed)}/{int(r.zero_cols_removed)}",
+                  "rapporto; log", f"tools/S2.0_ph5_stripes_hp.py@S2.0 (results/S2.0/S2.0_PH5_sections.csv, S2.0_PH5_calib.csv) + {DS[k]}",
+                  "post hoc PH-5 (revisione G-5 a): la parte lenta dei fattori non è identificata (deriva con le iterazioni); valori per il simulatore" + ("; passo 1 per il generatore estrapolato oltre la calibrazione (" + ", ".join(ex) + ")" if ex else ""))
 open(f"{RES}/S2.0_bio_rows.md", "w").write("\n".join(bio) + "\n")
 # tabella dei parametri
 cols = ["intestino (A1)", "tumore (A2)", "stroma (A3)", "linfonodo (A4)", "cervello (A5)", "cuore (A6)"]
@@ -64,11 +81,12 @@ for p, nm, f_ in (("sigma_e", "zona di bordo: sfocatura larga σ_e (µm)", f2), 
     v = [f_(e(SOF[A_], "C2", p)[0]) for A_ in ARCH[:5]] + [f_(HEART[p]) + "†"]
     T.append(row(nm, v, ", ".join(bc2[k] for k in SEC) + "; †mediana delle altre 4 sezioni ([DEC-037](/decisions/DEC-037.md)), calcolata da `results/S2.0/S2.0_edges_sections.csv`"))
 T.append(row("fondo sul vetro b (UMI per bin di 2 µm)", [f3(BG[SOF[A_]][1]) for A_ in ARCH], ", ".join(BG[k][0] for k in SEC)))
-T.append(row("strisce: parità righe dispari/pari", [f3(ST[SOF[A_]]["rows"]["odd_over_even"]) + ("‡" if A_ == "A4" else "") for A_ in ARCH], ", ".join(bst[k] for k in SEC) + "; ‡variabile nello spazio"))
-T.append(row("strisce: parità colonne dispari/pari", [f3(ST[SOF[A_]]["cols"]["odd_over_even"]) + ("‡" if A_ == "A4" else "") for A_ in ARCH], ", ".join(bst[k] for k in SEC)))
-T.append(row("strisce: SD dei fattori per riga α (log)", [f3(ST[SOF[A_]]["rows"]["sd_repro"]) for A_ in ARCH], ", ".join(bst[k] for k in SEC)))
-T.append(row("strisce: SD dei fattori per colonna β (log)", [f3(ST[SOF[A_]]["cols"]["sd_repro"]) for A_ in ARCH], ", ".join(bst[k] for k in SEC)))
-T.append(row("strisce: correlazione a passo 1 di α; β (misurata fra le due metà; lo stimatore aggiunge circa −0.03)", [f"{f2(ST[SOF[A_]]['rows']['lag1_repro'])}; {f2(ST[SOF[A_]]['cols']['lag1_repro'])}" for A_ in ARCH], ", ".join(bst[k] for k in SEC) + "; distorsione dallo stimatore: post hoc PH-4 `results/S2.0/S2.0_PH4_lag.csv`"))
+SRC5 = ", ".join(bph5[k] for k in SEC)
+T.append(row("strisce: parità righe dispari/pari", [f3(p5(SOF[A_], "rows").odd_over_even) + ("‡" if A_ == "A4" else "") for A_ in ARCH], SRC5 + "; ‡variabile nello spazio; righe e colonne con 0 UMI tolte (PH-5)"))
+T.append(row("strisce: parità colonne dispari/pari", [f3(p5(SOF[A_], "cols").odd_over_even) + ("‡" if A_ == "A4" else "") for A_ in ARCH], SRC5))
+T.append(row("strisce: SD della parte fine dei fattori per riga α (log)", [f3(p5(SOF[A_], "rows").sd_repro_hp) for A_ in ARCH], SRC5 + "; parte lenta non identificata (PH-5)"))
+T.append(row("strisce: SD della parte fine dei fattori per colonna β (log)", [f3(p5(SOF[A_], "cols").sd_repro_hp) for A_ in ARCH], SRC5))
+T.append(row("strisce: passo 1 per il generatore, α; β (dalla parte fine misurata, calibrata su sezioni sintetiche)", [f"{f2(rho_gen(p5(SOF[A_], 'rows').lag1_repro_hp))}; {f2(rho_gen(p5(SOF[A_], 'cols').lag1_repro_hp))}" + ("§" if extrap(p5(SOF[A_], 'rows').lag1_repro_hp) or extrap(p5(SOF[A_], 'cols').lag1_repro_hp) else "") for A_ in ARCH], SRC5 + "; `results/S2.0/S2.0_PH5_calib.csv`; §almeno un valore oltre l'ultimo punto calibrato (passo 1 vero −0.3)"))
 T.append(row("variabilità dentro il nucleo v, come scritta da R-C (prototipo senza fattori di riga e colonna)", [f3(P.loc[A_].v_pre) for A_ in ARCH], ", ".join(bv[A_] for A_ in ARCH) + "; `results/S2.0/S2.0_RC.json`"))
 T.append(row("variabilità dentro il nucleo v, al netto delle strisce (post hoc PH-2; punto di partenza della taratura, DEC-040)", [f3(P.loc[A_].v) + ("*" if A_ == "A6" else "") for A_ in ARCH], ", ".join(bv[A_] for A_ in ARCH) + "; post hoc PH-2"))
 T.append(row("scala della variabilità dentro il nucleo", ["1-2 µm"] * 6, ", ".join(bv[A_] for A_ in ARCH) + "; post hoc PH-3 (correlazione in più a 2 µm, al più 0.09 a 4 µm)"))
