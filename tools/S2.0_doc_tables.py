@@ -59,17 +59,29 @@ def row(name, vals, src): return f"| {name} | " + " | ".join(vals) + f" | {src} 
 T = ["| parametro | " + " | ".join(cols) + " | fonte |", "|---|" + "---|" * 6 + "---|"]
 T.append(row("trascritti per cellula", ["per tipo, mediana e dispersione di R4"] * 6, "B-275...B-335; [DEC-035](/decisions/DEC-035.md)"))
 T.append(row("rapporto nucleo/citoplasma r (regola C2)", [f2(I[(I.archetype == A_) & (I.rule == 'C2')].r_median.iloc[0]) + ("*" if A_ == "A6" else "") for A_ in ARCH], ", ".join(br[A_] for A_ in ARCH) + "; *controllo interno smentito"))
-T.append(row("sfocatura stretta per tutti σ_in (µm)", ["0.7"] * 6, "valore fisso di S2.0 dentro 0.5-1 µm di [DEC-037](/decisions/DEC-037.md); B-367...B-372"))
+T.append(row("sfocatura stretta per tutti σ_in (µm)", ["0.7"] * 6, "valore unico per scelta ([DEC-038](/decisions/DEC-038.md)): R5 PH-5 `results/R5/R5_PH5_narrowcore.csv` (sigma_fixed 0.7) e pre-registrazione di M2, dentro 0.5-1 µm di [DEC-037](/decisions/DEC-037.md); valori per tessuto in B-367...B-372"))
 for p, nm, f_ in (("sigma_e", "zona di bordo: sfocatura larga σ_e (µm)", f2), ("D", "zona di bordo: profondità D (µm)", f2), ("w", "coda esponenziale: massa w", f3), ("ell", "coda esponenziale: lunghezza ℓ (µm)", f2)):
     v = [f_(e(SOF[A_], "C2", p)[0]) for A_ in ARCH[:5]] + [f_(HEART[p]) + "†"]
-    T.append(row(nm, v, ", ".join(bc2[k] for k in SEC) + "; †mediana delle altre 4 sezioni ([DEC-037](/decisions/DEC-037.md))"))
+    T.append(row(nm, v, ", ".join(bc2[k] for k in SEC) + "; †mediana delle altre 4 sezioni ([DEC-037](/decisions/DEC-037.md)), calcolata da `results/S2.0/S2.0_edges_sections.csv`"))
 T.append(row("fondo sul vetro b (UMI per bin di 2 µm)", [f3(BG[SOF[A_]][1]) for A_ in ARCH], ", ".join(BG[k][0] for k in SEC)))
 T.append(row("strisce: parità righe dispari/pari", [f3(ST[SOF[A_]]["rows"]["odd_over_even"]) + ("‡" if A_ == "A4" else "") for A_ in ARCH], ", ".join(bst[k] for k in SEC) + "; ‡variabile nello spazio"))
 T.append(row("strisce: parità colonne dispari/pari", [f3(ST[SOF[A_]]["cols"]["odd_over_even"]) + ("‡" if A_ == "A4" else "") for A_ in ARCH], ", ".join(bst[k] for k in SEC)))
 T.append(row("strisce: SD dei fattori per riga α (log)", [f3(ST[SOF[A_]]["rows"]["sd_repro"]) for A_ in ARCH], ", ".join(bst[k] for k in SEC)))
 T.append(row("strisce: SD dei fattori per colonna β (log)", [f3(ST[SOF[A_]]["cols"]["sd_repro"]) for A_ in ARCH], ", ".join(bst[k] for k in SEC)))
-T.append(row("strisce: correlazione a passo 1 di α; β", [f"{f2(ST[SOF[A_]]['rows']['lag1_repro'])}; {f2(ST[SOF[A_]]['cols']['lag1_repro'])}" for A_ in ARCH], ", ".join(bst[k] for k in SEC)))
-T.append(row("variabilità dentro il nucleo v (gamma moltiplicativa)", [f3(P.loc[A_].v) + ("*" if A_ == "A6" else "") for A_ in ARCH], ", ".join(bv[A_] for A_ in ARCH) + "; post hoc PH-2"))
-T.append(row("scala della variabilità dentro il nucleo", ["1-2 µm"] * 6, ", ".join(bv[A_] for A_ in ARCH) + "; post hoc PH-3 (correlazione in più a 2 µm, quasi nulla a 4 µm)"))
+T.append(row("strisce: correlazione a passo 1 di α; β (misurata fra le due metà; lo stimatore aggiunge circa −0.03)", [f"{f2(ST[SOF[A_]]['rows']['lag1_repro'])}; {f2(ST[SOF[A_]]['cols']['lag1_repro'])}" for A_ in ARCH], ", ".join(bst[k] for k in SEC) + "; distorsione dallo stimatore: post hoc PH-4 `results/S2.0/S2.0_PH4_lag.csv`"))
+T.append(row("variabilità dentro il nucleo v, come scritta da R-C (prototipo senza fattori di riga e colonna)", [f3(P.loc[A_].v_pre) for A_ in ARCH], ", ".join(bv[A_] for A_ in ARCH) + "; `results/S2.0/S2.0_RC.json`"))
+T.append(row("variabilità dentro il nucleo v, al netto delle strisce (post hoc PH-2; proposta, scelta di Luca)", [f3(P.loc[A_].v) + ("*" if A_ == "A6" else "") for A_ in ARCH], ", ".join(bv[A_] for A_ in ARCH) + "; post hoc PH-2"))
+T.append(row("scala della variabilità dentro il nucleo", ["1-2 µm"] * 6, ", ".join(bv[A_] for A_ in ARCH) + "; post hoc PH-3 (correlazione in più a 2 µm, al più 0.09 a 4 µm)"))
+import re
+BR = {l.split("|")[1].strip(): [x.strip() for x in l.split("|")[1:-1]] for l in open("docs/BIO_REFERENCES.md").read().split("\n") if l.startswith("| B-")}
+REF = {"A1": (270, 271, 272), "A2": (280, 281, 282), "A3": (290, 291, 292), "A4": (302, 303, 304), "A5": (315, 316, 317), "A6": (327, 328, 329)}
+def sp8(b):
+    m = re.search(r"8 µm ([0-9.]+)$", BR[b][4].split("sparsità")[1].strip().rstrip(";")) if "sparsità" in BR[b][4] else None
+    return m.group(1) if m else "—"
+def sp2(b):
+    m = re.search(r"sparsità 2 µm ([0-9.]+)", BR[b][4]); return m.group(1) if m else "—"
+T.append(row("riferimento (controllo, non parametro): UMI per bin di 2 µm in tessuto, media", [BR[f"B-{REF[A_][0]}"][3] for A_ in ARCH], ", ".join(f"B-{REF[A_][0]}" for A_ in ARCH)))
+T.append(row("riferimento (controllo, non parametro): UMI per bin di 8 µm in tessuto, media", [BR[f"B-{REF[A_][1]}"][3] for A_ in ARCH], ", ".join(f"B-{REF[A_][1]}" for A_ in ARCH)))
+T.append(row("riferimento (controllo, non parametro): sparsità bin × gene a 2 µm; 8 µm", [f"{sp2('B-%d' % REF[A_][2])}; {sp8('B-%d' % REF[A_][2])}" for A_ in ARCH], ", ".join(f"B-{REF[A_][2]}" for A_ in ARCH)))
 open(f"{RES}/S2.0_param_table.md", "w").write("\n".join(T) + "\n")
 print("\n".join(T)); print(); print("\n".join(bio)); print("heart medians", HEART)
