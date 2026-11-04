@@ -30,9 +30,9 @@ Una lista `hd` con:
 | D2-4 | Il nucleo ha densità di trascritti r volte quella del citoplasma; r per tessuto invertito in S2.0 con la regola di spostamento scelta (sezione 9), sulla statistica pesata per cellula. Nel cuore il controllo interno è smentito: valore con riserva. | [DEC-034](/decisions/DEC-034.md), R5, S2.0 |
 | D2-5 | Lo spostamento ha due livelli, legati dalla regola scelta dai dati in S2.0 (zona di bordo, sezione 6): tutti i trascritti hanno la sfocatura gaussiana stretta σ_in = 0.7 µm, salvo quelli nati vicino al bordo del tessuto o di un lume (peso exp(−d/D) alla distanza d dal bordo), che hanno la sfocatura larga σ_e (4.5-6.2 µm); una coda esponenziale (massa w, lunghezza ℓ) vale per tutti. La regola precisa la formulazione di DEC-037 («per i trascritti che finiscono fuori dal tessuto»): l'alone dipende da dove il trascritto nasce, non da dove arriva; DEC-037 affidava la regola a questo documento (BL-197). Sostituisce il nucleo gaussiano unico `diffusion_sigma_um` della decisione 11 del design dello Step 1. Il cuore usa i valori mediani delle altre sezioni. | [DEC-037](/decisions/DEC-037.md); S2.0, M2: regola R-A ([DEC-039](/decisions/DEC-039.md)) |
 | D2-6 | Le strisce della griglia a 2 µm sono uno strato tecnico che si può spegnere: alternanza fra righe e colonne pari e dispari più un fattore casuale per ogni riga e ogni colonna (sezione 7). | [DEC-035](/decisions/DEC-035.md) punto 2; S2.0, M1: P-1 smentita in 5 sezioni su 5, regola R-B ([DEC-039](/decisions/DEC-039.md)) |
-| D2-7 | La densità dei trascritti varia su scala di 1-2 µm più del caso, dentro i nuclei (misura pre-registrata) e probabilmente in tutto il tessuto (revisione G-5): uno strato moltiplicativo (gamma, media 1, varianza per tessuto) è acceso nei preset e si può spegnere; quali valori usare è una scelta di Luca. | S2.0, M3: P-4 smentita per eccesso in 6 tessuti su 6, regola R-C, post hoc PH-2 e PH-3 ([DEC-039](/decisions/DEC-039.md)) |
+| D2-7 | La densità dei trascritti varia su scala di 1-2 µm più del caso, dentro i nuclei (misura pre-registrata) e probabilmente in tutto il tessuto (revisione G-5): uno strato moltiplicativo (gamma, media 1, varianza per tessuto) è acceso nei preset e si può spegnere; valori al netto delle strisce e forma di campo correlato, tarati in S2.3 ([DEC-040](/decisions/DEC-040.md)). | S2.0, M3: P-4 smentita per eccesso in 6 tessuti su 6, regola R-C, post hoc PH-2 e PH-3 ([DEC-039](/decisions/DEC-039.md)) |
 | D2-8 | Nessun «dropout» come processo separato: gli zeri in eccesso osservati vengono da sottotipi o programmi dentro i tipi, quindi i profili per cellula hanno sottotipi o programmi. | R4 (PH-2), BL-194 |
-| D2-9 | La profondità (trascritti per cellula) dei preset viene dalle aree misurate di R4; un fattore di profondità permette di passare alla media della sezione. | BL-195 (scelta da confermare da Luca) |
+| D2-9 | I trascritti per cellula restano per tipo (R4); un fattore di profondità per tessuto li porta a riprodurre gli UMI veri per bin di 2 µm in tessuto (sezione 9, righe di riferimento). Il fattore si tara in S2.2 e si verifica in S2.5; senza, il simulatore produrrebbe meno RNA del vero (stima provvisoria della revisione G-5: 67-82 %, un terzo nel cuore). | BL-195, BL-167; [DEC-040](/decisions/DEC-040.md) |
 | D2-10 | Fondo sul vetro: un numero costante di trascritti per bin (misurato sul vetro lontano in R5), con la composizione media del tessuto. | R5 (D-3) |
 | D2-11 | Lo spazio acellulare dentro il tessuto resta assente per costruzione (decisione 1 del design dello Step 1): lumi e vetro ricevono solo trascritti spostati e fondo. Limite dichiarato. | BL-077, BL-086, BL-201 |
 | D2-12 | Tutte le sovrapposizioni geometriche fra bin e poligoni usano l'helper con arrotondamento a 1e-6 µm dello Step 1 (`overlay_prec`), mai `sf::st_intersection` sui territori. | S1.3b, S1.3d, S1.5 |
@@ -49,11 +49,11 @@ Verità geometrica (revisione 3.2.A): per ogni bin, la frazione della sua area c
 
 Ogni cellula riceve:
 
-1. **un totale di trascritti** N_c, estratto dalla distribuzione per tipo e tessuto misurata in R4 (mediana e dispersione dei trascritti per cellula: per tessuto B-275, B-285, B-295, B-307, B-320, B-332, per tipo B-276...B-278, B-286...B-288, B-296...B-300, B-308...B-313, B-321...B-325, B-333...B-335 di `BIO_REFERENCES.md`; [DEC-035](/decisions/DEC-035.md)). Il totale è sulla scala dei trascritti catturati (R4 misura la cattura, non le molecole vere), quindi non serve una seconda efficienza di cattura media. Profondità: D2-9 e la scelta di Luca su BL-195;
+1. **un totale di trascritti** N_c, estratto dalla distribuzione per tipo e tessuto misurata in R4 (mediana e dispersione dei trascritti per cellula: per tessuto B-275, B-285, B-295, B-307, B-320, B-332, per tipo B-276...B-278, B-286...B-288, B-296...B-300, B-308...B-313, B-321...B-325, B-333...B-335 di `BIO_REFERENCES.md`; [DEC-035](/decisions/DEC-035.md)). Il totale è sulla scala dei trascritti catturati (R4 misura la cattura, non le molecole vere), quindi non serve una seconda efficienza di cattura media. Profondità: D2-9;
 2. **un profilo di espressione** p_c (frazioni per gene) dal suo tipo, con un sottotipo o un programma (BL-194: nell'intestino gli zeri in eccesso vengono da marcatori di sottotipi dentro i tipi grossolani);
 3. **i conteggi per gene** x_c ~ Multinomiale(N_c, p_c) o binomiale negativa con dispersione per gene (la vecchia `R/06d_dispersion_params.R` resta riusabile).
 
-La fonte dei profili per tipo è una scelta di Luca (riassunto di S2.0). Il resto del documento non dipende dalla scelta.
+La fonte dei profili per tipo la decidono i dati, in S2.2, con una regola scritta prima del calcolo ([DEC-040](/decisions/DEC-040.md)): candidate i profili medi dei nuclei veri di R6 (impronta intera, oppure solo l'interno del nucleo, meno contaminato dai vicini) e un atlante a cellula singola del tessuto; vince quella che, passata nel modello del simulatore, riproduce meglio i valori veri di R4 per bin (geni rilevati, sparsità a 2 e 8 µm, somiglianza fra bin vicini). Il resto del documento non dipende dalla scelta. Il confronto del modello di rumore per gene (binomiale negativa contro scDesign3) è BL-203.
 
 Il numero di zeri a 2 µm e a 8 µm (revisione 4.4 e 4.5) non è un parametro: è una conseguenza di trascritti per cellula, densità delle cellule, spostamento e somma; il passo 6 lo controlla contro R4 (UMI per bin a 2 e 8 µm e sparsità: B-270...B-272, B-280...B-282, B-290...B-292, B-302...B-304, B-315...B-317, B-327...B-329). La variabilità fra bin della stessa cellula (revisione 4.1) è il passo 4 più lo strato del passo 3.
 
@@ -115,7 +115,7 @@ Valori per tessuto; la colonna «fonte» rimanda alla riga di `docs/BIO_REFERENC
 | strisce: SD dei fattori per colonna β (log) | 0.188 | 0.196 | 0.196 | 0.282 | 0.184 | 0.190 | B-374, B-375, B-376, B-377, B-378 |
 | strisce: correlazione a passo 1 di α; β (misurata fra le due metà; lo stimatore aggiunge circa −0.03) | -0.19; -0.25 | -0.29; -0.18 | -0.29; -0.18 | -0.21; -0.12 | -0.26; -0.27 | -0.07; -0.22 | B-374, B-375, B-376, B-377, B-378; distorsione dallo stimatore: post hoc PH-4 `results/S2.0/S2.0_PH4_lag.csv` |
 | variabilità dentro il nucleo v, come scritta da R-C (prototipo senza fattori di riga e colonna) | 0.102 | 0.144 | 0.170 | 0.159 | 0.115 | 0.201 | B-385, B-387, B-389, B-391, B-393, B-395; `results/S2.0/S2.0_RC.json` |
-| variabilità dentro il nucleo v, al netto delle strisce (post hoc PH-2; proposta, scelta di Luca) | 0.044 | 0.069 | 0.095 | 0.063 | 0.033 | 0.153* | B-385, B-387, B-389, B-391, B-393, B-395; post hoc PH-2 |
+| variabilità dentro il nucleo v, al netto delle strisce (post hoc PH-2; punto di partenza della taratura, DEC-040) | 0.044 | 0.069 | 0.095 | 0.063 | 0.033 | 0.153* | B-385, B-387, B-389, B-391, B-393, B-395; post hoc PH-2 |
 | scala della variabilità dentro il nucleo | 1-2 µm | 1-2 µm | 1-2 µm | 1-2 µm | 1-2 µm | 1-2 µm | B-385, B-387, B-389, B-391, B-393, B-395; post hoc PH-3 (correlazione in più a 2 µm, al più 0.09 a 4 µm) |
 | riferimento (controllo, non parametro): UMI per bin di 2 µm in tessuto, media | 27.14 | 45.46 | 19.53 | 11.40 | 41.79 | 3.42 | B-270, B-280, B-290, B-302, B-315, B-327 |
 | riferimento (controllo, non parametro): UMI per bin di 8 µm in tessuto, media | 424.81 | 719.50 | 312.39 | 182.42 | 667.44 | 54.78 | B-271, B-281, B-291, B-303, B-316, B-328 |
@@ -160,7 +160,7 @@ Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
 |---|---|---|
 | `R/05_grid_sampling.R` | griglia di campionamento con scala propria | sostituito dal passo 1 (BL-005, BL-010) |
 | `R/06a_expression_params.R`, `R/06k_expression_profiles_wrapper.R` | parametri e involucro della generazione per spot | sostituiti dall'orchestratore dello Step 2 |
-| `R/06b_expression_baseline.R` | profili sintetici per tipo con geni marcatori | riusato solo se Luca sceglie i profili sintetici |
+| `R/06b_expression_baseline.R` | profili sintetici per tipo con geni marcatori | riusabile per i controlli (profili noti), non come fonte dei preset |
 | `R/06d_dispersion_params.R` | dispersione binomiale negativa | riusabile per la dispersione per gene |
 | `R/06e_library_size.R` | profondità per spot (8 000 UMI, Visium classico) | sostituito dai trascritti per cellula di R4 (B-275...B-335) |
 | `R/06f_dropout_models.R` | dropout e RNA ambientale | non usato: niente dropout separato (D2-8); il fondo sostituisce l'RNA ambientale (D2-10). La divergenza fra le due configurazioni di prova (`dropout_range` 0.45-0.65 contro 0.25-0.45, BL-001) non riguarda più il simulatore |
@@ -173,7 +173,7 @@ Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
 | sessione | funzione | controlli | riferimenti | controprova |
 |---|---|---|---|---|
 | S2.1 | `build_hd_grid()` e `truth$overlap` | somma delle frazioni, identità della somma a 8 µm, geometrie valide | — | griglia spostata di mezzo bin: le frazioni si ricalcolano identiche a meno della traslazione |
-| S2.2 | `simulate_cell_profiles()` | totali per cellula, multinomiale, sottotipi | trascritti per cellula per tipo (R4); profili scelti da Luca | profili veri recuperati dalla media delle cellule simulate |
+| S2.2 | `simulate_cell_profiles()` | totali per cellula, multinomiale, sottotipi | trascritti per cellula per tipo (R4); profili scelti dalla regola pre-registrata di S2.2 (DEC-040) | profili veri recuperati dalla media delle cellule simulate |
 | S2.3 | `place_and_move_transcripts()` | conservazione dei trascritti, densità nucleo/citoplasma, nucleo di spostamento | R5 (bordi, contrasto interno), regola di S2.0 | controllo interno e lumi di S2.0 rifatti sulle cellule simulate |
 | S2.4 | `capture_and_bin()` | strisce, fondo, assottigliamento, somma a 8 µm | R4 (strisce, vuoti, UMI per bin), M1 di S2.0 | strisce stimate sui dati simulati con lo stimatore di S2.0 |
 | S2.5 | `simulate_visium_hd()` e pannello A1-A6 | tutti i controlli dello Step 2 | R4 per tessuto (UMI per bin a 2 e 8 µm, frazione di bin vuoti, geni per bin, rapporto nucleo/corona) | il cuore come controllo negativo dove il Voronoi isotropo fallisce |
@@ -206,6 +206,7 @@ Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
 | [DEC-034](/decisions/DEC-034.md), [DEC-035](/decisions/DEC-035.md), [DEC-037](/decisions/DEC-037.md) | sezione 2 |
 | [DEC-038](/decisions/DEC-038.md) scelte tecniche di S2.0 (σ_in unico, margini, tolleranze) | sezioni 9, 13 |
 | [DEC-039](/decisions/DEC-039.md) regole decise dai dati in S2.0 (R-A, R-B, R-C) | sezioni 5, 6, 7, 9 |
+| [DEC-040](/decisions/DEC-040.md) profili, profondità e variabilità a 1-2 µm decisi con i dati | sezioni 2, 4, 5, 9 |
 
 ## 17. Limiti dichiarati
 
@@ -225,4 +226,4 @@ Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
 | data | versione | che cosa | chi |
 |---|---|---|---|
 | 2026-11-04 | 0.1 | prima bozza con le misure di S2.0 | geo-agent/skill-v2 (S2.0) |
-| 2026-11-04 | 0.2 | correzioni dalla revisione avversariale G-5 (documento e nucleo), PH-4, DEC-038 e DEC-039 | geo-agent/skill-v2 (S2.0) |
+| 2026-11-04 | 0.2 | correzioni dalla revisione avversariale G-5 (documento e nucleo), PH-4, DEC-038, DEC-039, DEC-040 | geo-agent/skill-v2 (S2.0) |

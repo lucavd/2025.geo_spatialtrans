@@ -70,7 +70,7 @@ T.append(row("strisce: SD dei fattori per riga α (log)", [f3(ST[SOF[A_]]["rows"
 T.append(row("strisce: SD dei fattori per colonna β (log)", [f3(ST[SOF[A_]]["cols"]["sd_repro"]) for A_ in ARCH], ", ".join(bst[k] for k in SEC)))
 T.append(row("strisce: correlazione a passo 1 di α; β (misurata fra le due metà; lo stimatore aggiunge circa −0.03)", [f"{f2(ST[SOF[A_]]['rows']['lag1_repro'])}; {f2(ST[SOF[A_]]['cols']['lag1_repro'])}" for A_ in ARCH], ", ".join(bst[k] for k in SEC) + "; distorsione dallo stimatore: post hoc PH-4 `results/S2.0/S2.0_PH4_lag.csv`"))
 T.append(row("variabilità dentro il nucleo v, come scritta da R-C (prototipo senza fattori di riga e colonna)", [f3(P.loc[A_].v_pre) for A_ in ARCH], ", ".join(bv[A_] for A_ in ARCH) + "; `results/S2.0/S2.0_RC.json`"))
-T.append(row("variabilità dentro il nucleo v, al netto delle strisce (post hoc PH-2; proposta, scelta di Luca)", [f3(P.loc[A_].v) + ("*" if A_ == "A6" else "") for A_ in ARCH], ", ".join(bv[A_] for A_ in ARCH) + "; post hoc PH-2"))
+T.append(row("variabilità dentro il nucleo v, al netto delle strisce (post hoc PH-2; punto di partenza della taratura, DEC-040)", [f3(P.loc[A_].v) + ("*" if A_ == "A6" else "") for A_ in ARCH], ", ".join(bv[A_] for A_ in ARCH) + "; post hoc PH-2"))
 T.append(row("scala della variabilità dentro il nucleo", ["1-2 µm"] * 6, ", ".join(bv[A_] for A_ in ARCH) + "; post hoc PH-3 (correlazione in più a 2 µm, al più 0.09 a 4 µm)"))
 import re
 BR = {l.split("|")[1].strip(): [x.strip() for x in l.split("|")[1:-1]] for l in open("docs/BIO_REFERENCES.md").read().split("\n") if l.startswith("| B-")}
