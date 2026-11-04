@@ -57,7 +57,7 @@ open(f"{RES}/S2.0_bio_rows.md", "w").write("\n".join(bio) + "\n")
 cols = ["intestino (A1)", "tumore (A2)", "stroma (A3)", "linfonodo (A4)", "cervello (A5)", "cuore (A6)"]
 def row(name, vals, src): return f"| {name} | " + " | ".join(vals) + f" | {src} |"
 T = ["| parametro | " + " | ".join(cols) + " | fonte |", "|---|" + "---|" * 6 + "---|"]
-T.append(row("trascritti per cellula", ["per tipo, mediana e dispersione di R4"] * 6, "B-275...B-335; [DEC-035](/decisions/DEC-035.md)"))
+T.append(row("trascritti per cellula", ["per tipo, mediana e dispersione di R4"] * 6, "per tessuto B-275, B-285, B-295, B-307, B-320, B-332; per tipo B-276...B-278, B-286...B-288, B-296...B-300, B-308...B-313, B-321...B-325, B-333...B-335; [DEC-035](/decisions/DEC-035.md)"))
 T.append(row("rapporto nucleo/citoplasma r (regola C2)", [f2(I[(I.archetype == A_) & (I.rule == 'C2')].r_median.iloc[0]) + ("*" if A_ == "A6" else "") for A_ in ARCH], ", ".join(br[A_] for A_ in ARCH) + "; *controllo interno smentito"))
 T.append(row("sfocatura stretta per tutti σ_in (µm)", ["0.7"] * 6, "valore unico per scelta ([DEC-038](/decisions/DEC-038.md)): R5 PH-5 `results/R5/R5_PH5_narrowcore.csv` (sigma_fixed 0.7) e pre-registrazione di M2, dentro 0.5-1 µm di [DEC-037](/decisions/DEC-037.md); valori per tessuto in B-367...B-372"))
 for p, nm, f_ in (("sigma_e", "zona di bordo: sfocatura larga σ_e (µm)", f2), ("D", "zona di bordo: profondità D (µm)", f2), ("w", "coda esponenziale: massa w", f3), ("ell", "coda esponenziale: lunghezza ℓ (µm)", f2)):
