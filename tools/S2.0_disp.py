@@ -39,7 +39,8 @@ import pyarrow.parquet as pq
 OUT, PJF, RULE = sys.argv[1], sys.argv[2], sys.argv[3]
 NREP = 5
 STRIPES = os.environ.get("S20_STRIPES") == "1"          # post hoc PH-2 (dichiarata dopo P-4)
-DDIR = "disp_stripes" if STRIPES else "disp"
+NBR = os.environ.get("S20_NBR") == "1"                  # post hoc PH-3 (dichiarata dopo PH-2)
+DDIR = ("disp_nbr" if NBR else "disp_stripes") if STRIPES else "disp"
 
 def roi_rowscols(Rw):
     sq = f"{NC.D}/{NC.DS[Rw.archetype]}/binned_outputs_x/binned_outputs/square_002um"
@@ -52,6 +53,27 @@ def cv8(u, rows, cols):
     k = pd.DataFrame({"g": (rows // 4) * 100000 + (cols // 4), "u": u})
     g = k.groupby("g").u.agg(["sum", "size"]); g = g[g["size"] == 16]["sum"]
     return float(g.std() / g.mean()) if len(g) > 1 and g.mean() > 0 else float("nan"), int(len(g))
+
+def nbr_corr(u, lab, c, keep, rows, cols, min_bins=4):
+    """Post hoc PH-3: correlazione dei residui standardizzati (y - m)/sqrt(m) fra bin dello stesso nucleo profondo a distanza 1 e 2
+    lungo le righe (h) e le colonne (v); m come in psi_index."""
+    keep = np.asarray(keep); y = np.asarray(u, float); cc = np.asarray(c, float); lab = np.asarray(lab)
+    sel = np.isin(lab, keep) & (lab > 0)
+    z = np.full(len(y), np.nan)
+    l = lab[sel]; uniq, inv, n = np.unique(l, return_inverse=True, return_counts=True)
+    sy = np.bincount(inv, weights=y[sel]); sc = np.bincount(inv, weights=cc[sel])
+    ok = ((n >= min_bins) & (sy > 0))[inv]
+    m = (sy / n)[inv] * cc[sel] / (sc / n)[inv]
+    zz = np.where(ok, (y[sel] - m) / np.sqrt(np.where(ok, m, 1.0)), np.nan); z[sel] = zz
+    key = {(int(a), int(b)): i for i, (a, b) in enumerate(zip(rows, cols))}
+    out = {}
+    for nm, dr, dc in (("h1", 0, 1), ("h2", 0, 2), ("v1", 1, 0), ("v2", 2, 0)):
+        ia, ib = [], []
+        for i, (a, b) in enumerate(zip(rows, cols)):
+            j = key.get((int(a) + dr, int(b) + dc))
+            if j is not None and lab[i] > 0 and lab[i] == lab[j] and np.isfinite(z[i]) and np.isfinite(z[j]): ia.append(i); ib.append(j)
+        out[nm] = float(np.corrcoef(z[ia], z[ib])[0, 1]) if len(ia) > 10 else float("nan"); out[nm + "_n"] = len(ia)
+    return out
 
 def job(args):
     tag, Rw = args
@@ -88,6 +110,11 @@ def job(args):
                "zero_frac_obs": float((Dd["u"] == 0).mean()), "zero_frac_sim": float(np.mean([(y == 0).mean() for y in Y])),
                "cv8_obs": cvo, "cv8_sim": cvs, "n_bins8": n8, "mean_lam": float(lam.mean()), "mean_obs": float(Dd["u"].mean()),
                "sec": round(time.time() - t0, 1)}
+        if NBR:
+            no_ = nbr_corr(Dd["u"], lab, Dd["c"], Dd["keep"], rows, cols)
+            ns_ = [nbr_corr(y, lab, Dd["c"], Dd["keep"], rows, cols) for y in Y]
+            for k_ in ("h1", "h2", "v1", "v2"):
+                res[f"rho_{k_}_obs"] = no_[k_]; res[f"rho_{k_}_sim"] = float(np.mean([s[k_] for s in ns_])); res[f"n_{k_}"] = no_[k_ + "_n"]
     except Exception:
         res = {"tag": tag, "error": traceback.format_exc()}
     json.dump(res, open(fo + ".tmp", "w")); os.replace(fo + ".tmp", fo); return fo
