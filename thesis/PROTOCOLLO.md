@@ -6,7 +6,7 @@
 Scuola di specializzazione in Statistica medica · supervisore: Luca Vedovelli
 Branch: `thesis/expression-sources` del repository `lucavd/2025.geo_spatialtrans`
 Periodo: **19 ottobre – 31 dicembre 2026**, a tempo pieno. Il 31/12/2026 la tesi è **scritta e consegnata** a Luca.
-Versione del protocollo: 1.3 (2026-10-14)
+Versione del protocollo: 1.4 (2026-11-04)
 
 ---
 
@@ -38,6 +38,8 @@ Il risultato serve al progetto principale: deciderà quale fonte di profili user
 
 ## 2. Decisioni prese
 
+Dal 26/10 le decisioni nuove si registrano in `DECISIONS.md`, che prevale su questa tabella se le due differiscono. Qui restano le decisioni di partenza e quelle che cambiano il disegno del protocollo.
+
 | Data | Decisione |
 |---|---|
 | 2026-10-14 | Tema, titolo e i due obiettivi della sezione 1 |
@@ -54,6 +56,12 @@ Il risultato serve al progetto principale: deciderà quale fonte di profili user
 | 2026-10-14 | Fino all'arrivo della VPN si lavora sul PC con un clone parziale del branch. I percorsi dei dati si leggono da `TESI_DATA`; i dati si scaricano solo da script con md5 e non si copiano mai dal PC al server |
 | 2026-10-14 | Piano di riserva: se la VPN non c'è entro venerdì 30/10, l'ADEMP si approva con un pilota su CPU (RCTD, CARD, NNLS). Il numero di repliche per cell2location si fissa nei primi giorni sul server, con un emendamento datato scritto **prima** di qualsiasi risultato |
 | 2026-10-14 | Regola di taglio in caso di ritardo: si toglie prima SPOTlight, poi il braccio G, poi il tessuto cervello. Non si tagliano mai i bracci E, P, M, C− ed E′ né i tessuti colon e linfoide |
+| 2026-11-04 | **Braccio P come mondo de novo coerente.** I geni di P non corrispondono a quelli reali, quindi con il riferimento reale P sarebbe un secondo C−. Per P il riferimento dei metodi si simula da μ^P, con lo stesso modello di rumore e lo stesso numero di cellule per tipo del riferimento reale, e cambia a ogni replica insieme a μ^P. Nell'Obiettivo 1 per P si leggono solo le proprietà di distribuzione (separabilità, distribuzione delle medie e dei fold-change): la correlazione gene per gene è circa zero per costruzione. Sostituisce, per il solo P, la regola "stesso riferimento per tutti i bracci" (sez. 5.4) |
+| 2026-11-04 | **Braccio O, μ oracolo.** μ dal donatore held-out stesso, con il rumore comune. È un braccio di riferimento, come E′, non una fonte in competizione: àncora contro O misura l'effetto del modello di rumore, O contro gli altri bracci l'effetto della fonte di μ. H3: la classifica di P o di G differisce dall'àncora più di quanto ne differiscano O ed E′. Regola: due differenze fra metodi di segno opposto, entrambe oltre 2 × MCSE; dichiarato che con molte coppie e condizioni qualche cambio di segno esce per caso |
+| 2026-11-04 | **Braccio M tolto dallo studio.** Nell'Obiettivo 1 il suo profilo coincide con E per costruzione; il costo di scDesign3 sul cervello non è noto e il calendario è una settimana indietro. Il braccio O ne prende il posto nel calcolo. Il confronto sul modello di rumore passa al simulatore principale (Step 2) |
+| 2026-11-04 | **Repliche.** Metodi su CPU: n_sim con la regola dell'ADEMP (2 × MCSE ≤ δ/2 sulle differenze appaiate), ricalcolato dopo i piloti di linfoide e cervello. cell2location: budget di 240 ore di GPU nelle settimane 7–8; n_c2l = 240 h / tempo di una replica completa (72 dataset, 84 se entra G, più l'addestramento del riferimento di P in ogni tessuto), al massimo pari all'n_sim dei metodi su CPU, minimo 20; sotto 20, cell2location gira solo a 10 cellule per spot. Le differenze appaiate con cell2location si calcolano sulle sue prime n_c2l repliche. Il tempo si misura per primo sul server e si scrive come emendamento prima del run |
+| 2026-11-04 | **Baseline nulla.** Resta la regola per gli spot falliti (proporzioni medie del training). Per ogni metodo si riporta anche l'RMSE relativo alla baseline nulla. Prima del run principale si spiega, con la tabella del pilota del colon, perché a 10 cellule nessun metodo batte la baseline sull'àncora (con α_k = K·p_k la composizione attesa di ogni spot è la quota di training) |
+| 2026-11-04 | **Regola di taglio aggiornata:** prima il braccio G, poi il tessuto cervello. Non si tagliano mai i bracci E, P, C−, E′, O né i tessuti colon e linfoide. Sostituisce la regola del 14/10 e quella dell'ADEMP (G → M → cervello) |
 
 ## 3. Regole di lavoro (non negoziabili)
 
@@ -260,11 +268,12 @@ Si varia **un solo fattore principale**: la fonte della matrice delle medie μ (
 | Braccio | Fonte di μ | Ruolo |
 |---|---|---|
 | E | Medie empiriche dallo split di training dello scRNA reale | Riferimento "onesto" |
-| P | Parametrico de novo: medie da una distribuzione gamma, marcatori con fold-change controllati | Massimo controllo, minimo realismo |
-| M | scDesign3 addestrato sullo split di training | Via di mezzo model-based |
+| P | Parametrico de novo: medie da una distribuzione gamma, marcatori con fold-change controllati | Mondo de novo coerente: il riferimento dei metodi si simula da μ^P (decisione del 4/11). Massimo controllo, minimo realismo |
+| ~~M~~ | ~~scDesign3 addestrato sullo split di training~~ | Tolto il 4/11: nell'Obiettivo 1 coincide con E per costruzione |
 | G | GEM-1-sc in modalità "mean estimation", da metadati CL/UBERON | Modello generativo (opzionale, gate G0) |
 | C− | Profili E con le etichette dei geni permutate dentro ogni tipo cellulare | Controllo negativo: deve fallire |
-| E′ | Medie da un secondo donatore reale indipendente | Controllo positivo: il tetto ottenibile |
+| E′ | Medie da un secondo donatore reale indipendente | Riferimento della variabilità tra donatori, non un tetto (DECISIONS 26/10) |
+| O | μ oracolo: medie del donatore held-out stesso, rumore comune | Riferimento: separa l'effetto del rumore (àncora contro O) dall'effetto della fonte di μ (O contro gli altri bracci) (decisione del 4/11) |
 
 Fattori secondari, in griglia fissa:
 - tessuto: colon/tumore del colon, tessuto linfoide, cervello;
@@ -286,12 +295,14 @@ Generazione dei dati di una replica:
 
 ### 5.4 Methods
 - RCTD (pacchetto spacexr);
-- CARD;
 - cell2location (Python, GPU);
-- NNLS (baseline);
-- SPOTlight (facoltativo).
+- spatialDWLS;
+- MuSiC (seconda baseline);
+- NNLS (baseline).
 
-Ogni metodo riceve come riferimento lo scRNA dello split di training, sempre lo stesso per tutti i bracci.
+CARD e SPOTlight sono stati tolti il 26/10 (DECISIONS): CARD sfrutta una struttura spaziale che gli pseudo-spot non hanno.
+
+Ogni metodo riceve come riferimento lo scRNA dello split di training, lo stesso per tutti i bracci **tranne P**, il cui riferimento si simula da μ^P (decisione del 4/11).
 
 ### 5.5 Performance measures
 - **Obiettivo 1:**
@@ -306,8 +317,9 @@ Ogni metodo riceve come riferimento lo scRNA dello split di training, sempre lo 
 
 ### 5.6 Controprove previste
 1. **C−** deve dare fedeltà bassa e classifiche diverse dall'àncora. Se le classifiche non cambiano nemmeno con profili privi di senso, il benchmark è insensibile al livello di espressione: è un risultato e va scritto.
-2. **E′** è il tetto. Una fonte sintetica che lo supera indica un probabile leakage (lo stesso donatore in training e in test, o dati di GEM-1 sovrapposti). Va investigata prima di andare avanti.
+2. **E′** è il riferimento della variabilità tra donatori, non il tetto: una fonte che lo supera non indica leakage. Il tetto dell'Obiettivo 1 è il noise ceiling del donatore held-out; il leakage si controlla sulla provenienza dei dati (DECISIONS 26/10).
 3. **Split per donatore** verificato con un test automatico: nessun identificativo di donatore compare in due split.
+4. **Braccio O** (decisione del 4/11): se la classifica di O differisce già dall'àncora, una parte della differenza fra bracci e àncora viene dal modello di rumore e non dalla fonte di μ. Le differenze di P e G si leggono rispetto a quelle di O ed E′.
 
 ## 6. Timeline settimana per settimana
 
