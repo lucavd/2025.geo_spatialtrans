@@ -56,14 +56,19 @@ run_music <- function(spots, ref, ref_type, ref_donor) {
   })
 }
 
-# spatialDWLS (standalone package). Pilot settings (ADEMP §4, [PILOT]):
+# spatialDWLS (standalone package). Settings (ADEMP §4):
 #  - normalisation: counts / total * 1e4; spots log2(x + 1), signature on the unlogged scale;
 #  - markers: top n_markers genes per type by log2 fold-change of the mean normalised expression
 #    (type vs mean of the other types), from the training reference;
-#  - spot clusters: k-means (k_clusters, nstart 10) on the first 20 principal components of the
-#    log-normalised spots over the marker genes;
+#  - spot clusters (changed 2026-11-04, ADEMP §4): Leiden clustering with the settings of Spotless
+#    (saeyslab/spotless-benchmark, subworkflows/deconvolution/spatialdwls/script_nf.R: nn.dims = 10,
+#    nn.k = 4, cluster.res = 0.4, cluster.n_iter = 1000) on a shared-nearest-neighbour graph
+#    (bluster::makeSNNGraph, default "rank" weights) of the first 10 principal components of the
+#    log-normalised spots over the marker genes; igraph instead of Giotto. The colon pilot used
+#    k-means (k = 10, 20 PCs), which had no source. Leiden uses the R RNG, so the replicate seed fixes it;
 #  - n_cell = the true cells-per-spot level.
-run_dwls <- function(spots, ref, ref_type, n_cell, n_markers = 100, k_clusters = 10) {
+run_dwls <- function(spots, ref, ref_type, n_cell, n_markers = 100, nn_dims = 10, nn_k = 4,
+                     cluster_res = 0.4, cluster_n_iter = 1000) {
   timed({
     norm <- function(x) { x <- methods::as(x, "CsparseMatrix"); Matrix::t(Matrix::t(x) / Matrix::colSums(x)) * 1e4 }
     ref_n <- norm(ref)
@@ -77,8 +82,10 @@ run_dwls <- function(spots, ref, ref_type, n_cell, n_markers = 100, k_clusters =
       rownames(means)[order(lfc[, k], decreasing = TRUE)[seq_len(n_markers)]])))
     sig <- spatialDWLS::dwls_signature(ref_n, markers, ref_type)
     expr <- log2(norm(spots) + 1)
-    pcs <- stats::prcomp(t(as.matrix(expr[markers, ])), rank. = 20)$x
-    cl <- stats::kmeans(pcs, centers = min(k_clusters, ncol(spots) - 1), nstart = 10)$cluster
+    pcs <- stats::prcomp(t(as.matrix(expr[markers, ])), rank. = nn_dims)$x
+    g <- bluster::makeSNNGraph(pcs, k = nn_k)
+    cl <- igraph::membership(igraph::cluster_leiden(g, objective_function = "modularity",
+                                                    resolution = cluster_res, n_iterations = cluster_n_iter))
     p <- spatialDWLS::dwls(expr, sig, clusters = cl, n_cell = n_cell)
     t(p)
   })
