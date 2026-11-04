@@ -13,7 +13,7 @@ P1=$!
 S20_REVERSE=1 S20_NW=$H $PY tools/S2.0_edges.py "$RUN" real >> "$RUN/m2_rev.log" 2>&1 &
 P2=$!
 wait $P1 $P2
-S20_IGNORE_LOCKS=1 S20_NW=$NW $PY tools/S2.0_edges.py "$RUN" real >> "$RUN/m2_fwd.log" 2>&1
+S20_NW=$NW $PY tools/S2.0_edges.py "$RUN" real >> "$RUN/m2_fwd.log" 2>&1
 echo "$(date -Is) M2 done: $(ls $RUN/edges | wc -l) windows" >> $LOG
 $PY tools/S2.0_analysis.py "$RUN" edges >> $LOG 2>&1
 echo $NW > "$RUN/WORKERS"

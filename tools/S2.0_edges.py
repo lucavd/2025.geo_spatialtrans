@@ -36,8 +36,11 @@ def one_real(path):
     key = path.split("/")[-2]; tile = os.path.basename(path)[:-4]; fo = f"{OUT}/edges/{key}_{tile}.json"
     if os.path.exists(fo): return fo
     if os.environ.get("S20_IGNORE_LOCKS") != "1":      # prenotazione: con piu' esecutori nessuna finestra si calcola due volte
+        lk = fo + ".lock"
+        if os.path.exists(lk) and time.time() - os.path.getmtime(lk) > 7200:
+            os.remove(lk)                                   # prenotazione abbandonata (esecutore interrotto)
         try:
-            os.close(os.open(fo + ".lock", os.O_CREAT | os.O_EXCL | os.O_WRONLY))
+            os.close(os.open(lk, os.O_CREAT | os.O_EXCL | os.O_WRONLY))
         except FileExistsError:
             return fo
     t0 = time.time()
