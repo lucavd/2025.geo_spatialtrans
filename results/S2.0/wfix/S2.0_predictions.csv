@@ -1,0 +1,30 @@
+id,quantity,unit,estimate,lo,hi,interval,verdict,extra
+P-1,SD riproducibile dei fattori non periodici (rows),A1,0.2045530646467744,0.19658490539497883,0.21290410609930396,"[0, 0.05]",smentita,parita' 1.417; r fra meta' 0.906; passo 1 -0.187
+P-1,SD riproducibile dei fattori non periodici (cols),A1,0.18781030608572108,0.1820950959515183,0.193137923000085,"[0, 0.05]",smentita,parita' 1.750; r fra meta' 0.859; passo 1 -0.248
+P-2,SD riproducibile fra tessere del log dispari/pari (cols),A1,0.014133790040526298,0.009846461723444761,0.017455665380896393,"[0, 0.05]",confermata,"mediana 1.745 (p10 1.703, p90 1.795); tessere 266"
+P-2,SD riproducibile fra tessere del log dispari/pari (rows),A1,0.004110662681433286,0.0,0.018750260370601405,"[0, 0.05]",confermata,"mediana 1.403 (p10 1.342, p90 1.461); tessere 266"
+P-1,SD riproducibile dei fattori non periodici (rows),A23,0.22464162044960437,0.21682164613486532,0.23244942760662538,"[0, 0.05]",smentita,parita' 1.578; r fra meta' 0.919; passo 1 -0.288
+P-1,SD riproducibile dei fattori non periodici (cols),A23,0.1963734401201944,0.19168824573906523,0.20072790777084587,"[0, 0.05]",smentita,parita' 1.724; r fra meta' 0.904; passo 1 -0.179
+P-2,SD riproducibile fra tessere del log dispari/pari (cols),A23,0.010333523874236458,0.004638751224812863,0.013752566627666562,"[0, 0.05]",confermata,"mediana 1.709 (p10 1.656, p90 1.757); tessere 369"
+P-2,SD riproducibile fra tessere del log dispari/pari (rows),A23,0.0021531002691097634,0.0,0.012606307864752354,"[0, 0.05]",confermata,"mediana 1.599 (p10 1.542, p90 1.664); tessere 369"
+P-1,SD riproducibile dei fattori non periodici (rows),A4,0.22522498834286198,0.21380545497240241,0.23862983412029817,"[0, 0.05]",smentita,parita' 0.980; r fra meta' 0.732; passo 1 -0.207
+P-1,SD riproducibile dei fattori non periodici (cols),A4,0.2817069736617398,0.2534878065311726,0.31394563264107833,"[0, 0.05]",smentita,parita' 1.125; r fra meta' 0.393; passo 1 -0.119
+P-2,SD riproducibile fra tessere del log dispari/pari (cols),A4,0.04671610281155594,0.029212000058146052,0.06077438927218925,"[0, 0.05]",indeterminata,"mediana 1.110 (p10 1.010, p90 1.176); tessere 239"
+P-2,SD riproducibile fra tessere del log dispari/pari (rows),A4,0.08936595878764464,0.06552893335097111,0.10971839325912737,"[0, 0.05]",smentita,"mediana 0.999 (p10 0.874, p90 1.074); tessere 239"
+P-1,SD riproducibile dei fattori non periodici (rows),A5,0.24821071408347187,0.24132415017993303,0.2547724066770601,"[0, 0.05]",smentita,parita' 1.178; r fra meta' 0.932; passo 1 -0.258
+P-1,SD riproducibile dei fattori non periodici (cols),A5,0.18365594401256025,0.17771812967611078,0.1907329268287632,"[0, 0.05]",smentita,parita' 1.231; r fra meta' 0.880; passo 1 -0.265
+P-2,SD riproducibile fra tessere del log dispari/pari (cols),A5,0.01527323925008322,0.010644816328556916,0.01879530164845224,"[0, 0.05]",confermata,"mediana 1.230 (p10 1.190, p90 1.271); tessere 283"
+P-2,SD riproducibile fra tessere del log dispari/pari (rows),A5,0.0,0.0,0.0,"[0, 0.05]",confermata,"mediana 1.180 (p10 1.141, p90 1.247); tessere 283"
+P-1,SD riproducibile dei fattori non periodici (rows),A6,0.19450110524326256,0.17957976146587215,0.21787966800039438,"[0, 0.05]",smentita,parita' 0.947; r fra meta' 0.957; passo 1 -0.071
+P-1,SD riproducibile dei fattori non periodici (cols),A6,0.18967592835740493,0.18507505351113163,0.19431064390999675,"[0, 0.05]",smentita,parita' 0.967; r fra meta' 0.938; passo 1 -0.215
+P-2,SD riproducibile fra tessere del log dispari/pari (cols),A6,0.012023472343302501,0.007476715803335312,0.015497080098524602,"[0, 0.05]",confermata,"mediana 0.965 (p10 0.930, p90 0.999); tessere 468"
+P-2,SD riproducibile fra tessere del log dispari/pari (rows),A6,0.020408877958484194,0.014323442719913681,0.02522835012312032,"[0, 0.05]",confermata,"mediana 0.941 (p10 0.906, p90 1.009); tessere 468"
+P-3,"previsto/osservato senza i bin entro 2 µm dal bordo del nucleo, regola C1",A2,,,,"[0.909, 1.1]",non calcolabile come scritto,"ROI non invertibili 2/5; sulle ROI riuscite 0.880 [0.873, 0.889]"
+P-3,"previsto/osservato senza i bin entro 2 µm dal bordo del nucleo, regola C1",A5,1.0095776634923328,0.9939076537195162,1.0271978912143471,"[0.909, 1.1]",confermata,"ROI non invertibili 0/5; sulle ROI riuscite 1.010 [0.994, 1.027]"
+P-4,"indice di dispersione dentro il nucleo, osservato/simulato",A1,3.8960751509095024,3.2631914475151986,4.514097935637882,"[0.909, 1.1]",smentita,"v 0.1023 [0.0958, 0.1096]; psi oss 5.760, sim 1.507; r da inverted"
+P-4,"indice di dispersione dentro il nucleo, osservato/simulato",A2,7.412863900224065,7.1674555524412025,7.697658181292705,"[0.909, 1.1]",smentita,"v 0.1440 [0.1334, 0.1547]; psi oss 7.857, sim 1.060; r da inverted"
+P-4,"indice di dispersione dentro il nucleo, osservato/simulato",A3,5.522285505270601,4.849226894953065,5.986917604704708,"[0.909, 1.1]",smentita,"v 0.1698 [0.1609, 0.1792]; psi oss 5.668, sim 1.026; r da inverted"
+P-4,"indice di dispersione dentro il nucleo, osservato/simulato",A4,2.926596078794028,2.6298555138114557,3.1144406405819347,"[0.909, 1.1]",smentita,"v 0.1592 [0.1543, 0.1643]; psi oss 3.204, sim 1.093; r da inverted"
+P-4,"indice di dispersione dentro il nucleo, osservato/simulato",A5,10.890324874757782,10.259576059186283,11.366667390601187,"[0.909, 1.1]",smentita,"v 0.1145 [0.1122, 0.1167]; psi oss 11.374, sim 1.045; r da inverted"
+P-4,"indice di dispersione dentro il nucleo, osservato/simulato",A6,3.0425669530440733,2.644657042537887,3.5469621437909877,"[0.909, 1.1]",smentita,"v 0.2010 [0.1754, 0.2310]; psi oss 3.135, sim 1.031; r da inverted"
+CP-1,"lumi interni, osservati/previsti con C2, fasce 2-4 e 4-8 µm","A1, A23, A4, A6",0.0,,,0 celle smentite su 8,superata,celle smentite 0

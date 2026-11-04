@@ -1,0 +1,70 @@
+{
+ "nonperiodic": {
+  "A1_rows": {
+   "verdict": "smentita",
+   "sd": 0.2045530646467744,
+   "lag1": -0.18737196070567338
+  },
+  "A1_cols": {
+   "verdict": "smentita",
+   "sd": 0.18781030608572108,
+   "lag1": -0.24828560686212936
+  },
+  "A23_rows": {
+   "verdict": "smentita",
+   "sd": 0.22464162044960437,
+   "lag1": -0.2880924935282328
+  },
+  "A23_cols": {
+   "verdict": "smentita",
+   "sd": 0.1963734401201944,
+   "lag1": -0.17879156706395535
+  },
+  "A4_rows": {
+   "verdict": "smentita",
+   "sd": 0.22522498834286198,
+   "lag1": -0.20720201279641728
+  },
+  "A4_cols": {
+   "verdict": "smentita",
+   "sd": 0.2817069736617398,
+   "lag1": -0.11944681954610047
+  },
+  "A5_rows": {
+   "verdict": "smentita",
+   "sd": 0.24821071408347187,
+   "lag1": -0.2583317104303918
+  },
+  "A5_cols": {
+   "verdict": "smentita",
+   "sd": 0.18365594401256025,
+   "lag1": -0.2650553706157547
+  },
+  "A6_rows": {
+   "verdict": "smentita",
+   "sd": 0.19450110524326256,
+   "lag1": -0.07116143668440766
+  },
+  "A6_cols": {
+   "verdict": "smentita",
+   "sd": 0.18967592835740493,
+   "lag1": -0.21504685981732252
+  }
+ },
+ "parity_spatial": {
+  "A1_cols": "confermata",
+  "A1_rows": "confermata",
+  "A23_cols": "confermata",
+  "A23_rows": "confermata",
+  "A4_cols": "indeterminata",
+  "A4_rows": "smentita",
+  "A5_cols": "confermata",
+  "A5_rows": "confermata",
+  "A6_cols": "confermata",
+  "A6_rows": "confermata"
+ },
+ "nonperiodic_layer": "fattori casuali per riga e colonna",
+ "parity_spatial_sections": [
+  "A4"
+ ]
+}

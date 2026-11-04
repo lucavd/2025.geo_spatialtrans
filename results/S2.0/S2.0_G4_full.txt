@@ -1,0 +1,12 @@
+PASS table S2.0_edges_tiles.csv 4400c344c8e0747ed17c84250f8dbf50
+PASS table S2.0_edges_sections.csv 95d21c547ccec6fc6f913dc176562963
+PASS table S2.0_inner_roi.csv e2931f2613113dda74e16c94bc536482
+PASS table S2.0_inner_summary.csv 54e24739f3f607809ce6ad327a3c1bec
+PASS table S2.0_RA.json a5ecb05db9222cee5cadc03b982d41a9
+PASS table S2.0_RB.json b5dcb1fd8097587838011dd82a55d0f2
+PASS table S2.0_RC.json dc4ec00d76411144ca2f0fc7053df431
+PASS table S2.0_predictions.csv c67ab91c9dca164b4de7ba5974eab9ba
+PASS table S2.0_CP1_lumens.csv c458b11728c06c8c368e753ff739e48f
+PASS table S2.0_disp_roi.csv f0f33ded835154575fdda19f71f99545
+unit files compared 514, differing or missing 0
+G-4 PASS

@@ -1,0 +1,109 @@
+PASS cov_BL-197 sezioni=2
+PASS cov_BL-192 sezioni=1
+PASS cov_BL-194 sezioni=4
+PASS cov_BL-195 sezioni=3
+PASS cov_BL-001 sezioni=2
+PASS cov_BL-005 sezioni=4
+PASS cov_BL-010 sezioni=4
+PASS cov_BL-146 sezioni=2
+PASS cov_BL-201 sezioni=4
+PASS cov_BL-077 sezioni=3
+PASS cov_BL-086 sezioni=3
+PASS cov_BL-087 sezioni=3
+PASS cov_BL-045 sezioni=2
+PASS cov_BL-057 sezioni=2
+PASS cov_BL-072 sezioni=2
+PASS cov_BL-144 sezioni=2
+PASS cov_3.2.A sezioni=4
+PASS cov_3.2.B sezioni=4
+PASS cov_3.2.C sezioni=3
+PASS cov_3.2.D sezioni=3
+PASS cov_3.2.E sezioni=3
+PASS cov_4.1 sezioni=4
+PASS cov_4.2 sezioni=3
+PASS cov_4.3 sezioni=3
+PASS cov_4.4 sezioni=2
+PASS cov_4.5 sezioni=4
+PASS cov_DEC-034 sezioni=2
+PASS cov_DEC-035 sezioni=4
+PASS cov_DEC-037 sezioni=5
+PASS cov_DEC-038 sezioni=4
+PASS cov_DEC-039 sezioni=3
+PASS cov_DEC-040 sezioni=6
+PASS param_table_present 
+PASS param_table_has_source_column ['parametro', 'intestino (a1)', 'tumore (a2)', 'stroma (a3)', 'linfonodo (a4)', 'cervello (a5)', 'cuore (a6)', 'fonte']
+PASS param_rows_sourced righe=19 senza_fonte=0
+FAIL M1_cov_BL-197 sezioni=0
+FAIL M1_cov_BL-192 sezioni=0
+PASS M1_cov_BL-194 sezioni=2
+PASS M1_cov_BL-195 sezioni=1
+PASS M1_cov_BL-001 sezioni=1
+PASS M1_cov_BL-005 sezioni=2
+PASS M1_cov_BL-010 sezioni=2
+PASS M1_cov_BL-146 sezioni=1
+PASS M1_cov_BL-201 sezioni=2
+PASS M1_cov_BL-077 sezioni=1
+PASS M1_cov_BL-086 sezioni=1
+PASS M1_cov_BL-087 sezioni=2
+PASS M1_cov_BL-045 sezioni=1
+PASS M1_cov_BL-057 sezioni=1
+PASS M1_cov_BL-072 sezioni=1
+PASS M1_cov_BL-144 sezioni=1
+PASS M1_cov_3.2.A sezioni=3
+PASS M1_cov_3.2.B sezioni=2
+PASS M1_cov_3.2.C sezioni=1
+PASS M1_cov_3.2.D sezioni=2
+PASS M1_cov_3.2.E sezioni=2
+PASS M1_cov_4.1 sezioni=3
+PASS M1_cov_4.2 sezioni=2
+PASS M1_cov_4.3 sezioni=2
+PASS M1_cov_4.4 sezioni=1
+PASS M1_cov_4.5 sezioni=2
+FAIL M1_cov_DEC-034 sezioni=0
+PASS M1_cov_DEC-035 sezioni=2
+PASS M1_cov_DEC-037 sezioni=3
+PASS M1_cov_DEC-038 sezioni=3
+PASS M1_cov_DEC-039 sezioni=1
+PASS M1_cov_DEC-040 sezioni=4
+PASS M1_param_table_present 
+PASS M1_param_table_has_source_column ['parametro', 'intestino (a1)', 'tumore (a2)', 'stroma (a3)', 'linfonodo (a4)', 'cervello (a5)', 'cuore (a6)', 'fonte']
+PASS M1_param_rows_sourced righe=19 senza_fonte=0
+PASS M2_cov_BL-197 sezioni=2
+PASS M2_cov_BL-192 sezioni=1
+PASS M2_cov_BL-194 sezioni=4
+PASS M2_cov_BL-195 sezioni=3
+PASS M2_cov_BL-001 sezioni=2
+PASS M2_cov_BL-005 sezioni=4
+PASS M2_cov_BL-010 sezioni=4
+PASS M2_cov_BL-146 sezioni=2
+PASS M2_cov_BL-201 sezioni=4
+PASS M2_cov_BL-077 sezioni=3
+PASS M2_cov_BL-086 sezioni=3
+PASS M2_cov_BL-087 sezioni=3
+PASS M2_cov_BL-045 sezioni=2
+PASS M2_cov_BL-057 sezioni=2
+PASS M2_cov_BL-072 sezioni=2
+PASS M2_cov_BL-144 sezioni=2
+PASS M2_cov_3.2.A sezioni=4
+PASS M2_cov_3.2.B sezioni=4
+PASS M2_cov_3.2.C sezioni=3
+PASS M2_cov_3.2.D sezioni=3
+PASS M2_cov_3.2.E sezioni=3
+PASS M2_cov_4.1 sezioni=4
+PASS M2_cov_4.2 sezioni=3
+PASS M2_cov_4.3 sezioni=3
+PASS M2_cov_4.4 sezioni=2
+PASS M2_cov_4.5 sezioni=4
+PASS M2_cov_DEC-034 sezioni=2
+PASS M2_cov_DEC-035 sezioni=4
+PASS M2_cov_DEC-037 sezioni=5
+PASS M2_cov_DEC-038 sezioni=4
+PASS M2_cov_DEC-039 sezioni=3
+PASS M2_cov_DEC-040 sezioni=6
+PASS M2_param_table_present 
+PASS M2_param_table_has_source_column ['parametro', 'intestino (a1)', 'tumore (a2)', 'stroma (a3)', 'linfonodo (a4)', 'cervello (a5)', 'cuore (a6)', 'fonte']
+   riga senza fonte valida: trascritti per cellula | per tessuto B-275, B-285, B-295, B-907, B-320, B-332; per tipo B-276...B-278, B- | ['B-907']
+FAIL M2_param_rows_sourced righe=19 senza_fonte=1
+PASS mutant_M1_section_removed_detected 
+PASS mutant_M2_invented_B_detected 
+S2.0_design_check: 37/37 PASS

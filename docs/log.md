@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-05 (S2.0)
+
+* **Aggiornamento**: [Come passa il simulatore dalle cellule ai conteggi nei quadratini di Visium HD, e i pezzi che i dati possono decidere (come escono i trascritti dal tessuto, le strisce della griglia, la variabilità dentro la cellula) reggono sui vetrini veri? (S2.0)](steps/S2.0.md): risultati, post hoc PH-1...PH-6, revisione avversariale (quattro revisori), deviazioni dichiarate, riassunto «In breve» con una decisione per Luca; report `reports/S2.0.html`.
+* **Creazione**: decisioni tecniche [S2.0: scelte tecniche (DEC-038)](decisions/DEC-038.md), [S2.0: regole decise dai dati (DEC-039)](decisions/DEC-039.md) e [S2.0: profili, profondità e variabilità decisi con i dati (DEC-040)](decisions/DEC-040.md).
+* **Modifica**: design dello Step 2 v0.2; BIO_REFERENCES B-374...B-401; BACKLOG (chiuse BL-192, BL-195, BL-197; aggiornata BL-201; nuove BL-204...BL-211); ROADMAP sezione 7; CHANGELOG.
+
 ## 2026-11-03 (R5)
 
 * **Chiusura**: [Di quanto si spostano i trascritti fra il tessuto e la griglia di Visium HD, con quale forma, e quanto è diverso davvero il nucleo dal citoplasma prima dello spostamento? (R5)](steps/R5.md) chiuso con l'approvazione di Luca (risposte alle tre decisioni del riassunto «In breve», senza dubbi nuovi).

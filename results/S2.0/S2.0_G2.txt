@@ -1,0 +1,1 @@
+G-2 PASS: 1623/1623 file letti con md5 identici prima e dopo (results/S2.0/S2.0_md5_before.txt, _after.txt)
