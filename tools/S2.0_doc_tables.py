@@ -7,8 +7,10 @@ OUT = sys.argv[1]; RES = "results/S2.0"
 SEC = ["A1", "A23", "A4", "A5", "A6"]; ARCH = ["A1", "A2", "A3", "A4", "A5", "A6"]; SOF = {"A1": "A1", "A2": "A23", "A3": "A23", "A4": "A4", "A5": "A5", "A6": "A6"}
 DS = {"A1": "Visium_HD_Mouse_Small_Intestine", "A23": "Visium_HD_Human_Colon_Cancer", "A4": "Visium_HD_Human_Lymph_Node_FFPE", "A5": "Visium_HD_6p5mm_Mouse_Brain", "A6": "Visium_HD_6p5mm_Human_Heart"}
 BG = {"A1": ("B-342", 0.161), "A23": ("B-348", 0.197), "A4": ("B-354", 0.042), "A5": ("B-360", 0.309), "A6": ("B-366", 0.117)}   # R5, gia' in BIO_REFERENCES
-E = pd.read_csv(f"{RES}/S2.0_edges_sections.csv"); I = pd.read_csv(f"{RES}/S2.0_inner_summary.csv"); IR = pd.read_csv(f"{RES}/S2.0_inner_roi.csv")
-P = pd.read_csv(f"{RES}/S2.0_PH23_disp.csv").set_index("archetype"); L = pd.read_csv(f"{RES}/S2.0_CP1_lumens.csv")
+import os
+RESE = os.environ.get("S20_EDGES_RES", RES)      # post hoc PH-6: bordi, controllo interno e lumi con le soluzioni corrette (w = 0)
+E = pd.read_csv(f"{RESE}/S2.0_edges_sections.csv"); I = pd.read_csv(f"{RESE}/S2.0_inner_summary.csv"); IR = pd.read_csv(f"{RESE}/S2.0_inner_roi.csv")
+P = pd.read_csv(f"{RES}/S2.0_PH23_disp.csv").set_index("archetype"); L = pd.read_csv(f"{RESE}/S2.0_CP1_lumens.csv")
 ST = {k: json.load(open(f"{OUT}/stripes/{k}.json")) for k in SEC}
 def e(k, rl, p): x = E[(E.key == k) & (E.rule == rl) & (E.param == p)].iloc[0]; return x["median"], x.lo, x.hi
 HEART = {p: float(np.median([e(k, "C2", p)[0] for k in ("A1", "A23", "A4", "A5")])) for p in ("sigma_e", "D", "w", "ell")}
@@ -35,13 +37,13 @@ for k in SEC:
     bc2[k] = add(arch, "spostamento ai bordi, regola C2 (zona di bordo): σ_e, profondità D, massa della coda w, lunghezza della coda ℓ (mediana delle finestre)",
                  f"σ_e {f2(vals['sigma_e'][0])} µm; D {f2(vals['D'][0])} µm; w {f3(vals['w'][0])}; ℓ {f2(vals['ell'][0])} µm",
                  "; ".join(f"{n} [{f2(v[1])}, {f2(v[2])}]" for n, v in (("σ_e", vals["sigma_e"]), ("D", vals["D"]), ("w", vals["w"]), ("ℓ", vals["ell"]))) + f"; {nt} finestre; ΔAIC mediano per finestra contro C0 {dA:.1f}",
-                 "µm; frazione", f"tools/S2.0_edges.py, S2.0_analysis.py@S2.0 (results/S2.0/S2.0_edges_sections.csv, S2.0_RA.json) + {DS[k]}", note)
+                 "µm; frazione", f"tools/S2.0_edges.py, S2.0_analysis.py@S2.0 (results/S2.0/wfix/S2.0_edges_sections.csv dopo PH-6; prima: results/S2.0/S2.0_edges_sections.csv) + {DS[k]}", note)
 br, bv = {}, {}
 for A_ in ARCH:
     x = I[(I.archetype == A_) & (I.rule == "C2")].iloc[0]; rr = IR[(IR.archetype == A_) & (IR.rule == "C2")].r.dropna()
     br[A_] = add(A_, "rapporto nucleo/citoplasma prima dello spostamento con la regola C2 (invertito sulla statistica di R4 PH-1) e controllo interno (previsto/osservato senza i bin entro 2 µm dal bordo del nucleo)",
                  f"r {f2(x.r_median)} (mediana di 5 ROI)", f"ROI {f2(rr.min())}-{f2(rr.max())}; controllo interno {f3(x.ratio_mean)} [{f3(x.lo)}, {f3(x.hi)}], {x.verdict}", "adimensionale",
-                 f"tools/S2.0_inner.py, S2.0_analysis.py@S2.0 (results/S2.0/S2.0_inner_summary.csv) + 5 ROI di R2, nuclei di R4, {DS[SOF[A_]]}",
+                 f"tools/S2.0_inner.py, S2.0_analysis.py@S2.0 (results/S2.0/wfix/S2.0_inner_summary.csv dopo PH-6) + 5 ROI di R2, nuclei di R4, {DS[SOF[A_]]}",
                  "il modello in avanti non descrive l'interno del nucleo: valore da non usare senza riserva" if x.verdict == "smentita" else ("da confermare" if x.verdict != "confermata" else "regola C2, σ interno 0.7 µm"))
     p = P.loc[A_]
     bv[A_] = add(A_, "variabilità dentro il nucleo oltre il caso a 2 µm: varianza moltiplicativa v in più (dopo strisce e spostamento) e correlazione in più dei residui fra bin adiacenti e a 4 µm",
@@ -51,7 +53,7 @@ for A_ in ARCH:
 j = L[L.judged_CP1 & (L.rule == "C2")]
 bl = add("A1, A2-A3, A4, A6", "lumi interni: UMI osservati/previsti con la regola C2 a 2-4 e 4-8 µm dal bordo (CP-1)",
          "; ".join(f"{k} {b} {f2(o)}" for k, b, o in zip(j.key, j.band, j.obs_over_pred)), "0 smentite su 8 rispetto a [0.8, 1.25]; " + "; ".join(f"{k} {b} [{f2(lo)}, {f2(hi)}]" for k, b, lo, hi in zip(j.key, j.band, j.lo, j.hi)),
-         "rapporto", "tools/S2.0_lumens.py, S2.0_analysis.py@S2.0 (results/S2.0/S2.0_CP1_lumens.csv) + lumi di R5 CP-2", "bootstrap per tessere come R5; C0 riproduce R5 CP-2 esattamente; cervello (2 lumi) descrittivo")
+         "rapporto", "tools/S2.0_lumens.py, S2.0_analysis.py@S2.0 (results/S2.0/wfix/S2.0_CP1_lumens.csv dopo PH-6) + lumi di R5 CP-2", "bootstrap per tessere come R5; C0 riproduce R5 CP-2 esattamente; cervello (2 lumi) descrittivo")
 # PH-5: parte fine delle strisce, maschera senza righe e colonne a zero UMI; passo 1 per il generatore dalla calibrazione sintetica
 P5 = pd.read_csv(f"{RES}/S2.0_PH5_sections.csv"); CB = pd.read_csv(f"{RES}/S2.0_PH5_calib.csv")
 cm = CB.groupby("rho_true").lag1_repro_hp.mean(); cb_b, cb_a = np.polyfit(cm.index.values, cm.values, 1)
@@ -79,7 +81,7 @@ T.append(row("rapporto nucleo/citoplasma r (regola C2)", [f2(I[(I.archetype == A
 T.append(row("sfocatura stretta per tutti σ_in (µm)", ["0.7"] * 6, "valore unico per scelta ([DEC-038](/decisions/DEC-038.md)): R5 PH-5 `results/R5/R5_PH5_narrowcore.csv` (sigma_fixed 0.7) e pre-registrazione di M2, dentro 0.5-1 µm di [DEC-037](/decisions/DEC-037.md); valori per tessuto in B-367...B-372"))
 for p, nm, f_ in (("sigma_e", "zona di bordo: sfocatura larga σ_e (µm)", f2), ("D", "zona di bordo: profondità D (µm)", f2), ("w", "coda esponenziale: massa w", f3), ("ell", "coda esponenziale: lunghezza ℓ (µm)", f2)):
     v = [f_(e(SOF[A_], "C2", p)[0]) for A_ in ARCH[:5]] + [f_(HEART[p]) + "†"]
-    T.append(row(nm, v, ", ".join(bc2[k] for k in SEC) + "; †mediana delle altre 4 sezioni ([DEC-037](/decisions/DEC-037.md)), calcolata da `results/S2.0/S2.0_edges_sections.csv`"))
+    T.append(row(nm, v, ", ".join(bc2[k] for k in SEC) + "; †mediana delle altre 4 sezioni ([DEC-037](/decisions/DEC-037.md)), calcolata da `results/S2.0/wfix/S2.0_edges_sections.csv`"))
 T.append(row("fondo sul vetro b (UMI per bin di 2 µm)", [f3(BG[SOF[A_]][1]) for A_ in ARCH], ", ".join(BG[k][0] for k in SEC)))
 SRC5 = ", ".join(bph5[k] for k in SEC)
 T.append(row("strisce: parità righe dispari/pari", [f3(p5(SOF[A_], "rows").odd_over_even) + ("‡" if A_ == "A4" else "") for A_ in ARCH], SRC5 + "; ‡variabile nello spazio; righe e colonne con 0 UMI tolte (PH-5)"))
