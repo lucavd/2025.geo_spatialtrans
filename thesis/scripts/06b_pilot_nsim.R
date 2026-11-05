@@ -11,6 +11,16 @@
 # upper 95% limit of the SD (chi-square, reps − 1 df; DECISIONS 2026-10-30).
 # n_sim = (4 × SD_upper / δ)², from 2 × MCSE(D) ≤ δ/2, with SD_upper the largest over pairs,
 # conditions and datasets (DECISIONS 2026-11-03).
+# RMSE relative to the null baseline (DECISIONS 2026-11-04, Luca; ADEMP §5.2; pre-registered
+# 2026-11-05 before the run): rel_null = mean RMSE of the method / mean RMSE of the null baseline,
+# same condition x dataset (ratio of means); rel_null_umi the same on the UMI-share truth; and the
+# paired difference RMSE_i(method) − RMSE_i(null) within replicate, mean and MCSE = SD/√reps, so a
+# ratio below 1 is read together with its Monte Carlo error. Check (second route): equal (< 1e-9)
+# to the one-off computation of 2026-11-04 (colon_pilot_rmse_relative_null.csv) when that file
+# exists. Correction 2026-11-05 after the first run: the check was written against its column
+# `ratio`, which is the mean of the per-replicate ratios, not the ratio of means of ADEMP §5.2
+# (largest difference 0.0016; its `ratio_umi` is already a ratio of means); it now compares rmse / null
+# of that file, which is the ratio of means, and prints the largest difference from the mean of ratios.
 #
 # Output (next to the pilot summary, outside git):
 #   <tissue>_pilot_rmse_methods.csv   one row per condition x dataset x method (+ null baseline)
@@ -78,6 +88,28 @@ sm <- do.call(rbind, lapply(split(d, d[c(key, "method")], drop = TRUE), function
   sd_rmse_upper = sd(z$rmse) * up(nrow(z)), mean_fail_rate = mean(z$fail_rate), sd_fail_rate = sd(z$fail_rate),
   mean_rmse_umi = mean(z$rmse_umi), sd_rmse_umi = sd(z$rmse_umi))))
 
+# RMSE relative to the null baseline (DECISIONS 2026-11-04): ratio of means, and paired difference
+# method − null within replicate with its MCSE
+nbl <- d[d$method == "null baseline", ]
+rk <- function(z) paste(z$n_cells, z$depth, z$dataset, z$rep)
+dn <- d$rmse - nbl$rmse[match(rk(d), rk(nbl))]
+dd <- do.call(rbind, lapply(split(data.frame(d[c(key, "method")], dn), d[c(key, "method")], drop = TRUE),
+  function(z) data.frame(z[1, c(key, "method")], diff_null = mean(z$dn), mcse_diff_null = sd(z$dn) / sqrt(nrow(z)))))
+gk <- function(z) paste(z$n_cells, z$depth, z$dataset)
+nb_sm <- sm[sm$method == "null baseline", ]
+sm$rel_null <- sm$mean_rmse / nb_sm$mean_rmse[match(gk(sm), gk(nb_sm))]
+sm$rel_null_umi <- sm$mean_rmse_umi / nb_sm$mean_rmse_umi[match(gk(sm), gk(nb_sm))]
+j <- match(paste(gk(sm), sm$method), paste(gk(dd), dd$method))
+sm$diff_null <- dd$diff_null[j]; sm$mcse_diff_null <- dd$mcse_diff_null[j]
+old <- file.path(pilot_dir, paste0(tissue, "_pilot_rmse_relative_null.csv"))
+if (file.exists(old)) {
+  o <- read.csv(old); i <- match(paste(o$n_cells, o$depth, o$dataset, o$method), paste(gk(sm), sm$method))
+  stopifnot("rel_null differs from the 2026-11-04 computation" = !anyNA(i),
+            max(abs(sm$rel_null[i] - o$rmse / o$null)) < 1e-9)
+  cat(sprintf("Relative RMSE: equal to rmse / null of %s (second route); largest difference from its mean of per-replicate ratios: cells %.4f, UMI %.4f\n",
+              basename(old), max(abs(sm$rel_null[i] - o$ratio)), max(abs(sm$rel_null_umi[i] - o$ratio_umi))))
+}
+
 # Paired differences (methods only, same replicate)
 dm <- d[d$method %in% methods, ]
 pairs <- combn(methods, 2, simplify = FALSE)
@@ -108,7 +140,7 @@ md_table <- function(z, rowvar, mcol, scol, rowlabels) {
   cond <- unique(z[c("n_cells", "depth")]); lines <- character()
   for (i in seq_len(nrow(cond))) for (r in rowlabels) {
     cell <- function(ds) { w <- z[z$n_cells == cond$n_cells[i] & z$depth == cond$depth[i] & z$dataset == ds & z[[rowvar]] == r, ]
-      if (nrow(w)) fmt(w[[mcol]], w[[scol]]) else "" }
+      if (!nrow(w)) "" else if (is.null(scol)) sprintf("%.2f", w[[mcol]]) else fmt(w[[mcol]], w[[scol]]) }
     lines <- c(lines, sprintf("| %d cells, %s UMI | %s | %s | %s | %s |", cond$n_cells[i],
       format(cond$depth[i], big.mark = ","), r, cell("E"), cell("Cminus"), cell("anchor")))
   }
@@ -135,6 +167,9 @@ type_table <- function(kind, types) {
       apply(w[cols], 1, function(v) paste(sprintf("%.3f", v), collapse = " | "))))
 }
 t6 <- type_table("bias", ts); t7 <- type_table("absent", absent)
+t8 <- md_table(sm[sm$method %in% methods, ], "method", "rel_null", NULL, methods); t8[1] <- sprintf(t8[1], "Method")
+t8b <- md_table(sm[sm$method %in% methods, ], "method", "diff_null", "mcse_diff_null", methods); t8b[1] <- sprintf(t8b[1], "Method")
+t8c <- md_table(sm[sm$method %in% methods, ], "method", "rel_null_umi", NULL, methods); t8c[1] <- sprintf(t8c[1], "Method")
 write.csv(bd, out("type_diagnostics.csv"), row.names = FALSE)
 reps <- unique(sm$reps); n_spots <- nrow(readRDS(files[1])$truth)
 md <- c(sprintf("# Pilot %s: RMSE, failures and n_sim", tissue), "",
@@ -151,7 +186,12 @@ md <- c(sprintf("# Pilot %s: RMSE, failures and n_sim", tissue), "",
   if (all(is.na(sm$mean_rmse_umi))) "Not available: run `06_pilot.R <tissue> <workers> <reps> truth` first." else t5, "",
   "## Table 6. Mean bias per spot type (estimate − cell truth), returned spots, mean over replicates (E and anchor)", "",
   "Positive = the method gives the type more than its true share of cells.", "", t6, "",
-  "## Table 7. Mean proportion given to reference types absent from the spots (true share 0), returned spots, mean over replicates (E and anchor)", "", t7, "")
+  "## Table 7. Mean proportion given to reference types absent from the spots (true share 0), returned spots, mean over replicates (E and anchor)", "", t7, "",
+  "## Table 8. RMSE relative to the null baseline (DECISIONS 2026-11-04): mean RMSE of the method / mean RMSE of the null baseline, same condition and dataset", "",
+  "Below 1 the method adds information beyond the expected composition.", "", t8, "",
+  "## Table 8b. Paired difference RMSE(method) − RMSE(null baseline) within replicate, mean (MCSE)", "", t8b, "",
+  "## Table 8c. As Table 8, on the UMI-share truth (secondary estimand)", "",
+  if (all(is.na(sm$rel_null_umi))) "Not available." else t8c, "")
 writeLines(md, out("tables.md"), useBytes = TRUE)
 
 cat(sprintf("Largest SD_upper: paired difference %.4f, single method %.4f\n", sd_max,

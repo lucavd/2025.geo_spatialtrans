@@ -58,6 +58,36 @@ simulate_arm <- function(mu, phi, cells, spot_names, block = 2000) {
   out
 }
 
+# Single cells from the common noise model (used for the method reference of arm P, R/arm_p.R):
+# column j ~ NB(mean = mu[, type[j]] * L[j], overdispersion phi). Returns genes x cells, sparse.
+# simulate_arm() is kept as it is, so the random-number streams of the pilot are unchanged.
+simulate_cells <- function(mu, phi, type, L, block = 1000) {
+  stopifnot(all(type %in% colnames(mu)), length(phi) == nrow(mu), length(L) == length(type))
+  size <- pmin(1 / pmax(phi, 1e-12), 1e12)
+  out <- lapply(split(seq_along(type), ceiling(seq_along(type) / block)), function(b) {
+    m <- mu[, type[b], drop = FALSE] * rep(L[b], each = nrow(mu))
+    y <- rnbinom(length(m), size = rep(size, length(b)), mu = m)
+    Matrix::Matrix(matrix(y, nrow(mu)), sparse = TRUE)
+  })
+  x <- do.call(cbind, out)
+  rownames(x) <- rownames(mu)
+  x
+}
+
+# Arm O, oracle μ (DECISIONS 2026-11-04, Luca): the pooled relative profile of the held-out donor
+# itself (mu_held of 03_reference.R, built like μ_E: counts of gene g over the donor's cells of
+# type k / all their counts), restricted to the spot types; spots then follow the common noise
+# model with the same cells and library sizes as every arm (common random numbers), so anchor vs O
+# = noise model (including the library sizes, drawn from training cells), O vs the other arms =
+# source of μ. Draws no random numbers.
+mu_oracle <- function(mu_held, types) {
+  stopifnot(all(types %in% colnames(mu_held)))
+  mu <- mu_held[, types, drop = FALSE]
+  cs <- colSums(mu)
+  if (anyNA(mu) || any(cs <= 0.9 | cs > 1 + 1e-9)) stop("mu_oracle: column sums out of (0.9, 1]")
+  mu
+}
+
 # Real anchor: each spot sums real held-out cells with the same composition (cells drawn with
 # replacement within type). held: genes x cells counts; held_type: type of each column.
 anchor_spots <- function(held, held_type, comp) {
