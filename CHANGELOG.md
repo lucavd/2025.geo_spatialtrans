@@ -2,9 +2,9 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## S2.1, 2026-11-05: griglia di Visium HD e verita' geometrica (`build_hd_grid()`, branch `step2-visium-grid`), **non chiusa** (in attesa della decisione di Luca)
+## S2.1, 2026-11-05: griglia di Visium HD e verita' geometrica (`build_hd_grid()`, branch `step2-visium-grid`), **chiusa** (letta da Luca il 2026-11-05, «chiudi»; una decisione: chiusura con G-2 fallito come scritto, DEC-044)
 
-File dello step `docs/steps/S2.1.md`, report `reports/S2.1.html`. Codice `R/05b1_build_hd_grid.R` (hd_grid_geometry, hd_bin_table, hd_tissue_area, hd_overlap, sum_to_8um, build_hd_grid), test `R/testing/test_S2.1.R`, strumenti `tools/S2.1_*`; tabelle e figure `results/S2.1/`; uscite `/mnt/micron/geo_spatialtrans/S2.1/run1` (riproduzione `run2`; calcoli superati `run0_bindid`, `run0b_prereview`). Cancelli: G-1 PASS (21/21, mutanti 11/11), G-2 fallito come scritto in (c) (24/30; PH-1 30/30), G-3 PASS (35/35), G-4 PASS (173 file), G-5 tre revisori. CP-1 confermata (25 aree). Decisioni DEC-042 (Luca), DEC-043. BACKLOG: chiuse BL-005, BL-010, BL-104, BL-146; nuove BL-212...BL-214. Design dello Step 2: frase sul riquadro dell'area simulata, stato (DEC-042).
+File dello step `docs/steps/S2.1.md`, report `reports/S2.1.html`. Codice `R/05b1_build_hd_grid.R` (hd_grid_geometry, hd_bin_table, hd_tissue_area, hd_overlap, sum_to_8um, build_hd_grid), test `R/testing/test_S2.1.R`, strumenti `tools/S2.1_*`; tabelle e figure `results/S2.1/`; uscite `/mnt/micron/geo_spatialtrans/S2.1/run1` (riproduzione `run2`; calcoli superati `run0_bindid`, `run0b_prereview`). Cancelli: G-1 PASS (21/21, mutanti 11/11), G-2 fallito come scritto in (c) (24/30; PH-1 30/30), G-3 PASS (35/35), G-4 PASS (173 file), G-5 tre revisori. CP-1 confermata (25 aree). Decisioni DEC-042 (Luca), DEC-043, DEC-044 (Luca). BACKLOG: chiuse BL-005, BL-010, BL-104, BL-146; nuove BL-212...BL-214. Design dello Step 2: frase sul riquadro dell'area simulata, stato (DEC-042).
 
 ## S2.0, 2026-11-03 → 2026-11-05: design dello Step 2 (cellule → quadratini di Visium HD) con tre misure decise dai dati (branch `step2-visium-grid`), **chiusa** (letta da Luca il 2026-11-05, «chiudi»; una decisione: chiusura con G-5 fallito come scritto sulla tolleranza 1e-6, DEC-041)
 
