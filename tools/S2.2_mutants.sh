@@ -12,6 +12,7 @@ MUT[M4_gamma_shape_inverted]='s/shape = shape\[z\], rate = shape\[z\]/shape = 1 
 MUT[M5_genes_permuted]='s/j = sums\$gene_index, x/j = rev(seq_len(nrow(genes)))[sums$gene_index], x/'
 MUT[M6_totals_misassigned]='s/cell <- rep(seq_along(w), Nc\[w\])/cell <- rep(seq_along(w), rev(Nc[w]))/'
 MUT[M7_subtypes_always_on]='s/^  if (!use_subtypes) {   /  if (FALSE) {   /'
+MUT[M9_subtype_totals_from_type]='s/profiles\$totals_subtype\[\[sub\$subtype\[s_\]\]\]/profiles$totals[[sub$cell_type[s_]]]/'
 MUT[M8_rng_not_restored]='s/^  on.exit({ do.call(RNGkind/  if (FALSE) on.exit({ do.call(RNGkind/'
 for m in $(printf "%s\n" "${!MUT[@]}" | sort); do
   T=$(mktemp -d); mkdir -p $T/R; cp R/04b*.R R/05b1*.R $T/R/; sed -e "${MUT[$m]}" $F > $T/R/05b2_simulate_cell_profiles.R

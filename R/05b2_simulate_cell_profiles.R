@@ -8,10 +8,10 @@
 #'
 #' @param archetype `"A1"` ... `"A6"`.
 #' @param dir cartella con i file di `tools/S2.2_build_profiles.py` (`<A>_sums.tsv.gz`, `_subtypes.tsv`, `_genes.tsv`, `_phi.tsv`,
-#'   `_totals.tsv`, `_meta.json`).
+#'   `_totals.tsv`, `_meta.json`; facoltativo `_totals_subtype.tsv`, quantili dei totali per sottotipo).
 #' @return lista `archetype`, `genes` (data.frame `gene_id`, `gene_name`), `subtypes` (data.frame `subtype`, `cell_type`, `share`),
 #'   `P` (matrice sottotipi x geni, righe che sommano a 1), `phi` (per gene), `totals` (data.frame: colonna `q` e una colonna per tipo,
-#'   quantili dei trascritti per cellula), `noise` (`"M"` multinomiale o `"G"` con fattore gamma per gene), `depth_factor`, `meta`.
+#'   quantili dei trascritti per cellula), `totals_subtype` (come `totals`, una colonna per sottotipo, o NULL), `noise` (`"M"` multinomiale o `"G"` con fattore gamma per gene), `depth_factor`, `meta`.
 #' @export
 load_cell_profiles <- function(archetype, dir = getOption("geo.spatialtrans.profiles_dir", "/mnt/micron/geo_spatialtrans/S2.2/profiles")) {
   f <- function(s) file.path(dir, paste0(archetype, s))
@@ -19,6 +19,7 @@ load_cell_profiles <- function(archetype, dir = getOption("geo.spatialtrans.prof
   rd <- function(p) utils::read.delim(p, stringsAsFactors = FALSE, check.names = FALSE)
   genes <- rd(f("_genes.tsv")); sub <- rd(f("_subtypes.tsv")); sums <- rd(gzfile(f("_sums.tsv.gz")))
   phi <- rd(f("_phi.tsv")); tot <- rd(f("_totals.tsv"))
+  tots <- if (file.exists(f("_totals_subtype.tsv"))) rd(f("_totals_subtype.tsv")) else NULL
   meta <- .s22_read_json(f("_meta.json"))
   S <- Matrix::sparseMatrix(i = match(sums$subtype, sub$subtype), j = sums$gene_index, x = as.numeric(sums$count),
                             dims = c(nrow(sub), nrow(genes)))
@@ -26,7 +27,7 @@ load_cell_profiles <- function(archetype, dir = getOption("geo.spatialtrans.prof
   dimnames(P) <- list(sub$subtype, genes$gene_id)
   ph <- numeric(nrow(genes)); ph[phi$gene_index] <- phi$phi
   list(archetype = archetype, genes = genes, subtypes = sub[, c("subtype", "cell_type", "share")], P = P, phi = ph, totals = tot,
-       noise = meta$noise, depth_factor = as.numeric(meta$depth_factor), meta = meta)
+       totals_subtype = tots, noise = meta$noise, depth_factor = as.numeric(meta$depth_factor), meta = meta)
 }
 
 .s22_read_json <- function(p) {
@@ -73,13 +74,16 @@ load_cell_profiles <- function(archetype, dir = getOption("geo.spatialtrans.prof
 #' @param depth_factor fattore di profondita' (predefinito: quello dei profili, regola R-3 di S2.2).
 #' @param noise `"M"` o `"G"` (predefinito: il vincitore della gara di S2.2 per il tessuto).
 #' @param use_subtypes `FALSE` usa un profilo per tipo (media dei sottotipi pesata con le quote e i trascritti); per le controprove.
+#' @param totals_by `"type"`: totale dalla distribuzione del tipo (D2-3); `"subtype"`: prima il sottotipo, poi il totale dalla distribuzione
+#'   del sottotipo (`profiles$totals_subtype`; analisi PH-3 di S2.2). Con `use_subtypes = FALSE` vale sempre `"type"`.
 #' @param chunk_size cellule per blocco (fa parte della definizione del risultato).
 #' @param workers processi (`parallel::mclapply`).
 #' @return lista `counts` (dgCMatrix geni x cellule, nomi `gene_id` e `cell_id`), `cells` (data.frame `cell_id`, `cell_type`, `subtype`,
 #'   `n_transcripts`), `metadata`.
 #' @export
 simulate_cell_profiles <- function(cell_df, profiles, seed, depth_factor = profiles$depth_factor, noise = profiles$noise,
-                                   use_subtypes = TRUE, chunk_size = 2000L, workers = 1L) {
+                                   use_subtypes = TRUE, totals_by = c("type", "subtype"), chunk_size = 2000L, workers = 1L) {
+  totals_by <- match.arg(totals_by)
   if (!is.data.frame(cell_df) || !all(c("cell_id", "cell_type") %in% names(cell_df)))
     stop("simulate_cell_profiles(): `cell_df` deve avere `cell_id` e `cell_type`.", call. = FALSE)
   if (anyNA(cell_df$cell_type)) stop("simulate_cell_profiles(): `cell_type` con NA.", call. = FALSE)
@@ -89,6 +93,12 @@ simulate_cell_profiles <- function(cell_df, profiles, seed, depth_factor = profi
     stop("simulate_cell_profiles(): `depth_factor` deve essere un numero > 0.", call. = FALSE)
   types <- unique(as.character(cell_df$cell_type))
   .s22_check_profiles(profiles, types)
+  if (!use_subtypes) totals_by <- "type"
+  if (totals_by == "subtype") {
+    ts <- profiles$totals_subtype
+    if (is.null(ts) || !identical(ts$q, profiles$totals$q) || length(setdiff(profiles$subtypes$subtype, names(ts))))
+      stop("simulate_cell_profiles(): `totals_by = \"subtype\"` richiede i quantili dei totali per ogni sottotipo.", call. = FALSE)
+  }
   P <- profiles$P; sub <- profiles$subtypes
   if (!use_subtypes) {                                         # un profilo per tipo: media dei sottotipi pesata con le quote
     tt <- unique(sub$cell_type)
@@ -112,13 +122,17 @@ simulate_cell_profiles <- function(cell_df, profiles, seed, depth_factor = profi
   one_chunk <- function(k) {
     assign(".Random.seed", streams[[k]], envir = globalenv())
     idx <- chunks[[k]]; m <- length(idx); ty <- ctype[idx]
-    # (1) totali: quantile casuale della distribuzione del tipo, per il fattore di profondita'
-    u <- stats::runif(m); Nc <- integer(m)
-    for (t in unique(ty)) { w <- which(ty == t); Nc[w] <- as.integer(pmax(1, round(depth_factor * stats::approx(qs, profiles$totals[[t]], u[w])$y))) }
-    # (2) sottotipi
-    si <- integer(m)
-    for (t in unique(ty)) { w <- which(ty == t); r <- which(sub$cell_type == t)
-      si[w] <- if (length(r) == 1L) r else r[sample.int(length(r), length(w), replace = TRUE, prob = sub$share[r])] }
+    # (1) totali: quantile casuale della distribuzione del tipo, per il fattore di profondita'; (2) sottotipi
+    u <- stats::runif(m); Nc <- integer(m); si <- integer(m)
+    draw_sub <- function() for (t in unique(ty)) { w <- which(ty == t); r <- which(sub$cell_type == t)
+      si[w] <<- if (length(r) == 1L) r else r[sample.int(length(r), length(w), replace = TRUE, prob = sub$share[r])] }
+    if (totals_by == "type") {
+      for (t in unique(ty)) { w <- which(ty == t); Nc[w] <- as.integer(pmax(1, round(depth_factor * stats::approx(qs, profiles$totals[[t]], u[w])$y))) }
+      draw_sub()
+    } else {                                                     # prima il sottotipo, poi il totale dalla sua distribuzione
+      draw_sub()
+      for (s_ in unique(si)) { w <- which(si == s_); Nc[w] <- as.integer(pmax(1, round(depth_factor * stats::approx(qs, profiles$totals_subtype[[sub$subtype[s_]]], u[w])$y))) }
+    }
     # (3) conteggi per gene
     ii <- vector("list", m); xx <- vector("list", m)
     if (noise == "M") {
@@ -145,6 +159,6 @@ simulate_cell_profiles <- function(cell_df, profiles, seed, depth_factor = profi
                                  dimnames = list(profiles$genes$gene_id, as.character(cell_df$cell_id)))
   list(counts = counts,
        cells = data.frame(cell_id = cell_df$cell_id, cell_type = ctype, subtype = sub$subtype[si], n_transcripts = Nc, stringsAsFactors = FALSE),
-       metadata = list(step = "S2.2", seed = seed, noise = noise, depth_factor = depth_factor, use_subtypes = use_subtypes,
+       metadata = list(step = "S2.2", seed = seed, noise = noise, depth_factor = depth_factor, use_subtypes = use_subtypes, totals_by = totals_by,
                        chunk_size = chunk_size, archetype = profiles$archetype, profiles_winner = profiles$meta$winner))
 }

@@ -104,5 +104,18 @@ writeLines('{\n "archetype": "T",\n "winner": "exp_G",\n "source": "exp",\n "noi
 lp <- load_cell_profiles("T", dir = td)
 ck("h1 lettura: profili = somme / totale, nell'ordine dei geni", max(abs(lp$P - S0 / rowSums(S0))) < 1e-12 && identical(colnames(lp$P), colnames(P)))
 ck("h2 lettura: phi, modello, fattore", identical(lp$phi, seq_len(G) / 1000) && lp$noise == "G" && lp$depth_factor == 1.25)
+# (i) totali per sottotipo
+ps <- prof; ps$totals_subtype <- data.frame(q = prof$totals$q, `a|1` = seq(10, 20, length.out = 1001), `a|2` = seq(100, 200, length.out = 1001),
+  `a|3` = seq(1000, 2000, length.out = 1001), `b|1` = seq(200, 300, length.out = 1001), check.names = FALSE)
+si_ <- simulate_cell_profiles(cells, ps, seed = 21, totals_by = "subtype", depth_factor = 1)
+mm <- tapply(si_$cells$n_transcripts, si_$cells$subtype, mean); ss <- tapply(si_$cells$n_transcripts, si_$cells$subtype, function(v) sd(v) / sqrt(length(v)))
+exm <- c(`a|1` = 15, `a|2` = 150, `a|3` = 1500, `b|1` = 250)
+ck("i1 totali per sottotipo: media di ogni sottotipo = media della sua distribuzione (|z| < 5)", all(abs(mm[names(exm)] - exm) / ss[names(exm)] < 5),
+   paste(sprintf("%s %.1f", names(mm), mm), collapse = "; "))
+ck("i2 totali per sottotipo: somma = totale, quote come prima", all(Matrix::colSums(si_$counts) == si_$cells$n_transcripts) &&
+     abs(mean(si_$cells$subtype[si_$cells$cell_type == "a"] == "a|1") - 0.5) < 5 * sqrt(0.25 / 20000))
+ck("i3 totali per sottotipo senza i quantili -> errore", err(simulate_cell_profiles(cells, prof, seed = 1, totals_by = "subtype")))
+s5 <- simulate_cell_profiles(cells, ps, seed = 11)
+ck("i4 con totals_by = \"type\" il risultato non cambia se ci sono anche i quantili per sottotipo", identical(s5$counts, s1$counts))
 cat(sprintf("\n%d PASS, %d FAIL\n", sum(unlist(res)), sum(!unlist(res))))
 if (!all(unlist(res))) quit(status = 1)

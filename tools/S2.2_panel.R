@@ -24,7 +24,7 @@ for (p in lay) {
       n_cells = nrow(cd), n_na = sum(is.na(s$counts@x)) + sum(is.na(s$cells$n_transcripts)), min_total = min(s$cells$n_transcripts),
       sum_equals_total = ok_sum, type_and_subtype_ok = ok_type, seconds = el)
     key <- paste(A, sd, nz)
-    agg <- Matrix::t(Matrix::fac2sparse(factor(s$cells$subtype, levels = prof$subtypes$subtype)))
+    agg <- Matrix::sparseMatrix(i = seq_len(nrow(s$cells)), j = match(s$cells$subtype, prof$subtypes$subtype), x = 1, dims = c(nrow(s$cells), nrow(prof$subtypes)))
     pooled[[key]] <- list(A = A, seed = sd, noise = nz, prof = prof,
       sums = if (is.null(pooled[[key]])) as.matrix(s$counts %*% agg) else pooled[[key]]$sums + as.matrix(s$counts %*% agg),
       n_sub = (if (is.null(pooled[[key]])) 0 else pooled[[key]]$n_sub) + Matrix::colSums(agg),

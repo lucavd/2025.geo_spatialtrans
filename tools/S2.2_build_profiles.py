@@ -67,6 +67,12 @@ for A in S.PRESET_TYPES:
     qs = np.linspace(0, 1, 1001)
     tq = pd.DataFrame({t: np.quantile(g.umi.to_numpy(), qs) for t, g in lab.groupby("ptype")}); tq.insert(0, "q", qs)
     tq.to_csv(f"{OUT}/{A}_totals.tsv", sep="\t", index=False)
+    if src in ("exp", "nuc"):                                    # totali per sottotipo (PH-3): stessi nuclei dei sottotipi, impronta intera
+        Xe, _, sub_e = r6_all(A, "exp"); tot_e = np.asarray(Xe.sum(axis=1)).ravel()
+        tqs = pd.DataFrame({s_: np.quantile(tot_e[sub_e == s_], qs) for s_ in us}); tqs.insert(0, "q", qs)
+        tqs.to_csv(f"{OUT}/{A}_totals_subtype.tsv", sep="\t", index=False)
+    elif os.path.exists(f"{OUT}/{A}_totals_subtype.tsv"):
+        os.remove(f"{OUT}/{A}_totals_subtype.tsv")
     meta = dict(archetype=A, winner=w, source=src, noise=noise, depth_factor=float(fac.loc[A, "f"]), depth_factor_lo=float(fac.loc[A, "lo"]),
                 depth_factor_hi=float(fac.loc[A, "hi"]), n_genes=int(len(vis)), n_genes_nonzero=int((Xv.sum(axis=0) > 0).sum()), n_subtypes=int(len(us)),
                 n_cells_source=int(Xv.shape[0]), atlas=ATLAS.get(A) if src == "atlas" else None)
