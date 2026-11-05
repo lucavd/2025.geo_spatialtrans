@@ -84,6 +84,9 @@ p <- c(L$cell_df$x[5], L$cell_df$y[5]); ip <- floor((p[2] - H$grid$y0) / 2); jp 
 idp <- ip * H$grid$n_col + jp + 1
 ck("T-B3 il quadratino che contiene il centro di una cellula sta nella verita' geometrica di quella cellula",
    any(H$truth$overlap$bin_id == idp & H$truth$overlap$cell_id == 5) && abs(b$x[idp] - p[1]) <= 1 && abs(b$y[idp] - p[2]) <= 1)
+ck("T-B6 indici interi (bin_id e cell_id della verita' geometrica, bin_id e bin8_id della tabella): un indice double come 2e5 diventa \"2e+05\" come testo",
+   is.integer(H$truth$overlap$bin_id) && is.integer(H$truth$overlap$cell_id) && is.integer(H$bins$bin_id) && is.integer(H$bins$bin8_id) &&
+     identical(as.character(200000L), "200000"))
 L0 <- L; L0$metadata$pixel_size_um <- NULL
 ck("T-B4 errore senza pixel_size_um (BL-005); errore con margine 279 o 4 um; la scala passa nei metadati",
    inherits(safe(build_hd_grid(L0)), "t_err") && inherits(safe(build_hd_grid(L, margin_um = 279)), "t_err") &&

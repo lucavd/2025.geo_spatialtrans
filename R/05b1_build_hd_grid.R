@@ -61,8 +61,10 @@ hd_bin_table <- function(grid) {
 # intervalli di righe e colonne toccati dai riquadri delle geometrie (bb: matrice n x 4 xmin ymin xmax ymax)
 .hd_bbox_bins <- function(grid, bb) {
   b <- grid$bin_um
-  cbind(i0 = pmax(0L, floor((bb[, 2] - grid$y0) / b)), i1 = pmin(grid$n_row - 1L, floor((bb[, 4] - grid$y0) / b)),
-        j0 = pmax(0L, floor((bb[, 1] - grid$x0) / b)), j1 = pmin(grid$n_col - 1L, floor((bb[, 3] - grid$x0) / b)))
+  m <- cbind(i0 = pmax(0, floor((bb[, 2] - grid$y0) / b)), i1 = pmin(grid$n_row - 1, floor((bb[, 4] - grid$y0) / b)),
+             j0 = pmax(0, floor((bb[, 1] - grid$x0) / b)), j1 = pmin(grid$n_col - 1, floor((bb[, 3] - grid$x0) / b)))
+  storage.mode(m) <- "integer"   # indici interi: un bin_id double come 2e5 diventa "2e+05" come testo (fattori, nomi), S2.1
+  m
 }
 .hd_bboxes <- function(g) {
   gg <- geos::as_geos_geometry(sf::st_set_crs(g, NA))
@@ -131,7 +133,7 @@ hd_overlap <- function(grid, territories, nuclei = NULL, tile_um = 500, grid_um 
     keep <- aT > 0
     aN <- numeric(sum(keep))
     if (!is.null(nuclei) && any(keep)) aN <- overlay_prec("intersection", sq[keep], nuclei[cc[keep]], grid_um = grid_um, origin = org)
-    res[[length(res) + 1L]] <- data.frame(bin_id = i[keep] * grid$n_col + j[keep] + 1L, cell_id = cc[keep],
+    res[[length(res) + 1L]] <- data.frame(bin_id = as.integer(i[keep] * grid$n_col + j[keep] + 1L), cell_id = as.integer(cc[keep]),
                                           area_territory_um2 = aT[keep], area_nucleus_um2 = aN)
   }
   out <- if (length(res)) do.call(rbind, res) else

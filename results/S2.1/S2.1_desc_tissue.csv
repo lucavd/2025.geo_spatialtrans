@@ -1,0 +1,52 @@
+archetype,tissue,quantity,label,source,n_roi,mean,lo,hi
+A1,intestine (mouse),d1,2 um bins in tissue with centre in a nucleus,simulated,5,0.1800506158835708,0.1792589033709379,0.18076218571933117
+A1,intestine (mouse),d1,2 um bins in tissue with centre in a nucleus,segmenter (Step 1),5,0.1548878421559991,0.1500792099452042,0.1595692583786235
+A1,intestine (mouse),d2,nuclei touching an 8 um bin (mean),simulated,5,1.689859203880206,1.6791244179431881,1.7000979684138902
+A1,intestine (mouse),d2,nuclei touching an 8 um bin (mean),segmenter (Step 1),5,1.4422573111739034,1.4074619198515623,1.4679124684907603
+A1,intestine (mouse),d3,cells touching an 8 um bin (mean),simulated,5,3.7598195908394403,3.73472496660242,3.78646121517029
+A1,intestine (mouse),d3_pure,2 um bins inside one territory (>= 99 %),simulated,5,0.5771935595292815,0.5758215452968882,0.5785655737616751
+A2,colon tumour,d1,2 um bins in tissue with centre in a nucleus,simulated,5,0.3088226204370574,0.306813929100396,0.31061022564083396
+A2,colon tumour,d1,2 um bins in tissue with centre in a nucleus,segmenter (Step 1),5,0.27973925902067315,0.26412728597478907,0.29407210632713915
+A2,colon tumour,d1,2 um bins in tissue with centre in a nucleus,Space Ranger 4,5,0.2977778332566824,0.25347102200915517,0.3420853610620703
+A2,colon tumour,d2,nuclei touching an 8 um bin (mean),simulated,5,1.758366176703884,1.730728270180082,1.7860040832276858
+A2,colon tumour,d2,nuclei touching an 8 um bin (mean),segmenter (Step 1),5,1.5593054314043477,1.4680894225086445,1.6344115655707352
+A2,colon tumour,d2,nuclei touching an 8 um bin (mean),Space Ranger 4,5,1.2769087444592162,1.0887157718666955,1.4661543503882872
+A2,colon tumour,d3,cells touching an 8 um bin (mean),simulated,5,3.366133982614966,3.311423248361592,3.42084471686834
+A2,colon tumour,d3,cells touching an 8 um bin (mean),Space Ranger 4,5,2.385445279428331,2.169534609445929,2.595415404163938
+A2,colon tumour,d3_pure,2 um bins inside one territory (>= 99 %),simulated,5,0.6281437933003536,0.6251561863213644,0.6311842811496317
+A3,tumour stroma,d1,2 um bins in tissue with centre in a nucleus,simulated,5,0.1120564869941392,0.1113086016305942,0.11331454538269821
+A3,tumour stroma,d1,2 um bins in tissue with centre in a nucleus,segmenter (Step 1),5,0.15421467051768434,0.12697879226364872,0.17249423858567914
+A3,tumour stroma,d1,2 um bins in tissue with centre in a nucleus,Space Ranger 4,5,0.1523214711672553,0.12595960525256214,0.17227671222259328
+A3,tumour stroma,d2,nuclei touching an 8 um bin (mean),simulated,5,0.6306825529846852,0.6278418606552079,0.632982438107536
+A3,tumour stroma,d2,nuclei touching an 8 um bin (mean),segmenter (Step 1),5,0.885200527448953,0.7576969887660987,0.9744310501530171
+A3,tumour stroma,d2,nuclei touching an 8 um bin (mean),Space Ranger 4,5,0.6780459722662726,0.5812931710666243,0.757411757341662
+A3,tumour stroma,d3,cells touching an 8 um bin (mean),simulated,5,2.3035006678059697,2.3011738222059277,2.305178549040994
+A3,tumour stroma,d3,cells touching an 8 um bin (mean),Space Ranger 4,5,1.6607336089015596,1.5254031450238217,1.7898277951635826
+A3,tumour stroma,d3_pure,2 um bins inside one territory (>= 99 %),simulated,5,0.7692900758163426,0.7688495671077706,0.7698235683558264
+A4,lymph node,d1,2 um bins in tissue with centre in a nucleus,simulated,5,0.4724064709606468,0.4720230918522158,0.4728192720179182
+A4,lymph node,d1,2 um bins in tissue with centre in a nucleus,segmenter (Step 1),5,0.45148832895563873,0.4252762954723142,0.47543790934742153
+A4,lymph node,d1,2 um bins in tissue with centre in a nucleus,Space Ranger 4,5,0.5747564345494139,0.5368767533109804,0.6090527018577063
+A4,lymph node,d2,nuclei touching an 8 um bin (mean),simulated,5,4.327454676542173,4.31933728713859,4.335572065945758
+A4,lymph node,d2,nuclei touching an 8 um bin (mean),segmenter (Step 1),5,3.9702644362631445,3.652615770315265,4.2769575007031575
+A4,lymph node,d2,nuclei touching an 8 um bin (mean),Space Ranger 4,5,3.260115721588204,2.976638542558862,3.5077906028477295
+A4,lymph node,d3,cells touching an 8 um bin (mean),simulated,5,6.08665627081325,6.079015043341036,6.092884572834445
+A4,lymph node,d3,cells touching an 8 um bin (mean),Space Ranger 4,5,4.337921312297583,4.113185735586315,4.546798728893409
+A4,lymph node,d3_pure,2 um bins inside one territory (>= 99 %),simulated,5,0.395005498129407,0.3946895643368572,0.39545661928910125
+A5,brain (mouse),d1,2 um bins in tissue with centre in a nucleus,simulated,5,0.10742892086818781,0.1064001610309532,0.10849123733203815
+A5,brain (mouse),d1,2 um bins in tissue with centre in a nucleus,segmenter (Step 1),5,0.09110476022965655,0.08041179901455019,0.10677153436747122
+A5,brain (mouse),d1,2 um bins in tissue with centre in a nucleus,Space Ranger 4,5,0.055669525693563905,0.03862926326673664,0.07460551197546299
+A5,brain (mouse),d2,nuclei touching an 8 um bin (mean),simulated,5,0.34742101371484424,0.3421639083613012,0.3522210557078994
+A5,brain (mouse),d2,nuclei touching an 8 um bin (mean),segmenter (Step 1),5,0.2919844710449248,0.24364541485007338,0.3527381622589777
+A5,brain (mouse),d2,nuclei touching an 8 um bin (mean),Space Ranger 4,5,0.1567468238036033,0.10799129037600175,0.20550235723120486
+A5,brain (mouse),d3,cells touching an 8 um bin (mean),simulated,5,1.65343980739013,1.622362162122482,1.6827210353958262
+A5,brain (mouse),d3,cells touching an 8 um bin (mean),Space Ranger 4,5,0.5032191019792596,0.3535087046396216,0.6532551834807889
+A5,brain (mouse),d3_pure,2 um bins inside one territory (>= 99 %),simulated,5,0.8671349024787769,0.8638457496773827,0.8709431274938497
+A6,heart,d1,2 um bins in tissue with centre in a nucleus,simulated,5,0.02400347320008122,0.023592415962767503,0.02444856646431538
+A6,heart,d1,2 um bins in tissue with centre in a nucleus,segmenter (Step 1),5,0.02495524865165534,0.02267372519117132,0.027236772112139363
+A6,heart,d1,2 um bins in tissue with centre in a nucleus,Space Ranger 4,5,0.026305713468881158,0.0236113527559221,0.0287567145624826
+A6,heart,d2,nuclei touching an 8 um bin (mean),simulated,5,0.1646497007507012,0.16182484157536842,0.16747455992603402
+A6,heart,d2,nuclei touching an 8 um bin (mean),segmenter (Step 1),5,0.1693600631953554,0.14693564977545215,0.19042406925116245
+A6,heart,d2,nuclei touching an 8 um bin (mean),Space Ranger 4,5,0.13245293375157524,0.11755418824965162,0.14735167925349882
+A6,heart,d3,cells touching an 8 um bin (mean),simulated,5,1.639184501109502,1.6217194860921982,1.6566620720828138
+A6,heart,d3,cells touching an 8 um bin (mean),Space Ranger 4,5,0.5634816467748421,0.48204971993973145,0.6327115838071405
+A6,heart,d3_pure,2 um bins inside one territory (>= 99 %),simulated,5,0.8724464014313039,0.8700776342910193,0.8746190723506366

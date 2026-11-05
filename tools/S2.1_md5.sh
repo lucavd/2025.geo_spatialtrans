@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # tools/S2.1_md5.sh - S2.1, cancello G-4: md5 dei file letti, prima e dopo. Uso (root del repo): tools/S2.1_md5.sh before|after
-# after: confronta con before e controlla che results/R2, results/R3, results/S1.6 siano invariati rispetto al commit.
+# before_extra / after_extra: nuclei del segmentatore letti dal descrittivo (aggiunti prima di leggerli). after: confronta con before e controlla che results/R2, results/R3, results/S1.6 siano invariati rispetto al commit.
 set -euo pipefail
 STAGE=${1:?before o after}
 M=/mnt/micron/geo_spatialtrans; D=$M/data_real; OUT=$M/S2.1; mkdir -p "$OUT"
@@ -22,8 +22,12 @@ list() {
   echo results/R2/R2_rois_checked.csv
   ls results/R2/tissue_masks/*_valid_ds4.png
 }
-list | sort | xargs md5sum > "$OUT/md5_$STAGE.txt"
+list_extra() { ls "$M"/R3b/nuclei/A4_*_consensus_native.parquet "$M"/R3b/nuclei/A6_*_consensus_native.parquet; ls results/R2/nuclei/*_cellpose_rgb_native.parquet; }
+case "$STAGE" in before_extra|after_extra) list_extra | sort | xargs md5sum > "$OUT/md5_$STAGE.txt";; *) list | sort | xargs md5sum > "$OUT/md5_$STAGE.txt";; esac
 echo "$(wc -l < "$OUT/md5_$STAGE.txt") file in $OUT/md5_$STAGE.txt"
+if [ "$STAGE" = after_extra ]; then
+  if diff -q "$OUT/md5_before_extra.txt" "$OUT/md5_after_extra.txt" > /dev/null; then echo "PASS G-4 md5 dei nuclei del descrittivo identici"; else echo "FAIL G-4 md5 dei nuclei del descrittivo diversi"; fi
+fi
 if [ "$STAGE" = after ]; then
   if diff -q "$OUT/md5_before.txt" "$OUT/md5_after.txt" > /dev/null; then echo "PASS G-4 md5 identici prima e dopo"; else echo "FAIL G-4 md5 diversi"; diff "$OUT/md5_before.txt" "$OUT/md5_after.txt" | head; fi
   ch=$(git status --porcelain results/R2 results/R3 results/S1.6 | wc -l)
