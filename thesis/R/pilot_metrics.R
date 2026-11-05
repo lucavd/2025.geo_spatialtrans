@@ -20,6 +20,23 @@ fill_failed <- function(est, p_null) {
   est
 }
 
+# Main run (ADEMP §7.2, Pierangela 2026-11-03): a spot fails if it has a missing value, a proportion
+# below -tol, or a sum that differs from 1 by more than tol; values in [-tol, 0) are numerical zeros,
+# set to 0, then the row is rescaled to 1. Failed rows become NA, so fill_failed() treats them alike.
+# Returns the cleaned matrix with attribute "min_raw" (smallest raw value, for the residue check).
+clean_props <- function(est, tol = 1e-5) {
+  min_raw <- suppressWarnings(min(est, na.rm = TRUE))
+  bad <- apply(est, 1, function(p) anyNA(p) || any(p < -tol) || abs(sum(p) - 1) > tol)
+  est[bad, ] <- NA
+  ok <- !bad
+  if (any(ok)) {
+    x <- est[ok, , drop = FALSE]; x[x < 0] <- 0
+    est[ok, ] <- x / rowSums(x)
+  }
+  attr(est, "min_raw") <- min_raw
+  est
+}
+
 # Mean over spots of the Jensen–Shannon divergence (base 2, between 0 and 1).
 jsd <- function(est, truth) {
   kl <- function(p, q) { i <- p > 0; sum(p[i] * log2(p[i] / q[i])) }

@@ -129,3 +129,11 @@ simulate_reference_p <- function(mu_p, phi_p, ref_meta, L, cell_names = NULL, bl
   dimnames(profiles) <- list(rownames(mu_p), types)
   list(ref = x, ref_meta = ref_meta, profiles = profiles)
 }
+
+# Method reference of P rebuilt from a saved world (scripts/04_simulate.R, world_p.rds: mu, phi and
+# ref_seed = the L'Ecuyer-CMRG state of the reference sub-stream). Same inputs -> identical reference,
+# so the reference is not stored. L = Matrix::colSums(ref) of the real capped reference (ADEMP §2.1).
+reference_p_from_world <- function(world, ref_meta, L, cell_names = NULL) {
+  assign(".Random.seed", world$ref_seed, envir = .GlobalEnv)
+  simulate_reference_p(world$mu, world$phi, ref_meta, L, cell_names)
+}

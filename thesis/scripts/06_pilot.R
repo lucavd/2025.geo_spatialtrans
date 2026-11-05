@@ -32,7 +32,16 @@
 # (thinned) and below it, per dataset (exact thinning amendment, DECISIONS 2026-11-02).
 # Progress: one line per job start and end in <tissue>_progress.log, next to the summary.
 #
-# Usage (working directory = thesis/):  Rscript scripts/06_pilot.R <tissue> [workers] [reps] [depth]
+# Amendment 2026-11-05 (Luca's email of 2026-11-05, written before the run; rule not yet in DECISIONS):
+#   optional 5th argument c = Dirichlet concentration, alpha_k = c * p_k (expected composition still
+#   p). Without it alpha_k = K * p_k as before (c = K). Source of c: R6 of the main project, groups of
+#   10 neighbouring nuclei (thesis/protocol/R6_dirichlet_concentration_by_roi.csv): colon about 1.
+#   With c the outputs go to derived/pilot/<tissue>_c<c>/ and <tissue>_c<c>_* files, so the c = K
+#   pilot is untouched; same pilot seed, donors, arms (E, C−, anchor), methods and checks C1–C5.
+#   Each replicate file also stores alpha. Expected (pre-registered): the null-baseline RMSE rises to
+#   the formula value of 06b_pilot_nsim.R (spots less mixed, so the mean composition guesses worse).
+#
+# Usage (working directory = thesis/):  Rscript scripts/06_pilot.R <tissue> [workers] [reps] [mode] [c]
 #   "depth" rebuilds the spots from the same seeds and only counts spot depths, without deconvolution.
 #   "truth" rebuilds compositions, cells and anchor from the same seeds, checks that the cell truth
 #   equals the saved one and adds the UMI-fraction truth (truth_umi) to existing replicate files.
@@ -43,15 +52,17 @@ workers <- if (length(args) >= 2) as.integer(args[2]) else 8
 n_rep <- if (length(args) >= 3) as.integer(args[3]) else 10
 mode <- if (length(args) >= 4) args[4] else "full"
 stopifnot(mode %in% c("full", "depth", "truth"))
+conc <- if (length(args) >= 5) as.numeric(args[5]) else NA_real_   # Dirichlet concentration c (NA = K)
+run_id <- if (is.na(conc)) tissue else sprintf("%s_c%g", tissue, conc)
 
 data_dir <- Sys.getenv("TESI_DATA")
 stopifnot("TESI_DATA non impostata" = nzchar(data_dir), dir.exists(data_dir))
 stopifnot("Run from the thesis/ folder" = file.exists("thesis.Rproj"))
 ref_file <- file.path(data_dir, "derived", "reference", paste0(tissue, "_pilot.rds"))
-out_dir <- file.path(data_dir, "derived", "pilot", tissue)
+out_dir <- file.path(data_dir, "derived", "pilot", run_id)
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
-log_file <- file.path(dirname(out_dir), paste0(tissue, "_progress.log"))
-depth_file <- file.path(dirname(out_dir), paste0(tissue, "_pilot_depth.csv"))
+log_file <- file.path(dirname(out_dir), paste0(run_id, "_progress.log"))
+depth_file <- file.path(dirname(out_dir), paste0(run_id, "_pilot_depth.csv"))
 
 n_spots <- 500
 levels_cells <- c(2, 10)
@@ -60,7 +71,7 @@ pilot_seed <- 20261101
 
 R0 <- readRDS(ref_file)
 n_train <- lengths(R0$L_by_type[R0$types_spot])          # training cells per spot type
-alpha <- length(n_train) * n_train / sum(n_train)          # alpha_k = K * p_k
+alpha <- (if (is.na(conc)) length(n_train) else conc) * n_train / sum(n_train)   # alpha_k = c * p_k (c = K by default)
 if (any(R0$ref_meta$donor_id %in% R0$donors$heldout)) stop("C5: held-out donor in the reference")
 
 grid <- expand.grid(rep = seq_len(n_rep), depth = levels_depth, n_cells = levels_cells)
@@ -159,7 +170,7 @@ run_job <- function(i) {
   res <- do.call(rbind, rows)
   res <- cbind(tissue = tissue, n_cells = g$n_cells, depth = g$depth, rep = g$rep, res)
   spot_umi <- vapply(data, function(x) median(Matrix::colSums(x)), numeric(1))
-  saveRDS(list(metrics = res, props = props, truth = truth, truth_umi = truth_umi, spot_umi = spot_umi, depth = depth,
+  saveRDS(list(metrics = res, props = props, alpha = alpha, truth = truth, truth_umi = truth_umi, spot_umi = spot_umi, depth = depth,
                anchor_cells_used = length(unique(anc$cells_used)), held_cells = sum(held_ok)), f)
   log_line(sprintf("done %s in %.1f min", job, (proc.time()[["elapsed"]] - t_job) / 60))
   f
@@ -181,7 +192,7 @@ t0 <- proc.time()[["elapsed"]]
 cl <- parallel::makeCluster(workers, setup_strategy = "sequential")   # parallel start-up drops workers on Windows
 lib <- .libPaths()
 parallel::clusterCall(cl, function(lib) { .libPaths(lib); RNGkind("L'Ecuyer-CMRG"); NULL }, lib)
-parallel::clusterExport(cl, c("grid", "R0", "out_dir", "n_spots", "alpha", "tissue", "mode", "log_file", "run_job"))
+parallel::clusterExport(cl, c("grid", "R0", "conc", "out_dir", "n_spots", "alpha", "tissue", "mode", "log_file", "run_job"))
 parallel::clusterEvalQ(cl, { for (f in c("R/simulate_spots.R", "R/deconvolve.R", "R/pilot_metrics.R")) source(f); NULL })
 done <- parallel::parLapplyLB(cl, seq_len(nrow(grid)), function(i)
   tryCatch(run_job(i), error = function(e) paste("ERROR", i, conditionMessage(e))))
@@ -204,7 +215,7 @@ agg <- do.call(rbind, lapply(split(m, m[key], drop = TRUE), function(z) data.fra
 agg$sd_rmse_upper <- agg$sd_rmse * sqrt((agg$reps - 1) / qchisq(0.025, agg$reps - 1))   # upper 95% limit
 for (tg in c(0.005, 0.0025, 0.001)) agg[[paste0("n_sim_", tg)]] <- ceiling((agg$sd_rmse_upper / tg)^2)
 rownames(agg) <- NULL
-write.csv(agg, file.path(dirname(out_dir), paste0(tissue, "_pilot_summary.csv")), row.names = FALSE)
+write.csv(agg, file.path(dirname(out_dir), paste0(run_id, "_pilot_summary.csv")), row.names = FALSE)
 umi <- do.call(rbind, lapply(out, `[[`, "spot_umi"))
 cat("\nMedian UMI per spot by dataset:\n"); print(round(apply(umi, 2, median)))
 cat(sprintf("Anchor: %d held-out cells of spot types\n", out[[1]]$held_cells))
@@ -214,4 +225,4 @@ cat("\nFailed spots and errors per method x dataset:\n"); print(aggregate(cbind(
 dp <- do.call(rbind, lapply(out, `[[`, "depth"))   # NULL for jobs run before 2026-11-02
 if (!is.null(dp)) report_depth(dp)
 if (any(agg$same_rng_state)) cat("\nWARNING: a method leaves the same RNG state in two replicates (seed reset?)\n")
-cat("\nSummary written to", file.path(dirname(out_dir), paste0(tissue, "_pilot_summary.csv")), "\n")
+cat("\nSummary written to", file.path(dirname(out_dir), paste0(run_id, "_pilot_summary.csv")), "\n")
