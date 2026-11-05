@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-05 (S2.1)
+
+* **Creazione**: [La griglia dei quadratini di Visium HD sopra le cellule simulate è costruita bene? (S2.1)](steps/S2.1.md): perimetro, cancelli G-1...G-5, controprova CP-1 con l'ok di Luca («Ok, come proposte (Recommended)»), tre correzioni prima del calcolo, esiti, post hoc PH-1 e PH-2, revisione avversariale (tre revisori), riassunto «In breve» con una decisione per Luca; report `reports/S2.1.html`.
+* **Creazione**: decisione di Luca [Il documento di progetto dello Step 2 non passa dalla revisione di Daniele prima del codice (DEC-042)](decisions/DEC-042.md); decisione tecnica [S2.1: scelte tecniche della griglia di Visium HD e della verità geometrica (DEC-043)](decisions/DEC-043.md).
+* **Modifica**: design dello Step 2 (riquadro dell'area simulata, stato); BACKLOG (chiuse BL-005, BL-010, BL-104, BL-146; nuove BL-212...BL-214); ROADMAP sezioni 6 e 7; CHANGELOG.
+
 ## 2026-11-05 (S2.0)
 
 * **Chiusura**: [Come passa il simulatore dalle cellule ai conteggi nei quadratini di Visium HD, e i pezzi che i dati possono decidere (come escono i trascritti dal tessuto, le strisce della griglia, la variabilità dentro la cellula) reggono sui vetrini veri? (S2.0)](steps/S2.0.md) chiuso con l'approvazione di Luca («chiudi», risposta all'unica decisione del riassunto «In breve»).

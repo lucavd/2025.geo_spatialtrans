@@ -3,9 +3,10 @@ Uso (root del repo): .venv/bin/python tools/S2.1_desc_real.py [outcsv]
 Per ogni area (30): quadratini di 2 um di Space Ranger con il centro nel riquadro, coordinate dell'area x = (colonna - c0) * um_per_px,
 y = (riga - r0) * um_per_px (stesse dei livelli simulati); in tessuto = maschera valida ds4 di R2 al centro (la stessa che ha fatto le regioni
 simulate). Blocchi di 8 um = (array_row // 4, array_col // 4) con tutti i 16 figli nel riquadro e almeno un figlio in tessuto.
-Fonti: Space Ranger 4 (in_nucleus, cell_id di barcode_mappings; 4 sezioni) e il segmentatore dello Step 1 (maschere native di R2, consenso
-R3b per linfonodo e cuore, nuclei 'keep' come R4): centro del quadratino nel nucleo; nuclei che toccano un blocco = etichette su 7 x 7 punti
-per figlio."""
+Fonti: Space Ranger 4 (in_nucleus, cell_id di barcode_mappings; 4 sezioni; nuclei e cellule per blocco con la regola del centro, come
+Space Ranger li costruisce) e il segmentatore dello Step 1 (maschere native di R2, consenso R3b per linfonodo e cuore, nuclei 'keep' come R4):
+centro del quadratino nel nucleo; nuclei per blocco con la regola del centro (seg_d2c) e con quella del tocco (seg_d2: pixel il cui centro cade
+in uno dei 16 figli). In tessuto = maschera ds4 letta al centro del quadratino (revisione F12)."""
 import sys, numpy as np, pandas as pd, pyarrow.parquet as pq
 from PIL import Image
 M = "/mnt/micron/geo_spatialtrans"; D = f"{M}/data_real"
@@ -46,14 +47,23 @@ for ds in dict.fromkeys(DS.values()):
             v[~keep[v]] = 0; return v
         cen = lab_at(box.x.to_numpy(), box.y.to_numpy())
         out["seg_d1_centre_in_nucleus"] = float(np.mean(cen[box.tis.to_numpy()] > 0))
-        off = (np.arange(7) - 3) * (2.0 / 7.0)
-        dx, dy = np.meshgrid(off, off); dx = dx.ravel(); dy = dy.ravel()
         sub = box[box.b8.isin(good8)]
-        X = (sub.x.to_numpy()[:, None] + dx[None, :]).ravel(); Y = (sub.y.to_numpy()[:, None] + dy[None, :]).ravel()
-        L = lab_at(X, Y); B = np.repeat(sub.b8.to_numpy(), len(dx))
-        pairs = pd.DataFrame({"b8": B, "l": L}); pairs = pairs[pairs.l > 0].drop_duplicates()
-        nN = pairs.groupby("b8").size().reindex(good8, fill_value=0).to_numpy()
-        out.update(cls(nN, "seg_d2_nuclei"))
+        # regola del centro (come Space Ranger): etichetta al centro di ciascuno dei 16 figli del blocco
+        lc = lab_at(sub.x.to_numpy(), sub.y.to_numpy())
+        pc = pd.DataFrame({"b8": sub.b8.to_numpy(), "l": lc}); pc = pc[pc.l > 0].drop_duplicates()
+        out.update(cls(pc.groupby("b8").size().reindex(good8, fill_value=0).to_numpy(), "seg_d2c_nuclei"))
+        # regola del tocco (come il simulato, area > 0): pixel il cui centro cade nel quadrato del figlio (revisione F1/F2: niente 7 x 7 punti)
+        hw = 1.0 / upp; xs = sub.x.to_numpy() / upp; ys = sub.y.to_numpy() / upp
+        k = np.arange(-int(np.ceil(hw)) - 1, int(np.ceil(hw)) + 2)
+        cc = np.floor(xs)[:, None] + k[None, :]; rr = np.floor(ys)[:, None] + k[None, :]
+        okc = np.abs(cc + 0.5 - xs[:, None]) <= hw; okr = np.abs(rr + 0.5 - ys[:, None]) <= hw
+        C = np.repeat(cc[:, None, :], len(k), 1); Rr = np.repeat(rr[:, :, None], len(k), 2); OK = okc[:, None, :] & okr[:, :, None]
+        Bk = np.repeat(sub.b8.to_numpy(), len(k) * len(k)).reshape(len(sub), len(k), len(k))
+        Cf = C[OK].astype(int); Rf = Rr[OK].astype(int); Bf = Bk[OK]
+        okp = (Cf >= 0) & (Rf >= 0) & (Cf < lab.shape[1]) & (Rf < lab.shape[0])
+        L = np.zeros(len(Cf), int); L[okp] = lab[Rf[okp], Cf[okp]]; L[~keep[L]] = 0
+        pairs = pd.DataFrame({"b8": Bf, "l": L}); pairs = pairs[pairs.l > 0].drop_duplicates()
+        out.update(cls(pairs.groupby("b8").size().reindex(good8, fill_value=0).to_numpy(), "seg_d2_nuclei"))
         if bm is not None:
             j = bm.reindex(box.barcode)
             inn = j.in_nucleus.fillna(False).to_numpy().astype(bool)

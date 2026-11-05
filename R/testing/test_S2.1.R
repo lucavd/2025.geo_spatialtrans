@@ -42,7 +42,7 @@ synth_layer <- function(side = 120, n = 150, seed = 1, shift = c(0, 0), region_f
   Tt <- overlay_prec("intersection", vor, R, area = FALSE)
   Nn <- overlay_prec("intersection", sf::st_buffer(P, 2.2, nQuadSegs = 8), Tt, area = FALSE)
   Tt <- Tt + shift; Nn <- Nn + shift; R <- R + shift
-  list(cell_df = data.frame(cell_id = seq_len(n), x = pts[, 1] + shift[1], y = pts[, 2] + shift[2],
+  list(cell_df = data.frame(cell_id = 1000L + 7L * rev(seq_len(n)), x = pts[, 1] + shift[1], y = pts[, 2] + shift[2],   # id non consecutivi (revisione F07)
                             territory_area = as.numeric(sf::st_area(Tt)), nucleus_area = as.numeric(sf::st_area(Nn))),
        region_polygons = R, cell_territories = Tt, cell_nuclei = Nn, metadata = list(pixel_size_um = 1.1, random_seed = seed))
 }
@@ -52,10 +52,11 @@ oA <- hd_overlap(G16, sf::st_sfc(sq_poly(2, 2, 4)), sf::st_sfc(sq_poly(2, 2, 4))
 ck("T-A1 quadrato di 4 um allineato: 4 quadratini, aree 4 (entro tau), nucleo uguale",
    nrow(oA) == 4 && all(abs(oA$area_territory_um2 - 4) <= tau_pieces(1, 8) + 1e-12) && all(abs(oA$area_nucleus_um2 - 4) <= 1e-5) &&
      setequal(oA$bin_id, c(1 * 16 + 1 + 1, 1 * 16 + 2 + 1, 2 * 16 + 1 + 1, 2 * 16 + 2 + 1)))
-oB <- hd_overlap(G16, sf::st_sfc(sq_poly(2.5, 2.5, 4)), NULL, tile_um = Inf)
-w <- c(1.5, 2, 0.5); expB <- data.frame(bin_id = c(outer(1:3, 1:3, function(i, j) i * 16 + j + 1)), a = c(outer(w, w)))
+oB <- hd_overlap(G16, sf::st_sfc(poly(rbind(c(2.5, 3), c(6.5, 3), c(6.5, 7), c(2.5, 7)))), NULL, tile_um = Inf)
+wx <- c(1.5, 2, 0.5); wy <- c(1, 2, 1)   # spostamento asimmetrico: 0.5 um in x, 1 um in y (revisione F14: vede uno scambio di i e j)
+expB <- data.frame(bin_id = c(outer(1:3, 1:3, function(i, j) i * 16 + j + 1)), a = c(outer(wy, wx)))
 mB <- merge(oB, expB, by = "bin_id")
-ck("T-A2 quadrato spostato di 0.5 um: 9 quadratini con aree prodotto di 1.5, 2, 0.5",
+ck("T-A2 quadrato spostato di 0.5 um in x e 1 um in y: 9 quadratini, aree prodotto di (1, 2, 1) per riga e (1.5, 2, 0.5) per colonna",
    nrow(oB) == 9 && nrow(mB) == 9 && max(abs(mB$area_territory_um2 - mB$a)) <= tau_pieces(1, 8), sprintf("max scarto %.2e", max(abs(mB$area_territory_um2 - mB$a))))
 Ptri <- rbind(c(1.3, 0.7), c(27.1, 5.9), c(9.4, 22.6))
 th <- seq(0, 2 * pi, length.out = 1001)[-1001]; Pgon <- cbind(16 + 11.3 * cos(th), 15 + 11.3 * sin(th))
@@ -83,7 +84,8 @@ ck("T-B2 bin_id = i * n_col + j + 1; centro (x0 + 2 j + 1, y0 + 2 i + 1); i = ri
 p <- c(L$cell_df$x[5], L$cell_df$y[5]); ip <- floor((p[2] - H$grid$y0) / 2); jp <- floor((p[1] - H$grid$x0) / 2)
 idp <- ip * H$grid$n_col + jp + 1
 ck("T-B3 il quadratino che contiene il centro di una cellula sta nella verita' geometrica di quella cellula",
-   any(H$truth$overlap$bin_id == idp & H$truth$overlap$cell_id == 5) && abs(b$x[idp] - p[1]) <= 1 && abs(b$y[idp] - p[2]) <= 1)
+   any(H$truth$overlap$bin_id == idp & H$truth$overlap$cell_id == L$cell_df$cell_id[5]) && abs(b$x[idp] - p[1]) <= 1 && abs(b$y[idp] - p[2]) <= 1 &&
+     setequal(unique(H$truth$overlap$cell_id), L$cell_df$cell_id))
 ck("T-B6 indici interi (bin_id e cell_id della verita' geometrica, bin_id e bin8_id della tabella): un indice double come 2e5 diventa \"2e+05\" come testo",
    is.integer(H$truth$overlap$bin_id) && is.integer(H$truth$overlap$cell_id) && is.integer(H$bins$bin_id) && is.integer(H$bins$bin8_id) &&
      identical(as.character(200000L), "200000"))
@@ -93,14 +95,23 @@ ck("T-B4 errore senza pixel_size_um (BL-005); errore con margine 279 o 4 um; la 
      inherits(safe(build_hd_grid(L, margin_um = 4)), "t_err") && identical(H$metadata$pixel_size_um, 1.1))
 # livello esatto: regione [0, 40]^2 in 4 territori quadrati, piu' una regione senza cellule [41, 51] x [0, 10]: quadratini [40, 42] a meta'
 Tq <- sf::st_sfc(sq_poly(0, 0, 20), sq_poly(20, 0, 20), sq_poly(0, 20, 20), sq_poly(20, 20, 20))
+rect <- function(x0, y0, x1, y1) poly(rbind(c(x0, y0), c(x1, y0), c(x1, y1), c(x0, y1)))
+# regioni senza cellule: [41, 51] x [0, 10] (quadratini [40, 42] e [50, 52] a meta'), [60.95, 70] x [20, 30] (quadratini [60, 62] a 0.525),
+# [81.05, 90] x [20, 30] (quadratini [80, 82] a 0.475; revisione F08: frazioni vicine a 0.5, una soglia spostata a 0.45 o 0.55 si vede)
 Lh <- list(cell_df = data.frame(cell_id = 1:4, x = c(10, 30, 10, 30), y = c(10, 10, 30, 30), territory_area = 400, nucleus_area = 400),
-           region_polygons = sf::st_sfc(sq_poly(0, 0, 40), sq_poly(41, 0, 10)), cell_territories = Tq, cell_nuclei = Tq,
-           metadata = list(pixel_size_um = 0.5))
-Hh <- build_hd_grid(Lh); half <- Hh$bins[Hh$bins$x == 41 & Hh$bins$y > 0 & Hh$bins$y < 10, ]
-ck("T-B5 in_tissue = frazione di tessuto >= 0.5 (quadratini a meta' esatta: in tessuto); tessuto totale con due regioni",
-   Hh$grid$x0 == -280 && Hh$grid$x0 + 2 * Hh$grid$n_col >= 51 + 280 && Hh$grid$n_col %% 4 == 0 && nrow(half) == 5 && all(abs(half$tissue_frac - 0.5) < 1e-6) && all(half$in_tissue) &&
-     abs(sum(Hh$bins$tissue_area_um2) - 1700) < 1e-6 && sum(Hh$bins$in_tissue) == 400 + 20 + 10,
-   sprintf("%d quadratini a meta', in tessuto %d", nrow(half), sum(Hh$bins$in_tissue)))
+           region_polygons = sf::st_sfc(sq_poly(0, 0, 40), rect(41, 0, 51, 10), rect(60.95, 20, 70, 30), rect(81.05, 20, 90, 30)),
+           cell_territories = Tq, cell_nuclei = Tq, metadata = list(pixel_size_um = 0.5))
+Hh <- build_hd_grid(Lh); hb <- Hh$bins; inr <- function(x) hb[hb$x == x & hb$y > 0 & hb$y < 30 & hb$tissue_frac > 0, ]
+half <- hb[hb$x == 41 & hb$y > 0 & hb$y < 10, ]; f55 <- inr(61); f45 <- inr(81)
+ck("T-B5 in_tissue = frazione di tessuto >= 0.5: a meta' esatta in tessuto, 0.525 in tessuto, 0.475 fuori; tessuto totale con quattro regioni",
+   Hh$grid$x0 == -280 && Hh$grid$x0 + 2 * Hh$grid$n_col >= 90 + 280 && Hh$grid$n_col %% 4 == 0 && nrow(half) == 5 && all(abs(half$tissue_frac - 0.5) < 1e-6) &&
+     all(half$in_tissue) && nrow(f55) == 5 && all(abs(f55$tissue_frac - 0.525) < 1e-6) && all(f55$in_tissue) && nrow(f45) == 5 &&
+     all(abs(f45$tissue_frac - 0.475) < 1e-6) && !any(f45$in_tissue) && abs(sum(hb$tissue_area_um2) - 1880) < 1e-6 && sum(hb$in_tissue) == 475,
+   sprintf("%d / %d / %d quadratini a 0.5 / 0.525 / 0.475, in tessuto %d", nrow(half), nrow(f55), nrow(f45), sum(hb$in_tissue)))
+Le <- Lh; Le$cell_territories[[2]] <- sf::st_polygon(); Lp <- Lh; Lp$cell_nuclei[[1]] <- sq_poly(-2, 0, 4)
+we <- tryCatch({ build_hd_grid(Lp); "nessun avviso" }, warning = function(w) conditionMessage(w))
+ck("T-B7 casi limite: un territorio vuoto ferma build_hd_grid() con un messaggio chiaro; un nucleo che sporge dal territorio da' un avviso (revisione F11)",
+   inherits(safe(build_hd_grid(Le)), "t_err") && grepl("territori vuoti", safe(build_hd_grid(Le))$err) && grepl("sporgono", we))
 # ================= T-C somma a 8 um =================
 set.seed(3); nb <- H$grid$n_row * H$grid$n_col
 X <- Matrix::rsparsematrix(5, nb, density = 0.01, rand.x = function(n) as.numeric(rpois(n, 3) + 1))
@@ -108,29 +119,32 @@ S <- sum_to_8um(X, H$grid); b8 <- (b$i %/% 4) * (H$grid$n_col %/% 4) + b$j %/% 4
 Sb <- vapply(seq_len(ncol(S)), function(q) Matrix::rowSums(X[, b8 == q, drop = FALSE]), numeric(5))
 ck("T-C1 somma a 8 um di una matrice intera = somma per forza bruta dei 16 figli (identita' esatta); blocco = (i %/% 4, j %/% 4)",
    identical(unname(as.matrix(S)), unname(Sb)) && all(table(b8) == 16) && all(b8 == b$bin8_id) && sum(S) == sum(X))
-o8 <- sum_to_8um(H$truth$overlap[, c("bin_id", "cell_id", "area_territory_um2", "area_nucleus_um2")], H$grid, by = "cell_id")
+o8 <- sum_to_8um(H$truth$overlap, H$grid, cols = c("area_territory_um2", "area_nucleus_um2"), by = "cell_id")
+ck("T-C3 sum_to_8um() su un data.frame chiede le colonne da sommare (revisione F11: niente coordinate sommate per difetto)",
+   inherits(safe(sum_to_8um(H$truth$overlap, H$grid, by = "cell_id")), "t_err") && identical(names(o8), c("bin8_id", "cell_id", "area_territory_um2", "area_nucleus_um2")))
 ck("T-C2 somma a 8 um della verita' geometrica: totali per cellula invariati",
    max(abs(tapply(o8$area_territory_um2, o8$cell_id, sum) - tapply(H$truth$overlap$area_territory_um2, H$truth$overlap$cell_id, sum))) < 1e-9)
 # ================= T-D invarianze =================
 ovk <- function(H) H$truth$overlap[, c("bin_id", "cell_id", "area_territory_um2", "area_nucleus_um2")]
-H100 <- build_hd_grid(L, tile_um = 100); Hinf <- build_hd_grid(L, tile_um = Inf)
+H100 <- build_hd_grid(L, tile_um = 100); Hinf <- build_hd_grid(L, tile_um = Inf); H50 <- build_hd_grid(L, tile_um = 50)
 same <- function(a, b, tol) nrow(a) == nrow(b) && all(a$bin_id == b$bin_id) && all(a$cell_id == b$cell_id) &&
   max(abs(a$area_territory_um2 - b$area_territory_um2)) <= tol && max(abs(a$area_nucleus_um2 - b$area_nucleus_um2)) <= tol
-ck("T-D1 tessere di 100 um, 500 um e una sola tessera: stessa verita' geometrica e stessa area di tessuto (entro 16 g)",
-   same(ovk(H100), ovk(H), 16 * g) && same(ovk(Hinf), ovk(H), 16 * g) && max(abs(H100$bins$tissue_area_um2 - Hinf$bins$tissue_area_um2)) <= 16 * g)
+ck("T-D1 tessere di 50 um, 100 um, 500 um e una sola tessera: stessa verita' geometrica e stessa area di tessuto (entro 16 g)",
+   same(ovk(H50), ovk(H), 16 * g) && same(ovk(H100), ovk(H), 16 * g) && same(ovk(Hinf), ovk(H), 16 * g) &&
+     max(abs(H50$bins$tissue_area_um2 - Hinf$bins$tissue_area_um2)) <= 16 * g && max(abs(H100$bins$tissue_area_um2 - Hinf$bins$tissue_area_um2)) <= 16 * g)
 L1 <- synth_layer(shift = c(1, 1)); H1 <- build_hd_grid(L1); L4 <- synth_layer(shift = c(1e4, 1e4)); H4 <- build_hd_grid(L4)
 ck("T-D2 cellule e griglia traslate insieme di 1 um (mezzo quadratino) e di 1e4 um (BL-104): stesse coppie e stesse aree",
    same(ovk(H1), ovk(H), 16 * g) && same(ovk(H4), ovk(H), 16 * g) && max(abs(H4$bins$tissue_area_um2 - H$bins$tissue_area_um2)) <= 16 * g)
 ovs <- hd_overlap(H$grid, L1$cell_territories, L1$cell_nuclei); nks <- tabulate(ovs$cell_id, nrow(L$cell_df))
 perS <- as.numeric(sf::st_length(sf::st_cast(L1$cell_territories, "MULTILINESTRING")))
 ck("T-D3 solo le cellule spostate di mezzo quadratino, griglia ferma: totali per cellula invariati (entro tau), coppie diverse (la prova ha potere)",
-   all(abs(tapply(ovs$area_territory_um2, factor(ovs$cell_id, levels = L$cell_df$cell_id), sum) - L1$cell_df$territory_area) <= g * (8 * nks + perS) + nks * g^2) &&
+   all(abs(tapply(ovs$area_territory_um2, factor(ovs$cell_id, levels = seq_len(nrow(L$cell_df))), sum) - L1$cell_df$territory_area) <= g * (8 * nks + perS) + nks * g^2) &&
      nrow(ovs) != nrow(ovk(H)), sprintf("coppie %d contro %d", nrow(ovs), nrow(ovk(H))))
 H2 <- build_hd_grid(L)
 ck("T-D4 due esecuzioni bit per bit uguali", identical(H2[c("grid", "bins", "bins_8um", "truth")], H[c("grid", "bins", "bins_8um", "truth")]))
 # ================= T-E invarianti (come G-2 sul pannello) =================
-ov <- H$truth$overlap; perT <- as.numeric(sf::st_length(sf::st_cast(L$cell_territories, "MULTILINESTRING"))); nk <- tabulate(ov$cell_id, nrow(L$cell_df))
-lev <- factor(ov$cell_id, levels = L$cell_df$cell_id)
+ov <- H$truth$overlap; perT <- as.numeric(sf::st_length(sf::st_cast(L$cell_territories, "MULTILINESTRING")))
+lev <- factor(ov$cell_id, levels = L$cell_df$cell_id); nk <- as.numeric(table(lev))
 sT <- tapply(ov$area_territory_um2, lev, sum); sN <- tapply(ov$area_nucleus_um2, lev, sum)
 ck("T-E1 ogni cellula ha quadratini (BL-010) e la somma sui quadratini = area del territorio e del nucleo (entro g (8 n + P) + n g^2)",
    all(nk > 0) && all(abs(sT - L$cell_df$territory_area) <= g * (8 * nk + perT) + nk * g^2) && all(abs(sN - L$cell_df$nucleus_area) <= g * (8 * nk + perT) + nk * g^2))
@@ -140,7 +154,7 @@ ck("T-E2 per quadratino: somma dei territori = area di tessuto, <= 4 um^2; nucle
      abs(sum(b$tissue_area_um2) - 120^2) <= 16 * g * sum(b$tissue_area_um2 > 0 & b$tissue_area_um2 < 4) + 1e-9 &&
      sum(b$tissue_area_um2[-ib]) == 0)
 G8 <- modifyList(H$grid, list(bin_um = 8, n_row = H$grid$n_row %/% 4L, n_col = H$grid$n_col %/% 4L, block = 1L))
-d8 <- hd_overlap(G8, L$cell_territories, L$cell_nuclei)
+d8 <- hd_overlap(G8, L$cell_territories, L$cell_nuclei); d8$cell_id <- L$cell_df$cell_id[d8$cell_id]
 o8b <- o8[o8$area_territory_um2 > 0, ]; m8 <- merge(o8b, d8, by.x = c("bin8_id", "cell_id"), by.y = c("bin_id", "cell_id"))
 ck("T-E3 somma a 8 um della verita' geometrica = verita' calcolata direttamente sui quadrati di 8 um",
    nrow(m8) == nrow(o8b) && nrow(m8) == nrow(d8) && max(abs(m8$area_territory_um2.x - m8$area_territory_um2.y)) <= 16 * 16 * g &&

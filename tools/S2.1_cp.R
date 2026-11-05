@@ -23,7 +23,7 @@ fit_affine <- function(tp, flip = "none") {
                 half = cbind(u = 2 * j + 2, v = 2 * i + 2), reverse = cbind(u = 2 * j + 1, v = 2 * (max(i) - i) + 1))
   X <- cbind(1, tp$pxl_col_in_fullres, tp$pxl_row_in_fullres)
   B <- solve(crossprod(X), crossprod(X, tgt)); res <- tgt - X %*% B
-  list(B = B, max_res_um = max(abs(res)), flip = flip)
+  list(B = B, max_res_um = max(abs(res)), max_res_dist_um = sqrt(max(rowSums(res^2))), flip = flip)   # per componente e come distanza (revisione F3)
 }
 apply_affine <- function(xy, af) cbind(1, xy) %*% af$B
 # poligoni del geojson nelle coordinate della griglia
@@ -64,7 +64,7 @@ roi_cp <- function(R, sec, sr, af) {
 cp_stats <- function(x) {
   k <- x$ov$frac >= 0.5; ours <- unique(sprintf("%d_%d_%d", x$ov$i[k], x$ov$j[k], x$ov$cell[k]))
   srs <- unique(sprintf("%d_%d_%d", x$sr$i, x$sr$j, x$sr$cell))
-  c(n_nuclei = x$n_nuc, n_pairs = nrow(x$ov), frac_mid = mean(x$ov$frac > 0.1 & x$ov$frac < 0.9),
+  c(n_nuclei = x$n_nuc, n_pairs = nrow(x$ov), frac_mid = mean(x$ov$frac >= 0.1 & x$ov$frac <= 0.9), n_pairs_sig = sum(x$ov$frac > 0.1),
     n_ours = length(ours), n_sr = length(srs), jaccard = length(intersect(ours, srs)) / length(union(ours, srs)))
 }
 if (STAGE == "explore") {
@@ -89,7 +89,7 @@ if (STAGE %in% c("run", "gridonly")) {
   key8 <- (tp$array_row %/% 4L) * 1e5 + tp$array_col %/% 4L
   mc <- tapply(tp$pxl_col_in_fullres, key8, mean); mr <- tapply(tp$pxl_row_in_fullres, key8, mean); nch <- tapply(key8, key8, length)
   k8 <- match(tp8$array_row * 1e5 + tp8$array_col, as.numeric(names(mc)))
-  grid_rows <- data.frame(key = KEY, dataset = info$ds, n_bins = nrow(tp), affine_max_res_um = af$max_res_um, mpp = sec$mpp, pitch_um = pitch_um,
+  grid_rows <- data.frame(key = KEY, dataset = info$ds, n_bins = nrow(tp), affine_max_res_um = af$max_res_um, affine_max_dist_um = af$max_res_dist_um, mpp = sec$mpp, pitch_um = pitch_um,
                           n_8um = nrow(tp8), n_8um_matched = sum(!is.na(k8)), n_8um_16children = sum(nch[k8] == 16, na.rm = TRUE),
                           max_dev_8um_px = max(abs(c(mc[k8] - tp8$pxl_col_in_fullres, mr[k8] - tp8$pxl_row_in_fullres)), na.rm = TRUE))
   full <- !is.na(k8) & nch[k8] == 16; edge <- tp8$array_row == max(tp8$array_row) | tp8$array_col == max(tp8$array_col)
@@ -107,7 +107,7 @@ if (STAGE %in% c("run", "gridonly")) {
         afr <- fit_affine(tpr, fl)                        # trasformazione per area (correzione 2 prima del calcolo)
         x <- roi_cp(R, sec, sr, afr); s <- cp_stats(x)
         out[[length(out) + 1]] <- data.frame(archetype = A_, roi_id = R$roi_id, grid = fl, affine_max_res_um = afr$max_res_um,
-                                             affine_max_res_px = afr$max_res_um / sec$mpp, n_bins_fit = nrow(tpr), t(s))
+                                             affine_max_res_px = afr$max_res_um / sec$mpp, affine_max_dist_px = afr$max_res_dist_um / sec$mpp, n_bins_fit = nrow(tpr), t(s))
         if (fl == "none") saveRDS(x, file.path(OUT, sprintf("%s_%s_cp.rds", A_, R$roi_id)))
         cat(sprintf("[%s] %s %s %s: scarto %.3f px, jaccard %.5f, a meta' %.5f\n", KEY, A_, R$roi_id, fl, afr$max_res_um / sec$mpp, s["jaccard"], s["frac_mid"]), flush = TRUE)
       }

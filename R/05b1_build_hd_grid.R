@@ -145,20 +145,21 @@ hd_overlap <- function(grid, territories, nuclei = NULL, tile_um = 500, grid_um 
 #' Somma a 8 um
 #'
 #' Somma dei 16 figli di 2 um di ogni blocco (i %/% 4, j %/% 4), come Space Ranger (design sezione 8).
-#' @param x matrice (anche sparsa) con una colonna per quadratino di 2 um in ordine di `bin_id`, oppure data.frame con `bin_id` e
-#'   colonne numeriche da sommare per (`bin8_id`, `by`).
+#' @param x matrice (anche sparsa) con una colonna per quadratino di 2 um in ordine di `bin_id`, oppure data.frame con `bin_id`.
 #' @param grid uscita di `hd_grid_geometry()`.
+#' @param cols per i data.frame: colonne da sommare (obbligatorio: nessuna colonna si somma per difetto, revisione G-5 di S2.1).
 #' @param by per i data.frame: colonne di raggruppamento oltre al blocco (per esempio `"cell_id"`).
-#' @return matrice con una colonna per blocco (ordine di `bin8_id`), oppure data.frame con `bin8_id`, `by` e le somme.
+#' @return matrice con una colonna per blocco (ordine di `bin8_id`), oppure data.frame con `bin8_id`, `by` e le somme di `cols`.
 #' @export
-sum_to_8um <- function(x, grid, by = NULL) {
+sum_to_8um <- function(x, grid, cols = NULL, by = NULL) {
   nb <- grid$n_row * grid$n_col; nc8 <- grid$n_col %/% grid$block; n8 <- (grid$n_row %/% grid$block) * nc8
-  b8_of <- function(id) { i <- (id - 1L) %/% grid$n_col; j <- (id - 1L) %% grid$n_col; (i %/% grid$block) * nc8 + j %/% grid$block + 1L }
+  b8_of <- function(id) { i <- (id - 1L) %/% grid$n_col; j <- (id - 1L) %% grid$n_col; as.integer((i %/% grid$block) * nc8 + j %/% grid$block + 1L) }
   if (is.data.frame(x)) {
-    num <- setdiff(names(x)[vapply(x, is.numeric, TRUE)], c("bin_id", by))
+    if (is.null(cols) || !all(cols %in% names(x)) || any(cols %in% c("bin_id", by)))
+      stop("sum_to_8um(): per un data.frame indicare in `cols` le colonne da sommare (esistenti, diverse da bin_id e da `by`).", call. = FALSE)
     key <- data.frame(bin8_id = b8_of(x$bin_id), x[by])
-    s <- stats::aggregate(x[num], by = key, FUN = sum)
-    s <- s[do.call(order, s[c("bin8_id", by)]), c("bin8_id", by, num)]; rownames(s) <- NULL
+    s <- stats::aggregate(x[cols], by = key, FUN = sum)
+    s <- s[do.call(order, s[c("bin8_id", by)]), c("bin8_id", by, cols)]; rownames(s) <- NULL
     return(s)
   }
   if (ncol(x) != nb) stop("sum_to_8um(): la matrice deve avere una colonna per quadratino di 2 um.", call. = FALSE)
@@ -187,6 +188,10 @@ build_hd_grid <- function(cell_layer, margin_um = 280, bin_um = 2, tile_um = 500
   Tt <- cell_layer$cell_territories; Nn <- cell_layer$cell_nuclei; R <- cell_layer$region_polygons
   if (length(Tt) != nrow(cell_layer$cell_df) || length(Nn) != length(Tt))
     stop("build_hd_grid(): territori, nuclei e cell_df di lunghezza diversa.", call. = FALSE)
+  gT <- geos::as_geos_geometry(sf::st_set_crs(Tt, NA))
+  if (any(geos::geos_is_empty(gT)))
+    stop(sprintf("build_hd_grid(): %d territori vuoti (cell_id %s): ogni cellula dello Step 1 deve avere un territorio.",
+                 sum(geos::geos_is_empty(gT)), paste(utils::head(cell_layer$cell_df$cell_id[geos::geos_is_empty(gT)], 5), collapse = ", ")), call. = FALSE)
   bb <- sf::st_bbox(c(sf::st_set_crs(Tt, NA), sf::st_set_crs(R, NA)))
   grid <- hd_grid_geometry(bb, margin_um = margin_um, bin_um = bin_um)
   bins <- hd_bin_table(grid)
@@ -195,9 +200,17 @@ build_hd_grid <- function(cell_layer, margin_um = 280, bin_um = 2, tile_um = 500
   bins$in_tissue <- bins$tissue_frac >= 0.5
   if (verbose) message(sprintf("build_hd_grid(): %d x %d quadratini, tessuto %.0f um^2", grid$n_row, grid$n_col, sum(bins$tissue_area_um2)))
   ov <- hd_overlap(grid, Tt, Nn, tile_um = tile_um, grid_um = grid_um)
+  # il nucleo si calcola solo dove il territorio copre il quadratino (lo Step 1 contiene il nucleo nel territorio, C3): se un nucleo sporge,
+  # la parte esterna andrebbe persa in silenzio; si controlla entro la tolleranza a n pezzi (DEC-038) e si avvisa
+  nk <- tabulate(ov$cell_id, length(Tt)); sN <- as.numeric(tapply(ov$area_nucleus_um2, factor(ov$cell_id, levels = seq_along(Tt)), sum)); sN[is.na(sN)] <- 0
+  gN <- geos::as_geos_geometry(sf::st_set_crs(Nn, NA)); aN <- geos::geos_area(gN); PN <- geos::geos_length(gN)
+  lost <- which(aN - sN > grid_um * (8 * nk + 2 * PN) + (nk + 1) * grid_um^2)
+  if (length(lost)) warning(sprintf("build_hd_grid(): %d nuclei sporgono dal loro territorio (cell_id %s): la parte esterna non entra in truth$overlap.",
+                                    length(lost), paste(utils::head(cell_layer$cell_df$cell_id[lost], 5), collapse = ", ")), call. = FALSE)
   ov$cell_id <- cell_layer$cell_df$cell_id[ov$cell_id]
   ov$frac_territory <- ov$area_territory_um2 / bin_um^2; ov$frac_nucleus <- ov$area_nucleus_um2 / bin_um^2
-  b8 <- sum_to_8um(data.frame(bin_id = bins$bin_id, tissue_area_um2 = bins$tissue_area_um2, n_in_tissue = as.numeric(bins$in_tissue)), grid)
+  b8 <- sum_to_8um(data.frame(bin_id = bins$bin_id, tissue_area_um2 = bins$tissue_area_um2, n_in_tissue = as.numeric(bins$in_tissue)), grid,
+                   cols = c("tissue_area_um2", "n_in_tissue"))
   nc8 <- grid$n_col %/% grid$block
   b8$i8 <- (b8$bin8_id - 1L) %/% nc8; b8$j8 <- (b8$bin8_id - 1L) %% nc8
   b8$x <- grid$x0 + (b8$j8 + 0.5) * bin_um * grid$block; b8$y <- grid$y0 + (b8$i8 + 0.5) * bin_um * grid$block

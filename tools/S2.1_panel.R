@@ -30,9 +30,10 @@ if (STAGE == "run") {
   invisible(mclapply(todo, function(tag) {
     L <- layer_of(tag); invisible(gc(reset = TRUE)); t0 <- proc.time()[["elapsed"]]
     H <- build_hd_grid(L); el <- proc.time()[["elapsed"]] - t0; mx <- sum(gc()[, 6])
+    hwm <- as.numeric(sub("[^0-9]*([0-9]+).*", "\\1", grep("^VmHWM", readLines("/proc/self/status"), value = TRUE))) / 1024   # picco residente del processo (MB, GEOS compreso; revisione F17)
     saveRDS(H[c("grid", "bins", "bins_8um", "truth")], file.path(OUT, "grid", paste0(tag, ".rds")))
     write.csv(data.frame(tag = tag, n_cells = nrow(L$cell_df), n_bins = nrow(H$bins), n_pairs = nrow(H$truth$overlap), elapsed_s = el,
-                         r_max_used_mb = mx, load1 = as.numeric(strsplit(readLines("/proc/loadavg"), " ")[[1]][1])),
+                         r_max_used_mb = mx, vm_hwm_mb = hwm, n_bins_glass_margin = sum(H$bins$tissue_area_um2 == 0), load1 = as.numeric(strsplit(readLines("/proc/loadavg"), " ")[[1]][1])),
               file.path(OUT, "grid", paste0(tag, "_time.csv")), row.names = FALSE)
     cat(sprintf("%s: %d cellule, %d quadratini, %d coppie, %.1f s\n", tag, nrow(L$cell_df), nrow(H$bins), nrow(H$truth$overlap), el))
   }, mc.cores = NW(), mc.preschedule = FALSE))
@@ -65,8 +66,10 @@ if (STAGE == "check") {
     c_pair <- max((ov$area_nucleus_um2 - ov$area_territory_um2) / (g * (PT + PN) + 2 * g^2), 0)
     # (d) tessuto totale = somma delle aree delle regioni
     d_err <- abs(sum(b$tissue_area_um2) - sum(as.numeric(sf::st_area(L$region_polygons)))) / (g * sum(Ptis) + sum(Ptis > 0) * g^2)
+    d_err_strict <- abs(sum(b$tissue_area_um2) - sum(as.numeric(sf::st_area(L$region_polygons)))) / (g * sum(Ptis[bd]) + length(bd) * g^2)   # solo i pezzi di bordo (revisione F09)
     # (e) somma a 8 um = verita' sui quadrati di 8 um
-    o8 <- sum_to_8um(data.frame(bin_id = ov$bin_id, cell_id = ov$cell_id, aT = ov$area_territory_um2, aN = ov$area_nucleus_um2, PT = PT, PN = PN), G, by = "cell_id")
+    o8 <- sum_to_8um(data.frame(bin_id = ov$bin_id, cell_id = ov$cell_id, aT = ov$area_territory_um2, aN = ov$area_nucleus_um2, PT = PT, PN = PN), G,
+                     cols = c("aT", "aN", "PT", "PN"), by = "cell_id")
     G8 <- modifyList(G, list(bin_um = 8, n_row = G$n_row %/% 4L, n_col = G$n_col %/% 4L, block = 1L))
     d8 <- hd_overlap(G8, L$cell_territories, L$cell_nuclei); d8$cell_id <- L$cell_df$cell_id[d8$cell_id]
     m8 <- merge(o8, d8, by.x = c("bin8_id", "cell_id"), by.y = c("bin_id", "cell_id"), all = TRUE)
@@ -74,7 +77,7 @@ if (STAGE == "check") {
     m8[is.na(m8)] <- 0
     e_err <- max(abs(m8$aT - m8$area_territory_um2) / (2 * g * m8$PT + 17 * g^2), abs(m8$aN - m8$area_nucleus_um2) / pmax(2 * g * m8$PN + 17 * g^2, 17 * g^2))
     out <- data.frame(tag = tag, archetype = sub("_.*", "", tag), n_cells = n, n_pairs = nrow(ov), n_bins_tissue = sum(b$in_tissue),
-                      a_ratio = a_err, b_bad = b_bad, c_ratio = c_err, c_pair_ratio = c_pair, d_ratio = d_err, e_ratio = e_err, e_missing = e_miss,
+                      a_ratio = a_err, b_bad = b_bad, c_ratio = c_err, c_pair_ratio = c_pair, d_ratio = d_err, d_ratio_strict = d_err_strict, e_ratio = e_err, e_missing = e_miss,
                       n_valid_bad = sum(!geos::geos_is_valid(geos::as_geos_geometry(sf::st_set_crs(L$cell_territories, NA)))))
     out$pass <- out$a_ratio <= 1 && out$b_bad == 0 && out$c_ratio <= 1 && out$c_pair_ratio <= 1 && out$d_ratio <= 1 && out$e_ratio <= 1 && out$e_missing == 0 && out$n_valid_bad == 0
     write.csv(out, f, row.names = FALSE); out
@@ -101,10 +104,16 @@ if (STAGE == "desc") {
     q <- data.frame(b8 = b8_of(ov$bin_id), cell = ov$cell_id, n = ov$area_nucleus_um2 > 0)
     nT <- tabulate(unique(q[, c("b8", "cell")])$b8, nrow(b8))[inb8]
     qn <- unique(q[q$n, c("b8", "cell")]); nN <- tabulate(qn$b8, nrow(b8))[inb8]
+    # regola del centro (Space Ranger; revisione F01/F1): nuclei e territori che contengono il centro di almeno uno dei 16 figli del blocco
+    qc <- unique(data.frame(b8 = b8_of(ov$bin_id[kn][inn]), cell = ov$cell_id[kn][inn])); nNc <- tabulate(qc$b8, nrow(b8))[inb8]
+    ct <- match(ov$cell_id, L$cell_df$cell_id); ptT <- geos::geos_make_point(b$x[ov$bin_id], b$y[ov$bin_id])
+    inT <- geos::geos_intersects(ptT, geos::as_geos_geometry(sf::st_set_crs(L$cell_territories[ct], NA)))
+    qt <- unique(data.frame(b8 = b8_of(ov$bin_id[inT]), cell = ov$cell_id[inT])); nTc <- tabulate(qt$b8, nrow(b8))[inb8]
     cls <- function(v) c(mean = mean(v), p0 = mean(v == 0), p1 = mean(v == 1), p2 = mean(v == 2), p3 = mean(v == 3), p4 = mean(v >= 4))
     data.frame(tag = tag, archetype = sub("_.*", "", tag), source = "simulated", n_bins_tissue = sum(b$in_tissue), n_8um_tissue = length(inb8),
                d1_centre_in_nucleus = d1, d3_pure_bins = pure, t(setNames(cls(nN), paste0("d2_nuclei_", names(cls(nN))))),
-               t(setNames(cls(nT), paste0("d3_cells_", names(cls(nT))))))
+               t(setNames(cls(nT), paste0("d3_cells_", names(cls(nT))))), t(setNames(cls(nNc), paste0("d2c_nuclei_", names(cls(nNc))))),
+               t(setNames(cls(nTc), paste0("d3c_cells_", names(cls(nTc))))))
   }, mc.cores = NW(), mc.preschedule = FALSE)
   tab <- do.call(rbind, rows); write.csv(tab, file.path(RES, "S2.1_desc_sim_roi.csv"), row.names = FALSE); print(head(tab, 3))
 }

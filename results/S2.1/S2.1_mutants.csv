@@ -1,9 +1,12 @@
-mutant,what,applied,n_fail,detected,first_fail
-M1,i e j scambiati nei centri,True,3,True,"FAIL T-B2 bin_id = i * n_col + j + 1; centro (x0 + 2 j + 1, y0 + 2 i + 1); i = riga (y), j"
-M2,centro spostato di mezzo quadratino,True,3,True,"FAIL T-B2 bin_id = i * n_col + j + 1; centro (x0 + 2 j + 1, y0 + 2 i + 1); i = riga (y), j"
-M3,margine non aggiunto,True,2,True,FAIL T-B1 origine = angolo del riquadro meno 280 um; righe e colonne multiple di 4; la gri
-M4,quadratini sul bordo di una tessera contati due volte,True,1,True,"FAIL T-D1 tessere di 100 um, 500 um e una sola tessera: stessa verita' geometrica e stessa"
-M5,blocchi di 3 invece di 4,True,errore,True,Execution halted
-M6,nucleo calcolato sul territorio,True,1,True,FAIL T-E1 ogni cellula ha quadratini (BL-010) e la somma sui quadratini = area del territo
-M7,in_tissue con > invece di >=,True,1,True,FAIL T-B5 in_tissue = frazione di tessuto >= 0.5 (quadratini a meta' esatta: in tessuto); 
-M8,ultima riga e colonna perse (arrotondamento per difetto),True,2,True,FAIL T-B1 origine = angolo del riquadro meno 280 um; righe e colonne multiple di 4; la gri
+mutant,what,applied,n_fail,crashed,detected,first_fail
+M1,i e j scambiati nei centri,True,3,False,True,"FAIL T-B2 bin_id = i * n_col + j + 1; centro (x0 + 2 j + 1, y0 + 2 i + 1); i = riga (y), j"
+M2,centro spostato di mezzo quadratino,True,3,False,True,"FAIL T-B2 bin_id = i * n_col + j + 1; centro (x0 + 2 j + 1, y0 + 2 i + 1); i = riga (y), j"
+M3,margine non aggiunto,True,2,False,True,FAIL T-B1 origine = angolo del riquadro meno 280 um; righe e colonne multiple di 4; la gri
+M4,quadratini sul bordo di una tessera contati due volte,True,1,False,True,"FAIL T-D1 tessere di 50 um, 100 um, 500 um e una sola tessera: stessa verita' geometrica e"
+M5,blocchi di 3 invece di 4 nella tabella dei quadratini (revisione F05),True,1,False,True,FAIL T-C1 somma a 8 um di una matrice intera = somma per forza bruta dei 16 figli (identit
+M6,nucleo calcolato sul territorio,True,2,False,True,FAIL T-B7 casi limite: un territorio vuoto ferma build_hd_grid() con un messaggio chiaro; 
+M7,in_tissue con > invece di >=,True,1,False,True,"FAIL T-B5 in_tissue = frazione di tessuto >= 0.5: a meta' esatta in tessuto, 0.525 in tess"
+M8,ultima riga e colonna perse (arrotondamento per difetto),True,2,False,True,FAIL T-B1 origine = angolo del riquadro meno 280 um; righe e colonne multiple di 4; la gri
+M9,coppie contate in due tessere della verita' geometrica (revisione F06),True,1,False,True,"FAIL T-D1 tessere di 50 um, 100 um, 500 um e una sola tessera: stessa verita' geometrica e"
+M10,cell_id della verita' non riportato a quello dello Step 1 (revisione F07),True,3,False,True,FAIL T-B3 il quadratino che contiene il centro di una cellula sta nella verita' geometrica
+M11,soglia di in_tissue a 0.45 (revisione F08),True,1,False,True,"FAIL T-B5 in_tissue = frazione di tessuto >= 0.5: a meta' esatta in tessuto, 0.525 in tess"
