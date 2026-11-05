@@ -1,0 +1,30 @@
+PASS a1 somma dei conteggi = totale per ogni cellula 
+PASS a2 totali >= 1 e interi 
+PASS a3 totale medio = fattore x media della distribuzione (|z| < 5) media 150.04 atteso 150
+PASS a4 dimensioni e nomi 
+PASS b1 profili ricostruiti dalla somma delle cellule (|z| < 5 per ogni gene con atteso >= 20) max |z| 3.03
+PASS b2 quote dei sottotipi (|z| < 5) max |z| 0.53
+PASS b3 sottotipi solo del proprio tipo 
+PASS c1 stesso seme, stesso risultato 
+PASS c2 stato del generatore dell'utente ripristinato 
+PASS c3 risultato identico con 1 e 4 processi 
+PASS c4 seme diverso, risultato diverso 
+PASS d1 tipo assente dai profili -> errore 
+PASS d2 profilo che non somma a 1 -> errore 
+PASS d3 valore negativo -> errore 
+PASS d4 NA nei profili -> errore 
+PASS d5 phi di lunghezza diversa dai geni -> errore 
+PASS d6 scala dei geni diversa dai profili -> errore 
+PASS d7 cell_df senza cell_type -> errore 
+PASS d8 senza seme -> errore 
+PASS d9 fattore di profondita' <= 0 -> errore 
+PASS d10 tipo senza distribuzione dei totali -> errore 
+PASS e1 tipi dei preset (R) = PRESET_TYPES di tools/S22_common.py 
+PASS e2 PRESET_TYPES identico in tools/S2.2_real.py e tools/S22_common.py 
+PASS f1 modello G: varianza del gene = formula esatta (entro 5 %) osservata 1057.7 attesa 1081.1
+PASS f2 modello M sullo stesso caso: varianza binomiale (entro 5 %) 
+PASS g1 sottotipi spenti: un solo profilo per tipo, media pesata dei sottotipi 
+PASS h1 lettura: profili = somme / totale, nell'ordine dei geni 
+PASS h2 lettura: phi, modello, fattore 
+
+28 PASS, 0 FAIL

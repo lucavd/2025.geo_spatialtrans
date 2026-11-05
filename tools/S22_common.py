@@ -7,6 +7,12 @@ KEY_STRIDE = 1_000_000          # chiave del blocco = riga_blocco * KEY_STRIDE +
 MIN_BINS_BLOCK = 12             # un blocco di 8 um entra se ha almeno 12 dei 16 quadratini di valutazione
 MIN_BINS_CELL = 4               # misura di Daniele: cellule con almeno 4 quadratini di valutazione
 D_BETWEEN_UM = 30.0             # misura di Daniele: la cellula di confronto dello stesso tipo sta a più di 30 um
+# tipi dei preset dello Step 1 (R/04b0_tissue_presets.R, righe 42-43; uguale a tools/S2.2_real.py, controllato da R/testing/test_S2.2.R)
+PRESET_TYPES = {"A1": ["epiteliale", "immunitario", "stromale e muscolo liscio"], "A2": ["epiteliale", "fibroblasti"],
+                "A3": ["endoteliale", "epiteliale", "fibroblasti", "immunitario"],
+                "A4": ["endoteliali", "linfociti B", "linfociti T", "mieloidi", "plasmacellule", "stromali"],
+                "A5": ["astrociti", "microglia", "oligodendrociti", "vascolari", "neuroni"], "A6": ["cardiomiociti", "fibroblasti", "immunitari"]}
+MERGE = {"epiteliale normale": "epiteliale", "epiteliale tumorale": "epiteliale"}
 
 
 def _rowcos(A, B):

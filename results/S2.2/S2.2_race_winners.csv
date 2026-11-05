@@ -1,0 +1,7 @@
+archetype,best_score,winner,tie_set,rule
+A1,exp_G,exp_G,exp_G,score
+A2,exp_G,atlas_M,atlas_M;exp_G,tie-break order
+A3,atlas_M,atlas_M,atlas_M;nuc_M;exp_G,score
+A4,exp_G,exp_G,exp_G,score
+A5,exp_G,exp_G,exp_G,score
+A6,exp_G,exp_M,exp_M;exp_G,tie-break order
