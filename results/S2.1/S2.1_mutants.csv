@@ -1,0 +1,9 @@
+mutant,what,applied,n_fail,detected,first_fail
+M1,i e j scambiati nei centri,True,3,True,"FAIL T-B2 bin_id = i * n_col + j + 1; centro (x0 + 2 j + 1, y0 + 2 i + 1); i = riga (y), j"
+M2,centro spostato di mezzo quadratino,True,3,True,"FAIL T-B2 bin_id = i * n_col + j + 1; centro (x0 + 2 j + 1, y0 + 2 i + 1); i = riga (y), j"
+M3,margine non aggiunto,True,2,True,FAIL T-B1 origine = angolo del riquadro meno 280 um; righe e colonne multiple di 4; la gri
+M4,quadratini sul bordo di una tessera contati due volte,True,1,True,"FAIL T-D1 tessere di 100 um, 500 um e una sola tessera: stessa verita' geometrica e stessa"
+M5,blocchi di 3 invece di 4,True,errore,True,Execution halted
+M6,nucleo calcolato sul territorio,True,1,True,FAIL T-E1 ogni cellula ha quadratini (BL-010) e la somma sui quadratini = area del territo
+M7,in_tissue con > invece di >=,True,1,True,FAIL T-B5 in_tissue = frazione di tessuto >= 0.5 (quadratini a meta' esatta: in tessuto); 
+M8,ultima riga e colonna perse (arrotondamento per difetto),True,2,True,FAIL T-B1 origine = angolo del riquadro meno 280 um; righe e colonne multiple di 4; la gri
