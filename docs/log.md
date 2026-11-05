@@ -2,6 +2,9 @@
 
 ## 2026-11-05 (S2.0)
 
+* **Chiusura**: [Come passa il simulatore dalle cellule ai conteggi nei quadratini di Visium HD, e i pezzi che i dati possono decidere (come escono i trascritti dal tessuto, le strisce della griglia, la variabilità dentro la cellula) reggono sui vetrini veri? (S2.0)](steps/S2.0.md) chiuso con l'approvazione di Luca («chiudi», risposta all'unica decisione del riassunto «In breve»).
+* **Creazione**: decisione di Luca [S2.0: chiusura con G-5 fallito come scritto sulla tolleranza di un milionesimo (DEC-041)](decisions/DEC-041.md).
+* **Modifica**: ROADMAP sezione 6 (righe di rimando a [S2.0: scelte tecniche (DEC-038)](decisions/DEC-038.md), [S2.0: regole decise dai dati (DEC-039)](decisions/DEC-039.md), [S2.0: profili, profondità e variabilità decisi con i dati (DEC-040)](decisions/DEC-040.md) e [S2.0: chiusura con G-5 fallito come scritto (DEC-041)](decisions/DEC-041.md)) e sezione 7 (S2.0 chiusa); CHANGELOG.
 * **Aggiornamento**: [Come passa il simulatore dalle cellule ai conteggi nei quadratini di Visium HD, e i pezzi che i dati possono decidere (come escono i trascritti dal tessuto, le strisce della griglia, la variabilità dentro la cellula) reggono sui vetrini veri? (S2.0)](steps/S2.0.md): risultati, post hoc PH-1...PH-6, revisione avversariale (quattro revisori), deviazioni dichiarate, riassunto «In breve» con una decisione per Luca; report `reports/S2.0.html`.
 * **Creazione**: decisioni tecniche [S2.0: scelte tecniche (DEC-038)](decisions/DEC-038.md), [S2.0: regole decise dai dati (DEC-039)](decisions/DEC-039.md) e [S2.0: profili, profondità e variabilità decisi con i dati (DEC-040)](decisions/DEC-040.md).
 * **Modifica**: design dello Step 2 v0.2; BIO_REFERENCES B-374...B-401; BACKLOG (chiuse BL-192, BL-195, BL-197; aggiornata BL-201; nuove BL-204...BL-211); ROADMAP sezione 7; CHANGELOG.
