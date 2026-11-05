@@ -1,0 +1,3 @@
+42a7d406b241eea006309e2b2f78ed1a  <atlas>/crc/crc_aggregation.csv
+1ae27cd908d8c46134d35276f197f34e  <atlas>/crc/crc_count_filtered_feature_bc_matrix.h5
+12b2c0e74a771422cf6b265201f5554a  <atlas>/crc/SingleCell_MetaData.csv.gz
