@@ -209,6 +209,7 @@ Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
 | [DEC-038](/decisions/DEC-038.md) scelte tecniche di S2.0 (σ_in unico, margini, tolleranze) | sezioni 9, 13 |
 | [DEC-039](/decisions/DEC-039.md) regole decise dai dati in S2.0 (R-A, R-B, R-C) | sezioni 5, 6, 7, 9 |
 | [DEC-040](/decisions/DEC-040.md) profili, profondità e variabilità a 1-2 µm decisi con i dati | sezioni 2, 4, 5, 9 |
+| [DEC-041](/decisions/DEC-041.md) S2.0 chiusa da Luca con il ricalcolo indipendente dei bordi fallito come scritto sulla tolleranza di un milionesimo (precisione singola) | nessuna sezione cambia; i valori della sezione 9 sono già quelli delle soluzioni corrette (PH-6) |
 
 ## 17. Limiti dichiarati
 
@@ -230,3 +231,4 @@ Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
 |---|---|---|---|
 | 2026-11-04 | 0.1 | prima bozza con le misure di S2.0 | geo-agent/skill-v2 (S2.0) |
 | 2026-11-04 | 0.2 | correzioni dalla revisione avversariale G-5 (documento, nucleo, strisce, bordi), PH-4, PH-5, PH-6, DEC-038, DEC-039, DEC-040 | geo-agent/skill-v2 (S2.0) |
+| 2026-11-05 | 0.2 | S2.0 chiusa (DEC-041); aggiunta la riga di DEC-041 nella mappa della sezione 16, nessun contenuto cambiato | geo-agent/skill-v2 (S2.0) |

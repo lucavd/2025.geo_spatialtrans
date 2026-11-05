@@ -66,7 +66,7 @@ def run(text, label=""):
             cells = [c.strip() for c in l.strip("|").split("|")]
             ok, bad = source_ok(cells[j[0]], bio) if j else (False, [])
             if not ok:
-                nbad += 1; print(f"   riga senza fonte valida: {cells[0][:60]} | {cells[j[0]][:80] if j else ''} | {bad}")
+                nbad += 1; print(f"   {label}riga senza fonte valida: {cells[0][:60]} | {cells[j[0]][:80] if j else ''} | {bad}")
         check(f"{label}param_rows_sourced", nbad == 0, f"righe={len(rows) - 1} senza_fonte={nbad}")
     return all(RES[n0:])
 
