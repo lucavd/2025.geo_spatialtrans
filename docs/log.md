@@ -2,6 +2,9 @@
 
 ## 2026-11-06 (S2.2)
 
+* **Chiusura**: [Che trascritti diamo a ogni cellula simulata? (S2.2)](steps/S2.2.md) chiuso con l'approvazione di Luca («ok chiudi», risposta alle tre decisioni del riassunto «In breve»).
+* **Creazione**: decisioni di Luca [un totale per sottotipo dove i profili vengono dai nuclei veri (DEC-046)](decisions/DEC-046.md), [S2.2 chiusa con G-2 e G-5 falliti come scritti (DEC-047)](decisions/DEC-047.md), [step dedicato sulle aree sovrapposte prima di S2.5 (DEC-048)](decisions/DEC-048.md).
+* **Modifica**: `simulate_cell_profiles()` con il totale per sottotipo come predefinito nei tessuti con i profili di R6; G-1...G-4 rifatti; design dello Step 2 (D2-3, sezione 4); BACKLOG (chiusa BL-194, BL-215 a R7); ROADMAP sezioni 6 e 7; CHANGELOG.
 * **Creazione**: [Che trascritti diamo a ogni cellula simulata? (S2.2)](steps/S2.2.md): perimetro scelto da Luca («Atlante Flex dove esiste»), banco della gara con la geometria vera, regole R-1...R-3, cancelli G-1...G-5, previsioni P-1...P-6 con l'ok di Luca («Ok, come proposte»), tre correzioni prima del calcolo, esiti, deviazioni, post hoc PH-1...PH-5, revisione avversariale (due revisori), riassunto «In breve» con 3 decisioni per Luca; report `reports/S2.2.html`.
 * **Creazione**: decisione tecnica [S2.2: fonte dei profili, modello di conteggio e fattore di profondità decisi dai dati (DEC-045)](decisions/DEC-045.md).
 * **Modifica**: BIO_REFERENCES B-402...B-419; BACKLOG (nuove BL-215...BL-219; chiusa BL-204; aggiornate BL-194, BL-205); ROADMAP sezioni 6 e 7; CHANGELOG.

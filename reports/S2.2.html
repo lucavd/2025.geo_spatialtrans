@@ -3132,7 +3132,7 @@ vertical-align: -.125em;
 <li><strong>I sottotipi da soli non riproducono gli zeri in eccesso dell’intestino. Li riproducono se ogni sottotipo ha il suo numero di trascritti per cellula.</strong>
 <ul>
 <li>Con i sottotipi l’eccesso di zeri simulato è circa un quinto di quello vero.</li>
-<li>Dando a ogni sottotipo la sua distribuzione dei trascritti, l’eccesso torna entro il margine che avevamo fissato quando abbiamo misurato i trascritti nei quadratini veri. Le altre misure cambiano al più di un centesimo, in meglio o in peggio, in tutti i tessuti.</li>
+<li>Dando a ogni sottotipo la sua distribuzione dei trascritti, l’eccesso torna entro il margine che avevamo fissato quando abbiamo misurato i trascritti nei quadratini veri. Le altre misure peggiorano al più di un centesimo in tutti i tessuti; nel linfonodo la somiglianza fra blocchi vicini migliora di sei centesimi.</li>
 <li>La causa sta nel legame fra sottotipo e quantità di trascritti, non nella posizione: lo abbiamo verificato rimescolando i sottotipi fra le cellule in due modi diversi.</li>
 </ul></li>
 <li><strong>Il fattore che porta i trascritti simulati alla profondità vera è sotto 1 in tre tessuti, non sopra come mi aspettavo.</strong>
@@ -3151,13 +3151,13 @@ vertical-align: -.125em;
 <ol type="1">
 <li><strong>Diamo a ogni sottotipo la sua distribuzione di trascritti per cellula, invece di una per tipo? Consiglio di sì.</strong>
 <ul>
-<li>È l’unico modo che abbiamo trovato per riprodurre gli zeri dell’intestino. Negli altri tessuti le misure cambiano al più di un centesimo, e la funzione lo sa già fare.</li>
+<li>È l’unico modo che abbiamo trovato per riprodurre gli zeri dell’intestino. Negli altri tessuti nessuna misura peggiora di più di un centesimo, e la funzione lo sa già fare.</li>
 <li>Vale dove i profili vengono dai nuclei veri. Nello stroma i sottotipi vengono dall’atlante, dove non abbiamo i trascritti misurati con Visium HD, e resterebbe un valore per tipo.</li>
 <li>Alternativa: tenere un valore per tipo, come deciso quando abbiamo misurato i trascritti nei quadratini veri. Conseguenza: l’intestino simulato avrà meno zeri del vero, e i metodi che lavorano sugli zeri lo troveranno più facile.</li>
 </ul></li>
 <li><strong>Chiudiamo lo step anche se due controlli automatici non sono passati come li avevo scritti? Consiglio di sì.</strong>
 <ul>
-<li>Il primo controlla che i profili si ricostruiscano dalle cellule simulate. Ho fissato la soglia per un gene alla volta, ma i confronti erano fino a 150 000. Con tanti confronti qualche scarto oltre soglia è atteso per caso, e la distribuzione degli scarti è esattamente quella del caso.</li>
+<li>Il primo controlla che i profili si ricostruiscano dalle cellule simulate. Ho fissato la soglia per un gene alla volta, ma i confronti erano fino a 140 000. Con tanti confronti qualche scarto oltre soglia è atteso per caso, e la distribuzione degli scarti è esattamente quella del caso.</li>
 <li>Il secondo è il ricalcolo indipendente: differisce solo per i quadratini a pari distanza da due nuclei, che due programmi assegnano in modo diverso. L’effetto è al più di un millesimo.</li>
 <li>Alternativa: riscrivere le due soglie e rifare i controlli in uno step dedicato. Nessun numero cambierebbe.</li>
 </ul></li>
@@ -3176,18 +3176,13 @@ vertical-align: -.125em;
 <ul>
 <li>«Atlante Flex dove esiste (Recommended)» (chat, 2026-11-05): perimetro della gara.</li>
 <li>«Ok, come proposte (Recommended)» (chat, 2026-11-05): previsioni P-1…P-6, soglia del fattore di profondità (1-2), regola dei pareggi della gara.</li>
+<li>«VPN riaccesa, continua (Recommended)» (chat, 2026-11-06).</li>
+<li>«ok chiudi» (chat, 2026-11-06): risposta alle tre decisioni del riassunto, lette come le tre raccomandazioni: <a href="../docs/decisions/DEC-046.md">un totale per sottotipo dove i profili vengono dai nuclei veri (DEC-046)</a>; <a href="../docs/decisions/DEC-047.md">chiusura con G-2 e G-5 falliti come scritti (DEC-047)</a>; <a href="../docs/decisions/DEC-048.md">step sulle aree sovrapposte prima di S2.5 (DEC-048)</a>.</li>
 </ul>
 </section>
 <section id="dubbi-rinviati" class="level1">
 <h1>Dubbi rinviati</h1>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>cosa</th>
@@ -3215,8 +3210,8 @@ vertical-align: -.125em;
 <tr class="odd">
 <td>aree di riferimento sovrapposte (fino al 39 %): incertezza fra aree ottimistica da R2 in poi</td>
 <td>proprietà del disegno delle aree di R2</td>
-<td>step dedicato (decisione 3 del riassunto)</td>
-<td>da assegnare</td>
+<td>step dedicato (<a href="../docs/decisions/DEC-048.md">step sulle aree sovrapposte prima di S2.5 (DEC-048)</a>)</td>
+<td>R7 (id proposto), prima di S2.5</td>
 <td>BL-215</td>
 </tr>
 <tr class="even">
@@ -3321,7 +3316,7 @@ vertical-align: -.125em;
 <tr class="odd">
 <td>G-1</td>
 <td>superato</td>
-<td>35/35 test (<code>results/S2.2/S2.2_G1_tests.txt</code>); 9/9 mutanti rilevati (<code>S2.2_mutants.txt</code>)</td>
+<td>36/36 test (<code>results/S2.2/S2.2_G1_tests.txt</code>); 9/9 mutanti rilevati (<code>S2.2_mutants.txt</code>)</td>
 </tr>
 <tr class="even">
 <td>G-2</td>
@@ -3331,7 +3326,7 @@ vertical-align: -.125em;
 <tr class="odd">
 <td>G-3</td>
 <td>superato</td>
-<td>gara: 60/60 file identici e 30/30 indici degli zeri identici con 2 processi invece di 4; pannello: 100/100 file identici byte per byte con 2 processi invece di 4 (dopo la ricostruzione dei profili)</td>
+<td>gara: 60/60 file identici e 30/30 indici degli zeri identici con 2 processi invece di 4; pannello: 100/100 file identici byte per byte con 2 processi invece di 4 (esecuzione finale)</td>
 </tr>
 <tr class="even">
 <td>G-4</td>
@@ -3452,7 +3447,7 @@ Figure 2
 <ul>
 <li><strong>PH-1, sottotipi «oracolo»</strong> (ogni cellula vera riceve il suo gruppo di R6; disposizione nello spazio vera), tutti i tessuti, <code>results/S2.2/S2.2_PH1.csv</code>. Nell’intestino la somiglianza fra blocchi vicini passa da −0.24 a −0.06 (modello G) e l’indice degli zeri da 0.009 a 0.032 (vero 0.043). Negli altri tessuti cambia poco, salvo il linfonodo (m3 da −0.15 a −0.01).</li>
 <li><strong>PH-1b/c</strong> (solo intestino): i gruppi veri rimescolati fra le cellule dello stesso tipo nell’area (b) o dentro i decimi del totale della cellula (c). La somiglianza fra vicini torna a −0.24 in entrambi: viene dalla <strong>posizione</strong> dei sottotipi. L’indice degli zeri torna a 0.008 con (b) e resta a 0.031 con (c): viene dal <strong>legame fra sottotipo e totale della cellula</strong>, non dalla posizione (<code>S2.2_PH1_P5.csv</code>).</li>
-<li><strong>PH-3, un totale per sottotipo</strong> (sottotipo estratto dentro il decimo del totale; equivale a dare a ogni sottotipo la sua distribuzione dei totali), tutti i tessuti: indice degli zeri 0.033, differenza dal vero −0.010 [−0.018, +0.005], dentro ±0.02; le altre misure peggiorano al più di 0.011 (stroma m3, con la fonte R6 che nello stroma non vince) e migliorano altrove (linfonodo m3 da −0.15 a −0.09). Implementato in <code>simulate_cell_profiles(totals_by = &quot;subtype&quot;)</code> con i quantili per sottotipo delle fonti R6 (test i1-i4, mutante M9); predefinito ancora «type» (<a href="../docs/decisions/DEC-035.md">DEC-035</a>) in attesa della decisione di Luca.</li>
+<li><strong>PH-3, un totale per sottotipo</strong> (sottotipo estratto dentro il decimo del totale; equivale a dare a ogni sottotipo la sua distribuzione dei totali), tutti i tessuti: indice degli zeri 0.033, differenza dal vero −0.010 [−0.018, +0.005], dentro ±0.02; le altre misure peggiorano al più di 0.011 (stroma m3, con la fonte R6 che nello stroma non vince) e migliorano altrove (linfonodo m3 da −0.15 a −0.09). Implementato in <code>simulate_cell_profiles(totals_by = &quot;subtype&quot;)</code> con i quantili per sottotipo delle fonti R6 (test i1-i5, mutante M9); dopo la decisione di Luca è il predefinito nei tessuti con i profili di R6 (<a href="../docs/decisions/DEC-046.md">S2.2: un totale per sottotipo dove i profili vengono dai nuclei veri (DEC-046)</a>); G-1…G-4 rifatti con questo predefinito.</li>
 <li><strong>PH-2, scomposizione del fattore di profondità</strong> (<code>S2.2_PH2.csv</code>), esatta: f = (UMI dell’area / UMI nelle impronte dei nuclei) × (nuclei veri / cellule simulate) × (totale medio vero per nucleo / totale medio simulato) × fondo. Intestino: impronte 0.89, nuclei/cellule 0.77 (il preset mette il 29 % di cellule in più dei nuclei trovati da Cellpose), totali 1.00. Tumore: 0.94, 0.83, 1.01. Linfonodo: 1.00, 0.99, 0.81 (i totali per tipo vengono dai nuclei con un tipo; quasi metà dei nuclei del linfonodo non ha tipo e ha meno trascritti). Stroma: 0.85, 1.37 (il preset mette meno cellule dei nuclei), 0.99. Cervello: 0.57 (molto RNA fuori dalle impronte, nel neuropilo), 0.74, 1.02. Cuore: 0.37, 1.00, 1.04.</li>
 <li><strong>PH-4, distribuzione degli z di G-2</strong> (<code>S2.2_PH4.csv</code>): vedi G-2.</li>
 <li><strong>PH-5, gara senza i nuclei dell’area tenuta fuori</strong> (<code>results/S2.2/PH5/</code>): vedi deviazione 5.</li>
@@ -3485,6 +3480,7 @@ Figure 2
 <ul>
 <li>Commit della pre-registrazione: <code>c7ef7b1</code>, <code>edbd012</code> (cancelli), <code>9eb1c1b</code> (ok di Luca), <code>6035eb2</code> e <code>abf8d70</code> (correzioni prima del calcolo); chiusura in questo commit.</li>
 <li>Banco: <code>tools/S2.2_real.py</code> (5 processi su 5 dataset), gara <code>tools/S2.2_race.py</code> (un processo per tessuto, 4 in parallelo; 14 bracci, 3 repliche, semi 20261106 + 1000 r + braccio, per area), punteggi <code>tools/S2.2_score.py</code>, fattore <code>tools/S2.2_depth_layers.R</code> + <code>tools/S2.2_depth.py</code>, profili <code>tools/S2.2_build_profiles.py</code>, pannello <code>tools/S2.2_panel.R</code> (semi 20261108, 20261109), post hoc <code>tools/S2.2_posthoc_*.py|R</code>, riproduzione <code>tools/S2.2_repro.sh</code>, <code>tools/S2.2_repro_content.R</code>, mutanti <code>tools/S2.2_mutants.sh</code>.</li>
+<li>Esecuzione finale di G-1…G-4 dopo <a href="../docs/decisions/DEC-046.md">DEC-046</a> (totale per sottotipo come predefinito).</li>
 <li>Durata: banco circa 10 minuti; gara circa 10 minuti per tessuto; pannello circa 5 minuti con 4 processi (la funzione: 0.6-6 s per area di 1 mm² con 4 processi). Server condiviso: tempi non da manoscritto.</li>
 <li>md5: <code>results/S2.2/S2.2_md5_before.txt</code>, <code>S2.2_md5_after.txt</code> (188 file identici); atlante <code>S2.2_atlas_md5.txt</code>; profili <code>S2.2_profiles_md5.txt</code>.</li>
 </ul>
@@ -3938,7 +3934,7 @@ Figure 2
 <td>diff −0.0098 [−0.0176, +0.0050]; margine ±0.02</td>
 </tr>
 <tr class="odd">
-<td>le altre misure cambiano al più di un centesimo</td>
+<td>le altre misure peggiorano al più di un centesimo; linfonodo migliora di sei centesimi</td>
 <td><code>S2.2_PH1.csv</code>,</td>
 <td>scarto</td>
 </tr>
@@ -3978,9 +3974,9 @@ Figure 2
 <td></td>
 </tr>
 <tr class="odd">
-<td>fino a 150 000 confronti</td>
+<td>fino a 140 000 confronti</td>
 <td><code>S2.2_PH4.csv</code>, n_z</td>
-<td>massimo 151 695</td>
+<td>massimo 141 390</td>
 </tr>
 <tr class="even">
 <td>l’effetto dei pareggi è al più di un millesimo</td>

@@ -32,6 +32,7 @@ PASS h2 lettura: phi, modello, fattore
 PASS i1 totali per sottotipo: media di ogni sottotipo = media della sua distribuzione (|z| < 5) a|1 15.1; a|2 150.5; a|3 1492.8; b|1 249.9
 PASS i2 totali per sottotipo: somma = totale, quote come prima 
 PASS i3 totali per sottotipo senza i quantili -> errore 
-PASS i4 con totals_by = "type" il risultato non cambia se ci sono anche i quantili per sottotipo 
+PASS i4 senza totals_by nei metadati il predefinito e' "type" e il risultato non cambia se ci sono anche i quantili per sottotipo 
+PASS i5 con totals_by = "subtype" nei metadati il predefinito segue i metadati (DEC-046) 
 
-35 PASS, 0 FAIL
+36 PASS, 0 FAIL

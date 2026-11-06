@@ -99,3 +99,6 @@ pannello, contenuto: 90 file, 0 diversi nei conteggi o nelle cellule; metadati c
 pannello (seconda esecuzione dopo la ricostruzione dei profili): file RDS, 4 processi contro 2
 pannello: 100 file, 0 diversi (byte)
 profili ricostruiti: tabella identica
+pannello (terza esecuzione, con il totale per sottotipo come predefinito, DEC-046): file RDS, 4 processi contro 2
+pannello: 100 file, 0 diversi (byte)
+profili ricostruiti: tabella identica

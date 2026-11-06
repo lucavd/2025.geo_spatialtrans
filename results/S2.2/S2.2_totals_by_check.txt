@@ -1,0 +1,6 @@
+A1 subtype subtype 
+A2 subtype subtype 
+A3 type type 
+A4 subtype subtype 
+A5 subtype subtype 
+A6 subtype subtype 

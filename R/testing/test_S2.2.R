@@ -122,6 +122,9 @@ ck("i2 totali per sottotipo: somma = totale, quote come prima", all(Matrix::colS
      abs(mean(si_$cells$subtype[si_$cells$cell_type == "a"] == "a|1") - 0.5) < 5 * sqrt(0.25 / 20000))
 ck("i3 totali per sottotipo senza i quantili -> errore", err(simulate_cell_profiles(cells, prof, seed = 1, totals_by = "subtype")))
 s5 <- simulate_cell_profiles(cells, ps, seed = 11)
-ck("i4 con totals_by = \"type\" il risultato non cambia se ci sono anche i quantili per sottotipo", identical(s5$counts, s1$counts))
+ck("i4 senza totals_by nei metadati il predefinito e' \"type\" e il risultato non cambia se ci sono anche i quantili per sottotipo", identical(s5$counts, s1$counts))
+ps2 <- ps; ps2$meta$totals_by <- "subtype"
+s6 <- simulate_cell_profiles(cells, ps2, seed = 21, depth_factor = 1)
+ck("i5 con totals_by = \"subtype\" nei metadati il predefinito segue i metadati (DEC-046)", identical(s6$counts, si_$counts) && s6$metadata$totals_by == "subtype")
 cat(sprintf("\n%d PASS, %d FAIL\n", sum(unlist(res)), sum(!unlist(res))))
 if (!all(unlist(res))) quit(status = 1)

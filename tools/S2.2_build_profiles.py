@@ -78,6 +78,7 @@ for A in S.PRESET_TYPES:
         os.remove(f"{OUT}/{A}_totals_subtype.tsv")
     meta = dict(archetype=A, winner=w, source=src, noise=noise, depth_factor=float(fac.loc[A, "f"]), depth_factor_lo=float(fac.loc[A, "lo"]),
                 depth_factor_hi=float(fac.loc[A, "hi"]), n_genes=int(len(vis)), n_genes_nonzero=int((Xv.sum(axis=0) > 0).sum()), n_subtypes=int(len(us)),
-                n_cells_source=int(Xv.shape[0]), atlas=ATLAS.get(A) if src == "atlas" else None)
+                n_cells_source=int(Xv.shape[0]), atlas=ATLAS.get(A) if src == "atlas" else None,
+                totals_by="subtype" if src in ("exp", "nuc") else "type")       # DEC-046 (Luca, 2026-11-06)
     json.dump(meta, open(f"{OUT}/{A}_meta.json", "w"), indent=1)
     print(meta, flush=True)

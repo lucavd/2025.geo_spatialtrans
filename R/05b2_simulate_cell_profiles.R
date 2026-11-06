@@ -82,16 +82,18 @@ load_cell_profiles <- function(archetype, dir = getOption("geo.spatialtrans.prof
 #' @param noise `"M"` o `"G"` (predefinito: il vincitore della gara di S2.2 per il tessuto).
 #' @param use_subtypes `FALSE` usa un profilo per tipo (media dei profili dei sottotipi pesata con le quote di cellule; la gara di S2.2
 #'   pesava anche con i trascritti, quindi i due profili differiscono di poco); per le controprove.
-#' @param totals_by `"type"`: totale dalla distribuzione del tipo (D2-3); `"subtype"`: prima il sottotipo, poi il totale dalla distribuzione
-#'   del sottotipo (`profiles$totals_subtype`; analisi PH-3 di S2.2). Con `use_subtypes = FALSE` vale sempre `"type"`.
+#' @param totals_by `"type"`: totale dalla distribuzione del tipo; `"subtype"`: prima il sottotipo, poi il totale dalla distribuzione
+#'   del sottotipo (`profiles$totals_subtype`; analisi PH-3 di S2.2, DEC-046). Predefinito (NULL): quello scritto nei metadati dei
+#'   profili (`"subtype"` dove i profili vengono dai nuclei veri di R6, `"type"` per l'atlante). Con `use_subtypes = FALSE` vale sempre `"type"`.
 #' @param chunk_size cellule per blocco (fa parte della definizione del risultato).
 #' @param workers processi (`parallel::mclapply`).
 #' @return lista `counts` (dgCMatrix geni x cellule, nomi `gene_id` e `cell_id`), `cells` (data.frame `cell_id`, `cell_type`, `subtype`,
 #'   `n_transcripts`), `metadata`.
 #' @export
 simulate_cell_profiles <- function(cell_df, profiles, seed, depth_factor = profiles$depth_factor, noise = profiles$noise,
-                                   use_subtypes = TRUE, totals_by = c("type", "subtype"), chunk_size = 2000L, workers = 1L) {
-  totals_by <- match.arg(totals_by)
+                                   use_subtypes = TRUE, totals_by = NULL, chunk_size = 2000L, workers = 1L) {
+  if (is.null(totals_by)) totals_by <- if (!is.null(profiles$meta$totals_by) && !is.na(profiles$meta$totals_by)) profiles$meta$totals_by else "type"
+  totals_by <- match.arg(totals_by, c("type", "subtype"))
   if (!is.data.frame(cell_df) || !all(c("cell_id", "cell_type") %in% names(cell_df)))
     stop("simulate_cell_profiles(): `cell_df` deve avere `cell_id` e `cell_type`.", call. = FALSE)
   if (anyNA(cell_df$cell_type)) stop("simulate_cell_profiles(): `cell_type` con NA.", call. = FALSE)
