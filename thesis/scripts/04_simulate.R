@@ -96,12 +96,9 @@ R0 <- readRDS(ref_file)
 calib <- readRDS(calib_file)
 ts <- R0$types_spot; types <- R0$types_ref
 n_train <- lengths(R0$L_by_type[ts])
-# Dirichlet concentration c, alpha_k = c p_k (ADEMP §2.2). NA = K (rule of 2026-10-31). Luca proposed
-# on 2026-11-05 c = 1 colon, 2 lymphoid, K brain (R6 neighbourhoods), after the colon pilot with c = 1:
-# set the values here only once the rule is a DECISIONS row.
-conc_by_tissue <- c(colon = NA, lymphoid = NA, brain = NA)
-conc <- conc_by_tissue[[tissue]]
-alpha <- (if (is.na(conc)) length(ts) else conc) * n_train / sum(n_train)
+# Dirichlet concentration c per tissue and cells per spot, alpha_k = c p_k (ADEMP §2.2; DECISIONS
+# 2026-11-06, Luca): values in dirichlet_c(), R/simulate_spots.R. One alpha per cells level.
+alpha_by_n <- lapply(levels_cells, function(nc) dirichlet_c(tissue, nc) * n_train / sum(n_train))
 
 # S5 and static μ
 hd <- unique(R0$held_meta$donor_id)
@@ -154,7 +151,7 @@ make_replicate <- function(i, arms = arms_all) {
   for (j in seq_along(levels_cells)) {
     nc <- levels_cells[j]
     use_stream(substream(sr, 100 * j))
-    comp <- draw_compositions(n_spots, nc, ts, alpha)
+    comp <- draw_compositions(n_spots, nc, ts, alpha_by_n[[j]])
     cells <- draw_cells(comp, R0$L_by_type[ts])
     sp <- rownames(comp)
     truth <- matrix(0, n_spots, length(types), dimnames = list(sp, types))
@@ -205,7 +202,7 @@ make_replicate <- function(i, arms = arms_all) {
                          reuse = cbind(tissue = tissue, rep = i, n_cells = nc, reuse),
                          meta = list(tissue = tissue, ref_mode = ref_mode, rep = i, n_cells = nc,
                                      depth = levels_depth[d], target = target, arms = arms, rep_seed = sr,
-                                     types_spot = ts, types_ref = types, study_seed = study_seed, alpha = alpha))
+                                     types_spot = ts, types_ref = types, study_seed = study_seed, alpha = alpha_by_n[[j]]))
     }
   }
   list(world = world, conditions = res)
@@ -291,7 +288,7 @@ t0 <- proc.time()[["elapsed"]]
 cl <- parallel::makeCluster(workers, setup_strategy = "sequential")   # parallel start-up drops workers on Windows
 lib <- .libPaths()
 invisible(parallel::clusterCall(cl, function(lib) { .libPaths(lib); RNGkind("L'Ecuyer-CMRG"); NULL }, lib))
-parallel::clusterExport(cl, c("R0", "calib", "ts", "types", "n_train", "alpha", "mu_fix", "mean_real", "held", "held_type",
+parallel::clusterExport(cl, c("R0", "calib", "ts", "types", "n_train", "alpha_by_n", "mu_fix", "mean_real", "held", "held_type",
   "held_L", "genes", "rep_seed", "substream", "use_stream", "make_world_p", "make_replicate", "save_atomic", "log_line",
   "run_job", "out_dir", "log_file", "tissue", "ref_mode", "study_seed", "n_spots", "levels_cells", "levels_depth",
   "slot", "arms_all"))

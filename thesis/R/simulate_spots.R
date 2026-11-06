@@ -4,9 +4,9 @@
 
 # Spot compositions: π_s ~ Dirichlet(alpha) over the spot types, then n_cells cells drawn
 # multinomially (as in the Open Problems spatial-decomposition simulator). alpha is one value
-# (symmetric) or one value per type, e.g. alpha_k = K * p_k with p_k the training share of type k
-# (ADEMP §2.2, Pierangela 2026-10-31). Returns a spots x types matrix of cell counts; the truth is
-# counts / n_cells.
+# (symmetric) or one value per type, alpha_k = c * p_k with p_k the training share of type k and
+# c from dirichlet_c() (ADEMP §2.2; c = K until 2026-11-06). Returns a spots x types matrix of cell
+# counts; the truth is counts / n_cells.
 draw_compositions <- function(n_spots, n_cells, types, alpha = 1) {
   k <- length(types)
   alpha <- rep_len(alpha, k)
@@ -141,4 +141,16 @@ permute_mu <- function(mu) {
   out <- mu
   for (k in seq_len(ncol(mu))) out[, k] <- mu[sample.int(nrow(mu)), k]
   out
+}
+
+# Dirichlet concentration c per tissue and cells per spot (ADEMP §2.2; DECISIONS 2026-11-06, Luca):
+# median over the R6 ROIs (corrected labels, DEC-013) of c estimated from groups of 2 or 10 neighbouring
+# Visium HD nuclei, protocol/R6_dirichlet_concentration_by_roi.csv (colon = A2 + A3, lymphoid = A4,
+# brain = A5). Values as rounded in the decision.
+dirichlet_c <- function(tissue, n_cells) {
+  tab <- list(colon = c(`2` = 0.68, `10` = 1.05), lymphoid = c(`2` = 1.79, `10` = 2.05),
+              brain = c(`2` = 3.37, `10` = 21.8))
+  v <- if (tissue %in% names(tab)) unname(tab[[tissue]][as.character(n_cells)]) else NA_real_
+  if (length(v) != 1 || is.na(v)) stop("no Dirichlet c for ", tissue, " at ", n_cells, " cells")
+  v
 }

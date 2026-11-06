@@ -40,8 +40,12 @@
 #   pilot is untouched; same pilot seed, donors, arms (E, C−, anchor), methods and checks C1–C5.
 #   Each replicate file also stores alpha. Expected (pre-registered): the null-baseline RMSE rises to
 #   the formula value of 06b_pilot_nsim.R (spots less mixed, so the mean composition guesses worse).
+# Amendment 2026-11-06 (DECISIONS 2026-11-06, Luca; before the lymphoid and brain pilots): c = "rule"
+#   takes c per tissue and cells level from dirichlet_c() (R/simulate_spots.R; colon 0.68/1.05,
+#   lymphoid 1.79/2.05, brain 3.37/21.8 at 2/10 cells); outputs in derived/pilot/<tissue>_crule/.
+#   A number still gives one c for both levels, so the colon c = 1 pilot is reproducible.
 #
-# Usage (working directory = thesis/):  Rscript scripts/06_pilot.R <tissue> [workers] [reps] [mode] [c]
+# Usage (working directory = thesis/):  Rscript scripts/06_pilot.R <tissue> [workers] [reps] [mode] [c | rule]
 #   "depth" rebuilds the spots from the same seeds and only counts spot depths, without deconvolution.
 #   "truth" rebuilds compositions, cells and anchor from the same seeds, checks that the cell truth
 #   equals the saved one and adds the UMI-fraction truth (truth_umi) to existing replicate files.
@@ -52,8 +56,9 @@ workers <- if (length(args) >= 2) as.integer(args[2]) else 8
 n_rep <- if (length(args) >= 3) as.integer(args[3]) else 10
 mode <- if (length(args) >= 4) args[4] else "full"
 stopifnot(mode %in% c("full", "depth", "truth"))
-conc <- if (length(args) >= 5) as.numeric(args[5]) else NA_real_   # Dirichlet concentration c (NA = K)
-run_id <- if (is.na(conc)) tissue else sprintf("%s_c%g", tissue, conc)
+conc <- if (length(args) >= 5) args[5] else NA_character_   # Dirichlet concentration: a number, "rule" or NA (c = K)
+stopifnot(is.na(conc) || conc == "rule" || !is.na(suppressWarnings(as.numeric(conc))))
+run_id <- if (is.na(conc)) tissue else if (conc == "rule") paste0(tissue, "_crule") else sprintf("%s_c%g", tissue, as.numeric(conc))
 
 data_dir <- Sys.getenv("TESI_DATA")
 stopifnot("TESI_DATA non impostata" = nzchar(data_dir), dir.exists(data_dir))
@@ -71,7 +76,9 @@ pilot_seed <- 20261101
 
 R0 <- readRDS(ref_file)
 n_train <- lengths(R0$L_by_type[R0$types_spot])          # training cells per spot type
-alpha <- (if (is.na(conc)) length(n_train) else conc) * n_train / sum(n_train)   # alpha_k = c * p_k (c = K by default)
+source("R/simulate_spots.R")   # dirichlet_c()
+c_for <- function(nc) if (is.na(conc)) length(n_train) else if (conc == "rule") dirichlet_c(tissue, nc) else as.numeric(conc)
+alpha_by_n <- setNames(lapply(levels_cells, function(nc) c_for(nc) * n_train / sum(n_train)), levels_cells)   # alpha_k = c * p_k (c = K by default)
 if (any(R0$ref_meta$donor_id %in% R0$donors$heldout)) stop("C5: held-out donor in the reference")
 
 grid <- expand.grid(rep = seq_len(n_rep), depth = levels_depth, n_cells = levels_cells)
@@ -93,7 +100,7 @@ run_job <- function(i) {
   assign(".Random.seed", g$seed[[1]], envir = .GlobalEnv)
   ts <- R$types_spot
   target <- g$n_cells * g$depth
-  comp <- draw_compositions(n_spots, g$n_cells, ts, alpha)
+  comp <- draw_compositions(n_spots, g$n_cells, ts, alpha_by_n[[as.character(g$n_cells)]])
   cells <- draw_cells(comp, R$L_by_type[ts])
   truth <- matrix(0, n_spots, length(R$types_ref), dimnames = list(rownames(comp), R$types_ref))
   truth[, ts] <- comp / g$n_cells
@@ -170,7 +177,7 @@ run_job <- function(i) {
   res <- do.call(rbind, rows)
   res <- cbind(tissue = tissue, n_cells = g$n_cells, depth = g$depth, rep = g$rep, res)
   spot_umi <- vapply(data, function(x) median(Matrix::colSums(x)), numeric(1))
-  saveRDS(list(metrics = res, props = props, alpha = alpha, truth = truth, truth_umi = truth_umi, spot_umi = spot_umi, depth = depth,
+  saveRDS(list(metrics = res, props = props, alpha = alpha_by_n[[as.character(g$n_cells)]], truth = truth, truth_umi = truth_umi, spot_umi = spot_umi, depth = depth,
                anchor_cells_used = length(unique(anc$cells_used)), held_cells = sum(held_ok)), f)
   log_line(sprintf("done %s in %.1f min", job, (proc.time()[["elapsed"]] - t_job) / 60))
   f
@@ -192,7 +199,7 @@ t0 <- proc.time()[["elapsed"]]
 cl <- parallel::makeCluster(workers, setup_strategy = "sequential")   # parallel start-up drops workers on Windows
 lib <- .libPaths()
 parallel::clusterCall(cl, function(lib) { .libPaths(lib); RNGkind("L'Ecuyer-CMRG"); NULL }, lib)
-parallel::clusterExport(cl, c("grid", "R0", "conc", "out_dir", "n_spots", "alpha", "tissue", "mode", "log_file", "run_job"))
+parallel::clusterExport(cl, c("grid", "R0", "conc", "out_dir", "n_spots", "alpha_by_n", "tissue", "mode", "log_file", "run_job"))
 parallel::clusterEvalQ(cl, { for (f in c("R/simulate_spots.R", "R/deconvolve.R", "R/pilot_metrics.R")) source(f); NULL })
 done <- parallel::parLapplyLB(cl, seq_len(nrow(grid)), function(i)
   tryCatch(run_job(i), error = function(e) paste("ERROR", i, conditionMessage(e))))
