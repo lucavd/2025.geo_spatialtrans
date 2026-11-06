@@ -207,13 +207,14 @@ place_and_move_transcripts <- function(cell_layer, hd, cell_profiles, params, se
   fx0 <- gx0 + q0 * step; fy0 <- gy0 + p0 * step; nr <- p1 - p0; nc <- q1 - q0
   Mt <- .s23_raster_center_in(G, fx0, fy0, step, nr, nc)
   if (frame_open) {
-    # il riquadro delle regioni non e' bordo: si tolgono i sottopixel esterni al riquadro e si riflette la maschera interna
-    qi0 <- as.integer(ceiling((bb[["xmin"]] - fx0) / step - 0.5)); qi1 <- as.integer(floor((bb[["xmax"]] - fx0) / step - 0.5))
-    pi0 <- as.integer(ceiling((bb[["ymin"]] - fy0) / step - 0.5)); pi1 <- as.integer(floor((bb[["ymax"]] - fy0) / step - 0.5))
-    inner <- Mt[(pi0 + 1L):(pi1 + 1L), (qi0 + 1L):(qi1 + 1L), drop = FALSE]
+    # il riquadro delle regioni non e' bordo: i sottopixel con il centro fuori dal riquadro valgono tessuto, e la maschera si allarga di
+    # pad_um di tessuto (revisione G-5, DSC-1: prima i sottopixel tagliati dal lato del riquadro restavano vetro)
+    xc <- fx0 + (seq_len(nc) - 0.5) * step; yc <- fy0 + (seq_len(nr) - 0.5) * step
+    out_box <- outer(yc < bb[["ymin"]] | yc > bb[["ymax"]], xc < bb[["xmin"]] | xc > bb[["xmax"]], `|`)
+    Mo <- Mt | out_box
     pp <- as.integer(round(pad_um / step))
-    Din <- .s23_edt(.s23_reflect_pad(inner, pp), step)[pp + seq_len(nrow(inner)), pp + seq_len(ncol(inner)), drop = FALSE]
-    Dm <- matrix(0, nr, nc); Dm[(pi0 + 1L):(pi1 + 1L), (qi0 + 1L):(qi1 + 1L)] <- Din
+    Mp <- matrix(TRUE, nr + 2L * pp, nc + 2L * pp); Mp[pp + seq_len(nr), pp + seq_len(nc)] <- Mo
+    Dm <- .s23_edt(Mp, step)[pp + seq_len(nr), pp + seq_len(nc), drop = FALSE]
   } else {
     Dm <- .s23_edt(Mt, step)
   }
@@ -294,6 +295,7 @@ place_and_move_transcripts <- function(cell_layer, hd, cell_profiles, params, se
     stopifnot(length(gene) == nt)
     pts <- if (return_points) data.frame(cell = cell, x0 = x, y0 = y, nucleus = isn, d = d, mode = mode, x1 = x1, y1 = y1, bin_id = bin, gene = gene) else NULL
     lost <- tabulate(match(cell[!inside], idx), length(idx)); lost_nuc <- tabulate(match(cell[!inside & isn], idx), length(idx))
+    lost_gene <- tabulate(gene[!inside], nrow(X))
     ci <- cell[inside]; bi <- bin[inside]; gi <- gene[inside]; ni <- isn[inside]
     key <- (bi - 1) * n + (ci - 1)
     ko <- order(key, gi); key <- key[ko]; gi <- gi[ko]; ni <- ni[ko]
@@ -303,7 +305,7 @@ place_and_move_transcripts <- function(cell_layer, hd, cell_profiles, params, se
     rk2 <- rle(key); e2 <- cumsum(rk2$lengths)
     nb <- diff(c(0L, cumsum(ni)[e2]))
     og <- data.frame(bin_id = as.integer(key[e2] %/% n + 1), cell = as.integer(key[e2] %% n + 1), n = as.integer(rk2$lengths), n_born_nucleus = as.integer(nb))
-    list(tr = tr, og = og, lost = lost, lost_nuc = lost_nuc, pts = pts, n_gen = nt, it = it)
+    list(tr = tr, og = og, lost = lost, lost_nuc = lost_nuc, lost_gene = lost_gene, pts = pts, n_gen = nt, it = it)
   }
   out <- if (workers > 1L) parallel::mclapply(seq_along(chunks), one_chunk, mc.cores = workers, mc.preschedule = FALSE) else lapply(seq_along(chunks), one_chunk)
   bad <- vapply(out, function(o) inherits(o, "try-error"), logical(1))
@@ -315,7 +317,7 @@ place_and_move_transcripts <- function(cell_layer, hd, cell_profiles, params, se
   res <- list(transcripts = data.frame(bin_id = tr$bin_id, cell_id = tr$cell_id, gene = tr$gene, n = tr$n),
               origin = data.frame(bin_id = og$bin_id, cell_id = og$cell_id, n = og$n, n_born_nucleus = og$n_born_nucleus),
               lost = data.frame(cell_id = cd$cell_id, n_lost = as.integer(lost), n_lost_born_nucleus = as.integer(lost_nuc)),
-              genes = rownames(X),
+              genes = rownames(X), lost_by_gene = Reduce(`+`, lapply(out, `[[`, "lost_gene")),
               field_grid = list(x0 = fx0, y0 = fy0, step = step, n_row = nr, n_col = nc),
               cells = data.frame(cell_id = cd$cell_id, area_nucleus_um2 = A_n, area_cytoplasm_um2 = A_c, p_nucleus_no_field = pn, n_transcripts = Nc),
               metadata = list(step = "S2.3", seed = seed, params = params, field = !is.null(Fm), frame_open = frame_open, pad_um = pad_um,

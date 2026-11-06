@@ -1,0 +1,4 @@
+banco, verifica: 30/30 file identici (tempi esclusi)
+banco, preparazione: 30/30 aree identiche in tutti i campi (tempi esclusi, NaN uguali)
+pannello: 60/60 file dei conteggi con md5 identico
+pannello, statistiche: 60/60 file identici (tempi esclusi)

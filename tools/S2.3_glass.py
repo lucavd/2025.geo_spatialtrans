@@ -23,15 +23,30 @@ def kft(shape):
     kr, kc = C.freq_grid(shape, BIN)
     return kr, kc, C.box_ft(kr, kc, BIN)
 
-def conv(X, Kf, shape):
-    return sfft.irfft2(sfft.rfft2(X, workers=1) * Kf, s=shape, workers=1)
+def gauss_bins_ft(shape, s):
+    """Gaussiana per asse di deviazione standard s, esatta sulla griglia di 2 um: sorgente uniforme nel quadratino, arrivo integrato sul
+    quadratino ricevente (revisione G-5 c, D-glass-1: la gaussiana di 0.7 um in Fourier sul passo di 2 um non e' a banda limitata)."""
+    from scipy.stats import norm
+    K = int(np.ceil(8 * s / BIN)) + 2; n = np.arange(-K, K + 1) * BIN
+    Gi = lambda u: u * norm.cdf(u) + norm.pdf(u)
+    # P(n) = (1/h) int_0^h [Phi((n + h - x)/s) - Phi((n - x)/s)] dx, h = BIN
+    h = BIN
+    p = (s * (Gi((n + h) / s) - Gi(n / s)) - s * (Gi(n / s) - Gi((n - h) / s))) / h
+    p = p / p.sum()
+    ker = np.zeros(shape); ker[np.ix_(n.astype(int) // 2 % shape[0], n.astype(int) // 2 % shape[1])] = np.outer(p, p)
+    return sfft.rfft2(ker, workers=1)
 
+_GK = {}
 def model(T, pi, prm, shape, K):
     kr, kc, box = K
-    Ge = C.gauss_ft(kr, kc, prm["sigma_e"], prm["sigma_e"]); Gi = C.gauss_ft(kr, kc, SIG_IN, SIG_IN); E = C.exp_ft(kr, kc, prm["ell"])
+    key = (shape, prm["sigma_e"])
+    if key not in _GK:
+        _GK.clear(); _GK[key] = (gauss_bins_ft(shape, prm["sigma_e"]), gauss_bins_ft(shape, SIG_IN))
+    Ge, Gi = _GK[key]
+    E = C.exp_ft(kr, kc, prm["ell"]) * box
     Tf = sfft.rfft2(T, workers=1); Tpf = sfft.rfft2(T * pi, workers=1)
     F = (1 - prm["w"]) * (Ge * Tpf + Gi * (Tf - Tpf)) + prm["w"] * E * Tf
-    return sfft.irfft2(F * box, s=shape, workers=1), Tf
+    return sfft.irfft2(F, s=shape, workers=1), Tf
 
 def run(KEY, OUT):
     t0 = time.time()

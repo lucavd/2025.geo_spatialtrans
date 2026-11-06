@@ -194,4 +194,11 @@ dl2 <- ifelse(xc > 30 & xc < 50, pmax(20 - yc, yc - 40) + 0.25, ifelse(yc > 20 &
 ok_h <- all(abs(q$d[!is.na(dl2)] - dl2[!is.na(dl2)]) < 1e-9)
 ck("h2 frame_open: la distanza viene solo dal lumo", ok_h, sprintf("d max %.1f", max(q$d)))
 
+# rettangolo non allineato alla sottogriglia (lato 100.3 um): con frame_open nessuna nascita ha d finita (revisione G-5, DSC-1)
+Lh <- mk_layer(10, 10, 10.03, 4); Hh <- build_hd_grid(Lh, margin_um = 8); Ph_ <- mk_prof(Lh, 500)
+sh2 <- place_and_move_transcripts(Lh, Hh, Ph_, Pcp, seed = 5, field = FALSE, frame_open = TRUE, return_points = TRUE)
+ck("h3 frame_open: riquadro non allineato alla sottogriglia, nessun bordo", all(!is.finite(sh2$points$d)) && !any(sh2$points$mode == 1L), sprintf("nascite con d finita %d", sum(is.finite(sh2$points$d))))
+lg <- tabulate(pt$gene[is.na(pt$bin_id)], nrow(X))
+ck("a7 persi per gene", identical(as.integer(sa$lost_by_gene), as.integer(lg)) && all(tapply(sa$transcripts$n, factor(sa$transcripts$gene, levels = seq_len(nrow(X))), sum) + sa$lost_by_gene == rowSums(X)))
+
 nP <- sum(unlist(res)); cat(sprintf("\nTOTALE: %d PASS, %d FAIL su %d\n", nP, length(res) - nP, length(res)))

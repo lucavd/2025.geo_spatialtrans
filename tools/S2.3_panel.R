@@ -44,7 +44,8 @@ one <- function(q) {
   nuc_born <- as.numeric(nuc_born) + tx$lost$n_lost_born_nucleus
   chk <- list(tag = tag, archetype = A, k = k, variant = VAR, seed = seed, n_cells = nrow(L$cell_df), n_transcripts = sum(Nc),
     n_lost = sum(tx$lost$n_lost), conservation_cells = all(as.numeric(per_cell) + tx$lost$n_lost == Nc),
-    conservation_total = sum(tx$origin$n) + sum(tx$lost$n_lost) == sum(Nc), conservation_genes = sum(tx$transcripts$n) == sum(tx$origin$n),
+    conservation_total = sum(tx$origin$n) + sum(tx$lost$n_lost) == sum(Nc), conservation_genes = sum(tx$transcripts$n) == sum(tx$origin$n) &&
+      all(as.numeric(tapply(tx$transcripts$n, factor(tx$transcripts$gene, levels = seq_len(nrow(prof$counts))), sum, default = 0)) + tx$lost_by_gene == as.numeric(Matrix::rowSums(prof$counts))),
     n_na = sum(is.na(tx$transcripts$bin_id)) + sum(is.na(tx$origin$n)) + sum(is.na(tx$lost$n_lost)),
     bins_in_grid = all(tx$origin$bin_id >= 1 & tx$origin$bin_id <= nb),
     nuc_born = sum(nuc_born), nuc_expected_no_field = sum(Nc * tx$cells$p_nucleus_no_field),

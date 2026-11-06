@@ -4,3 +4,38 @@ PASS a3 nei quadratini + persi = totale della cellula
 PASS a4 terne = aggregazione dei trascritti 
 PASS a5 verita' di origine = somma delle terne, nati nel nucleo 
 PASS a6 almeno un trascritto perso (il test vede i persi) 
+PASS b1 ogni punto di nascita nel suo territorio (1e-9 um) 
+PASS b2 nascita nel nucleo = punto nel poligono del nucleo 
+PASS b3 senza spostamento arrivo = nascita 5.03e-12
+PASS b4 quota nel nucleo = r A_n / (r A_n + A_c), r 0.5, 1, 2.6 max |z| 1.18 soglia 3.59
+PASS b5 uniformita' in 16 celle (chi quadro, p > 0.001) p min 0.059
+PASS c1 frazione della coda = w 0.1998
+PASS c2 raggio della coda ~ Gamma(2, ell) (KS p > 0.001) p 0.149
+PASS c3 deviazione standard per asse, modo 0 (sigma 0.7) sd 0.6997 0.6980
+PASS c3 deviazione standard per asse, modo 1 (sigma 4.0) sd 4.0068 3.9982
+PASS c4 distanza dal bordo = trasformata esatta della maschera sui sottopixel 0.00e+00
+PASS c5 frazione larga per fasce di d = exp(-d / D) max |z| 2.35
+PASS d1 Z: varianza 1 e correlazione a 0.5, 1, 2 um come la teorica (entro 0.02) 0.0008
+PASS d2 F: media 1 (entro 0.02) e varianza s2 (entro il 5 %) media 0.9992 var 0.5081
+PASS d3 F: margine gamma (KS su sottopixel distanti 10 um, p > 0.001) p 0.37
+PASS d4 campo spento = 1 
+PASS d5 tabella Z -> F identica a quella del prototipo (1e-9 relativo) 4.79e-12
+PASS e0 massa per sottopixel = trascritti totali 
+PASS e1 media della funzione = attesa esatta (campo fissato, z sotto Bonferroni) max |z| 3.52 soglia 5.13 su 3412 quadratini
+PASS e2 trasformata di distanza identica a quella del prototipo DIST_IDENTICAL True 0.0
+PASS e3 media della funzione = lambda del prototipo (z sotto Bonferroni) max |z| 3.59; scarto relativo massimo prototipo / esatto 0.0373
+PASS f1 stesso seme, stesso risultato 
+PASS f2 1 e 4 processi identici 
+PASS f3 seme diverso, risultato diverso 
+PASS f4 generatore dell'utente ripristinato 
+PASS g1 scala mancante 
+PASS g2 trascritti e cellule non allineati 
+PASS g3 parametri non validi 
+PASS g4 territorio vuoto 
+PASS g5 seme mancante 
+PASS h1 frame_open: un rettangolo senza buchi non ha bordo (nessuna sfocatura larga) 
+PASS h2 frame_open: la distanza viene solo dal lumo d max 36.1
+PASS h3 frame_open: riquadro non allineato alla sottogriglia, nessun bordo nascite con d finita 0
+PASS a7 persi per gene 
+
+TOTALE: 39 PASS, 0 FAIL su 39

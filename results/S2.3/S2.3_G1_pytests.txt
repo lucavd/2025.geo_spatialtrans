@@ -1,0 +1,11 @@
+PASS pd1 Z: varianza 1 e correlazione a 0.5, 1, 2 um come la teorica (entro 0.02) 0.0056
+PASS pd2 F: media 1 (entro 0.02), varianza s2 (entro il 5 %) 1.0005 0.4949
+PASS pd3 campo spento = 1 
+PASS pd4 tabella finita 
+PASS pi1 psi = 1 su Poisson omogeneo (|psi - 1| <= 0.03) 1.0022
+PASS pi2 rho1 = 0 su Poisson indipendente (|rho1| <= 0.02) -0.0022
+PASS pi3 recupero di v = 0.1 (entro il 20 %) 0.1003
+PASS pi3 recupero di v = 0.3 (entro il 20 %) 0.2988
+PASS pi4 psi = 1 con fattori di cattura noti 1.0008
+
+TOTALE: 9 PASS, 0 FAIL su 9
