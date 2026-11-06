@@ -22,9 +22,10 @@ peak_mb <- function() { s <- readLines("/proc/self/status"); as.numeric(sub("[^0
 if (VAR == "check") {
   J <- list()
   for (v in c("main", "stripes_off", "tail2_off")) for (f in list.files(file.path(OUT, v), pattern = "_k[01]\\.json$", full.names = TRUE)) J[[length(J) + 1]] <- jsonlite::fromJSON(f)
+  nz <- function(x) if (is.null(x) || length(x) == 0) NA_real_ else x
   G2 <- do.call(rbind, lapply(J, function(j) data.frame(tag = j$tag, archetype = j$archetype, k = j$k, variant = j$variant, M = j$M,
     conservation = j$conservation_cells && j$conservation_genes && j$conservation_bins && j$profiles_match, n_na = j$n_na,
-    z_captured = j$z_captured, z_background = j$z_background, elapsed_total_s = j$elapsed_total_s, peak_mb = j$peak_mb)))
+    z_captured = j$z_captured, z_background = nz(j$z_background), elapsed_total_s = j$elapsed_total_s, peak_mb = j$peak_mb)))
   write.csv(G2, file.path(OUT, "G2.csv"), row.names = FALSE)
   zt <- stats::qnorm(1 - 0.0005 / nrow(G2))
   cat(sprintf("G-2: %d esecuzioni; conservazione %d; NA %d; max |z| catturati %.2f, fondo %.2f (soglia di Bonferroni sulle esecuzioni, 3 errori Monte Carlo: %.2f)\n",
@@ -33,7 +34,7 @@ if (VAR == "check") {
 }
 stopifnot(VAR %in% c("main", "stripes_off", "tail2_off"))
 dir.create(file.path(OUT, VAR), recursive = TRUE, showWarnings = FALSE)
-ks <- if (VAR == "main") 0:1 else 0L
+ks <- if (VAR == "main") { if (nzchar(Sys.getenv("S24_KS"))) as.integer(strsplit(Sys.getenv("S24_KS"), ",")[[1]]) else 0:1 } else 0L
 jobs <- expand.grid(t = seq_along(tags), k = ks)
 one <- function(q) {
   ti <- jobs$t[q]; k <- jobs$k[q]; tag <- tags[ti]; A <- strsplit(tag, "_")[[1]][1]

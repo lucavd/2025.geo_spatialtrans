@@ -1,0 +1,15 @@
+PASS T-A1 quadrato di 4 um allineato: 4 quadratini, aree 4 (entro tau), nucleo uguale 
+PASS T-A2 quadrato spostato di 0.5 um in x e 1 um in y: 9 quadratini, aree prodotto di (1, 2, 1) per riga e (1.5, 2, 0.5) per colonna max scarto 0.00e+00
+PASS T-A3 triangolo contro il ritaglio indipendente (Sutherland-Hodgman): stesse coppie, scarti entro tau coppie 92, max scarto 7.21e-07
+PASS T-A3 poligono di 1000 lati contro il ritaglio indipendente (Sutherland-Hodgman): stesse coppie, scarti entro tau coppie 128, max scarto 2.77e-07
+PASS T-B1 origine = angolo del riquadro meno 280 um; righe e colonne multiple di 4; la griglia copre riquadro + margine 344 x 344
+PASS T-B2 bin_id = i * n_col + j + 1; centro (x0 + 2 j + 1, y0 + 2 i + 1); i = riga (y), j = colonna (x) 
+PASS T-B3 il quadratino che contiene il centro di una cellula sta nella verita' geometrica di quella cellula 
+PASS T-B6 indici interi (bin_id e cell_id della verita' geometrica, bin_id e bin8_id della tabella): un indice double come 2e5 diventa "2e+05" come testo 
+PASS T-B4 errore senza pixel_size_um (BL-005); errore con margine 279 o 4 um; la scala passa nei metadati 
+PASS T-B5 in_tissue = frazione di tessuto >= 0.5: a meta' esatta in tessuto, 0.525 in tessuto, 0.475 fuori; tessuto totale con quattro regioni 5 / 5 / 5 quadratini a 0.5 / 0.525 / 0.475, in tessuto 475
+PASS T-B7 casi limite: un territorio vuoto ferma build_hd_grid() con un messaggio chiaro; un nucleo che sporge dal territorio da' un avviso (revisione F11) 
+PASS T-C1 somma a 8 um di una matrice intera = somma per forza bruta dei 16 figli (identita' esatta); blocco = (i %/% 4, j %/% 4) 
+PASS T-C3 sum_to_8um() su un data.frame chiede le colonne da sommare (revisione F11: niente coordinate sommate per difetto) 
+PASS T-C2 somma a 8 um della verita' geometrica: totali per cellula invariati 
+PASS T-D1 tessere di 50 um, 100 um, 500 um e una sola tessera: stessa verita' geometrica e stessa area di tessuto (entro 16 g) 

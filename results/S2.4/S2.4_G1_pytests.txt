@@ -1,0 +1,8 @@
+PASS 1 parita' con l'indice assoluto (righe 1.5, colonne 1.7) 1.479 1.675
+PASS 1b deviazione standard della parte fine circa 0.2 0.182 0.204
+PASS 2 R-3: (b, w2) ritrovati b 0.1497 w2 0.0434
+PASS 2b R-3: b = 0 e w2 = 0 al bordo quando non ci sono b 0.0008 w2 0.0000
+PASS 3 R-2: parte lenta riproducibile ritrovata (SD circa 0.0707, correlazione circa 0.72) sd 0.0700 r 0.711
+PASS 4 fasce dei lumi: rapporto 0.1 in ogni fascia lumi 1
+
+TOTALE 6 PASS, 0 FAIL
