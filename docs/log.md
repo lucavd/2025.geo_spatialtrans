@@ -1,5 +1,12 @@
 # Registro delle modifiche
 
+## 2026-11-07 (S2.4)
+
+* **Creazione**: [Come il simulatore cattura i trascritti nei quadratini del vetrino (strisce, fondo, seconda coda) e i conteggi somigliano ai veri? (S2.4)](steps/S2.4.md): perimetro e margine scelti da Luca, esplorazioni E-1...E-4, regole R-1...R-3, cancelli G-1...G-5, previsioni P-1...P-7 con l'ok di Luca, correzione C-1, esiti, post hoc, revisione avversariale (tre revisori), riassunto «In breve» con due decisioni per Luca; report `reports/S2.4.html`.
+* **Creazione**: decisioni di Luca [fondo e seconda coda adattati insieme (DEC-053)](decisions/DEC-053.md), [seconda coda persa ma riflessa nelle aree ritagliate (DEC-054)](decisions/DEC-054.md); decisioni tecniche [passo 1 delle strisce calibrato (DEC-055)](decisions/DEC-055.md), [parte lenta delle strisce esclusa (DEC-056)](decisions/DEC-056.md), [semi rimescolati (DEC-057)](decisions/DEC-057.md).
+* **Modifica**: [DEC-051](decisions/DEC-051.md) superata da [DEC-053](decisions/DEC-053.md) per i valori; design dello Step 2 v0.4; BIO_REFERENCES B-442...B-461; BACKLOG (nuove BL-224...BL-228; chiuse BL-208, BL-209, BL-221); ROADMAP sezione 7; CHANGELOG.
+* **Creazione**: `capture_and_bin()`, `simulate_stripes()`, `capture_params()` in `R/05b4_capture_and_bin.R`; seconda coda in `R/05b3_place_and_move_transcripts.R`; test `R/testing/test_S2.4.R`; strumenti `tools/S2.4_*`; tabelle `results/S2.4/`.
+
 ## 2026-11-06 (S2.3)
 
 * **Chiusura**: [Dove nascono i trascritti dentro le cellule simulate e come si spostano? (S2.3)](steps/S2.3.md) chiuso con l'approvazione di Luca («si a tutto. Chiudi», risposta alle tre decisioni del riassunto «In breve»).

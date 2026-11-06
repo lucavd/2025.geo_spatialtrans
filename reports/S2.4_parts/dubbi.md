@@ -1,0 +1,7 @@
+| cosa | perché | cosa serve per chiuderlo | step destinatario | voce di BACKLOG |
+|---|---|---|---|---|
+| generatori casuali di `simulate_cell_profiles()` e `place_and_move_transcripts()` inizializzati con `set.seed` diretto (semi consecutivi legati) | cambiarli cambia i risultati approvati di S2.2 e S2.3 | rimescolamento del seme come in S2.4, misura dell'effetto sui pannelli passati | da assegnare | BL-224 |
+| vetro del tumore del colon oltre 256 µm sovrastimato (0.70; 0.42 oltre 512 µm); fondo e coda poco separabili | forma della coda | decisione 2 di Luca | da assegnare (decisione 2) | BL-225 |
+| quadratini vuoti veri 3-10 volte i simulati in intestino, tumore, stroma | non vengono dalle strisce | origine (tessuto, densità dei preset, cattura locale) | con BL-167, BL-213, BL-218, BL-222 | BL-226 |
+| memoria della catena oltre 8 GB con la sovra-generazione | blocchi di 2 000 cellule | `chunk_size` scelto dai trascritti per blocco | S2.5 (orchestratore) | BL-227 |
+| piccole definizioni degli stimatori (righe senza stima a 0, riferimento dei lumi lumo per lumo, iterazioni di R-2, integrazione della coda esponenziale) | effetti trascurabili, trovati dalla revisione | correzione negli strumenti alla prossima occasione | da assegnare | BL-228 |

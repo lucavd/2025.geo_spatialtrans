@@ -1,0 +1,5 @@
+- Correzione C-1 (semi) e test riscritti prima del verdetto di G-1 (sezione «Correzioni prima del calcolo»).
+- R-3: la pre-registrazione chiedeva «partenze multiple»; l'adattamento usa la verosimiglianza profilo su ℓ₂ (41 valori da 10 a 5 000 µm, poi ricerca limitata) con (b, w₂) ottimizzati esattamente per ogni ℓ₂: equivalente e più robusto. Intervalli di R-3 con B = 200 (non 2 000) e ℓ₂ su 17 valori: aggiunti dopo la revisione.
+- E-3: la frase sul fondo nullo e sulla coda oltre 1 mm era sbagliata nella prima versione (corretta, `1c9dee3`).
+- Pannello: la prima esecuzione delle varianti delle controprove si è fermata perché lo script era stato modificato mentre girava (R legge gli script un'espressione alla volta); le 60 esecuzioni principali erano già complete; varianti rilanciate.
+- P-5: la fascia 256-512 µm del cuore ha una sola tessera di 300 µm: «non valutabile».

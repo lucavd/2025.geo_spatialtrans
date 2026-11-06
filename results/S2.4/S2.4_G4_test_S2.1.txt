@@ -13,3 +13,11 @@ PASS T-C1 somma a 8 um di una matrice intera = somma per forza bruta dei 16 figl
 PASS T-C3 sum_to_8um() su un data.frame chiede le colonne da sommare (revisione F11: niente coordinate sommate per difetto) 
 PASS T-C2 somma a 8 um della verita' geometrica: totali per cellula invariati 
 PASS T-D1 tessere di 50 um, 100 um, 500 um e una sola tessera: stessa verita' geometrica e stessa area di tessuto (entro 16 g) 
+PASS T-D2 cellule e griglia traslate insieme di 1 um (mezzo quadratino) e di 1e4 um (BL-104): stesse coppie e stesse aree 
+PASS T-D3 solo le cellule spostate di mezzo quadratino, griglia ferma: totali per cellula invariati (entro tau), coppie diverse (la prova ha potere) coppie 5628 contro 5485
+PASS T-D4 due esecuzioni bit per bit uguali 
+PASS T-E1 ogni cellula ha quadratini (BL-010) e la somma sui quadratini = area del territorio e del nucleo (entro g (8 n + P) + n g^2) 
+PASS T-E2 per quadratino: somma dei territori = area di tessuto, <= 4 um^2; nucleo <= territorio per coppia; tessuto totale = area della regione 
+PASS T-E3 somma a 8 um della verita' geometrica = verita' calcolata direttamente sui quadrati di 8 um coppie 791 / 791
+
+S2.1 test: 21 PASS, 0 FAIL

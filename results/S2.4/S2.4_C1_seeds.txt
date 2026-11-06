@@ -1,0 +1,8 @@
+         maxz var_over_mean 
+   12.3713301     0.9975634 
+         maxz var_over_mean 
+    18.262687      0.996998 
+         maxz var_over_mean 
+    3.8436883     0.9991118 
+         maxz var_over_mean 
+    3.7644998     0.9969166 

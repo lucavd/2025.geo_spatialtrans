@@ -1,0 +1,6 @@
+IDENTICO S2.4_R1_calib.csv
+IDENTICO S2.4_R1_curve.csv
+IDENTICO S2.4_R1_generator.csv
+IDENTICO S2.4_R3_fits.csv (senza secondi)
+IDENTICO S2.4_P5_glass.csv (senza secondi)
+pannello: .bin identici 30/30; .json identici senza tempi e memoria 30/30
