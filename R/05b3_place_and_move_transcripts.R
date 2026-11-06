@@ -37,12 +37,20 @@ transcript_params <- function(archetype) {
   ok1 <- function(v) is.numeric(v) && length(v) == 1L && is.finite(v)
   for (k in c("r", "sigma_in", "sigma_e", "D", "ell")) if (!ok1(p[[k]]) || p[[k]] <= 0) stop(sprintf("place_and_move_transcripts(): `%s` deve essere un numero > 0.", k), call. = FALSE)
   if (!ok1(p$w) || p$w < 0 || p$w > 1) stop("place_and_move_transcripts(): `w` deve stare in [0, 1].", call. = FALSE)
+  # seconda coda (S2.4, BL-221): facoltativa; assente o w2 = 0 = comportamento di S2.3
+  if (!is.null(p$w2)) {
+    if (!ok1(p$w2) || p$w2 < 0 || p$w2 >= 1) stop("place_and_move_transcripts(): `w2` deve stare in [0, 1).", call. = FALSE)
+    if (p$w2 > 0 && (!ok1(p$ell2) || p$ell2 <= 0)) stop("place_and_move_transcripts(): `ell2` deve essere un numero > 0.", call. = FALSE)
+  }
   if (isTRUE(field)) {
     if (!ok1(p$field_s2) || p$field_s2 < 0) stop("place_and_move_transcripts(): campo acceso ma `field_s2` non valido (campo non tarato?).", call. = FALSE)
     if (!ok1(p$field_L) || p$field_L <= 0) stop("place_and_move_transcripts(): campo acceso ma `field_L` non valido.", call. = FALSE)
   }
   invisible(TRUE)
 }
+
+# Riflessione ripetuta nell'intervallo [a, b] (S2.4): x' = a + W - |((x - a) mod 2W) - W|, W = b - a.
+.s24_fold <- function(x, a, b) { W <- b - a; t <- (x - a) %% (2 * W); a + W - abs(t - W) }
 
 # Triangoli (triangolazione vincolata di GEOS) di un vettore di poligoni: una riga per triangolo, con l'indice del poligono.
 .s23_triangles <- function(g) {
@@ -241,6 +249,7 @@ place_and_move_transcripts <- function(cell_layer, hd, cell_profiles, params, se
     for (k in seq_along(ids)) Fmax[ids[k]] <- max(Fm[a0[k]:a1[k], b0[k]:b1[k]])
   }
   Nc <- Nc0
+  w2 <- if (is.null(params$w2)) 0 else params$w2
   chunks <- split(seq_len(n), ceiling(seq_len(n) / chunk_size))
   streams <- vector("list", length(chunks)); s <- parallel::nextRNGStream(s)
   for (k in seq_along(chunks)) { streams[[k]] <- s; s <- parallel::nextRNGStream(s) }
@@ -286,6 +295,18 @@ place_and_move_transcripts <- function(cell_layer, hd, cell_profiles, params, se
     nT <- sum(tail); if (nT) { rho <- stats::rgamma(nT, shape = 2, scale = params$ell); th <- stats::runif(nT, 0, 2 * pi); dx[tail] <- rho * cos(th); dy[tail] <- rho * sin(th) }
     nG <- sum(!tail); if (nG) { sg <- ifelse(wide[!tail], params$sigma_e, params$sigma_in); dx[!tail] <- stats::rnorm(nG) * sg; dy[!tail] <- stats::rnorm(nG) * sg }
     x1 <- x + dx; y1 <- y + dy
+    # seconda coda (S2.4, BL-221, DEC-051 e regola R-3 di S2.4): con probabilita' w2 raggio Gamma(2, ell2) e angolo uniforme (modo 3), estratta
+    # dopo le estrazioni di S2.3 (con w2 assente o 0 nessuna estrazione in piu': risultato identico a S2.3). Con frame_open l'arrivo si ripiega
+    # nel riquadro per riflessione sui lati (scelta di Luca, 2026-11-06); altrimenti chi esce dalla griglia e' perso.
+    if (w2 > 0) {
+      sec <- stats::runif(nt) < w2; nS <- sum(sec)
+      if (nS) {
+        rho2 <- stats::rgamma(nS, shape = 2, scale = params$ell2); th2 <- stats::runif(nS, 0, 2 * pi)
+        x1[sec] <- x[sec] + rho2 * cos(th2); y1[sec] <- y[sec] + rho2 * sin(th2)
+        if (frame_open) { x1[sec] <- .s24_fold(x1[sec], bb[["xmin"]], bb[["xmax"]]); y1[sec] <- .s24_fold(y1[sec], bb[["ymin"]], bb[["ymax"]]) }
+        mode[sec] <- 3L
+      }
+    }
     # (4) conteggio
     ii <- floor((y1 - gy0) / bin_um); jj <- floor((x1 - gx0) / bin_um)
     inside <- ii >= 0 & ii < gnr & jj >= 0 & jj < gn

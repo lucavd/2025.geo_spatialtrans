@@ -1,0 +1,13 @@
+RILEVATO | assottigliamento con c invece di c/C | test falliti: 3 (b1, e1, f4)
+RILEVATO | normalizzazione su tutti i quadratini | test falliti: 1 (c2)
+RILEVATO | parita' sulle righe pari | test falliti: 2 (c1, c7)
+RILEVATO | segno di theta | test falliti: 1 (c4)
+RILEVATO | fondo senza strisce | test falliti: 2 (e1, f5)
+RILEVATO | raggio della seconda coda esponenziale | test falliti: 2 (d2, e1)
+RILEVATO | riflessione mancante | test falliti: 1 (d4)
+RILEVATO | seconda coda solo fuori dalla prima (miscela sbagliata) | test falliti: 1 (d1)
+RILEVATO | blocchi di 8 um sfasati di un quadratino | test falliti: 1 (a7)
+RILEVATO | seme ignorato nei blocchi | test falliti: 1 (f4)
+RILEVATO | ipergeometrica con nucleo e citoplasma scambiati | test falliti: 1 (b2)
+RILEVATO | seme non rimescolato | test falliti: 1 (f5)
+mutanti rilevati 12/12
