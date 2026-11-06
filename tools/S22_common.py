@@ -15,6 +15,13 @@ PRESET_TYPES = {"A1": ["epiteliale", "immunitario", "stromale e muscolo liscio"]
 MERGE = {"epiteliale normale": "epiteliale", "epiteliale tumorale": "epiteliale"}
 
 
+def inside_box(roi_row, x_um, y_um, other_row):
+    """Nuclei di un'area (coordinate in um dall'origine dell'area) che cadono nel riquadro di un'altra area (pixel dell'immagine).
+    Le aree di R2 dello stesso tessuto si sovrappongono fino al 39 % (revisione G-5 di S2.2)."""
+    col = roi_row.c0 + np.asarray(x_um) / roi_row.um_per_px; row = roi_row.r0 + np.asarray(y_um) / roi_row.um_per_px
+    return (col >= other_row.c0) & (col < other_row.c1) & (row >= other_row.r0) & (row < other_row.r1)
+
+
 def _rowcos(A, B):
     """Coseno riga per riga fra due csr della stessa forma."""
     num = np.asarray(A.multiply(B).sum(axis=1)).ravel()

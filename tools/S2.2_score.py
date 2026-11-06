@@ -2,7 +2,7 @@
 Uso: .venv/bin/python tools/S2.2_score.py   (legge /mnt/micron/geo_spatialtrans/S2.2/race/*; scrive results/S2.2/S2.2_*.csv)
 Pre-registrazione: docs/steps/S2.2.md (regole R-1, R-2; previsioni; controprova)."""
 import glob, json, os, numpy as np, pandas as pd
-M = "/mnt/micron/geo_spatialtrans/S2.2/race"; RES = "results/S2.2"; os.makedirs(RES, exist_ok=True)
+M = os.environ.get("S22_RACE_OUT", "/mnt/micron/geo_spatialtrans/S2.2/race"); RES = os.environ.get("S22_RES", "results/S2.2"); os.makedirs(RES, exist_ok=True)
 METRICS = {"m1": "m1", "m2": "m2", "m3": "m3", "m4": "m4_ratio"}
 MAIN = ["atlas_M", "atlas_G", "nuc_M", "nuc_G", "exp_M", "exp_G"]          # ordine di preferenza nei pareggi (R-1)
 SEED_B = 20261107; B = 2000
@@ -39,13 +39,14 @@ for a, g in per.groupby("archetype"):
     W = g.pivot(index="roi_id", columns="arm", values="S")
     Sa = W[arms].mean()
     best = Sa.idxmin()
-    tie = []
+    second = Sa.drop(best).idxmin()
     for x in arms:
         d = W[x] - W[best]; n = d.notna().sum()
         se = d.std(ddof=1) / np.sqrt(n) if x != best else 0.0
-        is_tie = (x == best) or (d.mean() < 2 * se)
-        summ.append(dict(archetype=a, arm=x, S=Sa[x], diff_vs_best=d.mean(), se_diff=se, n_roi=int(n), tie_with_best=bool(is_tie)))
-        if is_tie: tie.append(x)
+        summ.append(dict(archetype=a, arm=x, S=Sa[x], diff_vs_best=d.mean(), se_diff=se, n_roi=int(n), is_second=bool(x == second),
+                         tie_with_best=bool(x == best or (x == second and d.mean() < 2 * se))))
+    # R-1 come scritta: pareggio solo fra il secondo e il primo; allora si sceglie per ordine fra i due (correzione dopo la revisione G-5)
+    tie = [x for x in (best, second) if summ[-len(arms) + arms.index(x)]["tie_with_best"]]
     win = [x for x in MAIN if x in tie][0]
     winners.append(dict(archetype=a, best_score=best, winner=win, tie_set=";".join(tie), rule="score" if win == best else "tie-break order"))
     gw = g[g.arm == win].set_index("roi_id")

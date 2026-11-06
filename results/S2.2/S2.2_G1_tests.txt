@@ -19,6 +19,9 @@ PASS d7 cell_df senza cell_type -> errore
 PASS d8 senza seme -> errore 
 PASS d9 fattore di profondita' <= 0 -> errore 
 PASS d10 tipo senza distribuzione dei totali -> errore 
+PASS d11 cell_id duplicati -> errore 
+PASS d12 quote dei sottotipi che non sommano a 1 -> errore 
+PASS d13 NA nei quantili dei totali -> errore 
 PASS e1 tipi dei preset (R) = PRESET_TYPES di tools/S22_common.py 
 PASS e2 PRESET_TYPES identico in tools/S2.2_real.py e tools/S22_common.py 
 PASS f1 modello G: varianza del gene = formula esatta (entro 5 %) osservata 1057.7 attesa 1081.1
@@ -26,5 +29,9 @@ PASS f2 modello M sullo stesso caso: varianza binomiale (entro 5 %)
 PASS g1 sottotipi spenti: un solo profilo per tipo, media pesata dei sottotipi 
 PASS h1 lettura: profili = somme / totale, nell'ordine dei geni 
 PASS h2 lettura: phi, modello, fattore 
+PASS i1 totali per sottotipo: media di ogni sottotipo = media della sua distribuzione (|z| < 5) a|1 15.1; a|2 150.5; a|3 1492.8; b|1 249.9
+PASS i2 totali per sottotipo: somma = totale, quote come prima 
+PASS i3 totali per sottotipo senza i quantili -> errore 
+PASS i4 con totals_by = "type" il risultato non cambia se ci sono anche i quantili per sottotipo 
 
-28 PASS, 0 FAIL
+35 PASS, 0 FAIL

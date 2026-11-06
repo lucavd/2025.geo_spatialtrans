@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-06 (S2.2)
+
+* **Creazione**: [Che trascritti diamo a ogni cellula simulata? (S2.2)](steps/S2.2.md): perimetro scelto da Luca («Atlante Flex dove esiste»), banco della gara con la geometria vera, regole R-1...R-3, cancelli G-1...G-5, previsioni P-1...P-6 con l'ok di Luca («Ok, come proposte»), tre correzioni prima del calcolo, esiti, deviazioni, post hoc PH-1...PH-5, revisione avversariale (due revisori), riassunto «In breve» con 3 decisioni per Luca; report `reports/S2.2.html`.
+* **Creazione**: decisione tecnica [S2.2: fonte dei profili, modello di conteggio e fattore di profondità decisi dai dati (DEC-045)](decisions/DEC-045.md).
+* **Modifica**: BIO_REFERENCES B-402...B-419; BACKLOG (nuove BL-215...BL-219; chiusa BL-204; aggiornate BL-194, BL-205); ROADMAP sezioni 6 e 7; CHANGELOG.
+
 ## 2026-11-05 (S2.1)
 
 * **Chiusura**: [La griglia dei quadratini di Visium HD sopra le cellule simulate è costruita bene? (S2.1)](steps/S2.1.md) chiuso con l'approvazione di Luca («chiudi», risposta all'unica decisione del riassunto «In breve»).

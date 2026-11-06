@@ -1,0 +1,121 @@
+---
+title: "S2.2: con quali profili di espressione diamo i trascritti alle cellule simulate, perché i quadratini somiglino a quelli veri?"
+subtitle: "geo_spatialtrans, report di step (protocollo v2)"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+execute:
+  echo: false
+  warning: false
+---
+
+```{r setup}
+#| include: false
+.libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({ library(knitr); library(ggplot2) })
+R <- "../results/S2.2"; rd <- function(f) read.csv(file.path(R, f), stringsAsFactors = FALSE, check.names = FALSE)
+TIS <- c(A1 = "intestino di topo", A2 = "tumore del colon", A3 = "stroma del tumore", A4 = "linfonodo", A5 = "cervello di topo", A6 = "cuore")
+ARM <- c(exp_M = "R6 con corona, M", exp_G = "R6 con corona, G", nuc_M = "R6 solo nucleo, M", nuc_G = "R6 solo nucleo, G", atlas_M = "atlante, M", atlas_G = "atlante, G")
+theme_set(theme_bw(base_size = 11))
+```
+
+{{< include _S2.2_inbreve.md >}}
+
+# Decisioni e verifiche di Luca
+
+{{< include _S2.2_verifiche.md >}}
+
+# Dubbi rinviati
+
+{{< include _S2.2_rinviati.md >}}
+
+# Cancelli, previsioni e controprova
+
+{{< include _S2.2_esiti.md >}}
+
+## La gara per tessuto
+
+```{r fig-race}
+#| fig-width: 9
+#| fig-height: 5.5
+s <- rd("S2.2_race_scores.csv"); w <- rd("S2.2_race_winners.csv")
+s$tessuto <- factor(TIS[s$archetype], levels = TIS); s$braccio <- factor(ARM[s$arm], levels = rev(ARM))
+s$vince <- mapply(function(a, x) x == w$winner[w$archetype == a], s$archetype, s$arm)
+ggplot(s, aes(S, braccio, fill = vince)) + geom_col(width = 0.7) + facet_wrap(~ tessuto, ncol = 3) +
+  scale_fill_manual(values = c(`TRUE` = "#2b6cb0", `FALSE` = "grey70"), labels = c("altri", "vincitore"), name = NULL) +
+  labs(x = "punteggio S (scarto relativo medio dal vero; più basso è meglio)", y = NULL) + theme(legend.position = "bottom")
+```
+
+Cosa guardare: il vincitore per tessuto e la distanza dal secondo. Nel linfonodo e nel cervello manca l'atlante (deviazione 1). Nel cuore il profilo medio senza tipi fa come i profili per tipo (CP-1 in `S2.2_CP1.csv`).
+
+## Da dove vengono gli scarti dell'intestino (analisi post hoc)
+
+```{r fig-ph1}
+#| fig-width: 8
+#| fig-height: 3.5
+p <- rd("S2.2_PH1.csv"); p <- p[p$archetype == "A1" & p$metric %in% c("m3") & grepl("^exp_G", p$arm), ]
+z <- rd("S2.2_PH1_P5.csv"); z <- z[grepl("_G_", z$arm), ]
+lab <- c(exp_G = "sorteggiato (simulatore)", exp_G_shuf = "vero, rimescolato nell'area", exp_G_shuftot = "vero, rimescolato nel decimo del totale",
+         exp_G_oracle = "vero, al suo posto", exp_G_subtot = "sorteggiato con un totale per sottotipo")
+d <- rbind(data.frame(misura = "somiglianza fra blocchi vicini: scarto dal vero", arm = p$arm, v = p$e_mean),
+           data.frame(misura = "zeri in eccesso: simulato meno vero", arm = z$arm, v = z$diff),
+           data.frame(misura = "zeri in eccesso: simulato meno vero", arm = "exp_G", v = rd("S2.2_P5_CP2.csv")$diff[1]))
+d$sottotipo <- factor(lab[d$arm], levels = rev(lab))
+ggplot(d, aes(v, sottotipo)) + geom_col(fill = "#2b6cb0", width = 0.6) + geom_vline(xintercept = 0) + facet_wrap(~ misura, scales = "free_x") +
+  labs(x = NULL, y = "sottotipo della cellula")
+```
+
+Cosa guardare: la somiglianza fra vicini torna solo con il sottotipo vero al suo posto (posizione); gli zeri tornano anche rimescolando dentro il decimo del totale e con un totale per sottotipo (legame sottotipo-totale).
+
+{{< include _S2.2_posthoc.md >}}
+
+# Revisione avversariale
+
+{{< include _S2.2_review.md >}}
+
+# Deviazioni dichiarate
+
+{{< include _S2.2_deviazioni.md >}}
+
+# Cosa è girato
+
+- Commit della pre-registrazione: `c7ef7b1`, `edbd012` (cancelli), `9eb1c1b` (ok di Luca), `6035eb2` e `abf8d70` (correzioni prima del calcolo); chiusura in questo commit.
+- Banco: `tools/S2.2_real.py` (5 processi su 5 dataset), gara `tools/S2.2_race.py` (un processo per tessuto, 4 in parallelo; 14 bracci, 3 repliche, semi 20261106 + 1000 r + braccio, per area), punteggi `tools/S2.2_score.py`, fattore `tools/S2.2_depth_layers.R` + `tools/S2.2_depth.py`, profili `tools/S2.2_build_profiles.py`, pannello `tools/S2.2_panel.R` (semi 20261108, 20261109), post hoc `tools/S2.2_posthoc_*.py|R`, riproduzione `tools/S2.2_repro.sh`, `tools/S2.2_repro_content.R`, mutanti `tools/S2.2_mutants.sh`.
+- Durata: banco circa 10 minuti; gara circa 10 minuti per tessuto; pannello circa 5 minuti con 4 processi (la funzione: 0.6-6 s per area di 1 mm² con 4 processi). Server condiviso: tempi non da manoscritto.
+- md5: `results/S2.2/S2.2_md5_before.txt`, `S2.2_md5_after.txt` (188 file identici); atlante `S2.2_atlas_md5.txt`; profili `S2.2_profiles_md5.txt`.
+
+```{r}
+kable(rd("S2.2_depth_factor.csv")[, c("archetype", "f", "lo", "hi", "f_min", "f_max")], digits = 3, caption = "Fattore di profondità per tessuto (regola R-3)")
+```
+
+# Appendice
+
+## Pre-registrazione
+
+{{< include _S2.2_prereg.md >}}
+
+## Da dove vengono i numeri del riassunto
+
+| frase del riassunto | fonte | valore letto |
+|---|---|---|
+| vincono i nuclei veri con la corona e il modello G in intestino, tumore, linfonodo, cervello; atlante nello stroma | `results/S2.2/S2.2_race_winners.csv` | A1, A2, A4, A5 exp_G; A3 atlas_M; A6 exp_M (ordine) |
+| nel cuore nessuna fonte batte un profilo medio | `S2.2_CP1.csv`, A6 null_pooled | diff −0.0008, se 0.0077 |
+| 3-6 trascritti per quadratino nel cuore | `S2.2_E1_real.csv`, A6 umi_per_bin | 2.89-5.68 |
+| 20 confronti su 24 | `S2.2_predictions.csv` (P-1...P-4) | 20 confermata, 3 indeterminata, 1 smentita |
+| blocchi vicini un quarto meno simili nell'intestino | `S2.2_predictions.csv`, P-3 A1 | −0.241 |
+| con il sottotipo vero al suo posto un sedicesimo | `S2.2_PH1.csv`, A1 exp_G_oracle m3 | −0.061 |
+| eccesso di zeri simulato circa un quinto del vero | `S2.2_P5_CP2.csv`, exp_G | 0.0088 contro 0.0425 |
+| con un totale per sottotipo entro il margine | `S2.2_PH1_P5.csv`, exp_G_subtot | diff −0.0098 [−0.0176, +0.0050]; margine ±0.02 |
+| le altre misure cambiano al più di un centesimo | `S2.2_PH1.csv`, |scarto| di exp_G_subtot meno |scarto| di exp_G | massimo +0.0114 (stroma m3), minimo −0.0621 (linfonodo m3) |
+| rimescolando in due modi | `S2.2_PH1_P5.csv`, exp_G_shuf, exp_G_shuftot | 0.0078; 0.0313 |
+| fattore 0.79, 0.87, 0.89, 1.25, 1.58, 2.6 | `S2.2_depth_factor.csv` | 0.787, 0.867, 0.893, 1.252, 1.584, 2.625 |
+| il preset mette il 29 % di cellule in più dei nuclei | `S2.2_PH2.csv`, A1 density_ratio_real_sim (media) | 0.774 |
+| nel linfonodo i totali dai nuclei con un tipo | `S2.2_PH2.csv`, A4 mean_ratio_real_sim | 0.811 |
+| regola dei pareggi: nel tumore vincono i nuclei veri | revisore dei numeri; `S2.2_race_winners.csv` | prima atlas_M, ora exp_G |
+| aree sovrapposte fino a quasi due quinti, tranne il cuore | `results/R2/R2_rois_checked.csv` (riquadri) | massimo 0.39 (linfonodo f2-p2); cuore 0 |
+| togliendo i nuclei in comune la gara non cambia | `results/S2.2/PH5/S2.2_race_scores.csv` | |ΔS| ≤ 0.0033; stessi vincitori |
+| fino a 150 000 confronti | `S2.2_PH4.csv`, n_z | massimo 151 695 |
+| l'effetto dei pareggi è al più di un millesimo | revisore dei numeri | m3 linfonodo f1 +1.0e-3 |

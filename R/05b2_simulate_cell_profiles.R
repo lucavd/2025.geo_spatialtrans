@@ -23,7 +23,9 @@ load_cell_profiles <- function(archetype, dir = getOption("geo.spatialtrans.prof
   meta <- .s22_read_json(f("_meta.json"))
   S <- Matrix::sparseMatrix(i = match(sums$subtype, sub$subtype), j = sums$gene_index, x = as.numeric(sums$count),
                             dims = c(nrow(sub), nrow(genes)))
-  P <- as.matrix(S / Matrix::rowSums(S))
+  rs <- Matrix::rowSums(S)
+  if (any(rs <= 0)) stop("load_cell_profiles(): sottotipi senza conteggi: ", paste(sub$subtype[rs <= 0], collapse = ", "), call. = FALSE)
+  P <- as.matrix(S / rs)
   dimnames(P) <- list(sub$subtype, genes$gene_id)
   ph <- numeric(nrow(genes)); ph[phi$gene_index] <- phi$phi
   list(archetype = archetype, genes = genes, subtypes = sub[, c("subtype", "cell_type", "share")], P = P, phi = ph, totals = tot,
@@ -53,6 +55,11 @@ load_cell_profiles <- function(archetype, dir = getOption("geo.spatialtrans.prof
     stop("simulate_cell_profiles(): `phi` non ha un valore >= 0 per ogni gene del profilo.", call. = FALSE)
   if (nrow(prof$genes) != ncol(P)) stop("simulate_cell_profiles(): geni e profili non hanno la stessa lunghezza.", call. = FALSE)
   if (!identical(rownames(P), prof$subtypes$subtype)) stop("simulate_cell_profiles(): sottotipi e righe dei profili non coincidono.", call. = FALSE)
+  sh <- tapply(prof$subtypes$share, prof$subtypes$cell_type, sum)
+  if (anyNA(prof$subtypes$share) || any(prof$subtypes$share < 0) || any(abs(sh - 1) > 1e-9))
+    stop("simulate_cell_profiles(): le quote dei sottotipi di un tipo non sommano a 1.", call. = FALSE)
+  tt <- prof$totals[, setdiff(names(prof$totals), "q"), drop = FALSE]
+  if (anyNA(tt) || any(tt < 0)) stop("simulate_cell_profiles(): quantili dei totali con NA o negativi.", call. = FALSE)
   miss <- setdiff(types, prof$subtypes$cell_type)
   if (length(miss)) stop("simulate_cell_profiles(): tipi senza profilo: ", paste(miss, collapse = ", "), call. = FALSE)
   miss <- setdiff(types, setdiff(names(prof$totals), "q"))
@@ -73,7 +80,8 @@ load_cell_profiles <- function(archetype, dir = getOption("geo.spatialtrans.prof
 #' @param seed intero.
 #' @param depth_factor fattore di profondita' (predefinito: quello dei profili, regola R-3 di S2.2).
 #' @param noise `"M"` o `"G"` (predefinito: il vincitore della gara di S2.2 per il tessuto).
-#' @param use_subtypes `FALSE` usa un profilo per tipo (media dei sottotipi pesata con le quote e i trascritti); per le controprove.
+#' @param use_subtypes `FALSE` usa un profilo per tipo (media dei profili dei sottotipi pesata con le quote di cellule; la gara di S2.2
+#'   pesava anche con i trascritti, quindi i due profili differiscono di poco); per le controprove.
 #' @param totals_by `"type"`: totale dalla distribuzione del tipo (D2-3); `"subtype"`: prima il sottotipo, poi il totale dalla distribuzione
 #'   del sottotipo (`profiles$totals_subtype`; analisi PH-3 di S2.2). Con `use_subtypes = FALSE` vale sempre `"type"`.
 #' @param chunk_size cellule per blocco (fa parte della definizione del risultato).
@@ -87,6 +95,7 @@ simulate_cell_profiles <- function(cell_df, profiles, seed, depth_factor = profi
   if (!is.data.frame(cell_df) || !all(c("cell_id", "cell_type") %in% names(cell_df)))
     stop("simulate_cell_profiles(): `cell_df` deve avere `cell_id` e `cell_type`.", call. = FALSE)
   if (anyNA(cell_df$cell_type)) stop("simulate_cell_profiles(): `cell_type` con NA.", call. = FALSE)
+  if (anyNA(cell_df$cell_id) || anyDuplicated(cell_df$cell_id)) stop("simulate_cell_profiles(): `cell_id` con NA o duplicati.", call. = FALSE)
   if (missing(seed) || length(seed) != 1L || !is.finite(seed)) stop("simulate_cell_profiles(): serve un `seed`.", call. = FALSE)
   noise <- match.arg(noise, c("M", "G"))
   if (!is.numeric(depth_factor) || length(depth_factor) != 1L || !is.finite(depth_factor) || depth_factor <= 0)

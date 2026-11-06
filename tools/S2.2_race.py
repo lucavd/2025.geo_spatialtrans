@@ -17,7 +17,8 @@ MIN_SUB = 30; SEED0 = 20261106; REPS = 3; SEED_M4 = 20261106
 ARMS = ["exp_M", "exp_G", "nuc_M", "nuc_G", "atlas_M", "atlas_G", "null_pooled", "null_other",
         "exp_M_nosub", "exp_G_nosub", "nuc_M_nosub", "nuc_G_nosub", "atlas_M_nosub", "atlas_G_nosub"]
 TYPES = S.PRESET_TYPES[A]
-rois_tab = pd.read_csv("results/R2/R2_rois_checked.csv"); rois_tab = rois_tab[rois_tab.archetype == A].reset_index(drop=True)
+rois_all = pd.read_csv("results/R2/R2_rois_checked.csv")
+rois_tab = rois_all[rois_all.archetype == A].reset_index(drop=True)
 ROIS = list(rois_tab.roi_id)
 t0 = time.time()
 
@@ -37,8 +38,12 @@ print(f"[{A}] universo {G} geni (Visium {len(vis)}); atlante {'si' if HAVE_ATLAS
 
 
 # ------------------------------------------------------------------ cellule di stima delle candidate
-def r6_cells(arch, roi, fp):
-    """Nuclei di R6 di un'area con tipo del preset (classificabili), conteggi sull'universo."""
+NO_OVERLAP = os.environ.get("S22_NO_OVERLAP") == "1"   # PH-5 (dopo la revisione G-5): nella stima si tolgono i nuclei dentro l'area tenuta fuori
+
+
+def r6_cells(arch, roi, fp, exclude=None):
+    """Nuclei di R6 di un'area con tipo del preset (classificabili), conteggi sull'universo.
+    exclude: riga di R2_rois_checked dell'area tenuta fuori; i nuclei che cadono nel suo riquadro (pixel dell'immagine) si tolgono."""
     tab = pd.read_parquet(f"{M}/R6/counts/{arch}_{roi}_nuclei.parquet")
     C = sp.load_npz(f"{M}/R6/counts/{arch}_{roi}_{fp}.npz").tocsr()
     lab = pd.read_parquet(f"{M}/R6/labels/{arch}_exp_umi20_seed20261022_nuclei_ph1.parquet")
@@ -46,6 +51,9 @@ def r6_cells(arch, roi, fp):
     ty = lab.cell_type.reindex(tab.label).replace(S.MERGE).to_numpy()
     cl = lab.cluster.reindex(tab.label).to_numpy()
     ok = np.isin(ty, S.PRESET_TYPES[arch]) & pd.notna(cl)
+    if exclude is not None:
+        me = rois_all[(rois_all.archetype == arch) & (rois_all.roi_id == roi)].iloc[0]
+        ok &= ~S.inside_box(me, tab.x_um.to_numpy(), tab.y_um.to_numpy(), exclude)
     return C[ok], ty[ok], np.array([f"{t}|{c}" for t, c in zip(ty[ok], cl[ok])])
 
 
@@ -201,7 +209,7 @@ for k, roi in enumerate(ROIS):
     train = [r for r in ROIS if r != roi]
     src = {}
     for fp in ("exp", "nuc"):
-        parts = [r6_cells(A, r, fp) for r in train]
+        parts = [r6_cells(A, r, fp, rois_tab.iloc[k] if NO_OVERLAP else None) for r in train]
         X_ = sp.vstack([p[0] for p in parts]).tocsc()[:, GV]; ty_ = np.concatenate([p[1] for p in parts]); sb_ = merge_small(ty_, np.concatenate([p[2] for p in parts]))
         src[(fp, True)] = build_source(X_, ty_, sb_, True); src[(fp, False)] = build_source(X_, ty_, sb_, False)
         if fp == "exp":

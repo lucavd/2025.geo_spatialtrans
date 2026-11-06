@@ -21,12 +21,17 @@ def merge_small(ty, sub):
 
 
 def r6_all(A, fp):
+    """Nuclei classificabili con tipo del preset delle 5 aree; un nucleo che cade nel riquadro di un'area precedente (le aree di R2 si
+    sovrappongono, revisione G-5) si conta una volta sola, nella prima area."""
     Xs, tys, subs = [], [], []
-    for roi in rois[rois.archetype == A].roi_id:
+    ra = rois[rois.archetype == A].reset_index(drop=True)
+    for i, roi in enumerate(ra.roi_id):
         tab = pd.read_parquet(f"{M}/R6/counts/{A}_{roi}_nuclei.parquet"); C = sp.load_npz(f"{M}/R6/counts/{A}_{roi}_{fp}.npz").tocsr()
         lab = pd.read_parquet(f"{M}/R6/labels/{A}_exp_umi20_seed20261022_nuclei_ph1.parquet"); lab = lab[lab.roi_id == roi].set_index("label")
         ty = lab.cell_type.reindex(tab.label).replace(S.MERGE).to_numpy(); cl = lab.cluster.reindex(tab.label).to_numpy()
         ok = np.isin(ty, S.PRESET_TYPES[A]) & pd.notna(cl)
+        for j in range(i):
+            ok &= ~S.inside_box(ra.iloc[i], tab.x_um.to_numpy(), tab.y_um.to_numpy(), ra.iloc[j])
         Xs.append(C[ok]); tys.append(ty[ok]); subs.append(np.array([f"{t}|{c}" for t, c in zip(ty[ok], cl[ok])]))
     ty = np.concatenate(tys)
     return sp.vstack(Xs).tocsr(), ty, merge_small(ty, np.concatenate(subs))
@@ -62,13 +67,11 @@ for A in S.PRESET_TYPES:
     phi = np.where(den > 0, np.maximum(num, 0) / np.where(den > 0, den, 1), 0.0)
     pd.DataFrame({"gene_index": np.arange(1, len(vis) + 1), "phi": phi}).to_csv(f"{OUT}/{A}_phi.tsv", sep="\t", index=False)
     # totali per tipo: nuclei veri classificabili di R6 (impronta intera), tutte le aree
-    lab = pd.read_parquet(f"{M}/R6/labels/{A}_exp_umi20_seed20261022_nuclei_ph1.parquet"); lab["ptype"] = lab.cell_type.replace(S.MERGE)
-    lab = lab[lab.ptype.isin(S.PRESET_TYPES[A]) & lab.classifiable]
+    Xe, ty_e, sub_e = r6_all(A, "exp"); tot_e = np.asarray(Xe.sum(axis=1)).ravel()     # totali dei nuclei veri, impronta intera, senza doppi
     qs = np.linspace(0, 1, 1001)
-    tq = pd.DataFrame({t: np.quantile(g.umi.to_numpy(), qs) for t, g in lab.groupby("ptype")}); tq.insert(0, "q", qs)
+    tq = pd.DataFrame({t: np.quantile(tot_e[ty_e == t], qs) for t in np.unique(ty_e)}); tq.insert(0, "q", qs)
     tq.to_csv(f"{OUT}/{A}_totals.tsv", sep="\t", index=False)
     if src in ("exp", "nuc"):                                    # totali per sottotipo (PH-3): stessi nuclei dei sottotipi, impronta intera
-        Xe, _, sub_e = r6_all(A, "exp"); tot_e = np.asarray(Xe.sum(axis=1)).ravel()
         tqs = pd.DataFrame({s_: np.quantile(tot_e[sub_e == s_], qs) for s_ in us}); tqs.insert(0, "q", qs)
         tqs.to_csv(f"{OUT}/{A}_totals_subtype.tsv", sep="\t", index=False)
     elif os.path.exists(f"{OUT}/{A}_totals_subtype.tsv"):

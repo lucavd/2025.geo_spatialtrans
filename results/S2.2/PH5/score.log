@@ -1,0 +1,48 @@
+archetype best_score  winner       tie_set            rule
+       A1      exp_G   exp_G         exp_G           score
+       A2      exp_G   exp_G         exp_G           score
+       A3    atlas_M atlas_M atlas_M;exp_G           score
+       A4      exp_G   exp_G         exp_G           score
+       A5      exp_G   exp_G         exp_G           score
+       A6      exp_G   exp_M   exp_G;exp_M tie-break order
+ id archetype     arm  estimate      lo      hi  relevance       verdict
+P-1        A1   exp_G    0.0026 -0.0011  0.0063     0.0104    confermata
+P-2        A1   exp_G    0.0226  0.0166  0.0287     0.0276 indeterminata
+P-3        A1   exp_G   -0.2374 -0.2709 -0.2039     0.0992      smentita
+P-4        A1   exp_G    0.0229 -0.0045  0.0504     0.0637    confermata
+P-1        A2   exp_G    0.0070  0.0002  0.0138     0.0116 indeterminata
+P-2        A2   exp_G    0.0170  0.0061  0.0280     0.0320    confermata
+P-3        A2   exp_G   -0.0302 -0.1027  0.0424     0.1841    confermata
+P-4        A2   exp_G    0.0299 -0.0182  0.0779     0.1908    confermata
+P-1        A3 atlas_M   -0.0001 -0.0114  0.0112     0.0417    confermata
+P-2        A3 atlas_M    0.0112 -0.0044  0.0268     0.0529    confermata
+P-3        A3 atlas_M    0.0262 -0.0691  0.1216     0.2522    confermata
+P-4        A3 atlas_M   -0.0288 -0.0841  0.0266     0.1297    confermata
+P-1        A4   exp_G    0.0134  0.0041  0.0227     0.0347    confermata
+P-2        A4   exp_G    0.0367  0.0208  0.0526     0.0574    confermata
+P-3        A4   exp_G   -0.1530 -0.2423 -0.0638     0.2518    confermata
+P-4        A4   exp_G   -0.0389 -0.0813  0.0036     0.0955    confermata
+P-1        A5   exp_G    0.0011  0.0005  0.0017     0.0049    confermata
+P-2        A5   exp_G    0.0060  0.0031  0.0088     0.0373    confermata
+P-3        A5   exp_G    0.0149 -0.0147  0.0444     0.1137    confermata
+P-4        A5   exp_G    0.0083 -0.0212  0.0379     0.1097    confermata
+P-1        A6   exp_M    0.0010 -0.0056  0.0075     0.0200    confermata
+P-2        A6   exp_M   -0.0048 -0.0355  0.0258     0.0988    confermata
+P-3        A6   exp_M    0.1425 -0.1294  0.4144     0.6914    confermata
+P-4        A6   exp_M   -0.0553 -0.0776 -0.0329     0.0752 indeterminata
+  id archetype        null  winner  S_null  S_winner    diff     se  null_loses
+CP-1        A1 null_pooled   exp_G  0.1998    0.0735  0.1263 0.0045        True
+CP-1        A1  null_other   exp_G  0.3261    0.0735  0.2526 0.0051        True
+CP-1        A2 null_pooled   exp_G  0.0712    0.0359  0.0353 0.0057        True
+CP-1        A2  null_other   exp_G  0.3309    0.0359  0.2949 0.0110        True
+CP-1        A3 null_pooled atlas_M  0.1306    0.0415  0.0891 0.0186        True
+CP-1        A3  null_other atlas_M  0.3010    0.0415  0.2594 0.0229        True
+CP-1        A4 null_pooled   exp_G  0.1527    0.0627  0.0900 0.0164        True
+CP-1        A4  null_other   exp_G  0.2669    0.0627  0.2042 0.0069        True
+CP-1        A5 null_pooled   exp_G  0.0508    0.0155  0.0353 0.0072        True
+CP-1        A5  null_other   exp_G  0.2062    0.0155  0.1907 0.0038        True
+CP-1        A6 null_pooled   exp_M  0.0845    0.0854 -0.0008 0.0077       False
+CP-1        A6  null_other   exp_M  0.1285    0.0854  0.0431 0.0421       False
+        arm    sim   real    diff  diff_lo  diff_hi  sim_lo  sim_hi  n_pairs_real
+      exp_G 0.0100 0.0425 -0.0326  -0.0379  -0.0202  0.0063  0.0181           205
+exp_G_nosub 0.0026 0.0425 -0.0399  -0.0528  -0.0240  0.0022  0.0031           205

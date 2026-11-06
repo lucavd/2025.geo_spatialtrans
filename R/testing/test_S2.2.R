@@ -64,6 +64,12 @@ ck("d8 senza seme -> errore", err(simulate_cell_profiles(cells, prof)))
 ck("d9 fattore di profondita' <= 0 -> errore", err(simulate_cell_profiles(cells, prof, seed = 1, depth_factor = 0)))
 bad <- prof; bad$totals$b <- NULL
 ck("d10 tipo senza distribuzione dei totali -> errore", err(simulate_cell_profiles(cells, bad, seed = 1)))
+cdup <- cells; cdup$cell_id[2] <- cdup$cell_id[1]
+ck("d11 cell_id duplicati -> errore", err(simulate_cell_profiles(cdup, prof, seed = 1)))
+bad <- prof; bad$subtypes$share[1] <- 0.6
+ck("d12 quote dei sottotipi che non sommano a 1 -> errore", err(simulate_cell_profiles(cells, bad, seed = 1)))
+bad <- prof; bad$totals$a[5] <- NA
+ck("d13 NA nei quantili dei totali -> errore", err(simulate_cell_profiles(cells, bad, seed = 1)))
 # (e) catalogo dei tipi dei preset = catalogo del banco
 arch <- c(A1 = "epithelial", A2 = "tumor_microenv", A3 = "stromal_rich", A4 = "lymphoid", A5 = "brain_cortex", A6 = "columnar_muscle")
 py <- system2(".venv/bin/python", c("-c", shQuote("import sys; sys.path.insert(0, 'tools'); import S22_common as S\nfor a, t in S.PRESET_TYPES.items(): print(a + '\\t' + '|'.join(sorted(t)))")), stdout = TRUE)

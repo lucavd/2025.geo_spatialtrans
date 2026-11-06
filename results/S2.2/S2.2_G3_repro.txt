@@ -1,0 +1,101 @@
+gara: file CSV e JSON per area (prima esecuzione: 4 processi; seconda: 2 processi, cartella /mnt/micron/geo_spatialtrans/S2.2/repro/race)
+gara: 60 file, 0 diversi
+gara, indice degli zeri (npz, confronto dei contenuti): 30 file, 0 diversi
+pannello: file RDS (prima esecuzione: 4 processi; seconda: 2 processi, cartella /mnt/micron/geo_spatialtrans/S2.2/repro/panel)
+DIVERSO A1_r1_s20261108_G.rds
+DIVERSO A1_r1_s20261108_M.rds
+DIVERSO A1_r1_s20261109_G.rds
+DIVERSO A1_r1_s20261109_M.rds
+DIVERSO A1_r2_s20261108_G.rds
+DIVERSO A1_r2_s20261108_M.rds
+DIVERSO A1_r2_s20261109_G.rds
+DIVERSO A1_r2_s20261109_M.rds
+DIVERSO A1_r3_s20261108_G.rds
+DIVERSO A1_r3_s20261108_M.rds
+DIVERSO A1_r3_s20261109_G.rds
+DIVERSO A1_r3_s20261109_M.rds
+DIVERSO A1_r4_s20261108_G.rds
+DIVERSO A1_r4_s20261108_M.rds
+DIVERSO A1_r4_s20261109_G.rds
+DIVERSO A1_r4_s20261109_M.rds
+DIVERSO A1_r5_s20261108_G.rds
+DIVERSO A1_r5_s20261108_M.rds
+DIVERSO A1_r5_s20261109_G.rds
+DIVERSO A1_r5_s20261109_M.rds
+DIVERSO A2_r1_s20261108_M.rds
+DIVERSO A2_r1_s20261109_M.rds
+DIVERSO A2_r2_s20261108_M.rds
+DIVERSO A2_r2_s20261109_M.rds
+DIVERSO A2_r3_s20261108_M.rds
+DIVERSO A2_r3_s20261109_M.rds
+DIVERSO A2_r4_s20261108_M.rds
+DIVERSO A2_r4_s20261109_M.rds
+DIVERSO A2_r5_s20261108_M.rds
+DIVERSO A2_r5_s20261109_M.rds
+DIVERSO A3_r1_s20261108_M.rds
+DIVERSO A3_r1_s20261109_M.rds
+DIVERSO A3_r2_s20261108_M.rds
+DIVERSO A3_r2_s20261109_M.rds
+DIVERSO A3_r3_s20261108_M.rds
+DIVERSO A3_r3_s20261109_M.rds
+DIVERSO A3_r4_s20261108_M.rds
+DIVERSO A3_r4_s20261109_M.rds
+DIVERSO A3_r5_s20261108_M.rds
+DIVERSO A3_r5_s20261109_M.rds
+DIVERSO A4_f1_s20261108_G.rds
+DIVERSO A4_f1_s20261108_M.rds
+DIVERSO A4_f1_s20261109_G.rds
+DIVERSO A4_f1_s20261109_M.rds
+DIVERSO A4_f2_s20261108_G.rds
+DIVERSO A4_f2_s20261108_M.rds
+DIVERSO A4_f2_s20261109_G.rds
+DIVERSO A4_f2_s20261109_M.rds
+DIVERSO A4_p1_s20261108_G.rds
+DIVERSO A4_p1_s20261108_M.rds
+DIVERSO A4_p1_s20261109_G.rds
+DIVERSO A4_p1_s20261109_M.rds
+DIVERSO A4_p2_s20261108_G.rds
+DIVERSO A4_p2_s20261108_M.rds
+DIVERSO A4_p2_s20261109_G.rds
+DIVERSO A4_p2_s20261109_M.rds
+DIVERSO A4_p3_s20261108_G.rds
+DIVERSO A4_p3_s20261108_M.rds
+DIVERSO A4_p3_s20261109_G.rds
+DIVERSO A4_p3_s20261109_M.rds
+DIVERSO A5_r1_s20261108_G.rds
+DIVERSO A5_r1_s20261108_M.rds
+DIVERSO A5_r1_s20261109_G.rds
+DIVERSO A5_r1_s20261109_M.rds
+DIVERSO A5_r2_s20261108_G.rds
+DIVERSO A5_r2_s20261108_M.rds
+DIVERSO A5_r2_s20261109_G.rds
+DIVERSO A5_r2_s20261109_M.rds
+DIVERSO A5_r3_s20261108_G.rds
+DIVERSO A5_r3_s20261108_M.rds
+DIVERSO A5_r3_s20261109_G.rds
+DIVERSO A5_r3_s20261109_M.rds
+DIVERSO A5_r4_s20261108_G.rds
+DIVERSO A5_r4_s20261108_M.rds
+DIVERSO A5_r4_s20261109_G.rds
+DIVERSO A5_r4_s20261109_M.rds
+DIVERSO A5_r5_s20261108_G.rds
+DIVERSO A5_r5_s20261108_M.rds
+DIVERSO A5_r5_s20261109_G.rds
+DIVERSO A5_r5_s20261109_M.rds
+DIVERSO A6_r1_s20261108_M.rds
+DIVERSO A6_r1_s20261109_M.rds
+DIVERSO A6_r2_s20261108_M.rds
+DIVERSO A6_r2_s20261109_M.rds
+DIVERSO A6_r3_s20261108_M.rds
+DIVERSO A6_r3_s20261109_M.rds
+DIVERSO A6_r4_s20261108_M.rds
+DIVERSO A6_r4_s20261109_M.rds
+DIVERSO A6_r5_s20261108_M.rds
+DIVERSO A6_r5_s20261109_M.rds
+pannello: 90 file, 90 diversi
+tabella G-2: diversa (contiene i secondi di calcolo, atteso)
+tabella dei profili ricostruiti: identica
+pannello, contenuto: 90 file, 0 diversi nei conteggi o nelle cellule; metadati comuni diversi in 0; campi nuovi nella ripetizione: totals_by 
+pannello (seconda esecuzione dopo la ricostruzione dei profili): file RDS, 4 processi contro 2
+pannello: 100 file, 0 diversi (byte)
+profili ricostruiti: tabella identica
