@@ -29,9 +29,11 @@ def z_corr_theory(L_um, lag_px, step=SUB_UM):
     return float(np.sum(g[:len(g) - k] * g[k:]) / np.sum(g * g))
 
 def gamma_table(s2):
-    """Trasformazione Z -> F sulla tabella ZTAB (gamma di media 1 e varianza s2)."""
-    p = _stats.norm.cdf(ZTAB)
-    return _stats.gamma.ppf(p, a=1.0 / s2, scale=s2)
+    """Trasformazione Z -> F sulla tabella ZTAB (gamma di media 1 e varianza s2); per Z >= 0 con le code superiori
+    (isf di sf), che restano precise vicino a 1 e finite fino a Z = 8.5."""
+    lo = _stats.gamma.ppf(_stats.norm.cdf(ZTAB), a=1.0 / s2, scale=s2)
+    hi = _stats.gamma.isf(_stats.norm.sf(ZTAB), a=1.0 / s2, scale=s2)
+    return np.where(ZTAB >= 0, hi, lo)
 
 def gaussian_z(shape, L_um, rng, step=SUB_UM):
     """Z gaussiano a varianza 1 con correlazione da convoluzione separabile (rumore bianco generato su un riquadro allargato)."""

@@ -1,0 +1,6 @@
+PASS a1 trascritti per cellula e gene (nati) = profili 
+PASS a2 persi per cellula = trascritti fuori dalla griglia persi 7988
+PASS a3 nei quadratini + persi = totale della cellula 
+PASS a4 terne = aggregazione dei trascritti 
+PASS a5 verita' di origine = somma delle terne, nati nel nucleo 
+PASS a6 almeno un trascritto perso (il test vede i persi) 
