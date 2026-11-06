@@ -89,7 +89,7 @@ Il modello adattato (C-2 della pre-registrazione) è una miscela: per una sorgen
 
 dove G(σ) è la gaussiana isotropa in due dimensioni con deviazione standard σ per asse, E(ℓ) il nucleo E(r) ∝ exp(−r/ℓ) normalizzato nel piano (K2 di R5), ∗ la convoluzione e d la distanza della sorgente dal bordo del tessuto. Per un singolo trascritto: con probabilità w si sposta secondo E(ℓ); altrimenti secondo G(σ_e) con probabilità π(d), secondo G(σ_in) con probabilità 1 − π(d). La regola è misurata sul bordo esterno del tessuto; nei lumi la si applica con la distanza dal bordo del lume, e CP-1 dice che funziona entro 8 µm. Valori per sezione nella sezione 9; il cuore usa la mediana delle altre quattro.
 
-**Seconda coda (S2.3, R-2).** Sul vetro a 16-256 µm dal tessuto i conteggi veri superano quelli previsti da questa regola nel tumore del colon (fino a 2.3 volte) e nel cervello (fino a 1.5); fra un termine sul solo vetro e una seconda coda esponenziale (massa w₂, lunghezza ℓ₂) vince la seconda coda in 5 sezioni su 5. La implementa S2.4, con i valori scelti da Luca (BL-221); ℓ₂ arriva a circa 500 µm, oltre il margine di 280 µm.
+**Seconda coda (S2.3, R-2).** Sul vetro a 16-256 µm dal tessuto i conteggi veri superano quelli previsti da questa regola nel tumore del colon (fino a 2.3 volte) e nel cervello (fino a 1.5); fra un termine sul solo vetro e una seconda coda esponenziale (massa w₂, lunghezza ℓ₂) vince la seconda coda in 5 sezioni su 5. La implementa S2.4 con i valori stimati senza le correzioni della sorgente, scelti da Luca ([DEC-051](/decisions/DEC-051.md); sezione 9; BL-221); ℓ₂ arriva a circa 500 µm, oltre il margine di 280 µm.
 
 ## 7. Passo 5: cattura e strati tecnici (revisione 3.2.C)
 
@@ -122,6 +122,8 @@ Valori per tessuto; la colonna «fonte» rimanda alla riga di `docs/BIO_REFERENC
 | strisce: passo 1 per il generatore, α; β (dalla parte fine misurata, calibrata su sezioni sintetiche) | -0.30; -0.27§ | -0.31; -0.21§ | -0.31; -0.21§ | -0.38; -0.46§ | -0.31; -0.29§ | -0.17; -0.21 | B-397, B-398, B-399, B-400, B-401; `results/S2.0/S2.0_PH5_calib.csv`; §almeno un valore oltre l'ultimo punto calibrato (passo 1 vero −0.3) |
 | variabilità dentro il nucleo v, come scritta da R-C (prototipo senza fattori di riga e colonna) | 0.102 | 0.144 | 0.170 | 0.159 | 0.115 | 0.201 | B-385, B-387, B-389, B-391, B-393, B-395; `results/S2.0/S2.0_RC.json` |
 | variabilità dentro il nucleo v, al netto delle strisce (post hoc PH-2; punto di partenza della taratura, DEC-040) | 0.044 | 0.069 | 0.095 | 0.063 | 0.033 | 0.153* | B-385, B-387, B-389, B-391, B-393, B-395; post hoc PH-2 |
+| seconda coda: massa w₂ (S2.3, da implementare in S2.4) | 0.0059 | 0.0211 | 0.0211 | 0.0048 | 0.0356 | 0.0497 | B-432...B-436; [DEC-051](/decisions/DEC-051.md) |
+| seconda coda: lunghezza ℓ₂ (µm) | 347 | 455 | 455 | 509 | 183 | 84.3 | B-437...B-441; [DEC-051](/decisions/DEC-051.md) |
 | campo di variabilità fine: varianza s² (griglia di 0.5 µm; tarata sul nucleo, S2.3) | 0.5 | 0.5 | 0.354 | 0.297 | 0.0743 | 0.841 | B-420...B-425; [DEC-049](/decisions/DEC-049.md) |
 | campo di variabilità fine: lunghezza L del nucleo gaussiano (µm) | 0.6375 | 0.5 | 0.85 | 1.275 | 1.275 | 0.885 | B-426...B-431; [DEC-049](/decisions/DEC-049.md) |
 | scala della variabilità dentro il nucleo | 1-2 µm | 1-2 µm | 1-2 µm | 1-2 µm | 1-2 µm | 1-2 µm | B-385, B-387, B-389, B-391, B-393, B-395; post hoc PH-3 (correlazione in più a 2 µm, al più 0.09 a 4 µm) |
@@ -222,7 +224,7 @@ Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
 - Spazio acellulare dentro il tessuto assente (sezione 10); lumi oltre 8 µm del tumore del colon e del cuore non riprodotti (BL-201).
 - Arricchimento nucleare per gene assente (revisione 4.2).
 - Strisce: solo la parte fine dei fattori di riga e colonna (periodi sotto circa 40 µm); le tendenze lente della cattura non sono identificate dallo stimatore e mancano.
-- Variabilità a 1-2 µm tarata dentro il nucleo e applicata a tutto il tessuto; nella corona e nello spazio senza cellule i veri variano di più e su scala più larga (S2.3, BL-220); origine (biologica o tecnica) non nota (sezione 5).
+- Variabilità a 1-2 µm tarata dentro il nucleo e applicata a tutto il tessuto; nella corona e nello spazio senza cellule i veri variano di più e su scala più larga (S2.3, BL-220; limite dichiarato e step dedicato, [DEC-050](/decisions/DEC-050.md)); origine (biologica o tecnica) non nota (sezione 5).
 - Seconda coda lunga dello spostamento misurata sul vetro (S2.3) e non ancora nel simulatore (S2.4, BL-221).
 - Cuore: il modello non descrive l'interno dei nuclei (controllo interno smentito); r e v del cuore con riserva.
 - Fondo vicino al bordo: il simulatore usa il fondo del vetro lontano (sezione 9), ma nelle finestre di bordo il fondo adattato è più alto in intestino, tumore e cervello (0.22, 0.46, 0.55 UMI per bin contro 0.16, 0.20, 0.31): vicino al tessuto il vetro simulato avrà meno conteggi del vero (forse una coda non modellata).
@@ -241,3 +243,4 @@ Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
 | 2026-11-05 | 0.2 | S2.0 chiusa (DEC-041); aggiunta la riga di DEC-041 nella mappa della sezione 16, nessun contenuto cambiato | geo-agent/skill-v2 (S2.0) |
 | 2026-11-05 | 0.2 | S2.1: riquadro dell'area simulata = territori e regioni (come il codice, revisione F18); stato aggiornato con DEC-042 | geo-agent/skill-v2 (S2.1) |
 | 2026-11-06 | 0.3 | S2.3: valori del campo di variabilità fine (sezioni 5 e 9), nome dell'interruttore `field`, limite fuori dal nucleo (sezione 17), seconda coda sul vetro (sezione 6), esito sul calo radiale; DEC-049 | geo-agent/skill-v2 (S2.3) |
+| 2026-11-06 | 0.3 | S2.3 chiusa: valori della seconda coda nella sezione 9 (DEC-051), limite fuori dal nucleo (DEC-050) | geo-agent/skill-v2 (S2.3) |

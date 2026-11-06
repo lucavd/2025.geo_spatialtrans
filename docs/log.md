@@ -2,6 +2,8 @@
 
 ## 2026-11-06 (S2.3)
 
+* **Chiusura**: [Dove nascono i trascritti dentro le cellule simulate e come si spostano? (S2.3)](steps/S2.3.md) chiuso con l'approvazione di Luca («si a tutto. Chiudi», risposta alle tre decisioni del riassunto «In breve»).
+* **Creazione**: decisioni di Luca [limite dichiarato fuori dai nuclei e step dedicato (DEC-050)](decisions/DEC-050.md), [seconda coda con i valori senza correzioni (DEC-051)](decisions/DEC-051.md), [S2.3 chiusa con G-5 fallito come scritto (DEC-052)](decisions/DEC-052.md); BIO_REFERENCES B-432...B-441.
 * **Creazione**: [Dove nascono i trascritti dentro le cellule simulate e come si spostano? (S2.3)](steps/S2.3.md), con esiti, analisi post hoc, revisione avversariale e riassunto «In breve»; decisione tecnica [campo di variabilità fine tarato sul nucleo (DEC-049)](decisions/DEC-049.md).
 * **Creazione**: `place_and_move_transcripts()` in `R/05b3_place_and_move_transcripts.R`, test `R/testing/test_S2.3.R`, strumenti `tools/S2.3_*`, tabelle `results/S2.3/`.
 * **Modifica**: design dello Step 2 v0.3 (sezioni 5, 6, 9, 17, 18); BIO_REFERENCES B-420...B-431; BACKLOG (nuove BL-220...BL-223; aggiornate BL-085, BL-087, BL-214; chiuse BL-206 e BL-207 per il nucleo); ROADMAP sezioni 6 e 7; CHANGELOG.
