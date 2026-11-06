@@ -1,0 +1,164 @@
+---
+title: "S2.3: dove nascono i trascritti dentro le cellule simulate, come si spostano, e la variabilità fine dei quadratini somiglia a quella vera?"
+subtitle: "geo_spatialtrans, report di step (protocollo v2)"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+execute:
+  echo: false
+  warning: false
+---
+
+```{r setup}
+#| include: false
+.libPaths(c(.libPaths(), "~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu"))
+suppressPackageStartupMessages({ library(knitr); library(ggplot2) })
+R <- "../results/S2.3"; rd <- function(f) read.csv(file.path(R, f), stringsAsFactors = FALSE, check.names = FALSE)
+TIS <- c(A1 = "intestino di topo", A2 = "tumore del colon", A3 = "stroma del tumore", A4 = "linfonodo", A5 = "cervello di topo", A6 = "cuore")
+SEC <- c(A1 = "intestino di topo", A23 = "tumore e stroma", A4 = "linfonodo", A5 = "cervello di topo", A6 = "cuore")
+VCOL <- c(confermata = "#2b6cb0", indeterminata = "grey55", smentita = "#c53030", `smentita per eccesso` = "#c53030", `smentita per difetto` = "#c53030")
+theme_set(theme_bw(base_size = 11))
+```
+
+{{< include _S2.3_inbreve.md >}}
+
+# Decisioni e verifiche di Luca
+
+{{< include _S2.3_verifiche.md >}}
+
+# Dubbi rinviati
+
+{{< include _S2.3_rinviati.md >}}
+
+# Cancelli, previsioni e controprova
+
+{{< include _S2.3_esiti.md >}}
+
+## Banco: variabilità simulata contro vera per zona della cellula
+
+```{r fig-bench}
+#| fig-width: 9
+#| fig-height: 4
+b <- rd("S2.3_P123_bench.csv"); b <- b[b$measure == "q", ]
+b$tessuto <- factor(TIS[b$archetype], levels = rev(TIS))
+b$zona <- factor(c(nucleus = "nucleo", corona = "corona", acellular = "spazio senza cellule")[b$group], levels = c("nucleo", "corona", "spazio senza cellule"))
+ggplot(b, aes(estimate, tessuto, colour = verdict)) + annotate("rect", xmin = 0.909, xmax = 1.1, ymin = -Inf, ymax = Inf, alpha = 0.15, fill = "#2b6cb0") +
+  geom_vline(xintercept = 1, linetype = 2) + geom_pointrange(aes(xmin = lo2se, xmax = hi2se)) + facet_wrap(~ zona) +
+  scale_colour_manual(values = VCOL, name = NULL) + labs(x = "ψ simulato / ψ vero (banco, verifica con 5 repliche; ± 2 errori standard fra aree)", y = NULL) + theme(legend.position = "bottom")
+```
+
+Cosa guardare: nel nucleo, su cui il campo è tarato, le stime stanno sull'1 in tutti i tessuti; nella corona e nello spazio senza cellule i punti stanno fra 0.37 e 0.62 in quattro tessuti densi (la banda azzurra è l'intervallo di rilevanza).
+
+## Vetro vicino al tessuto
+
+```{r fig-glass}
+#| fig-width: 9
+#| fig-height: 4.5
+g <- rd("S2.3_P4_verdicts.csv"); g$sezione <- factor(SEC[g$key], levels = SEC)
+g$fascia <- factor(g$band, levels = c("16-32", "32-64", "64-128", "128-256"))
+ggplot(g, aes(fascia, ratio, colour = verdict, group = variant, shape = variant)) + annotate("rect", xmin = -Inf, xmax = Inf, ymin = 0.8, ymax = 1.25, alpha = 0.15, fill = "#2b6cb0") +
+  geom_hline(yintercept = 1, linetype = 2) + geom_pointrange(aes(ymin = lo, ymax = hi), position = position_dodge(width = 0.5)) + facet_wrap(~ sezione, nrow = 1) +
+  scale_colour_manual(values = VCOL, name = NULL) + scale_shape_manual(values = c(16, 1), name = NULL) +
+  labs(x = "distanza dal tessuto (µm)", y = "UMI vero / previsto sul vetro") + theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Cosa guardare: nel tumore e nel cervello i punti stanno sopra la banda anche lontano dal tessuto; i cerchi vuoti sono la versione senza le correzioni della sorgente (analisi post hoc PH-1).
+
+```{r tab-r2}
+f <- rbind(cbind(variante = "come scritto", rd("S2.3_R2_fits.csv")), cbind(variante = "senza correzioni (PH-1)", rd("S2.3_R2_fits_PH1_nocorr.csv")))
+f <- f[f$candidate == "A_second_tail", c("variante", "key", "tissue_obs_over_pred", "w2", "ell2")]
+names(f) <- c("variante", "sezione", "tessuto osservato / previsto", "massa w₂", "lunghezza ℓ₂ (µm)")
+kable(f, digits = 4, row.names = FALSE, caption = "Seconda coda (forma vincente in 5 sezioni su 5) nelle due varianti")
+```
+
+## Pannello: le 30 aree simulate contro le stesse aree vere
+
+```{r fig-panel}
+#| fig-width: 10
+#| fig-height: 5.5
+p <- rd("S2.3_P5_P9.csv"); p$tessuto <- factor(TIS[p$archetype], levels = rev(TIS))
+LAB <- c(panel_star = "contrasto (P-5)", panel_star_far = "controllo interno (P-6)", panel_radial_R = "calo radiale R (P-7)", panel_nucleus_psi = "ψ nucleo (P-8)", panel_corona_psi = "ψ corona (P-8)", lumen_band_2_4 = "lumi 2-4 µm (P-9)", lumen_band_4_8 = "lumi 4-8 µm (P-9)")
+p$misura <- factor(LAB[p$stat], levels = LAB)
+ggplot(p, aes(estimate, tessuto, colour = verdict)) + geom_rect(aes(xmin = int_lo, xmax = int_hi, ymin = -Inf, ymax = Inf), fill = "#2b6cb0", alpha = 0.02, colour = NA) +
+  geom_vline(xintercept = 1, linetype = 2) + geom_pointrange(aes(xmin = lo2se, xmax = hi2se)) + facet_wrap(~ misura, nrow = 2) +
+  scale_colour_manual(values = VCOL, name = NULL) + labs(x = "simulato / vero", y = NULL) + theme(legend.position = "bottom")
+```
+
+Cosa guardare: il contrasto sta sull'1 in cinque tessuti; ψ del nucleo è sotto il vero dove i nuclei simulati hanno meno trascritti (PH-2); il calo radiale del cervello è più debole nel simulato (R sopra 1).
+
+## Controprova
+
+```{r fig-cp}
+#| fig-width: 9
+#| fig-height: 3.8
+k <- rd("S2.3_CP.csv"); k$tessuto <- factor(TIS[k$archetype], levels = rev(TIS))
+k$misura <- paste(k$cp, c(panel_nucleus_psi = "campo spento: ψ nucleo", lumen_band_4_8 = "solo stretta: lumi 4-8 µm", panel_star = "r = 1: contrasto", panel_radial_R = "r = 1: calo radiale R")[k$stat])
+ggplot(k, aes(estimate, tessuto, colour = verdict)) + geom_rect(aes(xmin = int_lo, xmax = int_hi, ymin = -Inf, ymax = Inf), fill = "#2b6cb0", alpha = 0.02, colour = NA) +
+  geom_vline(xintercept = 1, linetype = 2) + geom_pointrange(aes(xmin = lo2se, xmax = hi2se)) + facet_wrap(~ misura, nrow = 1) +
+  scale_colour_manual(values = VCOL, name = NULL) + labs(x = "simulato / vero", y = NULL) + theme(legend.position = "bottom")
+```
+
+Cosa guardare: togliendo ciascun pezzo del modello la misura che lo riguarda esce dall'intervallo: il pannello vede il campo, la zona di bordo e il rapporto nucleo/citoplasma.
+
+# Analisi post hoc
+
+{{< include _S2.3_posthoc.md >}}
+
+# Revisione avversariale
+
+{{< include _S2.3_review.md >}}
+
+# Deviazioni dichiarate
+
+{{< include _S2.3_deviazioni.md >}}
+
+# Cosa è girato
+
+- Commit della pre-registrazione: `4994f45` (cancelli), `2e49c83` (esplorazione e correzione C-1), `7c7ab8e` (ok di Luca); codice e risultati prima della revisione `eb11a03`; correzioni dalla revisione e risultati finali `40db522`; chiusura nei commit successivi.
+- Server condiviso con un altro utente (fino a circa 45 processi R suoi); i nostri lavori con al più 6 processi. Tempi non da manoscritto.
+- md5: `results/S2.3/S2.3_md5_before.txt`, `S2.3_md5_after.txt` (479 file identici).
+
+{{< include _S2.3_riproduzione.md >}}
+
+```{r}
+tm <- rd("S2.3_timing.csv"); tm$tessuto <- TIS[tm$archetype]
+kable(tm[, c("tessuto", "n_tx_mean", "sec_min", "sec_max", "lost", "tx")], digits = 1, row.names = FALSE, col.names = c("tessuto", "trascritti per area (media)", "s min", "s max", "persi (10 aree)", "trascritti (10 aree)"), caption = "Tempo di place_and_move_transcripts() per area di 1 mm², un processo")
+```
+
+# Appendice
+
+## Pre-registrazione
+
+{{< include _S2.3_prereg.md >}}
+
+## Da dove vengono i numeri del riassunto
+
+| frase del riassunto | fonte | valore letto |
+|---|---|---|
+| tutti i test passano, ogni errore inserito apposta viene trovato | `results/S2.3/S2.3_G1_tests.txt`, `S2.3_G1_pytests.txt`, `S2.3_mutants.txt` | 39/39, 9/9, 11/11 |
+| identico rifatto da zero con un altro numero di processi | `S2.3_G3.txt` | 60/60 md5, 60/60 statistiche, 30/30 banco |
+| striscia larga un decimo di micron; non cambia fino alla quarta cifra | revisore del codice (DSC-1); `S2.3_P5_P9.csv` prima e dopo | ≤ 0.104 µm; 1 159 nascite in A3_r1 |
+| nel nucleo il simulato torna sul vero in tutti e sei i tessuti | `S2.3_P123_bench.csv`, nucleus q | 0.992-1.034 (2 confermate, 4 indeterminate) |
+| corona e spazio senza cellule: da una volta e mezza a quasi tre volte | `S2.3_P123_bench.csv`, q corona e acellular A1, A2, A3, A5 | 0.365-0.624 (1/q 1.6-2.7) |
+| linfonodo poco di più, cuore come il simulato | stesso file | A4 0.835, 0.834; A6 1.150, 1.087 indeterminate |
+| simili anche a 4 µm | `S2.3_E2_real.csv`; `S2.3_P123_bench.csv` e2 | ρ2 corona vera fino a 0.45 (cervello); e2 −0.095...−0.370 |
+| contrasto giusto in 5 tessuti su 6 | `S2.3_P5_P9.csv`, panel_star | 5 confermate, cuore indeterminata |
+| lumi dell'intestino tornano | `S2.3_P5_P9.csv`, lumen A1 | 0.967, 1.110 confermate |
+| lontano dal bordo del nucleo giusto in intestino, stroma, cervello; cuore sbagliato | `S2.3_P5_P9.csv`, panel_star_far | 1.003, 1.013, 0.980 confermate; A6 0.579 |
+| da due terzi a nove decimi dei trascritti per quadratino | `S2.3_PH2_depth.csv` | 0.63-0.92 |
+| entro un ventesimo in quattro tessuti, un sesto o un quarto più alta in stroma e tumore | `S2.3_PH2_depth.csv`, rapporto (ψ − 1)/m | 0.996, 0.957, 1.046, 1.046; 1.149, 1.262 |
+| i «lumi» del cervello sono tessuto pallido | `S2.3_PH3_lumens.csv` | 100 % (20 015 su 20 015) |
+| con il nucleo come il citoplasma il calo simulato molto più debole | `S2.3_CP.csv`, CP-3 panel_radial_R | cervello 1.454, cuore 1.518 |
+| calo più ripido di un quinto; di oltre un quarto sui nuclei veri | `S2.3_P5_P9.csv` A5 panel_radial_R; `S2.3_PH4_radial.csv` A5 | 1.199; 1.282 |
+| stroma cala meno | `S2.3_P5_P9.csv` A3 panel_radial_R | 1.338 |
+| sul vetro tumore circa il doppio, cervello una volta e mezza, fino a 256 µm | `S2.3_P4_verdicts.csv` | tumore 1.57-2.29, cervello 1.25-1.51 (come scritto) |
+| da mezzo a cinque trascritti su cento a 80-500 µm | `S2.3_R2_fits_PH1_nocorr.csv` | w₂ 0.0048-0.0497, ℓ₂ 84.3-508.9 µm |
+| correzione: tessuto previsto gonfiato del 4-12 % | `S2.3_R2_fits.csv`, tissue_obs_over_pred | 0.896-0.961 |
+| senza correzione entro un punto e mezzo percentuale | `S2.3_R2_fits_PH1_nocorr.csv` | 0.997-1.014 |
+| intestino: un sesto dei trascritti spostati di 5 µm | `S2.3_R2_fits.csv`, A1 | w₂ 0.167, ℓ₂ 5.06 µm |
+| regola dei pareggi: al più tre centesimi | revisore dei numeri (D-ties) | 2.7e-2 relativo |
+| simulazione indipendente: uno o due centesimi in più | revisore del banco (D-banco-1) | +0.9 % spazio senza cellule, +2.0 % nucleo (20 repliche) |
+| 10-15 s cuore, 43-62 s tumore | `S2.3_timing.csv` | 10.3-15.1 s; 42.7-62.5 s |

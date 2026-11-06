@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-06 (S2.3)
+
+* **Creazione**: [Dove nascono i trascritti dentro le cellule simulate e come si spostano? (S2.3)](steps/S2.3.md), con esiti, analisi post hoc, revisione avversariale e riassunto «In breve»; decisione tecnica [campo di variabilità fine tarato sul nucleo (DEC-049)](decisions/DEC-049.md).
+* **Creazione**: `place_and_move_transcripts()` in `R/05b3_place_and_move_transcripts.R`, test `R/testing/test_S2.3.R`, strumenti `tools/S2.3_*`, tabelle `results/S2.3/`.
+* **Modifica**: design dello Step 2 v0.3 (sezioni 5, 6, 9, 17, 18); BIO_REFERENCES B-420...B-431; BACKLOG (nuove BL-220...BL-223; aggiornate BL-085, BL-087, BL-214; chiuse BL-206 e BL-207 per il nucleo); ROADMAP sezioni 6 e 7; CHANGELOG.
+
 ## 2026-11-06 (S2.2)
 
 * **Chiusura**: [Che trascritti diamo a ogni cellula simulata? (S2.2)](steps/S2.2.md) chiuso con l'approvazione di Luca («ok chiudi», risposta alle tre decisioni del riassunto «In breve»).
