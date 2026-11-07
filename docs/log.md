@@ -2,6 +2,9 @@
 
 ## 2026-11-07 (S2.4)
 
+* **Chiusura**: [Come il simulatore cattura i trascritti nei quadratini del vetrino (strisce, fondo, seconda coda) e i conteggi somigliano ai veri? (S2.4)](steps/S2.4.md) chiuso con l'approvazione di Luca («va bene le tue raccomandazioni chiudiamo», risposta alle due decisioni del riassunto «In breve»).
+* **Creazione**: decisioni di Luca [S2.4 si chiude con G-2 fallito come scritto (DEC-058)](decisions/DEC-058.md), [il vetro lontano del tumore del colon resta un limite dichiarato (DEC-059)](decisions/DEC-059.md).
+* **Modifica**: BACKLOG (BL-225 chiusa come limite dichiarato); ROADMAP sezioni 6 e 7; CHANGELOG.
 * **Creazione**: [Come il simulatore cattura i trascritti nei quadratini del vetrino (strisce, fondo, seconda coda) e i conteggi somigliano ai veri? (S2.4)](steps/S2.4.md): perimetro e margine scelti da Luca, esplorazioni E-1...E-4, regole R-1...R-3, cancelli G-1...G-5, previsioni P-1...P-7 con l'ok di Luca, correzione C-1, esiti, post hoc, revisione avversariale (tre revisori), riassunto «In breve» con due decisioni per Luca; report `reports/S2.4.html`.
 * **Creazione**: decisioni di Luca [fondo e seconda coda adattati insieme (DEC-053)](decisions/DEC-053.md), [seconda coda persa ma riflessa nelle aree ritagliate (DEC-054)](decisions/DEC-054.md); decisioni tecniche [passo 1 delle strisce calibrato (DEC-055)](decisions/DEC-055.md), [parte lenta delle strisce esclusa (DEC-056)](decisions/DEC-056.md), [semi rimescolati (DEC-057)](decisions/DEC-057.md).
 * **Modifica**: [DEC-051](decisions/DEC-051.md) superata da [DEC-053](decisions/DEC-053.md) per i valori; design dello Step 2 v0.4; BIO_REFERENCES B-442...B-461; BACKLOG (nuove BL-224...BL-228; chiuse BL-208, BL-209, BL-221); ROADMAP sezione 7; CHANGELOG.
