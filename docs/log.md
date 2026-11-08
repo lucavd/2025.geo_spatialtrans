@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-08 (R7)
+
+* **Creazione**: [Quanto sono troppo stretti gli intervalli dei riferimenti calcolati su 5 aree per tessuto, che in parte si sovrappongono, e cambia qualche conclusione? (R7)](steps/R7.md): perimetro scelto da Luca (sovrapposizioni e poche aree), esplorazioni E-0...E-2, inventario, cancelli G-1...G-5, previsioni P-1...P-3 con l'ok di Luca, esiti, correzioni C-1...C-6 dopo la revisione avversariale (quattro revisori), riassunto «In breve» con tre decisioni per Luca; report `reports/R7.html`.
+* **Creazione**: decisione tecnica [R7: come si correggono gli intervalli calcolati su poche aree o finestre (DEC-060)](decisions/DEC-060.md).
+* **Modifica**: BACKLOG (nuove BL-229...BL-233; BL-215, BL-186, BL-128 misurate in R7); ROADMAP sezione 7; CHANGELOG.
+
 ## 2026-11-07 (S2.4)
 
 * **Chiusura**: [Come il simulatore cattura i trascritti nei quadratini del vetrino (strisce, fondo, seconda coda) e i conteggi somigliano ai veri? (S2.4)](steps/S2.4.md) chiuso con l'approvazione di Luca («va bene le tue raccomandazioni chiudiamo», risposta alle due decisioni del riassunto «In breve»).

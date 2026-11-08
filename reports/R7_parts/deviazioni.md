@@ -1,0 +1,9 @@
+- **DV-1**: κ da una calibrazione a 10⁶ repliche invece di 20 000 (solo precisione).
+- **DV-2**: R-2 letta come «se una coppia qualsiasi supera 0.05»: matrici specifiche per bin e per nuclei in tutti i tessuti (effetto +1.4 % a +2.3 % nell'intestino e nel cervello; letta per tessuto varrebbe solo per i nuclei dello stroma).
+- **DV-3**: F_nuc con i nuclei Cellpose-RGB (il segmentatore dei riferimenti attivi) invece di Cellpose-HED scritto in M-1.
+- **DV-4**: dove scatta R-1, il fattore «altre quantità» è il maggiore dei due campi, e anche κ_range viene dalla struttura misurata.
+- **DV-5**: in P-3 il limite delle due quantità dei nuclei viene da un bootstrap sulle aree (seme dello step), non da una riga di riferimento; con i fattori geometrici il rapporto massimo sarebbe 0.645, ancora confermata.
+- **DV-6**: pesi del semivariogramma con il γ del modello (Cressie) invece del γ empirico scritto; ρ̄ cambia al più di 0.007.
+- **DV-7**: M-f confronta la mediana delle cellule riunite con la media delle mediane per area (statistiche diverse).
+- **DV-8**: nel riesame (M-5) le validazioni lasciando fuori un'area e gli intervalli su tessere dentro una sezione restano senza correzione (regola); i confronti appaiati simulato meno vero prendono il fattore del tessuto vero (scelta conservativa); 84 righe con medie su 4 aree simulate e i margini su 3 aree nel cervello hanno il fattore per 5 (D-2, D-3).
+- **DV-9**: la classificazione delle componenti (costruzione, lato, tipo) nelle tabelle del riesame è dei sotto-agenti, controllata dal secondo revisore su un campione di 40 righe.
