@@ -7,7 +7,7 @@ import sys, numpy as np, pandas as pd
 sys.path.insert(0, "tools")
 import R7_common as C, R4_common as R4
 V = pd.read_csv("results/R7/pieces/R7_values_area_piece.csv"); refs = pd.read_csv("results/R4/R4_refs.csv")
-K = pd.read_csv("results/R7/coverage/R7_kappa_final_v2.csv").set_index("archetype")
+K = pd.read_csv("results/R7/coverage/R7_kappa_final_v4.csv"); K = K[K.unit == "area"].set_index("archetype")
 AIDX = {a: i for i, a in enumerate(["A1", "A2", "A3", "A4", "A5", "A6"])}
 QT = {"mean_umi2": ("bin", "mean_umi2"), "mean_umi8": ("bin", "mean_umi8"), "frac_empty2": ("bin", "frac_empty2"), "mean_genes8": ("bin", "mean_genes8"),
       "rho_obs": ("bin", "rho_obs nucleus/ring UMI per bin (uncorrected)"), "nuc_area_median": ("nuc", None), "nuc_density": ("nuc", None)}
@@ -21,7 +21,7 @@ for A in ["A1", "A2", "A3", "A4", "A5", "A6"]:
             rr = refs[(refs.archetype == A) & (refs.quantity == rname)].iloc[0]; est, lo, hi = rr.estimate, rr.lo, rr.hi
         else:
             est, lo, hi, _ = R4.boot_one_stage(va, rng=np.random.default_rng([C.SEED, AIDX[A], 900 + qi]))
-        k = K.loc[A, f"kappa_{t}"]; lo2, hi2 = C.widen(est, lo, hi, k)
+        k = K.loc[A, f"kappa_boot_{t}"]; lo2, hi2 = C.widen(est, lo, hi, k)
         shift = ep - ea; half = (hi2 - est) if shift > 0 else (est - lo2)
         ok = abs(shift) <= 0.5 * half
         rows.append(dict(archetype=A, quantity=q, qtype=t, value_areas=ea, value_pieces=ep, shift=shift, rel_shift=shift / ea, est=est, lo=lo, hi=hi,

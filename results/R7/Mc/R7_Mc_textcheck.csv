@@ -31,12 +31,18 @@ B-125,"fraction of nuclei in contact in masks (cellpose_rgb), min-max per ROI",0
 B-125,"fraction of nuclei in contact in masks (stardist_he), min-max per ROI",0.0651,0.108,0.065,0.108,True
 B-126,"fraction of nuclei in contact in masks (cellpose_rgb), min-max per ROI",0.0137,0.166,0.014,0.166,True
 B-126,"fraction of nuclei in contact in masks (stardist_he), min-max per ROI",0.0444,0.074,0.044,0.074,True
-B-127,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)",0.36625,0.65,0.37,0.65,True
-B-128,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)",0.2166666666666666,0.5666666666666667,0.22,0.57,True
-B-129,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)",0.0833333333333333,0.2833333333333333,0.08,0.28,True
-B-130,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)",0.35,0.75,0.35,0.75,True
-B-131,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)",0.0,0.217083333333331,0.0,0.22,True
-B-132,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)",0.0,0.0701754385964912,0.0,0.07,True
+B-127,"S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)",0.4333333333333333,0.5666666666666667,,,
+B-127,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row",0.36625,0.65,0.37,0.65,True
+B-128,"S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)",0.2666666666666666,0.5166666666666667,,,
+B-128,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row",0.2166666666666666,0.5666666666666667,0.22,0.57,True
+B-129,"S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)",0.15,0.2,,,
+B-129,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row",0.0833333333333333,0.2833333333333333,0.08,0.28,True
+B-130,"S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)",0.4,0.7166666666666667,,,
+B-130,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row",0.35,0.75,0.35,0.75,True
+B-131,"S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)",0.0,0.2,,,
+B-131,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row",0.0,0.217083333333331,0.0,0.22,True
+B-132,"S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)",0.0,0.0526315789473684,,,
+B-132,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row",0.0,0.0701754385964912,0.0,0.07,True
 B-161,"epiteliale: fraction of nuclei, bootstrap over ROIs",0.6708552898256992,0.6961190701282332,0.671,0.696,True
 B-161,"epiteliale: nuclear density per ROI, min-max",6758.389034558841,7668.723755323102,6758.0,7669.0,True
 B-161,"epiteliale: median nuclear area, bootstrap over ROIs",13.56508688218727,14.389484427513567,13.6,14.4,True

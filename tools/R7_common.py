@@ -126,8 +126,9 @@ def coverage_interval(lo, hi, truth):
 def kappa_range(R, rng, nrep=NREP):
     """Ampiezza attesa max-min di n aree indipendenti diviso quella con correlazione R (valori normali)."""
     n = len(R)
-    Xi, _ = simulate_values(np.eye(n), nrep, rng); Xr, _ = simulate_values(R, nrep, rng)
-    return float(np.mean(Xi.max(1) - Xi.min(1)) / np.mean(Xr.max(1) - Xr.min(1)))
+    # stesse estrazioni per numeratore e denominatore (correzione C-3 dopo la revisione): senza zone comuni vale 1 esatto
+    Z = rng.standard_normal((nrep, n)); Xr = Z @ np.linalg.cholesky(np.asarray(R, float)).T
+    return float(np.mean(Z.max(1) - Z.min(1)) / np.mean(Xr.max(1) - Xr.min(1)))
 
 
 def mc_se(p, nrep):

@@ -4,7 +4,7 @@ R = "/home/user/2025.geo_spatialtrans/results/"
 W = "/tmp/r7_refs/"
 bio = pd.read_csv(W + "bio_all.csv", dtype=str).set_index("id")
 sel = pd.read_csv(W + "sel.csv", dtype=str)
-K = pd.read_csv(W + "kappa.csv"); CVF = pd.read_csv(W + "cvf.csv")
+K = pd.read_csv(W + "kappa4.csv"); CVF = pd.read_csv(W + "cvf.csv")
 kap = K.set_index(["archetype", "unit"])
 T975_3 = 3.182446305284263  # t quantile 0.975, df 3 (as in R2b)
 rows = []; checks = []
@@ -18,10 +18,22 @@ def rx(pat, s, n=2):
     if not m: return None
     return [num(g) for g in m.groups()[:n]]
 
-def kappa_for(a, kind, q):
-    if kind == "ci": return float(kap.loc[(a, "area"), f"kappa_{q}"])
-    if kind == "range": return float(kap.loc[(a, "area"), f"kappa_range_{q}"])
-    if kind == "window": return float(kap.loc[("all", "window_4"), f"kappa_{q}"])
+GEO5 = {"nuc": (1.751, 1.496, 1.020), "bin": (1.760, 1.503, 1.019), "box": (1.743, 1.491, 1.018)}  # boot, se, range (geometric A5)
+STRESS = 1.343
+
+def kappa_for(a, constr, q, m=None, side="real", geo=False):
+    """constr: boot / se_m / range / window_one_stage_boot / window_one_stage_se / others -> NaN (unchanged)."""
+    if geo:
+        kb, ks, kr = GEO5[q]
+    else:
+        row = ("all", "sim_5") if side == "simulated" else (a, "area")
+        kb, ks, kr = (float(kap.loc[row, f"kappa_boot_{q}"]), float(kap.loc[row, f"kappa_se_{q}"]), float(kap.loc[row, f"kappa_range_{q}"]))
+    w = ("all", "window_4")
+    if constr == "boot": return kb
+    if constr == "se_m": return ks * 2.0 / m
+    if constr == "range": return kr
+    if constr == "window_one_stage_boot": return float(kap.loc[w, f"kappa_boot_{q}"])
+    if constr == "window_one_stage_se": return float(kap.loc[w, f"kappa_se_{q}"]) * 2.0 / m
     return np.nan
 
 def cvfac(cv):
@@ -32,7 +44,10 @@ def dec(x):
     s = str(x)
     return len(s.split(".")[1]) if "." in s else 0
 
-def add(bid, metric, kind, q, est, lo, hi, source, per_area=None, per_src="", s25=False, notes="", text_lohi=None, tol=None):
+def add(bid, metric, kind, q, est, lo, hi, source, per_area=None, per_src="", s25=False, notes="", text_lohi=None, tol=None,
+        constr=None, m=None, side="real"):
+    if constr is None:
+        constr = {"ci": "boot", "range": "range", "loao": "loao", "other": "fixed"}[kind]
     b = bio.loc[bid]; a = b.archetype; n = [notes] if notes else []
     lo = float(lo); hi = float(hi); est = float(est) if est is not None else np.nan
     if text_lohi is not None:
@@ -43,18 +58,21 @@ def add(bid, metric, kind, q, est, lo, hi, source, per_area=None, per_src="", s2
         if not ok: n.append(f"file lo/hi {lo:.4g}/{hi:.4g} differ from row text {tl}/{th}")
     elif source != "row text":
         checks.append((bid, metric, lo, hi, np.nan, np.nan, None))
-    k = kappa_for(a, kind, q)
+    corrected = constr in ("boot", "se_m", "range", "window_one_stage_boot", "window_one_stage_se")
+    k = kappa_for(a, constr, q, m, side)
     centre = np.nan
-    if kind in ("ci", "window"):
-        if np.isfinite(est): centre = est
-        else: centre = (lo + hi) / 2; n.append("no point estimate: scaled around midpoint")
-    elif kind == "range":
+    if constr == "range":
         centre = (lo + hi) / 2
-    if kind in ("ci", "window", "range"):
-        lo_new = centre - k * (centre - lo); hi_new = centre + k * (hi - centre)
+    elif np.isfinite(est):
+        centre = est
     else:
-        lo_new, hi_new = lo, hi
-    if kind == "loao": n.append("LOAO: not corrected (rule 4); held-out area shares up to 60% of its nuclei with the training areas in A3/A4")
+        centre = (lo + hi) / 2
+        if corrected: n.append("no point estimate: scaled around midpoint")
+    sc = lambda kk: (centre - kk * (centre - lo), centre + kk * (hi - centre))
+    lo_new, hi_new = sc(k) if corrected else (lo, hi)
+    if constr == "loao": n.append("LOAO: not corrected (rule 4); held-out area shares up to 60% of its nuclei with the training areas in A3/A4")
+    if constr == "window_two_stage": n.append("two-stage window interval: not widened (R-3 does not hold for windows), unchanged and flagged")
+    if constr in ("se_m", "window_one_stage_se"): n.append(f"+-m SE/t interval, m = {m:.4f}: factor = kappa_se x 2/m")
     wr = (hi_new - lo_new) / (hi - lo) if (hi - lo) > 0 else np.nan
     if (hi - lo) == 0: n.append("zero-width interval: correction has no effect")
     cv = np.nan; lo_cv = hi_cv = np.nan
@@ -63,25 +81,33 @@ def add(bid, metric, kind, q, est, lo, hi, source, per_area=None, per_src="", s2
         if len(v) >= 2 and np.mean(v) != 0:
             cv = float(np.std(v, ddof=1) / abs(np.mean(v)))
             n.append(f"per-area n={len(v)} from {per_src}")
-    if np.isfinite(cv) and cv > 0.45 and kind in ("ci", "range"):
-        f, fl = cvfac(cv); kk = k * f
-        lo_cv = centre - kk * (centre - lo); hi_cv = centre + kk * (hi - centre)
+    if np.isfinite(cv) and cv > 0.45 and constr in ("boot", "se_m", "range"):
+        f, fl = cvfac(cv)
+        lo_cv, hi_cv = sc(k * f)
         n.append(f"cv_factor {f:.4f}")
         if fl: n.append(fl)
         if lo_cv < 0 <= lo: n.append("lo_cv < 0 (not clipped)")
-    if kind in ("ci", "window") and lo_new < 0 <= lo: n.append("lo_new < 0 for a non-negative quantity (literal rule, not clipped)")
-    lo5 = hi5 = np.nan
-    if a == "A5" and q == "nuc":
-        k5 = {"ci": 3.880, "range": 1.361}.get(kind)
-        if k5 is None:
-            lo5, hi5 = lo_new, hi_new; n.append(f"A5nuc sensitivity: {kind} interval does not use the tissue kappa, unchanged")
+    if lo_new < 0 <= lo: n.append("lo_new < 0 for a non-negative quantity (literal rule, not clipped)")
+    # stress: area (boot, se_m) and window factors x 1.343; range and unchanged kinds stay as lo_new
+    if constr in ("boot", "se_m", "window_one_stage_boot", "window_one_stage_se"):
+        lo_st, hi_st = sc(k * STRESS)
+        if lo_st < 0 <= lo: n.append("lo_stress < 0 (not clipped)")
+    else:
+        lo_st, hi_st = lo_new, hi_new
+    # geometric A5 factors, A5 rows only
+    lo_g = hi_g = np.nan
+    if a == "A5":
+        if constr in ("boot", "se_m", "range"):
+            lo_g, hi_g = sc(kappa_for(a, constr, q, m, side, geo=True))
+            if lo_g < 0 <= lo: n.append("lo_geomA5 < 0 (not clipped)")
         else:
-            lo5 = centre - k5 * (centre - lo); hi5 = centre + k5 * (hi - centre)
-            if lo5 < 0 <= lo: n.append("lo_A5nuc < 0 (not clipped)")
+            lo_g, hi_g = lo_new, hi_new
+    ic = {"window_one_stage_boot": "window_one_stage", "window_one_stage_se": "window_one_stage"}.get(constr, constr)
     rows.append(dict(id=bid, archetype=a, metric=metric, session=b.session, unit=selu.loc[bid, "unit"],
-                     interval_kind=kind, qtype=q, est=est, lo=lo, hi=hi, kappa=k, lo_new=lo_new, hi_new=hi_new, width_ratio=wr,
-                     cv_between_areas=cv, lo_cv=lo_cv, hi_cv=hi_cv, lo_A5nuc=lo5, hi_A5nuc=hi5, source=source, is_S25_target=s25,
-                     notes="; ".join(n)))
+                     interval_kind=kind, interval_construction=ic, side=side, m_se=m if m is not None else np.nan, qtype=q,
+                     est=est, lo=lo, hi=hi, kappa=k, lo_new=lo_new, hi_new=hi_new, width_ratio=wr,
+                     cv_between_areas=cv, lo_cv=lo_cv, hi_cv=hi_cv, lo_stress=lo_st, hi_stress=hi_st, lo_geomA5=lo_g, hi_geomA5=hi_g,
+                     source=source, is_S25_target=s25, notes="; ".join(n)))
 
 def ids_where(session, pat):
     s = sel[sel.session == session]
@@ -108,6 +134,7 @@ for bid in sel[sel.session == "R2b"].id:
     add(bid, "manual nuclear density, t 95% CI across the 4 windows", "window", "nuc", m, m - hw, m + hw,
         "results/R2b/R2b_archetype_summary.csv:density_mean_windows,density_sd_windows (rater Luca; t df=3)",
         text_lohi=rx(r"IC t 95 % fra le 4 finestre ([\d.]+)\u2013([\d.]+)", bio.loc[bid, "interval"]), tol=1.0,
+        constr="window_one_stage_se", m=T975_3,
         notes=f"CV between the {len(dw)} windows (Luca) {cvw:.3f}: windows, not areas, no cv_factor applied; the row's reference interval [evidenti, totale] and the Poisson CI are not window intervals and stay unchanged")
 
 # ---------- R3: territories (cellpose_rgb)
@@ -172,12 +199,16 @@ for bid in sel[sel.session == "S1.4c"].id:
 
 # ---------- R2c: S-1 manual contact fraction, two-stage bootstrap (windows, focal nuclei)
 pc = pd.read_csv(R + "R2c/R2c_posthoc_ci.csv"); pc = pc[pc.ci == "due stadi"].set_index("archetype")
+s1 = pd.read_csv(R + "R2c/R2c_s1.csv"); s1 = s1[s1.set == "Luca"].set_index("archetype")
 for bid in sel[sel.session == "R2c"].id:
-    a = bio.loc[bid, "archetype"]; r = pc.loc[a]
-    add(bid, "S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)", "window", "nuc",
+    a = bio.loc[bid, "archetype"]; r = s1.loc[a]
+    add(bid, "S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)", "window", "nuc",
+        r.s1_primary, r.lo_primary, r.hi_primary, "results/R2c/R2c_s1.csv:s1_primary,lo_primary,hi_primary (set Luca)",
+        constr="window_one_stage_boot", notes=f"one-stage interval over the 4 windows (rule d); n focal {int(r.n_focal)}")
+    r = pc.loc[a]
+    add(bid, "S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row", "window", "nuc",
         r.est, r.lo, r.hi, "results/R2c/R2c_posthoc_ci.csv:est,lo,hi (ci = due stadi)",
-        text_lohi=rx(r"due stadi ([\d.]+)\u2013([\d.]+)", bio.loc[bid, "interval"]), tol=0.006,
-        notes="R2c_s1.csv lo/hi are the pre-registered window-cluster percentile CI (narrower); the row text cites the two-stage CI, used here")
+        text_lohi=rx(r"due stadi ([\d.]+)\u2013([\d.]+)", bio.loc[bid, "interval"]), tol=0.006, constr="window_two_stage")
 
 # ---------- R6: composition and size per type (PH-1 labels)
 t6 = pd.read_csv(R + "R6/R6_refs_type_ph1.csv"); p6 = pd.read_csv(R + "R6/R6_refs_roi_type_ph1.csv")

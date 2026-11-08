@@ -2,17 +2,21 @@ import numpy as np, pandas as pd, re, json, sys
 R = "/home/user/2025.geo_spatialtrans/results/"
 OUT = "/tmp/r7_R_S2/"
 INF = np.inf
-# ---- kappa table (R7_kappa_final_v2.csv, copied verbatim; A3/A4 from measured tissue structure, R-1)
-A5NUC = dict(nuc=3.880, rnuc=1.361)
+# ---- kappa table R7_kappa_final_v4.csv (copied verbatim). keys: boot <q>, se_<q>, r<q>
+def _k(bb, bn, bx, sb, sn, sx, rb, rn, rx):
+    return dict(bin=bb, nuc=bn, box=bx, se_bin=sb, se_nuc=sn, se_box=sx, rbin=rb, rnuc=rn, rbox=rx)
 K = {
- "A1": dict(box=1.828324, bin=1.859528, nuc=1.854225, rbox=1.030056, rbin=1.035737, rnuc=1.037274),
- "A2": dict(box=1.652586, bin=1.660052, nuc=1.665265, rbox=1.005797, rbin=1.005367, rnuc=1.005283),
- "A3": dict(box=3.153120, bin=3.153120, nuc=2.802511, rbox=1.257896, rbin=1.257896, rnuc=1.183278),
- "A4": dict(box=2.991686, bin=2.573466, nuc=2.991686, rbox=1.211661, rbin=1.153472, rnuc=1.211661),
- "A5": dict(box=1.720333, bin=1.756975, nuc=1.759646, rbox=1.015547, rbin=1.017908, rnuc=1.018814),
- "A6": dict(box=1.628260, bin=1.620145, nuc=1.634484, rbox=0.999615, rbin=1.000210, rnuc=1.000751),
+ "A1": _k(1.856554, 1.854074, 1.837434, 1.586026, 1.583085, 1.569508, 1.032707, 1.032584, 1.029498),
+ "A2": _k(1.655263, 1.666445, 1.662134, 1.413347, 1.422352, 1.420388, 1.004158, 1.004919, 1.004163),
+ "A3": _k(3.192814, 2.817212, 3.192814, 2.739571, 2.416476, 2.739571, 1.253434, 1.188013, 1.253434),
+ "A4": _k(2.570965, 2.965472, 2.965472, 2.206106, 2.549470, 2.549470, 1.147244, 1.216181, 1.216181),
+ "A5": _k(1.818286, 3.865405, 3.865405, 1.555139, 3.324402, 3.324402, 1.028976, 1.372253, 1.372253),
+ "A6": _k(1.624284, 1.626878, 1.625283, 1.387311, 1.386960, 1.386430, 1.000000, 1.000000, 1.000000),
 }
-KWIN = 1.978078
+GEOA5 = _k(1.760, 1.751, 1.743, 1.503, 1.496, 1.491, 1.019, 1.020, 1.018)   # geometric A5 factors (sensitivity verdict_geom_A5)
+SIM = dict(boot=1.632431, se=1.390531)
+WIN = dict(boot=1.979389, se=1.594398)
+KWIN = WIN["boot"]
 STRESS = 1.343
 def verdict(lo, hi, a, b):
     if not (np.isfinite(lo) and np.isfinite(hi)): return "non valutabile"
@@ -24,21 +28,28 @@ def verdict(lo, hi, a, b):
     return "indeterminata"
 def tissues(arch):
     return [t for t in re.split(r"[;,/ ]+", str(arch)) if t in K]
-def kfac(unit, arch, qtype, stress=False, a5=False):
+def kfac(unit, con, side, m, arch, qtype, stress=False, geo=False):
+    """con: boot | se (area, window) | two (window two-stage). side: real | simulated."""
     ts = tissues(arch)
-    def kk(t, key):
-        if a5 and t == "A5" and key in A5NUC: return A5NUC[key]
-        return K[t][key]
+    def kk(t, key): return (GEOA5 if (geo and t == "A5") else K[t])[key]
     if unit == "area":
+        if side == "simulated":
+            return SIM["boot"] if con == "boot" else SIM["se"] * 2 / m
         if not ts: return np.nan
-        k = max(kk(t, qtype) for t in ts)
+        k = max(kk(t, qtype) if con == "boot" else kk(t, "se_" + qtype) * 2 / m for t in ts)
         return k * STRESS if stress else k
     if unit == "range":
         if not ts: return np.nan
         return max(kk(t, "r" + qtype) for t in ts)
     if unit == "window":
-        return KWIN * STRESS if stress else KWIN
+        if con == "two": return 1.0
+        k = WIN["boot"] if con == "boot" else WIN["se"] * 2 / m
+        return k * STRESS if stress else k
     return 1.0
+def label(unit, con, m):
+    if unit == "area": return "boot" if con == "boot" else f"se_m (m={m:g})"
+    if unit == "window": return "window_two_stage" if con == "two" else ("window_one_stage (boot)" if con == "boot" else f"window_one_stage (se_m, m={m:g})")
+    return unit
 def scale(lo, hi, c, k):
     if not np.isfinite(k) or k == 1.0: return lo, hi
     nlo = c - (c - lo) * k if np.isfinite(lo) else lo
@@ -48,44 +59,58 @@ ROWS = []
 def f(x):
     try: return float(x)
     except Exception: return np.nan
+CORR = ("area", "range", "window")
 def add(step, pid, arch, qty, est, lo, hi, a, b, eu, mu, qt, rec, rec_map, touches="none", notes="",
-        mcenter=None, a_new=None, b_new=None, a_new_s=None, b_new_s=None, clip=None, a_new_a5=None):
+        mcenter=None, a_new=None, b_new=None, a_new_s=None, b_new_s=None, clip=None, a_new_geo=None,
+        ec="boot", es="real", em=2, mc="boot", ms="real", mm=2, force_nv=False, alt_sim=False):
     est, lo, hi, a, b = map(f, (est, lo, hi, a, b))
-    old = verdict(lo, hi, a, b)
+    old = "non valutabile" if force_nv else verdict(lo, hi, a, b)
     reproduces = "NA" if rec_map is None else str(old == rec_map).upper()
     out = {}
-    for tag, stress, a5 in (("n", False, False), ("s", True, False), ("a5", False, True)):
-        ke = kfac(eu, arch, qt, stress, a5)
+    for tag, stress, geo in (("n", False, False), ("s", True, False), ("g", False, True)):
+        ke = kfac(eu, ec, es, em, arch, qt, stress, geo)
         ce = est if np.isfinite(est) else (lo + hi) / 2
         if eu == "range": ce = (lo + hi) / 2
-        nlo, nhi = scale(lo, hi, ce, ke) if eu in ("area", "range", "window") else (lo, hi)
-        km = kfac(mu, arch, qt, stress, a5)
-        if mu in ("area", "range", "window") and (a_new is None):
+        nlo, nhi = scale(lo, hi, ce, ke) if eu in CORR else (lo, hi)
+        km = kfac(mu, mc, ms, mm, arch, qt, stress, geo)
+        if a_new is not None:
+            na, nb = (a_new, b_new) if not stress else (a_new_s, b_new_s)
+            if geo and a_new_geo is not None: na = a_new_geo
+        elif mu in CORR:
             cm = mcenter if mcenter is not None else (a + b) / 2
             na, nb = scale(a, b, cm, km)
-        elif a_new is not None:
-            na, nb = (a_new, b_new) if not stress else (a_new_s, b_new_s)
-            if a5 and a_new_a5 is not None: na = a_new_a5
         else:
             na, nb = a, b
         if clip is not None:
             nlo, nhi, na, nb = [min(max(v, clip[0]), clip[1]) if np.isfinite(v) else v for v in (nlo, nhi, na, nb)]
-        out[tag] = (nlo, nhi, na, nb, ke if eu in ("area","range","window") else 1.0, km if mu in ("area","range","window") else 1.0)
+        out[tag] = (nlo, nhi, na, nb, ke if eu in CORR else 1.0, km if mu in CORR else 1.0)
     nlo, nhi, na, nb, ke, km = out["n"]
-    vnew = verdict(nlo, nhi, na, nb)
-    s = out["s"]; vst = verdict(s[0], s[1], s[2], s[3])
-    a5o = out["a5"]; va5 = verdict(a5o[0], a5o[1], a5o[2], a5o[3]) if (tissues(arch) == ["A5"] and qt == "nuc") else ""
-    affected = (eu in ("area", "range", "window")) or (mu in ("area", "range", "window"))
+    vnew = "non valutabile" if force_nv else verdict(nlo, nhi, na, nb)
+    s_ = out["s"]; vst = "non valutabile" if force_nv else verdict(*s_[:4])
+    g_ = out["g"]; vg = (("non valutabile" if force_nv else verdict(*g_[:4])) if tissues(arch) == ["A5"] and len(str(arch)) == 2 else "")
+    corr_e = eu in CORR and ke != 1.0; corr_m = mu in CORR and km != 1.0
+    affected = corr_e or corr_m
     trans = "unaffected" if not affected else ("unchanged" if vnew == old else f"{old}->{vnew}")
     note = notes
     if len(tissues(arch)) > 1 and affected:
         note = (note + "; " if note else "") + f"panel-wide row ({arch}): largest kappa among tissues used"
     if eu == "loao" or mu == "loao":
         note = (note + "; " if note else "") + "LOAO component not corrected: held-out area shares up to 60% of nuclei with training areas in A3/A4"
+    if (eu == "window" and ec == "two") or (mu == "window" and mc == "two"):
+        note = (note + "; " if note else "") + "two-stage window interval kept unchanged (rule d: two-stage is 1.1-4x wider than one-stage; not widened) - flagged"
+    if alt_sim and eu == "area":
+        k_alt = kfac(eu, ec, "simulated", em, arch, qt)
+        l_alt, h_alt = scale(lo, hi, est if np.isfinite(est) else (lo + hi) / 2, k_alt)
+        if clip is not None: l_alt, h_alt = max(l_alt, clip[0]), min(h_alt, clip[1])
+        note = (note + "; " if note else "") + f"paired sim-vs-real per area on overlapping real areas: side taken as real (tissue factor); with sim_5 factor ({k_alt:.3f}) the verdict would be {verdict(l_alt, h_alt, na, nb)}"
+    if (eu == "area" and es == "simulated"):
+        note = (note + "; " if note else "") + "estimate interval across simulated areas: sim_5 factor (not stressed)"
     ROWS.append(dict(step=step, prediction_id=pid, archetype=arch, quantity=qty, est=est, lo=lo, hi=hi, a=a, b=b,
         est_unit=eu, margin_unit=mu, qtype=qt, verdict_recorded=rec, reproduces=reproduces,
         lo_new=nlo, hi_new=nhi, a_new=na, b_new=nb, kappa_est=ke, kappa_margin=km,
-        verdict_new=vnew, verdict_new_stress=vst, verdict_new_A5nuc=va5, transition=trans, touches_conclusion=touches, notes=note,
+        verdict_new=vnew, verdict_new_stress=vst, verdict_geom_A5=vg, transition=trans, touches_conclusion=touches, notes=note,
+        interval_construction=label(eu, ec, em), side=(es if eu == "area" else ("real" if eu in ("range", "window") else "")),
+        margin_construction=label(mu, mc, mm), margin_side=(ms if mu == "area" else ("real" if mu in ("range", "window") else "")),
         _old=old))
 MAPV = {"confermata": "confermata", "smentita": "smentita", "indeterminata": "indeterminata",
         "non valutabile": "non valutabile", "PASS": "confermata", "FAIL": "smentita",
@@ -204,7 +229,7 @@ def r2c():
             recm = {"nessuno": "smentita", "indeciso": "confermata"}.get(rb, "confermata" if rb == seg else None)
             add(st, f"B-dec ({seg})", A, f"{seg} S-1 inside manual 95% CI (cluster bootstrap over windows)", v, v, v, lo, hi, "fixed", "window", "nuc",
                 f"b_dec={rb}", recm, TC,
-                f"segmenter S-1 is a point; manual CI over 4 windows widened by window kappa around s1={s1:.4f}, clipped to [0,1]; "
+                f"segmenter S-1 is a point; manual one-stage cluster-percentile CI over 4 windows (pre-registered) widened by window_4 kappa_boot around s1={s1:.4f}, clipped to [0,1]; "
                 f"b_dec recomputed old={rep}, new={nd}, stress={sdd}", mcenter=s1, clip=(0, 1))
     for A in S.index:
         s1, lo, hi, k2, w, rk = S.loc[A, ["s1_primary", "lo_primary", "hi_primary", "k2_s1", "widen", "k2_verdict"]]
@@ -224,19 +249,19 @@ def r2c():
     nsame = 0; nsame_new = 0
     for A in ("A1", "A2", "A3", "A4"):
         s1, lo, hi = F.loc[A, ["s1_primary", "lo_primary", "hi_primary"]]; cp, sd = F.loc[A, "seg_cellpose_rgb"], F.loc[A, "seg_stardist_he"]
+        e_new = None
         old = bdec(s1, lo, hi, cp, sd); nlo, nhi = scale(lo, hi, s1, KWIN); nlo, nhi = max(nlo, 0), min(nhi, 1)
         new = bdec(s1, nlo, nhi, cp, sd)
         same_old = old == S.loc[A, "b_dec"]; same_new = new == newdec[A]; nsame += same_old; nsame_new += same_new
-        e_old, e_new = float(same_old), float(same_new)
+        e_old = float(same_old)
         recm = "confermata" if bool(C5.loc[A, "same"]) else "smentita"
         ROWS.append(dict(step=st, prediction_id="CP-5", archetype=A, quantity="B-dec with Federica's answers equals B-dec with Luca's (1=same)",
             est=e_old, lo=e_old, hi=e_old, a=1, b=1, est_unit="window", margin_unit="fixed", qtype="nuc",
             verdict_recorded=f"same={C5.loc[A,'same']} (Federica {C5.loc[A,'b_dec_Federica']})", reproduces=str((verdict(e_old,e_old,1,1))==recm).upper(),
-            lo_new=e_new, hi_new=e_new, a_new=1, b_new=1, kappa_est=KWIN, kappa_margin=1.0,
-            verdict_new=verdict(e_new, e_new, 1, 1), verdict_new_stress="", transition="", touches_conclusion="none",
-            notes=f"both b_dec recomputed with window-kappa CIs (Federica 2 windows); Federica old={old}, new={new}; Luca new={newdec[A]}", _old=verdict(e_old,e_old,1,1)))
-        ROWS[-1]["transition"] = "unchanged" if ROWS[-1]["verdict_new"] == ROWS[-1]["_old"] else f"{ROWS[-1]['_old']}->{ROWS[-1]['verdict_new']}"
-        ROWS[-1]["verdict_new_stress"] = "not computed"
+            lo_new=e_old, hi_new=e_old, a_new=1, b_new=1, kappa_est=1.0, kappa_margin=1.0,
+            verdict_new=verdict(e_old, e_old, 1, 1), verdict_new_stress=verdict(e_old, e_old, 1, 1), transition="unaffected", touches_conclusion="none",
+            interval_construction="other (2 windows)", side="", margin_construction="fixed", margin_side="", verdict_geom_A5="",
+            notes=f"component over 2 windows only (Federica): not correctable, kept unchanged and flagged (rule d). For information only: with Luca's one-stage CI x window kappa, Luca b_dec={newdec[A]}; Federica CI x kappa would give {new}", _old=verdict(e_old,e_old,1,1)))
     CP = pd.read_csv(R + "R2c/R2c_counterproofs.csv")
     thr = {"CP-1": (0.60, 1), "CP-2": (0.70, 1), "CP-3": (0.95, 1), "D-3": (0, 0.05), "CP-4": (0.80, 1)}
     for _, r in CP.iterrows():
@@ -289,13 +314,14 @@ def r3b():
     res = {}
     for _, r in P.iterrows():
         A = r.archetype; MK = r["mask"]
-        if r.id == "P-1": eu, mu, q, tc, nt = "window", "other", "nuclei of mask / Luca points in same windows", TC, "est SE across 4 windows; margin B-046/B-048 Poisson CI of manual total (not across areas or windows): not corrected"
-        elif r.id == "P-2": eu, mu, q, tc, nt = "window", "window", "fraction of Luca focal nuclei touching in mask", TC, "est: two-stage bootstrap windows+focal; margin B-130/B-132 two-stage CI over windows, re-centred on manual S-1"
-        elif r.id in ("P-3", "CP-1"): eu, mu, q, tc, nt = "seed", "window", "simulated contact fraction on R2c windows" + (" (Luca points as centres)" if r.id == "CP-1" else ""), TC if r.id == "P-3" else "explanation of A4 contact excess (S1.4d) rejected", "est across 10 seeds (size model M2 from leave-one-ROI-out fold, not an interval component); margin B-130/B-132 (window) re-centred on manual S-1"
+        if r.id == "P-1": eu, mu, q, tc, nt = "window", "other", "nuclei of mask / Luca points in same windows", TC, "est = mean of 4 window ratios +- 2 SE (SD/sqrt 4): one-stage window interval, window_4 kappa_se; margin B-046/B-048 Poisson CI of manual total (not across areas or windows): not corrected"
+        elif r.id == "P-2": eu, mu, q, tc, nt = "window", "window", "fraction of Luca focal nuclei touching in mask", TC, "est: two-stage bootstrap windows+focal; margin B-130/B-132 two-stage CI over windows. Both two-stage: unchanged (rule d)"
+        elif r.id in ("P-3", "CP-1"): eu, mu, q, tc, nt = "seed", "window", "simulated contact fraction on R2c windows" + (" (Luca points as centres)" if r.id == "CP-1" else ""), TC if r.id == "P-3" else "explanation of A4 contact excess (S1.4d) rejected", "est across 10 seeds (size model M2 from leave-one-ROI-out fold, not an interval component); margin B-130/B-132 two-stage CI over windows: unchanged (rule d)"
         else: eu, mu, q, tc, nt = "loao", "fixed", "fraction of simulated nuclei truncated by phi cap (mean of 10 seeds per ROI)", "phi cap and size model coherent (S1.4d criterion)", "est: SE across the 5 R2 ROI, each simulated with the size model M2 of the fold in which it is held out (leave-one-ROI-out)"
-        mc = S1.loc[A, "s1_primary"] if mu == "window" else None
+        mcen = S1.loc[A, "s1_primary"] if mu == "window" else None
+        ecx = "se" if r.id == "P-1" else ("two" if r.id == "P-2" else "boot")
         add(st, f"{r.id} ({MK})", A, q, r.est, r.lo, r.hi, r.int_lo, r.int_hi, eu, mu, "nuc", r.verdict, r.verdict, tc, nt + "; fractions clipped to [0,1] as pre-registered",
-            mcenter=mc, clip=(0, 1) if r.id != "P-1" else None)
+            mcenter=mcen, clip=(0, 1) if r.id != "P-1" else None, ec=ecx, em=2, mc="two")
         res[(r.id, A, MK)] = (ROWS[-1]["_old"], ROWS[-1]["verdict_new"], ROWS[-1]["verdict_new_stress"], r.est)
     for A in ("A4", "A6"):
         for k, lab in ((0, "old"), (1, "new"), (2, "stress")):
@@ -312,8 +338,9 @@ def r3b():
         o, n, s = res[("rule", A, "old")], res[("rule", A, "new")], res[("rule", A, "stress")]
         ROWS.append(dict(step=st, prediction_id="decision rule (mask)", archetype=A, quantity="mask chosen by pre-registered rule from P-1,P-2,P-3,CP-1",
             est=np.nan, lo=np.nan, hi=np.nan, a=np.nan, b=np.nan, est_unit="window", margin_unit="window", qtype="nuc", verdict_recorded="CO",
-            reproduces=str(o == "CO").upper(), lo_new=np.nan, hi_new=np.nan, a_new=np.nan, b_new=np.nan, kappa_est=KWIN, kappa_margin=KWIN,
+            reproduces=str(o == "CO").upper(), lo_new=np.nan, hi_new=np.nan, a_new=np.nan, b_new=np.nan, kappa_est=np.nan, kappa_margin=np.nan,
             verdict_new=n, verdict_new_stress=s, transition="unchanged" if n == o else f"{o}->{n}", touches_conclusion=TC,
+            interval_construction="decision rule", side="", margin_construction="decision rule", margin_side="", verdict_geom_A5="",
             notes="decision outcome (mask), not a three-way verdict; recomputed from the corrected verdicts of this table", _old=o))
 # ======================= R4 =======================
 def r4():
@@ -388,11 +415,11 @@ def r6():
             kw = {}
             if r.id == "P-1" or r.id == "P-2":
                 mu = "range"; rr = lo_m
-                kr = K[A]["rnuc"]; kw = dict(a_new=ratio_range(rr, kr), b_new=INF, a_new_s=ratio_range(rr, kr), b_new_s=INF, a_new_a5=ratio_range(rr, A5NUC["rnuc"]) if A == "A5" else None)
+                kr = K[A]["rnuc"]; kw = dict(a_new=ratio_range(rr, kr), b_new=INF, a_new_s=ratio_range(rr, kr), b_new_s=INF, a_new_geo=ratio_range(rr, GEOA5["rnuc"]) if A == "A5" else None)
                 b = INF; nt = "margin = max/min of per-ROI median nuclear area (S1.5 refs): range; corrected on linear scale around midpoint (ratio' = ((1+r)+k(r-1))/((1+r)-k(r-1)))"
                 tc = "type-specific nuclear sizes in presets (Luca: one size for lymphocytes in A4; PH-1 labels adopted)"
             elif r.id == "P-3":
-                mu = "range"; kr = K[A]["rnuc"]; kw = dict(a_new=lo_m * kr, b_new=INF, a_new_s=lo_m * kr, b_new_s=INF, a_new_a5=lo_m * A5NUC["rnuc"] if A == "A5" else None); b = INF
+                mu = "range"; kr = K[A]["rnuc"]; kw = dict(a_new=lo_m * kr, b_new=INF, a_new_s=lo_m * kr, b_new_s=INF, a_new_geo=lo_m * GEOA5["rnuc"] if A == "A5" else None); b = INF
                 nt = "margin = range of per-ROI median eccentricity (0.874-0.770): width scaled by kappa_range_nuc"; tc = "none (cardiomyocyte nuclei not more elongated)"
             elif r.id == "P-4":
                 mu = "fixed"; b = INF; nt = "margin Luca's choice"; tc = "single composition for lymph node preset (B/T references provisional)"
@@ -459,7 +486,7 @@ def s22():
         a, b = (1, 2) if r.archetype != "A6" else (np.nan, np.nan)
         rec = {"A1": "smentita", "A2": "indeterminata", "A3": "confermata", "A4": "smentita", "A5": "confermata", "A6": "nessun intervallo (come atteso, circa 3)"}[r.archetype]
         add(st, "P-6", r.archetype, "depth factor f", r.f, r.lo, r.hi, a, b, "area", "fixed", "bin", rec, MAPV.get(rec, "non valutabile"),
-            "depth factor per tissue (R-3, DEC-045) - value used regardless of verdict", "bootstrap over 5 areas (flagged optimistic in step, deviation 5)")
+            "depth factor per tissue (R-3, DEC-045) - value used regardless of verdict", "percentile bootstrap over 5 areas (flagged optimistic in step, deviation 5); real UMI / simulated cells per area", alt_sim=True)
     C = pd.read_csv(R + "S2.2/S2.2_CP1.csv")
     for _, r in C.iterrows():
         add(st, f"CP-1 ({r.null})", r.archetype, "paired score difference null - winner (must be > 2 SE)", r["diff"], r["diff"] - 2 * r.se, r["diff"] + 2 * r.se, 0, INF,
@@ -484,7 +511,7 @@ def s22():
             est=np.nan, lo=np.nan, hi=np.nan, a=np.nan, b=np.nan, est_unit="loao", margin_unit="fixed", qtype="box", verdict_recorded=W.loc[A, "winner"],
             reproduces=str(win["old"] == W.loc[A, "winner"]).upper(), lo_new=np.nan, hi_new=np.nan, a_new=np.nan, b_new=np.nan, kappa_est=1.0, kappa_margin=1.0,
             verdict_new=win["new"], verdict_new_stress=win["stress"], transition="unchanged" if win["new"] == win["old"] else f"{win['old']}->{win['new']}",
-            touches_conclusion="profile source and count model per tissue (DEC-045)", notes=f"LOAO component not corrected (held-out area shares up to 60% of nuclei with training areas in A3/A4; S2.2 deviation 5, PH-5); tie sets old={ties['old']}, new={ties['new']}, stress={ties['stress']}; order atlas>nuc>exp, M>G; atlas not run in A4/A5 (deviation 1)", _old=win["old"]))
+            touches_conclusion="profile source and count model per tissue (DEC-045)", interval_construction="loao", side="", margin_construction="fixed", margin_side="", verdict_geom_A5="" if A != "A5" else win["old"], notes=f"LOAO component not corrected (held-out area shares up to 60% of nuclei with training areas in A3/A4; S2.2 deviation 5, PH-5); tie sets old={ties['old']}, new={ties['new']}, stress={ties['stress']}; order atlas>nuc>exp, M>G; atlas not run in A4/A5 (deviation 1)", _old=win["old"]))
 # ======================= S2.3 =======================
 def s23():
     st = "S2.3"; P = pd.read_csv(R + "S2.3/S2.3_P123_bench.csv")
@@ -496,7 +523,7 @@ def s23():
         else: tc = "R-4 context (DEC-050)" if r.group != "nucleus" else "none"
         add(st, f"{pid} ({r.group})", r.archetype, f"bench {r.measure} sim vs obs, group {r.group}", r.estimate, r.lo2se, r.hi2se, r.int_lo, r.int_hi, "area", mu, "bin",
             r.verdict, MAPV.get(r.verdict), tc, "est +-2 SE between 5 areas" + ("; margin = max difference between two real areas (range) centred on 0" if mu == "range" else "; margin Luca 2026-11-03"),
-            mcenter=0.0 if mu == "range" else None)
+            mcenter=0.0 if mu == "range" else None, ec="se", em=2, alt_sim=True)
     G = pd.read_csv(R + "S2.3/S2.3_P4_verdicts.csv"); G = G[G.variant == "come scritto"]
     for _, r in G.iterrows():
         A = "A2;A3" if r.key == "A23" else r.key
@@ -510,11 +537,11 @@ def s23():
     Q = pd.read_csv(R + "S2.3/S2.3_P5_P9.csv")
     for _, r in Q.iterrows():
         pid, q, tc = names[r.stat]
-        add(st, pid, r.archetype, q, r.estimate, r.lo2se, r.hi2se, r.int_lo, r.int_hi, "area", "fixed", "bin", r.verdict, MAPV.get(r.verdict), tc, "est +-2 SE between 5 areas")
+        add(st, pid, r.archetype, q, r.estimate, r.lo2se, r.hi2se, r.int_lo, r.int_hi, "area", "fixed", "bin", r.verdict, MAPV.get(r.verdict), tc, "est +-2 SE between 5 areas (panel sim/real per area)", ec="se", em=2, alt_sim=True)
     C = pd.read_csv(R + "S2.3/S2.3_CP.csv")
     for _, r in C.iterrows():
         add(st, f"{r.cp} ({r.stat})", r.archetype, f"{r.stat} sim/real in control panel", r.estimate, r.lo2se, r.hi2se, r.int_lo, r.int_hi, "area", "fixed", "bin",
-            r.verdict, MAPV.get(r.verdict), "power of P-8/P-9/P-7", "counter-proof passes when smentita (expected out of interval)")
+            r.verdict, MAPV.get(r.verdict), "power of P-8/P-9/P-7", "counter-proof passes when smentita (expected out of interval); est +-2 SE between 5 areas", ec="se", em=2, alt_sim=True)
 # ======================= S2.4 =======================
 def s24():
     st = "S2.4"; V = pd.read_csv(R + "S2.4/S2.4_verdicts.csv")
@@ -522,16 +549,17 @@ def s24():
         A = "A2;A3" if r.A == "A23" else r.A
         if r.id in ("P-1", "P-2", "P-3"):
             add(st, f"{r.id} ({r.quantita})", A, f"{r.quantita}, sim - real", r.stima, r.stima - 2 * r.se, r.stima + 2 * r.se, r.lo, r.hi, "area", "range", "bin", r.esito, MAPV.get(r.esito),
-                "stripe generator parameters (parity per section, fine SD, lag-1 from R-1, DEC-055)", "est +-2 SE between areas; margin = max difference between two real areas (range) centred on 0", mcenter=0.0)
+                "stripe generator parameters (parity per section, fine SD, lag-1 from R-1, DEC-055)", "est +-2 SE between areas (sim - real per area); margin = max difference between two real areas (range) centred on 0", mcenter=0.0, ec="se", em=2, alt_sim=True)
         elif r.id in ("P-4", "P-6", "P-7"):
             qt = "box" if r.id == "P-7" else "bin"
             tc = {"P-4": "second tail values (DEC-053); heart = negative control", "P-6": "none (stripes do not create empty bins: declared limit)", "P-7": "none (resource budget, design s12)"}[r.id]
             add(st, f"{r.id} ({r.quantita})", A, r.quantita, r.stima, r.stima - 2 * r.se, r.stima + 2 * r.se, r.lo, r.hi, "area" if r.n > 1 else "other", "fixed", qt, r.esito,
                 MAPV.get(r.esito) if r.esito in MAPV else None, tc, f"est +-2 SE between {int(r.n) if r.n==r.n else 0} areas" + ("; descriptive per pre-registration" if r.esito == "descrittivo" else "") +
-                ("; computational quantity, kappa applied literally (rule 1)" if r.id == "P-7" else ""))
+                ("; computational quantity of the simulation only" if r.id == "P-7" else ""), ec="se", em=2,
+                es=("simulated" if r.id == "P-7" else "real"), alt_sim=(r.id != "P-7"))
         elif r.id == "P-5":
             add(st, f"P-5 ({r.quantita})", A, "glass observed/predicted after R-3", r.stima, r.ci_lo, r.ci_hi, r.lo, r.hi, "other", "fixed", "bin", r.esito, MAPV.get(r.esito),
-                "R-3 background + second tail (DEC-053); tumour far-glass limit (DEC-059)", "bootstrap over 300 um tiles" + ("; single tile: step rule declares non valutabile" if r.n == 1 else ""))
+                "R-3 background + second tail (DEC-053); tumour far-glass limit (DEC-059)", "bootstrap over 300 um tiles" + ("; single tile: step rule declares non valutabile (kept)" if r.n == 1 else ""), force_nv=(r.n == 1))
     C = pd.read_csv(R + "S2.4/S2.4_CP12.csv")
     for _, r in C.iterrows():
         if r.id == "CP-1":
@@ -539,7 +567,7 @@ def s24():
             add(st, "CP-1 (parity)", r.A, "|parity - 1| with stripes off (<= 0.01)", r.parity_dev_max, r.parity_dev_max, r.parity_dev_max, 0, 0.01, "fixed", "fixed", "bin", f"ok={r.ok}", "confermata" if r.ok else None, "power of P-1...P-3", "mean over areas, point")
         else:
             add(st, f"CP-2 [{r.band}]", "A2", "lumen band with tail - without tail (must be > 2 SE)", r.main_minus_off, r.main_minus_off - 2 * r.se, r.main_minus_off + 2 * r.se, 0, INF,
-                "area", "fixed", "bin", f"ok={r.ok}", "confermata" if r.ok else None, "power of P-4 on second tail", "bootstrap over areas (tags) of A2, tools/S2.4_analysis.py l.90")
+                "area", "fixed", "bin", f"ok={r.ok}", "confermata" if r.ok else None, "power of P-4 on second tail", "SE = SD of bootstrap over simulated areas (tags) of A2, judged as > 2 SE (tools/S2.4_analysis.py l.90); both terms simulated", ec="se", em=2, es="simulated")
     C3 = pd.read_csv(R + "S2.4/S2.4_CP3.csv")
     for _, r in C3.iterrows():
         A = "A2;A3" if r.key == "A23" else r.key
@@ -553,9 +581,10 @@ def main():
             import traceback; traceback.print_exc(); print("FAILED", fn.__name__)
     D = pd.DataFrame(ROWS)
     cols = ["step","prediction_id","archetype","quantity","est","lo","hi","a","b","est_unit","margin_unit","qtype","verdict_recorded","reproduces",
-            "lo_new","hi_new","a_new","b_new","kappa_est","kappa_margin","verdict_new","verdict_new_stress","verdict_new_A5nuc","transition","touches_conclusion","notes"]
-    if "verdict_new_A5nuc" not in D: D["verdict_new_A5nuc"] = ""
-    D["verdict_new_A5nuc"] = D["verdict_new_A5nuc"].fillna("")
+            "lo_new","hi_new","a_new","b_new","kappa_est","kappa_margin","verdict_new","verdict_new_stress","verdict_geom_A5","transition","touches_conclusion","interval_construction","side","margin_construction","margin_side","notes"]
+    for cc in ("verdict_geom_A5", "interval_construction", "side", "margin_construction", "margin_side"):
+        D[cc] = D[cc].fillna("")
+    D["reproduces"] = D["reproduces"].astype(str).str.upper().replace({"NAN": "NA"})
     D[cols].to_csv(OUT + "R7_M5_R_S2.csv", index=False)
     print(D.groupby("step").size().to_dict())
     print("rows", len(D), "affected", (D.transition != "unaffected").sum())

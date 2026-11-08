@@ -1,0 +1,247 @@
+components 386 ids 200
+archetype              A1  A2  A3  A4  A5  A6  All
+interval_construction                             
+boot                   30  30  38  42  39  30  209
+fixed                   1   1   1   0   1   0    4
+loao                    5   4   6   3   5   4   27
+range                  18  18  20  27  20  25  128
+window_one_stage        2   2   2   2   2   2   12
+window_two_stage        1   1   1   1   1   1    6
+All                    57  56  68  75  68  62  386
+interval_construction  boot  fixed  ...  window_one_stage  window_two_stage
+session                             ...                                    
+R2                        0      0  ...                 0                 0
+R2b                       0      0  ...                 6                 0
+R2c                       0      0  ...                 6                 6
+R3                        0      4  ...                 0                 0
+R3b                       0      0  ...                 0                 0
+R4                      128      0  ...                 0                 0
+R5                        1      0  ...                 0                 0
+R6                       50      0  ...                 0                 0
+S1.4                      0      0  ...                 0                 0
+S1.4b                     0      0  ...                 0                 0
+S1.4c                     0      0  ...                 0                 0
+S1.5d                     0      0  ...                 0                 0
+S1.6                      0      0  ...                 0                 0
+S2.0                     24      0  ...                 0                 0
+S2.2                      6      0  ...                 0                 0
+
+[15 rows x 6 columns]
+side {'real': 386} m_se [3.1824]
+recheck max err 2.2737367544323206e-13 1.8189894035458565e-12
+width_ratio: n_all = all components, n_finite = components with non-zero old width (zero-width ones have no ratio)
+                                    min     max  n_all  n_finite
+interval_construction archetype                                 
+boot                  A1         1.8541  1.8566     30        29
+                      A2         1.6553  1.6664     30        29
+                      A3         2.8172  3.1928     38        38
+                      A4         2.5710  2.9655     42        42
+                      A5         1.8183  3.8654     39        38
+                      A6         1.6243  1.6269     30        30
+fixed                 A1         1.0000  1.0000      1         1
+                      A2         1.0000  1.0000      1         1
+                      A3         1.0000  1.0000      1         1
+                      A5         1.0000  1.0000      1         1
+loao                  A1         1.0000  1.0000      5         2
+                      A2         1.0000  1.0000      4         4
+                      A3         1.0000  1.0000      6         5
+                      A4         1.0000  1.0000      3         3
+                      A5         1.0000  1.0000      5         5
+                      A6         1.0000  1.0000      4         4
+range                 A1         1.0326  1.0327     18        18
+                      A2         1.0042  1.0049     18        18
+                      A3         1.1880  1.2534     20        18
+                      A4         1.1472  1.2162     27        27
+                      A5         1.0290  1.3723     20        20
+                      A6         1.0000  1.0000     25        25
+window_one_stage      A1         1.0020  1.9794      2         2
+                      A2         1.0020  1.9794      2         2
+                      A3         1.0020  1.9794      2         2
+                      A4         1.0020  1.9794      2         2
+                      A5         1.0020  1.9794      2         2
+                      A6         1.0020  1.9794      2         2
+window_two_stage      A1         1.0000  1.0000      1         1
+                      A2         1.0000  1.0000      1         1
+                      A3         1.0000  1.0000      1         1
+                      A4         1.0000  1.0000      1         1
+                      A5         1.0000  1.0000      1         1
+                      A6         1.0000  1.0000      1         1
+merge {'both': 374, 'left_only': 12, 'right_only': 6}
+only in v2: [['B-127', 'S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)'], ['B-128', 'S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)'], ['B-129', 'S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)'], ['B-130', 'S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)'], ['B-131', 'S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)'], ['B-132', 'S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)']]
+only in v4: [['B-127', 'S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)'], ['B-127', 'S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row'], ['B-128', 'S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)'], ['B-128', 'S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row'], ['B-129', 'S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)'], ['B-129', 'S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row'], ['B-130', 'S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)'], ['B-130', 'S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row'], ['B-131', 'S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)'], ['B-131', 'S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row'], ['B-132', 'S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)'], ['B-132', 'S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei), as cited in the row']]
+changed v2->v4: 338 by tissue {'A4': 70, 'A5': 59, 'A3': 57, 'A6': 56, 'A1': 48, 'A2': 48} by construction {'boot': 206, 'range': 126, 'window_one_stage': 6}
+width v4/v2 by construction x tissue (changed only):
+                                    min     max  n_all  n_finite
+interval_construction archetype                                 
+boot                  A1         0.9984  0.9999     29        29
+                      A2         0.9971  1.0007     29        29
+                      A3         1.0052  1.0126     38        38
+                      A4         0.9912  0.9990     42        42
+                      A5         1.0349  2.1967     38        38
+                      A6         0.9953  1.0026     30        30
+range                 A1         0.9955  0.9971     18        18
+                      A2         0.9988  0.9996     18        18
+                      A3         0.9965  1.0040     18        18
+                      A4         0.9946  1.0037     27        27
+                      A5         1.0109  1.3469     20        20
+                      A6         0.9992  0.9998     25        25
+window_one_stage      A1         0.5065  0.5065      1         1
+                      A2         0.5065  0.5065      1         1
+                      A3         0.5065  0.5065      1         1
+                      A4         0.5065  0.5065      1         1
+                      A5         0.5065  0.5065      1         1
+                      A6         0.5065  0.5065      1         1
+S25 42
+       id archetype                             metric       est        lo        hi   kappa  lo_new_v2  hi_new_v2    lo_new    hi_new  lo_stress  hi_stress  lo_geomA5  hi_geomA5
+0   B-270        A1    mean UMI per 2 um bin in tissue   27.1413   25.7953   28.4874  1.8566    24.6383    29.6444   24.6423   29.6404    23.7851    30.4976        NaN        NaN
+1   B-270        A1  fraction of empty 2 um bins in...    0.0170    0.0142    0.0197  1.8566     0.0118     0.0221    0.0118    0.0221     0.0101     0.0238        NaN        NaN
+2   B-271        A1    mean UMI per 8 um bin in tissue  424.8096  405.1184  444.4156  1.8566   388.1933   461.2675  388.2519  461.2092   375.7126   473.6942        NaN        NaN
+3   B-271        A1  fraction of empty 8 um bins in...    0.0000    0.0000    0.0000  1.8566     0.0000     0.0000    0.0000    0.0000     0.0000     0.0000        NaN        NaN
+4   B-272        A1        genes detected per 2 um bin   25.2005   24.0253   26.3817  1.8566    23.0151    27.3969   23.0186   27.3934    22.2703    28.1456        NaN        NaN
+5   B-272        A1        genes detected per 8 um bin  323.7821  310.6469  336.4942  1.8566   299.3569   347.4207  299.3959  347.3829   291.0315   355.4780        NaN        NaN
+6   B-274        A1  nucleus/ring UMI-per-bin ratio...    0.9856    0.9747    0.9966  1.8566     0.9653     1.0060    0.9653    1.0060     0.9583     1.0130        NaN        NaN
+7   B-280        A2    mean UMI per 2 um bin in tissue   45.4561   38.4773   53.0780  1.6553    33.8709    58.1089   33.9043   58.0724    29.9421    62.3998        NaN        NaN
+8   B-280        A2  fraction of empty 2 um bins in...    0.0107    0.0061    0.0173  1.6553     0.0031     0.0216    0.0031    0.0216     0.0005     0.0253        NaN        NaN
+9   B-281        A2    mean UMI per 8 um bin in tissue  719.4965  611.5316  838.7167  1.6553   540.2692   917.4082  540.7862  916.8373   479.4886   984.5251        NaN        NaN
+10  B-281        A2  fraction of empty 8 um bins in...    0.0000    0.0000    0.0000  1.6553     0.0000     0.0000    0.0000    0.0000     0.0000     0.0000        NaN        NaN
+11  B-282        A2        genes detected per 2 um bin   43.3178   36.6779   50.6896  1.6553    32.2953    55.5554   32.3271   55.5201    28.5572    59.7055        NaN        NaN
+12  B-282        A2        genes detected per 8 um bin  581.9929  501.6105  675.8685  1.6553   448.5538   737.8314  448.9388  737.3818   403.3012   790.6802        NaN        NaN
+13  B-284        A2  nucleus/ring UMI-per-bin ratio...    0.8470    0.8277    0.8662  1.6553     0.8150     0.8789    0.8151    0.8789     0.8042     0.8898        NaN        NaN
+14  B-290        A3    mean UMI per 2 um bin in tissue   19.5291   16.2362   21.8754  3.1928     9.1463    26.9272    9.0156   27.0204     5.4095    29.5899        NaN        NaN
+15  B-290        A3  fraction of empty 2 um bins in...    0.0221    0.0161    0.0281  3.1928     0.0032     0.0410    0.0030    0.0412    -0.0036     0.0478        NaN        NaN
+16  B-291        A3    mean UMI per 8 um bin in tissue  312.3908  259.7372  349.6215  3.1928   146.3676   429.7835  144.2775  431.2614    86.6147   472.0340        NaN        NaN
+17  B-291        A3  fraction of empty 8 um bins in...    0.0006    0.0000    0.0017  3.1928    -0.0012     0.0042   -0.0013    0.0042    -0.0019     0.0055        NaN        NaN
+18  B-292        A3        genes detected per 2 um bin   18.5658   15.3870   20.8284  3.1928     8.5426    25.7001    8.4165   25.7899     4.9352    28.2678        NaN        NaN
+19  B-292        A3        genes detected per 8 um bin  259.0890  215.9790  291.3524  3.1928   123.1580   360.8192  121.4468  362.0999    74.2355   397.4327        NaN        NaN
+20  B-294        A3  nucleus/ring UMI-per-bin ratio...    0.8918    0.8538    0.9279  3.1928     0.7720     1.0055    0.7705    1.0069     0.7289     1.0464        NaN        NaN
+21  B-302        A4    mean UMI per 2 um bin in tissue   11.4032   10.4026   12.1247  2.5710     8.8283    13.2599    8.8308   13.2581     7.9485    13.8943        NaN        NaN
+22  B-302        A4  fraction of empty 2 um bins in...    0.0120    0.0053    0.0210  2.5710    -0.0053     0.0353   -0.0053    0.0352    -0.0112     0.0432        NaN        NaN
+23  B-303        A4    mean UMI per 8 um bin in tissue  182.4246  166.3666  193.8872  2.5710   141.1000   211.9233  141.1402  211.8946   126.9796   222.0028        NaN        NaN
+24  B-303        A4  fraction of empty 8 um bins in...    0.0004    0.0000    0.0012  2.5710    -0.0006     0.0025   -0.0006    0.0025    -0.0010     0.0032        NaN        NaN
+25  B-304        A4        genes detected per 2 um bin   10.9904   10.0734   11.7017  2.5710     8.6304    12.8209    8.6327   12.8191     7.8240    13.4464        NaN        NaN
+26  B-304        A4        genes detected per 8 um bin  163.0543  150.5150  173.1502  2.5710   130.7849   189.0358  130.8162  189.0106   119.7586   197.9136        NaN        NaN
+27  B-306        A4  nucleus/ring UMI-per-bin ratio...    0.7880    0.7717    0.8034  2.5710     0.7460     0.8276    0.7460    0.8276     0.7316     0.8412        NaN        NaN
+28  B-315        A5    mean UMI per 2 um bin in tissue   41.7930   39.3327   44.2534  1.8183    37.4702    46.1159   37.3194   46.2667    35.7849    47.8012    37.4628    46.1233
+29  B-315        A5  fraction of empty 2 um bins in...    0.0005    0.0001    0.0008  1.8183    -0.0001     0.0011   -0.0001    0.0011    -0.0003     0.0013    -0.0001     0.0011
+30  B-316        A5    mean UMI per 8 um bin in tissue  667.4382  628.2044  706.6719  1.8183   598.5055   736.3709  596.1000  738.7764   571.6310   763.2454   598.3868   736.4896
+31  B-316        A5  fraction of empty 8 um bins in...    0.0000    0.0000    0.0000  1.8183     0.0000     0.0000    0.0000    0.0000     0.0000     0.0000     0.0000     0.0000
+32  B-317        A5        genes detected per 2 um bin   40.7476   38.4805   43.1342  1.8183    36.7644    44.9408   36.6254   45.0871    35.2115    46.5755    36.7575    44.9480
+33  B-317        A5        genes detected per 8 um bin  541.7976  510.4032  573.1920  1.8183   486.6385   596.9568  484.7137  598.8816   465.1339   618.4614   486.5435   597.0517
+34  B-319        A5  nucleus/ring UMI-per-bin ratio...    1.3827    1.3616    1.4015  1.8183     1.3456     1.4158    1.3443    1.4169     1.3311     1.4287     1.3455     1.4158
+35  B-327        A6    mean UMI per 2 um bin in tissue    3.4249    2.5605    4.2893  1.6243     2.0245     4.8253    2.0209    4.8289     1.5394     5.3104        NaN        NaN
+36  B-327        A6  fraction of empty 2 um bins in...    0.1453    0.0985    0.1823  1.6243     0.0695     0.2053    0.0693    0.2055     0.0432     0.2261        NaN        NaN
+37  B-328        A6    mean UMI per 8 um bin in tissue   54.7792   41.7463   68.5906  1.6243    33.6641    77.1557   33.6101   77.2129    26.3491    84.9077        NaN        NaN
+38  B-328        A6  fraction of empty 8 um bins in...    0.0023    0.0004    0.0055  1.6243    -0.0008     0.0075   -0.0008    0.0076    -0.0018     0.0093        NaN        NaN
+39  B-329        A6        genes detected per 2 um bin    3.3283    2.5024    4.1543  1.6243     1.9901     4.6665    1.9867    4.6699     1.5266     5.1301        NaN        NaN
+40  B-329        A6        genes detected per 8 um bin   44.5719   34.2698   54.8739  1.6243    27.8811    61.2626   27.8384   61.3053    22.0989    67.0448        NaN        NaN
+41  B-331        A6  nucleus/ring UMI-per-bin ratio...    1.7840    1.6401    1.9274  1.6243     1.5509     2.0163    1.5503    2.0169     1.4701     2.0967        NaN        NaN
+HIGH CV 24
+        id archetype interval_construction                                        metric  cv_between_areas    lo_new     hi_new     lo_cv      hi_cv
+52   B-125        A5                 range  fraction of nuclei in contact in masks (c...            0.5906    0.0184     0.2320   -0.0150     0.2654
+54   B-126        A6                 range  fraction of nuclei in contact in masks (c...            1.0117    0.0137     0.1660   -0.0433     0.2230
+80   B-165        A2                  boot  fibroblasti: fraction of nuclei, bootstra...            0.4700    0.0806     0.3247    0.0568     0.3479
+83   B-166        A2                  boot  epiteliale tumorale: fraction of nuclei, ...            0.5573    0.0132     0.0872    0.0030     0.0978
+84   B-166        A2                 range  epiteliale tumorale: nuclear density per ...            0.5237  186.8650   656.0927  129.0563   713.9014
+86   B-167        A3                  boot  epiteliale normale: fraction of nuclei, b...            0.5203    0.0006     0.6515   -0.0797     0.7293
+87   B-167        A3                 range  epiteliale normale: nuclear density per R...            0.5839   32.1875  2709.7358 -378.7117  3120.6350
+98   B-171        A3                  boot  epiteliale tumorale: fraction of nuclei, ...            0.4734    0.0006     0.1425   -0.0139     0.1558
+99   B-171        A3                 range  epiteliale tumorale: nuclear density per ...            0.5790   71.9933   627.8623  -11.9546   711.8103
+107  B-174        A4                  boot  plasmacellule: fraction of nuclei, bootst...            0.4729    0.0023     0.0380   -0.0005     0.0422
+122  B-179        A5                  boot  oligodendrociti: fraction of nuclei, boot...            0.7054   -0.2085     0.5852   -0.3849     0.7537
+123  B-179        A5                 range  oligodendrociti: nuclear density per ROI,...            1.1131  -49.5342   719.6597 -337.4128  1007.5384
+130  B-181        A5                  boot  vascolari: median nuclear area, bootstrap...            0.7196   -3.7481   193.6212  -15.9474   270.1442
+137  B-184        A6                  boot  fibroblasti: fraction of nuclei, bootstra...            0.5104    0.0385     0.2080    0.0177     0.2268
+138  B-184        A6                 range  fibroblasti: nuclear density per ROI, min...            0.6753   53.8273   291.8558    5.9500   339.7331
+204  B-280        A2                  boot         fraction of empty 2 um bins in tissue            0.7024    0.0031     0.0216   -0.0001     0.0263
+228  B-291        A3                  boot         fraction of empty 8 um bins in tissue            2.2361   -0.0013     0.0042   -0.0026     0.0070
+250  B-302        A4                  boot         fraction of empty 2 um bins in tissue            0.8672   -0.0053     0.0352   -0.0158     0.0494
+253  B-303        A4                  boot         fraction of empty 8 um bins in tissue            2.2361   -0.0006     0.0025   -0.0014     0.0041
+277  B-315        A5                  boot         fraction of empty 2 um bins in tissue            0.9302   -0.0001     0.0011   -0.0005     0.0015
+305  B-328        A6                  boot         fraction of empty 8 um bins in tissue            1.5284   -0.0008     0.0076   -0.0031     0.0115
+321  B-367        A1                 range  in-tissue gaussian blur sigma_in, min-max...            0.8906    0.7225     3.4103   -0.1266     4.2594
+327  B-370        A4                 range  in-tissue gaussian blur sigma_in, min-max...            0.5651    0.2261     0.6088    0.1710     0.6640
+329  B-371        A5                 range  in-tissue gaussian blur sigma_in, min-max...            0.4591    0.6674     2.5631    0.4954     2.7351
+WINDOWS
+       id archetype interval_construction         est          lo          hi   kappa      lo_new      hi_new   lo_stress   hi_stress
+6   B-043        A1      window_one_stage  12419.1523   7103.1654  17735.1391  1.0020   7092.5585  17745.7461   5265.5368  19572.7677
+7   B-044        A2      window_one_stage   8923.9183   7090.3266  10757.5099  1.0020   7086.6681  10761.1685   6456.4913  11391.3453
+8   B-045        A3      window_one_stage   3100.4842   1096.2354   5104.7331  1.0020   1092.2363   5108.7321    403.4073   5797.5612
+9   B-046        A4      window_one_stage  28096.0631  17892.8087  38299.3175  1.0020  17872.4501  38319.6761  14365.7508  41826.3754
+10  B-047        A5      window_one_stage   1184.8581    555.2536   1814.4625  1.0020    553.9973   1815.7188    337.6121   2032.1040
+11  B-048        A6      window_one_stage    990.0867    764.2499   1215.9236  1.0020    763.7993   1216.3742    686.1827   1293.9908
+56  B-127        A1      window_one_stage      0.5000      0.4333      0.5667  1.9794      0.3680      0.6320      0.3228      0.6772
+57  B-127        A1      window_two_stage      0.5000      0.3662      0.6500     NaN      0.3662      0.6500      0.3662      0.6500
+58  B-128        A2      window_one_stage      0.3667      0.2667      0.5167  1.9794      0.1687      0.6636      0.1008      0.7654
+59  B-128        A2      window_two_stage      0.3667      0.2167      0.5667     NaN      0.2167      0.5667      0.2167      0.5667
+60  B-129        A3      window_one_stage      0.1833      0.1500      0.2000  1.9794      0.1174      0.2163      0.0947      0.2276
+61  B-129        A3      window_two_stage      0.1833      0.0833      0.2833     NaN      0.0833      0.2833      0.0833      0.2833
+62  B-130        A4      window_one_stage      0.5500      0.4000      0.7167  1.9794      0.2531      0.8799      0.1513      0.9931
+63  B-130        A4      window_two_stage      0.5500      0.3500      0.7500     NaN      0.3500      0.7500      0.3500      0.7500
+64  B-131        A5      window_one_stage      0.0833      0.0000      0.2000  1.9794     -0.0816      0.3143     -0.1382      0.3935
+65  B-131        A5      window_two_stage      0.0833      0.0000      0.2171     NaN      0.0000      0.2171      0.0000      0.2171
+66  B-132        A6      window_one_stage      0.0169      0.0000      0.0526  1.9794     -0.0166      0.0876     -0.0281      0.1118
+67  B-132        A6      window_two_stage      0.0169      0.0000      0.0702     NaN      0.0000      0.0702      0.0000      0.0702
+A5 comps 68 geomA5 filled 68 non-A5 filled 0
+A5 geom/new width ratio by qtype x construction
+                                min     max  n_all  n_finite
+qtype interval_construction                                 
+bin   boot                   0.9679  0.9679     16        15
+      range                  0.9903  0.9903      8         8
+nuc   boot                   0.4530  0.4530     23        23
+      range                  0.7433  0.7433     12        12
+A5 lo_new<0: [['B-131', 'S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)'], ['B-179', 'oligodendrociti: fraction of nuclei, bootstrap over ROIs'], ['B-179', 'oligodendrociti: nuclear density per ROI, min-max'], ['B-181', 'vascolari: fraction of nuclei, bootstrap over ROIs'], ['B-181', 'vascolari: median nuclear area, bootstrap over ROIs'], ['B-315', 'fraction of empty 2 um bins in tissue'], ['B-324', 'oligodendrociti: median UMI per cell'], ['B-324', 'oligodendrociti: median UMI per bin of the cell'], ['B-325', 'vascolari: median UMI per cell']]
+A5 lo_geom<0: [['B-131', 'S-1 manual fraction of focal nuclei with a touching neighbour, one-stage window-cluster percentile bootstrap (pre-registered)'], ['B-315', 'fraction of empty 2 um bins in tissue']]
+A5 S25 geom:
+        id                                   metric    lo_new    hi_new  lo_geomA5  hi_geomA5
+275  B-315          mean UMI per 2 um bin in tissue   37.3194   46.2667    37.4628    46.1233
+277  B-315    fraction of empty 2 um bins in tissue   -0.0001    0.0011    -0.0001     0.0011
+278  B-316          mean UMI per 8 um bin in tissue  596.1000  738.7764   598.3868   736.4896
+280  B-316    fraction of empty 8 um bins in tissue    0.0000    0.0000     0.0000     0.0000
+281  B-317              genes detected per 2 um bin   36.6254   45.0871    36.7575    44.9480
+282  B-317              genes detected per 8 um bin  484.7137  598.8816   486.5435   597.0517
+283  B-319  nucleus/ring UMI-per-bin ratio, cell...    1.3443    1.4169     1.3455     1.4158
+stress-affected 221 unaffected 165
+lo_new<0 (non-neg lo): ['B-131', 'B-132', 'B-179', 'B-179', 'B-181', 'B-181', 'B-291', 'B-298', 'B-302', 'B-303', 'B-315', 'B-324', 'B-324', 'B-325', 'B-328']
+lo_stress<0 newly:         id archetype                                             metric   lo_new  lo_stress
+86   B-167        A3  epiteliale normale: fraction of nuclei, bootst...   0.0006    -0.1128
+98   B-171        A3  epiteliale tumorale: fraction of nuclei, boots...   0.0006    -0.0248
+101  B-172        A4  linfociti B: fraction of nuclei, bootstrap ove...   0.0331    -0.0453
+107  B-174        A4  plasmacellule: fraction of nuclei, bootstrap o...   0.0023    -0.0027
+131  B-182        A5  microglia: fraction of nuclei, bootstrap over ...   0.0077    -0.0021
+225  B-290        A3              fraction of empty 2 um bins in tissue   0.0030    -0.0036
+286  B-320        A5  CV of UMI per cell, two-stage bootstrap (ROI, ...   0.1331    -0.0200
+291  B-322        A5          microglia: median UMI per bin of the cell   7.7438    -4.4612
+297  B-325        A5          vascolari: median UMI per bin of the cell  10.5894    -0.1913
+335  B-385        A1  extra residual correlation between adjacent 2 ...   0.0188    -0.0062
+356  B-393        A5  extra residual correlation at 4 um, bootstrap ...   0.0081    -0.0187
+lo_cv<0: ['B-125', 'B-126', 'B-167', 'B-167', 'B-171', 'B-171', 'B-174', 'B-179', 'B-179', 'B-181', 'B-280', 'B-291', 'B-302', 'B-303', 'B-315', 'B-328', 'B-367']
+margin_use TRUE components:
+       id archetype interval_construction                                             metric          lo          hi      lo_new      hi_new
+9   B-046        A4      window_one_stage  manual nuclear density, t 95% CI across the 4 ...  17892.8087  38299.3175  17872.4501  38319.6761
+11  B-048        A6      window_one_stage  manual nuclear density, t 95% CI across the 4 ...    764.2499   1215.9236    763.7993   1216.3742
+32  B-115        A1                 range  fraction of nuclei touching a neighbour, equal...      0.3240      0.3460      0.3236      0.3464
+33  B-115        A1                 range  fraction of nuclei touching a neighbour, equal...      0.2140      0.2480      0.2134      0.2486
+34  B-116        A2                 range  fraction of nuclei touching a neighbour, equal...      0.4530      0.6400      0.4525      0.6405
+35  B-116        A2                 range  fraction of nuclei touching a neighbour, equal...      0.3860      0.6260      0.3854      0.6266
+36  B-117        A3                 range  fraction of nuclei touching a neighbour, equal...      0.1820      0.5290      0.1494      0.5616
+37  B-117        A3                 range  fraction of nuclei touching a neighbour, equal...      0.1390      0.5000      0.1051      0.5339
+38  B-118        A4                 range  fraction of nuclei touching a neighbour, equal...      0.3320      0.3810      0.3267      0.3863
+39  B-118        A4                 range  fraction of nuclei touching a neighbour, equal...      0.2740      0.3220      0.2688      0.3272
+40  B-119        A5                 range  fraction of nuclei touching a neighbour, equal...      0.0630      0.1580      0.0453      0.1757
+41  B-119        A5                 range  fraction of nuclei touching a neighbour, equal...      0.0250      0.1260      0.0062      0.1448
+42  B-120        A6                 range  fraction of nuclei touching a neighbour, equal...      0.0370      0.0590      0.0370      0.0590
+43  B-120        A6                 range  fraction of nuclei touching a neighbour, equal...      0.0320      0.0650      0.0320      0.0650
+56  B-127        A1      window_one_stage  S-1 manual fraction of focal nuclei with a tou...      0.4333      0.5667      0.3680      0.6320
+57  B-127        A1      window_two_stage  S-1 manual fraction of focal nuclei with a tou...      0.3662      0.6500      0.3662      0.6500
+58  B-128        A2      window_one_stage  S-1 manual fraction of focal nuclei with a tou...      0.2667      0.5167      0.1687      0.6636
+59  B-128        A2      window_two_stage  S-1 manual fraction of focal nuclei with a tou...      0.2167      0.5667      0.2167      0.5667
+60  B-129        A3      window_one_stage  S-1 manual fraction of focal nuclei with a tou...      0.1500      0.2000      0.1174      0.2163
+61  B-129        A3      window_two_stage  S-1 manual fraction of focal nuclei with a tou...      0.0833      0.2833      0.0833      0.2833
+62  B-130        A4      window_one_stage  S-1 manual fraction of focal nuclei with a tou...      0.4000      0.7167      0.2531      0.8799
+63  B-130        A4      window_two_stage  S-1 manual fraction of focal nuclei with a tou...      0.3500      0.7500      0.3500      0.7500
+64  B-131        A5      window_one_stage  S-1 manual fraction of focal nuclei with a tou...      0.0000      0.2000     -0.0816      0.3143
+65  B-131        A5      window_two_stage  S-1 manual fraction of focal nuclei with a tou...      0.0000      0.2171      0.0000      0.2171
+66  B-132        A6      window_one_stage  S-1 manual fraction of focal nuclei with a tou...      0.0000      0.0526     -0.0166      0.0876
+67  B-132        A6      window_two_stage  S-1 manual fraction of focal nuclei with a tou...      0.0000      0.0702      0.0000      0.0702
+margin_use by construction {('boot', 'unknown'): 128.0, ('boot', 'FALSE'): 81.0, ('boot', 'TRUE'): nan, ('fixed', 'unknown'): nan, ('fixed', 'FALSE'): 4.0, ('fixed', 'TRUE'): nan, ('loao', 'unknown'): 23.0, ('loao', 'FALSE'): 4.0, ('loao', 'TRUE'): nan, ('range', 'unknown'): 24.0, ('range', 'FALSE'): 92.0, ('range', 'TRUE'): 12.0, ('window_one_stage', 'unknown'): 4.0, ('window_one_stage', 'FALSE'): nan, ('window_one_stage', 'TRUE'): 8.0, ('window_two_stage', 'unknown'): nan, ('window_two_stage', 'FALSE'): nan, ('window_two_stage', 'TRUE'): 6.0}
+used_downstream of S25 ids: [['B-270', 'R4;S2.0'], ['B-271', 'R4;S2.0'], ['B-272', 'R4;S2.0'], ['B-274', 'R4;R5;S2.0'], ['B-280', 'R4;S2.0'], ['B-281', 'R4;S2.0'], ['B-282', 'R4;S2.0'], ['B-284', 'R4;R5;S2.0'], ['B-290', 'R4;S2.0'], ['B-291', 'R4;S2.0'], ['B-292', 'R4;S2.0'], ['B-294', 'R4;R5;S2.0'], ['B-302', 'R4;S2.0'], ['B-303', 'R4;S2.0'], ['B-304', 'R4;S2.0'], ['B-306', 'R4;R5;S2.0'], ['B-315', 'R4;S2.0'], ['B-316', 'R4;S2.0'], ['B-317', 'R4;S2.0'], ['B-319', 'R4;R5;S2.0'], ['B-327', 'R4;S2.0'], ['B-328', 'R4;S2.0'], ['B-329', 'R4;S2.0'], ['B-331', 'R4;R5;S2.0']]
