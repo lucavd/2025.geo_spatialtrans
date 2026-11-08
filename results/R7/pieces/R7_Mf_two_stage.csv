@@ -1,0 +1,7 @@
+archetype,quantity,two_stage_lo,two_stage_hi,two_stage_est,one_stage_lo,one_stage_hi,one_stage_est,width_ratio
+A1,median UMI per interior cell (nucleus + ring),480.0,543.0,510.0,483.8,542.6,512.6,1.0714285714285712
+A2,median UMI per interior cell (nucleus + ring),996.0,1310.0,1125.0,999.0,1310.3,1145.2,1.0086733054930936
+A3,median UMI per interior cell (nucleus + ring),743.975,830.0,797.5,730.0,828.4,791.6,0.8742378048780487
+A4,median UMI per interior cell (nucleus + ring),73.0,95.0,83.0,74.6,97.0,85.8,0.9821428571428569
+A5,median UMI per interior cell (nucleus + ring),5687.0,7977.0,6742.0,6040.3,7897.6,7073.2,1.2329725946266084
+A6,median UMI per interior cell (nucleus + ring),219.0,369.0,273.0,220.3,394.9,304.4,0.8591065292096222

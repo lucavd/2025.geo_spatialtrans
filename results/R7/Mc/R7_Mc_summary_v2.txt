@@ -1,0 +1,124 @@
+components 380 ids 200 same keys as v1: True
+changed components by tissue: {'A4': 69, 'A3': 58} by kind: {'ci': 80, 'range': 47}
+unchanged outside A3/A4: True
+recheck max err 4.547473508864641e-13 1.8189894035458565e-12
+                            min     max  count
+interval_kind archetype                       
+ci            A1         1.8542  1.8595     29
+              A2         1.6601  1.6653     29
+              A3         2.8025  3.1531     38
+              A4         2.5735  2.9917     42
+              A5         1.7570  1.7596     38
+              A6         1.6201  1.6345     30
+loao          A1         1.0000  1.0000      2
+              A2         1.0000  1.0000      4
+              A3         1.0000  1.0000      5
+              A4         1.0000  1.0000      3
+              A5         1.0000  1.0000      5
+              A6         1.0000  1.0000      4
+other         A1         1.0000  1.0000      1
+              A2         1.0000  1.0000      1
+              A3         1.0000  1.0000      1
+              A5         1.0000  1.0000      1
+range         A1         1.0357  1.0373     18
+              A2         1.0053  1.0054     18
+              A3         1.1833  1.2579     18
+              A4         1.1535  1.2117     27
+              A5         1.0179  1.0188     20
+              A6         1.0002  1.0008     25
+window        A1         1.9781  1.9781      2
+              A2         1.9781  1.9781      2
+              A3         1.9781  1.9781      2
+              A4         1.9781  1.9781      2
+              A5         1.9781  1.9781      2
+              A6         1.9781  1.9781      2
+HIGH CV 24
+        id archetype interval_kind                                             metric  cv_between_areas    lo_new     hi_new     lo_cv      hi_cv
+52   B-125        A5         range  fraction of nuclei in contact in masks (cellpo...            0.5906    0.0459     0.2045    0.0211     0.2293
+54   B-126        A6         range  fraction of nuclei in contact in masks (cellpo...            1.0117    0.0136     0.1661   -0.0434     0.2231
+74   B-165        A2            ci  fibroblasti: fraction of nuclei, bootstrap ove...            0.4700    0.0807     0.3246    0.0569     0.3477
+77   B-166        A2            ci  epiteliale tumorale: fraction of nuclei, boots...            0.5573    0.0132     0.0872    0.0030     0.0977
+78   B-166        A2         range  epiteliale tumorale: nuclear density per ROI, ...            0.5237  186.7800   656.1778  128.9503   714.0074
+80   B-167        A3            ci  epiteliale normale: fraction of nuclei, bootst...            0.5203    0.0023     0.6498   -0.0776     0.7272
+81   B-167        A3         range  epiteliale normale: nuclear density per ROI, m...            0.5839   37.5230  2704.4003 -371.7386  3113.6619
+92   B-171        A3            ci  epiteliale tumorale: fraction of nuclei, boots...            0.4734    0.0010     0.1421   -0.0134     0.1553
+93   B-171        A3         range  epiteliale tumorale: nuclear density per ROI, ...            0.5790   73.1010   626.7547  -10.5124   710.3680
+101  B-174        A4            ci  plasmacellule: fraction of nuclei, bootstrap o...            0.4729    0.0022     0.0382   -0.0007     0.0424
+116  B-179        A5            ci  oligodendrociti: fraction of nuclei, bootstrap...            0.7054    0.0127     0.3740   -0.0676     0.4507
+117  B-179        A5         range  oligodendrociti: nuclear density per ROI, min-max            1.1131   49.5230   620.6025 -164.2093   834.3349
+124  B-181        A5            ci  vascolari: median nuclear area, bootstrap over...            0.7196   11.0360   100.8844    5.4826   135.7199
+131  B-184        A6            ci  fibroblasti: fraction of nuclei, bootstrap ove...            0.5104    0.0380     0.2084    0.0172     0.2273
+132  B-184        A6         range      fibroblasti: nuclear density per ROI, min-max            0.6753   53.7379   291.9452    5.8247   339.8584
+198  B-280        A2            ci              fraction of empty 2 um bins in tissue            0.7024    0.0031     0.0216   -0.0002     0.0263
+222  B-291        A3            ci              fraction of empty 8 um bins in tissue            2.2361   -0.0012     0.0042   -0.0026     0.0069
+244  B-302        A4            ci              fraction of empty 2 um bins in tissue            0.8672   -0.0053     0.0353   -0.0158     0.0494
+247  B-303        A4            ci              fraction of empty 8 um bins in tissue            2.2361   -0.0006     0.0025   -0.0014     0.0041
+271  B-315        A5            ci              fraction of empty 2 um bins in tissue            0.9302   -0.0001     0.0011   -0.0005     0.0015
+299  B-328        A6            ci              fraction of empty 8 um bins in tissue            1.5284   -0.0008     0.0075   -0.0031     0.0114
+315  B-367        A1         range  in-tissue gaussian blur sigma_in, min-max acro...            0.8906    0.7186     3.4143   -0.1330     4.2659
+321  B-370        A4         range  in-tissue gaussian blur sigma_in, min-max acro...            0.5651    0.2250     0.6099    0.1696     0.6653
+323  B-371        A5         range  in-tissue gaussian blur sigma_in, min-max acro...            0.4591    0.6776     2.5529    0.5075     2.7230
+S25 A3/A4
+       id archetype                                   metric       est        lo        hi  lo_new_v1  hi_new_v1   kappa    lo_new    hi_new
+0   B-290        A3          mean UMI per 2 um bin in tissue   19.5291   16.2362   21.8754    12.9236    24.2358  3.1531    9.1463   26.9272
+1   B-290        A3    fraction of empty 2 um bins in tissue    0.0221    0.0161    0.0281     0.0101     0.0341  3.1531    0.0032    0.0410
+2   B-291        A3          mean UMI per 8 um bin in tissue  312.3908  259.7372  349.6215   206.7669   387.0760  3.1531  146.3676  429.7835
+3   B-291        A3    fraction of empty 8 um bins in tissue    0.0006    0.0000    0.0017    -0.0006     0.0029  3.1531   -0.0012    0.0042
+4   B-292        A3              genes detected per 2 um bin   18.5658   15.3870   20.8284    12.1891    23.1046  3.1531    8.5426   25.7001
+5   B-292        A3              genes detected per 8 um bin  259.0890  215.9790  291.3524   172.6098   323.8097  3.1531  123.1580  360.8192
+6   B-294        A3  nucleus/ring UMI-per-bin ratio, cell...    0.8918    0.8538    0.9279     0.8156     0.9641  3.1531    0.7720    1.0055
+7   B-302        A4          mean UMI per 2 um bin in tissue   11.4032   10.4026   12.1247     9.4230    12.8311  2.5735    8.8283   13.2599
+8   B-302        A4    fraction of empty 2 um bins in tissue    0.0120    0.0053    0.0210    -0.0013     0.0299  2.5735   -0.0053    0.0353
+9   B-303        A4          mean UMI per 8 um bin in tissue  182.4246  166.3666  193.8872   150.6437   205.1107  2.5735  141.1000  211.9233
+10  B-303        A4    fraction of empty 8 um bins in tissue    0.0004    0.0000    0.0012    -0.0004     0.0020  2.5735   -0.0006    0.0025
+11  B-304        A4              genes detected per 2 um bin   10.9904   10.0734   11.7017     9.1754    12.3982  2.5735    8.6304   12.8209
+12  B-304        A4              genes detected per 8 um bin  163.0543  150.5150  173.1502   138.2373   183.0356  2.5735  130.7849  189.0358
+13  B-306        A4  nucleus/ring UMI-per-bin ratio, cell...    0.7880    0.7717    0.8034     0.7557     0.8185  2.5735    0.7460    0.8276
+A5 nuc 43 {'ci': 23, 'range': 12, 'loao': 5, 'window': 2, 'other': 1} A5nuc filled 43 non-A5nuc filled 0
+        id interval_kind                                             metric         lo         hi     lo_new     hi_new   lo_A5nuc    hi_A5nuc       r
+4    B-030         range  median nuclear area (Cellpose-RGB), min-max of...    74.2629   109.7800    73.9288   110.1141    67.8521    116.1908  1.3359
+10   B-047        window  manual nuclear density, t 95% CI across the 4 ...   555.2536  1814.4625   -60.5486  2430.2647   -60.5486   2430.2647  1.0000
+21   B-079         range  median interior territory area, min-max of ROI...   420.9727  1153.3062   414.0835  1160.1954   288.7865   1285.4925  1.3359
+22   B-080         other  median territory eq_radius, bracket [value / C...    14.7800    16.1500    14.7800    16.1500    14.7800     16.1500  1.0000
+23   B-081         range    local CV of territory area, min-max across ROIs     0.5249     0.7911     0.5224     0.7936     0.4768      0.8391  1.3359
+31   B-113          loao  C8 interval [q05, q95] of interior eq_radius (...     6.9500    26.8800     6.9500    26.8800     6.9500     26.8800  1.0000
+40   B-119         range  fraction of nuclei touching a neighbour, equal...     0.0630     0.1580     0.0621     0.1589     0.0459      0.1751  1.3359
+41   B-119         range  fraction of nuclei touching a neighbour, equal...     0.0250     0.1260     0.0240     0.1270     0.0068      0.1442  1.3359
+52   B-125         range  fraction of nuclei in contact in masks (cellpo...     0.0474     0.2030     0.0459     0.2045     0.0193      0.2311  1.3359
+53   B-125         range  fraction of nuclei in contact in masks (stardi...     0.0651     0.1080     0.0647     0.1084     0.0574      0.1157  1.3359
+60   B-131        window  S-1 manual fraction of focal nuclei with a tou...     0.0000     0.2171    -0.0815     0.3479    -0.0815      0.3479  1.0000
+113  B-178            ci   neuroni: fraction of nuclei, bootstrap over ROIs     0.5802     0.7329     0.5255     0.7943     0.3730      0.9656  2.2050
+114  B-178         range          neuroni: nuclear density per ROI, min-max   507.8657   907.5775   504.1055   911.3377   435.7177    979.7255  1.3359
+115  B-178            ci  neuroni: median nuclear area, bootstrap over ROIs   104.4487   120.7429    99.6002   128.2724    86.0669    149.2887  2.2050
+116  B-179            ci  oligodendrociti: fraction of nuclei, bootstrap...     0.0925     0.2978     0.0127     0.3740    -0.2100      0.5867  2.2050
+117  B-179         range  oligodendrociti: nuclear density per ROI, min-max    54.7960   615.3295    49.5230   620.6025   -46.3803    716.5058  1.3359
+118  B-179            ci  oligodendrociti: median nuclear area, bootstra...    25.5302    42.0498    21.4233    50.4919     9.9598     74.0557  2.2050
+119  B-180            ci  astrociti: fraction of nuclei, bootstrap over ...     0.0582     0.0778     0.0521     0.0865     0.0348      0.1106  2.2050
+120  B-180         range        astrociti: nuclear density per ROI, min-max    49.9651    92.5005    49.5650    92.9007    42.2875    100.1782  1.3359
+121  B-180            ci  astrociti: median nuclear area, bootstrap over...    47.4562    53.1629    45.5738    55.6157    40.3197     62.4619  2.2050
+122  B-181            ci  vascolari: fraction of nuclei, bootstrap over ...     0.0320     0.0634     0.0204     0.0757    -0.0121      0.1099  2.2050
+123  B-181         range        vascolari: nuclear density per ROI, min-max    37.1535    64.2778    36.8984    64.5330    32.2576     69.1737  1.3359
+124  B-181            ci  vascolari: median nuclear area, bootstrap over...    16.3694    67.4298    11.0360   100.8844    -3.8506    194.2640  2.2050
+125  B-182            ci  microglia: fraction of nuclei, bootstrap over ...     0.0290     0.0484     0.0234     0.0575     0.0076      0.0829  2.2050
+126  B-182         range        microglia: nuclear density per ROI, min-max    30.9486    44.8405    30.8179    44.9712    28.4411     47.3480  1.3359
+127  B-182            ci  microglia: median nuclear area, bootstrap over...    21.3252    28.9149    19.7281    33.0831    15.2701     44.7178  2.2050
+148  B-243          loao  neuroni: latent field amplitude s, range over ...     3.0000     5.0000     3.0000     5.0000     3.0000      5.0000  1.0000
+149  B-244          loao  oligodendrociti: latent field amplitude s, ran...     1.0000     3.5000     1.0000     3.5000     1.0000      3.5000  1.0000
+150  B-245          loao  astrociti: latent field amplitude s, range ove...     4.0000     8.0000     4.0000     8.0000     4.0000      8.0000  1.0000
+158  B-263          loao  seeding heterogeneity void_frac, range over le...     0.1000     0.1500     0.1000     0.1500     0.1000      0.1500  1.0000
+279  B-320            ci  median UMI per cell (nucleus + 8 um ring), two...  5683.9500  7958.0000  4880.2061  8881.7301  2636.7660  11460.0800  2.2050
+280  B-320            ci  CV of UMI per cell, two-stage bootstrap (ROI, ...     0.4639     0.6864     0.3762     0.7676     0.1314      0.9944  2.2050
+281  B-320            ci  median UMI per bin of the cell, two-stage boot...    52.4898    64.5443    48.1445    69.3561    36.0158     82.7871  2.2050
+282  B-321            ci                     astrociti: median UMI per cell  2871.0000  3520.5000  2630.5719  3773.4623  1959.4800   4479.5400  2.2050
+283  B-321            ci          astrociti: median UMI per bin of the cell    31.8652    40.7027    27.3894    42.9404    14.8966     49.1863  2.2050
+284  B-322            ci                     microglia: median UMI per cell  2604.0000  4324.0000  2250.0048  5276.5966  1261.9200   7935.5200  2.2050
+285  B-322            ci          microglia: median UMI per bin of the cell    34.1214    52.0800    27.1284    58.7292     7.6094     77.2889  2.2050
+286  B-323            ci                       neuroni: median UMI per cell  7049.0000  8900.5875  6296.5702  9554.7096  4196.3600  11380.5195  2.2050
+287  B-323            ci            neuroni: median UMI per bin of the cell    59.9674    69.0993    55.9083    71.9772    44.5782     80.0100  2.2050
+288  B-324            ci               oligodendrociti: median UMI per cell  1146.0000  4816.0625   392.8106  6850.8230 -1709.5200  12530.3225  2.2050
+289  B-324            ci    oligodendrociti: median UMI per bin of the cell    19.0426    54.5385    12.3850    74.8454    -6.1977    131.5267  2.2050
+290  B-325            ci                     vascolari: median UMI per cell  2201.0000  5258.0000  1481.2350  6860.4742  -527.8000  11333.3600  2.2050
+291  B-325            ci          vascolari: median UMI per bin of the cell    33.8889    49.1857    27.7120    54.6290    10.4707     69.8224  2.2050
+lo_A5nuc<0: ['B-047', 'B-131', 'B-179', 'B-179', 'B-181', 'B-181', 'B-324', 'B-324', 'B-325']
+negative lo_new: ['B-045', 'B-047', 'B-129', 'B-131', 'B-132', 'B-291', 'B-298', 'B-302', 'B-303', 'B-315', 'B-328']
+lo_cv<0: ['B-126', 'B-167', 'B-167', 'B-171', 'B-171', 'B-174', 'B-179', 'B-179', 'B-280', 'B-291', 'B-302', 'B-303', 'B-315', 'B-328', 'B-367']

@@ -1,0 +1,403 @@
+check,archetype,roi_id,quantity,ours,ref,rel,ok
+G-3a valore per area = R4_roi.csv,A1,r1,mean_umi2,25.28423744242108,25.28423744242108,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r1,frac_empty2,0.017245086065330057,0.01724508606533,3.218954722577986e-15,True
+G-3a valore per area = R4_roi.csv,A1,r1,rho_obs,1.155904447608414,1.155904447608414,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r1,mean_genes2,23.52100744237534,23.52100744237534,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r1,mean_umi8,397.63929974991066,397.63929974991066,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r1,mean_genes8,303.88760271525547,303.88760271525547,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A1,r1,nuc_area_median,12.590798874074373,12.590798874074371,1.4108372766226414e-16,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A1,r1,nuc_density,10952.90484210638,10946.908999962185,0.0005477201047543107,True
+G-3a valore per area = R4_roi.csv,A1,r2,mean_umi2,28.45451583510506,28.45451583510506,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r2,frac_empty2,0.0122428693707375,0.0122428693707375,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r2,rho_obs,1.1496564843297092,1.1496564843297092,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r2,mean_genes2,26.372946406383743,26.372946406383743,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r2,mean_umi8,440.1305897327111,440.1305897327111,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r2,mean_genes8,334.79575731862536,334.79575731862536,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A1,r2,nuc_area_median,12.890579799647572,12.890579799647572,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A1,r2,nuc_density,10269.22886897703,10263.607284919775,0.000547720104754465,True
+G-3a valore per area = R4_roi.csv,A1,r3,mean_umi2,27.963610258222705,27.963610258222705,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r3,frac_empty2,0.020136511232356255,0.0201365112323562,2.7567412542675297e-15,True
+G-3a valore per area = R4_roi.csv,A1,r3,rho_obs,1.2325603939974799,1.23256039399748,1.8014906693933999e-16,True
+G-3a valore per area = R4_roi.csv,A1,r3,mean_genes2,25.952097369176737,25.952097369176737,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r3,mean_umi8,442.03959362605246,442.03959362605246,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r3,mean_genes8,335.18238118432953,335.1823811843296,1.6958951917448085e-16,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A1,r3,nuc_area_median,12.928052415344222,12.928052415344222,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A1,r3,nuc_density,10506.044808392413,10500.293586489268,0.0005477201047545138,True
+G-3a valore per area = R4_roi.csv,A1,r4,mean_umi2,28.78222943277976,28.78222943277976,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r4,frac_empty2,0.020496380213686848,0.0204963802136868,2.369796852954341e-15,True
+G-3a valore per area = R4_roi.csv,A1,r4,rho_obs,1.2401786929248935,1.2401786929248937,1.7904242847565075e-16,True
+G-3a valore per area = R4_roi.csv,A1,r4,mean_genes2,26.60516270981148,26.60516270981148,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r4,mean_umi8,448.9340630925702,448.9340630925702,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r4,mean_genes8,338.6553180486123,338.6553180486123,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A1,r4,nuc_area_median,13.340251188007372,13.340251188007372,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A1,r4,nuc_density,10591.5981945873,10585.800139026243,0.0005477201047544836,True
+G-3a valore per area = R4_roi.csv,A1,r5,mean_umi2,25.222125129317703,25.222125129317703,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r5,frac_empty2,0.014644288426190978,0.0146442884261909,5.330580370115056e-15,True
+G-3a valore per area = R4_roi.csv,A1,r5,rho_obs,1.2180146706488741,1.218014670648874,1.8230043551670958e-16,True
+G-3a valore per area = R4_roi.csv,A1,r5,mean_genes2,23.55105914966704,23.55105914966704,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r5,mean_umi8,395.3043954325043,395.3043954325043,0.0,True
+G-3a valore per area = R4_roi.csv,A1,r5,mean_genes8,306.38933208196465,306.38933208196465,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A1,r5,nuc_area_median,13.714977344973871,13.714977344973873,1.2951948768994735e-16,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A1,r5,nuc_density,10619.124342668189,10613.311218735673,0.0005477201047542856,True
+G-3a valore per area = R4_roi.csv,A2,r1,mean_umi2,44.69528518139843,44.69528518139843,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r1,frac_empty2,0.02355775290970462,0.0235577529097046,7.363705199837582e-16,True
+G-3a valore per area = R4_roi.csv,A2,r1,rho_obs,0.8930551864549913,0.8930551864549913,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r1,mean_genes2,42.29059230521436,42.29059230521436,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r1,mean_umi8,707.7376470588235,707.7376470588235,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r1,mean_genes8,565.04375,565.04375,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A2,r1,nuc_area_median,28.279421743660993,28.279421743660997,1.2562893651094062e-16,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A2,r1,nuc_density,8803.708677596502,8794.073976618964,0.0010955901671005034,True
+G-3a valore per area = R4_roi.csv,A2,r2,mean_umi2,58.470461348627836,58.47046134862784,1.2152165715326186e-16,True
+G-3a valore per area = R4_roi.csv,A2,r2,frac_empty2,0.004652331878527523,0.0046523318785275,5.033769631477607e-15,True
+G-3a valore per area = R4_roi.csv,A2,r2,rho_obs,0.9316286648411756,0.9316286648411756,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r2,mean_genes2,55.79695633297534,55.79695633297534,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r2,mean_umi8,925.1967130397175,925.1967130397176,1.228785577373053e-16,True
+G-3a valore per area = R4_roi.csv,A2,r2,mean_genes8,740.4825200028833,740.4825200028833,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A2,r2,nuc_area_median,28.391790306880836,28.39179030688084,1.2513172436116117e-16,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A2,r2,nuc_density,7951.688981099662,7942.986722948589,0.001095590167100561,True
+G-3a valore per area = R4_roi.csv,A2,r3,mean_umi2,50.162559717650886,50.162559717650886,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r3,frac_empty2,0.00705872791970697,0.0070587279197069,9.953110755397687e-15,True
+G-3a valore per area = R4_roi.csv,A2,r3,rho_obs,0.9334962879003113,0.9334962879003113,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r3,mean_genes2,47.94914929557843,47.94914929557843,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r3,mean_umi8,781.02691065662,781.02691065662,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r3,mean_genes8,632.934068891281,632.934068891281,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A2,r3,nuc_area_median,31.088635824157116,31.08863582415712,1.1427692417561466e-16,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A2,r3,nuc_density,7909.346212221618,7900.690293622618,0.0010955901671005834,True
+G-3a valore per area = R4_roi.csv,A2,r4,mean_umi2,39.81622230747099,39.81622230747099,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r4,frac_empty2,0.007280777468750999,0.0072807774687509,1.3699992933004595e-14,True
+G-3a valore per area = R4_roi.csv,A2,r4,rho_obs,0.9121120830834659,0.912112083083466,1.2172002160874362e-16,True
+G-3a valore per area = R4_roi.csv,A2,r4,mean_genes2,38.10805680764681,38.10805680764681,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r4,mean_umi8,636.9663000383681,636.9663000383681,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r4,mean_genes8,524.9501854457092,524.9501854457092,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A2,r4,nuc_area_median,32.287233831835465,32.287233831835465,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A2,r4,nuc_density,7695.779630968759,7687.357437748974,0.0010955901671005671,True
+G-3a valore per area = R4_roi.csv,A2,r5,mean_umi2,34.135878643531356,34.13587864353136,2.0815129535115853e-16,True
+G-3a valore per area = R4_roi.csv,A2,r5,frac_empty2,0.011073458067919342,0.0110734580679193,3.759743629143147e-15,True
+G-3a valore per area = R4_roi.csv,A2,r5,rho_obs,1.0830098295739905,1.0830098295739905,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r5,mean_genes2,32.444125192816436,32.44412519281644,2.1900505300646037e-16,True
+G-3a valore per area = R4_roi.csv,A2,r5,mean_umi8,546.5550086300582,546.5550086300582,0.0,True
+G-3a valore per area = R4_roi.csv,A2,r5,mean_genes8,446.55411366106244,446.5541136610624,1.2729346146826128e-16,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A2,r5,nuc_area_median,32.287233831835465,32.287233831835465,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A2,r5,nuc_density,6630.065670450304,6622.809785171095,0.001095590167100284,True
+G-3a valore per area = R4_roi.csv,A3,r1,mean_umi2,19.33912536116917,19.33912536116917,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r1,frac_empty2,0.0333254738659388,0.0333254738659388,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r1,rho_obs,1.1604236189167643,1.1604236189167645,1.913478847770318e-16,True
+G-3a valore per area = R4_roi.csv,A3,r1,mean_genes2,18.53522173688901,18.53522173688901,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r1,mean_umi8,309.59832502237566,309.59832502237566,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r1,mean_genes8,258.8655542769467,258.8655542769467,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A3,r1,nuc_area_median,33.560744214993704,33.560744214993704,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A3,r1,nuc_density,4183.523447220249,4178.945036129811,0.0010955901671006374,True
+G-3a valore per area = R4_roi.csv,A3,r2,mean_umi2,13.125386124686804,13.125386124686804,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r2,frac_empty2,0.023313339434070084,0.02331333943407,3.57163447486211e-15,True
+G-3a valore per area = R4_roi.csv,A3,r2,rho_obs,1.2224623593867843,1.2224623593867845,1.8163717125524752e-16,True
+G-3a valore per area = R4_roi.csv,A3,r2,mean_genes2,12.556543040164959,12.55654304016496,1.4146862187452142e-16,True
+G-3a valore per area = R4_roi.csv,A3,r2,mean_umi8,210.02634271099745,210.02634271099743,1.3532449817265607e-16,True
+G-3a valore per area = R4_roi.csv,A3,r2,mean_genes8,177.32186700767264,177.32186700767264,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A3,r2,nuc_area_median,27.717578927561767,27.717578927561767,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A3,r2,nuc_density,3156.0587873321842,3152.604824485724,0.0010955901671005769,True
+G-3a valore per area = R4_roi.csv,A3,r3,mean_umi2,21.768941225360724,21.768941225360724,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r3,frac_empty2,0.013338075049648167,0.0133380750496481,5.072262325055699e-15,True
+G-3a valore per area = R4_roi.csv,A3,r3,rho_obs,1.1845351197488077,1.1845351197488077,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r3,mean_genes2,20.730085790434785,20.730085790434785,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r3,mean_umi8,348.39873458170894,348.39873458170894,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r3,mean_genes8,289.0640378347287,289.0640378347287,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A3,r3,nuc_area_median,31.313372950596808,31.313372950596808,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A3,r3,nuc_density,4305.161630980121,4300.450100136305,0.0010955901671005788,True
+G-3a valore per area = R4_roi.csv,A3,r4,mean_umi2,20.902436198140386,20.902436198140386,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r4,frac_empty2,0.024785529054969294,0.0247855290549692,3.77942578893497e-15,True
+G-3a valore per area = R4_roi.csv,A3,r4,rho_obs,1.2947906667120532,1.2947906667120532,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r4,mean_genes2,19.332337064015633,19.332337064015636,1.8377052226206869e-16,True
+G-3a valore per area = R4_roi.csv,A3,r4,mean_umi8,334.30342754827984,334.30342754827984,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r4,mean_genes8,267.2496482926205,267.2496482926205,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A3,r4,nuc_area_median,29.47801975133934,29.47801975133934,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A3,r4,nuc_density,4839.214567951813,4833.918574293251,0.0010955901671007167,True
+G-3a valore per area = R4_roi.csv,A3,r5,mean_umi2,22.509420466487914,22.509420466487917,1.5783230332783512e-16,True
+G-3a valore per area = R4_roi.csv,A3,r5,frac_empty2,0.015672139794527938,0.0156721397945279,2.435143954293664e-15,True
+G-3a valore per area = R4_roi.csv,A3,r5,rho_obs,1.2177036867309463,1.2177036867309463,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r5,mean_genes2,21.674761141724574,21.674761141724574,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r5,mean_umi8,359.6272454132839,359.6272454132839,0.0,True
+G-3a valore per area = R4_roi.csv,A3,r5,mean_genes8,302.94412836412454,302.94412836412454,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A3,r5,nuc_area_median,31.68793482799629,31.68793482799629,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A3,r5,nuc_density,4930.533657403931,4925.13772494087,0.0010955901671005925,True
+G-3a valore per area = R4_roi.csv,A4,f1,mean_umi2,11.929535112483105,11.929535112483103,1.4890411257865908e-16,True
+G-3a valore per area = R4_roi.csv,A4,f1,frac_empty2,0.029422349469374047,0.029422349469374,1.6508626334518227e-15,True
+G-3a valore per area = R4_roi.csv,A4,f1,rho_obs,0.8195546099320432,0.8195546099320432,0.0,True
+G-3a valore per area = R4_roi.csv,A4,f1,mean_genes2,11.33361057573116,11.33361057573116,0.0,True
+G-3a valore per area = R4_roi.csv,A4,f1,mean_umi8,191.064,191.064,0.0,True
+G-3a valore per area = R4_roi.csv,A4,f1,mean_genes8,166.332928,166.332928,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A4,f1,nuc_area_median,14.615789709871056,14.615789709871056,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A4,f1,nuc_density,19614.222698471855,19603.485475353737,0.0005477201047546996,True
+G-3a valore per area = R4_roi.csv,A4,f2,mean_umi2,12.512920604574706,12.512920604574706,0.0,True
+G-3a valore per area = R4_roi.csv,A4,f2,frac_empty2,0.013214572826134778,0.0132145728261347,5.9073083516230344e-15,True
+G-3a valore per area = R4_roi.csv,A4,f2,rho_obs,0.8175107508126924,0.8175107508126924,0.0,True
+G-3a valore per area = R4_roi.csv,A4,f2,mean_genes2,12.075091890075871,12.075091890075871,0.0,True
+G-3a valore per area = R4_roi.csv,A4,f2,mean_umi8,200.047296,200.047296,0.0,True
+G-3a valore per area = R4_roi.csv,A4,f2,mean_genes8,178.16,178.16,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A4,f2,nuc_area_median,14.166073103413483,14.166073103413485,1.2539514842488115e-16,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A4,f2,nuc_density,20483.734107385982,20472.520896096183,0.000547720104754564,True
+G-3a valore per area = R4_roi.csv,A4,p1,mean_umi2,9.51381091758233,9.51381091758233,0.0,True
+G-3a valore per area = R4_roi.csv,A4,p1,frac_empty2,0.008328934951937686,0.0083289349519376,1.0413837339270192e-14,True
+G-3a valore per area = R4_roi.csv,A4,p1,rho_obs,0.7950233698984583,0.7950233698984583,0.0,True
+G-3a valore per area = R4_roi.csv,A4,p1,mean_genes2,9.315727812165123,9.315727812165123,0.0,True
+G-3a valore per area = R4_roi.csv,A4,p1,mean_umi8,152.202304,152.202304,0.0,True
+G-3a valore per area = R4_roi.csv,A4,p1,mean_genes8,140.202176,140.202176,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A4,p1,nuc_area_median,13.86626203244177,13.86626203244177,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A4,p1,nuc_density,25562.52100109856,25548.52755890767,0.0005477201047546148,True
+G-3a valore per area = R4_roi.csv,A4,p2,mean_umi2,11.542278470889315,11.542278470889316,1.539000158313963e-16,True
+G-3a valore per area = R4_roi.csv,A4,p2,frac_empty2,0.005298304542546385,0.0052983045425463,1.6043141657918536e-14,True
+G-3a valore per area = R4_roi.csv,A4,p2,rho_obs,0.8094280971838766,0.8094280971838766,0.0,True
+G-3a valore per area = R4_roi.csv,A4,p2,mean_genes2,11.141602687140114,11.141602687140114,0.0,True
+G-3a valore per area = R4_roi.csv,A4,p2,mean_umi8,184.162304,184.162304,0.0,True
+G-3a valore per area = R4_roi.csv,A4,p2,mean_genes8,164.9408,164.9408,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A4,p2,nuc_area_median,13.566450961470055,13.566450961470055,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A4,p2,nuc_density,24379.939577172292,24366.593504025757,0.0005477201047544777,True
+G-3a valore per area = R4_roi.csv,A4,p3,mean_umi2,11.517376,11.517376,0.0,True
+G-3a valore per area = R4_roi.csv,A4,p3,frac_empty2,0.003688,0.003688,0.0,True
+G-3a valore per area = R4_roi.csv,A4,p3,rho_obs,0.7961749138900527,0.7961749138900527,0.0,True
+G-3a valore per area = R4_roi.csv,A4,p3,mean_genes2,11.085988,11.085988,0.0,True
+G-3a valore per area = R4_roi.csv,A4,p3,mean_umi8,184.647104,184.647104,0.0,True
+G-3a valore per area = R4_roi.csv,A4,p3,mean_genes8,165.635584,165.635584,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A4,p3,nuc_area_median,13.491498193727127,13.491498193727129,1.316649058461252e-16,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A4,p3,nuc_density,25164.735724728598,25150.96003826176,0.0005477201047546686,True
+G-3a valore per area = R4_roi.csv,A5,r1,mean_umi2,38.724455839179576,38.724455839179576,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r1,frac_empty2,0.0007879432680846979,0.0007879432680846,1.242519101831191e-13,True
+G-3a valore per area = R4_roi.csv,A5,r1,rho_obs,1.628904925485994,1.628904925485994,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r1,mean_genes2,37.85525842139366,37.85525842139366,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r1,mean_umi8,619.20352,619.20352,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r1,mean_genes8,510.228992,510.228992,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A5,r1,nuc_area_median,74.26291775241657,74.26291775241657,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A5,r1,nuc_density,1699.4552541696874,1698.523918248459,0.0005483207573483667,True
+G-3a valore per area = R4_roi.csv,A5,r2,mean_umi2,44.515901242647885,44.515901242647885,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r2,frac_empty2,0.00012056181807221654,0.0001205618180722,1.371419525251543e-13,True
+G-3a valore per area = R4_roi.csv,A5,r2,rho_obs,1.5013135957098616,1.5013135957098616,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r2,mean_genes2,43.38819613685489,43.38819613685489,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r2,mean_umi8,710.3458424807903,710.3458424807903,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r2,mean_genes8,575.6606750823271,575.6606750823271,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A5,r2,nuc_area_median,100.46894231823396,100.46894231823396,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A5,r2,nuc_density,925.3934803679489,924.8863459862564,0.0005483207573485109,True
+G-3a valore per area = R4_roi.csv,A5,r3,mean_umi2,42.65347976457739,42.65347976457739,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r3,frac_empty2,0.001061828772525939,0.0010618287725259,3.675854263831047e-14,True
+G-3a valore per area = R4_roi.csv,A5,r3,rho_obs,1.5372057280382279,1.537205728038228,1.4444690185249516e-16,True
+G-3a valore per area = R4_roi.csv,A5,r3,mean_genes2,41.57897839070098,41.57897839070098,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r3,mean_umi8,681.5261338495575,681.5261338495575,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r3,mean_genes8,552.4217367256637,552.4217367256637,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A5,r3,nuc_area_median,109.77996537313754,109.77996537313754,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A5,r3,nuc_density,826.7988891046326,826.3457865571161,0.000548320757348271,True
+G-3a valore per area = R4_roi.csv,A5,r4,mean_umi2,38.280466299121976,38.280466299121976,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r4,frac_empty2,0.0002273950734161237,0.0002273950734161,1.042983129178084e-13,True
+G-3a valore per area = R4_roi.csv,A5,r4,rho_obs,1.5579327978836164,1.5579327978836164,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r4,mean_genes2,37.25779176180134,37.25779176180134,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r4,mean_umi8,610.5444847766502,610.5444847766502,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r4,mean_genes8,489.56826431587524,489.5682643158752,1.1610928036816531e-16,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A5,r4,nuc_area_median,109.4796097907213,109.4796097907213,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A5,r4,nuc_density,700.7040131121208,700.3200131121449,0.0005483207573484289,True
+G-3a valore per area = R4_roi.csv,A5,r5,mean_umi2,44.79094501321428,44.79094501321428,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r5,frac_empty2,0.00012829394709157623,0.0001282939470915,5.940998344323354e-13,True
+G-3a valore per area = R4_roi.csv,A5,r5,rho_obs,1.5598622256590926,1.5598622256590926,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r5,mean_genes2,43.65777161966832,43.65777161966832,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r5,mean_umi8,715.5708825336154,715.5708825336154,0.0,True
+G-3a valore per area = R4_roi.csv,A5,r5,mean_genes8,581.1084567606307,581.1084567606307,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A5,r5,nuc_area_median,89.73123024685319,89.73123024685319,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A5,r5,nuc_density,1069.5451861937424,1068.9590537558126,0.0005483207573483765,True
+G-3a valore per area = R4_roi.csv,A6,r1,mean_umi2,4.727673658218375,4.727673658218375,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r1,frac_empty2,0.06805857375546778,0.0680585737554677,1.223456829202173e-15,True
+G-3a valore per area = R4_roi.csv,A6,r1,rho_obs,1.8445560611192615,1.8445560611192613,1.2037834447292239e-16,True
+G-3a valore per area = R4_roi.csv,A6,r1,mean_genes2,4.602462050721766,4.602462050721766,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r1,mean_umi8,75.59550489850804,75.59550489850804,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r1,mean_genes8,61.50188896715118,61.50188896715118,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A6,r1,nuc_area_median,22.41683693009363,22.41683693009363,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A6,r1,nuc_density,724.2538849981784,724.2538849981784,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r2,mean_umi2,2.3073570550968707,2.3073570550968707,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r2,frac_empty2,0.2027502411263502,0.2027502411263502,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r2,rho_obs,2.264127295066778,2.264127295066778,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r2,mean_genes2,2.2764568633964197,2.27645686339642,1.9507912361119462e-16,True
+G-3a valore per area = R4_roi.csv,A6,r2,mean_umi8,36.90804892104757,36.90804892104757,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r2,mean_genes8,32.628417749887944,32.628417749887944,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A6,r2,nuc_area_median,18.218365799373753,18.218365799373757,1.950072645331681e-16,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A6,r2,nuc_density,598.8754085517756,598.8754085517755,1.8983387211797206e-16,True
+G-3a valore per area = R4_roi.csv,A6,r3,mean_umi2,2.549976587544574,2.549976587544574,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r3,frac_empty2,0.169338087862743,0.169338087862743,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r3,rho_obs,2.0821826988484706,2.08218269884847,2.1328061658357915e-16,True
+G-3a valore per area = R4_roi.csv,A6,r3,mean_genes2,2.4834571992299903,2.4834571992299903,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r3,mean_umi8,40.80105013767049,40.80105013767049,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r3,mean_genes8,33.227316385989624,33.227316385989624,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A6,r3,nuc_area_median,20.692464858547964,20.692464858547964,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A6,r3,nuc_density,306.40153140781706,306.401531407817,1.855193693048161e-16,True
+G-3a valore per area = R4_roi.csv,A6,r4,mean_umi2,3.088064032016008,3.088064032016008,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r4,frac_empty2,0.16757178589294647,0.1675717858929464,3.3126788579266705e-16,True
+G-3a valore per area = R4_roi.csv,A6,r4,rho_obs,2.1635816505425396,2.16358165054254,2.052565059140258e-16,True
+G-3a valore per area = R4_roi.csv,A6,r4,mean_genes2,2.991967983991996,2.991967983991996,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r4,mean_umi8,49.42037523211884,49.42037523211884,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r4,mean_genes8,39.6376384708971,39.6376384708971,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A6,r4,nuc_area_median,14.244812764942441,14.24481276494244,1.2470201389884175e-16,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A6,r4,nuc_density,658.8215928986851,658.821592898685,1.72560885901472e-16,True
+G-3a valore per area = R4_roi.csv,A6,r5,mean_umi2,4.451463537622962,4.451463537622962,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r5,frac_empty2,0.11878786908601935,0.1187878690860193,4.673133010834622e-16,True
+G-3a valore per area = R4_roi.csv,A6,r5,rho_obs,1.8370919434672632,1.8370919434672632,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r5,mean_genes2,4.287280789517917,4.287280789517917,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r5,mean_umi8,71.17090350259333,71.17090350259333,0.0,True
+G-3a valore per area = R4_roi.csv,A6,r5,mean_genes8,55.86399436511494,55.86399436511494,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A6,r5,nuc_area_median,18.068420401848044,18.068420401848044,0.0,True
+info: nuclei per area contro R2_roi_summary (maschera a 1/4 per la densità),A6,r5,nuc_density,630.0245206923724,630.0245206923724,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,rho_obs nucleus/ring UMI per bin (uncorrected),1.1670768995607648,1.167076899560765,3.383708570129123e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,mean_umi2,25.79526708034005,25.79526708034005,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,median_umi2,17.4,17.4,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,q90_umi2,59.8,59.8,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,q99_umi2,122.0,122.0,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,cv_umi2,1.0190018778743668,1.0190018778743668,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,frac_empty2,0.01420388033183736,0.0142038803318374,7.256549734985743e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,mean_umi8,405.11841593469524,405.1184159346952,1.4465017844360185e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,median_umi8,332.0,332.0,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,q90_umi8,837.2,837.2,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,q99_umi8,1252.1679999999992,1252.1679999999992,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,cv_umi8,0.75163803148662,0.75163803148662,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,frac_empty8,0.0,0.0,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,mean_genes2,24.02525645211064,24.02525645211064,1.5076827470998911e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,mean_genes8,310.64690428241215,310.6469042824121,2.199199133311936e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,sparsity2,0.9986177692127836,0.9986177692127836,1.820435104283989e-12,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,sparsity8,0.9823446019645887,0.9823446019645888,1.6324030821272407e-13,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,share_nucleus,0.1378222559035967,0.1378222559035967,4.439200551902735e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,share_ring,0.6061474162515468,0.6061474162515468,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,share_acellular,0.2155192404080684,0.2155192404080684,2.3025297254228444e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,share_other_nucleus,0.012385070158630461,0.0123850701586305,4.316924167242578e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,mean_umi2_nucleus,34.403062689154545,34.403062689154545,1.3871388946801695e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,mean_umi2_ring,28.925673060099143,28.925673060099143,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,mean_umi2_acellular,11.053771655895485,11.053771655895485,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,frac_empty2_nucleus,0.00076384940080728,0.0007638494008073,3.935548263584887e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,frac_empty2_ring,0.0036596569144936807,0.0036596569144937,6.043398557117379e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A1,,frac_empty2_acellular,0.0509652866669235,0.0509652866669235,2.025389564991999e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,rho_obs nucleus/ring UMI per bin (uncorrected),0.9083903423579719,0.9083903423579718,1.0043883213028488e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,mean_umi2,38.47728359114319,38.477283591143184,4.866481202019873e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,median_umi2,28.6,28.6,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,q90_umi2,84.0,84.0,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,q99_umi2,165.0,165.0,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,cv_umi2,0.8140756040464486,0.8140756040464486,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,frac_empty2,0.0061405794130439395,0.0061405794130439,3.5818129972968056e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,mean_umi8,611.5316473170326,611.5316473170326,5.004151963787919e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,median_umi8,580.0,580.0,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,q90_umi8,1094.6600000000003,1094.6600000000003,7.702360279242289e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,q99_umi8,1596.7060000000001,1596.706,4.586772979755178e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,cv_umi8,0.5207323580867524,0.5207323580867524,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,frac_empty8,0.0,0.0,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,mean_genes2,36.67791633633492,36.67791633633492,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,mean_genes8,501.6104696427086,501.6104696427086,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,sparsity2,0.9971824248780866,0.9971824248780864,2.79390241267209e-13,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,sparsity8,0.9627252171371538,0.9627252171371538,1.1414663938658181e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,share_nucleus,0.2550847082113271,0.2550847082113271,2.1343915804293494e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,share_ring,0.5432943720836224,0.5432943720836224,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,share_acellular,0.10751542370772445,0.1075154237077244,5.06485994686759e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,share_other_nucleus,0.00053870938377782,0.0005387093837778,2.1321140851068943e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,mean_umi2_nucleus,42.669663376408934,42.66966337640893,6.454996629173562e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,mean_umi2_ring,42.56036069205014,42.56036069205014,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,mean_umi2_acellular,13.749863671131829,13.749863671131829,3.010416457207212e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,frac_empty2_nucleus,0.00036918371681925996,0.0003691837168193,7.480156817520833e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,frac_empty2_ring,0.00186037943072726,0.0018603794307273,1.507918480950886e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A2,,frac_empty2_acellular,0.03514737988017894,0.0351473798801789,8.043986361317668e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,rho_obs nucleus/ring UMI per bin (uncorrected),1.1776536671771773,1.1776536671771771,2.7871068394753103e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,mean_umi2,16.236206154068235,16.236206154068235,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,median_umi2,10.6,10.6,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,q90_umi2,37.0,37.0,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,q99_umi2,87.4,87.4,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,cv_umi2,1.088728563770947,1.088728563770947,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,frac_empty2,0.01609437879968828,0.0160943787996883,1.7358171435123677e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,mean_umi8,259.7371766459104,259.7371766459104,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,median_umi8,206.4,206.4,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,q90_umi8,524.0,524.0,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,q99_umi8,975.1660000000004,975.1660000000004,8.529988799557043e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,cv_umi8,0.7529601136954668,0.7529601136954668,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,frac_empty8,0.0,0.0,1.2562289171865643e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,mean_genes2,15.386987329563738,15.386987329563734,6.52902078070272e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,mean_genes8,215.97903862693866,215.97903862693863,3.7707899225702896e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,sparsity2,0.9988512901949225,0.9988512901949224,3.6995063998656966e-13,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,sparsity8,0.9839315908095736,0.9839315908095736,2.6707797998454283e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,share_nucleus,0.1264009115852931,0.1264009115852931,1.2351210330953711e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,share_ring,0.5515943061051816,0.5515943061051816,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,share_acellular,0.2073158757143656,0.2073158757143656,6.148147856696044e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,share_other_nucleus,0.0003153480127186887,0.0003153480127187,1.410694752971743e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,mean_umi2_nucleus,21.57455808865887,21.574558088658865,4.436769080870669e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,mean_umi2_ring,17.46455247868483,17.46455247868483,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,mean_umi2_acellular,10.248051108088424,10.248051108088424,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,frac_empty2_nucleus,0.0023665459015317,0.0023665459015317,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,frac_empty2_ring,0.010520814851370821,0.0105208148513708,1.6114957578554757e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A3,,frac_empty2_acellular,0.035083555243469,0.035083555243469,2.899989269177996e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,rho_obs nucleus/ring UMI per bin (uncorrected),0.7983649329521796,0.7983649329521796,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,mean_umi2,10.402649267223882,10.402649267223882,1.0315574323168563e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,median_umi2,8.8,8.8,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,q90_umi2,19.6,19.6,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,q99_umi2,35.6,35.6,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,cv_umi2,0.6783810063864865,0.6783810063864865,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,frac_empty2,0.0052603088074060405,0.005260308807406,2.5844424724284115e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,mean_umi8,166.36664320000003,166.36664320000003,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,median_umi8,157.2,157.2,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,q90_umi8,238.365,238.365,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,q99_umi8,352.9600000000002,352.9600000000002,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,cv_umi8,0.335858330130345,0.335858330130345,8.299067914588392e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,frac_empty8,0.0,0.0,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,mean_genes2,10.073356402445306,10.073356402445306,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,mean_genes8,150.51500800000002,150.51500800000002,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,sparsity2,0.9993546384177753,0.9993546384177752,1.215893910945877e-12,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,sparsity8,0.9904505434811384,0.9904505434811384,8.893266143226895e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,share_nucleus,0.42220488343266627,0.4222048834326662,1.04917983138105e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,share_ring,0.5221960738094416,0.5221960738094416,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,share_acellular,0.0007829358595068999,0.0007829358595069,2.2804966149404155e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,share_other_nucleus,0.00222338607527198,0.002223386075272,4.764458921826274e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,mean_umi2_nucleus,9.263698012080969,9.263698012080969,1.0792793813468666e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,mean_umi2_ring,11.526354835458559,11.52635483545856,9.467104562255268e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,mean_umi2_acellular,1.0989621124744962,1.0989621124744962,2.1801495223919673e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,frac_empty2_nucleus,0.004716665379681161,0.0047166653796812,1.2720816699297005e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,frac_empty2_ring,0.00419915792196106,0.0041991579219611,5.3507165612305135e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A4,,frac_empty2_acellular,0.162873868676356,0.162873868676356,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,rho_obs nucleus/ring UMI per bin (uncorrected),1.5243471621344586,1.5243471621344586,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,mean_umi2,39.332664808236096,39.332664808236096,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,median_umi2,26.8,26.8,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,q90_umi2,86.6,86.6,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,q99_umi2,165.8,165.8,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,cv_umi2,0.8217313817093925,0.8217313817093925,8.082818149940897e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,frac_empty2,0.00014502132074869999,0.0001450213207487,1.6091410612918567e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,mean_umi8,628.2044286805716,628.2044286805716,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,median_umi8,459.72,459.72,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,q90_umi8,1299.5400000000002,1299.5400000000002,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,q99_umi8,2038.9,2038.9,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,cv_umi8,0.6542781139373671,0.6542781139373671,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,frac_empty8,0.0,0.0,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,mean_genes2,38.480509083336656,38.480509083336656,1.5268426236139411e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,mean_genes8,510.4032498714828,510.4032498714828,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,sparsity2,0.9977381131210935,0.9977381131210932,1.330685870585633e-12,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,sparsity8,0.9699427372793752,0.9699427372793752,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,share_nucleus,0.06955695542181217,0.0695569554218122,1.7540166797551457e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,share_ring,0.26642049596091283,0.2664204959609129,6.855325435155629e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,share_acellular,0.5568647612517322,0.5568647612517322,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,share_other_nucleus,0.0005462728799414,0.0005462728799414,3.4570296126368533e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,mean_umi2_nucleus,82.72459693842556,82.72459693842556,1.7513396969137726e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,mean_umi2_ring,52.08914358831358,52.08914358831358,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,mean_umi2_acellular,27.25224726095963,27.25224726095963,1.013309763450649e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,frac_empty2_nucleus,0.0,0.0,3.7640339431114827e-13,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,frac_empty2_ring,1.2760885037778937e-05,1.2760885037778936e-05,4.3810512605001996e-13,True
+G-3b intervallo di R4_refs.csv ricalcolato,A5,,frac_empty2_acellular,0.00023011755773179999,0.0002301175577318,1.9546371900130748e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,rho_obs nucleus/ring UMI per bin (uncorrected),1.8876029180739042,1.887602918073905,2.2210590619992165e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,mean_umi2,2.5605462634597798,2.56054626345978,2.568888222147767e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,median_umi2,2.0,2.0,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,q90_umi2,5.4,5.4,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,q99_umi2,11.2,11.2,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,cv_umi2,0.8868340697473188,0.8868340697473188,1.983579918337045e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,frac_empty2,0.09849615095379866,0.0984961509537987,6.620013022006878e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,mean_umi8,41.74631491323557,41.74631491323557,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,median_umi8,38.6,38.6,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,q90_umi8,66.4,66.4,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,q99_umi8,112.93600000000006,112.93600000000006,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,cv_umi8,0.5013894655560034,0.5013894655560034,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,frac_empty8,0.00042261637958634,0.0004226163795863,1.2356487886760789e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,mean_genes2,2.5023592218489634,2.5023592218489634,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,mean_genes8,34.26982134853044,34.26982134853044,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,sparsity2,0.9997702908082449,0.9997702908082446,2.493386077825474e-12,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,sparsity8,0.9969657793183806,0.9969657793183806,9.744867620065717e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,share_nucleus,0.021358221247732217,0.0213582212477322,4.7354308343889866e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,share_ring,0.24459317142496503,0.2445931714249651,8.631691500179498e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,share_acellular,0.6611207612399794,0.6611207612399794,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,share_other_nucleus,0.00294231199964634,0.0029423119996463,1.6062021998577503e-14,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,mean_umi2_nucleus,6.234636722676751,6.234636722676751,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,mean_umi2_ring,2.8744834002104587,2.8744834002104587,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,mean_umi2_acellular,2.3045212966823394,2.3045212966823394,0.0,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,frac_empty2_nucleus,0.02464598049625836,0.0246459804962584,1.4495653031118702e-15,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,frac_empty2_ring,0.06006911299973914,0.0600691129997391,5.673386732214833e-16,True
+G-3b intervallo di R4_refs.csv ricalcolato,A6,,frac_empty2_acellular,0.12106718097331037,0.1210671809733104,3.0766090993059916e-16,True

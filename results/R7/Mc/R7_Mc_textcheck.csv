@@ -1,0 +1,334 @@
+id,metric,lo,hi,text_lo,text_hi,ok
+B-002,"median nuclear area (Cellpose-RGB), min-max of ROI medians",12.590798874074371,13.714977344973873,12.6,13.7,True
+B-009,"median nuclear area (Cellpose-RGB), min-max of ROI medians",28.279421743660997,32.287233831835465,28.3,32.3,True
+B-016,"median nuclear area (Cellpose-RGB), min-max of ROI medians",27.717578927561767,33.560744214993704,27.7,33.6,True
+B-023,"median nuclear area (Cellpose-RGB), min-max of ROI medians",13.491498193727129,14.615789709871056,13.5,14.6,True
+B-030,"median nuclear area (Cellpose-RGB), min-max of ROI medians",74.26291775241657,109.77996537313754,74.3,109.8,True
+B-037,"median nuclear area (Cellpose-RGB), min-max of ROI medians",14.24481276494244,22.41683693009363,14.2,22.4,True
+B-043,"manual nuclear density, t 95% CI across the 4 windows",7103.165449522124,17735.139060076308,7103.0,17735.0,True
+B-044,"manual nuclear density, t 95% CI across the 4 windows",7090.326637676259,10757.509895316743,7090.0,10758.0,True
+B-045,"manual nuclear density, t 95% CI across the 4 windows",1096.2353904381287,5104.733061349486,1096.0,5105.0,True
+B-046,"manual nuclear density, t 95% CI across the 4 windows",17892.80867699867,38299.31753011755,17893.0,38299.0,True
+B-047,"manual nuclear density, t 95% CI across the 4 windows",555.2535869409826,1814.4625279026686,555.0,1814.0,True
+B-048,"manual nuclear density, t 95% CI across the 4 windows",764.2498827270217,1215.9235703967736,764.0,1216.0,True
+B-055,"median interior territory area, min-max of ROI medians",59.9577182145578,62.188703266525,60.0,62.2,True
+B-057,"local CV of territory area, min-max across ROIs",0.631045398813199,0.68024131205125,0.631,0.68,True
+B-061,"median interior territory area, min-max of ROI medians",81.5112295944001,111.723896086802,81.5,111.7,True
+B-063,"local CV of territory area, min-max across ROIs",0.547214680902077,0.767757139936156,0.547,0.768,True
+B-067,"median interior territory area, min-max of ROI medians",101.181070457962,239.810442545461,101.2,239.8,True
+B-069,"local CV of territory area, min-max across ROIs",0.593426103135637,0.714889443366748,0.593,0.715,True
+B-079,"median interior territory area, min-max of ROI medians",420.972668880662,1153.30624193162,421.0,1153.3,True
+B-081,"local CV of territory area, min-max across ROIs",0.524877034582638,0.791076721442589,0.525,0.791,True
+B-121,"fraction of nuclei in contact in masks (cellpose_rgb), min-max per ROI",0.4,0.439,0.4,0.439,True
+B-121,"fraction of nuclei in contact in masks (stardist_he), min-max per ROI",0.232,0.274,0.232,0.274,True
+B-122,"fraction of nuclei in contact in masks (cellpose_rgb), min-max per ROI",0.535,0.762,0.535,0.762,True
+B-122,"fraction of nuclei in contact in masks (stardist_he), min-max per ROI",0.271,0.408,0.271,0.408,True
+B-123,"fraction of nuclei in contact in masks (cellpose_rgb), min-max per ROI",0.207,0.613,0.207,0.613,True
+B-123,"fraction of nuclei in contact in masks (stardist_he), min-max per ROI",0.142,0.316,0.142,0.316,True
+B-124,"fraction of nuclei in contact in masks (cellpose_rgb), min-max per ROI",0.325,0.371,0.325,0.371,True
+B-124,"fraction of nuclei in contact in masks (stardist_he), min-max per ROI",0.371,0.461,0.371,0.461,True
+B-125,"fraction of nuclei in contact in masks (cellpose_rgb), min-max per ROI",0.0474,0.203,0.047,0.203,True
+B-125,"fraction of nuclei in contact in masks (stardist_he), min-max per ROI",0.0651,0.108,0.065,0.108,True
+B-126,"fraction of nuclei in contact in masks (cellpose_rgb), min-max per ROI",0.0137,0.166,0.014,0.166,True
+B-126,"fraction of nuclei in contact in masks (stardist_he), min-max per ROI",0.0444,0.074,0.044,0.074,True
+B-127,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)",0.36625,0.65,0.37,0.65,True
+B-128,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)",0.2166666666666666,0.5666666666666667,0.22,0.57,True
+B-129,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)",0.0833333333333333,0.2833333333333333,0.08,0.28,True
+B-130,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)",0.35,0.75,0.35,0.75,True
+B-131,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)",0.0,0.217083333333331,0.0,0.22,True
+B-132,"S-1 manual fraction of focal nuclei with a touching neighbour, two-stage bootstrap (windows, focal nuclei)",0.0,0.0701754385964912,0.0,0.07,True
+B-161,"epiteliale: fraction of nuclei, bootstrap over ROIs",0.6708552898256992,0.6961190701282332,0.671,0.696,True
+B-161,"epiteliale: nuclear density per ROI, min-max",6758.389034558841,7668.723755323102,6758.0,7669.0,True
+B-161,"epiteliale: median nuclear area, bootstrap over ROIs",13.56508688218727,14.389484427513567,13.6,14.4,True
+B-162,"stromale e muscolo liscio: fraction of nuclei, bootstrap over ROIs",0.1993007872431399,0.2323788246192409,0.199,0.232,True
+B-162,"stromale e muscolo liscio: nuclear density per ROI, min-max",2003.5241583437733,2606.144792470593,2004.0,2606.0,True
+B-162,"stromale e muscolo liscio: median nuclear area, bootstrap over ROIs",10.717168089241875,11.841346560141377,10.7,11.8,True
+B-163,"immunitario: fraction of nuclei, bootstrap over ROIs",0.0829972753788619,0.1182119528127132,0.083,0.118,True
+B-163,"immunitario: nuclear density per ROI, min-max",674.6236669998952,1374.5379259358613,675.0,1375.0,True
+B-163,"immunitario: median nuclear area, bootstrap over ROIs",10.867058552028476,11.616510865961477,10.9,11.6,True
+B-164,"epiteliale normale: fraction of nuclei, bootstrap over ROIs",0.5871545794618076,0.7393568247314645,0.587,0.739,True
+B-164,"epiteliale normale: nuclear density per ROI, min-max",3501.668360937608,6311.496165417508,3502.0,6311.0,True
+B-164,"epiteliale normale: median nuclear area, bootstrap over ROIs",32.96144521115453,34.83425459815195,33.0,34.8,True
+B-165,"fibroblasti: fraction of nuclei, bootstrap over ROIs",0.1300551185978819,0.2765174369494388,0.13,0.277,True
+B-165,"fibroblasti: nuclear density per ROI, min-max",810.4421036180094,2166.234205711842,810.0,2166.0,True
+B-165,"fibroblasti: median nuclear area, bootstrap over ROIs",20.975465134371067,29.365651188119493,21.0,29.4,True
+B-166,"epiteliale tumorale: fraction of nuclei, bootstrap over ROIs",0.0277276825969341,0.0721520095735676,0.028,0.072,True
+B-166,"epiteliale tumorale: nuclear density per ROI, min-max",188.01342038539937,654.944317536282,188.0,655.0,True
+B-166,"epiteliale tumorale: median nuclear area, bootstrap over ROIs",17.303822331162632,22.24897551752931,17.3,22.2,True
+B-167,"epiteliale normale: fraction of nuclei, bootstrap over ROIs",0.2138863474636576,0.4449299186710503,0.214,0.445,True
+B-167,"epiteliale normale: nuclear density per ROI, min-max",244.0596185302445,2497.863665986596,244.0,2498.0,True
+B-167,"epiteliale normale: median nuclear area, bootstrap over ROIs",31.313372950596808,42.47531689710141,31.3,42.5,True
+B-168,"fibroblasti: fraction of nuclei, bootstrap over ROIs",0.2509949818307666,0.4199379321609408,0.251,0.42,True
+B-168,"fibroblasti: nuclear density per ROI, min-max",1051.7851447815983,1689.255624124626,1052.0,1689.0,True
+B-168,"fibroblasti: median nuclear area, bootstrap over ROIs",30.33951206935815,34.085130843352985,30.3,34.1,True
+B-169,"immunitario: fraction of nuclei, bootstrap over ROIs",0.1386485551133414,0.2317359811963352,0.139,0.232,True
+B-169,"immunitario: nuclear density per ROI, min-max",533.4557445728337,1006.3393349004692,533.0,1006.0,True
+B-169,"immunitario: median nuclear area, bootstrap over ROIs",24.457954189492764,28.466702682360733,24.5,28.5,True
+B-170,"endoteliale: fraction of nuclei, bootstrap over ROIs",0.0619263144537033,0.101809494764664,0.062,0.102,True
+B-170,"endoteliale: nuclear density per ROI, min-max",247.82699253879068,500.1686555171318,248.0,500.0,True
+B-170,"endoteliale: median nuclear area, bootstrap over ROIs",27.417929425642185,35.13390410007154,27.4,35.1,True
+B-171,"epiteliale tumorale: fraction of nuclei, bootstrap over ROIs",0.0484446205666732,0.0987965666755154,0.048,0.099,True
+B-171,"epiteliale tumorale: nuclear density per ROI, min-max",115.97874434288478,583.8768924530638,116.0,584.0,True
+B-171,"epiteliale tumorale: median nuclear area, bootstrap over ROIs",22.69657696102169,27.64266655208187,22.7,27.6,True
+B-172,"linfociti B: fraction of nuclei, bootstrap over ROIs",0.1844895326721465,0.3441685168651185,0.184,0.344,True
+B-172,"linfociti B: nuclear density per ROI, min-max",4259.255485554124,9109.801576389851,4259.0,9110.0,True
+B-172,"linfociti B: median nuclear area, bootstrap over ROIs",16.41465613570134,17.014278277644767,16.4,17.0,True
+B-173,"linfociti T: fraction of nuclei, bootstrap over ROIs",0.1874021299795856,0.2451125824585908,0.187,0.245,True
+B-173,"linfociti T: nuclear density per ROI, min-max",3593.450815728296,7818.433276324014,3593.0,7818.0,True
+B-173,"linfociti T: median nuclear area, bootstrap over ROIs",15.88998676150084,16.264750600215482,15.9,16.3,True
+B-174,"plasmacellule: fraction of nuclei, bootstrap over ROIs",0.0119651158844887,0.0240075053309877,0.012,0.024,True
+B-174,"plasmacellule: nuclear density per ROI, min-max",295.2256504319705,747.9626557456932,295.0,748.0,True
+B-174,"plasmacellule: median nuclear area, bootstrap over ROIs",15.215411851814483,16.114845064729625,15.2,16.1,True
+B-175,"stromali: fraction of nuclei, bootstrap over ROIs",0.0102208250268363,0.0119326799759751,0.01,0.012,True
+B-175,"stromali: nuclear density per ROI, min-max",216.01080746231892,368.2814893524242,216.0,368.0,True
+B-175,"stromali: median nuclear area, bootstrap over ROIs",15.36531738730034,15.964939529243768,15.4,16.0,True
+B-176,"mieloidi: fraction of nuclei, bootstrap over ROIs",0.0080559053824672,0.0135908271753586,0.008,0.014,True
+B-176,"mieloidi: nuclear density per ROI, min-max",187.14303942636772,377.0963531539784,187.0,377.0,True
+B-176,"mieloidi: median nuclear area, bootstrap over ROIs",16.86437274215891,17.463994884102338,16.9,17.5,True
+B-177,"endoteliali: fraction of nuclei, bootstrap over ROIs",0.0069873671183541,0.0092549079057075,0.007,0.009,True
+B-177,"endoteliali: nuclear density per ROI, min-max",183.5335974127076,283.216471431348,184.0,283.0,True
+B-177,"endoteliali: median nuclear area, bootstrap over ROIs",14.84064801309984,15.290364619557412,14.8,15.3,True
+B-178,"neuroni: fraction of nuclei, bootstrap over ROIs",0.5801646413171305,0.7329052969502408,0.58,0.733,True
+B-178,"neuroni: nuclear density per ROI, min-max",507.86565836376855,907.5775001217052,508.0,908.0,True
+B-178,"neuroni: median nuclear area, bootstrap over ROIs",104.4486537852492,120.74294413133047,104.4,120.7,True
+B-179,"oligodendrociti: fraction of nuclei, bootstrap over ROIs",0.0924558587479935,0.2978027964408934,0.092,0.298,True
+B-179,"oligodendrociti: nuclear density per ROI, min-max",54.796031560301344,615.32950155962,55.0,615.0,True
+B-179,"oligodendrociti: median nuclear area, bootstrap over ROIs",25.530224505380826,42.049781538274296,25.5,42.0,True
+B-180,"astrociti: fraction of nuclei, bootstrap over ROIs",0.0582482069115409,0.0777913361805979,0.058,0.078,True
+B-180,"astrociti: nuclear density per ROI, min-max",49.96509407089551,92.5005133063481,50.0,93.0,True
+B-180,"astrociti: median nuclear area, bootstrap over ROIs",47.45618202176671,53.16293808767536,47.5,53.2,True
+B-181,"vascolari: fraction of nuclei, bootstrap over ROIs",0.0319976036762196,0.0634381195128858,0.032,0.063,True
+B-181,"vascolari: nuclear density per ROI, min-max",37.15353148861461,64.27781555116836,37.0,64.0,True
+B-181,"vascolari: median nuclear area, bootstrap over ROIs",16.36937924168535,67.429828252447,16.4,67.4,True
+B-182,"microglia: fraction of nuclei, bootstrap over ROIs",0.0290191526407428,0.0484301937207748,0.029,0.048,True
+B-182,"microglia: nuclear density per ROI, min-max",30.948577857969955,44.84046903798315,31.0,45.0,True
+B-182,"microglia: median nuclear area, bootstrap over ROIs",21.3252463515534,28.914856474733856,21.3,28.9,True
+B-183,"cardiomiociti: fraction of nuclei, bootstrap over ROIs",0.6865798294998595,0.8174817096649981,0.687,0.817,True
+B-183,"cardiomiociti: nuclear density per ROI, min-max",564.0303050583716,947.7855791218562,564.0,948.0,True
+B-183,"cardiomiociti: median nuclear area, bootstrap over ROIs",17.093775317930927,23.091591218959323,17.1,23.1,True
+B-184,"fibroblasti: fraction of nuclei, bootstrap over ROIs",0.0727762803234501,0.1770109791619986,0.073,0.177,True
+B-184,"fibroblasti: nuclear density per ROI, min-max",53.82729605813012,291.8558196554435,54.0,292.0,True
+B-184,"fibroblasti: median nuclear area, bootstrap over ROIs",18.44328389566232,22.41683693009363,18.4,22.4,True
+B-185,"immunitari: fraction of nuclei, bootstrap over ROIs",0.1006578947368421,0.1309721453606345,0.101,0.131,True
+B-185,"immunitari: nuclear density per ROI, min-max",75.7814229445029,185.6288852955578,76.0,186.0,True
+B-185,"immunitari: median nuclear area, bootstrap over ROIs",16.04415753525096,20.61936647725417,16.0,20.6,True
+B-265,"linfociti B: median nuclear area per ROI, min-max",16.564561671187196,17.688853187331123,16.56,17.69,True
+B-265,"linfociti B: median nucleus/territory ratio per ROI, min-max",0.4298089589797624,0.4886360968320873,0.4298,0.4886,True
+B-265,"linfociti B: 90th percentile of nuclear area per ROI, min-max",21.586397109963404,30.35587093588604,21.59,30.36,True
+B-266,"linfociti T: median nuclear area per ROI, min-max",15.740081226014984,16.714467206673053,15.74,16.71,True
+B-266,"linfociti T: median nucleus/territory ratio per ROI, min-max",0.4592117492794169,0.497727292308166,0.4592,0.4977,True
+B-266,"linfociti T: 90th percentile of nuclear area per ROI, min-max",20.087341755104838,21.586397109963404,20.09,21.59,True
+B-267,"cardiomiociti: median nuclear area per ROI, min-max",17.618584209270914,35.31214111730468,17.62,35.31,True
+B-267,"cardiomiociti: median nucleus/territory ratio per ROI, min-max",0.0228205332298247,0.0369330444425306,0.0228,0.0369,True
+B-267,"cardiomiociti: 90th percentile of nuclear area per ROI, min-max",37.59880842957177,64.41654277704495,37.6,64.42,True
+B-268,"fibroblasti: median nuclear area per ROI, min-max",16.943829920405218,23.991263604113584,16.94,23.99,True
+B-268,"fibroblasti: median nucleus/territory ratio per ROI, min-max",0.0206626140815709,0.0413025811565468,0.0207,0.0413,True
+B-268,"fibroblasti: 90th percentile of nuclear area per ROI, min-max",27.30505688943177,39.090765134952576,27.31,39.09,True
+B-269,"immunitari: median nuclear area per ROI, min-max",16.79388452287951,21.779568990609363,16.79,21.78,True
+B-269,"immunitari: median nucleus/territory ratio per ROI, min-max",0.0342545948765874,0.0443343580257479,0.0343,0.0443,True
+B-269,"immunitari: 90th percentile of nuclear area per ROI, min-max",27.68741765312233,37.35889579353062,27.69,37.36,True
+B-270,mean UMI per 2 um bin in tissue,25.79526708034005,28.48742015879847,25.8,28.49,True
+B-270,median UMI per 2 um bin in tissue,17.4,19.0,17.4,19.0,True
+B-270,fraction of empty 2 um bins in tissue,0.0142038803318374,0.0197021737914832,0.0142,0.0197,True
+B-271,mean UMI per 8 um bin in tissue,405.1184159346952,444.41558063399134,405.12,444.42,True
+B-271,median UMI per 8 um bin in tissue,332.0,368.2,332.0,368.2,True
+B-271,fraction of empty 8 um bins in tissue,0.0,0.0,0.0,0.0,True
+B-272,genes detected per 2 um bin,24.02525645211064,26.38166312031344,24.03,26.38,True
+B-272,genes detected per 8 um bin,310.6469042824121,336.4942311569018,310.6,336.5,True
+B-274,"nucleus/ring UMI-per-bin ratio, cell-weighted, divided by the 20 um shifted-mask ratio (Step 2 reference)",0.9746804369168216,0.9966160700745164,0.975,0.997,True
+B-274,"nucleus/ring ratio, pre-registered pooled-bin version (P-1)",1.0055972035997534,1.0471247328242492,1.006,1.047,True
+B-275,"median UMI per cell (nucleus + 8 um ring), two-stage bootstrap (ROI, cells)",479.0,543.0,479.0,543.0,True
+B-275,"CV of UMI per cell, two-stage bootstrap (ROI, cells)",0.7133754442252165,0.7607244464914045,0.713,0.761,True
+B-275,"median UMI per bin of the cell, two-stage bootstrap (ROI, cells)",32.04887218045113,36.74358974358975,32.05,36.74,True
+B-276,epiteliale: median UMI per cell,576.0,660.0,576.0,660.0,True
+B-276,epiteliale: median UMI per bin of the cell,36.48344155844156,41.83355263157895,36.48,41.83,True
+B-277,immunitario: median UMI per cell,318.975,405.0,319.0,405.0,True
+B-277,immunitario: median UMI per bin of the cell,30.5,36.11128472222222,30.5,36.11,True
+B-278,stromale e muscolo liscio: median UMI per cell,318.4875,355.0,318.5,355.0,True
+B-278,stromale e muscolo liscio: median UMI per bin of the cell,14.842105263157896,19.077631578947365,14.84,19.08,True
+B-279,"2 um capture alternation, odd/even columns: min-max across ROIs (est = section value)",1.727353404867778,1.7711204780265313,1.727,1.771,True
+B-279,"2 um capture alternation, odd/even rows: min-max across ROIs (est = section value)",1.3865268832442588,1.4266430824226592,1.387,1.427,True
+B-280,mean UMI per 2 um bin in tissue,38.477283591143184,53.078033214201085,38.48,53.08,True
+B-280,median UMI per 2 um bin in tissue,28.6,42.2,28.6,42.2,True
+B-280,fraction of empty 2 um bins in tissue,0.0061405794130439,0.0172798097351121,0.0061,0.0173,True
+B-281,mean UMI per 8 um bin in tissue,611.5316473170326,838.7166699628281,611.53,838.72,True
+B-281,median UMI per 8 um bin in tissue,580.0,825.6,580.0,825.6,True
+B-281,fraction of empty 8 um bins in tissue,0.0,0.0,0.0,0.0,True
+B-282,genes detected per 2 um bin,36.67791633633492,50.68961502043025,36.68,50.69,True
+B-282,genes detected per 8 um bin,501.6104696427086,675.8685400307979,501.6,675.9,True
+B-284,"nucleus/ring UMI-per-bin ratio, cell-weighted, divided by the 20 um shifted-mask ratio (Step 2 reference)",0.8277396876994139,0.866240692970338,0.828,0.866,True
+B-284,"nucleus/ring ratio, pre-registered pooled-bin version (P-1)",0.846946296069093,0.8954357823879826,0.847,0.895,True
+B-285,"median UMI per cell (nucleus + 8 um ring), two-stage bootstrap (ROI, cells)",996.0,1293.025,996.0,1293.0,True
+B-285,"CV of UMI per cell, two-stage bootstrap (ROI, cells)",0.7236452832530685,0.7801559494068152,0.724,0.78,True
+B-285,"median UMI per bin of the cell, two-stage bootstrap (ROI, cells)",47.61088386727688,56.37514880952381,47.61,56.38,True
+B-286,epiteliale normale: median UMI per cell,1115.0,1533.0499999999995,1115.0,1533.0,True
+B-286,epiteliale normale: median UMI per bin of the cell,52.948076923076925,63.88894927536232,52.95,63.89,True
+B-287,epiteliale tumorale: median UMI per cell,340.9875,398.01249999999993,341.0,398.0,True
+B-287,epiteliale tumorale: median UMI per bin of the cell,41.285714285714285,46.285714285714285,41.29,46.29,True
+B-288,fibroblasti: median UMI per cell,827.5,977.0,827.5,977.0,True
+B-288,fibroblasti: median UMI per bin of the cell,22.5225,38.52,22.52,38.52,True
+B-289,"2 um capture alternation, odd/even columns: min-max across ROIs (est = section value)",1.6791525734093675,1.746945038686458,1.679,1.747,True
+B-289,"2 um capture alternation, odd/even rows: min-max across ROIs (est = section value)",1.5848855307797718,1.663331087461236,1.585,1.663,True
+B-290,mean UMI per 2 um bin in tissue,16.236206154068235,21.875361445424165,16.24,21.88,True
+B-290,median UMI per 2 um bin in tissue,10.6,13.8,10.6,13.8,True
+B-290,fraction of empty 2 um bins in tissue,0.0160943787996883,0.0280868180894627,0.0161,0.0281,True
+B-291,mean UMI per 8 um bin in tissue,259.7371766459104,349.62146133510225,259.74,349.62,True
+B-291,median UMI per 8 um bin in tissue,206.4,260.0,206.4,260.0,True
+B-291,fraction of empty 8 um bins in tissue,0.0,0.0017261219792865,0.0,0.0017,True
+B-292,genes detected per 2 um bin,15.386987329563734,20.82840618566687,15.39,20.83,True
+B-292,genes detected per 8 um bin,215.97903862693863,291.3523954408098,216.0,291.4,True
+B-294,"nucleus/ring UMI-per-bin ratio, cell-weighted, divided by the 20 um shifted-mask ratio (Step 2 reference)",0.8537997941084224,0.927856280231632,0.854,0.928,True
+B-294,"nucleus/ring ratio, pre-registered pooled-bin version (P-1)",0.9124415165882352,1.024997555174134,0.912,1.025,True
+B-295,"median UMI per cell (nucleus + 8 um ring), two-stage bootstrap (ROI, cells)",742.0,830.0,742.0,830.0,True
+B-295,"CV of UMI per cell, two-stage bootstrap (ROI, cells)",0.6781258760752457,0.8042241275836091,0.678,0.804,True
+B-295,"median UMI per bin of the cell, two-stage bootstrap (ROI, cells)",16.210410216718266,30.424365942028963,16.21,30.42,True
+B-296,endoteliale: median UMI per cell,661.9875,774.0,662.0,774.0,True
+B-296,endoteliale: median UMI per bin of the cell,17.75862068965517,22.01220238095238,17.76,22.01,True
+B-297,epiteliale normale: median UMI per cell,893.0,1330.025,893.0,1330.0,True
+B-297,epiteliale normale: median UMI per bin of the cell,38.70722673893406,48.53596153846154,38.71,48.54,True
+B-298,epiteliale tumorale: median UMI per cell,391.0,450.0,391.0,450.0,True
+B-298,epiteliale tumorale: median UMI per bin of the cell,23.0,41.925892857142856,23.0,41.93,True
+B-299,fibroblasti: median UMI per cell,761.0,887.0,761.0,887.0,True
+B-299,fibroblasti: median UMI per bin of the cell,12.717391304347826,15.157932875667427,12.72,15.16,True
+B-300,immunitario: median UMI per cell,586.0,778.0249999999999,586.0,778.0,True
+B-300,immunitario: median UMI per bin of the cell,14.473684210526317,19.09100576662144,14.47,19.09,True
+B-301,"2 um capture alternation, odd/even columns: min-max across ROIs (est = section value)",1.7341095883073894,1.7415464434756172,1.734,1.742,True
+B-301,"2 um capture alternation, odd/even rows: min-max across ROIs (est = section value)",1.59017121790825,1.6382800432893876,1.59,1.638,True
+B-302,mean UMI per 2 um bin in tissue,10.402649267223882,12.124663751100549,10.4,12.12,True
+B-302,median UMI per 2 um bin in tissue,8.8,10.6,8.8,10.6,True
+B-302,fraction of empty 2 um bins in tissue,0.005260308807406,0.0210339242468513,0.0053,0.021,True
+B-303,mean UMI per 8 um bin in tissue,166.36664320000003,193.8872192,166.37,193.89,True
+B-303,median UMI per 8 um bin in tissue,157.2,184.8,157.2,184.8,True
+B-303,fraction of empty 8 um bins in tissue,0.0,0.0012288,0.0,0.0012,True
+B-304,genes detected per 2 um bin,10.073356402445306,11.701696208901568,10.07,11.7,True
+B-304,genes detected per 8 um bin,150.51500800000002,173.15023359999998,150.5,173.2,True
+B-306,"nucleus/ring UMI-per-bin ratio, cell-weighted, divided by the 20 um shifted-mask ratio (Step 2 reference)",0.7716998480863495,0.8034268417362126,0.772,0.803,True
+B-306,"nucleus/ring ratio, pre-registered pooled-bin version (P-1)",0.7954639837292572,0.8071994385836326,0.795,0.807,True
+B-307,"median UMI per cell (nucleus + 8 um ring), two-stage bootstrap (ROI, cells)",73.0,95.0,73.0,95.0,True
+B-307,"CV of UMI per cell, two-stage bootstrap (ROI, cells)",0.6701916259271945,0.7723706958402504,0.67,0.772,True
+B-307,"median UMI per bin of the cell, two-stage bootstrap (ROI, cells)",9.5,11.285714285714286,9.5,11.29,True
+B-308,endoteliali: median UMI per cell,63.0,80.0,63.0,80.0,True
+B-308,endoteliali: median UMI per bin of the cell,8.5,9.5,8.5,9.5,True
+B-309,linfociti B: median UMI per cell,105.0,135.0,105.0,135.0,True
+B-309,linfociti B: median UMI per bin of the cell,11.785714285714286,13.461538461538462,11.79,13.46,True
+B-310,linfociti T: median UMI per cell,83.0,99.0,83.0,99.0,True
+B-310,linfociti T: median UMI per bin of the cell,10.142857142857142,11.333333333333334,10.14,11.33,True
+B-311,mieloidi: median UMI per cell,134.0,138.0,134.0,138.0,True
+B-311,mieloidi: median UMI per bin of the cell,13.0,13.636363636363637,13.0,13.64,True
+B-312,plasmacellule: median UMI per cell,75.0,117.0,75.0,117.0,True
+B-312,plasmacellule: median UMI per bin of the cell,10.8,13.555555555555555,10.8,13.56,True
+B-313,stromali: median UMI per cell,81.0,98.0,81.0,98.0,True
+B-313,stromali: median UMI per bin of the cell,9.857142857142858,11.0,9.86,11.0,True
+B-314,"2 um capture alternation, odd/even columns: min-max across ROIs (est = section value)",1.1044421153877075,1.149198383870634,1.104,1.149,True
+B-314,"2 um capture alternation, odd/even rows: min-max across ROIs (est = section value)",0.973148107539143,1.0487533370441813,0.973,1.049,True
+B-315,mean UMI per 2 um bin in tissue,39.332664808236096,44.25343445526034,39.33,44.25,True
+B-315,median UMI per 2 um bin in tissue,26.8,32.8,26.8,32.8,True
+B-315,fraction of empty 2 um bins in tissue,0.0001450213207487,0.0008187982807469,0.0001,0.0008,True
+B-316,mean UMI per 8 um bin in tissue,628.2044286805716,706.6719167756738,628.2,706.67,True
+B-316,median UMI per 8 um bin in tissue,459.72,569.3,459.7,569.3,True
+B-316,fraction of empty 8 um bins in tissue,0.0,0.0,0.0,0.0,True
+B-317,genes detected per 2 um bin,38.480509083336656,43.13418278074949,38.48,43.13,True
+B-317,genes detected per 8 um bin,510.4032498714828,573.1920000823159,510.4,573.2,True
+B-319,"nucleus/ring UMI-per-bin ratio, cell-weighted, divided by the 20 um shifted-mask ratio (Step 2 reference)",1.3616015612173606,1.40154179219524,1.362,1.402,True
+B-319,"nucleus/ring ratio, pre-registered pooled-bin version (P-1)",1.4415361225753536,1.5267583339118456,1.442,1.527,True
+B-320,"median UMI per cell (nucleus + 8 um ring), two-stage bootstrap (ROI, cells)",5683.95,7958.0,5683.9,7958.0,True
+B-320,"CV of UMI per cell, two-stage bootstrap (ROI, cells)",0.4639428040369766,0.6863577974727225,0.464,0.686,True
+B-320,"median UMI per bin of the cell, two-stage bootstrap (ROI, cells)",52.48983713117149,64.54427875082618,52.49,64.54,True
+B-321,astrociti: median UMI per cell,2871.0,3520.5,2871.0,3520.5,True
+B-321,astrociti: median UMI per bin of the cell,31.865168539325843,40.7027027027027,31.87,40.7,True
+B-322,microglia: median UMI per cell,2604.0,4324.0,2604.0,4324.0,True
+B-322,microglia: median UMI per bin of the cell,34.12138072397921,52.08,34.12,52.08,True
+B-323,neuroni: median UMI per cell,7049.0,8900.5875,7049.0,8900.6,True
+B-323,neuroni: median UMI per bin of the cell,59.9674025769956,69.09929078014184,59.97,69.1,True
+B-324,oligodendrociti: median UMI per cell,1146.0,4816.062499999997,1146.0,4816.1,True
+B-324,oligodendrociti: median UMI per bin of the cell,19.04255319148936,54.53852295976357,19.04,54.54,True
+B-325,vascolari: median UMI per cell,2201.0,5258.0,2201.0,5258.0,True
+B-325,vascolari: median UMI per bin of the cell,33.888888888888886,49.18571428571428,33.89,49.19,True
+B-326,"2 um capture alternation, odd/even columns: min-max across ROIs (est = section value)",1.2286096931719,1.281724766133353,1.229,1.282,True
+B-326,"2 um capture alternation, odd/even rows: min-max across ROIs (est = section value)",1.1940926715550653,1.2445941460519965,1.194,1.245,True
+B-327,mean UMI per 2 um bin in tissue,2.56054626345978,4.289267684739736,2.56,4.29,True
+B-327,median UMI per 2 um bin in tissue,2.0,3.4,2.0,3.4,True
+B-327,fraction of empty 2 um bins in tissue,0.0984961509537987,0.1823496887742265,0.0985,0.1823,True
+B-328,mean UMI per 8 um bin in tissue,41.74631491323557,68.59063840686431,41.75,68.59,True
+B-328,median UMI per 8 um bin in tissue,38.6,64.0,38.6,64.0,True
+B-328,fraction of empty 8 um bins in tissue,0.0004226163795863,0.0055468399820708,0.0004,0.0055,True
+B-329,genes detected per 2 um bin,2.5023592218489634,4.154290732894272,2.5,4.15,True
+B-329,genes detected per 8 um bin,34.26982134853044,54.87388102708587,34.3,54.9,True
+B-331,"nucleus/ring UMI-per-bin ratio, cell-weighted, divided by the 20 um shifted-mask ratio (Step 2 reference)",1.640128216341972,1.9273741125295367,1.64,1.927,True
+B-331,"nucleus/ring ratio, pre-registered pooled-bin version (P-1)",1.8885913217903465,2.239443255105652,1.889,2.239,True
+B-332,"median UMI per cell (nucleus + 8 um ring), two-stage bootstrap (ROI, cells)",219.0,367.0,219.0,367.0,True
+B-332,"CV of UMI per cell, two-stage bootstrap (ROI, cells)",0.4559528612294864,0.6561902953265449,0.456,0.656,True
+B-332,"median UMI per bin of the cell, two-stage bootstrap (ROI, cells)",2.984478715728716,4.967881720430107,2.98,4.97,True
+B-333,cardiomiociti: median UMI per cell,229.0,423.0,229.0,423.0,True
+B-333,cardiomiociti: median UMI per bin of the cell,3.0673970037453184,5.132715855572998,3.07,5.13,True
+B-334,fibroblasti: median UMI per cell,218.0,309.0,218.0,309.0,True
+B-334,fibroblasti: median UMI per bin of the cell,2.9791666666666665,4.481927710843373,2.98,4.48,True
+B-335,immunitari: median UMI per cell,143.0,229.5,143.0,229.5,True
+B-335,immunitari: median UMI per bin of the cell,2.5737704918032787,3.7189687609972646,2.57,3.72,True
+B-336,"2 um capture alternation, odd/even columns: min-max across ROIs (est = section value)",0.9489231297570824,0.988506143178057,0.949,0.989,True
+B-336,"2 um capture alternation, odd/even rows: min-max across ROIs (est = section value)",0.9090973063707236,0.98791204912024,0.909,0.988,True
+B-367,"in-tissue gaussian blur sigma_in, min-max across ROIs with a solution (2/5)",0.7651080935957795,3.367749684400617,0.77,3.37,True
+B-367,"nucleus/ring ratio before diffusion at sigma_in, min-max across solved ROIs (2/5)",0.5195174068330453,0.8694512201069515,0.52,0.87,True
+B-368,"in-tissue gaussian blur sigma_in, min-max across ROIs with a solution (5/5)",0.5592894921792373,0.844740830971332,0.56,0.84,True
+B-368,"nucleus/ring ratio before diffusion at sigma_in, min-max across solved ROIs (5/5)",0.7067473962818689,0.8031610806192022,0.71,0.8,True
+B-369,"in-tissue gaussian blur sigma_in, min-max across ROIs with a solution (1/5)",0.3959492717518816,0.3959492717518816,0.4,0.4,True
+B-369,"nucleus/ring ratio before diffusion at sigma_in, min-max across solved ROIs (1/5)",0.8754699665681858,0.8754699665681858,0.88,0.88,True
+B-370,"in-tissue gaussian blur sigma_in, min-max across ROIs with a solution (2/5)",0.2506458025921353,0.5842728672409397,0.25,0.58,True
+B-370,"nucleus/ring ratio before diffusion at sigma_in, min-max across solved ROIs (2/5)",0.6120844502260616,0.6799965634046505,0.61,0.68,True
+B-371,"in-tissue gaussian blur sigma_in, min-max across ROIs with a solution (5/5)",0.6940640348120247,2.536412844316262,0.69,2.54,True
+B-371,"nucleus/ring ratio before diffusion at sigma_in, min-max across solved ROIs (5/5)",1.4634286196493835,1.48987585539709,1.46,1.49,True
+B-373,"nucleus/ring ratio before diffusion with the edge kernel (P-5), bootstrap over ROIs x 20 draws",1.6219219906635094,1.9491900131500264,1.62,1.95,True
+B-384,"nucleus/cytoplasm ratio before displacement (rule C2), min-max across ROIs",0.5069828776155306,0.787282082404739,0.51,0.79,True
+B-384,"internal check predicted/observed without bins within 2 um of the nucleus edge, bootstrap over ROIs",0.8330621506271714,0.9731019970278868,0.833,0.973,True
+B-385,"extra multiplicative variance v inside the nucleus, bootstrap over ROIs",0.0371866663539661,0.0509912162653101,0.037,0.051,True
+B-385,"extra residual correlation between adjacent 2 um bins, bootstrap over ROIs",0.0524501730208048,0.1299957872742171,0.052,0.13,True
+B-385,"extra residual correlation at 4 um, bootstrap over ROIs",-0.0705098946889617,0.0332710472613986,-0.071,0.033,True
+B-386,"nucleus/cytoplasm ratio before displacement (rule C2), min-max across ROIs",0.6752605743865066,0.7747628417657146,0.67,0.77,True
+B-386,"internal check predicted/observed without bins within 2 um of the nucleus edge, bootstrap over ROIs",0.9918111717025144,1.0056279844858884,0.992,1.006,True
+B-387,"extra multiplicative variance v inside the nucleus, bootstrap over ROIs",0.0606919882639507,0.078134101655594,0.061,0.078,True
+B-387,"extra residual correlation between adjacent 2 um bins, bootstrap over ROIs",0.2353203702326622,0.2566051382890403,0.235,0.257,True
+B-387,"extra residual correlation at 4 um, bootstrap over ROIs",-0.0127846098441713,-0.000584263739161,-0.013,-0.001,True
+B-388,"nucleus/cytoplasm ratio before displacement (rule C2), min-max across ROIs",0.7187327374733518,0.9166937897790612,0.72,0.92,True
+B-388,"internal check predicted/observed without bins within 2 um of the nucleus edge, bootstrap over ROIs",0.9563466954335804,0.9895490470027786,0.956,0.99,True
+B-389,"extra multiplicative variance v inside the nucleus, bootstrap over ROIs",0.0863819103696976,0.1012928170414299,0.086,0.101,True
+B-389,"extra residual correlation between adjacent 2 um bins, bootstrap over ROIs",0.2185156124250195,0.2555815912493617,0.219,0.256,True
+B-389,"extra residual correlation at 4 um, bootstrap over ROIs",-0.047076402227953,0.00439690921319,-0.047,0.004,True
+B-390,"nucleus/cytoplasm ratio before displacement (rule C2), min-max across ROIs",0.5082653393248824,0.5658838690921332,0.51,0.57,True
+B-390,"internal check predicted/observed without bins within 2 um of the nucleus edge, bootstrap over ROIs",0.8358178217383923,0.9403008982052456,0.836,0.94,True
+B-391,"extra multiplicative variance v inside the nucleus, bootstrap over ROIs",0.0592940443357576,0.0683207620859987,0.059,0.068,True
+B-391,"extra residual correlation between adjacent 2 um bins, bootstrap over ROIs",0.0807347179169842,0.105306780360931,0.081,0.105,True
+B-391,"extra residual correlation at 4 um, bootstrap over ROIs",-0.070559743198245,-0.0344485468574405,-0.071,-0.034,True
+B-392,"nucleus/cytoplasm ratio before displacement (rule C2), min-max across ROIs",1.4027879036756823,1.5193892205435444,1.4,1.52,True
+B-392,"internal check predicted/observed without bins within 2 um of the nucleus edge, bootstrap over ROIs",0.9636142994251689,0.9889980692938732,0.964,0.989,True
+B-393,"extra multiplicative variance v inside the nucleus, bootstrap over ROIs",0.0309341554823253,0.0358537410910979,0.031,0.036,True
+B-393,"extra residual correlation between adjacent 2 um bins, bootstrap over ROIs",0.3319990762886293,0.433402258891611,0.332,0.433,True
+B-393,"extra residual correlation at 4 um, bootstrap over ROIs",0.0433633831424206,0.1289079270712915,0.043,0.129,True
+B-394,"nucleus/cytoplasm ratio before displacement (rule C2), min-max across ROIs",2.027097125267802,2.883191453906838,2.03,2.88,True
+B-394,"internal check predicted/observed without bins within 2 um of the nucleus edge, bootstrap over ROIs",0.623992553136369,0.7011766632345354,0.624,0.701,True
+B-395,"extra multiplicative variance v inside the nucleus, bootstrap over ROIs",0.1277071938749549,0.1851536416662838,0.128,0.185,True
+B-395,"extra residual correlation between adjacent 2 um bins, bootstrap over ROIs",0.1372885738417354,0.2713581439954511,0.137,0.271,True
+B-395,"extra residual correlation at 4 um, bootstrap over ROIs",-0.0574987939661969,-0.0107654137612331,-0.057,-0.011,True
+B-402,"mean cosine between adjacent 8 um blocks in typed-nucleus squares, min-max across 5 ROI",0.4600212007023218,0.5091001020700848,0.46,0.509,True
+B-403,"same-cell / different-cell cosine ratio of squares (Daniele's measure), min-max across 5 ROI",2.07957801855323,2.2146679717783555,2.08,2.215,True
+B-404,"mean cosine between adjacent 8 um blocks in typed-nucleus squares, min-max across 5 ROI",0.4063133693349987,0.4890297685383902,0.406,0.489,True
+B-405,"same-cell / different-cell cosine ratio of squares (Daniele's measure), min-max across 5 ROI",1.1616498579814705,1.3996484991818317,1.162,1.4,True
+B-406,"mean cosine between adjacent 8 um blocks in typed-nucleus squares, min-max across 5 ROI",0.3204905649334072,0.4127501203692671,0.32,0.413,True
+B-407,"same-cell / different-cell cosine ratio of squares (Daniele's measure), min-max across 5 ROI",1.2419407056804022,1.4154052850913226,1.242,1.415,True
+B-408,"mean cosine between adjacent 8 um blocks in typed-nucleus squares, min-max across 5 ROI",0.3354696161422478,0.4344435262470296,0.335,0.434,True
+B-409,"same-cell / different-cell cosine ratio of squares (Daniele's measure), min-max across 5 ROI",1.715369322203726,1.8858059626915875,1.715,1.886,True
+B-410,"mean cosine between adjacent 8 um blocks in typed-nucleus squares, min-max across 5 ROI",0.3412418539433796,0.3828705933869538,0.341,0.383,True
+B-411,"same-cell / different-cell cosine ratio of squares (Daniele's measure), min-max across 5 ROI",1.117954463464527,1.2451101789745451,1.118,1.245,True
+B-412,"mean cosine between adjacent 8 um blocks in typed-nucleus squares, min-max across 5 ROI",0.1605581350314067,0.3466751691412493,0.161,0.347,True
+B-413,"same-cell / different-cell cosine ratio of squares (Daniele's measure), min-max across 5 ROI",1.0634223531686091,1.1463032878040462,1.063,1.146,True
+B-414,"simulator depth factor, bootstrap over the 5 ROIs",0.8241608984537262,0.908214068006206,0.824,0.908,True
+B-414,"simulator depth factor, min-max across ROIs",0.8053452383676057,0.9199072743077789,0.805,0.92,True
+B-415,"simulator depth factor, bootstrap over the 5 ROIs",0.7565385018712923,1.0519669824796,0.757,1.052,True
+B-415,"simulator depth factor, min-max across ROIs",0.6699590433716681,1.1504377092855345,0.67,1.15,True
+B-416,"simulator depth factor, bootstrap over the 5 ROIs",1.3148673183867363,1.777565448271795,1.315,1.778,True
+B-416,"simulator depth factor, min-max across ROIs",1.0592409087828794,1.828028068428237,1.059,1.828,True
+B-417,"simulator depth factor, bootstrap over the 5 ROIs",0.7170815324429423,0.8393252878484754,0.717,0.839,True
+B-417,"simulator depth factor, min-max across ROIs",0.6558643711095128,0.8635441356412105,0.656,0.864,True
+B-418,"simulator depth factor, bootstrap over the 5 ROIs",1.1772152921812356,1.3264045528254074,1.177,1.326,True
+B-418,"simulator depth factor, min-max across ROIs",1.144492266294804,1.3426128365304444,1.144,1.343,True
+B-419,"simulator depth factor, bootstrap over the 5 ROIs",1.938196795539744,3.311683165322413,1.938,3.312,True
+B-419,"simulator depth factor, min-max across ROIs",1.7378899266100267,3.660561367439327,1.738,3.661,True

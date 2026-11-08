@@ -1,0 +1,10 @@
+{
+ "rule": "R-1",
+ "cells_within_bradley": {
+  "C-a": 12,
+  "C-b": 12
+ },
+ "n_cells": 18,
+ "choice": "C-a",
+ "cv_hi": 0.6243431093893831
+}

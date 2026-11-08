@@ -1,0 +1,80 @@
+check,archetype,pair,value,expected,ok
+G-2a F_box vs E-0/BL-215,A1,r1-r2,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A1,r1-r3,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A1,r1-r4,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A1,r1-r5,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A1,r2-r3,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A1,r2-r4,0.12007665532433845,0.122,True
+G-2a F_box vs E-0/BL-215,A1,r2-r5,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A1,r3-r4,0.02997809794349079,0.028,True
+G-2a F_box vs E-0/BL-215,A1,r3-r5,0.34989050470500416,0.345,True
+G-2a F_box vs E-0/BL-215,A1,r4-r5,0.0,0.0,True
+G-2b bin dei file di R4 dentro la propria area,A1,,1.0,1.0,True
+G-2c bin in tessuto: file per area = contenimento nelle caselle,A1,,0.0,0.0,True
+"G-2d ogni bin unico in un solo pezzo, unione completa",A1,,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A2,r1-r2,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A2,r1-r3,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A2,r1-r4,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A2,r1-r5,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A2,r2-r3,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A2,r2-r4,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A2,r2-r5,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A2,r3-r4,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A2,r3-r5,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A2,r4-r5,0.08012588044862548,0.077,True
+G-2b bin dei file di R4 dentro la propria area,A2,,1.0,1.0,True
+G-2c bin in tessuto: file per area = contenimento nelle caselle,A2,,0.0,0.0,True
+"G-2d ogni bin unico in un solo pezzo, unione completa",A2,,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A3,r1-r2,0.28009852815922687,0.278,True
+G-2a F_box vs E-0/BL-215,A3,r1-r3,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A3,r1-r4,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A3,r1-r5,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A3,r2-r3,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A3,r2-r4,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A3,r2-r5,0.28009852815922687,0.278,True
+G-2a F_box vs E-0/BL-215,A3,r3-r4,0.12006569043260057,0.12,True
+G-2a F_box vs E-0/BL-215,A3,r3-r5,0.23985770817773536,0.24,True
+G-2a F_box vs E-0/BL-215,A3,r4-r5,0.0,0.0,True
+G-2b bin dei file di R4 dentro la propria area,A3,,1.0,1.0,True
+G-2c bin in tessuto: file per area = contenimento nelle caselle,A3,,0.0,0.0,True
+"G-2d ogni bin unico in un solo pezzo, unione completa",A3,,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A4,f1-f2,8.2131775187646e-05,0.002,True
+G-2a F_box vs E-0/BL-215,A4,f1-p1,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A4,f1-p2,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A4,f1-p3,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A4,f2-p1,0.13010130310004736,0.131,True
+G-2a F_box vs E-0/BL-215,A4,f2-p2,0.38514781733683373,0.384,True
+G-2a F_box vs E-0/BL-215,A4,f2-p3,0.0849561790259876,0.082,True
+G-2a F_box vs E-0/BL-215,A4,p1-p2,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A4,p1-p3,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A4,p2-p3,0.2799507269299075,0.278,True
+G-2b bin dei file di R4 dentro la propria area,A4,,1.0,1.0,True
+G-2c bin in tessuto: file per area = contenimento nelle caselle,A4,,0.0,0.0,True
+"G-2d ogni bin unico in un solo pezzo, unione completa",A4,,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A5,r1-r2,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A5,r1-r3,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A5,r1-r4,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A5,r1-r5,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A5,r2-r3,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A5,r2-r4,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A5,r2-r5,0.29979449803273717,0.301,True
+G-2a F_box vs E-0/BL-215,A5,r3-r4,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A5,r3-r5,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A5,r4-r5,0.0,0.0,True
+G-2b bin dei file di R4 dentro la propria area,A5,,1.0,1.0,True
+G-2c bin in tessuto: file per area = contenimento nelle caselle,A5,,0.0,0.0,True
+"G-2d ogni bin unico in un solo pezzo, unione completa",A5,,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A6,r1-r2,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A6,r1-r3,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A6,r1-r4,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A6,r1-r5,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A6,r2-r3,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A6,r2-r4,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A6,r2-r5,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A6,r3-r4,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A6,r3-r5,0.0,0.0,True
+G-2a F_box vs E-0/BL-215,A6,r4-r5,0.0,0.0,True
+G-2b bin dei file di R4 dentro la propria area,A6,,1.0,1.0,True
+G-2c bin in tessuto: file per area = contenimento nelle caselle,A6,,0.0,0.0,True
+"G-2d ogni bin unico in un solo pezzo, unione completa",A6,,0.0,0.0,True
+G-2e cuore: valori sui pezzi identici a quelli sulle aree,A6,,0.0,0.0,True
