@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-09 (dopo S2.5: preparazione delle sessioni successive)
+
+* **Creazione**: decisione di Luca [Dopo S2.5 si fa prima una prova di prestazione su aree grandi; ordine e perimetro delle sessioni successive li prepara l'agente (DEC-071)](decisions/DEC-071.md).
+* **Creazione**: file preparatorio [Il simulatore regge un'area di cattura intera, in tempo, in memoria e senza difetti alle giunture fra i pezzi? (S2.6)](steps/S2.6.md): dubbi ricevuti, perimetro, stime di preparazione; nessuna pre-registrazione, step non aperto.
+* **Modifica**: BACKLOG (nuova BL-240; destinazione di BL-045, BL-072, BL-144, BL-205, BL-214, BL-237); ROADMAP sezioni 4, 6 e 7; design dello Step 2 (nota nella sezione 12); CHANGELOG.
+
 ## 2026-11-09 (S2.5)
 
 * **Chiusura**: [Il simulatore completo produce conteggi come quelli dei sei tessuti veri? (S2.5)](steps/S2.5.md) chiuso con l'approvazione di Luca («vai chiudi», risposta alle due decisioni del riassunto «In breve»).

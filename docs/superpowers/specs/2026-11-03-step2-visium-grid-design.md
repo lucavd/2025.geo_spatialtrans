@@ -162,6 +162,8 @@ Bilancio proposto, come per lo Step 1: un'area di 1 mm² in meno di 5 minuti e 8
 
 Misurato in S2.5 (`simulate_visium_hd()`, aree di 1 mm², fino a 6 processi sul server condiviso): da 19 s (cuore) a 237 s (tumore del colon) per area, picco da 2.8 a 8.3 GB con 4 × 10⁶ trascritti per blocco (oltre 8 GB solo l'area A2_r4). A macchina libera, con i predefiniti finali (2 × 10⁶), le 5 aree del tumore stanno in 149-232 s e 6.0-7.2 GB. Con 70.6 milioni di trascritti generati il picco non scende sotto circa 7 GB al ridursi dei blocchi (tabelle dell'area intera): l'area di cattura intera va fatta a tessere (BL-214, step di prestazioni).
 
+Nota dopo S2.5 (preparazione della prova di prestazione, [DEC-071](/decisions/DEC-071.md)): il bordo di 280 µm di questa sezione è stato scelto sulla prima coda, prima della seconda coda di S2.4. Dai parametri della sezione 9 la seconda coda porta oltre 280 µm dal 2.0 al 3.6 % di tutti i trascritti (stime in `results/S2.6/S2.6_prep_estimates.csv`): tessere e bordo vanno rimisurati (S2.6, BL-240) prima di adottarli.
+
 ## 13. Tolleranze dei controlli (BL-146)
 
 Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
@@ -261,3 +263,4 @@ S2.5 fatta (2026-11-09, `docs/steps/S2.5.md`): dopo la ritaratura della profondi
 | 2026-11-07 | 0.4 | S2.4: cattura (sezioni 6, 7, 8), fondo e seconda coda adattati insieme (D2-10, sezione 9; DEC-053, DEC-054), passo 1 calibrato (DEC-055), parte lenta esclusa (DEC-056), semi (DEC-057), limiti nuovi (sezione 17) | geo-agent/skill-v2 (S2.4) |
 | 2026-11-09 | 0.5 | S2.5: uscite dell'orchestratore (sezione 1), verità a 8 µm (sezione 8), fattore di profondità ritarato e riferimenti sugli stessi quadratini (sezione 9; DEC-064, DEC-067), prestazioni misurate (sezione 12; DEC-068), esito (sezione 15), limiti (sezione 17; DEC-065, DEC-066) | geo-agent/skill-v2 (S2.5) |
 | 2026-11-09 | 0.5 | S2.5 chiusa: limiti dei tessuti densi e del cuore (sezione 17; DEC-069, DEC-070) | geo-agent/skill-v2 (S2.5) |
+| 2026-11-09 | 0.5 | dopo S2.5: nota sul bordo delle tessere e la seconda coda (sezione 12; DEC-071, BL-240) | geo-agent/skill-v2 (S2.5) |
