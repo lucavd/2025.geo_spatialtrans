@@ -1,0 +1,1 @@
+G-2: 150 esecuzioni; conservazione 150; NA 0; max |z| catturati 3.54, fondo 2.39; soglia 4.59

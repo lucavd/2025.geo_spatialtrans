@@ -10,6 +10,7 @@ res <- list()
 ck <- function(name, ok, val = "") { ok <- isTRUE(ok); res[[length(res) + 1]] <<- ok
   cat(sprintf("%s %s %s\n", if (ok) "PASS" else "FAIL", name, paste(val, collapse = " "))) }
 err <- function(expr) inherits(tryCatch({ expr; NULL }, error = function(e) e), "error")
+errm <- function(expr, pat) { e <- tryCatch({ expr; NULL }, error = function(e) e); inherits(e, "error") && grepl(pat, conditionMessage(e), fixed = TRUE) }
 
 mk_layer <- function(nx, ny, a, b, hole = NULL, preset = "epithelial") {
   sq <- function(x0, y0, s) sf::st_polygon(list(rbind(c(x0, y0), c(x0 + s, y0), c(x0 + s, y0 + s), c(x0, y0 + s), c(x0, y0))))
@@ -94,14 +95,24 @@ oD <- simulate_visium_hd(L, archetype = "A2", profiles = PR, component_seeds = C
 ck("c5 depth_factor sostituisce quello dei profili (per M)", same_out(oD, manual(L, H, PR, "A2", CS, depth = 2.5)) && oD$truth$layers$depth$depth_factor == 2.5)
 
 # ================= (d) blocchi dai trascritti
-ck("d1 visium_hd_chunk_size: 4e6 / 30000 = 133; tetto 2000; minimo 1; senza trascritti 2000",
-   visium_hd_chunk_size(rep(30000, 10)) == 133L && visium_hd_chunk_size(rep(100, 10)) == 2000L && visium_hd_chunk_size(rep(1e8, 3)) == 1L && visium_hd_chunk_size(numeric(0)) == 2000L &&
+ck("d1 visium_hd_chunk_size: 4e6 / 30000 = 133; predefinito 2e6 / 30000 = 66; tetto 2000; minimo 1; senza trascritti 2000",
+   visium_hd_chunk_size(rep(30000, 10), 4e6) == 133L && visium_hd_chunk_size(rep(100, 10)) == 2000L && visium_hd_chunk_size(rep(1e8, 3)) == 1L && visium_hd_chunk_size(numeric(0)) == 2000L &&
+   visium_hd_chunk_size(rep(30000, 10)) == 66L &&
    visium_hd_chunk_size(rep(1000, 5), chunk_transcripts = 5e4) == 50L)
 ck("d2 chunk_transcripts non valido: errore", err(visium_hd_chunk_size(1, chunk_transcripts = 0)) && err(visium_hd_chunk_size(1, chunk_transcripts = NA)))
 oA <- simulate_visium_hd(L, archetype = "A2", profiles = PR, component_seeds = CS, hd = H, chunk_transcripts = 5000)
 ck("d3 blocchi automatici = regola sui trascritti generati (sovra-generazione compresa)", oA$metadata$chunk_size == visium_hd_chunk_size(oA$truth$cells$n_transcripts_generated, 5000) &&
      same_out(oA, manual(L, H, PR, "A2", CS, chunk = oA$metadata$chunk_size)), sprintf("blocchi %d", oA$metadata$chunk_size))
 ck("d4 chunk_size esplicito rispettato", simulate_visium_hd(L, archetype = "A2", profiles = PR, component_seeds = CS, hd = H, chunk_size = 3L)$metadata$chunk_size == 3L)
+
+R2 <- read.csv("results/S2.5/S2.5_R2_depth.csv")
+P6 <- load_cell_profiles("A6"); ty6 <- unique(P6$subtypes$cell_type)
+L6 <- mk_layer(6, 5, 10, 4, preset = "columnar_muscle"); L6$cell_df$cell_type <- rep(ty6, length.out = nrow(L6$cell_df)); H6 <- build_hd_grid(L6, margin_um = 16)
+o6 <- simulate_visium_hd(L6, seed = 3, hd = H6, chunk_size = 7L)
+ck("d6 profili del preset (non dati): fattore di S2.5 per il tessuto; archetipo dal preset", o6$metadata$archetype == "A6" &&
+     abs(o6$truth$layers$depth$depth_factor - visium_hd_depth_factor("A6")) < 1e-12 && abs(visium_hd_depth_factor("A6") - P6$depth_factor) > 0.1)
+ck("d5 fattore del preset = regola R-2 (tabella di S2.5); profili dati dall'utente: il loro fattore", isTRUE(all(abs(vapply(R2$archetype, visium_hd_depth_factor, numeric(1)) - R2$f_new) < 1e-12)) &&
+     o$truth$layers$depth$depth_factor == PR$depth_factor && err(visium_hd_depth_factor("A9")))
 
 # ================= (e) semi, processi, generatore dell'utente
 RNGkind("Mersenne-Twister", "Inversion", "Rejection"); set.seed(99); s0 <- .Random.seed
@@ -118,6 +129,11 @@ ck("e4 seme diverso, risultato diverso; semi dei passi non consecutivi", !identi
 e3 <- simulate_visium_hd(L, seed = 2026, archetype = "A2", profiles = PR, hd = H, chunk_size = 7L, workers = 2L)
 ck("e5 1 e 2 processi identici", identical(e1$counts_2um, e3$counts_2um) && identical(e1$truth$origin, e3$truth$origin) && identical(e1$truth$background, e3$truth$background))
 
+if (exists(".Random.seed", envir = globalenv())) rm(".Random.seed", envir = globalenv())
+e6 <- simulate_visium_hd(L, seed = 2026, archetype = "A2", profiles = PR, hd = H, chunk_size = 7L)
+ck("e6 utente senza seme: nessun .Random.seed lasciato; risultato = stesso seme con seme dell'utente (revisione G-5)",
+   !exists(".Random.seed", envir = globalenv()) && identical(e6$counts_2um, e1$counts_2um))
+
 # ================= (f) errori espliciti e archetipo
 Lp <- L; Lp$metadata$pixel_size_um <- NULL
 ck("f1 scala mancante: errore", err(simulate_visium_hd(Lp, seed = 1, archetype = "A2", profiles = PR)))
@@ -127,8 +143,14 @@ ck("f3 archetipo sconosciuto o non ricavabile: errore", err(simulate_visium_hd(L
 ck("f4 archetipo dal preset", visium_hd_archetype(L) == "A1" && visium_hd_archetype(mk_layer(2, 2, 10, 4, preset = "columnar_muscle")) == "A6")
 ck("f5 strati non validi: errore", err(simulate_visium_hd(L, seed = 1, archetype = "A2", profiles = PR, hd = H, layers = list(stripe = FALSE))) &&
      err(simulate_visium_hd(L, seed = 1, archetype = "A2", profiles = PR, hd = H, layers = list(stripes = NA))))
+ck("f5b strati senza nome o con nomi ripetuti: errore (revisione G-5)", err(simulate_visium_hd(L, seed = 1, archetype = "A2", profiles = PR, hd = H, layers = list(FALSE))) &&
+     err(simulate_visium_hd(L, seed = 1, archetype = "A2", profiles = PR, hd = H, layers = list(stripes = FALSE, stripes = TRUE))))
+Ls <- L   # un territorio rimpicciolito (8 x 8 invece di 10 x 10, nucleo dentro): stesso riquadro (le regioni lo fissano), stesse cellule
+Ls$cell_territories[1] <- sf::st_sfc(sf::st_polygon(list(rbind(c(0, 0), c(8, 0), c(8, 8), c(0, 8), c(0, 0)))))
+ck("f6b griglia di un livello con territori diversi (stesso riquadro e stesse cellule): errore (revisione G-5)",
+   errm(simulate_visium_hd(Ls, seed = 1, archetype = "A2", profiles = PR, hd = H), "territori diversi") && !err(simulate_visium_hd(L, seed = 1, archetype = "A2", profiles = PR, hd = H, chunk_size = 7L)))
 L2 <- mk_layer(12, 8, 10, 4)
-ck("f6 griglia di un altro livello: errore", err(simulate_visium_hd(L2, seed = 1, archetype = "A2", profiles = PR, hd = H)))
+ck("f6 griglia di un altro livello: errore", errm(simulate_visium_hd(L2, seed = 1, archetype = "A2", profiles = PR, hd = H), "non e' la griglia"))
 ck("f7 chunk_size non valido: errore", err(simulate_visium_hd(L, seed = 1, archetype = "A2", profiles = PR, hd = H, chunk_size = 0)))
 ck("f8 component_seeds incompleti: errore", err(simulate_visium_hd(L, archetype = "A2", profiles = PR, hd = H, component_seeds = c(stripes = 1, place = 2))))
 

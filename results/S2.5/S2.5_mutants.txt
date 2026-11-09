@@ -1,0 +1,17 @@
+RILEVATO profondita' senza M: 7 asserzioni fallite; FAIL a1 A2 orchestratore = catena a mano (stessi semi e blocchi) M 3.248; FAIL a1 A4 orchestratore = catena a mano (stessi semi e blocchi) M 2.814; FAIL a2 frame_open passato alla posizione e allo spostamento 
+RILEVATO semi in progressione: 2 asserzioni fallite; FAIL e3 semi dei passi = 4 estrazioni Mersenne-Twister dal seme dell'utente ; FAIL e4 seme diverso, risultato diverso; semi dei passi non consecutivi 
+RILEVATO blocchi senza M: 1 asserzioni fallite; FAIL d3 blocchi automatici = regola sui trascritti generati (sovra-generazione compresa) b
+RILEVATO blocco di 8 um sfasato nell'origine: 1 asserzioni fallite; FAIL b2 origin_8um = sum_to_8um(origin, by = cell_id) 
+RILEVATO seconda coda ignorata: 1 asserzioni fallite; FAIL c3 seconda coda spenta = catena a mano con w2 = 0 
+RILEVATO fondo ignorato: 1 asserzioni fallite; FAIL c2 fondo spento: nessun fondo; resto = uscita completa 
+RILEVATO frame_open non passato: 1 asserzioni fallite; FAIL a2 frame_open passato alla posizione e allo spostamento 
+RILEVATO griglia non controllata: 1 asserzioni fallite; FAIL f6 griglia di un altro livello: errore 
+RILEVATO generatore non ripristinato (dentro e fuori; il solo interno e' equivalente dopo la correzione G-5): 3 asserzioni fallite; FAIL e1 generatore dell'utente intatto (tipo e stato) ; FAIL e2 stesso seme stesso risultato (anche con un altro generatore dell'utente, ripristin; FAIL e6 utente senza seme: nessun .Random.seed lasciato; risultato = stesso seme con seme 
+RILEVATO atteso catturato senza M: 1 asserzioni fallite; FAIL b8 atteso catturato = generati / M; fattore di profondita' per M nei profili 
+RILEVATO frazioni a 8 um su 4 um2: 1 asserzioni fallite; FAIL b3 overlap_8um = sum_to_8um(overlap, by = cell_id), frazioni su 64 um^2 
+RILEVATO aree dei territori non controllate: 1 asserzioni fallite; FAIL f6b griglia di un livello con territori diversi (stesso riquadro e stesse cellule): e
+RILEVATO stato dell'utente senza seme non ripristinato: 1 asserzioni fallite; FAIL e6 utente senza seme: nessun .Random.seed lasciato; risultato = stesso seme con seme 
+RILEVATO strati senza nome accettati: 1 asserzioni fallite; FAIL f5b strati senza nome o con nomi ripetuti: errore (revisione G-5) 
+RILEVATO fattore del preset non usato: 1 asserzioni fallite; FAIL d6 profili del preset (non dati): fattore di S2.5 per il tessuto; archetipo dal prese
+RILEVATO strisce ignorate: 1 asserzioni fallite; FAIL c1 strisce spente: M = 1, c = 1, nessuno scartato, = catena a mano 
+TOTALE: 16/16 rilevati

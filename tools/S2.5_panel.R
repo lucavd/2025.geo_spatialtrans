@@ -2,7 +2,8 @@
 # Definizioni: docs/steps/S2.5.md («Il pannello», cancelli, previsioni). Uso (root del repo):
 #   Rscript --vanilla tools/S2.5_panel.R <variante> [outdir] [workers]   |   ... check <outdir>
 #   varianti: main (2 semi), depth_off (1 seme, stessi semi di main k = 0, fattore di profondita' 1; controprova),
-#             explore (un'area per tessuto, seme dell'esplorazione), s24_identity (2 aree con i semi e i blocchi di S2.4: continuita')
+#             explore (un'area per tessuto, seme dell'esplorazione), s24_identity (2 aree con i semi e i blocchi di S2.4: continuita'),
+#             main_r2 (2 semi, stessi di main, fattore di profondita' della regola R-2 da results/S2.5/S2.5_R2_depth.csv o S25_R2)
 # Scrive <outdir>/<variante>/<A>_<roi>_k<k>.bin (UMI per quadratino di 2 um, int32, ordine di bin_id; stesso formato di S2.3 e S2.4),
 # .g2.bin (geni rilevati per quadratino), .u8.bin e .g8.bin (blocchi di 8 um, ordine di bin8_id), _out.rds (uscita senza le matrici),
 # _counts2.rds (matrice a 2 um, solo main), .json (controlli, tempi, memoria). Griglie di S2.1 lette da S2.3 (sola lettura, si controllano).
@@ -25,7 +26,7 @@ peak_mb <- function() { s <- readLines("/proc/self/status"); as.numeric(sub("[^0
 
 if (VAR == "check") {
   J <- list()
-  for (v in c("main", "depth_off")) for (f in list.files(file.path(OUT, v), pattern = "_k[01]\\.json$", full.names = TRUE)) J[[length(J) + 1]] <- jsonlite::fromJSON(f)
+  for (v in c("main", "depth_off", "main_r2")) for (f in list.files(file.path(OUT, v), pattern = "_k[01]\\.json$", full.names = TRUE)) J[[length(J) + 1]] <- jsonlite::fromJSON(f)
   nz <- function(x) if (is.null(x) || length(x) == 0) NA_real_ else x
   G2 <- do.call(rbind, lapply(J, function(j) data.frame(tag = j$tag, archetype = j$archetype, k = j$k, variant = j$variant, M = j$M, chunk_size = j$chunk_size,
     conservation = j$conservation_cells && j$conservation_genes && j$conservation_bins && j$conservation_8um && j$truth8_ok && j$profiles_match,
@@ -36,9 +37,10 @@ if (VAR == "check") {
               nrow(G2), sum(G2$conservation), sum(G2$n_na), max(abs(G2$z_captured)), max(abs(G2$z_background), na.rm = TRUE), zt))
   quit(status = if (all(G2$conservation) && sum(G2$n_na) == 0 && max(abs(G2$z_captured)) < zt && max(abs(G2$z_background), na.rm = TRUE) < zt) 0L else 1L)
 }
-stopifnot(VAR %in% c("main", "depth_off", "explore", "s24_identity"))
+stopifnot(VAR %in% c("main", "depth_off", "explore", "s24_identity", "main_r2"))
+R2TAB <- if (VAR == "main_r2") read.csv(Sys.getenv("S25_R2", "results/S2.5/S2.5_R2_depth.csv")) else NULL
 dir.create(file.path(OUT, VAR), recursive = TRUE, showWarnings = FALSE)
-jobs <- switch(VAR, main = expand.grid(t = seq_along(tags), k = if (nzchar(Sys.getenv("S25_KS"))) as.integer(strsplit(Sys.getenv("S25_KS"), ",")[[1]]) else 0:1),
+jobs <- switch(VAR, main_r2 = expand.grid(t = seq_along(tags), k = 0:1), main = expand.grid(t = seq_along(tags), k = if (nzchar(Sys.getenv("S25_KS"))) as.integer(strsplit(Sys.getenv("S25_KS"), ",")[[1]]) else 0:1),
                depth_off = expand.grid(t = seq_along(tags), k = 0L), explore = expand.grid(t = match(EXPLORE, tags), k = 0L),
                s24_identity = expand.grid(t = match(IDENT, tags), k = 0L))
 one <- function(q) {
@@ -47,10 +49,14 @@ one <- function(q) {
   if (file.exists(paste0(fo, ".json"))) return(fo)
   t0 <- proc.time()[["elapsed"]]
   L <- readRDS(lay[ti]); hd <- readRDS(file.path(HD23, paste0(tag, ".rds")))
-  args <- list(cell_layer = L, archetype = A, frame_open = TRUE, hd = hd, workers = 1L)
+  args <- list(cell_layer = L, archetype = A, frame_open = TRUE, hd = hd, workers = 1L, chunk_transcripts = 4e6)   # valore della regola R-1 con cui e' girato il pannello
   if (VAR == "s24_identity") { args$component_seeds <- setNames(S24[, ti, 1L], c("stripes", "profiles", "place", "capture")); args$chunk_size <- 2000L }
   else args$seed <- if (VAR == "explore") SEEDS_EX[ti] else SEEDS[ti, k + 1L]
+  # profondita' esplicita per ogni variante (il predefinito dell'orchestratore e' cambiato dopo R-2): main, explore, s24_identity con il fattore
+  # di S2.2 dei profili, con cui sono girate
+  if (VAR %in% c("main", "explore", "s24_identity")) args$depth_factor <- load_cell_profiles(A)$depth_factor
   if (VAR == "depth_off") args$depth_factor <- 1
+  if (VAR == "main_r2") { args$depth_factor <- R2TAB$f_new[R2TAB$archetype == A]; stopifnot(length(args$depth_factor) == 1L, is.finite(args$depth_factor)) }
   out <- do.call(simulate_visium_hd, args)
   te <- proc.time()[["elapsed"]]
   g <- out$metadata$grid; nb <- g$n_row * g$n_col
@@ -72,6 +78,7 @@ one <- function(q) {
                isTRUE(all(abs(tot8(tr$overlap$bin_id, tr$overlap$area_territory_um2) - t8(tr$overlap_8um$bin8_id, tr$overlap_8um$area_territory_um2)) < 1e-9)) &&
                isTRUE(all(tot8(tr$background$bin_id, tr$background$n) == t8(tr$background_8um$bin8_id, tr$background_8um$n)))
   chk <- list(tag = tag, archetype = A, k = k, variant = VAR, seed = if (is.null(args$seed)) NA else args$seed, component_seeds = as.list(out$metadata$component_seeds),
+    b = tr$layers$background$b, depth_factor = tr$layers$depth$depth_factor,
     M = out$metadata$overgeneration, chunk_size = out$metadata$chunk_size, n_cells = nrow(L$cell_df),
     n_generated = sum(cl$n_generated), n_lost = sum(cl$n_lost), n_thinned = sum(cl$n_thinned), n_captured = sum(cl$n_captured), n_background = sum(bgv),
     n_target_R4 = sum(cl$n_expected_captured),
@@ -89,7 +96,7 @@ one <- function(q) {
     elapsed = as.list(out$metadata$elapsed_s), elapsed_total_s = proc.time()[["elapsed"]] - t0, elapsed_sim_s = te - t0, peak_mb = peak_mb())
   writeBin(u2, paste0(fo, ".bin"), size = 4L); writeBin(g2, paste0(fo, ".g2.bin"), size = 4L)
   writeBin(u8, paste0(fo, ".u8.bin"), size = 4L); writeBin(g8, paste0(fo, ".g8.bin"), size = 4L)
-  if (VAR == "main") saveRDS(X2, paste0(fo, "_counts2.rds"))
+  if (VAR %in% c("main", "main_r2")) saveRDS(X2, paste0(fo, "_counts2.rds"))
   out$counts_2um <- NULL; out$counts_8um <- NULL; out$truth$overlap <- NULL; saveRDS(out, paste0(fo, "_out.rds"))
   writeLines(jsonlite::toJSON(chk, auto_unbox = TRUE, digits = NA), paste0(fo, ".json.tmp")); file.rename(paste0(fo, ".json.tmp"), paste0(fo, ".json"))
   cat(sprintf("[%s k%d %s] M %.2f blocchi %d generati %.0f catturati %.0f fondo %.0f, %.0f s, %.0f MB\n", tag, k, VAR, chk$M, chk$chunk_size, chk$n_generated, chk$n_captured, chk$n_background, chk$elapsed_total_s, chk$peak_mb))

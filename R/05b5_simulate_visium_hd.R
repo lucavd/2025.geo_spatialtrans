@@ -21,16 +21,30 @@ visium_hd_archetype <- function(cell_layer) {
 #' Il picco di memoria di `place_and_move_transcripts()` cresce con i trascritti generati per blocco di cellule (S2.4, PH-1): il blocco
 #' si sceglie perche' contenga in media `chunk_transcripts` trascritti generati.
 #' @param n_transcripts trascritti generati per cellula (sovra-generazione compresa).
-#' @param chunk_transcripts trascritti per blocco (S2.5, regola dei blocchi: 4e6).
+#' @param chunk_transcripts trascritti per blocco (predefinito 2e6: S2.5, regola R-1 con 4e6 e correzione dopo PH-1, area piu' carica del tumore
+#'   8.9 GB con 4e6, 7.1 GB con 2e6).
 #' @param max_cells tetto del blocco (cellule; 2000 = valore delle funzioni di S2.2 e S2.3).
 #' @return intero >= 1.
 #' @export
-visium_hd_chunk_size <- function(n_transcripts, chunk_transcripts = 4e6, max_cells = 2000L) {
+visium_hd_chunk_size <- function(n_transcripts, chunk_transcripts = 2e6, max_cells = 2000L) {
   if (!is.numeric(chunk_transcripts) || length(chunk_transcripts) != 1L || !is.finite(chunk_transcripts) || chunk_transcripts < 1)
     stop("visium_hd_chunk_size(): `chunk_transcripts` deve essere un numero >= 1.", call. = FALSE)
   m <- if (length(n_transcripts)) mean(as.numeric(n_transcripts)) else 0
   if (!is.finite(m) || m <= 0) return(as.integer(max_cells))
   as.integer(max(1, min(max_cells, floor(chunk_transcripts / m))))
+}
+
+#' Fattore di profondita' del preset dopo S2.5
+#'
+#' Fattore della regola R-2 di S2.5 (ritaratura sulla catena completa: f' = f (U_vero - b) / (U_sim - b), UMI per quadratino di 2 um in tessuto,
+#' pannello delle 30 aree; `results/S2.5/S2.5_R2_depth.csv`). Sostituisce, per i profili dei preset, il fattore di S2.2.
+#' @param archetype `"A1"` ... `"A6"`.
+#' @return numero.
+#' @export
+visium_hd_depth_factor <- function(archetype) {
+  tab <- c(A1 = 1.0127249977836763, A2 = 0.9540327133313311, A3 = 1.5614917408538553, A4 = 0.8191399388185701, A5 = 1.4278291184727523, A6 = 2.9386716762361265)
+  if (!archetype %in% names(tab)) stop("visium_hd_depth_factor(): archetipo sconosciuto: ", archetype, call. = FALSE)
+  tab[[archetype]]
 }
 
 # somma a 8 um di una tabella (quadratino, cellula) con chiavi intere (equivale a sum_to_8um(x, grid, cols, by = "cell_id"), piu' veloce)
@@ -73,7 +87,8 @@ visium_hd_chunk_size <- function(n_transcripts, chunk_transcripts = 4e6, max_cel
 #'   strato si provano con lo strato acceso).
 #' @param frame_open `TRUE` per aree ritagliate da un tessuto che continua (il riquadro non e' bordo; seconda coda riflessa).
 #' @param profiles uscita di `load_cell_profiles()`; predefinito: quella del tessuto.
-#' @param depth_factor fattore di profondita' prima della sovra-generazione; predefinito: quello dei profili (S2.2).
+#' @param depth_factor fattore di profondita' prima della sovra-generazione; predefinito: con i profili del preset `visium_hd_depth_factor()`
+#'   (S2.5, R-2), con profili dati dall'utente il loro `depth_factor`.
 #' @param chunk_size cellule per blocco della posizione e dello spostamento; predefinito (NULL): dai trascritti generati.
 #' @param chunk_transcripts trascritti per blocco usati quando `chunk_size` e' NULL.
 #' @param component_seeds semi dei quattro passi (`stripes`, `profiles`, `place`, `capture`); se dati, `seed` non si usa per estrarli (test).
@@ -85,15 +100,22 @@ visium_hd_chunk_size <- function(n_transcripts, chunk_transcripts = 4e6, max_cel
 #' @export
 simulate_visium_hd <- function(cell_layer, seed, archetype = NULL,
                                layers = list(stripes = TRUE, background = TRUE, field = TRUE, second_tail = TRUE),
-                               frame_open = FALSE, profiles = NULL, depth_factor = NULL, chunk_size = NULL, chunk_transcripts = 4e6,
+                               frame_open = FALSE, profiles = NULL, depth_factor = NULL, chunk_size = NULL, chunk_transcripts = 2e6,
                                component_seeds = NULL, hd = NULL, workers = 1L, verbose = FALSE) {
   t0 <- proc.time()[["elapsed"]]; tm <- c()
+  # stato del generatore dell'utente registrato in testa e ripristinato all'uscita: alcune funzioni compilate chiamate dai passi
+  # (imager, Rcpp) creano un .Random.seed se manca (revisione G-5 di S2.5)
+  old_kind <- RNGkind(); had_seed <- exists(".Random.seed", envir = globalenv())
+  if (had_seed) old_seed <- get(".Random.seed", envir = globalenv())
+  on.exit({ do.call(RNGkind, as.list(old_kind)); if (had_seed) assign(".Random.seed", old_seed, envir = globalenv())
+            else if (exists(".Random.seed", envir = globalenv())) rm(".Random.seed", envir = globalenv()) }, add = TRUE)
   px <- cell_layer$metadata$pixel_size_um
   if (is.null(px) || !is.numeric(px) || length(px) != 1L || !is.finite(px) || px <= 0)
     stop("simulate_visium_hd(): `cell_layer$metadata$pixel_size_um` manca o non e' valido (C-A): nessun default.", call. = FALSE)
   if (is.null(component_seeds) && (missing(seed) || length(seed) != 1L || !is.finite(seed))) stop("simulate_visium_hd(): serve un `seed`.", call. = FALSE)
   ly <- list(stripes = TRUE, background = TRUE, field = TRUE, second_tail = TRUE)
-  if (!is.list(layers) || length(setdiff(names(layers), names(ly))) || any(!vapply(layers, function(v) is.logical(v) && length(v) == 1L && !is.na(v), logical(1))))
+  if (!is.list(layers) || (length(layers) && (is.null(names(layers)) || any(!nzchar(names(layers))) || anyDuplicated(names(layers)))) ||
+      length(setdiff(names(layers), names(ly))) || any(!vapply(layers, function(v) is.logical(v) && length(v) == 1L && !is.na(v), logical(1))))
     stop("simulate_visium_hd(): `layers` accetta solo stripes, background, field, second_tail (TRUE o FALSE).", call. = FALSE)
   ly[names(layers)] <- layers
   if (is.null(archetype)) archetype <- visium_hd_archetype(cell_layer)
@@ -114,6 +136,14 @@ simulate_visium_hd <- function(cell_layer, seed, archetype = NULL,
     if (!isTRUE(all.equal(g0[c("x0", "y0", "n_row", "n_col")], hd$grid[c("x0", "y0", "n_row", "n_col")], tolerance = 0)) ||
         !identical(as.integer(hd$metadata$n_cells), nrow(cell_layer$cell_df)))
       stop("simulate_visium_hd(): `hd` non e' la griglia di questo livello cellulare.", call. = FALSE)
+    # stesso livello anche dentro il riquadro: seme dello Step 1 e area del territorio di ogni cellula (revisione G-5 di S2.5)
+    s1 <- cell_layer$metadata$random_seed
+    aT <- geos::geos_area(geos::as_geos_geometry(sf::st_set_crs(cell_layer$cell_territories, NA)))
+    sa <- rowsum(hd$truth$overlap$area_territory_um2, hd$truth$overlap$cell_id)
+    aH <- sa[match(as.character(cell_layer$cell_df$cell_id), rownames(sa)), 1]
+    if ((!is.null(s1) && !is.null(hd$metadata$step1_random_seed) && !identical(as.numeric(s1), as.numeric(hd$metadata$step1_random_seed))) ||
+        anyNA(aH) || max(abs(aH - aT)) > 1e-3)
+      stop("simulate_visium_hd(): `hd` ha territori diversi da quelli del livello cellulare (seme dello Step 1 o aree per cellula).", call. = FALSE)
   }
   tm["grid"] <- proc.time()[["elapsed"]] - t0
   cp <- capture_params(archetype); p <- transcript_params(archetype)
@@ -125,8 +155,10 @@ simulate_visium_hd <- function(cell_layer, seed, archetype = NULL,
   tm["stripes"] <- proc.time()[["elapsed"]] - t1
   # (3) profili, con il fattore di profondita' per M (sovra-generazione delle strisce)
   t1 <- proc.time()[["elapsed"]]
-  if (is.null(profiles)) profiles <- load_cell_profiles(archetype)
-  df0 <- if (is.null(depth_factor)) profiles$depth_factor else depth_factor
+  prof_default <- is.null(profiles)
+  if (prof_default) profiles <- load_cell_profiles(archetype)
+  # profondita': argomento; altrimenti, con i profili del preset, il fattore ritarato in S2.5 (R-2); altrimenti quello dei profili dati
+  df0 <- if (!is.null(depth_factor)) depth_factor else if (prof_default) visium_hd_depth_factor(archetype) else profiles$depth_factor
   prof <- simulate_cell_profiles(cell_layer$cell_df[, c("cell_id", "cell_type")], profiles, seed = sd_[["profiles"]], depth_factor = df0 * M, workers = workers)
   tm["profiles"] <- proc.time()[["elapsed"]] - t1
   ntx <- Matrix::colSums(prof$counts)

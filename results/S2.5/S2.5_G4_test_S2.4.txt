@@ -1,0 +1,39 @@
+PASS a1 per cellula: generati = profili 
+PASS a2 per cellula: generati = catturati + scartati + persi 
+PASS a3 per gene: generati = profili = catturati + scartati + persi 
+PASS a4 counts_2um per gene = catturati + fondo 
+PASS a5 counts_2um per quadratino = verita' di origine + fondo fondo 1328
+PASS a6 nati nel nucleo catturati in [0, catturati] 
+PASS a7 ogni quadratino di 8 um = somma dei suoi 16 
+PASS a8 catturati < arrivati (le strisce assottigliano) 
+PASS b1 catturati = n c/C per classi di c (z, Bonferroni) max |z| 2.73 soglia 3.89
+PASS b2 nati nel nucleo ipergeometrici (media z e rapporto delle varianze) z -1.24, varianza oss/attesa 0.986
+PASS b3 senza strisce e senza fondo: uscita = ingresso, generatore intatto 
+PASS c1 struttura esatta: log(c norm) = log p_r + log p_c + alpha + beta 6.66e-16
+PASS c2 media di c sul tessuto = 1 -1.11e-16
+PASS c3 M = C = max(c) M 5.916
+PASS c4 media mobile di ordine 1: deviazione standard, passo 1 = rho, passo 2 = 0 (entro 0.01) rho 0.00: sd 0.2002 passo1 -0.0002 passo2 0.0007; rho -0.30: sd 0.2002 passo1 -0.3001 passo2 0.0010; rho -0.50: sd 0.2002 passo1 -0.5001 passo2 0.0011
+PASS c5 campo della parita': correlazione teorica a 300 um = exp(-1/2) (entro 0.01) 0.6065 contro 0.6065
+PASS c6 campo della parita': varianza puntuale = 1 (400 realizzazioni, z) varianza 1.033, z 0.47
+PASS c7 linfonodo: il campo entra solo nelle righe e colonne dispari 
+PASS d1 frazioni dei modi: seconda coda w2, prima coda (1 - w2) w (z) w2 0.2481, prima 0.0747
+PASS d2 raggio Gamma(2, ell2) e angolo uniforme (KS) p 0.0168, 0.0949
+PASS d3 w2 = 0 identico bit per bit al codice di S2.3 (c7a53de), stato del generatore compreso 
+PASS d4 frame_open: seconda coda mai persa, arrivi nel riquadro, uniforme dopo la riflessione (chi quadro) persi modo 3: 0; p 0.0934
+PASS d5 senza frame_open la seconda coda esce dalla griglia ed e' contata fra i persi persi modo 3: 56618
+PASS e1 media di 200 repliche = c_b [(1 - w2) regola di S2.0 + w2 E(ell2) * T] / C + b c_b (z, Bonferroni) max |z| 3.95 soglia 5.29 su 8000 quadratini; massa della coda nella griglia 0.908
+PASS f1 stesso seme stesso risultato 
+PASS f2 1 e 4 processi identici 
+PASS f3 generatore dell'utente ripristinato 
+PASS f4 blocchi con lo stesso ingresso hanno estrazioni diverse 
+PASS f5 semi consecutivi: fondo indipendente fra repliche (z per quadratino, Bonferroni) max |z| 3.67 soglia 5.08
+PASS g1 sovra-generazione diversa da M 
+PASS g2 sovra-generazione mancante 
+PASS g3 griglia diversa 
+PASS g4 |rho| > 0.5 
+PASS g5 w2 fuori da [0, 1) 
+PASS g6 ell2 mancante con w2 > 0 
+PASS g7 seme mancante 
+PASS g8 fondo acceso con b non valido 
+
+TOTALE 37 PASS, 0 FAIL

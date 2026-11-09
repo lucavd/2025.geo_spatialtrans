@@ -1,0 +1,158 @@
+ id archetype   tessuto        metric  real_est    rel_lo     rel_hi                                        rel_rule    sim_est     sim_lo     sim_hi   ratio  n_areas         esito  max_value
+P-1        A1 intestino     mean_umi2  29.27252  26.20588   32.33915                   intervallo corretto (DEC-061)   29.27094   28.87250   29.71574 0.99995        5    confermata        NaN
+P-2        A1 intestino   frac_empty2   0.00670   0.00472    0.00933                   intervallo corretto (DEC-061)    0.00040    0.00031    0.00047 0.05917        5      smentita        NaN
+P-3        A1 intestino   mean_genes2  27.15416  24.45795   29.82703                   intervallo corretto (DEC-061)   27.94808   27.57635   28.41070 1.02924        5    confermata        NaN
+P-4        A1 intestino     mean_umi8 465.97608 418.97038  514.38004                   intervallo corretto (DEC-061)  465.87087  459.33595  474.14779 0.99977        5    confermata        NaN
+P-5        A1 intestino   frac_empty8   0.00000   0.00000    0.00010 vero sempre 0: meno di un blocco vuoto per area    0.00000    0.00000    0.00000     NaN        5    confermata        NaN
+P-6        A1 intestino   mean_genes8 354.26054 323.82415  385.26995                   intervallo corretto (DEC-061)  377.03533  372.09520  382.52536 1.06429        5    confermata        NaN
+P-7        A1 intestino          star   0.93705   0.92199    0.95082                   intervallo corretto (DEC-061)    0.95478    0.94296    0.96485 1.01892        5 indeterminata        NaN
+P-9        A1 intestino        aniso8   0.17353   0.10457    0.24061                   intervallo corretto (DEC-061)    0.20347    0.13010    0.27684 1.17251        5 indeterminata        NaN
+P-8        A1 intestino elapsed_sim_s       NaN   0.00000  300.00000                 bilancio del design, sezione 12  152.20930  134.27624  170.14236     NaN        5    confermata  194.01100
+P-8        A1 intestino       peak_mb       NaN   0.00000 8192.00000                 bilancio del design, sezione 12 5242.12812 4924.24263 5560.01362     NaN        5    confermata 5980.75781
+P-1        A2    tumore     mean_umi2  47.93378  36.61116   59.25641                   intervallo corretto (DEC-061)   47.93424   47.20484   48.68347 1.00001        5    confermata        NaN
+P-2        A2    tumore   frac_empty2   0.00559   0.00406    0.00710                   intervallo corretto (DEC-061)    0.00042    0.00037    0.00048 0.07571        5      smentita        NaN
+P-3        A2    tumore   mean_genes2  45.66483  34.99928   56.33038                   intervallo corretto (DEC-061)   45.73284   45.06752   46.39817 1.00149        5    confermata        NaN
+P-4        A2    tumore     mean_umi8 764.15983 560.60146  980.96620                   intervallo corretto (DEC-061)  764.87457  751.12125  777.70520 1.00094        5    confermata        NaN
+P-5        A2    tumore   frac_empty8   0.00000   0.00000    0.00008 vero sempre 0: meno di un blocco vuoto per area    0.00000    0.00000    0.00000     NaN        5    confermata        NaN
+P-6        A2    tumore   mean_genes8 617.06092 472.45249  751.44302                   intervallo corretto (DEC-061)  624.29620  614.29036  633.60390 1.01173        5    confermata        NaN
+P-7        A2    tumore          star   0.85055   0.81823    0.88287                   intervallo corretto (DEC-061)    0.90147    0.88819    0.91741 1.05987        5      smentita        NaN
+P-9        A2    tumore        aniso8   0.08685   0.00000    0.17712                   intervallo corretto (DEC-061)    0.15880    0.11131    0.19966 1.82857        5 indeterminata        NaN
+P-8        A2    tumore elapsed_sim_s       NaN   0.00000  300.00000                 bilancio del design, sezione 12  276.81290  238.85921  314.76659     NaN        5 indeterminata  379.78800
+P-8        A2    tumore       peak_mb       NaN   0.00000 8192.00000                 bilancio del design, sezione 12 7531.20430 6922.85621 8139.55239     NaN        5    confermata 8748.55078
+P-1        A3    stroma     mean_umi2  19.23506   8.64308   26.71840                   intervallo corretto (DEC-061)   19.23645   19.10970   19.39030 1.00007        5    confermata        NaN
+P-2        A3    stroma   frac_empty2   0.02219   0.00212    0.04402                   intervallo corretto (DEC-061)    0.00932    0.00912    0.00950 0.41976        5    confermata        NaN
+P-3        A3    stroma   mean_genes2  18.28423   8.46883   25.47400                   intervallo corretto (DEC-061)   18.34073   18.22585   18.46636 1.00309        5    confermata        NaN
+P-4        A3    stroma     mean_umi8 308.03886 142.02658  427.74841                   intervallo corretto (DEC-061)  307.70970  305.73467  310.07851 0.99893        5    confermata        NaN
+P-5        A3    stroma   frac_empty8   0.00064   0.00000    0.00774                   intervallo corretto (DEC-061)    0.00000    0.00000    0.00000 0.00000        5    confermata        NaN
+P-6        A3    stroma   mean_genes8 255.44470 113.04699  356.48984                   intervallo corretto (DEC-061)  262.70616  261.31058  264.16664 1.02843        5    confermata        NaN
+P-7        A3    stroma          star   0.89732   0.77063    1.02741                   intervallo corretto (DEC-061)    0.91269    0.90006    0.92532 1.01712        5    confermata        NaN
+P-9        A3    stroma        aniso8   0.06698   0.00000    0.17905                   intervallo corretto (DEC-061)    0.07060    0.03269    0.10850 1.05393        5    confermata        NaN
+P-8        A3    stroma elapsed_sim_s       NaN   0.00000  300.00000                 bilancio del design, sezione 12  120.17770  106.86589  133.48951     NaN        5    confermata  147.02200
+P-8        A3    stroma       peak_mb       NaN   0.00000 8192.00000                 bilancio del design, sezione 12 4633.52734 4564.36909 4702.68559     NaN        5    confermata 5154.23047
+P-1        A4 linfonodo     mean_umi2  11.51885   8.76037   13.56120                   intervallo corretto (DEC-061)   11.51966   11.49322   11.55426 1.00007        5    confermata        NaN
+P-2        A4 linfonodo   frac_empty2   0.00867   0.00000    0.02362                   intervallo corretto (DEC-061)    0.00547    0.00528    0.00565 0.63057        5    confermata        NaN
+P-3        A4 linfonodo   mean_genes2  11.10956   8.63923   13.17651                   intervallo corretto (DEC-061)   11.14856   11.11912   11.18538 1.00351        5    confermata        NaN
+P-4        A4 linfonodo     mean_umi8 184.31518 140.26650  219.41512                   intervallo corretto (DEC-061)  184.28575  183.88866  184.82276 0.99984        5    confermata        NaN
+P-5        A4 linfonodo   frac_empty8   0.00020   0.00000    0.00199                   intervallo corretto (DEC-061)    0.00000    0.00000    0.00000 0.00000        5    confermata        NaN
+P-6        A4 linfonodo   mean_genes8 164.83220 130.76849  191.35293                   intervallo corretto (DEC-061)  165.64531  165.20975  166.27140 1.00493        5    confermata        NaN
+P-7        A4 linfonodo          star   0.80208   0.76671    0.83763                   intervallo corretto (DEC-061)    0.79273    0.78803    0.79722 0.98834        5    confermata        NaN
+P-9        A4 linfonodo        aniso8   0.05822   0.00000    0.18425                   intervallo corretto (DEC-061)    0.21578    0.12019    0.29444 3.70604        5 indeterminata        NaN
+P-8        A4 linfonodo elapsed_sim_s       NaN   0.00000  300.00000                 bilancio del design, sezione 12  144.95320  141.49097  148.41543     NaN        5    confermata  149.97400
+P-8        A4 linfonodo       peak_mb       NaN   0.00000 8192.00000                 bilancio del design, sezione 12 3113.40781 2995.68705 3231.12857     NaN        5    confermata 3635.66406
+P-1        A5  cervello     mean_umi2  44.54766  40.43036   47.77128                   intervallo corretto (DEC-061)   44.54414   43.05445   46.03398 0.99992        5    confermata        NaN
+P-2        A5  cervello   frac_empty2   0.00066   0.00000    0.00209                   intervallo corretto (DEC-061)    0.00041    0.00018    0.00068 0.62269        5    confermata        NaN
+P-3        A5  cervello   mean_genes2  43.40616  39.58201   46.52509                   intervallo corretto (DEC-061)   43.63064   42.20652   45.25090 1.00517        5    confermata        NaN
+P-4        A5  cervello     mean_umi8 708.56353 642.18446  761.47480                   intervallo corretto (DEC-061)  706.47759  680.03267  735.75973 0.99706        5    confermata        NaN
+P-5        A5  cervello   frac_empty8   0.00000   0.00000    0.00009 vero sempre 0: meno di un blocco vuoto per area    0.00000    0.00000    0.00000     NaN        5    confermata        NaN
+P-6        A5  cervello   mean_genes8 572.76419 513.82212  614.84563                   intervallo corretto (DEC-061)  589.23848  570.70989  610.40197 1.02876        5    confermata        NaN
+P-7        A5  cervello          star   1.38347   1.35726    1.41100                   intervallo corretto (DEC-061)    1.36257    1.33635    1.38951 0.98489        5 indeterminata        NaN
+P-9        A5  cervello        aniso8   0.06654   0.00000    0.17559                   intervallo corretto (DEC-061)    0.07382    0.06069    0.08715 1.10933        5    confermata        NaN
+P-8        A5  cervello elapsed_sim_s       NaN   0.00000  300.00000                 bilancio del design, sezione 12  125.34860  111.34182  139.35538     NaN        5    confermata  171.45700
+P-8        A5  cervello       peak_mb       NaN   0.00000 8192.00000                 bilancio del design, sezione 12 5741.27188 5192.14334 6290.40041     NaN        5    confermata 6795.88672
+P-1        A6     cuore     mean_umi2   3.55597   2.05562    5.04817                   intervallo corretto (DEC-061)    3.55594    3.40517    3.72523 0.99999        5    confermata        NaN
+P-2        A6     cuore   frac_empty2   0.12670   0.06142    0.19198                   intervallo corretto (DEC-061)    0.13243    0.12791    0.13683 1.04525        5    confermata        NaN
+P-3        A6     cuore   mean_genes2   3.45392   2.15712    4.88663                   intervallo corretto (DEC-061)    3.48003    3.33848    3.63834 1.00756        5    confermata        NaN
+P-4        A6     cuore     mean_umi8  56.79223  32.92804   80.42199                   intervallo corretto (DEC-061)   56.66155   54.15736   59.35753 0.99770        5    confermata        NaN
+P-5        A6     cuore   frac_empty8   0.00047   0.00000    0.00139                   intervallo corretto (DEC-061)    0.00000    0.00000    0.00000 0.00000        5    confermata        NaN
+P-6        A6     cuore   mean_genes8  46.08521  28.35910   63.81132                   intervallo corretto (DEC-061)   48.63224   46.71947   50.73109 1.05527        5    confermata        NaN
+P-7        A6     cuore          star   1.78123   1.52466    2.02028                   intervallo corretto (DEC-061)    1.76201    1.63472    1.87527 0.98921        5    confermata        NaN
+P-9        A6     cuore        aniso8   0.24665   0.08580    0.40750                   intervallo corretto (DEC-061)    0.04760    0.03529    0.05947 0.19300        5      smentita        NaN
+P-8        A6     cuore elapsed_sim_s       NaN   0.00000  300.00000                 bilancio del design, sezione 12   34.52130   31.94638   37.09622     NaN        5    confermata   40.49500
+P-8        A6     cuore       peak_mb       NaN   0.00000 8192.00000                 bilancio del design, sezione 12 3984.74141 3772.22716 4197.25565     NaN        5    confermata 4342.55859
+esito  confermata  indeterminata  smentita
+id                                        
+P-1             6              0         0
+P-2             4              0         2
+P-3             6              0         0
+P-4             6              0         0
+P-5             6              0         0
+P-6             6              0         0
+P-7             3              2         1
+P-8            11              1         0
+P-9             2              3         1
+archetype           metric      adopted_id  adopted_est  adopted_lo  adopted_hi    sim_lo    sim_hi esito_sensibilita
+       A1        mean_umi2           B-270     27.14134    24.64228    29.64041  28.87250  29.71574     indeterminata
+       A1      frac_empty2           B-270      0.01695     0.01185     0.02206   0.00031   0.00047          smentita
+       A1      mean_genes2           B-272     25.20045    23.01864    27.39343  27.57635  28.41070          smentita
+       A1        mean_umi8           B-271    424.80959   388.25186   461.20917 459.33595 474.14779     indeterminata
+       A1      frac_empty8           B-271      0.00000     0.00000     0.00010   0.00000   0.00000        confermata
+       A1      mean_genes8           B-272    323.78208   299.39592   347.38288 372.09520 382.52536          smentita
+       A1             star           B-274      0.98565     0.96529     1.00601   0.94296   0.96485          smentita
+       A1  star_ratio_pm10        S2.3 P-5      1.00000     0.90900     1.10000   1.00630   1.02966        confermata
+       A1 aniso8_kappa_box kappa_box 1.837      0.17353     0.10528     0.23992   0.13010   0.27684     indeterminata
+       A2        mean_umi2           B-280     45.45608    33.90433    58.07242  47.20484  48.68347        confermata
+       A2      frac_empty2           B-280      0.01072     0.00000     0.02625   0.00037   0.00048        confermata
+       A2      mean_genes2           B-282     43.31778    32.32706    55.52011  45.06752  46.39817        confermata
+       A2        mean_umi8           B-281    719.49652   540.78624   916.83725 751.12125 777.70520        confermata
+       A2      frac_empty8           B-281      0.00000     0.00000     0.00008   0.00000   0.00000        confermata
+       A2      mean_genes8           B-282    581.99293   448.93880   737.38178 614.29036 633.60390        confermata
+       A2             star           B-284      0.84699     0.81513     0.87885   0.88819   0.91741          smentita
+       A2  star_ratio_pm10        S2.3 P-5      1.00000     0.90900     1.10000   1.04426   1.07861        confermata
+       A2 aniso8_kappa_box kappa_box 1.662      0.08685     0.00000     0.17750   0.11131   0.19966     indeterminata
+       A3        mean_umi2           B-290     19.52906     9.01559    27.02036  19.10970  19.39030        confermata
+       A3      frac_empty2           B-290      0.02209     0.00295     0.04124   0.00912   0.00950        confermata
+       A3      mean_genes2           B-292     18.56579     8.41646    25.78990  18.22585  18.46636        confermata
+       A3        mean_umi8           B-291    312.39082   144.27752   431.26136 305.73467 310.07851        confermata
+       A3      frac_empty8           B-291      0.00058     0.00000     0.00700   0.00000   0.00000        confermata
+       A3      mean_genes8           B-292    259.08905   121.44680   362.09993 261.31058 264.16664        confermata
+       A3             star           B-294      0.89180     0.77048     1.00693   0.90006   0.92532        confermata
+       A3  star_ratio_pm10        S2.3 P-5      1.00000     0.90900     1.10000   1.00305   1.03120        confermata
+       A3 aniso8_kappa_box kappa_box 3.193      0.06698     0.00000     0.17905   0.03269   0.10850        confermata
+       A4        mean_umi2           B-302     11.40318     8.83084    13.25808  11.49322  11.55426        confermata
+       A4      frac_empty2           B-302      0.01199     0.00000     0.04935   0.00528   0.00565        confermata
+       A4      mean_genes2           B-304     10.99040     8.63271    12.81911  11.11912  11.18538        confermata
+       A4        mean_umi8           B-303    182.42460   141.14015   211.89459 183.88866 184.82276        confermata
+       A4      frac_empty8           B-303      0.00041     0.00000     0.00409   0.00000   0.00000        confermata
+       A4      mean_genes8           B-304    163.05430   130.81622   189.01060 165.20975 166.27140        confermata
+       A4             star           B-306      0.78803     0.74604     0.82761   0.78803   0.79722        confermata
+       A4  star_ratio_pm10        S2.3 P-5      1.00000     0.90900     1.10000   0.98248   0.99395        confermata
+       A4 aniso8_kappa_box kappa_box 2.965      0.05822     0.00000     0.20359   0.12019   0.29444     indeterminata
+       A5        mean_umi2           B-315     41.79305    37.31937    46.26673  43.05445  46.03398        confermata
+       A5      frac_empty2           B-315      0.00047     0.00000     0.00154   0.00018   0.00068        confermata
+       A5      mean_genes2           B-317     40.74760    36.62538    45.08709  42.20652  45.25090     indeterminata
+       A5        mean_umi8           B-316    667.43817   596.09999   738.77636 680.03267 735.75973        confermata
+       A5      frac_empty8           B-316      0.00000     0.00000     0.00009   0.00000   0.00000        confermata
+       A5      mean_genes8           B-317    541.79762   484.71366   598.88159 570.70989 610.40197     indeterminata
+       A5             star           B-319      1.38273     1.34431     1.41693   1.33635   1.38951     indeterminata
+       A5  star_ratio_pm10        S2.3 P-5      1.00000     0.90900     1.10000   0.96594   1.00436        confermata
+       A5 aniso8_kappa_box kappa_box 3.865      0.06654     0.00000     0.29837   0.06069   0.08715        confermata
+       A6        mean_umi2           B-327      3.42491     2.02094     4.82887   3.40517   3.72523        confermata
+       A6      frac_empty2           B-327      0.14530     0.06928     0.20548   0.12791   0.13683        confermata
+       A6      mean_genes2           B-329      3.32832     1.98672     4.66993   3.33848   3.63834        confermata
+       A6        mean_umi8           B-328     54.77918    33.61011    77.21291  54.15736  59.35753        confermata
+       A6      frac_empty8           B-328      0.00233     0.00000     0.01146   0.00000   0.00000        confermata
+       A6      mean_genes8           B-329     44.57185    27.83843    61.30527  46.71947  50.73109        confermata
+       A6             star           B-331      1.78404     1.55029     2.01686   1.63472   1.87527        confermata
+       A6  star_ratio_pm10        S2.3 P-5      1.00000     0.90900     1.10000   0.91775   1.05280        confermata
+       A6 aniso8_kappa_box kappa_box 1.625      0.24665     0.08571     0.40759   0.03529   0.05947          smentita
+  tag archetype       M  chunk_size  n_in_tissue  n_tissue_no_territory  depth_factor  captured_over_target       target  share_tissue_no_territory
+A1_r1        A1 4.37930      1464.0       199399                      0       1.01272               1.00047 1.245125e+07                    0.00000
+A1_r2        A1 4.04815      1572.5       170583                      0       1.01272               0.99980 1.066077e+07                    0.00000
+A1_r3        A1 4.87332      1338.0       202567                      0       1.01272               0.99958 1.275667e+07                    0.00000
+A1_r4        A1 4.21786      1509.5       159736                      0       1.01272               1.00140 9.996678e+06                    0.00000
+A1_r5        A1 4.55067      1406.5       180816                      0       1.01272               0.99979 1.126053e+07                    0.00000
+A2_r1        A2 5.10882       568.0       186020                      0       0.95403               0.99956 1.830485e+07                    0.00000
+A2_r2        A2 4.56975       651.0       215389                      0       0.95403               0.99945 2.093211e+07                    0.00000
+A2_r3        A2 4.83249       607.5       171080                      0       0.95403               0.99998 1.672487e+07                    0.00000
+A2_r4        A2 5.48593       535.5       242725                      0       0.95403               0.99941 2.374792e+07                    0.00000
+A2_r5        A2 4.74328       622.0       243710                      0       0.95403               1.00050 2.357807e+07                    0.00000
+A3_r1        A3 5.34842       486.0       249120                      0       1.56149               0.99968 9.543282e+06                    0.00000
+A3_r2        A3 5.52678       471.5       247842                      0       1.56149               1.00014 9.429953e+06                    0.00000
+A3_r3        A3 4.93879       525.5       249863                      0       1.56149               0.99903 9.563138e+06                    0.00000
+A3_r4        A3 4.66027       560.5       249432                      0       1.56149               0.99926 9.474867e+06                    0.00000
+A3_r5        A3 4.53705       566.5       247862                      0       1.56149               1.00137 9.580650e+06                    0.00000
+A4_f1        A4 4.17904      2000.0       247623                      0       0.81914               1.00002 5.779016e+06                    0.00000
+A4_f2        A4 4.55968      2000.0       249231                      0       0.81914               0.99965 5.829418e+06                    0.00000
+A4_p1        A4 4.52031      2000.0       249762                      0       0.81914               0.99943 5.814321e+06                    0.00000
+A4_p2        A4 3.83377      2000.0       248799                      0       0.81914               0.99897 5.805716e+06                    0.00000
+A4_p3        A4 3.88859      2000.0       250000                      0       0.81914               1.00057 5.812381e+06                    0.00000
+A5_r1        A5 3.92638       105.0       186605                    141       1.42783               0.99878 1.733329e+07                    0.00076
+A5_r2        A5 4.03371       100.5       210139                      0       1.42783               0.99954 1.965543e+07                    0.00000
+A5_r3        A5 4.63731        87.5       195202                      0       1.42783               0.99966 1.815466e+07                    0.00000
+A5_r4        A5 3.84977       104.5       187116                      0       1.42783               0.99920 1.753496e+07                    0.00000
+A5_r5        A5 4.28547        94.5       217365                      0       1.42783               1.00000 2.063169e+07                    0.00000
+A6_r1        A6 3.31914      1269.5       231004                      1       2.93867               1.00024 1.735191e+06                    0.00000
+A6_r2        A6 3.17978      1385.0       225098                      2       2.93867               1.00143 1.626213e+06                    0.00001
+A6_r3        A6 3.21874      1307.5       241550                      0       2.93867               0.99991 1.815697e+06                    0.00000
+A6_r4        A6 2.99614      1429.0       233023                      0       2.93867               0.99988 1.721275e+06                    0.00000
+A6_r5        A6 3.27732      1335.5       227429                     11       2.93867               1.00009 1.641828e+06                    0.00005
