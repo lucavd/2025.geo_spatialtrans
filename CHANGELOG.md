@@ -2,9 +2,9 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## R7, 2026-11-08: aree di riferimento sovrapposte e poche aree, correzione degli intervalli dei riferimenti (branch `step2-visium-grid`), **in attesa delle decisioni di Luca**
+## R7, 2026-11-08: aree di riferimento sovrapposte e poche aree, correzione degli intervalli dei riferimenti (branch `step2-visium-grid`), **chiusa** (letta da Luca il 2026-11-09, «vanno bene i tuoi consigli»; tre decisioni: intervalli corretti adottati, DEC-061; varianti del livello cellulare invariate, DEC-062; limite sui contatti riscritto, DEC-063)
 
-File dello step `docs/steps/R7.md`, report `reports/R7.html`. Strumenti `tools/R7_*.py` (comune, test 10/10 e mutanti 7/7, pezzi disgiunti, copertura, struttura del tessuto, fattori, P-3, figure, report), `tools/R7_M5/` (riesame dei verdetti e riferimenti corretti); tabelle `results/R7/`. Decisione tecnica [R7: come si correggono gli intervalli calcolati su poche aree o finestre (DEC-060)](docs/decisions/DEC-060.md). BACKLOG BL-229...BL-233.
+File dello step `docs/steps/R7.md`, report `reports/R7.html`. Strumenti `tools/R7_*.py` (comune, test 10/10 e mutanti 7/7, pezzi disgiunti, copertura, struttura del tessuto, fattori, P-3, figure, report), `tools/R7_M5/` (riesame dei verdetti e riferimenti corretti); tabelle `results/R7/`. Decisione tecnica [R7: come si correggono gli intervalli calcolati su poche aree o finestre (DEC-060)](docs/decisions/DEC-060.md). BACKLOG BL-229...BL-233. Riferimenti adottati `results/R7/Mc/R7_refs_adopted.csv` (`tools/R7_refs_adopted.py`); BIO_REFERENCES B-462...B-469 (fattori per tessuto); design dello Step 1 e dello Step 2 aggiornati sul limite dei contatti.
 
 ## S2.4, 2026-11-06 → 11-07: cattura dei trascritti (`capture_and_bin()`, `simulate_stripes()`), seconda coda dello spostamento, fondo e coda adattati insieme (branch `step2-visium-grid`), **chiusa** (letta da Luca il 2026-11-07, «va bene le tue raccomandazioni chiudiamo»; due decisioni: chiusura con G-2 fallito come scritto, DEC-058; vetro lontano del tumore del colon come limite dichiarato, DEC-059)
 

@@ -235,7 +235,7 @@ Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
 - Revisione 4.1: la metrica di Daniele (correlazione fra i profili per gene dei bin della stessa cellula, contro cellule diverse dello stesso tipo) non è misurata in S2.0, che misura la dispersione dei totali per bin; il campo moltiplicativo della sezione 5 non crea variazione di composizione. Si misura in S2.2 con i profili scelti.
 - Revisione 3.2.B e 3.2.D: gli effetti spaziali dentro un tipo (campi gaussiani, `R/06h_spatial_correlation.R`) sono solo un'opzione per i programmi; la localizzazione periferica o di membrana non è trattata, salvo il gradiente radiale (BL-087).
 - Cuore: spostamento con i valori delle altre sezioni ([DEC-037](/decisions/DEC-037.md)); cellule isotrope (limite dello Step 1).
-- I limiti dello Step 1 passano ai conteggi: contatti fra nuclei in eccesso nei tessuti densi, territori troppo uniformi con la semina uniforme (design dello Step 1, 7.4).
+- I limiti dello Step 1 passano ai conteggi: contatti fra nuclei in eccesso nello stroma del tumore e per le coppie di nuclei (nel linfonodo non più dimostrato, nel tumore del colon non deciso: DEC-063), territori troppo uniformi con la semina uniforme (design dello Step 1, 7.4).
 
 ## 18. Storico
 

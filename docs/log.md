@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-09 (R7)
+
+* **Chiusura**: [Quanto sono troppo stretti gli intervalli dei riferimenti calcolati su 5 aree per tessuto, che in parte si sovrappongono, e cambia qualche conclusione? (R7)](steps/R7.md) chiuso con l'approvazione di Luca («vanno bene i tuoi consigli», risposta alle tre decisioni del riassunto «In breve»).
+* **Creazione**: decisioni di Luca [Gli intervalli dei riferimenti calcolati su poche aree o finestre si usano corretti da qui in avanti (DEC-061)](decisions/DEC-061.md), [Le varianti del livello cellulare oggi in uso restano, i dati non le distinguono (DEC-062)](decisions/DEC-062.md), [Il limite dichiarato sui nuclei a contatto si riscrive come lo vedono i dati dopo R7 (DEC-063)](decisions/DEC-063.md).
+* **Modifica**: [S1.4f: si chiude il lavoro sul disegno del nucleo; il disco resta nei preset e l'eccesso di contatti che resta è un limite dichiarato del simulatore (DEC-029)](decisions/DEC-029.md), nota sul punto 2; BIO_REFERENCES B-462...B-469; BACKLOG (chiuse BL-215, BL-186, BL-128; BL-166 aggiornata); design dello Step 1 e dello Step 2 (limite dei contatti); ROADMAP sezioni 6 e 7; CHANGELOG.
+
 ## 2026-11-08 (R7)
 
 * **Creazione**: [Quanto sono troppo stretti gli intervalli dei riferimenti calcolati su 5 aree per tessuto, che in parte si sovrappongono, e cambia qualche conclusione? (R7)](steps/R7.md): perimetro scelto da Luca (sovrapposizioni e poche aree), esplorazioni E-0...E-2, inventario, cancelli G-1...G-5, previsioni P-1...P-3 con l'ok di Luca, esiti, correzioni C-1...C-6 dopo la revisione avversariale (quattro revisori), riassunto «In breve» con tre decisioni per Luca; report `reports/R7.html`.

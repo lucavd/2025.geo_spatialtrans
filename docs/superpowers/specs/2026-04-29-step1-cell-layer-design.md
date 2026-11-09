@@ -436,7 +436,7 @@ plot_cell_layer(cell_layer, mode = c("voronoi", "types", "density", "regions"))
 
 Ciò che il livello cellulare non riproduce, misurato contro i riferimenti veri, e da tenere presente quando si testano i metodi di analisi sui dati simulati:
 
-- **Nuclei a contatto in eccesso** nei tessuti densi: tumore del colon 0.69 contro al più 0.57 del conteggio manuale, linfonodo 0.83 contro al più 0.75, al limite nello stroma del tumore 0.36 contro al più 0.28 (DEC-029; nessun disegno del nucleo provato li porta nel vero; nel tumore del colon il riferimento manuale è il meno sicuro).
+- **Nuclei a contatto** (riscritto dopo R7, DEC-063, che rivede il punto 2 di DEC-029): con l'incertezza corretta dei conteggi fatti a mano, nel linfonodo l'eccesso non è più dimostrato (0.83 contro un margine corretto 0.25-0.88); nel tumore del colon il confronto è non deciso (0.69, con il suo intervallo fra i semi a cavallo del limite superiore 0.66 del margine corretto 0.17-0.66); nello stroma del tumore resta un eccesso (0.36 contro al più 0.28) e restano in eccesso le coppie di nuclei a contatto. Nessun disegno del nucleo provato cambia questo quadro.
 - **Territori troppo uniformi** con la semina uniforme dei preset (variabilità dell'area dei territori e numero di vicini sotto il vero in intestino, tumore del colon, linfonodo; S1.5b-S1.5e): la semina a compartimenti con i vuoti è un'opzione che ne corregge una parte ma non è il predefinito (regola B).
 - **Cuore**: territori isotropi, cellule vere allungate (controllo negativo previsto, §4.6, R3).
 - **Densità dei preset** riferita al tessuto pieno di cellule del conteggio manuale, non al tessuto con i suoi vuoti (BL-167, da decidere in uno step dedicato).
