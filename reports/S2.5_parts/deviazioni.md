@@ -1,0 +1,7 @@
+- Correzioni C-1...C-7 (sopra); test e mutanti aggiunti dopo la revisione.
+- **Errore di pre-registrazione**: per l'orientamento (P-9) la regola di R7 chiede il fattore delle altre quantità (`kappa_boot_box`) e non quello dei quadratini; P-9 è giudicata come scritta, con la correzione come sensibilità (nessun esito cambia).
+- E-4: la frase «togliere gli effetti di riga e colonna non abbassa il simulato» vale per l'area esplorata, non per il linfonodo A4_p1 (revisore dei numeri).
+- P-8: il tempo è quello della sola chiamata dell'orchestratore (`elapsed_sim_s`, senza la scrittura dei file); la memoria è il picco del processo.
+- Il pannello main_r2 e la revisione sono girati insieme (server carico): tempi di main_r2 non confrontabili con main; rimisurati in PH-2.
+- La connessione al server è caduta (VPN) durante la chiusura; il lavoro è proseguito con il secondo accesso allo stesso server (`lesexp-ts`).
+- Un file di registro di un revisore (`sim_extract.log`) era finito nella root del repo; spostato nella cartella del revisore.

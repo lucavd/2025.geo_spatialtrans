@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-09 (S2.5)
+
+* **Creazione**: [Il simulatore completo produce conteggi come quelli dei sei tessuti veri? (S2.5)](steps/S2.5.md): perimetro e scelte di Luca, esplorazioni E-0...E-5, regole R-1 e R-2, cancelli G-1...G-5, previsioni P-1...P-9 con l'ok di Luca, controprove, esiti dei pannelli main, depth_off e main_r2, correzioni C-1...C-7, analisi post hoc PH-1 e PH-2, revisione avversariale (tre revisori), riassunto «In breve» con due decisioni per Luca; report `reports/S2.5.html`.
+* **Creazione**: decisioni di Luca [S2.5: il confronto fra simulato e vero si fa sugli stessi quadratini dei due lati (DEC-064)](decisions/DEC-064.md), [S2.5: i 522 geni senza profilo nello stroma del tumore restano un limite dichiarato (DEC-065)](decisions/DEC-065.md), [S2.5: i quadratini in tessuto senza territorio di cellula restano tessuto senza cellule (DEC-066)](decisions/DEC-066.md); decisioni tecniche [S2.5: i fattori di profondità ritarati sulla catena completa diventano quelli dei preset (DEC-067)](decisions/DEC-067.md), [S2.5: blocchi di cellule da 2 milioni di trascritti e semi dei passi estratti con Mersenne-Twister (DEC-068)](decisions/DEC-068.md).
+* **Modifica**: BACKLOG (chiuse BL-212, BL-219, BL-227; aggiornate BL-205, BL-214, BL-223, BL-224, BL-226; nuove BL-234...BL-239); BIO_REFERENCES B-470...B-524; design dello Step 2 v0.5; ROADMAP sezioni 6 e 7; CHANGELOG.
+
 ## 2026-11-09 (R7)
 
 * **Chiusura**: [Quanto sono troppo stretti gli intervalli dei riferimenti calcolati su 5 aree per tessuto, che in parte si sovrappongono, e cambia qualche conclusione? (R7)](steps/R7.md) chiuso con l'approvazione di Luca («vanno bene i tuoi consigli», risposta alle tre decisioni del riassunto «In breve»).

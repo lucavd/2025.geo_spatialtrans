@@ -1,6 +1,6 @@
 # Step 2 — Dalla mappa delle cellule ai conteggi di Visium HD: documento di progetto
 
-**Versione**: 0.4 (2026-11-07, sessione S2.4: cattura e strisce, fondo e seconda coda adattati insieme, passo 1 calibrato, parte lenta esclusa, semi; la 0.3 del 2026-11-06 è di S2.3; la 0.2 del 2026-11-04 è di S2.0, scritta con le misure di `docs/steps/S2.0.md`). **Stato**: in uso (Luca, 2026-11-05: niente revisione di Daniele prima del codice, [DEC-042](/decisions/DEC-042.md)). **Ramo**: `step2-visium-grid`.
+**Versione**: 0.5 (2026-11-09, sessione S2.5: orchestratore `simulate_visium_hd()`, fattore di profondità ritarato sulla catena completa, blocchi scelti dai trascritti, limiti nuovi; la 0.4 del 2026-11-07 è di S2.4, cattura e strisce, fondo e seconda coda adattati insieme, passo 1 calibrato, parte lenta esclusa, semi; la 0.3 del 2026-11-06 è di S2.3; la 0.2 del 2026-11-04 è di S2.0, scritta con le misure di `docs/steps/S2.0.md`). **Stato**: in uso (Luca, 2026-11-05: niente revisione di Daniele prima del codice, [DEC-042](/decisions/DEC-042.md)). **Ramo**: `step2-visium-grid`.
 **Scopo**: dire che cosa fa lo Step 2 del simulatore, con quali regole e con quali numeri, prima di scriverne il codice. Lo Step 1 (design `2026-04-29-step1-cell-layer-design.md`, v1.9) produce le cellule: posizione, tipo, territorio, nucleo. Lo Step 2 le trasforma nei conteggi che produrrebbe un vetrino Visium HD: quadratini (bin) di 2 µm, somma a 8 µm, e la verità di riferimento con cui si mettono alla prova i metodi di analisi.
 
 **Come leggerlo.** La sezione 1 dice che cosa esce. La sezione 2 elenca le decisioni con la loro fonte. Le sezioni 3-8 descrivono i sei passi del modello. La sezione 9 è la tabella dei parametri per tessuto. Le sezioni 10-15 trattano lumi, verità, prestazioni, tolleranze, vecchia pipeline e piano di implementazione. La sezione 16 è la mappa della revisione di Daniele (2025, sezioni 3 e 4) e dei dubbi ricevuti.
@@ -19,6 +19,8 @@ Una lista `hd` con:
 | `truth$cell_counts` | matrice geni × cellule dei trascritti generati per cellula (prima dello spostamento e della cattura tecnica) | profili veri |
 | `truth$layers` | strati tecnici attivi e loro valori (fattori delle strisce per riga e colonna, fondo, parametri dello spostamento) | per mettere alla prova i metodi che correggono quegli strati |
 | `metadata` | `pixel_size_um` ereditato dallo Step 1, seme, preset, versione | riproducibilità |
+
+S2.5: `simulate_visium_hd(cell_layer, seed, archetype, layers, frame_open, profiles, depth_factor, chunk_size, chunk_transcripts = 2e6, ...)` restituisce `counts_2um`, `counts_8um`, `bins`, `bins_8um`; in `truth` anche le somme a 8 µm (`overlap_8um`, `origin_8um`, `background_8um`), i trascritti arrivati per quadratino (`arrived_2um`), la tabella delle cellule (`cells`: tipo, sottotipo, trascritti generati, catturati, persi, attesi) e dei geni; in `metadata` i semi dei quattro passi casuali, gli strati, il fattore di sovra-generazione M, i blocchi, i tempi per passo. Lo stato del generatore dell'utente è lasciato com'era ([DEC-068](/decisions/DEC-068.md)).
 
 ## 2. Decisioni
 
@@ -99,7 +101,7 @@ dove G(σ) è la gaussiana isotropa in due dimensioni con deviazione standard σ
 
 ## 8. Passo 6: somma a 8 µm e uscite (revisione 3.2.E)
 
-`counts_8um` somma i 16 bin di 2 µm di ogni bin di 8 µm (righe e colonne a blocchi di 4, come Space Ranger). La verità di origine e quella geometrica si sommano allo stesso modo. Controllo: ogni bin di 8 µm è uguale alla somma esatta dei suoi 16 (identità su interi; R5 l'ha verificata sui dati veri). S2.4: `capture_and_bin()` restituisce `counts_2um` e `counts_8um`; la verità di origine e il fondo a 8 µm si ottengono con `sum_to_8um()` (compito dell'orchestratore, S2.5).
+`counts_8um` somma i 16 bin di 2 µm di ogni bin di 8 µm (righe e colonne a blocchi di 4, come Space Ranger). La verità di origine e quella geometrica si sommano allo stesso modo. Controllo: ogni bin di 8 µm è uguale alla somma esatta dei suoi 16 (identità su interi; R5 l'ha verificata sui dati veri). S2.4: `capture_and_bin()` restituisce `counts_2um` e `counts_8um`; la verità di origine e il fondo a 8 µm si ottengono con `sum_to_8um()` (compito dell'orchestratore, S2.5). S2.5: l'orchestratore le calcola (origine, nati nel nucleo, sovrapposizione geometrica, fondo); il controllo per coppia (blocco, cellula) è esatto in 150 esecuzioni su 150 (`results/S2.5/S2.5_G2_truth8.txt`).
 
 ## Tabella dei parametri (sezione 9)
 
@@ -127,6 +129,8 @@ Valori per tessuto; la colonna «fonte» rimanda alla riga di `docs/BIO_REFERENC
 | campo di variabilità fine: varianza s² (griglia di 0.5 µm; tarata sul nucleo, S2.3) | 0.5 | 0.5 | 0.354 | 0.297 | 0.0743 | 0.841 | B-420...B-425; [DEC-049](/decisions/DEC-049.md) |
 | campo di variabilità fine: lunghezza L del nucleo gaussiano (µm) | 0.6375 | 0.5 | 0.85 | 1.275 | 1.275 | 0.885 | B-426...B-431; [DEC-049](/decisions/DEC-049.md) |
 | scala della variabilità dentro il nucleo | 1-2 µm | 1-2 µm | 1-2 µm | 1-2 µm | 1-2 µm | 1-2 µm | B-385, B-387, B-389, B-391, B-393, B-395; post hoc PH-3 (correlazione in più a 2 µm, al più 0.09 a 4 µm) |
+| fattore di profondità prima della sovra-generazione (predefinito dei preset) | 1.0127 | 0.9540 | 1.5615 | 0.8191 | 1.4278 | 2.9387 | B-518...B-523; ritarato sulla catena completa in S2.5 (regola R-2, [DEC-067](/decisions/DEC-067.md)); prima, S2.2: 0.867, 0.893, 1.584, 0.787, 1.252, 2.625 ([DEC-045](/decisions/DEC-045.md)) |
+| riferimento sugli stessi quadratini dei due lati (S2.5, [DEC-064](/decisions/DEC-064.md)): UMI per bin di 2 µm in tessuto (reg), media | 29.27 | 47.93 | 19.24 | 11.52 | 44.55 | 3.556 | B-470, B-478, B-486, B-494, B-502, B-510 (altre misure fino a B-517) |
 | riferimento (controllo, non parametro): UMI per bin di 2 µm in tessuto, media | 27.14 | 45.46 | 19.53 | 11.40 | 41.79 | 3.42 | B-270, B-280, B-290, B-302, B-315, B-327 |
 | riferimento (controllo, non parametro): UMI per bin di 8 µm in tessuto, media | 424.81 | 719.50 | 312.39 | 182.42 | 667.44 | 54.78 | B-271, B-281, B-291, B-303, B-316, B-328 |
 | riferimento (controllo, non parametro): sparsità bin × gene a 2 µm; 8 µm | 0.9987; 0.9830 | 0.9976; 0.9679 | 0.9990; 0.9857 | 0.9994; 0.9910 | 0.9979; 0.9716 | 0.9998; 0.9975 | B-272, B-282, B-292, B-304, B-317, B-329 |
@@ -155,6 +159,8 @@ La revisione di Daniele (3.2.A) chiamava «verità» la sola frazione geometrica
 Ordini di grandezza dalle righe di `docs/BIO_REFERENCES.md` (da misurare negli step d'implementazione). Un'area di 1 mm² ha 250 000 bin di 2 µm. Le cellule per mm² vanno da circa 1 000 (cuore, B-036 e B-048; cervello, B-029 e B-047) a 24 000-28 000 (linfonodo, B-022 e B-046), con 11 000-12 000 nell'intestino (B-001, B-043). I trascritti catturati per mm² (UMI per bin di 2 µm × 250 000) vanno da 0.86 milioni (cuore, B-327) a 11.4 milioni (tumore del colon, B-280): 10.4 milioni nel cervello (B-315), 6.8 nell'intestino (B-270), 2.85 nel linfonodo (B-302). Con l'assottigliamento delle strisce i trascritti generati sono max(c)/media(c) volte di più (sezione 7). Un'area di cattura intera (11.2 milioni di bin) è 45 volte più grande.
 
 Bilancio proposto, come per lo Step 1: un'area di 1 mm² in meno di 5 minuti e 8 GB; l'area intera a tessere di 500 µm con un bordo di 280 µm (meno dell'1 % della coda più lunga oltre il bordo, sezione 3), un processo per tessera. Lo Step 1 sul linfonodo 4 000 × 4 000 px supera già il bilancio (310 s, 8.5 GB, BL-144): il ritaglio dei territori (BL-072) e le regioni a 2 µm (BL-045) vanno ottimizzati prima dell'area intera; la griglia dei vicini su estensioni enormi (BL-057) non serve allo Step 2, che lavora a tessere.
+
+Misurato in S2.5 (`simulate_visium_hd()`, aree di 1 mm², fino a 6 processi sul server condiviso): da 19 s (cuore) a 237 s (tumore del colon) per area, picco da 2.8 a 8.3 GB con 4 × 10⁶ trascritti per blocco (oltre 8 GB solo l'area A2_r4). A macchina libera, con i predefiniti finali (2 × 10⁶), le 5 aree del tumore stanno in 149-232 s e 6.0-7.2 GB. Con 70.6 milioni di trascritti generati il picco non scende sotto circa 7 GB al ridursi dei blocchi (tabelle dell'area intera): l'area di cattura intera va fatta a tessere (BL-214, step di prestazioni).
 
 ## 13. Tolleranze dei controlli (BL-146)
 
@@ -187,6 +193,8 @@ Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
 | S2.3 | `place_and_move_transcripts()` | conservazione dei trascritti, densità nucleo/citoplasma, nucleo di spostamento | R5 (bordi, contrasto interno), regola di S2.0 | controllo interno e lumi di S2.0 rifatti sulle cellule simulate |
 | S2.4 | `capture_and_bin()` | strisce, fondo, assottigliamento, somma a 8 µm | R4 (strisce, vuoti, UMI per bin), M1 di S2.0 | strisce stimate sui dati simulati con lo stimatore di S2.0 |
 | S2.5 | `simulate_visium_hd()` e pannello A1-A6 | tutti i controlli dello Step 2 | R4 per tessuto (UMI per bin a 2 e 8 µm, frazione di bin vuoti, geni per bin, rapporto nucleo/corona) | il cuore come controllo negativo dove il Voronoi isotropo fallisce |
+
+S2.5 fatta (2026-11-09, `docs/steps/S2.5.md`): dopo la ritaratura della profondità UMI e geni a 2 e 8 µm confermati in 6 tessuti su 6; restano i vuoti (intestino, tumore), il rapporto nucleo/corona del tumore e l'orientamento del cuore (sezione 17). La verifica su una sezione intera e l'area di cattura intera passano a uno step di prestazioni.
 
 ## 16. Mappa della revisione di Daniele e dei dubbi ricevuti
 
@@ -227,14 +235,17 @@ Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
 - Variabilità a 1-2 µm tarata dentro il nucleo e applicata a tutto il tessuto; nella corona e nello spazio senza cellule i veri variano di più e su scala più larga (S2.3, BL-220; limite dichiarato e step dedicato, [DEC-050](/decisions/DEC-050.md)); origine (biologica o tecnica) non nota (sezione 5).
 - Vetro lontano del tumore del colon: oltre 256 µm il simulato ha da 1.4 a 2.4 volte i trascritti veri (una coda esponenziale su un fondo costante non basta; BL-225).
 - Strisce: la parte lenta non entra (S2.4, R-2, [DEC-056](/decisions/DEC-056.md)): cercata sul vetro, non è identificabile come fattore di riga o colonna.
-- Quadratini vuoti in tessuto: nel simulato da un decimo a quattro decimi dei veri in intestino, tumore e stroma; non vengono dalle strisce (S2.4, P-6, BL-226).
-- Memoria: con la sovra-generazione la posizione e lo spostamento superano 8 GB in tumore, stroma e cervello con blocchi di 2 000 cellule; `chunk_size` va scelto dai trascritti (BL-227).
+- Quadratini vuoti in tessuto: dopo la ritaratura della profondità il simulato ha un diciassettesimo dei veri nell'intestino e un tredicesimo nel tumore (S2.5, smentite); nello stroma 0.42 dei veri, dentro il margine. Non vengono dalle strisce (S2.4) né dalla profondità (S2.5); BL-226.
+- Memoria: l'orchestratore sceglie le cellule per blocco dai trascritti (S2.5, BL-227 chiusa); nelle aree più cariche del tumore il picco resta vicino a 7 GB anche con blocchi piccoli, quindi un'area di cattura intera va fatta a tessere (BL-214).
 - Cuore: il modello non descrive l'interno dei nuclei (controllo interno smentito); r e v del cuore con riserva.
 - Fondo vicino al bordo: il simulatore usa il fondo del vetro lontano (sezione 9), ma nelle finestre di bordo il fondo adattato è più alto in intestino, tumore e cervello (0.22, 0.46, 0.55 UMI per bin contro 0.16, 0.20, 0.31): vicino al tessuto il vetro simulato avrà meno conteggi del vero (forse una coda non modellata).
-- Bilancio dei trascritti per area: densità delle cellule (Step 1) per trascritti per cellula (R4, nucleo più corona di 8 µm) può dare meno UMI per area dei dati veri, fino a un terzo nel cuore, dove la corona di 8 µm è piccola per i cardiomiociti (stima provvisoria della revisione G-5); da controllare come previsione in S2.2 e S2.5 con BL-195 e BL-167 (densità dei preset riferite al tessuto pieno).
+- Bilancio dei trascritti per area: densità delle cellule (Step 1) per trascritti per cellula (R4, nucleo più corona di 8 µm) può dare meno UMI per area dei dati veri, fino a un terzo nel cuore, dove la corona di 8 µm è piccola per i cardiomiociti (stima provvisoria della revisione G-5); da controllare come previsione in S2.2 e S2.5 con BL-195 e BL-167 (densità dei preset riferite al tessuto pieno). S2.5: con il fattore di profondità ritarato sulla catena completa ([DEC-067](/decisions/DEC-067.md)) gli UMI per quadratino tornano sul vero in 6 tessuti su 6; la verifica su una sezione intera resta (BL-205).
 - Revisione 4.1: la metrica di Daniele (correlazione fra i profili per gene dei bin della stessa cellula, contro cellule diverse dello stesso tipo) non è misurata in S2.0, che misura la dispersione dei totali per bin; il campo moltiplicativo della sezione 5 non crea variazione di composizione. Si misura in S2.2 con i profili scelti.
 - Revisione 3.2.B e 3.2.D: gli effetti spaziali dentro un tipo (campi gaussiani, `R/06h_spatial_correlation.R`) sono solo un'opzione per i programmi; la localizzazione periferica o di membrana non è trattata, salvo il gradiente radiale (BL-087).
-- Cuore: spostamento con i valori delle altre sezioni ([DEC-037](/decisions/DEC-037.md)); cellule isotrope (limite dello Step 1).
+- Cuore: spostamento con i valori delle altre sezioni ([DEC-037](/decisions/DEC-037.md)); cellule isotrope (limite dello Step 1). S2.5: il limite si vede nei conteggi: i conteggi veri a 8 µm hanno l'orientamento delle fibre (indice 0.25), il simulato no (0.048; BL-235).
+- Rapporto nucleo/corona del tumore del colon sopra il vero sulla geometria dello Step 1 (0.90 contro 0.82-0.88; giusto sulla geometria vera; S2.5, BL-234).
+- Stroma del tumore: 522 geni del pannello con profilo nullo, lo 0.99 % degli UMI veri ([DEC-065](/decisions/DEC-065.md)).
+- Indice di orientamento: nel simulato di intestino, tumore e linfonodo è più alto del vero o a ridosso (bordi delle regioni e dei lumi, strisce nel linfonodo; BL-236).
 - I limiti dello Step 1 passano ai conteggi: contatti fra nuclei in eccesso nello stroma del tumore e per le coppie di nuclei (nel linfonodo non più dimostrato, nel tumore del colon non deciso: DEC-063), territori troppo uniformi con la semina uniforme (design dello Step 1, 7.4).
 
 ## 18. Storico
@@ -248,3 +259,4 @@ Scelte tecniche registrate in [DEC-038](/decisions/DEC-038.md).
 | 2026-11-06 | 0.3 | S2.3: valori del campo di variabilità fine (sezioni 5 e 9), nome dell'interruttore `field`, limite fuori dal nucleo (sezione 17), seconda coda sul vetro (sezione 6), esito sul calo radiale; DEC-049 | geo-agent/skill-v2 (S2.3) |
 | 2026-11-06 | 0.3 | S2.3 chiusa: valori della seconda coda nella sezione 9 (DEC-051), limite fuori dal nucleo (DEC-050) | geo-agent/skill-v2 (S2.3) |
 | 2026-11-07 | 0.4 | S2.4: cattura (sezioni 6, 7, 8), fondo e seconda coda adattati insieme (D2-10, sezione 9; DEC-053, DEC-054), passo 1 calibrato (DEC-055), parte lenta esclusa (DEC-056), semi (DEC-057), limiti nuovi (sezione 17) | geo-agent/skill-v2 (S2.4) |
+| 2026-11-09 | 0.5 | S2.5: uscite dell'orchestratore (sezione 1), verità a 8 µm (sezione 8), fattore di profondità ritarato e riferimenti sugli stessi quadratini (sezione 9; DEC-064, DEC-067), prestazioni misurate (sezione 12; DEC-068), esito (sezione 15), limiti (sezione 17; DEC-065, DEC-066) | geo-agent/skill-v2 (S2.5) |
