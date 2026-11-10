@@ -285,6 +285,7 @@ dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 cat(sprintf("[%s, %s] %d replicates x 24 datasets, %d workers\nOutput: %s\n", tissue, ref_mode, n_rep, workers, out_dir))
 log_line(sprintf("run start, %s %s, %d replicates, %d workers", tissue, ref_mode, n_rep, workers))
 t0 <- proc.time()[["elapsed"]]
+Sys.setenv(OPENBLAS_NUM_THREADS = "1", OMP_NUM_THREADS = "1")   # one core per worker (ADEMP §6); workers inherit it
 cl <- parallel::makeCluster(workers, setup_strategy = "sequential")   # parallel start-up drops workers on Windows
 lib <- .libPaths()
 invisible(parallel::clusterCall(cl, function(lib) { .libPaths(lib); RNGkind("L'Ecuyer-CMRG"); NULL }, lib))

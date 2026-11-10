@@ -123,6 +123,7 @@ run_job <- function(r) {
 
 cat(sprintf("[%s, %s] %d jobs (%d replicates x 4 conditions), %d workers\n", tissue, ref_mode, nrow(jobs), n_rep, workers))
 t0 <- proc.time()[["elapsed"]]
+Sys.setenv(OPENBLAS_NUM_THREADS = "1", OMP_NUM_THREADS = "1")   # one core per worker (ADEMP §6); workers inherit it
 cl <- parallel::makeCluster(workers, setup_strategy = "sequential")
 lib <- .libPaths()
 invisible(parallel::clusterCall(cl, function(lib) { .libPaths(lib); RNGkind("L'Ecuyer-CMRG"); NULL }, lib))

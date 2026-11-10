@@ -173,6 +173,7 @@ chunks <- split(seq_len(nrow(Y)), cut(seq_len(nrow(Y)), workers * 4, labels = FA
 cat(sprintf("  fitting φ: %d genes x %d cells, %d coefficients, %d workers
 ", nrow(Y), ncol(Y),
             nlevels(cd$type) + nlevels(cd$donor) - 1, workers))
+Sys.setenv(OPENBLAS_NUM_THREADS = "1", OMP_NUM_THREADS = "1")   # one core per worker (ADEMP §6); workers inherit it
 cl <- parallel::makeCluster(workers, setup_strategy = "sequential")   # parallel start-up drops workers on Windows
 parallel::clusterCall(cl, function(lib) { .libPaths(lib); NULL }, .libPaths())
 phi_chunks <- parallel::parLapplyLB(cl, lapply(chunks, function(i) Y[i, , drop = FALSE]),

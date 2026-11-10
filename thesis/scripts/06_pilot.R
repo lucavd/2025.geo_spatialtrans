@@ -46,7 +46,9 @@
 #   A number still gives one c for both levels, so the colon c = 1 pilot is reproducible.
 #
 # Usage (working directory = thesis/):  Rscript scripts/06_pilot.R <tissue> [workers] [reps] [mode] [c | rule]
-#   "depth" rebuilds the spots from the same seeds and only counts spot depths, without deconvolution.
+#   "depth" rebuilds the spots from the same seeds and only counts spot depths, without deconvolution;
+#   it also writes quantiles of the raw UMI per cell (<run_id>_pilot_spot_umi_quantiles.csv, 2026-11-10)
+#   and checks that the depth counts equal those saved by the full run.
 #   "truth" rebuilds compositions, cells and anchor from the same seeds, checks that the cell truth
 #   equals the saved one and adds the UMI-fraction truth (truth_umi) to existing replicate files.
 
@@ -141,7 +143,11 @@ run_job <- function(i) {
     n_at_target = vapply(raw_umi, function(u) sum(u >= target), numeric(1)),   # thinned to the target
     n_below = vapply(raw_umi, function(u) sum(u < target), numeric(1)),        # left below it
     median_raw_umi = vapply(raw_umi, median, numeric(1)), row.names = NULL)
-  if (mode == "depth") { log_line(paste("depth only, done", job)); return(depth) }
+  if (mode == "depth") {   # also the raw (pre-thinning) UMI per cell of every spot, for the per-tissue depth question
+    log_line(paste("depth only, done", job))
+    return(list(depth = depth, umi = data.frame(n_cells = g$n_cells, dataset = rep(names(raw_umi), lengths(raw_umi)),
+                                                umi_per_cell = unlist(raw_umi, use.names = FALSE) / g$n_cells)))
+  }
   ms <- g$seed[[1]]
   rows <- list(); props <- list()
   for (d in names(data)) {
@@ -190,12 +196,31 @@ report_depth <- function(dp) {
   cat("Depth counts written to", depth_file, "\n")
 }
 
+# Depth mode only (2026-11-10): quantiles of the raw UMI per cell of the spots, before thinning, per dataset
+# x cells level, pooled over replicates and both depth levels (the raw spot does not depend on the target).
+report_umi_quantiles <- function(u) {
+  probs <- c(0.01, 0.05, 0.10, 0.25, 0.50)
+  q <- do.call(rbind, lapply(split(u, u[c("n_cells", "dataset")], drop = TRUE), function(z) {
+    v <- quantile(z$umi_per_cell, probs, names = FALSE)
+    data.frame(n_cells = z$n_cells[1], dataset = z$dataset[1], n_spots = nrow(z),
+               p01 = v[1], p05 = v[2], p10 = v[3], p25 = v[4], p50 = v[5],
+               share_ge_4900 = mean(z$umi_per_cell >= 4900))
+  }))
+  q <- q[order(q$n_cells, q$dataset), ]; rownames(q) <- NULL
+  qf <- file.path(dirname(out_dir), paste0(run_id, "_pilot_spot_umi_quantiles.csv"))
+  write.csv(q, qf, row.names = FALSE)
+  cat("\nRaw UMI per cell of the spots (before thinning), quantiles over replicates and depth levels:\n")
+  print(q, digits = 4)
+  cat("Quantiles written to", qf, "\n")
+}
+
 cat(sprintf("[%s] pilot (%s): %d jobs (%d reps x %d conditions), %d workers\n",
             tissue, mode, nrow(grid), n_rep, nrow(grid) / n_rep, workers))
 cat("Progress log:", log_file, "\n")
 cat(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), sprintf("run start, mode %s, %d jobs, %d workers", mode, nrow(grid), workers),
     "\n", file = log_file, append = TRUE)
 t0 <- proc.time()[["elapsed"]]
+Sys.setenv(OPENBLAS_NUM_THREADS = "1", OMP_NUM_THREADS = "1")   # one core per worker (ADEMP §6); workers inherit it
 cl <- parallel::makeCluster(workers, setup_strategy = "sequential")   # parallel start-up drops workers on Windows
 lib <- .libPaths()
 parallel::clusterCall(cl, function(lib) { .libPaths(lib); RNGkind("L'Ecuyer-CMRG"); NULL }, lib)
@@ -207,7 +232,15 @@ parallel::stopCluster(cl)
 errs <- grep("^ERROR", unlist(Filter(is.character, done)), value = TRUE)
 if (length(errs)) { cat(errs, sep = "\n"); stop(length(errs), " jobs failed a check") }
 cat(sprintf("  done in %.1f min\n", (proc.time()[["elapsed"]] - t0) / 60))
-if (mode == "depth") { report_depth(do.call(rbind, done)); quit(save = "no") }
+if (mode == "depth") {
+  dp <- do.call(rbind, lapply(done, `[[`, "depth"))
+  if (file.exists(depth_file)) {   # same seeds as the full run, so the counts must match the saved ones
+    old <- read.csv(depth_file)
+    same <- isTRUE(all.equal(old[do.call(order, old), ], dp[do.call(order, dp), ], check.attributes = FALSE))
+    cat(if (same) "Depth counts identical to the saved full run: same spots\n" else "WARNING: depth counts differ from the saved full run\n")
+  }
+  report_depth(dp); report_umi_quantiles(do.call(rbind, lapply(done, `[[`, "umi"))); quit(save = "no")
+}
 if (mode == "truth") { cat("UMI truth added to", length(done), "replicate files\n"); quit(save = "no") }
 
 # Summary
