@@ -2,7 +2,7 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## S2.6, 2026-11-09 → 11-10: prova di prestazione su aree grandi e giunture della simulazione a pezzi (branch `step2-visium-grid`), **non chiusa** (in attesa della lettura di Luca; nessun dubbio aperto, 5 rinvii)
+## S2.6, 2026-11-09 → 11-10: prova di prestazione su aree grandi e giunture della simulazione a pezzi (branch `step2-visium-grid`), **chiusa** (letta da Luca il 2026-11-10, «chiudi»; nessuna decisione; 5 rinvii, BL-241...BL-245)
 
 File dello step `docs/steps/S2.6.md`, report `reports/S2.6.html`. Nessuna modifica a `R/`. Strumenti `tools/S2.6_explore.R`, `S2.6_pieces.R` (pezzo solo, pezzi, ritaglio), `S2.6_section_layer.R`, `S2.6_measures.R`, `S2.6_section_measures.py`, `S2.6_run.py`, `S2.6_thermal_guard.sh`, `S2.6_check.R`, `S2.6_repro.sh`, `S2.6_md5.sh`, `S2.6_mutants.py`, `S2.6_tri_scan.R`, `S2.6_fix_cell.R`, `S2.6_PH3_edge.py`, `S2.6_analysis.py`, `S2.6_report_parts.py`; batteria `R/testing/test_S2.6.R` (33/33), mutanti 8/8; tabelle `results/S2.6/`; uscite `/mnt/micron/geo_spatialtrans/S2.6/`. Cancelli G-1...G-5 superati (G-5 con due correzioni dello strumento delle sezioni). Decisioni tecniche DEC-072 (perimetro) e DEC-073 (lo step successivo è S2.7, regola R-2). BACKLOG BL-241...BL-245; aggiornate BL-045, BL-057, BL-072, BL-144, BL-205, BL-214, BL-237, BL-240. 52 ore-processo.
 

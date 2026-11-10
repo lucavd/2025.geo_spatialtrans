@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-11-10 (S2.6, chiusura)
+
+* **Chiusura**: [Il simulatore regge un'area di cattura intera, in tempo, in memoria e senza difetti alle giunture fra i pezzi? (S2.6)](steps/S2.6.md) chiuso con l'approvazione di Luca («chiudi», dopo la lettura del riassunto «In breve»).
+* **Modifica**: ROADMAP sezione 7 (stato «chiusa», prossima sessione S2.7); CHANGELOG.
+
 ## 2026-11-10 (S2.6)
 
 * **Modifica**: [Il simulatore regge un'area di cattura intera, in tempo, in memoria e senza difetti alle giunture fra i pezzi? (S2.6)](steps/S2.6.md): pre-registrazione (cancelli, previsioni, ok di Luca), esiti, correzioni, analisi post hoc, revisione avversariale, deviazioni, riassunto «In breve», dubbi rinviati; `pi_approval` in attesa.
