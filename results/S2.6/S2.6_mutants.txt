@@ -1,0 +1,9 @@
+RILEVATO ancore tolte (griglia del pezzo non allineata dove il tessuto non arriva al riquadro): 1 asserzioni fallite; FAIL  T6: territori tagliati dentro il riquadro e riquadro del pezzo = riquadro di territo
+RILEVATO taglio dei territori al riquadro saltato: 1 asserzioni fallite; errore R: Execution halted
+RILEVATO quadratini tenuti con una colonna in meno: 5 asserzioni fallite; FAIL  T1 A2: un pezzo unico = un pezzo solo (UMI per quadratino identici, 160000 quadratin; FAIL  T1 A2: matrice a 8 um identica; FAIL  T2 A6_T200H100: nessun quadratino coperto due volte; quadratini scoperti solo nei pe
+RILEVATO ogni trascritto attribuito al pezzo proprietario: 2 asserzioni fallite; FAIL  T5 A6_T200H100: trascritti da cellule del bordo presenti; FAIL  T5 D_T120H56: trascritti da cellule del bordo presenti
+RILEVATO stesso seme in tutti i pezzi: 3 asserzioni fallite; FAIL  T4 A6_T200H100: semi dei pezzi tutti diversi (4 pezzi); FAIL  T4 D_T120H56: semi dei pezzi tutti diversi (9 pezzi); FAIL  T4 D_T120H0: semi dei pezzi tutti diversi (9 pezzi)
+RILEVATO blocchi di 8 um sfasati nella cucitura: 5 asserzioni fallite; FAIL  T1 A6: matrice a 8 um identica; FAIL  T1 A2: matrice a 8 um identica; FAIL  T3 A6_T200H100: matrice a 8 um = somma dei 16 quadratini
+RILEVATO riflessione spenta nei pezzi: 6 asserzioni fallite; FAIL  T1 A6: un pezzo unico = un pezzo solo (UMI per quadratino identici, 230400 quadratin; FAIL  T1 A6: matrice a 8 um identica; FAIL  T1 A6: origine per blocco identica
+RILEVATO giunture spostate di 8 um nelle misure: 2 asserzioni fallite; FAIL  T7: fascia 0-8 um con il deficit atteso (996 blocchi: 246 a 144 a sinistra, 246 a 12; FAIL  T7: fasce oltre 8 um senza deficit (160)
+TOTALE: 8/8 rilevati

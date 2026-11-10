@@ -1,0 +1,37 @@
+PASS  T1 A6: un pezzo unico = un pezzo solo (UMI per quadratino identici, 230400 quadratini)
+PASS  T1 A6: matrice a 8 um identica
+PASS  T1 A6: origine per blocco identica
+PASS  T1 A2: un pezzo unico = un pezzo solo (UMI per quadratino identici, 160000 quadratini)
+PASS  T1 A2: matrice a 8 um identica
+PASS  T1 A2: origine per blocco identica
+PASS  T2 A6_T200H100: nessun quadratino coperto due volte; quadratini scoperti solo nei pezzi senza cellule (230400)
+PASS  T3 A6_T200H100: UMI cuciti = somma dei pezzi
+PASS  T3 A6_T200H100: matrice a 8 um = somma dei 16 quadratini
+PASS  T3 A6_T200H100: origine propria + doppia <= UMI per blocco
+PASS  T4 A6_T200H100: semi dei pezzi tutti diversi (4 pezzi)
+PASS  T5 A6_T200H100: trascritti da cellule del bordo presenti
+PASS  T2 D_T120H56: nessun quadratino coperto due volte; quadratini scoperti solo nei pezzi senza cellule (211600)
+PASS  T2 D_T120H56: ogni quadratino con il centro nell'area utile di un pezzo con cellule e' coperto
+PASS  T3 D_T120H56: UMI cuciti = somma dei pezzi
+PASS  T3 D_T120H56: matrice a 8 um = somma dei 16 quadratini
+PASS  T3 D_T120H56: origine propria + doppia <= UMI per blocco
+PASS  T4 D_T120H56: semi dei pezzi tutti diversi (9 pezzi)
+PASS  T5 D_T120H56: trascritti da cellule del bordo presenti
+PASS  T2 D_T120H0: nessun quadratino coperto due volte; quadratini scoperti solo nei pezzi senza cellule (211600)
+PASS  T2 D_T120H0: ogni quadratino con il centro nell'area utile di un pezzo con cellule e' coperto
+PASS  T3 D_T120H0: UMI cuciti = somma dei pezzi
+PASS  T3 D_T120H0: matrice a 8 um = somma dei 16 quadratini
+PASS  T3 D_T120H0: origine propria + doppia <= UMI per blocco
+PASS  T4 D_T120H0: semi dei pezzi tutti diversi (9 pezzi)
+PASS  T5 D_T120H0: senza bordo nessuna cellula doppia
+PASS  T6: ogni cellula ha un solo pezzo proprietario (1130 cellule)
+PASS  T6: territori tagliati dentro il riquadro e riquadro del pezzo = riquadro di territori, regioni e ancore
+PASS  T6: aree dei territori non tagliati invariate (116 tagliati)
+PASS  T6: il caso di prova ha pezzi in cui il tessuto non arriva ai lati del riquadro (6)
+[1] TRUE
+PASS  T7: fascia 0-8 um con il deficit atteso (996 blocchi: 246 a 144 a sinistra, 246 a 128 a destra, gli altri a 160)
+PASS  T7: fasce oltre 8 um senza deficit (160)
+PASS  T7: coppie attraverso le giunture: due linee di 2000 um meno l'incrocio (circa 2 x 246)
+
+33 PASS, 0 FAIL
+exit 0
