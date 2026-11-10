@@ -52,16 +52,37 @@ transcript_params <- function(archetype) {
 # Riflessione ripetuta nell'intervallo [a, b] (S2.4): x' = a + W - |((x - a) mod 2W) - W|, W = b - a.
 .s24_fold <- function(x, a, b) { W <- b - a; t <- (x - a) %% (2 * W); a + W - abs(t - W) }
 
+# Triangolazione vincolata con ripiego (S2.7, BL-241): se la chiamata vettoriale fallisce, si rifa' geometria per geometria; quelle che
+# falliscono ancora si semplificano con tolleranza `tol` (1e-4 um, come la correzione a mano di S2.6) e si ritriangolano. Dove la chiamata
+# vettoriale riesce il risultato e' identico a prima. Le geometrie ripiegate sono nell'attributo \"fallback\" (indici).
+.s27_cdt <- function(g, tol = 1e-4) {
+  tri <- tryCatch(geos::geos_constrained_delaunay_triangles(g), error = function(e) NULL)
+  if (!is.null(tri)) { attr(tri, "fallback") <- integer(0); return(tri) }
+  out <- vector("list", length(g)); fb <- integer(0)
+  for (k in seq_along(g)) {
+    t1 <- tryCatch(geos::geos_constrained_delaunay_triangles(g[k]), error = function(e) NULL)
+    if (is.null(t1)) {
+      t1 <- tryCatch(geos::geos_constrained_delaunay_triangles(geos::geos_simplify_preserve_topology(g[k], tol)), error = function(e) NULL)
+      if (is.null(t1)) stop(sprintf(".s27_cdt(): triangolazione fallita anche dopo la semplificazione (geometria %d).", k), call. = FALSE)
+      fb <- c(fb, k)
+    }
+    out[[k]] <- t1
+  }
+  tri <- do.call(c, out)
+  attr(tri, "fallback") <- fb
+  tri
+}
+
 # Triangoli (triangolazione vincolata di GEOS) di un vettore di poligoni: una riga per triangolo, con l'indice del poligono.
 .s23_triangles <- function(g) {
-  tri <- geos::geos_constrained_delaunay_triangles(g)
+  tri <- .s27_cdt(g)
   k <- wk::wk_coords(tri)
   if (!nrow(k)) return(data.frame(cell = integer(0), ax = numeric(0), ay = numeric(0), bx = numeric(0), by = numeric(0), cx = numeric(0), cy = numeric(0), area = numeric(0)))
   stopifnot(nrow(k) %% 4L == 0L)
   i1 <- seq(1L, nrow(k), by = 4L)
   t <- data.frame(cell = k$feature_id[i1], ax = k$x[i1], ay = k$y[i1], bx = k$x[i1 + 1L], by = k$y[i1 + 1L], cx = k$x[i1 + 2L], cy = k$y[i1 + 2L])
   t$area <- abs((t$bx - t$ax) * (t$cy - t$ay) - (t$cx - t$ax) * (t$by - t$ay)) / 2
-  t[t$area > 0, , drop = FALSE]
+  structure(t[t$area > 0, , drop = FALSE], fallback = attr(tri, "fallback"))
 }
 
 # Maschera "centro del sottopixel nei poligoni" (regola pari-dispari, scansione per righe): matrice nr x nc, riga = asse y.
@@ -320,8 +341,10 @@ place_and_move_transcripts <- function(cell_layer, hd, cell_profiles, params, se
     ci <- cell[inside]; bi <- bin[inside]; gi <- gene[inside]; ni <- isn[inside]
     key <- (bi - 1) * n + (ci - 1)
     ko <- order(key, gi); key <- key[ko]; gi <- gi[ko]; ni <- ni[ko]
-    k3 <- key * (nrow(X) + 1) + gi
-    rl <- rle(k3); e3 <- cumsum(rl$lengths)
+    # gruppi (quadratino, cellula, gene) per confronto delle coppie consecutive (S2.7, anomalia A-1): la chiave unica key * (G + 1) + gene
+    # superava 2^53 sulle aree grandi (quadratini x cellule x geni > 9e15) e fondeva geni diversi; con chiavi esatte e' identica a prima
+    nk <- length(key); brk <- if (nk) c(which(key[-1L] != key[-nk] | gi[-1L] != gi[-nk]), nk) else integer(0)
+    rl <- list(lengths = diff(c(0L, brk))); e3 <- brk
     tr <- data.frame(bin_id = as.integer(key[e3] %/% n + 1), cell = as.integer(key[e3] %% n + 1), gene = as.integer(gi[e3]), n = as.integer(rl$lengths))
     rk2 <- rle(key); e2 <- cumsum(rk2$lengths)
     nb <- diff(c(0L, cumsum(ni)[e2]))

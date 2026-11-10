@@ -91,7 +91,7 @@ load_cell_profiles <- function(archetype, dir = getOption("geo.spatialtrans.prof
 #'   `n_transcripts`), `metadata`.
 #' @export
 simulate_cell_profiles <- function(cell_df, profiles, seed, depth_factor = profiles$depth_factor, noise = profiles$noise,
-                                   use_subtypes = TRUE, totals_by = NULL, chunk_size = 2000L, workers = 1L) {
+                                   use_subtypes = TRUE, totals_by = NULL, chunk_size = 2000L, workers = 1L, chunks = NULL, streams = NULL) {
   if (is.null(totals_by)) totals_by <- if (!is.null(profiles$meta$totals_by) && !is.na(profiles$meta$totals_by)) profiles$meta$totals_by else "type"
   totals_by <- match.arg(totals_by, c("type", "subtype"))
   if (!is.data.frame(cell_df) || !all(c("cell_id", "cell_type") %in% names(cell_df)))
@@ -121,15 +121,21 @@ simulate_cell_profiles <- function(cell_df, profiles, seed, depth_factor = profi
   phi <- profiles$phi; gpos <- phi > 0; shape <- ifelse(gpos, 1 / ifelse(gpos, phi, 1), Inf)
   qs <- profiles$totals$q
   ctype <- as.character(cell_df$cell_type)
-  chunks <- split(seq_len(n), ceiling(seq_len(n) / chunk_size))
+  if (is.null(chunks) != is.null(streams) || (!is.null(chunks) && (length(chunks) != length(streams) ||
+      !identical(as.integer(unlist(chunks)), seq_len(n)))))
+    stop("simulate_cell_profiles(): `chunks` e `streams` vanno dati insieme, uno per blocco, e i blocchi devono coprire le cellule una volta, in ordine.", call. = FALSE)
+  own_streams <- !is.null(chunks)
+  if (!own_streams) chunks <- split(seq_len(n), ceiling(seq_len(n) / chunk_size))
   # flussi casuali per blocco (L'Ecuyer-CMRG), indipendenti dal numero di processi
   old_kind <- RNGkind(); had_seed <- exists(".Random.seed", envir = globalenv())
   if (had_seed) old_seed <- get(".Random.seed", envir = globalenv())
   on.exit({ do.call(RNGkind, as.list(old_kind)); if (had_seed) assign(".Random.seed", old_seed, envir = globalenv())
             else if (exists(".Random.seed", envir = globalenv())) rm(".Random.seed", envir = globalenv()) }, add = TRUE)
   RNGkind("L'Ecuyer-CMRG", "Inversion", "Rejection"); set.seed(seed)
-  streams <- vector("list", length(chunks)); s <- get(".Random.seed", envir = globalenv())
-  for (k in seq_along(chunks)) { streams[[k]] <- s; s <- parallel::nextRNGStream(s) }
+  if (!own_streams) {
+    streams <- vector("list", length(chunks)); s <- get(".Random.seed", envir = globalenv())
+    for (k in seq_along(chunks)) { streams[[k]] <- s; s <- parallel::nextRNGStream(s) }
+  }
   one_chunk <- function(k) {
     assign(".Random.seed", streams[[k]], envir = globalenv())
     idx <- chunks[[k]]; m <- length(idx); ty <- ctype[idx]
