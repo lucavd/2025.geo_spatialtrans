@@ -79,7 +79,8 @@ def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "plan"; which = (sys.argv[2] if len(sys.argv) > 2 else "q1,q2,q3").split(",")
     os.makedirs(M, exist_ok=True)
     if not os.path.exists(WK): open(WK, "w").write("16\n")
-    T = tasks(which); done = {t["id"] for t in T if os.path.exists(t["out"])}
+    ALL = tasks(["q1", "q2", "q3"]); T = [t for t in ALL if t["q"] in which]
+    done = {t["id"] for t in ALL if os.path.exists(t["out"])}   # le dipendenze possono stare in un'altra domanda (correzione dopo il primo lancio)
     print(f"{len(T)} compiti, {len(done)} gia' fatti; memoria prevista massima per compito {max(t['mem'] for t in T):.0f} GB", flush=True)
     if mode == "plan":
         for t in T: print(t["id"], f"{t['mem']:.1f} GB", t["cpu"], "fatto" if t["id"] in done else "", t["cmd"])

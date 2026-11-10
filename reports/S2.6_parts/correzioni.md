@@ -1,0 +1,4 @@
+
+- **C-1, scheduler**: con le domande 2 e 3 lanciate insieme, i compiti della domanda 2 dipendevano dai livelli della domanda 1, esclusi dall'elenco: la domanda 2 non partiva. Corretto `tools/S2.6_run.py` (le dipendenze si cercano in tutte le domande); domanda 2 lanciata a parte con al più 9 processi e 60 GB previsti.
+- **C-2, somme del lato vero**: `np.add.reduceat` falliva con colonne vuote in coda alla matrice (linfonodo, cervello); sostituito con la somma cumulativa (stessi valori dove funzionava).
+- **C-3, bootstrap delle sezioni** (revisione G-5): i ricampioni con somma nulla sul lato del pezzo solo valevano 0; ora sono esclusi (non definiti). Gli esiti si giudicano con l'intervallo percentile del bootstrap, come dice il protocollo per le quantità derivate, non con la sua semi-ampiezza maggiore resa simmetrica. Cambia un solo esito: CP-2, cuore, 256-512 µm, da indeterminata a smentita.

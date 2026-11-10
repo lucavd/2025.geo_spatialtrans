@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-10 (S2.6)
+
+* **Modifica**: [Il simulatore regge un'area di cattura intera, in tempo, in memoria e senza difetti alle giunture fra i pezzi? (S2.6)](steps/S2.6.md): pre-registrazione (cancelli, previsioni, ok di Luca), esiti, correzioni, analisi post hoc, revisione avversariale, deviazioni, riassunto «In breve», dubbi rinviati; `pi_approval` in attesa.
+* **Creazione**: decisioni tecniche [S2.6: giunture su 4 mm² con le strisce spente, pezzi di 504 µm, sezione intera in un pezzo solo solo dove la memoria basta (DEC-072)](decisions/DEC-072.md) e [S2.6: lo step successivo è la simulazione a pezzi corretta nel pacchetto (S2.7), con i requisiti dati dalla prova (DEC-073)](decisions/DEC-073.md).
+* **Modifica**: BACKLOG (BL-241...BL-245; stato di BL-045, BL-057, BL-072, BL-144, BL-205, BL-214, BL-237, BL-240); ROADMAP sezioni 4, 6 e 7; CHANGELOG.
+
 ## 2026-11-09 (dopo S2.5: preparazione delle sessioni successive)
 
 * **Creazione**: decisione di Luca [Dopo S2.5 si fa prima una prova di prestazione su aree grandi; ordine e perimetro delle sessioni successive li prepara l'agente (DEC-071)](decisions/DEC-071.md).
