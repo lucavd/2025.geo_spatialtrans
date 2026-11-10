@@ -1,0 +1,15 @@
+
+.libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({ library(Matrix); library(sf); library(geos) })
+for (f in sort(list.files("R", pattern = "^(04b|05b).*\\.R$", full.names = TRUE))) source(f)
+sd_ <- .s25_draw_seeds(99877222)
+cp <- capture_params("A4")
+g <- list(x0=-280,y0=-280,bin_um=2,n_row=3632L,n_col=3632L,block=4L,margin_um=280)
+hd <- list(grid=g, bins=list(in_tissue=rep(TRUE, 3632*3632)))
+St <- simulate_stripes(hd, cp, seed = sd_[["stripes"]])
+cat("M all-bins-norm", St$M, "\n")
+L <- matrix(log(St$c), 3632, 3632, byrow=TRUE)
+k <- which.max(St$c); i <- (k-1) %/% 3632 + 1; j <- (k-1) %% 3632 + 1
+cat("argmax row", i, "col", j, "alpha", St$alpha[i], "beta", St$beta[j], "zr", if(!is.null(St$z_row)) St$z_row[i,j], "zc", if(!is.null(St$z_col)) St$z_col[i,j], "\n")
+cat("sd alpha", sd(St$alpha), "sd beta", sd(St$beta), "max alpha", max(St$alpha), "max beta", max(St$beta), "sd zr", sd(St$z_row[seq(2,3632,2),]), "\n")
+for (q in c(1e-3,1e-4,1e-5,1e-6)) cat("q", q, quantile(St$c, 1-q), "\n")
