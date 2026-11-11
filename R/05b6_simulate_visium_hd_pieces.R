@@ -203,9 +203,6 @@ stripe_ceiling <- function(params, q = 1e-5) {
   .s23_edt(M, env$step)
 }
 
-# righe [lo, hi] di una colonna ordinata `v` con valori in [a, b]
-.p27_rows <- function(v, a, b) { lo <- findInterval(a - 0.5, v) + 1L; hi <- findInterval(b + 0.5, v); if (hi < lo) integer(0) else lo:hi }
-
 # gruppi consecutivi uguali di piu' colonne intere ordinate: indice dell'ultimo elemento di ogni gruppo
 .p27_runs <- function(...) {
   v <- list(...); n <- length(v[[1]]); if (!n) return(integer(0))
@@ -472,8 +469,13 @@ stripe_ceiling <- function(params, q = 1e-5) {
 #' @param seed intero.
 #' @param piece_um lato dei pezzi (um), multiplo di 56; `Inf` = un pezzo solo. Predefinito 504 (DEC-076: memoria di un pezzo nel bilancio di 8 GB in tutti i tessuti).
 #' @param archetype,layers,profiles,depth_factor come `simulate_visium_hd()`.
-#' @param frame_open `TRUE` per aree ritagliate da un tessuto che continua.
-#' @param frame riquadro della riflessione (vettore `xmin`, `ymin`, `xmax`, `ymax`); predefinito: riquadro di territori e regioni (come oggi).
+#' @param frame_open `TRUE` per aree ritagliate da un tessuto che continua: i lati del riquadro `frame` non sono bordo del tessuto.
+#' @param frame riquadro dell'area (vettore `xmin`, `ymin`, `xmax`, `ymax`); predefinito: riquadro di territori e regioni, come
+#'   `simulate_visium_hd()`. Con `frame_open = TRUE` vale due volte: la seconda coda si ripiega sui suoi lati, e fuori dal riquadro i
+#'   sottopixel contano come tessuto nella distanza dal bordo (un lato del riquadro non e' un bordo del tessuto, quindi i trascritti nati
+#'   vicino a un lato non ricevono la sfocatura larga della zona di bordo). Per un'area ritagliata da una sezione vera conviene dare la
+#'   finestra del ritaglio: dove il tessuto non arriva al lato della finestra, il predefinito tratta come aperto un bordo vero (BL-237).
+#'   Con `frame_open = FALSE` non ha effetto.
 #' @param ceiling_q probabilita' di superare il tetto della sovra-generazione (DEC-075).
 #' @param out_dir cartella dei file per pezzo (rilanciabile: i file gia' scritti si riusano); predefinito: cartella temporanea, cancellata.
 #' @param workers processi (un processo figlio per pezzo e per fase).
@@ -482,6 +484,11 @@ stripe_ceiling <- function(params, q = 1e-5) {
 #' @param verbose messaggi di avanzamento.
 #' @return con `assemble = "full"`, lista come `simulate_visium_hd()`; con `"light"`, lista `umi_2um`, `counts_8um`, `bins`, `bins_8um`,
 #'   `truth` (`cells`, `genes`, `layers`), `metadata`. In `metadata`: pezzi, tetto, quota troncata, ripieghi della triangolazione, tempi e memoria per fase e pezzo, controlli.
+#'   Strisce e sovra-generazione (DEC-075): `bins$c` e' il fattore di striscia usato, tagliato al tetto M*; `bins$c_raw` quello grezzo;
+#'   `truth$layers$stripes$M` = `metadata$overgeneration` = M* (sovra-generazione usata, come in `simulate_visium_hd()`), `$M_raw` e `$C`
+#'   il massimo grezzo dei fattori dell'area. Il fondo e' Poisson(b c) per quadratino con il fattore tagliato `c`, come la cattura.
+#'   Ripresa (`out_dir`): l'impronta `run.rds` contiene argomenti, impronta del codice (`.geo_code_hash()`) e dei profili; se la cartella
+#'   contiene un'esecuzione diversa la funzione si ferma e dice quali campi cambiano (BL-247).
 #' @export
 simulate_visium_hd_pieces <- function(cell_layer, seed, piece_um = 504, archetype = NULL,
                                       layers = list(stripes = TRUE, background = TRUE, field = TRUE, second_tail = TRUE),
@@ -545,9 +552,15 @@ simulate_visium_hd_pieces <- function(cell_layer, seed, piece_um = 504, archetyp
   if (tmp_wd) on.exit(unlink(wd, recursive = TRUE), add = TRUE)
   fp <- list(seed = seed, piece_um = L$piece_um, archetype = archetype, layers = ly, frame_open = frame_open, frame = fb, ceiling_q = ceiling_q,
              Mstar = Ms, depth = df0 * Ms, n_cells = n, grid = g[c("x0", "y0", "n_row", "n_col")], keep_profiles = keep_profiles,
-             cell_xy = sum(cd$x * seq_len(n)) + sum(cd$y), step1_seed = cell_layer$metadata$random_seed)
+             cell_xy = sum(cd$x * seq_len(n)) + sum(cd$y), step1_seed = cell_layer$metadata$random_seed,
+             code = .geo_code_hash("simulate_visium_hd_pieces"), profiles = .geo_object_hash(profiles))
   fpf <- file.path(wd, "run.rds")
-  if (file.exists(fpf)) { if (!isTRUE(all.equal(readRDS(fpf), fp, tolerance = 0))) stop("simulate_visium_hd_pieces(): `out_dir` contiene un'esecuzione con altri parametri.", call. = FALSE) } else saveRDS(fp, fpf)
+  if (file.exists(fpf)) {
+    fo <- readRDS(fpf)
+    dif <- union(names(fp)[!vapply(names(fp), function(k) isTRUE(all.equal(fo[[k]], fp[[k]], tolerance = 0)), logical(1))], setdiff(names(fo), names(fp)))
+    if (length(dif)) stop("simulate_visium_hd_pieces(): `out_dir` contiene un'esecuzione diversa (campi: ", paste(dif, collapse = ", "),
+                          "); usa un'altra cartella o cancellala.", call. = FALSE)
+  } else saveRDS(fp, fpf)
   t1 <- proc.time()[["elapsed"]]
   ord <- order(ctile, seq_len(n))
   for (k in seq_len(L$n_pieces)) {
@@ -606,7 +619,8 @@ simulate_visium_hd_pieces <- function(cell_layer, seed, piece_um = 504, archetyp
   out <- .p27_assemble(env, A, cd = cell_info, assemble = assemble, tarea = tarea, in_tissue = in_tissue, St = St)
   tm["assemble"] <- proc.time()[["elapsed"]] - t1
   stats_ <- rbind(st0, stA, stB)
-  lay <- list(stripes = if (is.null(St)) NULL else St[c("alpha", "beta", "slow_alpha", "slow_beta", "z_row", "z_col", "norm", "C", "M", "seed", "params")],
+  lay <- list(stripes = if (is.null(St)) NULL else c(St[c("alpha", "beta", "slow_alpha", "slow_beta", "z_row", "z_col", "norm", "C")],
+                                                   list(M = Ms, M_raw = St$M), St[c("seed", "params")]),
               background = list(on = ly$background, b = if (ly$background) cp$b else 0), second_tail = p[c("w2", "ell2")], overgeneration = Ms,
               diffusion = p[c("r", "sigma_in", "sigma_e", "D", "w", "ell", "w2", "ell2")], field = list(on = ly$field, s2 = p$field_s2, L = p$field_L),
               depth = list(depth_factor = df0, overgeneration = Ms, profiles_winner = profiles$meta$winner, noise = profiles$noise))
@@ -615,7 +629,7 @@ simulate_visium_hd_pieces <- function(cell_layer, seed, piece_um = 504, archetyp
                          piece_um = L$piece_um, tile_um = L$tile_um, n_pieces = L$n_pieces, halo_um = env$halo_um, overgeneration = Ms, ceiling_q = ceiling_q,
                          n_bins_over_ceiling = n_over, pixel_size_um = px, grid = g, n_cells = n, step1 = step1_meta, piece_stats = stats_,
                          main_rss_at_fork_mb = rss_fork, main_peak_mb = .p27_peak_mb(),
-                         package_version = "geo.spatialtrans step2-visium-grid (S2.7)", elapsed_s = c(tm, total = proc.time()[["elapsed"]] - t0)),
+                         package_version = .geo_version(), code_hash = fp$code, profiles_hash = fp$profiles, elapsed_s = c(tm, total = proc.time()[["elapsed"]] - t0)),
                     out$metadata)
   out
 }

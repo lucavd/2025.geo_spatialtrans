@@ -62,6 +62,51 @@ visium_hd_depth_factor <- function(archetype) {
   out
 }
 
+# impronte e versione (S2.8, BL-247) ---------------------------------------------------------------------------------------------------
+# impronta md5 del codice: testo senza commenti (deparse) della funzione `root`, di tutte le funzioni dello stesso ambiente che chiama,
+# seguite ricorsivamente (codetools::findGlobals), e delle costanti dello stesso ambiente che leggono (per esempio la tabella .s23_ztab);
+# una modifica del codice o di una costante cambia l'impronta, una modifica dei soli commenti no.
+.geo_code_parts <- function(root) {
+  home <- environment(.geo_code_parts); seen <- character(0); todo <- root; parts <- list()
+  while (length(todo)) {
+    nm <- todo[[1L]]; todo <- todo[-1L]
+    if (nm %in% seen) next
+    seen <- c(seen, nm)
+    if (!exists(nm, envir = home, inherits = FALSE)) {          # funzione di un pacchetto o di base: fuori dall'impronta
+      fn <- get0(nm, envir = home, mode = "function", inherits = TRUE)
+      if (is.null(fn) || is.primitive(fn) || !identical(environment(fn), home)) next
+    } else fn <- get(nm, envir = home, inherits = FALSE)
+    if (is.function(fn)) {
+      if (!identical(environment(fn), home)) next
+      parts[[nm]] <- deparse(fn)
+      gl <- codetools::findGlobals(fn, merge = FALSE)
+      todo <- c(todo, setdiff(c(gl$functions, gl$variables), seen))
+    } else parts[[nm]] <- c("<costante>", deparse(fn))
+  }
+  if (!length(parts)) stop(".geo_code_parts(): funzione sconosciuta: ", root, call. = FALSE)
+  parts[order(names(parts))]
+}
+.geo_code_hash <- function(root) {
+  parts <- .geo_code_parts(root)
+  tf <- tempfile(); on.exit(unlink(tf))
+  writeLines(unlist(Map(function(n, d) c(paste0("## ", n), d), names(parts), parts), use.names = FALSE), tf, useBytes = TRUE)
+  unname(tools::md5sum(tf))
+}
+# impronta md5 di un oggetto R (serializzazione versione 3)
+.geo_object_hash <- function(x) {
+  tf <- tempfile(); on.exit(unlink(tf)); con <- file(tf, "wb"); serialize(x, con, version = 3L); close(con)
+  unname(tools::md5sum(tf))
+}
+# versione del pacchetto: installato, altrimenti DESCRIPTION nella cartella `geo.spatialtrans.root` (predefinito: cartella di lavoro)
+.geo_version <- function() {
+  v <- tryCatch(as.character(utils::packageVersion("geo.spatialtrans")), error = function(e) NA_character_)
+  if (is.na(v)) {
+    f <- file.path(getOption("geo.spatialtrans.root", "."), "DESCRIPTION")
+    if (file.exists(f)) { d <- read.dcf(f, fields = c("Package", "Version")); if (identical(unname(d[1, "Package"]), "geo.spatialtrans")) v <- unname(d[1, "Version"]) }
+  }
+  paste("geo.spatialtrans", if (is.na(v)) "(versione sconosciuta)" else v)
+}
+
 .s25_draw_seeds <- function(seed) {
   old_kind <- RNGkind(); had <- exists(".Random.seed", envir = globalenv())
   if (had) old <- get(".Random.seed", envir = globalenv())
@@ -202,5 +247,5 @@ simulate_visium_hd <- function(cell_layer, seed, archetype = NULL,
                        pixel_size_um = px, grid = g, n_cells = nrow(cell_layer$cell_df), n_transcript_triples = n_tx,
                        n_generated = sum(cells$n_generated), n_captured = sum(cells$n_captured), n_background = sum(bg$n), n_lost = sum(cells$n_lost),
                        step1 = cell_layer$metadata[c("tissue_preset_used", "random_seed", "package_version")],
-                       package_version = "geo.spatialtrans step2-visium-grid (S2.5)", elapsed_s = c(tm, total = proc.time()[["elapsed"]] - t0)))
+                       package_version = .geo_version(), code_hash = .geo_code_hash("simulate_visium_hd"), elapsed_s = c(tm, total = proc.time()[["elapsed"]] - t0)))
 }
