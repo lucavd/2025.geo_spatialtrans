@@ -31,4 +31,4 @@
 
 Appena decidi questo punto, lo step è chiuso.
 
-**Sui tempi di calcolo.** Li ho misurati io sul server: 26 ore-processo per le prove pre-registrate, contro le 21 stimate, più 9 per le verifiche successive. In tutto circa 4 ore di orologio, con al massimo 16 processi e la temperatura sotto gli 82 °C. Una prima esecuzione di circa un'ora e mezza è stata cancellata e rifatta, dopo aver tolto una lentezza del codice che non cambiava i risultati.
+**Sui tempi di calcolo.** Li ho misurati io sul server: 26 ore-processo per le prove pre-registrate, contro le 21 stimate, più 9 per le verifiche successive. In tutto circa 4 ore di orologio, con al massimo 16 processi e la temperatura al massimo di 82 °C. Una prima esecuzione di circa un'ora e mezza è stata cancellata e rifatta, dopo aver tolto una lentezza del codice che non cambiava i risultati.
