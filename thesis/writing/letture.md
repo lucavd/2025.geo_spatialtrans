@@ -33,7 +33,7 @@ Format: question · data · main result · limit · what we need from it.
     - **ADEMP skeleton:** 
         - **Aim** = do benchmark rankings change with the expression source; DGM = Dirichlet pseudo-spots with NB counts, one per arm; 
         - **Estimand** = true cell-type proportions per spot;
-        - **Methods** = RCTD, CARD, cell2location, NNLS; 
+        - **Methods** = RCTD, CARD, cell2location, NNLS (list of 14/10; current methods in DECISIONS 2026-10-26); 
         - **Performance** = RMSE and Jensen–Shannon per method × arm, plus the rankings.
     - **Performance at two levels (§5.2):** inside each replicate, one RMSE over all spots × cell types (how wrong the method was on that dataset); across replicates, the mean RMSE with its Monte Carlo SE = SD(RMSE_i) / √n_sim. Morris gives the MSE for a single scalar θ; the per-replicate RMSE over a vector of proportions is our adaptation.
     - **Number of replicates:** n_sim = (SD / target MCSE)², with the SD taken from the pilot. Halving the MCSE needs 4× the replicates.
@@ -62,7 +62,7 @@ Format: question · data · main result · limit · what we need from it.
     - **Real anchor:** they compared results on simulated data with results on real data. We do the same with pseudo-spots made of real held-out cells (protocol §5.2), compared with Kendall's τ (§5.5).
     - **Errors, not only rankings:** Objective 2 (protocol §1) asks whether both the ranking *and the error* of the methods change with the source. Crowell found methods looking better on simulated data, so we look at whether RMSE and JSD are lower on the synthetic arms than on the real anchor.
     - **Arm P:** P is built from scratch (protocol §5.2: "massimo controllo, minimo realismo"), the kind of simulator Crowell left out. They warn that conclusions from such simulations "should be treated with caution". Our study measures how much this matters for the ranking.
-    - **Arm M:** we use scDesign3. Crowell tested the earlier scDesign2 (among the most realistic), not scDesign3.
+    - **Arm M** (removed, DECISIONS 2026-11-04)**:** we use scDesign3. Crowell tested the earlier scDesign2 (among the most realistic), not scDesign3.
     - **Tissues:** rankings depended on the reference dataset, which agrees with the protocol's choice of three tissues and with reporting results for each tissue.
     - **Filtering:** they filtered the real references only, not the simulated data (Additional file 1, §6.1.2: groups with fewer than 50 cells removed; genes kept if their count is greater than 1 in at least 10 cells; cells kept with at least 100 detected genes), and ran the methods with their default parameters. For us: no extra filter on the pseudo-spots and each deconvolution method with its defaults, built-in filters included (ADEMP §7.1), as the protocol already implies. Using the same three rules on our real data before building μ (cell types as groups) is a proposal for Luca (ADEMP §2.6).
     - **Uncertainty:** they compared rankings without uncertainty. Our protocol (§5.5, "Incertezza") requires a Monte Carlo SE for every measure (Morris 2019), so we avoid this weakness by design.
@@ -115,7 +115,7 @@ Format: question · data · main result · limit · what we need from it.
     - **Extra choice it brings:** the marker genes must be computed by us on the training split (the paper used Seurat's `FindAllMarkers`); this must be fixed in the ADEMP if SPOTlight is used.
     - **Our generator:** their synthetic mixtures (a few cells summed, then down-sampled to a fixed depth) are close to our pseudo-spots with the depth factor.
 
-## Song, Wang, Yan, Liu, Sun, Li 2024 — scDesign3
+## Song, Wang, Yan, Liu, Sun, Li 2024 — scDesign3 (arm M removed 2026-11-04: its μ equals E, as point 5 already foresaw)
 *scDesign3 generates realistic in silico data for multimodal single-cell and spatial omics.* Nature Biotechnology 2024;42:247–252 (published online 11 May 2023). doi:10.1038/s41587-023-01772-1. Peer reviewed (Brief Communication). R/Bioconductor package `scDesign3`. Source of arm M (PROTOCOLLO §5.2).
 
 1. **Question:** Can one statistical model, fitted to real data, both generate realistic single-cell and spatial data (for benchmarking) and help interpret the real data (goodness-of-fit of clusters, trajectories, spatial locations)?

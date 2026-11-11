@@ -51,7 +51,7 @@ min_cells <- 50          # ADEMP §2.6.1
 gene_min_cells <- 10     # ADEMP §2.6.2: count > 1 in >= 10 training cells
 ref_cap <- 1000          # cells per type in the method reference (Pierangela, 2026-10-30)
 phi_all <- length(args) >= 3 && args[3] == "all"
-phi_cells <- if (phi_all) Inf else 20000   # training cells for φ (DECISIONS 2026-10-30)
+phi_cells <- if (phi_all) Inf else 50000   # training cells for φ (DECISIONS 2026-10-30); 20,000 until 2026-11-11, raised after the failed colon check (DECISIONS 2026-11-11)
 pilot_seed <- 20261030   # ADEMP §10
 ref_seed <- 20261031     # reference and φ samples
 counts_group <- c(brain = "/X", colon = "/raw/X", lymphoid = "/raw/X")[[tissue]]
