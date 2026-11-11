@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-11-11 (S2.8)
+
+* **Creazione**: [Il codice dello Step 2 fa ciò che dice il documento di progetto, e quale funzione deve essere l'ingresso del simulatore? (S2.8)](steps/S2.8.md): dubbi ricevuti, perimetro, stime di preparazione, regola dell'ingresso, cancelli e previsioni (in attesa dell'ok di Luca).
+* **Creazione**: decisione tecnica [Il consolidamento dello Step 2 si fa in due step: S2.8 per il codice, S2.8b per i documenti e l'unione nel ramo di sviluppo (DEC-078)](decisions/DEC-078.md).
+
 ## 2026-11-11 (S2.7, chiusura)
 
 * **Chiusura**: [La simulazione a pezzi dentro il pacchetto dà, pezzo per pezzo, lo stesso vetrino della simulazione in un pezzo solo, nel tempo e nella memoria del bilancio? (S2.7)](steps/S2.7.md) chiuso con l'approvazione di Luca («ok e chiudi»).
