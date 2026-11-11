@@ -2,7 +2,7 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## S2.7, 2026-11-10 → 11-11: simulazione a pezzi dentro il pacchetto (`simulate_visium_hd_pieces()`) (branch `step2-visium-grid`), **in attesa della lettura di Luca** (una decisione: tempo del tumore e dell'intestino oltre il bilancio)
+## S2.7, 2026-11-10 → 11-11: simulazione a pezzi dentro il pacchetto (`simulate_visium_hd_pieces()`) (branch `step2-visium-grid`), **chiusa** (letta da Luca il 2026-11-11, «ok e chiudi»; una decisione: tempo del tumore e dell'intestino oltre il bilancio come limite dichiarato, DEC-077)
 
 File dello step `docs/steps/S2.7.md`, report `reports/S2.7.html`. Codice nuovo `R/05b6_simulate_visium_hd_pieces.R` (`stripe_ceiling()`, `simulate_visium_hd_pieces()`; casualità legata a tessere di 56 µm, DEC-074; tetto fisso della sovra-generazione, DEC-075; lato predefinito 504 µm, DEC-076). Modifiche compatibili: ripiego della triangolazione e chiavi esatte in `R/05b3_place_and_move_transcripts.R` (BL-241, anomalia A-1), flussi per blocco in `simulate_cell_profiles()`. Test `R/testing/test_S2.7.R` (78/78) con fissaggio `R/testing/fixtures/S2.7_cell624286.rds`, mutanti `tools/S2.7_mutants.py` (8/8); strumenti `tools/S2.7_*`; tabelle `results/S2.7/`; uscite `/mnt/micron/geo_spatialtrans/S2.7/`. Esiti: G-1...G-5 superati (210/210 impronte identiche fra divisioni); P-1 21/3/0 (cervello confermato con 27 semi, PH-1); P-2 13/1/0; P-3 6/0/4 (memoria con pezzi di 1 008 µm nel tumore e nel cervello, risolta con 504 µm; tempo del tumore e dell'intestino); P-4 5/5; CP-1 6/6. Chiuse BL-240, BL-241, BL-242, BL-245; nuove BL-246...BL-248.
 

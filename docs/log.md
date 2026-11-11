@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-11 (S2.7, chiusura)
+
+* **Chiusura**: [La simulazione a pezzi dentro il pacchetto dà, pezzo per pezzo, lo stesso vetrino della simulazione in un pezzo solo, nel tempo e nella memoria del bilancio? (S2.7)](steps/S2.7.md) chiuso con l'approvazione di Luca («ok e chiudi»).
+* **Creazione**: decisione di Luca [S2.7: il tempo del tumore del colon e dell'intestino oltre il bilancio resta un limite dichiarato (DEC-077)](decisions/DEC-077.md).
+* **Modifica**: ROADMAP sezione 7 (stato «chiusa», prossima sessione: consolidamento dello Step 2); BACKLOG (BL-246); CHANGELOG.
+
 ## 2026-11-11 (S2.7)
 
 * **Modifica**: [La simulazione a pezzi dentro il pacchetto dà, pezzo per pezzo, lo stesso vetrino della simulazione in un pezzo solo, nel tempo e nella memoria del bilancio? (S2.7)](steps/S2.7.md): esiti, analisi post hoc, revisione avversariale, deviazioni, riassunto «In breve», dubbi rinviati.
