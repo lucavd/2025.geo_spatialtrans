@@ -1,0 +1,79 @@
+---
+title: "S2.8: il codice della griglia di Visium HD fa ciò che dice il suo documento di progetto, e quale funzione deve essere l'ingresso del simulatore?"
+subtitle: "geo_spatialtrans, report di step (protocollo v2)"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+---
+
+# In breve
+
+{{< include S2.8_parts/in_breve.md >}}
+
+# Dubbi rinviati
+
+{{< include S2.8_parts/dubbi.md >}}
+
+# Cancelli, previsioni e controprova
+
+Pre-registrazione: cancelli `e03f6bd`; ok di Luca sulle previsioni, sulla regola dell'ingresso con la soglia di 1.5 e sul calcolo il 2026-11-11 («Ok, come proposte (Recommended)»), commit `466563f`. Codice delle esecuzioni `1ecf81c`; codice finale dopo la revisione `64cf92f` e successivi (G-2 bis). File dello step: `docs/steps/S2.8.md`.
+
+{{< include S2.8_parts/esiti.md >}}
+
+## Figure
+
+![Tempo di orologio di una simulazione di un'area di 1 mm², media di 3 semi ± 2 errori standard, per configurazione e tessuto. Tratteggio: bilancio del documento di progetto (300 s).](figures/S2.8/fig1_time.png)
+
+**Cosa guardare**: le barre blu (valore predefinito, P-1) stanno sotto il tratteggio in tutti i tessuti; la barra verde (pezzo solo) è la più bassa delle configurazioni a pezzi e vicina a quella grigia del motore di S2.5 (regola R-1).
+
+![Picco di memoria, massimo sui 3 semi ± 2 errori standard. Tratteggio: bilancio (8 GB).](figures/S2.8/fig2_memory.png)
+
+**Cosa guardare**: tutte le configurazioni a pezzi stanno sotto 8 GB (P-2, P-3); il pezzo solo arriva a 6.2 GB nel tumore del colon, il motore di S2.5 con blocchi di 4 × 10⁶ trascritti a 7.4 GB.
+
+# Correzioni dichiarate prima dei verdetti
+
+{{< include S2.8_parts/correzioni.md >}}
+
+# Revisione avversariale
+
+{{< include S2.8_parts/revisione.md >}}
+
+# Cosa è girato
+
+- Commit: cancelli `e03f6bd`, ok di Luca `466563f`, codice delle esecuzioni `1ecf81c`, correzioni della documentazione e test del gruppo d `21fc08f`, documento v0.6 e decisioni `0bb19ad`, correzioni dalla revisione `64cf92f`; chiusura nel commit «S2.8: esiti, revisione, In breve, report».
+- Script: `tools/S2.8_run.R` (esecuzioni), `tools/S2.8_sched.py` (al più 6 processi), `tools/S2.8_analysis.py`, `tools/S2.8_identity.R`, `tools/S2.8_G2bis.py`, `tools/S2.8_md5.sh`, `tools/S2.8_mutants.sh`, `tools/S2.8_report_parts.py`; batteria `R/testing/test_S2.8.R` e `test_S2.8_d.R`.
+- Semi: quelli di P-1 di S2.7 e del pannello di S2.5 (`/mnt/micron/geo_spatialtrans/S2.8/seeds.json`).
+- Durata: 81 esecuzioni, 3.9 ore-processo, 19:59-20:43 del 2026-11-11.
+- Integrità: 375 file letti, md5 identici prima e dopo (`results/S2.8/S2.8_md5_before.txt`, `_after.txt`).
+
+# Appendice
+
+## Perimetro
+
+{{< include S2.8_parts/perimetro.md >}}
+
+## Stime di preparazione
+
+{{< include S2.8_parts/stime.md >}}
+
+## Regola dell'ingresso
+
+{{< include S2.8_parts/regola.md >}}
+
+## Attese pre-registrate
+
+{{< include S2.8_parts/attese.md >}}
+
+## Deviazioni
+
+{{< include S2.8_parts/deviazioni.md >}}
+
+## Verifiche di Luca
+
+{{< include S2.8_parts/verifiche.md >}}
+
+## Da dove vengono i numeri del riassunto
+
+{{< include S2.8_parts/fonti.md >}}

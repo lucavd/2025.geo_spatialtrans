@@ -49,20 +49,26 @@ if ("a" %in% GR) {
   txt <- paste(deparse(orig), collapse = "\n"); txt <- sub("\\{", "{ # solo un commento\n", txt)
   .p27_tab <- eval(parse(text = txt, keep.source = TRUE)); h1 <- .geo_code_hash("simulate_visium_hd_pieces"); .p27_tab <- orig
   ok("a6 un commento in piu' (sorgente conservata) non cambia l'impronta del codice", identical(h0, h1))
-  pn <- names(.geo_code_parts("simulate_visium_hd_pieces"))
+  pn <- sub("^## (<costante> )?", "", names(.geo_code_parts("simulate_visium_hd_pieces")))
   need <- c("simulate_visium_hd_pieces", ".p27_tab", ".s23_ztab", ".p27_stage0", ".p27_stageA", ".p27_stageB", ".p27_assemble", ".p27_place_tile", ".p27_edt_window",
             "simulate_stripes", "stripe_ceiling", "capture_params", "transcript_params", "load_cell_profiles", "hd_grid_geometry", ".s23_edt")
   ok(sprintf("a7 l'impronta copre le funzioni dei passi chiamate dalla funzione a pezzi (%d funzioni; mancanti: %s)", length(pn),
              paste(setdiff(need, pn), collapse = ", ")), all(need %in% pn))
   ok("a8 l'impronta del motore di S2.5 copre i quattro passi", all(c("simulate_visium_hd", "build_hd_grid", "simulate_cell_profiles",
-       "place_and_move_transcripts", "capture_and_bin", "simulate_stripes") %in% names(.geo_code_parts("simulate_visium_hd"))))
+       "place_and_move_transcripts", "capture_and_bin", "simulate_stripes") %in% sub("^## (<costante> )?", "", names(.geo_code_parts("simulate_visium_hd")))))
   L4b <- L4; ly_ <- L4b$cell_df$cell_type; sw <- which(ly_ %in% unique(ly_)[1:2]); L4b$cell_df$cell_type[sw] <- rev(ly_[sw])
   e9 <- err_of(simulate_visium_hd_pieces(L4b, seed = 7L, piece_um = 112, frame_open = TRUE, profiles = PR, depth_factor = DF, out_dir = d1))
   ok(sprintf("a9 ripresa con il livello cellulare cambiato (tipi di %d cellule scambiati, stessi centri): si ferma e nomina il livello", sum(ly_[sw] != rev(ly_[sw]))),
      sum(ly_[sw] != rev(ly_[sw])) > 0 && grepl("esecuzione diversa", e9) && grepl("\\blayer\\b", e9))
-  assign("max", 5, envir = globalenv()); assign("c", 1, envir = globalenv())
-  h2 <- .geo_code_hash("simulate_visium_hd_pieces"); rm("max", "c", envir = globalenv())
-  ok("a10 oggetti dell'utente con il nome di funzioni di base (max, c) non cambiano l'impronta", identical(h0, h2))
+  gl <- lapply(get0_parts <- names(.geo_code_parts("simulate_visium_hd_pieces")), function(n) NULL)
+  fnames <- sub("^## ", "", grep("^## [^<]", get0_parts, value = TRUE))
+  G <- lapply(fnames, function(n) codetools::findGlobals(get(n), merge = FALSE)); af <- unique(unlist(lapply(G, `[[`, "functions"))); av <- unique(unlist(lapply(G, `[[`, "variables")))
+  cand_call <- setdiff(intersect(c("nrow", "sum", "length", "seq_len", "min", "round", "floor", "paste0"), af), av)[1]
+  cand_val <- intersect(c("c", "max", "rbind", "sum"), av)[1]
+  assign(cand_call, 5, envir = globalenv()); h2 <- .geo_code_hash("simulate_visium_hd_pieces"); rm(list = cand_call, envir = globalenv())
+  assign(cand_val, 5, envir = globalenv()); h3 <- .geo_code_hash("simulate_visium_hd_pieces"); rm(list = cand_val, envir = globalenv())
+  ok(sprintf("a10 un oggetto dell'utente con il nome di una funzione di base usata solo in chiamata (%s) non cambia l'impronta; con il nome di una funzione passata come valore (%s, che il codice userebbe davvero) la cambia",
+             cand_call, cand_val), !is.na(cand_call) && !is.na(cand_val) && identical(h0, h2) && !identical(h0, h3))
   sc <- tempfile(fileext = ".R")
   writeLines(c('.libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")', 'suppressPackageStartupMessages({ library(Matrix); library(sf); library(geos) })',
                sprintf('for (f in sort(list.files("%s", pattern = "^(04b|05b).*\\\\.R$", full.names = TRUE))) source(f)', RDIR),

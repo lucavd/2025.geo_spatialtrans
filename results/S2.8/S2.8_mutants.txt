@@ -1,4 +1,5 @@
 M1_fingerprint_without_code DETECTED (4 FAIL: a1 l'impronta contiene l'impronta del codice e quella ;a3 ripresa dopo una modifica di una funzione dello Ste;a3b ripresa dopo una modifica di una costante letta da;a5 cartella di un'esecuzione di S2.7 (impronta senza c;)
 M2_fingerprint_without_profiles DETECTED (3 FAIL: a1 l'impronta contiene l'impronta del codice e quella ;a4 ripresa con profili diversi (un conteggio in piu'):;a5 cartella di un'esecuzione di S2.7 (impronta senza c;)
 M3_M_left_raw DETECTED (1 FAIL: b1 truth$layers$stripes$M = metadata$overgeneration = ;)
-mutanti rilevati 3/3
+M4_fingerprint_without_layer DETECTED (1 FAIL: a9 ripresa con il livello cellulare cambiato (tipi di ;)
+mutanti rilevati 4/4

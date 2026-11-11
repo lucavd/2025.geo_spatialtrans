@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-11 (S2.8, esiti)
+
+* **Modifica**: [Il codice dello Step 2 fa ciò che dice il documento di progetto, e quale funzione deve essere l'ingresso del simulatore? (S2.8)](steps/S2.8.md): correzioni, esiti, revisione avversariale, deviazioni, riassunto «In breve», dubbi rinviati.
+* **Creazione**: decisioni tecniche [S2.8: l'ingresso del simulatore dello Step 2 è la funzione a pezzi; la funzione di S2.5 resta come motore di riferimento (DEC-079)](decisions/DEC-079.md) e [S2.8: impronta della ripresa con codice, costanti e profili; nomi della sovra-generazione uguali nei due motori; versione dalla DESCRIPTION (DEC-080)](decisions/DEC-080.md).
+* **Modifica**: BACKLOG (chiuse BL-237, BL-247; BL-248 in parte; nuove BL-249...BL-252); ROADMAP sezione 7 (S2.8 in attesa della lettura di Luca; prossima sessione S2.8b); documento di progetto dello Step 2 v0.6; CHANGELOG.
+
 ## 2026-11-11 (S2.8)
 
 * **Creazione**: [Il codice dello Step 2 fa ciò che dice il documento di progetto, e quale funzione deve essere l'ingresso del simulatore? (S2.8)](steps/S2.8.md): dubbi ricevuti, perimetro, stime di preparazione, regola dell'ingresso, cancelli e previsioni (in attesa dell'ok di Luca).

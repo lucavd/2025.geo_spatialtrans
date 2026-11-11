@@ -7,10 +7,13 @@ PASS  a5 cartella di un'esecuzione di S2.7 (impronta senza codice e profili): si
 PASS  a6 un commento in piu' (sorgente conservata) non cambia l'impronta del codice
 PASS  a7 l'impronta copre le funzioni dei passi chiamate dalla funzione a pezzi (66 funzioni; mancanti: )
 PASS  a8 l'impronta del motore di S2.5 copre i quattro passi
+PASS  a9 ripresa con il livello cellulare cambiato (tipi di 772 cellule scambiati, stessi centri): si ferma e nomina il livello
+PASS  a10 un oggetto dell'utente con il nome di una funzione di base usata solo in chiamata (nrow) non cambia l'impronta; con il nome di una funzione passata come valore (c, che il codice userebbe davvero) la cambia
+PASS  a11 impronte del codice e dei profili uguali in due processi nuovi con lingua C.UTF-8 e C e in questo processo (fff1991d / fff1991d)
 PASS  b1 truth$layers$stripes$M = metadata$overgeneration = tetto M* (4.0449)
 PASS  b2 M_raw = C = massimo grezzo dei fattori (4.1854) > M*: quadratini tagliati 1
 PASS  b3 bins$c = min(bins$c_raw, M*), esatto
-PASS  b4 profondita' dei profili per M*
+PASS  b4 profili generati con la profondita' per M*: trascritti generati con le strisce / senza = 4.0446 contro M* = 4.0449 (entro il 3 %)
 PASS  b5 senza strisce: nessuno strato delle strisce, sovra-generazione 1, c = c_raw = 1
 PASS  b6 motore di S2.5: truth$layers$stripes$M = metadata$overgeneration = massimo di bins$c (stesso significato: sovra-generazione usata)
 PASS  c1 metadata$package_version da DESCRIPTION nei due motori (geo.spatialtrans 0.1.0)
@@ -35,12 +38,12 @@ PASS  d1 capture_params() `ell2` = tabella della sezione 9 alla precisione scrit
 PASS  d1 sigma_in = 0.7 um in tutti i tessuti (DEC-038)
 PASS  d2 cuore: sigma_e, D, w, ell = mediane delle altre sezioni (D2-5, DEC-037; entro 1e-3 relativo)
 PASS  d3 tumore e stroma: stesso spostamento (sigma_e, D, w, ell) e stessa cattura (sezione A23); r e campo diversi
-PASS  d4 fondo dei due motori = capture_params()$b (0.1736), non quello di R5 (0.1971)
+PASS  d4 fondo estratto con capture_params()$b (0.1736), non con quello di R5 (0.1971): z a pezzi 0.0 contro -20.2, motore di S2.5 -0.2 contro -20.4
 PASS  d5 ceiling_q: tetto = stripe_ceiling(q) (2.7043 con 1e-3 contro 4.0449 con 1e-5) e conteggi diversi
 PASS  d6 assemble = "light": UMI per quadratino = colonne di counts_2um, counts_8um e celle identici al completo
 PASS  d7 keep_profiles = FALSE: nessuna matrice dei profili, conteggi identici
 PASS  d8 archetype esplicito = archetipo dal preset; verbose = TRUE non cambia nulla
 PASS  d9 archetype sbagliato: errore chiaro
 
-43 PASS, 0 FAIL
+46 PASS, 0 FAIL
 exit 0
