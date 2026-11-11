@@ -1,5 +1,16 @@
 # Registro delle modifiche
 
+## 2026-11-11 (S2.7)
+
+* **Modifica**: [La simulazione a pezzi dentro il pacchetto dà, pezzo per pezzo, lo stesso vetrino della simulazione in un pezzo solo, nel tempo e nella memoria del bilancio? (S2.7)](steps/S2.7.md): esiti, analisi post hoc, revisione avversariale, deviazioni, riassunto «In breve», dubbi rinviati.
+* **Creazione**: decisione tecnica [S2.7: pezzi da 504 µm come lato predefinito della simulazione a pezzi (DEC-076)](decisions/DEC-076.md).
+* **Modifica**: BACKLOG (BL-246...BL-248; chiuse BL-240, BL-241, BL-242, BL-245; stato di BL-214, BL-237); ROADMAP sezione 7; CHANGELOG.
+
+## 2026-11-10 (S2.7)
+
+* **Creazione**: [La simulazione a pezzi dentro il pacchetto dà, pezzo per pezzo, lo stesso vetrino della simulazione in un pezzo solo, nel tempo e nella memoria del bilancio? (S2.7)](steps/S2.7.md): perimetro, cancelli, previsioni con l'ok di Luca, correzioni prima dei calcoli, anomalia A-1.
+* **Creazione**: decisioni [S2.7: come si costruisce la simulazione a pezzi (DEC-074)](decisions/DEC-074.md) (tecnica) e [S2.7: tetto fisso della sovra-generazione delle strisce per tessuto (DEC-075)](decisions/DEC-075.md) (Luca).
+
 ## 2026-11-10 (S2.6, chiusura)
 
 * **Chiusura**: [Il simulatore regge un'area di cattura intera, in tempo, in memoria e senza difetti alle giunture fra i pezzi? (S2.6)](steps/S2.6.md) chiuso con l'approvazione di Luca («chiudi», dopo la lettura del riassunto «In breve»).

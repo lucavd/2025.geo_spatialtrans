@@ -470,7 +470,7 @@ stripe_ceiling <- function(params, q = 1e-5) {
 #' @param cell_layer uscita di `place_cells()`, oppure il percorso di un file RDS che la contiene (letto e liberato dopo la divisione: conviene
 #'   per le aree grandi, cosi' i processi dei pezzi non portano con se' il livello intero).
 #' @param seed intero.
-#' @param piece_um lato dei pezzi (um), multiplo di 56; `Inf` = un pezzo solo.
+#' @param piece_um lato dei pezzi (um), multiplo di 56; `Inf` = un pezzo solo. Predefinito 504 (DEC-076: memoria di un pezzo nel bilancio di 8 GB in tutti i tessuti).
 #' @param archetype,layers,profiles,depth_factor come `simulate_visium_hd()`.
 #' @param frame_open `TRUE` per aree ritagliate da un tessuto che continua.
 #' @param frame riquadro della riflessione (vettore `xmin`, `ymin`, `xmax`, `ymax`); predefinito: riquadro di territori e regioni (come oggi).
@@ -483,7 +483,7 @@ stripe_ceiling <- function(params, q = 1e-5) {
 #' @return con `assemble = "full"`, lista come `simulate_visium_hd()`; con `"light"`, lista `umi_2um`, `counts_8um`, `bins`, `bins_8um`,
 #'   `truth` (`cells`, `genes`, `layers`), `metadata`. In `metadata`: pezzi, tetto, quota troncata, ripieghi della triangolazione, tempi e memoria per fase e pezzo, controlli.
 #' @export
-simulate_visium_hd_pieces <- function(cell_layer, seed, piece_um = 1008, archetype = NULL,
+simulate_visium_hd_pieces <- function(cell_layer, seed, piece_um = 504, archetype = NULL,
                                       layers = list(stripes = TRUE, background = TRUE, field = TRUE, second_tail = TRUE),
                                       frame_open = FALSE, frame = NULL, profiles = NULL, depth_factor = NULL, ceiling_q = 1e-5,
                                       out_dir = NULL, workers = 1L, assemble = c("full", "light"), keep_profiles = NULL, verbose = FALSE) {

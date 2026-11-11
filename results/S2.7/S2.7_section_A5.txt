@@ -1,0 +1,6 @@
+  archetype           band  n_blocks  n_tiles  mean_pieces   mean_real  ratio_pieces_real  lo_pieces_real  hi_pieces_real  n_boot_undefined_pieces_real
+0        A5         tissue    399501      154   742.607570  529.650629           1.402071        1.316442        1.491083                             0
+1        A5    glass_16_64     37111       98    33.612487   19.136024           1.756503        1.474108        2.107208                             0
+2        A5   glass_64_256    123202      113    10.382120    7.946981           1.306423        1.177555        1.457837                             0
+3        A5  glass_256_512     95416       86     5.922089    5.283894           1.120781        1.043986        1.207373                             0
+4        A5  glass_512plus     18675       28     4.400375    4.028809           1.092227        0.982527        1.254223                             0

@@ -1,0 +1,129 @@
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:28: RuntimeWarning: Mean of empty slice
+  ma, mb = a.mean(), b.mean(); r = ma / mb if mb > 0 else np.nan
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:219: RuntimeWarning: Degrees of freedom <= 0 for slice
+  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:178: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:211: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:219: RuntimeWarning: Degrees of freedom <= 0 for slice
+  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:178: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:211: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:46: RuntimeWarning: Mean of empty slice
+  a = np.array(th); b = o.reg_mean_umi2.to_numpy(float); ma, mb = a.mean(), b.mean(); r = ma / mb
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:47: RuntimeWarning: Degrees of freedom <= 0 for slice
+  se = r * np.sqrt(a.var(ddof=1) / len(a) / ma**2 + b.var(ddof=1) / len(b) / mb**2)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:178: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:211: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:219: RuntimeWarning: Degrees of freedom <= 0 for slice
+  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:28: RuntimeWarning: Mean of empty slice
+  ma, mb = a.mean(), b.mean(); r = ma / mb if mb > 0 else np.nan
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:46: RuntimeWarning: Mean of empty slice
+  a = np.array(th); b = o.reg_mean_umi2.to_numpy(float); ma, mb = a.mean(), b.mean(); r = ma / mb
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:47: RuntimeWarning: Degrees of freedom <= 0 for slice
+  se = r * np.sqrt(a.var(ddof=1) / len(a) / ma**2 + b.var(ddof=1) / len(b) / mb**2)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:178: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:211: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:219: RuntimeWarning: Degrees of freedom <= 0 for slice
+  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:28: RuntimeWarning: Mean of empty slice
+  ma, mb = a.mean(), b.mean(); r = ma / mb if mb > 0 else np.nan
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:46: RuntimeWarning: Mean of empty slice
+  a = np.array(th); b = o.reg_mean_umi2.to_numpy(float); ma, mb = a.mean(), b.mean(); r = ma / mb
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:47: RuntimeWarning: Degrees of freedom <= 0 for slice
+  se = r * np.sqrt(a.var(ddof=1) / len(a) / ma**2 + b.var(ddof=1) / len(b) / mb**2)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:178: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:211: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:219: RuntimeWarning: Degrees of freedom <= 0 for slice
+  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:28: RuntimeWarning: Mean of empty slice
+  ma, mb = a.mean(), b.mean(); r = ma / mb if mb > 0 else np.nan
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:46: RuntimeWarning: Mean of empty slice
+  a = np.array(th); b = o.reg_mean_umi2.to_numpy(float); ma, mb = a.mean(), b.mean(); r = ma / mb
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:47: RuntimeWarning: Degrees of freedom <= 0 for slice
+  se = r * np.sqrt(a.var(ddof=1) / len(a) / ma**2 + b.var(ddof=1) / len(b) / mb**2)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:178: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:211: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:219: RuntimeWarning: Degrees of freedom <= 0 for slice
+  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:28: RuntimeWarning: Mean of empty slice
+  ma, mb = a.mean(), b.mean(); r = ma / mb if mb > 0 else np.nan
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:219: RuntimeWarning: Degrees of freedom <= 0 for slice
+  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:178: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:211: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:46: RuntimeWarning: Mean of empty slice
+  a = np.array(th); b = o.reg_mean_umi2.to_numpy(float); ma, mb = a.mean(), b.mean(); r = ma / mb
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/tools/S2.7_p1_analysis.py:47: RuntimeWarning: Degrees of freedom <= 0 for slice
+  se = r * np.sqrt(a.var(ddof=1) / len(a) / ma**2 + b.var(ddof=1) / len(b) / mb**2)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:178: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:211: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/home/user/2025.geo_spatialtrans/.venv/lib/python3.12/site-packages/numpy/_core/_methods.py:219: RuntimeWarning: Degrees of freedom <= 0 for slice
+  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+  id archetype   tessuto                 metric  n_new  n_old  mean_new  mean_old  sd_new  sd_old  ratio     se     lo     hi  rel_lo  rel_hi                                       rel_source                esito
+ P-1        A1 intestino              mean_umi2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A1 intestino            mean_genes2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A1 intestino            mean_genes8      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A1 intestino            frac_empty2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.7046  1.3932 intervallo corretto del vero (DEC-061), relativo       non valutabile
+CP-1        A1 intestino mean_umi2_thinned_0.95      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)        indeterminata
+ P-1        A2    tumore              mean_umi2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A2    tumore            mean_genes2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A2    tumore            mean_genes8      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A2    tumore            frac_empty2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.7257  1.2708 intervallo corretto del vero (DEC-061), relativo       non valutabile
+CP-1        A2    tumore mean_umi2_thinned_0.95      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)        indeterminata
+ P-1        A3    stroma              mean_umi2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A3    stroma            mean_genes2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A3    stroma            mean_genes8      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A3    stroma            frac_empty2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.0957  1.9837 intervallo corretto del vero (DEC-061), relativo       non valutabile
+CP-1        A3    stroma mean_umi2_thinned_0.95      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)        indeterminata
+ P-1        A4 linfonodo              mean_umi2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A4 linfonodo            mean_genes2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A4 linfonodo            mean_genes8      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A4 linfonodo            frac_empty2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.0000  2.7254 intervallo corretto del vero (DEC-061), relativo       non valutabile
+CP-1        A4 linfonodo mean_umi2_thinned_0.95      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)        indeterminata
+ P-1        A5  cervello              mean_umi2     27     27   43.5247   43.3361  0.7560  0.7625 1.0044 0.0048 0.9948 1.0139  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A5  cervello            mean_genes2     27     27   42.6638   42.4829  0.7304  0.7364 1.0043 0.0047 0.9948 1.0137  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A5  cervello            mean_genes8     27     27  575.3204  573.2629  8.7732  9.0235 1.0036 0.0042 0.9951 1.0121  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A5  cervello            frac_empty2     27     27    0.0005    0.0005  0.0001  0.0001 1.0542 0.0605 0.9332 1.1753  0.0000  3.1575 intervallo corretto del vero (DEC-061), relativo           confermata
+CP-1        A5  cervello mean_umi2_thinned_0.95     27     27   41.3483   43.3361  0.7195  0.7625 0.9541 0.0045 0.9450 0.9632  0.9800  1.0200                           margine del 2 % (S2.6) smentita per difetto
+ P-1        A6     cuore              mean_umi2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A6     cuore            mean_genes2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A6     cuore            mean_genes8      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)       non valutabile
+ P-1        A6     cuore            frac_empty2      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.4848  1.5152 intervallo corretto del vero (DEC-061), relativo       non valutabile
+CP-1        A6     cuore mean_umi2_thinned_0.95      0      0       NaN       NaN     NaN     NaN    NaN    NaN    NaN    NaN  0.9800  1.0200                           margine del 2 % (S2.6)        indeterminata
+id    esito               
+CP-1  indeterminata            5
+      smentita per difetto     1
+P-1   non valutabile          20
+      confermata               4
+Name: count, dtype: int64

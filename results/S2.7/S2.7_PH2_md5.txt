@@ -1,0 +1,4 @@
+987e90a19ff8c25e435ccaf86c47129c  /mnt/micron/geo_spatialtrans/S2.7/sections/sec_A2_p1008w8.md5
+987e90a19ff8c25e435ccaf86c47129c  /mnt/micron/geo_spatialtrans/S2.7/sections_ph/sec_A2_p504w8.md5
+6cc52a13d5bb35716d511104de10ffe7  /mnt/micron/geo_spatialtrans/S2.7/sections/sec_A5_p1008w8.md5
+6cc52a13d5bb35716d511104de10ffe7  /mnt/micron/geo_spatialtrans/S2.7/sections_ph/sec_A5_p504w8.md5

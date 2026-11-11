@@ -1,0 +1,6 @@
+  archetype           band  n_blocks  n_tiles  mean_pieces   mean_real  ratio_pieces_real  lo_pieces_real  hi_pieces_real  n_boot_undefined_pieces_real
+0        A2         tissue    505612      186   773.045679  537.773838           1.437492        1.323431        1.566395                             0
+1        A2    glass_16_64     47058      106    16.213099   13.780207           1.176550        1.037432        1.346840                             0
+2        A2   glass_64_256     81731       77     6.681063    7.688698           0.868946        0.666805        1.129272                             0
+3        A2  glass_256_512     32256       32     5.301773    4.205171           1.260775        0.994442        1.580055                             0
+4        A2  glass_512plus      2412        4     5.208126    2.145937           2.426971        2.327857        3.188406                             0

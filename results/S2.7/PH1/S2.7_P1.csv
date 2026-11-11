@@ -1,0 +1,31 @@
+id,archetype,tessuto,metric,n_new,n_old,mean_new,mean_old,sd_new,sd_old,ratio,se,lo,hi,rel_lo,rel_hi,rel_source,esito
+P-1,A1,intestino,mean_umi2,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A1,intestino,mean_genes2,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A1,intestino,mean_genes8,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A1,intestino,frac_empty2,0,0,,,,,,,,,0.7046163440160904,1.393204023481839,"intervallo corretto del vero (DEC-061), relativo",non valutabile
+CP-1,A1,intestino,mean_umi2_thinned_0.95,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),indeterminata
+P-1,A2,tumore,mean_umi2,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A2,tumore,mean_genes2,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A2,tumore,mean_genes8,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A2,tumore,frac_empty2,0,0,,,,,,,,,0.7256601753682357,1.2708453799162835,"intervallo corretto del vero (DEC-061), relativo",non valutabile
+CP-1,A2,tumore,mean_umi2_thinned_0.95,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),indeterminata
+P-1,A3,stroma,mean_umi2,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A3,stroma,mean_genes2,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A3,stroma,mean_genes8,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A3,stroma,frac_empty2,0,0,,,,,,,,,0.09573217196425345,1.983661917846854,"intervallo corretto del vero (DEC-061), relativo",non valutabile
+CP-1,A3,stroma,mean_umi2_thinned_0.95,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),indeterminata
+P-1,A4,linfonodo,mean_umi2,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A4,linfonodo,mean_genes2,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A4,linfonodo,mean_genes8,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A4,linfonodo,frac_empty2,0,0,,,,,,,,,0.0,2.725394098469225,"intervallo corretto del vero (DEC-061), relativo",non valutabile
+CP-1,A4,linfonodo,mean_umi2_thinned_0.95,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),indeterminata
+P-1,A5,cervello,mean_umi2,27,27,43.52473610597954,43.336057506866425,0.7559595519726285,0.7624924032479348,1.004353847810988,0.004778728264964496,0.9947963912810589,1.013911304340917,0.98,1.02,margine del 2 % (S2.6),confermata
+P-1,A5,cervello,mean_genes2,27,27,42.663755232272614,42.48289373132742,0.7304288764779835,0.7364218935872625,1.004257278284502,0.004708803612125657,0.9948396710602507,1.0136748855087534,0.98,1.02,margine del 2 % (S2.6),confermata
+P-1,A5,cervello,mean_genes8,27,27,575.3204272179156,573.2629078380706,8.773185387009905,9.02347568710564,1.0035891374650496,0.004232841439471587,0.9951234545861064,1.0120548203439927,0.98,1.02,margine del 2 % (S2.6),confermata
+P-1,A5,cervello,frac_empty2,27,27,0.00050360658271321,0.0004777017977262185,0.00010532203041676124,0.00010164989798766588,1.0542279411764703,0.060532576177719705,0.933162788821031,1.1752930935319097,0.0,3.157519823558053,"intervallo corretto del vero (DEC-061), relativo",confermata
+CP-1,A5,cervello,mean_umi2_thinned_0.95,27,27,41.34828140830082,43.336057506866425,0.7194907884406031,0.7624924032479348,0.9541311274508382,0.004543928540736111,0.945043270369366,0.9632189845323104,0.98,1.02,margine del 2 % (S2.6),smentita per difetto
+P-1,A6,cuore,mean_umi2,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A6,cuore,mean_genes2,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A6,cuore,mean_genes8,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),non valutabile
+P-1,A6,cuore,frac_empty2,0,0,,,,,,,,,0.48475451988914803,1.5152454801108513,"intervallo corretto del vero (DEC-061), relativo",non valutabile
+CP-1,A6,cuore,mean_umi2_thinned_0.95,0,0,,,,,,,,,0.98,1.02,margine del 2 % (S2.6),indeterminata

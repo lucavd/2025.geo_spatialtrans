@@ -1,0 +1,36 @@
+  id archetype   tessuto                 metric  n_new  n_old  mean_new  mean_old  sd_new  sd_old  ratio     se     lo     hi  rel_lo  rel_hi                                       rel_source                esito
+ P-1        A1 intestino              mean_umi2      9      9   29.5096   29.5174  0.3755  0.2575 0.9997 0.0051 0.9895 1.0100  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A1 intestino            mean_genes2      9      9   28.1663   28.1699  0.3481  0.2413 0.9999 0.0050 0.9898 1.0099  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A1 intestino            mean_genes8      9      9  379.8883  379.9463  4.1679  3.0545 0.9998 0.0045 0.9908 1.0089  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A1 intestino            frac_empty2      9      9    0.0004    0.0004  0.0001  0.0001 0.9557 0.0815 0.7927 1.1186  0.7046  1.3932 intervallo corretto del vero (DEC-061), relativo           confermata
+CP-1        A1 intestino mean_umi2_thinned_0.95      9      9   28.0348   29.5174  0.3558  0.2575 0.9498 0.0049 0.9400 0.9595  0.9800  1.0200                           margine del 2 % (S2.6) smentita per difetto
+ P-1        A2    tumore              mean_umi2     18     18   47.2532   47.3935  0.4230  0.5664 0.9970 0.0035 0.9900 1.0041  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A2    tumore            mean_genes2     18     18   45.0985   45.2371  0.3903  0.5234 0.9969 0.0034 0.9901 1.0037  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A2    tumore            mean_genes8     18     18  615.3210  617.1946  4.8442  6.4748 0.9970 0.0031 0.9908 1.0031  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A2    tumore            frac_empty2     18     18    0.0005    0.0005  0.0001  0.0001 1.0393 0.0456 0.9482 1.1305  0.7257  1.2708 intervallo corretto del vero (DEC-061), relativo           confermata
+CP-1        A2    tumore mean_umi2_thinned_0.95     18     18   44.8908   47.3935  0.4028  0.5664 0.9472 0.0033 0.9405 0.9539  0.9800  1.0200                           margine del 2 % (S2.6) smentita per difetto
+ P-1        A3    stroma              mean_umi2      9      9   19.1222   19.1244  0.2533  0.1639 0.9999 0.0053 0.9894 1.0104  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A3    stroma            mean_genes2      9      9   18.2552   18.2690  0.2464  0.1652 0.9992 0.0054 0.9884 1.0101  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A3    stroma            mean_genes8      9      9  261.4546  261.8073  3.4115  2.3483 0.9987 0.0053 0.9881 1.0092  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A3    stroma            frac_empty2      9      9    0.0089    0.0091  0.0007  0.0005 0.9819 0.0321 0.9177 1.0460  0.0957  1.9837 intervallo corretto del vero (DEC-061), relativo           confermata
+CP-1        A3    stroma mean_umi2_thinned_0.95      9      9   18.1663   19.1244  0.2398  0.1639 0.9499 0.0050 0.9399 0.9599  0.9800  1.0200                           margine del 2 % (S2.6) smentita per difetto
+ P-1        A4 linfonodo              mean_umi2      9      9   11.5287   11.4996  0.0697  0.0591 1.0025 0.0027 0.9972 1.0078  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A4 linfonodo            mean_genes2      9      9   11.1551   11.1291  0.0659  0.0559 1.0023 0.0026 0.9972 1.0075  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A4 linfonodo            mean_genes8      9      9  165.6748  165.2875  0.9417  0.7977 1.0023 0.0025 0.9974 1.0073  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A4 linfonodo            frac_empty2      9      9    0.0054    0.0055  0.0003  0.0002 0.9834 0.0212 0.9409 1.0258  0.0000  2.7254 intervallo corretto del vero (DEC-061), relativo           confermata
+CP-1        A4 linfonodo mean_umi2_thinned_0.95      9      9   10.9528   11.4996  0.0655  0.0591 0.9524 0.0025 0.9474 0.9575  0.9800  1.0200                           margine del 2 % (S2.6) smentita per difetto
+ P-1        A5  cervello              mean_umi2      9      9   43.8437   43.1449  0.4538  0.7392 1.0162 0.0068 1.0026 1.0298  0.9800  1.0200                           margine del 2 % (S2.6)        indeterminata
+ P-1        A5  cervello            mean_genes2      9      9   42.9676   42.3013  0.4360  0.7157 1.0157 0.0067 1.0024 1.0291  0.9800  1.0200                           margine del 2 % (S2.6)        indeterminata
+ P-1        A5  cervello            mean_genes8      9      9  578.8575  571.1671  5.0938  8.7128 1.0135 0.0059 1.0016 1.0254  0.9800  1.0200                           margine del 2 % (S2.6)        indeterminata
+ P-1        A5  cervello            frac_empty2      9      9    0.0004    0.0005  0.0001  0.0001 0.8868 0.0858 0.7153 1.0583  0.0000  3.1575 intervallo corretto del vero (DEC-061), relativo           confermata
+CP-1        A5  cervello mean_umi2_thinned_0.95      9      9   41.6506   43.1449  0.4301  0.7392 0.9654 0.0064 0.9525 0.9782  0.9800  1.0200                           margine del 2 % (S2.6) smentita per difetto
+ P-1        A6     cuore              mean_umi2     27     27    3.5348    3.5310  0.0571  0.0684 1.0011 0.0049 0.9914 1.0108  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A6     cuore            mean_genes2     27     27    3.4603    3.4569  0.0550  0.0657 1.0010 0.0048 0.9914 1.0105  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A6     cuore            mean_genes8     27     27   48.3174   48.2791  0.7168  0.8441 1.0008 0.0044 0.9920 1.0096  0.9800  1.0200                           margine del 2 % (S2.6)           confermata
+ P-1        A6     cuore            frac_empty2     27     27    0.1318    0.1319  0.0035  0.0045 0.9993 0.0083 0.9827 1.0158  0.4848  1.5152 intervallo corretto del vero (DEC-061), relativo           confermata
+CP-1        A6     cuore mean_umi2_thinned_0.95     27     27    3.3581    3.5310  0.0542  0.0684 0.9510 0.0046 0.9418 0.9603  0.9800  1.0200                           margine del 2 % (S2.6) smentita per difetto
+id    esito               
+CP-1  smentita per difetto     6
+P-1   confermata              21
+      indeterminata            3
+Name: count, dtype: int64

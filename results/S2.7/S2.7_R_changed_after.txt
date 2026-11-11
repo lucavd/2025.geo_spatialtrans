@@ -1,0 +1,5 @@
+R/05b2_simulate_cell_profiles.R
+R/05b3_place_and_move_transcripts.R
+R/05b6_simulate_visium_hd_pieces.R
+R/testing/fixtures/S2.7_cell624286.rds
+R/testing/test_S2.7.R

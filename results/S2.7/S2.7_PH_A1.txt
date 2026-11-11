@@ -1,0 +1,6 @@
+LN_section A4_f1: terne fuse in media 1.1916 % (massimo 2.9838 %), UMI con il gene cambiato 1.2860 %
+LN_9mm2 A4_f1: terne fuse in media 0.0789 % (massimo 0.1962 %), UMI con il gene cambiato 0.0897 %
+intestine_section_approx A1_r1: terne fuse in media 1.1022 % (massimo 1.9405 %), UMI con il gene cambiato 1.2451 %
+heart_section A6_r1: terne fuse in media 0.0904 % (massimo 1.2065 %), UMI con il gene cambiato 0.1195 %
+intestine_section A1_r1: terne fuse in media 1.2116 % (massimo 1.9408 %), UMI con il gene cambiato 1.3598 %
+heart_section A6_r1: terne fuse in media 0.0900 % (massimo 1.2002 %), UMI con il gene cambiato 0.1195 %
