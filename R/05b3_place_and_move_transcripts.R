@@ -10,9 +10,10 @@
 #' Valori della sezione 9 del documento di progetto dello Step 2, con tutte le cifre dei file che li hanno prodotti:
 #' spostamento con la regola della zona di bordo (`S2.0/run1_wfix/params_flat.json`, regola C2; il cuore usa la mediana delle altre
 #' sezioni, DEC-037; B-379...B-383), rapporto nucleo/citoplasma r (mediana delle 5 aree, `results/S2.0/wfix/S2.0_inner_summary.csv`,
-#' B-384...B-394), fondo sul vetro lontano b (B-342...B-366, usato dallo strato di cattura), campo di variabilita' fine s2, L (S2.3, regola R-1).
+#' B-384...B-394), fondo sul vetro lontano b di R5 (B-342...B-366; conservato per confronto, NON usato dal simulatore: il fondo della cattura e' quello
+#' di `capture_params()`, adattato insieme alla seconda coda, DEC-053; mappa di S2.8, M-106), campo di variabilita' fine s2, L (S2.3, regola R-1).
 #' @param archetype `"A1"` ... `"A6"`.
-#' @return lista `r`, `sigma_in`, `sigma_e`, `D`, `w`, `ell` (um), `b` (UMI per quadratino), `field_s2`, `field_L` (um), `archetype`.
+#' @return lista `r`, `sigma_in`, `sigma_e`, `D`, `w`, `ell` (um), `b` (UMI per quadratino, valore di R5 non usato), `field_s2`, `field_L` (um), `archetype`.
 #' @export
 transcript_params <- function(archetype) {
   tab <- list(

@@ -87,6 +87,9 @@ load_cell_profiles <- function(archetype, dir = getOption("geo.spatialtrans.prof
 #'   profili (`"subtype"` dove i profili vengono dai nuclei veri di R6, `"type"` per l'atlante). Con `use_subtypes = FALSE` vale sempre `"type"`.
 #' @param chunk_size cellule per blocco (fa parte della definizione del risultato).
 #' @param workers processi (`parallel::mclapply`).
+#' @param chunks facoltativo: lista di blocchi di indici di riga di `cell_df` che coprono le cellule una volta, in ordine; si da' insieme a
+#'   `streams` e sostituisce `chunk_size` (lo usa `simulate_visium_hd_pieces()` per legare la casualita' alle tessere, DEC-074).
+#' @param streams facoltativo: un seme `.Random.seed` di L'Ecuyer-CMRG per blocco di `chunks`; con `chunks = NULL` i flussi derivano da `seed`.
 #' @return lista `counts` (dgCMatrix geni x cellule, nomi `gene_id` e `cell_id`), `cells` (data.frame `cell_id`, `cell_type`, `subtype`,
 #'   `n_transcripts`), `metadata`.
 #' @export

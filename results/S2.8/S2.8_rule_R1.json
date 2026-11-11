@@ -1,0 +1,7 @@
+{
+ "n_tissues": 6,
+ "n_ratio_le_1_5": 6,
+ "single_entry_point": true,
+ "n_best_e504": 0,
+ "backlog_auto_piece": true
+}
