@@ -69,6 +69,8 @@ if (mode == "pilot") {
   stopifnot("Check 1: a main held-out/E′ donor in the pilot" = !any(cells$donor_id %in% main_out))
 } else {
   cells$role <- c(training = "train", heldout = "heldout", eprime = "eprime")[cells$split]
+  # donors 3 and 4 of the held-out group (DECISIONS 2026-10-30) are read only by 07_aim1.R
+  cells <- cells[!is.na(cells$role), ]
 }
 stopifnot("Check 1: a donor in two roles" =
             all(tapply(cells$role, cells$donor_id, function(r) length(unique(r))) == 1))
