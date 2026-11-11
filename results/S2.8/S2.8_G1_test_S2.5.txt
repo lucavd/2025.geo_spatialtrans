@@ -1,0 +1,43 @@
+PASS a1 A2 orchestratore = catena a mano (stessi semi e blocchi) M 3.248
+PASS a1 A4 orchestratore = catena a mano (stessi semi e blocchi) M 2.814
+PASS a2 frame_open passato alla posizione e allo spostamento 
+PASS a3 senza hd: griglia costruita con build_hd_grid() (margine 280 um) 
+PASS b1 counts_8um = somma a 8 um di counts_2um (S2.1) 
+PASS b2 origin_8um = sum_to_8um(origin, by = cell_id) 
+PASS b3 overlap_8um = sum_to_8um(overlap, by = cell_id), frazioni su 64 um^2 
+PASS b4 background_8um = sum_to_8um(background) 
+PASS b5 UMI per quadratino = origine + fondo fondo 661
+PASS b6 per cellula generati = catturati + scartati + persi; = colonne di cell_counts 
+PASS b7 arrivati per quadratino: somma = generati - persi; catturati <= arrivati 
+PASS b8 atteso catturato = generati / M; fattore di profondita' per M nei profili 
+PASS b9 metadati: scala, semi, strati, blocchi 
+PASS c1 strisce spente: M = 1, c = 1, nessuno scartato, = catena a mano 
+PASS c2 fondo spento: nessun fondo; resto = uscita completa 
+PASS c3 seconda coda spenta = catena a mano con w2 = 0 
+PASS c4 campo spento = catena a mano senza campo 
+PASS c5 depth_factor sostituisce quello dei profili (per M) 
+PASS d1 visium_hd_chunk_size: 4e6 / 30000 = 133; predefinito 2e6 / 30000 = 66; tetto 2000; minimo 1; senza trascritti 2000 
+PASS d2 chunk_transcripts non valido: errore 
+PASS d3 blocchi automatici = regola sui trascritti generati (sovra-generazione compresa) blocchi 3
+PASS d4 chunk_size esplicito rispettato 
+PASS d6 profili del preset (non dati): fattore di S2.5 per il tessuto; archetipo dal preset 
+PASS d5 fattore del preset = regola R-2 (tabella di S2.5); profili dati dall'utente: il loro fattore 
+PASS e1 generatore dell'utente intatto (tipo e stato) 
+PASS e2 stesso seme stesso risultato (anche con un altro generatore dell'utente, ripristinato) 
+PASS e3 semi dei passi = 4 estrazioni Mersenne-Twister dal seme dell'utente 
+PASS e4 seme diverso, risultato diverso; semi dei passi non consecutivi 
+PASS e5 1 e 2 processi identici 
+PASS e6 utente senza seme: nessun .Random.seed lasciato; risultato = stesso seme con seme dell'utente (revisione G-5) 
+PASS f1 scala mancante: errore 
+PASS f2 seme mancante: errore 
+PASS f3 archetipo sconosciuto o non ricavabile: errore 
+PASS f4 archetipo dal preset 
+PASS f5 strati non validi: errore 
+PASS f5b strati senza nome o con nomi ripetuti: errore (revisione G-5) 
+PASS f6b griglia di un livello con territori diversi (stesso riquadro e stesse cellule): errore (revisione G-5) 
+PASS f6 griglia di un altro livello: errore 
+PASS f7 chunk_size non valido: errore 
+PASS f8 component_seeds incompleti: errore 
+
+TOTALE: 40 PASS, 0 FAIL
+exit 0

@@ -1,0 +1,8 @@
+S2.8_G1_test_S2.1.txt PASS=21 FAIL=0 exit 0
+S2.8_G1_test_S2.2.txt PASS=36 FAIL=0 exit 0
+S2.8_G1_test_S2.3.txt PASS=39 FAIL=0 exit 0
+S2.8_G1_test_S2.4.txt PASS=37 FAIL=0 exit 0
+S2.8_G1_test_S2.5.txt PASS=40 FAIL=0 exit 0
+S2.8_G1_test_S2.6.txt PASS=33 FAIL=0 exit 0
+S2.8_G1_test_S2.7.txt PASS=78 FAIL=0 exit 0
+S2.8_G1_test_S2.8.txt PASS=43 FAIL=0 exit 0

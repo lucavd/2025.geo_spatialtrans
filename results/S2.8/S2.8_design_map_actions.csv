@@ -1,0 +1,64 @@
+row_id,design_section,status,proposed_class,s28_action,s28_where
+M-005,1,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 1
+M-014,1,code_deviates,backlog,backlog,BL-238 (aperta da S2.5); citata nella nota della sezione 1
+M-015,1,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 1
+M-016,1,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 1
+M-017,1,code_deviates,bug_fix_with_test,bug_fixed_with_test,DEC-080; test_S2.8.R b1-b6; mutante M3
+M-018,1,code_deviates,bug_fix_with_test,bug_fixed_with_test,"DEC-080; test_S2.8.R a1-a8, c1-c3; mutanti M1, M2"
+M-025,2 D2-5,untested,bug_fix_with_test,test_added,test_S2.8_d.R d2
+M-029,2 D2-9,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 2
+M-031,2 D2-11,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 2
+M-040,3,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 3
+M-049,4,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 4
+M-050,4,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 4
+M-055,5,untested,bug_fix_with_test,backlog,BL-250
+M-073,6,code_deviates,backlog,documented_and_measured,roxygen di frame (R/05b6); descrittiva BL-237 (results/S2.8/S2.8_BL237.csv); nota della sezione 6; BL-237 chiusa
+M-074,6,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 6
+M-076,7.1,unclear,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 7; BL-249
+M-077,7.1,unclear,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 7
+M-083,7.1,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 7
+M-085,7.2,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 7
+M-088,7.3,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 7
+M-089,7.3,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 7
+M-092,7.3,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 7
+M-098,9 table,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 9
+M-099,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-100,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-101,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-102,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-103,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-104,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-105,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-106,9 table,code_deviates,bug_fix_with_test,doc_fixed_with_test,roxygen di transcript_params() (R/05b3); test_S2.8_d.R d4
+M-107,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-108,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-109,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-110,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-111,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-113,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-114,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-115,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-116,9 table,untested,bug_fix_with_test,test_added,test_S2.8_d.R d1
+M-120,9 note,untested,bug_fix_with_test,test_added,test_S2.8_d.R d3
+M-121,10,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 10
+M-128,11,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 11
+M-134,12,design_behind,annotate_design,annotated_design_v0.6,"stato dopo S2.6, S2.7 e S2.8 alla fine della sezione 12"
+M-135,12,design_behind,annotate_design,annotated_design_v0.6,"stato dopo S2.6, S2.7 e S2.8 alla fine della sezione 12"
+M-136,12,design_behind,annotate_design,annotated_design_v0.6,"stato dopo S2.6, S2.7 e S2.8 alla fine della sezione 12"
+M-138,12,design_behind,annotate_design,annotated_design_v0.6,"stato dopo S2.6, S2.7 e S2.8 alla fine della sezione 12"
+M-139,12,design_behind,annotate_design,annotated_design_v0.6,"stato dopo S2.6, S2.7 e S2.8 alla fine della sezione 12"
+M-140,12,design_behind,annotate_design,annotated_design_v0.6,"stato dopo S2.6, S2.7 e S2.8 alla fine della sezione 12"
+M-141,12,design_behind,annotate_design,annotated_design_v0.6,"stato dopo S2.6, S2.7 e S2.8 alla fine della sezione 12"
+M-152,14,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 14
+M-157,14,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 14
+M-163,15,design_behind,annotate_design,annotated_design_v0.6,tabella dopo S2.5 alla fine della sezione 15
+M-165,16,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 16
+M-166,16,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 16
+M-174,17,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 17
+M-176,17,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 17
+M-177,17,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 17
+M-178,17,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 17
+M-179,17,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 17
+M-185,17,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 17
+M-186,17,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 17
+M-187,17,design_behind,annotate_design,annotated_design_v0.6,nota della v0.6 alla fine della sezione 17

@@ -1,0 +1,81 @@
+PASS  a A1: pezzo solo = pezzi di 56 um con 3 processi (1118 cellule, 256 pezzi, 521029 trascritti scambiati)
+PASS  a A1: pezzo solo = pezzi di 168 um con 1 processo
+PASS  a A1: trascritti scambiati fra pezzi > 0 con 56 um
+PASS  f A1: controlli di conservazione e copertura (3 esecuzioni)
+PASS  f A1: conservazione per cellula a mano (generati = catturati + scartati + persi)
+PASS  f A1: profili della verita' = trascritti generati per cellula
+PASS  a A1: un altro seme da' un altro risultato
+PASS  a A2: pezzo solo = pezzi di 56 um con 3 processi (803 cellule, 256 pezzi, 754369 trascritti scambiati)
+PASS  a A2: pezzo solo = pezzi di 168 um con 1 processo
+PASS  a A2: trascritti scambiati fra pezzi > 0 con 56 um
+PASS  f A2: controlli di conservazione e copertura (3 esecuzioni)
+PASS  f A2: conservazione per cellula a mano (generati = catturati + scartati + persi)
+PASS  f A2: profili della verita' = trascritti generati per cellula
+PASS  a A2: un altro seme da' un altro risultato
+PASS  a A3: pezzo solo = pezzi di 56 um con 3 processi (279 cellule, 256 pezzi, 367611 trascritti scambiati)
+PASS  a A3: pezzo solo = pezzi di 168 um con 1 processo
+PASS  a A3: trascritti scambiati fra pezzi > 0 con 56 um
+PASS  f A3: controlli di conservazione e copertura (3 esecuzioni)
+PASS  f A3: conservazione per cellula a mano (generati = catturati + scartati + persi)
+PASS  f A3: profili della verita' = trascritti generati per cellula
+PASS  a A3: un altro seme da' un altro risultato
+PASS  a A4: pezzo solo = pezzi di 56 um con 3 processi (1618 cellule, 225 pezzi, 118061 trascritti scambiati)
+PASS  a A4: pezzo solo = pezzi di 168 um con 1 processo
+PASS  a A4: trascritti scambiati fra pezzi > 0 con 56 um
+PASS  f A4: controlli di conservazione e copertura (3 esecuzioni)
+PASS  f A4: conservazione per cellula a mano (generati = catturati + scartati + persi)
+PASS  f A4: profili della verita' = trascritti generati per cellula
+PASS  a A4: un altro seme da' un altro risultato
+PASS  a A5: pezzo solo = pezzi di 56 um con 3 processi (190 cellule, 324 pezzi, 2290565 trascritti scambiati)
+PASS  a A5: pezzo solo = pezzi di 168 um con 1 processo
+PASS  a A5: trascritti scambiati fra pezzi > 0 con 56 um
+PASS  f A5: controlli di conservazione e copertura (3 esecuzioni)
+PASS  f A5: conservazione per cellula a mano (generati = catturati + scartati + persi)
+PASS  f A5: profili della verita' = trascritti generati per cellula
+PASS  a A5: un altro seme da' un altro risultato
+PASS  a A6: pezzo solo = pezzi di 56 um con 3 processi (158 cellule, 324 pezzi, 165625 trascritti scambiati)
+PASS  a A6: pezzo solo = pezzi di 168 um con 1 processo
+PASS  a A6: trascritti scambiati fra pezzi > 0 con 56 um
+PASS  f A6: controlli di conservazione e copertura (3 esecuzioni)
+PASS  f A6: conservazione per cellula a mano (generati = catturati + scartati + persi)
+PASS  f A6: profili della verita' = trascritti generati per cellula
+PASS  a A6: un altro seme da' un altro risultato
+PASS  g: con un pezzo solo le uscite hanno gli stessi elementi di simulate_visium_hd()
+PASS  g: verita' geometrica uguale a build_hd_grid()
+PASS  a A6: frame_open = FALSE, pezzo solo = pezzi di 112 um
+PASS  a A6: strati spenti, pezzo solo = pezzi di 56 um
+PASS  a dischi del linfonodo, frame_open = FALSE: pezzo solo = pezzi di 56 um (1130 cellule)
+PASS  a dischi del linfonodo, frame_open = TRUE: pezzo solo = pezzi di 56 um (1130 cellule)
+PASS  a: con frame_open la seconda coda arriva sul vetro a oltre 450 um dal tessuto (UMI 148 con la coda, 0 senza; 8034 quadratini)
+PASS  a: lato dei pezzi non multiplo di 56 um rifiutato
+PASS  b frame_open = FALSE: dove la distanza vera e' minore della distanza dal lato della finestra, finestra = area intera (58531 sottopixel)
+PASS  b frame_open = FALSE: altrove la finestra non sottostima la distanza
+PASS  b frame_open = FALSE: a pg ≥ 25 D la probabilita' della zona di bordo e' sotto il minimo del generatore
+PASS  b: minimo di 1e7 estrazioni uniformi > exp(-25)
+PASS  b frame_open = TRUE: dove la distanza vera e' minore della distanza dal lato della finestra, finestra = area intera (58531 sottopixel)
+PASS  b frame_open = TRUE: altrove la finestra non sottostima la distanza
+PASS  b frame_open = TRUE: a pg ≥ 25 D la probabilita' della zona di bordo e' sotto il minimo del generatore
+PASS  b: minimo di 1e7 estrazioni uniformi > exp(-25)
+PASS  c A1: campo su una finestra = campo sulla finestra grande negli stessi sottopixel
+PASS  c A1: media 1 e varianza vicina a s2 (0.498 contro 0.500)
+PASS  c A5: campo su una finestra = campo sulla finestra grande negli stessi sottopixel
+PASS  c A5: media 1 e varianza vicina a s2 (0.074 contro 0.074)
+PASS  c A6: campo su una finestra = campo sulla finestra grande negli stessi sottopixel
+PASS  c A6: media 1 e varianza vicina a s2 (0.832 contro 0.841)
+PASS  d: precondizione, GEOS fallisce sul citoplasma originale della cellula 624286
+PASS  d: con il ripiego si triangola (26 triangoli), ripiego segnalato
+PASS  d: area dei triangoli entro 1e-3 um^2 dall'area del citoplasma (scarto 3.26e-04)
+PASS  d: le altre geometrie hanno gli stessi triangoli di prima
+PASS  d: senza geometrie degeneri nessun ripiego
+PASS  e A1: tetto 4.1344, superamenti Monte Carlo 33 su 4e6 (atteso 40 +- 25)
+PASS  e A2: tetto 4.6982, superamenti Monte Carlo 36 su 4e6 (atteso 40 +- 25)
+PASS  e A4: tetto 4.0449, superamenti Monte Carlo 37 su 4e6 (atteso 40 +- 25)
+PASS  e A5: tetto 3.8136, superamenti Monte Carlo 38 su 4e6 (atteso 40 +- 25)
+PASS  e A6: tetto 2.9770, superamenti Monte Carlo 39 su 4e6 (atteso 40 +- 25)
+PASS  e: tetto monotono in q
+PASS  h: precondizione, con key * (G + 1) + gene due geni vicini collidono a 8e12
+PASS  h: gruppi esatti della funzione nuova
+PASS  h: place_and_move_transcripts() non usa piu' la chiave unica
+
+78 PASS, 0 FAIL
+exit 0

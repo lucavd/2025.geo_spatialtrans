@@ -1,0 +1,46 @@
+PASS  a1 l'impronta contiene l'impronta del codice e quella dei profili
+PASS  a2 ripresa con codice e argomenti uguali: file dei pezzi riusati (256) e uscite identiche
+PASS  a3 ripresa dopo una modifica di una funzione dello Step 2 (stesso risultato, codice diverso): si ferma e nomina il codice
+PASS  a3b ripresa dopo una modifica di una costante letta dal codice (tabella .s23_ztab): si ferma e nomina il codice
+PASS  a4 ripresa con profili diversi (un conteggio in piu'): si ferma e nomina i profili, non il codice
+PASS  a5 cartella di un'esecuzione di S2.7 (impronta senza codice e profili): si ferma
+PASS  a6 un commento in piu' (sorgente conservata) non cambia l'impronta del codice
+PASS  a7 l'impronta copre le funzioni dei passi chiamate dalla funzione a pezzi (66 funzioni; mancanti: )
+PASS  a8 l'impronta del motore di S2.5 copre i quattro passi
+PASS  b1 truth$layers$stripes$M = metadata$overgeneration = tetto M* (4.0449)
+PASS  b2 M_raw = C = massimo grezzo dei fattori (4.1854) > M*: quadratini tagliati 1
+PASS  b3 bins$c = min(bins$c_raw, M*), esatto
+PASS  b4 profondita' dei profili per M*
+PASS  b5 senza strisce: nessuno strato delle strisce, sovra-generazione 1, c = c_raw = 1
+PASS  b6 motore di S2.5: truth$layers$stripes$M = metadata$overgeneration = massimo di bins$c (stesso significato: sovra-generazione usata)
+PASS  c1 metadata$package_version da DESCRIPTION nei due motori (geo.spatialtrans 0.1.0)
+PASS  c2 impronta del codice nei metadati dei due motori
+PASS  c3 impronta dei profili nei metadati della funzione a pezzi
+PASS  d1 transcript_params() `r` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.0049)
+PASS  d1 transcript_params() `sigma_e` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.0046)
+PASS  d1 transcript_params() `D` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.0037)
+PASS  d1 transcript_params() `w` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.0003)
+PASS  d1 transcript_params() `ell` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.0025)
+PASS  d1 transcript_params() `field_s2` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.00045)
+PASS  d1 transcript_params() `field_L` = tabella della sezione 9 alla precisione scritta (scarto massimo 0)
+PASS  d1 capture_params() `b` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.00042)
+PASS  d1 capture_params() `parity_row` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.00038)
+PASS  d1 capture_params() `parity_col` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.00042)
+PASS  d1 capture_params() `sd_alpha` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.00047)
+PASS  d1 capture_params() `sd_beta` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.00039)
+PASS  d1 capture_params() `rho_alpha` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.00041)
+PASS  d1 capture_params() `rho_beta` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.0005)
+PASS  d1 capture_params() `w2` = tabella della sezione 9 alla precisione scritta (scarto massimo 4.8e-05)
+PASS  d1 capture_params() `ell2` = tabella della sezione 9 alla precisione scritta (scarto massimo 0.48)
+PASS  d1 sigma_in = 0.7 um in tutti i tessuti (DEC-038)
+PASS  d2 cuore: sigma_e, D, w, ell = mediane delle altre sezioni (D2-5, DEC-037; entro 1e-3 relativo)
+PASS  d3 tumore e stroma: stesso spostamento (sigma_e, D, w, ell) e stessa cattura (sezione A23); r e campo diversi
+PASS  d4 fondo dei due motori = capture_params()$b (0.1736), non quello di R5 (0.1971)
+PASS  d5 ceiling_q: tetto = stripe_ceiling(q) (2.7043 con 1e-3 contro 4.0449 con 1e-5) e conteggi diversi
+PASS  d6 assemble = "light": UMI per quadratino = colonne di counts_2um, counts_8um e celle identici al completo
+PASS  d7 keep_profiles = FALSE: nessuna matrice dei profili, conteggi identici
+PASS  d8 archetype esplicito = archetipo dal preset; verbose = TRUE non cambia nulla
+PASS  d9 archetype sbagliato: errore chiaro
+
+43 PASS, 0 FAIL
+exit 0
