@@ -60,24 +60,33 @@ n15 = int(Q.within_1_5.sum()) if len(Q) else 0; nbest504 = int((Q.best == "e504"
 rule = dict(n_tissues=len(Q), n_ratio_le_1_5=n15, single_entry_point=bool(n15 >= 5), n_best_e504=nbest504, backlog_auto_piece=bool(nbest504 < 5))
 json.dump(rule, open(f"{RES}/S2.8_rule_R1.json", "w"), indent=1)
 print(P.to_string(index=False)); print(Q.to_string(index=False)); print(rule)
-# descrittiva di BL-237: A1_r1, finestra contro predefinito, stessi semi
+# descrittiva di BL-237: A1_r1, finestra contro predefinito, stessi semi. Distanza dal bordo sinistro del tessuto riga per riga
+# (primo quadratino di tessuto della riga), corretta dopo la revisione dei numeri (G-5): la prima stesura misurava da x = 5.48 um.
 def load(cf, k):
     b = f"{O}/{cf}/A1_r1_k{k}"; j = json.load(open(b + ".json")); g = j["grid"]
     u = np.fromfile(b + ".bin", dtype="<i4"); tis = np.fromfile(b + ".tis.bin", dtype="i1").astype(bool)
-    u8 = np.fromfile(b + ".u8.bin", dtype="<i4"); return g, u, tis, u8
+    return g, u, tis
 D = []
 for k in (0, 1, 2):
     if not (os.path.exists(f"{O}/bl237/A1_r1_k{k}.json") and os.path.exists(f"{O}/e504/A1_r1_k{k}.json")): continue
-    g, ud, tis, _ = load("e504", k); _, uw, tis_w, _ = load("bl237", k)
-    nr, nc = g["n_row"], g["n_col"]; x = g["x0"] + (np.arange(nc) + 0.5) * g["bin_um"]; X = np.tile(x, nr)
-    edge = 5.476725  # lato sinistro del tessuto in A1_r1 (riquadro delle regioni)
-    zones = {"tissue_all": tis, "tissue_0_8": tis & (X - edge >= 0) & (X - edge < 8), "tissue_8_16": tis & (X - edge >= 8) & (X - edge < 16),
-             "tissue_16_32": tis & (X - edge >= 16) & (X - edge < 32), "tissue_32_64": tis & (X - edge >= 32) & (X - edge < 64),
-             "glass_window_strip_0_5.48": (~tis) & (X >= 0) & (X < edge), "glass_outside_window_left": (~tis) & (X < 0)}
+    g, ud, tis = load("e504", k); _, uw, tis_w = load("bl237", k)
+    nr, nc = g["n_row"], g["n_col"]; x = g["x0"] + (np.arange(nc) + 0.5) * g["bin_um"]
+    T = tis.reshape(nr, nc); X = np.tile(x, (nr, 1))
+    has = T.any(axis=1); first = np.where(has, T.argmax(axis=1), -1)
+    edge = np.where(has, x[np.clip(first, 0, nc - 1)], np.nan)[:, None]   # centro del primo quadratino di tessuto della riga
+    d = X - edge; T_ = T; G_ = ~T
+    zones = {"tissue_all": T_, "tissue_0_8": T_ & (d >= 0) & (d < 8), "tissue_8_16": T_ & (d >= 8) & (d < 16),
+             "tissue_16_32": T_ & (d >= 16) & (d < 32), "tissue_32_64": T_ & (d >= 32) & (d < 64),
+             "glass_left_of_tissue_inside_window": G_ & (X >= 0) & (d < 0) & has[:, None],
+             "glass_left_of_tissue_0_8_from_edge": G_ & (X >= 0) & (d < 0) & (d >= -8),
+             "glass_window_strip_x0_5.48": G_ & (X >= 0) & (X < 5.476725), "glass_outside_window_left": G_ & (X < 0)}
     for z, msk in zones.items():
-        D.append(dict(k=k, zone=z, n_bins=int(msk.sum()), umi_default=float(ud[msk].mean()) if msk.any() else float("nan"),
-                      umi_window=float(uw[msk].mean()) if msk.any() else float("nan"), same_tissue_mask=bool((tis == tis_w).all())))
+        m = msk.ravel()
+        D.append(dict(k=k, zone=z, n_bins=int(m.sum()), umi_default=float(ud[m].mean()) if m.any() else float("nan"),
+                      umi_window=float(uw[m].mean()) if m.any() else float("nan"), same_tissue_mask=bool((tis == tis_w).all())))
+    if k == 0:
+        fe = x[first[has]]; print("primo quadratino di tessuto per riga: min %.2f mediana %.2f p95 %.2f um" % (fe.min(), np.median(fe), np.percentile(fe, 95)))
 D = pd.DataFrame(D)
 if len(D):
     D["ratio_window_default"] = D.umi_window / D.umi_default; D.to_csv(f"{RES}/S2.8_BL237.csv", index=False)
-    print(D.groupby("zone")[["n_bins", "umi_default", "umi_window", "ratio_window_default"]].mean().to_string())
+    print(D.groupby("zone").agg(n=("n_bins", "mean"), d=("umi_default", "mean"), w=("umi_window", "mean"), rmin=("ratio_window_default", "min"), rmax=("ratio_window_default", "max")).to_string())

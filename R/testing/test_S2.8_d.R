@@ -30,8 +30,11 @@ ok("d3 tumore e stroma: stesso spostamento (sigma_e, D, w, ell) e stessa cattura
 # fondo: i due motori usano capture_params()$b, non transcript_params()$b (M-106); linfonodo con b = 0 -> si prova il tumore
 L2 <- mk_layer("tumor_microenv", 100L, 202L)
 op <- simulate_visium_hd_pieces(L2, seed = 3L, piece_um = Inf, frame_open = FALSE); os5 <- simulate_visium_hd(L2, seed = 3L, frame_open = FALSE)
-ok(sprintf("d4 fondo dei due motori = capture_params()$b (%.4f), non quello di R5 (%.4f)", capture_params("A2")$b, transcript_params("A2")$b),
-   identical(op$truth$layers$background$b, capture_params("A2")$b) && identical(os5$truth$layers$background$b, capture_params("A2")$b))
+zb <- function(o, b) { E <- b * sum(o$bins$c); (sum(as.numeric(o$truth$background$n)) - E) / sqrt(E) }
+bc <- capture_params("A2")$b; b5 <- transcript_params("A2")$b
+zp <- c(zb(op, bc), zb(op, b5)); zs <- c(zb(os5, bc), zb(os5, b5))
+ok(sprintf("d4 fondo estratto con capture_params()$b (%.4f), non con quello di R5 (%.4f): z a pezzi %.1f contro %.1f, motore di S2.5 %.1f contro %.1f", bc, b5, zp[1], zp[2], zs[1], zs[2]),
+   identical(op$truth$layers$background$b, bc) && identical(os5$truth$layers$background$b, bc) && all(abs(c(zp[1], zs[1])) < 5) && all(abs(c(zp[2], zs[2])) > 5))
 # argomenti della funzione a pezzi senza test (mappa, S2.8_exported_args.csv)
 base <- function(...) simulate_visium_hd_pieces(L4, seed = 7L, piece_um = 112, frame_open = TRUE, ...)
 o0 <- base(); oq <- base(ceiling_q = 1e-3)

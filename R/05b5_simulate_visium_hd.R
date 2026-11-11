@@ -63,38 +63,46 @@ visium_hd_depth_factor <- function(archetype) {
 }
 
 # impronte e versione (S2.8, BL-247) ---------------------------------------------------------------------------------------------------
-# impronta md5 del codice: testo senza commenti (deparse) della funzione `root`, di tutte le funzioni dello stesso ambiente che chiama,
-# seguite ricorsivamente (codetools::findGlobals), e delle costanti dello stesso ambiente che leggono (per esempio la tabella .s23_ztab);
-# una modifica del codice o di una costante cambia l'impronta, una modifica dei soli commenti no.
+# impronta md5 del codice: testo senza commenti (deparse a 17 cifre) della funzione `root`, di tutte le funzioni dello stesso ambiente che
+# chiama, seguite ricorsivamente (codetools::findGlobals), e degli oggetti dello stesso ambiente che leggono come variabili (per esempio
+# la tabella .s23_ztab); una modifica del codice o di una costante cambia l'impronta, una modifica dei soli commenti no. Limiti (S2.8,
+# revisione): non segue funzioni chiamate per nome con do.call("nome") o match.fun, metodi S3/S4 e chiusure create a runtime (oggi assenti).
 .geo_code_parts <- function(root) {
-  home <- environment(.geo_code_parts); seen <- character(0); todo <- root; parts <- list()
-  while (length(todo)) {
-    nm <- todo[[1L]]; todo <- todo[-1L]
-    if (nm %in% seen) next
-    seen <- c(seen, nm)
-    if (!exists(nm, envir = home, inherits = FALSE)) {          # funzione di un pacchetto o di base: fuori dall'impronta
+  home <- environment(.geo_code_parts); seen <- character(0); todo_f <- root; todo_v <- character(0); parts <- list()
+  ctl <- c("keepNA", "keepInteger", "niceNames", "showAttributes", "digits17")
+  while (length(todo_f) || length(todo_v)) {
+    is_f <- length(todo_f) > 0L
+    nm <- if (is_f) todo_f[[1L]] else todo_v[[1L]]
+    if (is_f) todo_f <- todo_f[-1L] else todo_v <- todo_v[-1L]
+    key <- paste0(if (is_f) "f:" else "v:", nm)
+    if (key %in% seen) next
+    seen <- c(seen, key)
+    if (is_f) {                                                    # chiamata: R cerca solo funzioni (un oggetto omonimo dell'utente non conta)
       fn <- get0(nm, envir = home, mode = "function", inherits = TRUE)
       if (is.null(fn) || is.primitive(fn) || !identical(environment(fn), home)) next
-    } else fn <- get(nm, envir = home, inherits = FALSE)
-    if (is.function(fn)) {
-      if (!identical(environment(fn), home)) next
-      parts[[nm]] <- deparse(fn)
+      parts[[paste0("## ", nm)]] <- deparse(fn, control = ctl)
       gl <- codetools::findGlobals(fn, merge = FALSE)
-      todo <- c(todo, setdiff(c(gl$functions, gl$variables), seen))
-    } else parts[[nm]] <- c("<costante>", deparse(fn))
+      todo_f <- c(todo_f, gl$functions); todo_v <- c(todo_v, gl$variables)
+    } else if (exists(nm, envir = home, inherits = FALSE)) {      # variabile letta: conta l'oggetto dell'ambiente del codice
+      v <- get(nm, envir = home, inherits = FALSE)
+      if (is.function(v)) {
+        if (!identical(environment(v), home)) next
+        todo_f <- c(todo_f, nm)                                    # funzione passata come valore: si segue come una chiamata
+      } else parts[[paste0("## <costante> ", nm)]] <- deparse(v, control = ctl)
+    }
   }
   if (!length(parts)) stop(".geo_code_parts(): funzione sconosciuta: ", root, call. = FALSE)
-  parts[order(names(parts))]
+  parts[order(names(parts), method = "radix")]                    # ordine indipendente dalla lingua del sistema
 }
 .geo_code_hash <- function(root) {
   parts <- .geo_code_parts(root)
   tf <- tempfile(); on.exit(unlink(tf))
-  writeLines(unlist(Map(function(n, d) c(paste0("## ", n), d), names(parts), parts), use.names = FALSE), tf, useBytes = TRUE)
+  writeLines(unlist(Map(function(n, d) c(n, d), names(parts), parts), use.names = FALSE), tf, useBytes = TRUE)
   unname(tools::md5sum(tf))
 }
-# impronta md5 di un oggetto R (serializzazione versione 3)
+# impronta md5 di un oggetto R (serializzazione versione 2: l'intestazione non contiene la codifica della lingua del sistema)
 .geo_object_hash <- function(x) {
-  tf <- tempfile(); on.exit(unlink(tf)); con <- file(tf, "wb"); serialize(x, con, version = 3L); close(con)
+  tf <- tempfile(); on.exit(unlink(tf)); con <- file(tf, "wb"); serialize(x, con, version = 2L); close(con)
   unname(tools::md5sum(tf))
 }
 # versione del pacchetto: installato, altrimenti DESCRIPTION nella cartella `geo.spatialtrans.root` (predefinito: cartella di lavoro)

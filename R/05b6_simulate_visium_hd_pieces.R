@@ -487,7 +487,8 @@ stripe_ceiling <- function(params, q = 1e-5) {
 #'   Strisce e sovra-generazione (DEC-075): `bins$c` e' il fattore di striscia usato, tagliato al tetto M*; `bins$c_raw` quello grezzo;
 #'   `truth$layers$stripes$M` = `metadata$overgeneration` = M* (sovra-generazione usata, come in `simulate_visium_hd()`), `$M_raw` e `$C`
 #'   il massimo grezzo dei fattori dell'area. Il fondo e' Poisson(b c) per quadratino con il fattore tagliato `c`, come la cattura.
-#'   Ripresa (`out_dir`): l'impronta `run.rds` contiene argomenti, impronta del codice (`.geo_code_hash()`) e dei profili; se la cartella
+#'   Ripresa (`out_dir`): l'impronta `run.rds` contiene argomenti, impronta del codice (`.geo_code_hash()`), dei profili e del livello
+#'   cellulare (identificativi, tipi, centri, territori, nuclei, regioni); se la cartella
 #'   contiene un'esecuzione diversa la funzione si ferma e dice quali campi cambiano (BL-247).
 #' @export
 simulate_visium_hd_pieces <- function(cell_layer, seed, piece_um = 504, archetype = NULL,
@@ -553,7 +554,9 @@ simulate_visium_hd_pieces <- function(cell_layer, seed, piece_um = 504, archetyp
   fp <- list(seed = seed, piece_um = L$piece_um, archetype = archetype, layers = ly, frame_open = frame_open, frame = fb, ceiling_q = ceiling_q,
              Mstar = Ms, depth = df0 * Ms, n_cells = n, grid = g[c("x0", "y0", "n_row", "n_col")], keep_profiles = keep_profiles,
              cell_xy = sum(cd$x * seq_len(n)) + sum(cd$y), step1_seed = cell_layer$metadata$random_seed,
-             code = .geo_code_hash("simulate_visium_hd_pieces"), profiles = .geo_object_hash(profiles))
+             code = .geo_code_hash("simulate_visium_hd_pieces"), profiles = .geo_object_hash(profiles),
+             layer = .geo_object_hash(list(cd[, intersect(c("cell_id", "cell_type", "x", "y"), names(cd))], unclass(sf::st_as_binary(Tt)),
+                                           unclass(sf::st_as_binary(Nn)), unclass(sf::st_as_binary(R)))))
   fpf <- file.path(wd, "run.rds")
   if (file.exists(fpf)) {
     fo <- readRDS(fpf)

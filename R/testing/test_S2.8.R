@@ -56,7 +56,21 @@ if ("a" %in% GR) {
              paste(setdiff(need, pn), collapse = ", ")), all(need %in% pn))
   ok("a8 l'impronta del motore di S2.5 copre i quattro passi", all(c("simulate_visium_hd", "build_hd_grid", "simulate_cell_profiles",
        "place_and_move_transcripts", "capture_and_bin", "simulate_stripes") %in% names(.geo_code_parts("simulate_visium_hd"))))
-  unlink(c(d1, d5), recursive = TRUE)
+  L4b <- L4; ly_ <- L4b$cell_df$cell_type; sw <- which(ly_ %in% unique(ly_)[1:2]); L4b$cell_df$cell_type[sw] <- rev(ly_[sw])
+  e9 <- err_of(simulate_visium_hd_pieces(L4b, seed = 7L, piece_um = 112, frame_open = TRUE, profiles = PR, depth_factor = DF, out_dir = d1))
+  ok(sprintf("a9 ripresa con il livello cellulare cambiato (tipi di %d cellule scambiati, stessi centri): si ferma e nomina il livello", sum(ly_[sw] != rev(ly_[sw]))),
+     sum(ly_[sw] != rev(ly_[sw])) > 0 && grepl("esecuzione diversa", e9) && grepl("\\blayer\\b", e9))
+  assign("max", 5, envir = globalenv()); assign("c", 1, envir = globalenv())
+  h2 <- .geo_code_hash("simulate_visium_hd_pieces"); rm("max", "c", envir = globalenv())
+  ok("a10 oggetti dell'utente con il nome di funzioni di base (max, c) non cambiano l'impronta", identical(h0, h2))
+  sc <- tempfile(fileext = ".R")
+  writeLines(c('.libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")', 'suppressPackageStartupMessages({ library(Matrix); library(sf); library(geos) })',
+               sprintf('for (f in sort(list.files("%s", pattern = "^(04b|05b).*\\\\.R$", full.names = TRUE))) source(f)', RDIR),
+               'cat(.geo_code_hash("simulate_visium_hd_pieces"), .geo_object_hash(load_cell_profiles("A4")), "\\n")'), sc)
+  hh <- vapply(c("C.UTF-8", "C"), function(lc) trimws(paste(system2("Rscript", c("--vanilla", sc), stdout = TRUE, env = c(paste0("LC_ALL=", lc), "R_LIBS_SITE=/nonexistent", "R_LIBS_USER=/nonexistent")), collapse = "")), character(1))
+  ok(sprintf("a11 impronte del codice e dei profili uguali in due processi nuovi con lingua C.UTF-8 e C e in questo processo (%s)", paste(substr(hh, 1, 8), collapse = " / ")),
+     length(unique(hh)) == 1L && identical(strsplit(hh[[1]], " ")[[1]], c(h0, .geo_object_hash(PR))))
+  unlink(c(d1, d5, sc), recursive = TRUE)
 }
 # --- (b) nomi della sovra-generazione
 if ("b" %in% GR) {
@@ -66,7 +80,10 @@ if ("b" %in% GR) {
   ok(sprintf("b2 M_raw = C = massimo grezzo dei fattori (%.4f) > M*: quadratini tagliati %d", st$M_raw, o$metadata$n_bins_over_ceiling),
      identical(st$M_raw, max(o$bins$c_raw)) && identical(st$C, st$M_raw) && st$M_raw > Ms && o$metadata$n_bins_over_ceiling == sum(o$bins$c_raw > Ms))
   ok("b3 bins$c = min(bins$c_raw, M*), esatto", identical(o$bins$c, pmin(o$bins$c_raw, Ms)))
-  ok("b4 profondita' dei profili per M*", isTRUE(all.equal(o$truth$layers$depth$overgeneration, Ms, tolerance = 0)))
+  o1s <- simulate_visium_hd_pieces(L4, seed = 7L, piece_um = 112, frame_open = TRUE, layers = list(stripes = FALSE))
+  rg <- sum(o$truth$cells$n_transcripts_generated) / sum(o1s$truth$cells$n_transcripts_generated)
+  ok(sprintf("b4 profili generati con la profondita' per M*: trascritti generati con le strisce / senza = %.4f contro M* = %.4f (entro il 3 %%)", rg, Ms),
+     abs(rg / Ms - 1) < 0.03 && isTRUE(all.equal(o$truth$cells$n_expected_captured, o$truth$cells$n_transcripts_generated / Ms)))
   lyr <- list(stripes = FALSE)
   oo <- simulate_visium_hd_pieces(L4, seed = 7L, piece_um = 112, frame_open = TRUE, layers = lyr)
   ok("b5 senza strisce: nessuno strato delle strisce, sovra-generazione 1, c = c_raw = 1", is.null(oo$truth$layers$stripes) && identical(oo$metadata$overgeneration, 1) &&
@@ -86,6 +103,6 @@ if ("c" %in% GR) {
   ok("c3 impronta dei profili nei metadati della funzione a pezzi", identical(o$metadata$profiles_hash, .geo_object_hash(load_cell_profiles("A4"))))
 }
 # --- (d) test aggiunti dopo la mappa del documento di progetto (dichiarati nel file dello step)
-if ("d" %in% GR && file.exists("R/testing/test_S2.8_d.R")) source("R/testing/test_S2.8_d.R", local = TRUE)
+if ("d" %in% GR) { if (file.exists("R/testing/test_S2.8_d.R")) source("R/testing/test_S2.8_d.R", local = TRUE) else ok("d il file del gruppo d esiste", FALSE) }
 cat(sprintf("\n%d PASS, %d FAIL\n", np, nf))
 quit(status = if (nf) 1L else 0L)
