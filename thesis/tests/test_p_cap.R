@@ -11,7 +11,8 @@ args <- commandArgs(trailingOnly = TRUE); tissue <- if (length(args)) args[1] el
 d <- file.path(Sys.getenv("TESI_DATA"), "derived", "p_calibration")
 cap <- readRDS(file.path(d, paste0(tissue, "_p_calibration.rds")))
 all <- readRDS(file.path(d, paste0(tissue, "_p_calibration_all.rds")))
-stopifnot(cap$settings$marker_cap == 10000, is.infinite(all$settings$marker_cap))
+stopifnot(is.finite(cap$settings$marker_cap), is.infinite(all$settings$marker_cap))
+cat(sprintf("Cap %s cells per type%s\n", format(cap$settings$marker_cap), if (cap$settings$marker_cap == 20000) " (2nd check, reported only: DECISIONS 2026-11-11)" else ""))
 ok <- function(cond, msg) { cat(if (isTRUE(cond)) "PASS" else "FAIL", msg, "\n"); invisible(cond) }
 ok(identical(cap$genes, all$genes), "same kept genes (filter on all training cells)")
 ok(identical(cap$types, all$types), "same types")

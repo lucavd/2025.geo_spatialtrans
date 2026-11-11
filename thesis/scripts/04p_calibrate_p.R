@@ -39,6 +39,8 @@
 #   20,000-cell sample of φ); gene filter, pooled profile and mu_E stay on all training cells (streamed sums).
 #   Pre-registered check in lymphoid (4 types above 10,000 cells): markers with the cap vs all cells, Jaccard
 #   of the marker sets (FDR < 0.05) >= 0.9 for every type, otherwise the cap rises to 20,000 in every tissue.
+#   Outcome 2026-11-11: the check failed (cd4_cm 0.600; 5 more types 0.750-0.857), so the cap is 20,000 in
+#   every tissue; the check at 20,000 is repeated as a reported value only (DECISIONS 2026-11-11).
 # Usage (working directory = thesis/):  Rscript scripts/04p_calibrate_p.R <tissue> [all]
 
 args <- commandArgs(trailingOnly = TRUE)
@@ -57,7 +59,7 @@ gene_min_cells <- 10     # ADEMP §2.6.2
 fdr_main <- 0.05; fdr_check <- 0.01
 # cells per type for findMarkers (DECISIONS 2026-11-11); 2nd argument "all" = no cap, written to
 # <tissue>_p_calibration_all.rds, used only by the pre-registered lymphoid check (tests/test_p_cap.R)
-marker_cap <- if (length(args) >= 2 && args[2] == "all") Inf else 10000
+marker_cap <- if (length(args) >= 2 && args[2] == "all") Inf else 20000   # 10,000 failed the lymphoid check (DECISIONS 2026-11-11)
 counts_group <- c(brain = "/X", colon = "/raw/X", lymphoid = "/raw/X")[[tissue]]
 t0 <- proc.time()[["elapsed"]]
 el <- function() (proc.time()[["elapsed"]] - t0) / 60
