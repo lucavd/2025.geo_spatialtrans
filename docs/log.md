@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-12 (S2.8b, chiusura)
+
+* **Chiusura**: [La guida d'uso, il README, le istruzioni del progetto e la guida per Daniele descrivono lo Step 2 com'è, e il ramo della griglia entra in quello di sviluppo senza perdere nulla? (S2.8b)](steps/S2.8b.md) chiuso con l'approvazione di Luca («si chiudi»).
+* **Creazione**: decisioni di Luca [S2.8b si chiude con G-2 (a) e la batteria dello Step 1 falliti come scritti: l'aggiornamento di R cambia un byte d'intestazione dei file, non i dati (DEC-083)](decisions/DEC-083.md) e [Il tempo della sezione intera del cervello di topo con i pezzi predefiniti di 504 µm oltre il bilancio entra nel limite dichiarato (DEC-084)](decisions/DEC-084.md).
+* **Modifica**: ROADMAP sezione 7 (stato «chiusa»); CHANGELOG; BACKLOG (BL-246); nota della sezione 17 del documento di progetto dello Step 2; report rigenerato.
+
 ## 2026-11-12 (S2.8b, esiti)
 
 * **Modifica**: [La guida d'uso, il README, le istruzioni del progetto e la guida per Daniele descrivono lo Step 2 com'è, e il ramo della griglia entra in quello di sviluppo senza perdere nulla? (S2.8b)](steps/S2.8b.md): correzioni, esiti, revisione avversariale, deviazioni, riassunto «In breve», dubbi rinviati.

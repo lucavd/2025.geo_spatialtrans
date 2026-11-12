@@ -19,6 +19,8 @@ RV <- read.csv("S2.8b_parts/S2.8b_review_discrepancies.csv", stringsAsFactors = 
 
 {{< include S2.8b_parts/in_breve.md >}}
 
+**Chiusura**: letta da Luca il 2026-11-12 («si chiudi»): sì alle due raccomandazioni, [DEC-083](../docs/decisions/DEC-083.md) (chiusura con G-2 a e G-3 falliti come scritti) e [DEC-084](../docs/decisions/DEC-084.md) (cervello con pezzi di 504 µm nel limite di tempo).
+
 # Dubbi rinviati
 
 {{< include S2.8b_parts/dubbi.md >}}

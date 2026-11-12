@@ -284,6 +284,8 @@ Dopo S2.5 (nota della v0.6, riga M-163):
 
 **Nota della v0.6 (S2.8, righe M-174...M-179, M-185...M-187).** Superati: la memoria dell'area intera (fatta a pezzi, S2.7); il fondo vicino al bordo (il simulatore usa il fondo adattato insieme alla seconda coda, [DEC-053](/decisions/DEC-053.md); BL-206); la metrica 4.1 di Daniele (misurata in S2.2, BL-204); il gradiente radiale non è un'opzione del codice (S2.3, R-3). Ancora aperto: la verifica dei trascritti per area su una sezione intera contro il vero (S2.6 solo descrittiva, BL-205). Limiti nuovi: (a) tempo della funzione a pezzi oltre il bilancio nel tumore del colon e nell'intestino sulle sezioni ([DEC-077](/decisions/DEC-077.md)); (b) fattori di striscia sopra il tetto M* tagliati (circa un quadratino su 100 000, meno di 6 UMI su un milione; [DEC-075](/decisions/DEC-075.md)); (c) le funzioni dei passi chiamate da sole hanno semi diretti (BL-224); (d) la posizione dei trascritti nella cellula non dipende dal gene, e nessun test lo prova (BL-250).
 
+**Nota del 2026-11-12 (S2.8b).** Con il lato predefinito dei pezzi (504 µm) anche la sezione intera del cervello supera il bilancio di tempo: 334.6 s per mm² di tessuto (`results/S2.7/S2.7_P3_P4.csv`); limite dichiarato ([DEC-084](/decisions/DEC-084.md)), come tumore del colon e intestino ([DEC-077](/decisions/DEC-077.md)).
+
 ## 18. Storico
 
 | data | versione | che cosa | chi |
