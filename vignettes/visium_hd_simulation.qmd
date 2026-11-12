@@ -343,7 +343,8 @@ Limits of the fingerprint:
 - it follows the functions reached from `simulate_visium_hd_pieces()` by name and the constants they read, not functions called through
   `do.call("name")` or `match.fun()`, S3/S4 methods or closures created at run time (none are used in Step 2 today); a change in comments
   only does not change it;
-- the versions of R and of the packages are not in it;
+- package versions are not in it; the version of R enters indirectly, through the serialisation header used for the fingerprints of
+  the profiles and of the cell layer: a folder written with another version of R is refused (fields `profiles`, `layer`);
 - it is checked only if *run.rds* exists: a folder with piece files but without *run.rds* is reused without any check, so never delete
   that file alone (backlog item BL-254);
 - `keep_profiles` is in it: a run made with `assemble = "full"` is resumed as `"light"` only with `keep_profiles = TRUE`;
@@ -383,8 +384,9 @@ names(formals(simulate_visium_hd_pieces))
 ## Lower-level functions
 
 The entry point calls some exported functions directly and re-implements the arithmetic of the others piece by piece. The step functions
-can be run one by one, for example to study one layer in isolation; chained together they give the realisation of the reference engine,
-with the seeds passed directly (design document, section 17; backlog item BL-224), not that of the entry point.
+can be run one by one, for example to study one layer in isolation. Chained together they follow the model of the reference engine; they
+reproduce its realisation only with the same stage seeds (`component_seeds` of `simulate_visium_hd()`), and never that of the entry point
+(design document, section 17; backlog item BL-224).
 
 | function | what it does | called by `simulate_visium_hd_pieces()` |
 |---|---|---|

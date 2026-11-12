@@ -85,8 +85,10 @@ quarto render reports/<id>.qmd                   # report dello step
   ed è voluto ([DEC-080](docs/decisions/DEC-080.md)). Le modifiche al solo motore di riferimento o alle funzioni dei passi che la funzione a
   pezzi non chiama (`build_hd_grid()`, `place_and_move_transcripts()`, `capture_and_bin()` e altre) non la cambiano: se una correzione del
   modello tocca una di queste, va riportata nella funzione a pezzi. Una funzione chiamata con `do.call("nome")` o `match.fun()` sfugge
-  all'impronta: non usarle. La versione di R e dei pacchetti non entra nell'impronta, e un file salvato con `saveRDS()` porta nella sua
-  intestazione la versione di R che l'ha scritto: confronti di md5 fra versioni di R diverse falliscono anche con oggetti identici (S2.8b).
+  all'impronta: non usarle. Le versioni dei pacchetti non entrano nell'impronta; la versione di R sì, indirettamente: le impronte dei profili e del
+  livello cellulare serializzano gli oggetti, e l'intestazione della serializzazione contiene la versione di R, quindi dopo un aggiornamento di
+  R una cartella `out_dir` vecchia non si riprende. Per lo stesso motivo un file salvato con `saveRDS()` porta la versione di R che l'ha
+  scritto: confronti di md5 di file fra versioni di R diverse falliscono anche con oggetti identici (S2.8b: R 4.6.1 → 4.6.2 il 2026-11-05).
 - Nessun interruttore di prova nel codice di produzione: i mutanti sono copie modificate del codice (`tools/mutate.py`,
   `R/testing/mutants_<step>.py`).
 - Test in `R/testing/test_<step>.R`, eseguibili con un solo comando che stampa PASS o FAIL per asserzione e `RESULT n/m PASS`; runner dei

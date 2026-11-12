@@ -3881,7 +3881,7 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
 <p>Limits of the fingerprint:</p>
 <ul>
 <li>it follows the functions reached from <code>simulate_visium_hd_pieces()</code> by name and the constants they read, not functions called through <code>do.call(&quot;name&quot;)</code> or <code>match.fun()</code>, S3/S4 methods or closures created at run time (none are used in Step 2 today); a change in comments only does not change it;</li>
-<li>the versions of R and of the packages are not in it;</li>
+<li>package versions are not in it; the version of R enters indirectly, through the serialisation header used for the fingerprints of the profiles and of the cell layer: a folder written with another version of R is refused (fields <code>profiles</code>, <code>layer</code>);</li>
 <li>it is checked only if <em>run.rds</em> exists: a folder with piece files but without <em>run.rds</em> is reused without any check, so never delete that file alone (backlog item BL-254);</li>
 <li><code>keep_profiles</code> is in it: a run made with <code>assemble = &quot;full&quot;</code> is resumed as <code>&quot;light&quot;</code> only with <code>keep_profiles = TRUE</code>;</li>
 <li>a folder written before step S2.8 has no code fingerprint and is not resumed. Without <code>out_dir</code> a temporary folder is used and deleted.</li>
@@ -3924,7 +3924,7 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
 </section>
 <section id="lower-level-functions" class="level2">
 <h2 class="anchored" data-anchor-id="lower-level-functions">Lower-level functions</h2>
-<p>The entry point calls some exported functions directly and re-implements the arithmetic of the others piece by piece. The step functions can be run one by one, for example to study one layer in isolation; chained together they give the realisation of the reference engine, with the seeds passed directly (design document, section 17; backlog item BL-224), not that of the entry point.</p>
+<p>The entry point calls some exported functions directly and re-implements the arithmetic of the others piece by piece. The step functions can be run one by one, for example to study one layer in isolation. Chained together they follow the model of the reference engine; they reproduce its realisation only with the same stage seeds (<code>component_seeds</code> of <code>simulate_visium_hd()</code>), and never that of the entry point (design document, section 17; backlog item BL-224).</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">

@@ -9,6 +9,10 @@ se esistono nella copia di lavoro. Una funzione esiste se e' definita (`nome <- 
 o esportata da un pacchetto di base o della libreria del progetto. I file inclusi con {{< include ... >}} si controllano anche loro.
 (b) Copertura: ogni argomento di simulate_visium_hd_pieces() (dal sorgente di --tree) compare fra apici inversi nella guida d'uso; ogni
 funzione marcata @export in R/05b*.R compare nella guida d'uso o nel README.
+Portata (revisione di S2.8b, T02): non si controllano i nomi degli argomenti nelle chiamate, le chiamate con argomenti scritte in prosa,
+le ancore interne e i frammenti dei link, le espressioni `r ...` in linea, i blocchi ```{.r}; una funzione conta come definita se e' definita
+in un qualsiasi file .R dell'albero (anche nel codice del 2025). La copertura (b) controlla che un argomento o una funzione sia nominato,
+non che sia descritto bene: per questo c'e' la revisione avversariale.
 
 Uso (radice del repository):
   python3 -B tools/S2.8b_doc_check.py [--tree REV] [--text REV|worktree]   -> PASS/FAIL per riferimento e per voce di copertura, RESULT
