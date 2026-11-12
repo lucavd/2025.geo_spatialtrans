@@ -6,7 +6,7 @@
 Scuola di specializzazione in Statistica medica · supervisore: Luca Vedovelli
 Branch: `thesis/expression-sources` del repository `lucavd/2025.geo_spatialtrans`
 Periodo: **19 ottobre – 31 dicembre 2026**, a tempo pieno. Il 31/12/2026 la tesi è **scritta e consegnata** a Luca.
-Versione del protocollo: 1.4 (2026-11-04)
+Versione del protocollo: 1.5 (2026-11-11)
 
 ---
 
@@ -62,6 +62,7 @@ Dal 26/10 le decisioni nuove si registrano in `DECISIONS.md`, che prevale su que
 | 2026-11-04 | **Repliche.** Metodi su CPU: n_sim con la regola dell'ADEMP (2 × MCSE ≤ δ/2 sulle differenze appaiate), ricalcolato dopo i piloti di linfoide e cervello. cell2location: budget di 240 ore di GPU nelle settimane 7–8; n_c2l = 240 h / tempo di una replica completa (72 dataset, 84 se entra G, più l'addestramento del riferimento di P in ogni tessuto), al massimo pari all'n_sim dei metodi su CPU, minimo 20; sotto 20, cell2location gira solo a 10 cellule per spot. Le differenze appaiate con cell2location si calcolano sulle sue prime n_c2l repliche. Il tempo si misura per primo sul server e si scrive come emendamento prima del run |
 | 2026-11-04 | **Baseline nulla.** Resta la regola per gli spot falliti (proporzioni medie del training). Per ogni metodo si riporta anche l'RMSE relativo alla baseline nulla. Prima del run principale si spiega, con la tabella del pilota del colon, perché a 10 cellule nessun metodo batte la baseline sull'àncora (con α_k = K·p_k la composizione attesa di ogni spot è la quota di training) |
 | 2026-11-04 | **Regola di taglio aggiornata:** prima il braccio G, poi il tessuto cervello. Non si tagliano mai i bracci E, P, C−, E′, O né i tessuti colon e linfoide. Sostituisce la regola del 14/10 e quella dell'ADEMP (G → M → cervello) |
+| 2026-11-11 | **Un solo livello di profondità, quello di Visium HD, uno per tessuto** (UMI per cellula: colon 174, linfonodo 62, cervello 121; fonti nell'ADEMP §2.2). Al livello alto (4.900 UMI per cellula) una parte degli spot restava sotto il target in modo diverso fra àncora e bracci (linfonodo a 10 cellule 33 % contro 53 % di E; cervello a 2 cellule 41 % contro 18 %), cosicché la differenza dall'àncora mescolava fonte di μ e profondità; con il solo livello HD tutti gli spot sono diradati esattamente al target. Coerente con c (calibrato su Visium HD, R6) e con il simulatore principale. Il livello a 10 cellule rappresenta ora un bin di Visium HD aggregato a scala maggiore, non uno spot di Visium standard: le conclusioni su Visium standard escono dalla tesi (limite dichiarato), e la profondità, diversa per tessuto, si aggiunge ai fattori confusi con il tessuto. Condizioni: 5 bracci (E, P, C−, E′, O) × 3 tessuti × 2 livelli di cellule per spot = 30 (36 con G), più l'àncora in 6 condizioni. Dimezza i dataset: il cervello rientra nella finestra (circa 7,7 giorni su 12). Sostituisce i due livelli di profondità della sez. 5.2 e il conteggio delle condizioni dell'ADEMP del 30/10 |
 
 ## 3. Regole di lavoro (non negoziabili)
 
@@ -277,10 +278,10 @@ Si varia **un solo fattore principale**: la fonte della matrice delle medie μ (
 
 Fattori secondari, in griglia fissa:
 - tessuto: colon/tumore del colon, tessuto linfoide, cervello;
-- cellule per spot: 2 livelli;
-- profondità di sequenziamento: 2 livelli.
+- cellule per spot: 2 livelli (2 e 10 cellule);
+- profondità di sequenziamento: **un solo livello, quello di Visium HD, uno per tessuto** (decisione dell'11/11; i due livelli previsti in origine sono stati ridotti a uno).
 
-I livelli esatti si fissano nell'ADEMP della settimana 2, partendo dai dati reali.
+I livelli esatti si fissano nell'ADEMP, partendo dai dati reali.
 
 Generazione dei dati di una replica:
 1. per ogni spot si estrae una composizione da una Dirichlet e si campionano le cellule;
