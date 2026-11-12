@@ -1,0 +1,71 @@
+---
+title: "S2.8b: la guida d'uso e i documenti descrivono la griglia di Visium HD com'è, e lo Step 2 è entrato nel ramo di sviluppo senza perdere nulla?"
+subtitle: "geo_spatialtrans, report di step (protocollo v2)"
+date: today
+lang: it
+format:
+  html:
+    toc: true
+    embed-resources: true
+---
+
+```{r setup}
+#| include: false
+.libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+RV <- read.csv("../results/S2.8b/S2.8b_review_discrepancies.csv", stringsAsFactors = FALSE, check.names = FALSE)
+```
+
+# In breve
+
+{{< include S2.8b_parts/in_breve.md >}}
+
+# Dubbi rinviati
+
+{{< include S2.8b_parts/dubbi.md >}}
+
+# Cancelli e controprove
+
+Pre-registrazione: cancelli `4d2c637`; ok di Luca sulle attese il 2026-11-12 («Approvo (Recommended)»), commit `70651e1`. Nessuna previsione con intervallo: lo step non cambia il modello (G-4). Commit provato finale `fea12bd`. File dello step: `docs/steps/S2.8b.md`. Documenti prodotti: guida d'uso [`vignettes/visium_hd_simulation.html`](../vignettes/visium_hd_simulation.html), guida per Daniele [`reports/S2.8b_guida_revisione.html`](S2.8b_guida_revisione.html).
+
+{{< include S2.8b_parts/esiti.md >}}
+
+# Correzioni dichiarate prima dei verdetti
+
+{{< include S2.8b_parts/correzioni.md >}}
+
+# Revisione avversariale
+
+{{< include S2.8b_parts/revisione.md >}}
+
+Tutte le discrepanze, con la loro chiusura:
+
+```{r review}
+knitr::kable(RV[, c("reviewer", "id", "doc", "written", "correct", "severity", "closure")], row.names = FALSE, format = "html",
+             col.names = c("revisore", "id", "documento", "scritto", "corretto", "gravità", "chiusura"))
+```
+
+# Deviazioni dichiarate
+
+{{< include S2.8b_parts/deviazioni.md >}}
+
+# Cosa è girato
+
+- Commit: cancelli `4d2c637`, ok di Luca `70651e1`, primo commit provato `038f150`, secondo `9102831`, finale `fea12bd`; chiusura nei commit «S2.8b: esiti, revisione, In breve, report» e successivi (solo `docs/`, `reports/`, `CHANGELOG.md`).
+- Script: `tools/S2.8b_doc_check.py` (G-1, CP-1), `R/testing/run_S2.8b.sh` (G-2, G-3, G-4, CP-2); prova del controllo T7b `/mnt/micron/geo_spatialtrans/S2.8b/probe/S2.8b_T7b_check.R`.
+- Semi: quelli scritti negli esempi (README: `random_seed = 42`, `seed = 1`; guida: 42, 7 per i livelli; 1, 2, 3 per le simulazioni); nessun seme nuovo per i test.
+- Durata: tre giri di prove nel clone (10:24-11:05, 10:52-11:32, 11:36-12:39 del 2026-11-12), al più una decina di processi; temperatura in letture puntuali fra 68 e 81 °C, con altri lavori sul server nel terzo giro (carico circa 35).
+- Integrità: profili di espressione 41 file su 41 con l'md5 di `results/S2.2/S2.2_profiles_md5.txt`; file dell'avvio rapido di S1.6b ancora `9f361ea9…`; nessun file versionato di `results/` modificato.
+
+# Appendice
+
+## Perimetro
+
+{{< include S2.8b_parts/perimetro.md >}}
+
+## Attese pre-registrate
+
+{{< include S2.8b_parts/attese.md >}}
+
+## Da dove vengono i numeri del riassunto
+
+{{< include S2.8b_parts/fonti.md >}}

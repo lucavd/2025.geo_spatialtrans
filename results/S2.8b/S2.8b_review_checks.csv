@@ -1,0 +1,150 @@
+reviewer,doc,claim,source,value_read,verdict
+numeri,README.md,Status date 2026-11-12,commit 038f150 date,2026-11-12,ok
+numeri,README.md,Step 2 'merged into dev',git ls-remote origin dev,origin/dev = 9250749 at T; merge foreseen at end of step (G-4),not_verifiable
+numeri,README.md,Step 1 design version 1.9,docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md line 4,Versione 1.9,ok
+numeri,README.md,estimate_pixel_size() 'wrong in five tissues out of six',docs/steps/S1.5.md line 334,'rifiuta o sbaglia in 5 tessuti su 6' (rejects OR is wrong),discrepancy
+numeri,README.md,"preset densities 12419, 8924, 3100, 28096, 1185, 988 (B-043..B-048)",docs/BIO_REFERENCES.md rows B-043..B-048,"12419, 8924, 3100, 28096, 1185, 988",ok
+numeri,README.md,random draws tied to fixed 56 um tiles,R/05b6 line 9 .P27_TILE_UM <- 56,56,ok
+numeri,README.md,Step 2 design version 0.6,design .md line 3,Versione 0.6 (2026-11-11),ok
+numeri,README.md,R 4.6.1,R --version on lesexp-server; /var/log/apt/history.log,R 4.6.2 (r-base-core 4.6.1-9 -> 4.6.2-1; R bin dir mtime 2026-11-12 06:31),discrepancy
+numeri,README.md,"Ubuntu 24.04, GDAL 3.8.4, GEOS 3.12.1, PROJ 9.4.0",/etc/os-release; sf::sf_extSoftVersion(),"Ubuntu 24.04.5; GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0",ok
+numeri,README.md,renv.lock 199 packages,renv.lock at T (Packages),199; also gate_clone.log '199 pacchetti',ok
+numeri,README.md,"Step 1 quick start: 300x300 um square, prints '1118 cellule ... 1.8 s'","S2.8b/official/qs1_1.log, qs1_2.log, qs2_2.log","1118 cells; 2.1 s and 2.0 s (1 um px), 1.9 and 1.8 s (2 um px)",ok
+numeri,README.md,Step 2 quick start 'about 20 seconds on the lab server',mtimes S2.8b/official qs1_cell_df_k.rds -> qs2_k.log (run under concurrent battery load),30.7 s and 29.0 s wall incl. R start-up; no source for 20 s found,discrepancy
+numeri,README.md,Step 2 quick start: 280 um of glass around the tissue,R/05b1 hd_grid_geometry(margin_um = 280),280,ok
+numeri,README.md,Step 1 battery about 35 minutes,docs/steps/S1.6b.md line 176 'circa 36 minuti'; line 124 'poco piu di mezz ora',~36 min,ok
+numeri,README.md,Step 1 battery: GATE G-1 PASS except four known failures,"docs/steps/S1.6b.md (G-3), DEC-011, DEC-023",4 known FAIL,ok
+numeri,README.md,Step 2 batteries 'from a few minutes to about 25 minutes each',S2.8b/official test_S2.*.log mtimes (run in progress at 10:35),"finished: S2.2 9 s, S2.1 17 s, S2.5 28 s, S2.3 38 s, S2.4 89 s, S2.6 2.1 min, S2.8 4.2 min; S2.7 still running after 8.7 min",not_verifiable
+numeri,README.md,profiles at /mnt/micron/geo_spatialtrans/S2.2/profiles,du on server,"exists, 14 739 931 bytes",ok
+numeri,CLAUDE.md,"Step 2 consolidated in S2.8, merged into dev in S2.8b",git ls-remote origin dev,not yet at T (dev = 9250749),not_verifiable
+numeri,CLAUDE.md,design Step 2 v0.6,design line 3,0.6,ok
+numeri,CLAUDE.md,R 4.6.1 on the server (Ubuntu 24.04),R --version,R 4.6.2 since 2026-11-12,discrepancy
+numeri,CLAUDE.md,render of the guide 'circa 3 minuti',S2.8b/probe/render.log (/usr/bin/time),Elapsed 2:52.58,ok
+numeri,CLAUDE.md,run_S1.6.sh test: GATE G-1 PASS con 4 FAIL noti,S1.6b.md,4,ok
+numeri,CLAUDE.md,main process ~40 GB in colorectal cancer (S2.7),results/S2.7/S2.7_P3_P4.csv sec_A2_p504w8 main_peak_gb,39.842 GB (33.695 with 1008 um),ok
+numeri,CLAUDE.md,second tail goes beyond the 280 um margin,design sec. 12 note after S2.5: 2.0-3.6 % of transcripts beyond 280 um,consistent,ok
+numeri,CLAUDE.md,50 cores / 20-28 workers limits,project protocol (not in repo files read),not re-read,not_verifiable
+numeri,vignettes/visium_hd_simulation.qmd,56 um tiles; piece_um multiple of 56 or Inf,"R/05b6 lines 9, 61-62",56; stop() if not multiple,ok
+numeri,vignettes/visium_hd_simulation.qmd,design version 0.6; steps S2.0 to S2.8 in docs/steps,design line 3; git ls-tree docs/steps,0.6; S2.0..S2.8 all present,ok
+numeri,vignettes/visium_hd_simulation.qmd,280 um margin of glass,R/05b1 line 17,margin_um = 280,ok
+numeri,vignettes/visium_hd_simulation.qmd,profiles 15 MB,du -sb /mnt/micron/geo_spatialtrans/S2.2/profiles,14 739 931 B (du -h 15M),ok
+numeri,vignettes/visium_hd_simulation.qmd,disc of intestine 200 um radius on 2 um pixels,"chunk code (px=2, r=200)",as coded; 1561 cells in output,ok
+numeri,vignettes/visium_hd_simulation.qmd,default piece_um = 504,R/05b6 line 494,504,ok
+numeri,vignettes/visium_hd_simulation.qmd,with 1008 um a piece of colorectal cancer and of brain went above 8 GB,S2.7_P3_P4.csv piece_peak_gb,"A2 12.49, A5 9.58 (>8); A1 6.26, A4 4.12, A6 2.00 (<8)",ok
+numeri,vignettes/visium_hd_simulation.qmd,504 keeps one piece within 8 GB on whole capture areas,S2.7_P3_P4.csv p504 rows,"A2 3.78, A5 3.39 GB (A1, A4, A6 not run with 504; <8 GB already with 1008)",ok
+numeri,vignettes/visium_hd_simulation.qmd,'On small areas a single piece is faster' / 'fastest choice is piece_um = Inf',S2.8_summary.csv time_mean,"Inf faster than 504 and 1008 in 6/6 (504/Inf = 1.205,1.239,1.191,1.084,1.224,1.115); but simulate_visium_hd() is faster than Inf in 5/6 (Inf/ref 1.119,1.027,1.071,1.096,1.233; heart 0.971)",ok
+numeri,vignettes/visium_hd_simulation.qmd,"S2.8 table: 1 mm2 areas, six tissues, 3 seeds, one process each, default layers","tools/S2.8_run.R lines 5, 34, 59; S2.8_runs.csv","n=3 per cell, workers=1, frame_open=TRUE in all runs, ref engine with chunk_transcripts=4e6 (default 2e6)",discrepancy
+numeri,vignettes/visium_hd_simulation.qmd,"S2.7: five whole sections, 8 processes, assemble = 'light'","S2.7_P3_P4.csv (sections A1,A2,A4,A5,A6; suffix w8); tools/S2.7_tasks.R line 50","5 sections, 8 workers, light",ok
+numeri,vignettes/visium_hd_simulation.qmd,'areas up to about 1 mm2: piece_um = Inf',S2.8_summary.csv einf peak_max,"max 6.2 GB (<8), max 218 s (<300)",ok
+numeri,vignettes/visium_hd_simulation.qmd,time per mm2 of colorectal cancer and intestine above the 300 s budget (piece section and Known limits),S2.7_P3_P4.csv s_per_mm2_tissue; design sec. 12 'meno di 5 minuti',"A2 388/446, A1 331 (>300) but also brain with default 504 um: 334.64 s/mm2 (>300)",discrepancy
+numeri,vignettes/visium_hd_simulation.qmd,8 GB and 300 s budgets of the design document,design sec. 12 line 179,'un'area di 1 mm2 in meno di 5 minuti e 8 GB',ok
+numeri,vignettes/visium_hd_simulation.qmd,ceiling_q default 1e-5,R/05b6 line 496,1e-5,ok
+numeri,vignettes/visium_hd_simulation.qmd,b is zero in some tissues,rendered output,"A1, A4, A6 = 0; A2, A3 0.1736; A5 0.1474",ok
+numeri,vignettes/visium_hd_simulation.qmd,BL-237: default box starts 5.5 um from the left side of the window,own code on /mnt/micron/geo_spatialtrans/S2.8/e504/A1_r1_k0 grid; S2.8_analysis.py line 82,first tissue bin left edge 5.477 um,ok
+numeri,vignettes/visium_hd_simulation.qmd,BL-237: tissue edge further in on most rows,"own code, rows with tissue = 500","first tissue bin at the box in 4/500 rows (0.8 %); median 54.5 um, p95 184.5, max 208.5",ok
+numeri,vignettes/visium_hd_simulation.qmd,BL-237: same 3 seeds,"S2.8_BL237.csv k = 0,1,2",3,ok
+numeri,vignettes/visium_hd_simulation.qmd,BL-237: 'in the tissue and in the glass next to it the difference is below 2 %',S2.8_BL237.csv + own recomputation from .bin files,tissue zones |ratio-1| <= 0.28 % per seed; glass within 8 um <= 0.26 %; row 'glass between window side and tissue' 1.0184/1.0200/1.0186 (mean 1.019) because it contains 1500 strip bins; without them 1.0004/0.9952/0.9980,ok
+numeri,vignettes/visium_hd_simulation.qmd,BL-237: window changes counts only on the strip,own recomputation,strip 2.51-2.79; inside-window glass minus strip 0.995-1.000; outside window 0.987-1.006 (0.03 UMI/bin),ok
+numeri,vignettes/visium_hd_simulation.qmd,Known limits: UMI and detected genes at 2 and 8 um agree in all six tissues (S2.5),"docs/steps/S2.5.md lines 116-121, 170-175","P-1,P-3,P-4,P-6 after R-2 confirmed 6/6",ok
+numeri,vignettes/visium_hd_simulation.qmd,Known limits: row and column stripes agree in all six tissues (S2.4),docs/steps/S2.4.md lines 163-171,"P-1 5 conf/7 indet, P-2 8/4, P-3 11/1, 0 refuted: 24/36 confirmed",discrepancy
+numeri,vignettes/visium_hd_simulation.qmd,Known limits: too few empty bins in intestine and colorectal cancer,S2.5.md line 181,refuted: 1/17 and 1/13 of real,ok
+numeri,vignettes/visium_hd_simulation.qmd,folder written before S2.8 has no code fingerprint,"R/05b6 fp fields (code hash added in S2.8, DEC-080)",consistent,ok
+numeri,vignettes/visium_hd_simulation.qmd,rendered table time/memory (24 rows),results/S2.8/S2.8_summary.csv recomputed; also re-derived from S2.8_runs.csv (max diff 3e-14),24/24 match HTML,ok
+numeri,vignettes/visium_hd_simulation.qmd,rendered table whole sections (7 rows),results/S2.7/S2.7_P3_P4.csv; s/mm2 recomputed as process_s/tissue_mm2,7/7 match HTML,ok
+numeri,vignettes/visium_hd_simulation.qmd,rendered BL-237 table (9 rows),S2.8_BL237.csv and own recomputation from raw .bin,9/9 match HTML (n bins identical to own code),ok
+numeri,reports/S2.8b_guida_revisione.qmd,nove step S2.0-S2.8,docs/steps,9,ok
+numeri,reports/S2.8b_guida_revisione.qmd,subtitle 'unito in dev in S2.8b',git ls-remote origin dev,not yet at T,not_verifiable
+numeri,reports/S2.8b_guida_revisione.qmd,280 um margin; 56 um tiles,"R/05b1, R/05b6",280; 56,ok
+numeri,reports/S2.8b_guida_revisione.qmd,design v0.1 (2026-11-04) -> v0.6,design sec. 18,v0.1 2026-11-04; v0.6 2026-11-11,ok
+numeri,reports/S2.8b_guida_revisione.qmd,table sec. 16 (rows 'revisione'),design lines 233-245,"10 rows, identical in HTML",ok
+numeri,reports/S2.8b_guida_revisione.qmd,table sec. 18 storico,design lines 287-301,"11 rows, identical in HTML",ok
+numeri,reports/S2.8b_guida_revisione.qmd,map rows 187,S2.8_design_map.csv,187,ok
+numeri,reports/S2.8b_guida_revisione.qmd,status counts 124/37/19/5/2,S2.8_design_map.csv status,"consistent 124, design_behind 37, untested 19, code_deviates 5, unclear 2; HTML same",ok
+numeri,reports/S2.8b_guida_revisione.qmd,non-consistent rows all have an action,S2.8_design_map_actions.csv,"63 rows, 63/63 matched, 0 empty",ok
+numeri,reports/S2.8b_guida_revisione.qmd,action counts 39/18/2/1/1/2,S2.8_design_map_actions.csv,"39, 18, 2, 1, 1, 2; HTML same",ok
+numeri,reports/S2.8b_guida_revisione.qmd,"per-section table (31 rows: rows, consistent)",own split of S2.8_design_map.csv,31/31 match HTML; sums 187 / 124,ok
+numeri,reports/S2.8b_guida_revisione.qmd,five code_deviates rows and outcomes,map + actions,"M-014, M-017, M-018, M-073, M-106; HTML same",ok
+numeri,reports/S2.8b_guida_revisione.qmd,'circa un quarto dei file degli step' (S2.8 D-4),docs/steps/S2.8.md line 170,'circa 90 KB su 380' = 23.7 %,ok
+numeri,reports/S2.8b_guida_revisione.qmd,"G1 batteries PASS 21/36/39/37/40/33/78/46, 0 FAIL",S2.8_G1_summary.txt and per-test logs (PASS lines counted),identical; HTML same,ok
+numeri,reports/S2.8b_guida_revisione.qmd,1080 equal of 1080 expected; 6 different of 6,S2.8_G2_identity.csv (1086 rows; equal==md5 match verified),1080/1080; 6/6; HTML same,ok
+numeri,reports/S2.8b_guida_revisione.qmd,'le simulazioni di S2.7 e S2.5 rifatte ... 1080 confronti',S2.8_G2_identity.csv group column; S2.8.md line 119,only 324 (E504 vs S2.7) + 72 (S2.5 engine vs saved S2.5/S2.7) = 396 are reruns of earlier steps; 684 are E1008/EInf vs E504,discrepancy
+numeri,reports/S2.8b_guida_revisione.qmd,'6 file diversi su 6' with a different overgeneration ceiling,S2.8.md CP-2 (ceiling_q 1e-4),"d_cp2_vs_S2.7: 6 rows, all different",ok
+numeri,reports/S2.8b_guida_revisione.qmd,section 6 time over budget only colorectal cancer and intestine,S2.7_P3_P4.csv,brain 504 um = 334.64 s/mm2 also >300,discrepancy
+numeri,reports/S2.8b_guida_revisione.qmd,"report links S2.0..S2.8, R4, R5, R7",git ls-tree reports at T,all present; S2.8b.html not at T (expected later),ok
+numeri,reports/S2.8b_guida_revisione.qmd,DEC-033 point 6 = no questions for Daniele,DEC-033.md,point 6 matches,ok
+numeri,reports/S2.8b_guida_revisione.qmd,"Daniele's two comments 'di aprile' (C-A, C-B)",not found with a date in docs,-,not_verifiable
+numeri,docs/decisions/DEC-081.md,"DESCRIPTION version 0.2.0, date 2026-11-12",git diff 48a5f18 038f150 -- DESCRIPTION,"Version 0.2.0, Date 2026-11-12; only Version, Date, Description changed",ok
+numeri,docs/decisions/DEC-081.md,version not in resume fingerprint,R/05b6 lines 554-558 fp,no package_version field,ok
+numeri,docs/decisions/DEC-082.md,"main fermo al 2025-04-03, 5 commit propri",git log origin/dev..origin/main,"5 commits, last ec29fd6 2025-04-03",ok
+numeri,docs/decisions/DEC-082.md,"due script di confronto dei cluster di Daniele, un poster",same,"422896e, 3790fad by Danielesabbatini1; poster.md (53c309c)",ok
+numeri,docs/decisions/DEC-082.md,circa 150 MB di risultati e log binari,git rev-list --objects origin/main --not origin/dev + cat-file sizes,binary (rds/png/pdf) 174.7 MB (166.6 MiB) + logs 4.3 MB = 179.1 MB,discrepancy
+numeri,docs/decisions/DEC-082.md,git merge-tree trova un conflitto di rinomina su un file binario,"git merge-tree --write-tree (git 2.43.0) in a --shared scratch clone, main x {9250749, 038f150}, both orders",only 'CONFLICT (content): Merge conflict in .gitignore'; no rename conflict,discrepancy
+numeri,docs/steps/S2.8b.md (tip),"main fermo al 2025-04-03, 5 commit propri",git log origin/dev..origin/main,"5 commits, last ec29fd6 2025-04-03",ok
+numeri,docs/steps/S2.8b.md (tip),"due script di confronto dei cluster di Daniele, un poster",same,"422896e, 3790fad by Danielesabbatini1; poster.md (53c309c)",ok
+numeri,docs/steps/S2.8b.md (tip),circa 150 MB di risultati e log binari,git rev-list --objects origin/main --not origin/dev + cat-file sizes,binary (rds/png/pdf) 174.7 MB (166.6 MiB) + logs 4.3 MB = 179.1 MB,discrepancy
+numeri,docs/steps/S2.8b.md (tip),git merge-tree trova un conflitto di rinomina su un file binario,"git merge-tree --write-tree (git 2.43.0) in a --shared scratch clone, main x {9250749, 038f150}, both orders",only 'CONFLICT (content): Merge conflict in .gitignore'; no rename conflict,discrepancy
+numeri,docs/steps/S2.8b.md (tip),"origin/dev = 9250749 ancestor of branch: 0 own commits, 110 to add",git rev-list --count,9250749..48a5f18 = 110; 48a5f18..9250749 = 0,ok
+numeri,docs/steps/S2.8b.md (tip),main on GitHub = ec29fd6,git ls-remote origin main,ec29fd65,ok
+numeri,docs/steps/S2.8b.md (tip),profiles 15 MB,du,14.7 MB,ok
+numeri,docs/steps/S2.8b.md (tip),S2.8 approved by Luca 2026-11-12,docs/steps/S2.8.md pi_approval,at: 2026-11-12,ok
+numeri,docs/steps/S2.8b.md (tip),"G-3 assertion counts 21, 36, 39, 37, 40, 33, 78, 46",S2.8_G1_summary.txt,identical,ok
+numeri,docs/steps/S2.8b.md (tip),G-2(a) md5 of cell_df = 9f361ea9... (as S1.6b),S1.6b/official/qs_cell_df_*.rds vs S2.8b/official/qs1_cell_df_*.rds,"S1.6b 9f361ea9; at T on R 4.6.2: 57b56094 (gate_quickstart.log FAIL); files differ only in byte 10 (writer R version 4.6.1 vs 4.6.2); all.equal TRUE, every column identical",discrepancy
+numeri,docs/steps/S2.8b.md (tip),gate commit 4d2c637; Luca ok 2026-11-12,git log,"4d2c637, 70651e1 present",ok
+numeri,docs/steps/S2.8b.md (tip),CP-2 piece_um = 500 not a multiple of 56,arithmetics,500/56 = 8.93,ok
+numeri,docs/steps/S2.8b.md (tip),"estimate: examples on areas 0.16-0.25 mm2, 30-60 s each",vignette code; probe/probe.log,"disc r=200 um = 0.126 mm2, square 300x300 um = 0.09 mm2; 30.5 s (Inf), 31.3 s (112 um, 2 workers)",discrepancy
+numeri,docs/steps/S2.8b.md (tip),estimate: Step 1 battery ~36 min; clone+library ~1 min; two renders ~10 min,S1.6b.md line 176; gate_clone.log; render.log,36 min; restore 0.3 min; one render 2:52.6,ok
+codice,vignettes/visium_hd_simulation.qmd,capture probability c/M*,"R/05b6_simulate_visium_hd_pieces.R L411 rbinom(n, c_t/Ms); run on A2 square",obs/exp captured = 0.9977 (M*=4.698 = stripe_ceiling(capture_params('A2'))),ok
+codice,vignettes/visium_hd_simulation.qmd,background Poisson(b c) with the cut factor c,"R/05b6_simulate_visium_hd_pieces.R L425 rpois(b*ct[bb]), ct=pmin(c_raw,Ms) L605","obs/exp = 0.9955, z = -0.63 (A2, b=0.1736)",ok
+codice,vignettes/visium_hd_simulation.qmd,b is zero in some tissues,R/05b4 .s24_tab,"b = 0 in A1, A4, A6; 0.1736 A2/A3; 0.1474 A5",ok
+codice,vignettes/visium_hd_simulation.qmd,"metadata$overgeneration = truth$layers$stripes$M; bins$c used, bins$c_raw raw","R/05b6_simulate_visium_hd_pieces.R L605, L625-632, L646",names verified on a run,ok
+codice,vignettes/visium_hd_simulation.qmd,metadata$truncated_share = share of transcripts affected,"R/05b6_simulate_visium_hd_pieces.R L449, L685",sum(arrived*(c_raw-c))/sum(arrived*c_raw): share of expected capture removed by the cut,discrepancy
+codice,vignettes/visium_hd_simulation.qmd,"ceiling_q default 1e-5, probability that a raw factor exceeds M*","R/05b6_simulate_visium_hd_pieces.R L13-38, L496","q=1e-5, quantile 1-q of the per-bin factor law",ok
+codice,vignettes/visium_hd_simulation.qmd,frame_open: frame counts twice (fold of second tail + outside frame = tissue in edge distance),"R/05b6_simulate_visium_hd_pieces.R L198-202, L268",as written,ok
+codice,vignettes/visium_hd_simulation.qmd,default frame = bounding box of territories and regions,"R/05b6_simulate_visium_hd_pieces.R L522, L525","run: frame 0,0,120,120 = bbox",ok
+codice,vignettes/visium_hd_simulation.qmd; CLAUDE.md,"second tail lost outside the grid with frame_open=FALSE, folded with TRUE",R/05b6_simulate_visium_hd_pieces.R L263-276; runs,A2 square: lost 14642 (closed) vs 0 (open); A1 crop: 101617 vs 22 (first tail still exits); second_tail=FALSE: 0,ok
+codice,vignettes/visium_hd_simulation.qmd,"frame given as c(xmin, ymin, xmax, ymax)",R/05b6_simulate_visium_hd_pieces.R L526,"unnamed c(0,0,60,60) -> error; named vector works",discrepancy
+codice,vignettes/visium_hd_simulation.qmd,"keep_profiles default TRUE with full, FALSE with light",R/05b6_simulate_visium_hd_pieces.R L500,as written,ok
+codice,vignettes/visium_hd_simulation.qmd; roxygen L483,keep_profiles=TRUE keeps truth$cell_counts,R/05b6_simulate_visium_hd_pieces.R L687-689 vs L707-711,"assemble='light', keep_profiles=TRUE: truth = cells, genes, background, layers; cell_counts absent",discrepancy
+codice,vignettes/visium_hd_simulation.qmd,"cell_layer may be an RDS path, read and freed","R/05b6_simulate_visium_hd_pieces.R L505-506, L576",same counts as object (identical counts_8um); file untouched,ok
+codice,vignettes/visium_hd_simulation.qmd,"stage seeds drawn from seed (metadata$component_seeds), RNG state restored","R/05b6_simulate_visium_hd_pieces.R L45-53, L501-504",6 seeds; .Random.seed and RNGkind restored; absent seed stays absent,ok
+codice,vignettes/visium_hd_simulation.qmd,"run.rds contents: arguments, code, profiles, cell layer fingerprints",R/05b6_simulate_visium_hd_pieces.R L554-559,"17 fields: seed,piece_um,archetype,layers,frame_open,frame,ceiling_q,Mstar,depth,n_cells,grid,keep_profiles,cell_xy,step1_seed,code,profiles,layer (assemble, workers, verbose excluded)",ok
+codice,vignettes/visium_hd_simulation.qmd,if any fingerprint field differs the function stops and names the fields,R/05b6_simulate_visium_hd_pieces.R L561-566; runs,seed 4 -> 'campi: seed'; light after full -> 'campi: keep_profiles'; without run.rds a seed-4 call silently reuses seed-3 files,discrepancy
+codice,vignettes/visium_hd_simulation.qmd,a folder written before S2.8 has no code fingerprint and is not resumed,"git log -S run.rds (d5e0cfa S2.7, 1ecf81c S2.8); run without 'code' field",refused: 'campi: code',ok
+codice,vignettes/visium_hd_simulation.qmd,out_dir default temporary and deleted,R/05b6_simulate_visium_hd_pieces.R L550-553,0 s27_pieces_ folders left in tempdir,ok
+codice,vignettes/visium_hd_simulation.qmd,resume reuses all pieces and gives the same counts,"run piece_um=56, out_dir, workers=2",507/507 reused; counts_2um and origin identical,ok
+codice,vignettes/visium_hd_simulation.qmd,comment-only change does not change the code fingerprint,R/05b5 L66-96; deparse test,deparse without useSource ignores comments: TRUE,ok
+codice,vignettes/visium_hd_simulation.qmd,".geo_version(): installed package else DESCRIPTION in getOption('geo.spatialtrans.root','.'); unknown elsewhere",R/05b5 L109-116; runs,treeT: 'geo.spatialtrans 0.2.0'; tempdir: '(versione sconosciuta)'; option: 0.2.0; package not installed in project library,ok
+codice,vignettes/visium_hd_simulation.qmd; CLAUDE.md,"profiles from /mnt/micron/geo_spatialtrans/S2.2/profiles, option geo.spatialtrans.profiles_dir, 15 MB",R/05b2 L16; du,default read at call time; 15M,ok
+codice,vignettes/visium_hd_simulation.qmd,"assemble='light' content: UMI per 2 um bin, 8 um matrix, cell and gene tables, without 2 um matrix and per-bin truth",R/05b6_simulate_visium_hd_pieces.R L687-689,light also keeps truth$background (per-bin) and bins with c/c_raw,discrepancy
+codice,vignettes/visium_hd_simulation.qmd,"output table: names of elements, bins columns",R/05b6_simulate_visium_hd_pieces.R L641-715; run,"bins: bin_id,i,j,x,y,i8,j8,bin8_id,tissue_area_um2,tissue_frac,in_tissue,c,c_raw; in_tissue = frac>=0.5; truth names match",ok
+codice,vignettes/visium_hd_simulation.qmd,"bins_8um: centre, tissue area, in_tissue",R/05b6_simulate_visium_hd_pieces.R L647-653,"in_tissue = n_in_tissue > 0 (any 2 um bin), column n_in_tissue not listed",discrepancy
+codice,vignettes/visium_hd_simulation.qmd,"metadata checks: each cell/bin once, conservation, 8 um = sums of 2 um",R/05b6_simulate_visium_hd_pieces.R L675-694,"9 checks, all TRUE",ok
+codice,vignettes/visium_hd_simulation.qmd,"movement: short displacement, wider edge blur, long second tail (transcript_params())",R/05b6_simulate_visium_hd_pieces.R L257-269; R/05b3 L18-25; design s.6,"omits first exponential tail (w 0.040-0.112, ell 24.7-41.5 um); w2/ell2 come from capture_params()",discrepancy
+codice,vignettes/visium_hd_simulation.qmd,Lower-level functions: 'the functions behind simulate_visium_hd_pieces()',R .geo_code_parts('simulate_visium_hd_pieces'),"not called: build_hd_grid, hd_tissue_area, hd_overlap, s23_gamma_field, place_and_move_transcripts, capture_and_bin, visium_hd_chunk_size, simulate_visium_hd",discrepancy
+codice,vignettes/visium_hd_simulation.qmd,20 exported functions listed (table + entry point),grep @export R/05b*.R; tool INFO,"20 exported, all 20 in the guide",ok
+codice,vignettes/visium_hd_simulation.qmd,piece_um default 504; 1008 um pieces of CRC and brain above 8 GB,results/S2.7/S2.7_P3_P4.csv,"A2 12.49 GB, A5 9.58 GB at 1008; A2 3.78 at 504",ok
+codice,vignettes/visium_hd_simulation.qmd,single piece faster on small areas,results/S2.8/S2.8_summary.csv,einf < e504 in 6/6 (e.g. A2 218 vs 270 s),ok
+codice,vignettes/visium_hd_simulation.qmd,time per mm2 above 300 s only for CRC and intestine (also Known limits),results/S2.7/S2.7_P3_P4.csv s_per_mm2_tissue,"504 um: A2 445.74, A5 334.64; 1008: A2 388.49, A1 330.51, A5 263.32; A1 not run at 504",discrepancy
+codice,vignettes/visium_hd_simulation.qmd,BL-237: default box 5.5 um from window side; difference < 2% in tissue and adjacent glass,results/S2.8/S2.8_BL237.csv,"strip x0_5.48; tissue ratios 0.997-1.002; 'glass between window side and tissue' 1.018/1.020/1.019 (mean 1.019; seed 1 = 2.005%, due to the strip itself)",ok
+codice,vignettes/visium_hd_simulation.qmd,committed HTML fingerprints come from the code at T,own rerun at T in review_code/treeT,"5/5 identical: disc_counts_2um b2fa886b..., disc_counts_8um 1a7210d8..., disc_origin 744386aa..., flat a03c45fa..., crop_open eae33ca4...",ok
+codice,vignettes/visium_hd_simulation.qmd,S2.5/S2.4 agreement in all six tissues,"docs/steps/S2.5.md, S2.4.md In breve",consistent,ok
+codice,vignettes/visium_hd_simulation.qmd,Known limits list vs design s.17 and DEC-050/059/065/069/070/077,design s.17; DEC files,"DEC citations consistent; list omits lumens/acellular space (BL-201), slow stripes (DEC-056), ceiling cut (DEC-075), direct seeds of step functions (BL-224), orientation index (BL-236), heart notes, BL-205",discrepancy
+codice,vignettes/visium_hd_simulation.qmd; README.md,Step 1 limit: too many touching nuclei in dense tissues (README: CRC and lymph node),DEC-063; design s.17,lymph node: no excess shown; CRC undecided; stroma and nucleus pairs remain,discrepancy
+codice,README.md,quick start Step 2 takes about 20 seconds,own run,21.2 s for the simulation (server loaded),ok
+codice,README.md,renv.lock 199 packages,json count,199,ok
+codice,README.md,no NAMESPACE yet,git ls-tree,absent,ok
+codice,README.md,each Step 2 battery exits with status 0 only if every assertion passes,R/testing/test_S2.3.R,test_S2.3.R has no quit(status=...): exits 0 with FAIL lines,discrepancy
+codice,README.md,batteries take a few minutes to about 25 minutes,results/S2.8/S2.8_G1_summary.txt (file times only),start times not recorded,not_verifiable
+codice,README.md; CLAUDE.md,Step 2 merged into dev,git ls-remote origin,"dev = 9250749, step2-visium-grid = 038f150 (not merged at review time)",discrepancy
+codice,README.md,"repository map (paths, reports html next to qmd, mutants)",git ls-tree,consistent,ok
+codice,CLAUDE.md,every change of Step 2 code changes the resume fingerprint,.geo_code_parts,66 parts; 8 of 20 exported functions not in the hash,discrepancy
+codice,CLAUDE.md,Step 2 reads cell layers of real areas from S1.6/layers,git grep,only tools/S2.x scripts; simulator and test_S2.*.R do not,discrepancy
+codice,CLAUDE.md,main process ~40 GB in CRC (S2.7),S2.7_P3_P4.csv,"39.842 GB (A2, 504 um)",ok
+codice,CLAUDE.md,no .Rprofile in vignettes/,git ls-tree,only root .Rprofile,ok
+codice,CLAUDE.md,guide render takes about 3 minutes,not rendered (forbidden to touch official clone),-,not_verifiable
+codice,reports/S2.8b_guida_revisione.qmd,"section 1: steps, files, 280 um margin, DEC-079/074/037/040",code + DEC titles,consistent except tail omission and DEC-051,ok
+codice,reports/S2.8b_guida_revisione.qmd,second tail recorded by DEC-051,DEC-051 frontmatter,"status deprecated, superseded_by DEC-053; values in code from DEC-053",discrepancy
+codice,tools/S2.8b_doc_check.py,run --tree/--text 038f150; --mutants; --counterproof,server run,377/377 PASS; 3/3 mutants; CP-1 PASS (1/35 covered),ok
+codice,tools/S2.8b_doc_check.py,paths 'exist in the tree' (G-1a),path_ok regex without $; probe,"prefixes 'R/05b', 'docs/decisions/DEC-08', 'vignettes/visium_hd_simulation.qm' pass; 10/10 extra mutants missed",discrepancy
+codice,R/testing/run_S2.8b.sh,guide CHECK lines verify resume and refusal,script L56-63; vignette chunk resume,"resume_same_counts compares first vs hd, not the resumed run; NA accepted; committed HTML only INFO",discrepancy
+codice,DESCRIPTION,"T vs 48a5f18 changes only Version, Date, Description; version does not affect fingerprint or counts",git diff; grep package_version; run.rds fields,"0.1.0->0.2.0, 2026-10-30->2026-11-12, Description; version only in metadata$package_version",ok

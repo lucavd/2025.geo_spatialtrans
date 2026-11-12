@@ -1,0 +1,3 @@
+- **D-1, tre commit provati** invece di uno (correzioni dello strumento C-1 e della revisione C-2); ogni cancello è stato rifatto sul commit finale.
+- **D-2, quarto mutante** in G-1 (percorso troncato), aggiunto dopo la revisione: il cancello come scritto (3/3) è superato anche così.
+- **D-3, calcolo più lungo della stima**: tre giri invece di uno.

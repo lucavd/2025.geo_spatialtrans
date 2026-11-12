@@ -1,5 +1,15 @@
 # Registro delle modifiche
 
+## 2026-11-12 (S2.8b, esiti)
+
+* **Modifica**: [La guida d'uso, il README, le istruzioni del progetto e la guida per Daniele descrivono lo Step 2 com'è, e il ramo della griglia entra in quello di sviluppo senza perdere nulla? (S2.8b)](steps/S2.8b.md): correzioni, esiti, revisione avversariale, deviazioni, riassunto «In breve», dubbi rinviati.
+* **Creazione**: [S2.8b: scelte tecniche dei documenti e dell'unione dello Step 2 (guida d'uso eseguita, versione 0.2.0, controllo dei documenti esteso) (DEC-081)](decisions/DEC-081.md) e [S2.8b: scelte di Luca all'apertura (main invariato, guida d'uso in inglese) (DEC-082)](decisions/DEC-082.md).
+* **Modifica**: BACKLOG (chiusa BL-248; nuove BL-253...BL-258; nota in BL-246); nota datata in [Il codice dello Step 2 fa ciò che dice il documento di progetto, e quale funzione deve essere l'ingresso del simulatore? (S2.8)](steps/S2.8.md); ROADMAP sezione 7; CHANGELOG.
+
+## 2026-11-12 (S2.8b)
+
+* **Creazione**: [La guida d'uso, il README, le istruzioni del progetto e la guida per Daniele descrivono lo Step 2 com'è, e il ramo della griglia entra in quello di sviluppo senza perdere nulla? (S2.8b)](steps/S2.8b.md): perimetro, scelte di Luca all'apertura, cancelli e controprove; ok di Luca sulle attese.
+
 ## 2026-11-12 (S2.8, chiusura)
 
 * **Chiusura**: [Il codice dello Step 2 fa ciò che dice il documento di progetto, e quale funzione deve essere l'ingresso del simulatore? (S2.8)](steps/S2.8.md) chiuso con l'approvazione di Luca («ok chiudi»), nessuna decisione.
