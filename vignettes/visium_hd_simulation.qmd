@@ -1,0 +1,419 @@
+---
+title: "Simulating Visium HD data with geo.spatialtrans"
+subtitle: "Usage guide for Step 2: from simulated cells to 2 µm and 8 µm counts"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    embed-resources: true
+    code-overflow: wrap
+execute:
+  echo: true
+  error: false
+  warning: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+# The guide is rendered from the repository root:
+#   R_LIBS=$PWD/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu quarto render vignettes/visium_hd_simulation.qmd
+# Code chunks run with the repository root as working directory, as a user script would.
+knitr::opts_knit$set(root.dir = normalizePath(".."))
+knitr::opts_chunk$set(fig.width = 6, fig.height = 5, dpi = 110)
+```
+
+This guide shows how to turn a simulated cell layer (Step 1) into Visium HD data (Step 2): gene counts on the 2 µm grid, their sums on
+8 µm bins, and the ground truth that a method can be scored against. Every code chunk below runs when the guide is rendered, on the lab
+server, with the project library; the numbers in the outputs come from that run.
+
+The entry point is `simulate_visium_hd_pieces()` (decision [DEC-079](../docs/decisions/DEC-079.md)). It splits the area into square
+pieces, simulates each cell once in the piece that holds its centre, and passes the transcripts that land in another piece to that piece.
+All random draws are tied to fixed 56 µm tiles, so **the result does not depend on the piece size or on the number of processes**
+([DEC-074](../docs/decisions/DEC-074.md)). `simulate_visium_hd()`, written earlier (step S2.5), stays in the code as the reference
+engine of the test batteries: with the same seed it gives another realisation of the same model, not the same counts.
+
+## What the simulator does
+
+The model is described in the Step 2 design document, `docs/superpowers/specs/2026-11-03-step2-visium-grid-design.md` (version 0.6);
+the steps that built and checked each part are in `docs/steps/` (S2.0 to S2.8). In short, for each cell of the cell layer:
+
+1. **Grid and geometric truth** (`build_hd_grid()`): a 2 µm grid around the tissue with a 280 µm margin of glass; for every pair
+   (bin, cell) the area of the bin covered by the cell territory and by its nucleus.
+2. **Transcripts per cell** (`simulate_cell_profiles()`): a subtype and a total number of transcripts for each cell, and gene counts drawn
+   from the expression profiles of its tissue (`load_cell_profiles()`), scaled by a depth factor (`visium_hd_depth_factor()`).
+3. **Position and movement** (`place_and_move_transcripts()`): each transcript is born in the nucleus or in the cytoplasm, with a fine
+   random field at 1-2 µm, and then moves: a short displacement everywhere, a wider blur near the tissue edge, and a long second tail
+   that reaches the glass (`transcript_params()`).
+4. **Capture and binning** (`capture_and_bin()`): row and column stripes of the capture efficiency (`simulate_stripes()`), thinning to
+   the expected capture, a background on every bin, and the sum to 8 µm bins (`sum_to_8um()`). The capture parameters of each tissue are
+   in `capture_params()`.
+
+Transcripts are generated in excess and thinned by the stripe factor; the excess (the overgeneration) has a fixed ceiling for each tissue
+(`stripe_ceiling()`, [DEC-075](../docs/decisions/DEC-075.md)).
+
+## Setup
+
+From the repository root, after `Rscript --vanilla tools/restore_library.R` (see `README.md`). The expression profiles are read from the
+server data volume (`/mnt/micron/geo_spatialtrans/S2.2/profiles`, 15 MB); another folder can be set with
+`options(geo.spatialtrans.profiles_dir = ...)`.
+
+```{r}
+#| label: load
+.libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+suppressPackageStartupMessages({ library(sf); library(geos); library(Matrix) })
+for (f in sort(list.files("R", pattern = "^(04b|05b).*\\.R$", full.names = TRUE))) source(f)
+```
+
+Messages and error texts of the code are in Italian.
+
+## A first simulation
+
+A disc of mouse small intestine, 200 µm in radius, drawn on 2 µm pixels. `place_cells()` builds the cell layer (Step 1, see
+`README.md`); the preset decides the tissue, and `visium_hd_archetype()` maps it to the tissue code of the Step 2 parameters (A1 is the
+intestine, A2 the colorectal cancer, A3 its stroma, A4 the lymph node, A5 the mouse brain, A6 the heart).
+
+```{r}
+#| label: layer
+px <- 2
+xy <- expand.grid(x = 1:240, y = 1:240)
+disc <- (xy$x * px - 240)^2 + (xy$y * px - 240)^2 <= 200^2
+clust <- data.frame(xy[disc, ], intensity_cluster = 1L)
+cl <- place_cells(clust, tissue_preset = "epithelial", pixel_size_um = px, random_seed = 42)
+visium_hd_archetype(cl)
+```
+
+The simulation needs the cell layer and a seed. On a small area the fastest choice is a single piece, `piece_um = Inf` (see
+[Piece size, time and memory](#piece-size-time-and-memory)).
+
+```{r}
+#| label: sim
+hd <- simulate_visium_hd_pieces(cl, seed = 1, piece_um = Inf)
+dim(hd$counts_2um)     # genes x 2 um bins (tissue, lumens and glass)
+dim(hd$counts_8um)     # genes x 8 um bins
+unlist(hd$metadata$checks)
+hd$metadata[c("archetype", "n_cells", "overgeneration", "n_generated", "n_captured", "n_background", "package_version")]
+```
+
+The internal checks (`metadata$checks`) confirm that every cell and every bin was simulated once, that transcripts are conserved through
+generation, loss, thinning and capture, and that the 8 µm counts are the sums of the 2 µm counts.
+
+```{r}
+#| label: fig-umi8
+#| fig-cap: "UMI per 8 µm bin of the simulated disc of intestine (seed 1). The square is the whole simulated grid, with 280 µm of glass around the tissue."
+library(ggplot2)
+b8 <- hd$bins_8um
+b8$umi <- Matrix::colSums(hd$counts_8um)
+ggplot(b8, aes(x, y, fill = umi)) + geom_raster() + coord_equal() +
+  scale_fill_viridis_c(trans = "sqrt", name = "UMI / 8 µm bin") +
+  labs(x = "x (µm)", y = "y (µm)") + theme_minimal(base_size = 10)
+```
+
+## What comes out
+
+With `assemble = "full"` (the default) the result is a list with the same structure as `simulate_visium_hd()`:
+
+| element | content |
+|---|---|
+| `counts_2um` | sparse matrix genes × 2 µm bins, all bins of the grid |
+| `counts_8um` | sparse matrix genes × 8 µm bins (sums of 4 × 4 bins of 2 µm) |
+| `bins` | one row per 2 µm bin: grid row and column, centre (µm), 8 µm bin, tissue area and fraction, `in_tissue` (fraction ≥ 0.5), stripe factor used (`c`) and raw (`c_raw`) |
+| `bins_8um` | one row per 8 µm bin: centre, tissue area, `in_tissue` |
+| `truth$overlap`, `truth$overlap_8um` | for every pair (bin, cell): area and fraction of the bin covered by the territory and by the nucleus |
+| `truth$origin`, `truth$origin_8um` | for every pair (bin, cell): captured transcripts of that cell in that bin, and how many were born in the nucleus |
+| `truth$background`, `truth$background_8um` | background UMI per bin (not from any cell) |
+| `truth$arrived_2um` | transcripts that arrived in each 2 µm bin before capture |
+| `truth$cell_counts` | genes × cells matrix of the transcripts generated for each cell (the true profiles; kept when `keep_profiles = TRUE`, the default with `assemble = "full"`) |
+| `truth$cells`, `truth$genes` | per cell and per gene: generated, lost, thinned and captured transcripts; cell type and subtype |
+| `truth$layers` | the technical layers actually used: stripe factors and their ceiling, background, displacement parameters, fine field, depth |
+| `metadata` | seeds, pieces, grid, ceiling, checks, time and memory per stage and piece, version and fingerprints of the code and of the profiles |
+
+```{r}
+#| label: outputs
+names(hd$truth)
+head(hd$truth$origin)
+head(hd$truth$cells[, c("cell_id", "cell_type", "subtype", "n_transcripts_generated", "n_captured")])
+```
+
+## Ground truth for scoring methods
+
+The truth tables are what a method is scored against. Two examples. **Bin-to-cell assignment**: the share of the cell-derived UMI of a
+2 µm bin that comes from the cell whose territory covers most of the bin (1 would mean no transcript moved across territories).
+
+```{r}
+#| label: truth-purity
+ov <- hd$truth$overlap
+top <- ov[order(ov$bin_id, -ov$frac_territory), ]
+top <- top[!duplicated(top$bin_id), c("bin_id", "cell_id")]
+og <- hd$truth$origin
+tot <- tapply(og$n, og$bin_id, sum)
+own <- merge(og, top, by = c("bin_id", "cell_id"))
+own_n <- tapply(own$n, own$bin_id, sum)
+in_t <- hd$bins$bin_id[hd$bins$in_tissue]
+share <- own_n[as.character(in_t)] / tot[as.character(in_t)]
+summary(as.numeric(share[!is.na(share)]))
+```
+
+**Cell-level truth**: `truth$cell_counts` holds the transcripts generated for each cell before movement and capture; together with
+`truth$origin` it gives the expected recovery of a segmentation-based method, cell by cell.
+
+```{r}
+#| label: truth-cells
+cc <- hd$truth$cell_counts
+dim(cc)
+all.equal(as.numeric(Matrix::colSums(cc)), hd$truth$cells$n_transcripts_generated)
+```
+
+The background is kept apart from the cells (`truth$background`): it is not in `truth$origin`.
+
+## Same seed, same data, whatever the pieces
+
+The same seed gives the same counts with any piece size (a multiple of 56 µm, or `Inf`) and any number of processes (`workers`, one child
+process per piece and stage).
+
+```{r}
+#| label: pieces
+hd_pieces <- simulate_visium_hd_pieces(cl, seed = 1, piece_um = 112, workers = 2)
+hd_pieces$metadata$n_pieces
+c(counts_2um = identical(hd$counts_2um, hd_pieces$counts_2um),
+  counts_8um = identical(hd$counts_8um, hd_pieces$counts_8um),
+  origin = identical(hd$truth$origin, hd_pieces$truth$origin),
+  background = identical(hd$truth$background, hd_pieces$truth$background))
+```
+
+## Piece size, time and memory
+
+The default, `piece_um = 504`, was chosen so that one piece stays within the 8 GB budget of the design document on whole capture areas:
+with 1008 µm a piece of the colorectal cancer and of the brain went above it (second table below; [DEC-076](../docs/decisions/DEC-076.md)). On small areas a single piece is faster. The table below is read from the measurements of
+step S2.8 (`results/S2.8/S2.8_summary.csv`): areas of 1 mm² of the six reference tissues, 3 seeds, one process each, with the default
+layers.
+
+```{r}
+#| label: perf-small
+s28 <- read.csv("results/S2.8/S2.8_summary.csv")
+tissue <- c(A1 = "intestine", A2 = "colorectal cancer", A3 = "cancer stroma", A4 = "lymph node", A5 = "mouse brain", A6 = "heart")
+conf <- c(einf = "piece_um = Inf", e1008 = "piece_um = 1008", e504 = "piece_um = 504 (default)", ref = "simulate_visium_hd()")
+s28 <- s28[s28$conf %in% names(conf), ]
+tab <- data.frame(tissue = tissue[s28$A], configuration = conf[s28$conf],
+                  time_s = round(s28$time_mean), peak_GB = round(s28$peak_max, 1))
+tab <- tab[order(match(tab$tissue, tissue), match(tab$configuration, conf)), ]
+knitr::kable(tab, row.names = FALSE, col.names = c("tissue", "configuration", "time (s, mean of 3 seeds)", "peak memory (GB, max of 3 seeds)"))
+```
+
+Whole capture areas need pieces. In step S2.7 five whole sections were simulated with 8 processes and `assemble = "light"` (the table
+is `results/S2.7/S2.7_P3_P4.csv`): the peak of one piece and the peak of the main process, which stitches the pieces together, are
+different budgets.
+
+```{r}
+#| label: perf-sections
+s27 <- read.csv("results/S2.7/S2.7_P3_P4.csv")
+s27$tissue <- tissue[sub("^sec_(A[0-9])_.*$", "\\1", s27$section)]
+knitr::kable(data.frame(tissue = s27$tissue, piece_um = s27$piece_um, pieces = s27$n_pieces, tissue_mm2 = round(s27$tissue_mm2, 1),
+                        piece_peak_GB = round(s27$piece_peak_gb, 1), main_peak_GB = round(s27$main_peak_gb, 1),
+                        process_s_per_mm2 = round(s27$s_per_mm2_tissue), wall_min = round(s27$wall_s / 60)),
+             col.names = c("tissue", "piece (µm)", "pieces", "tissue (mm²)", "peak of one piece (GB)", "peak of the main process (GB)",
+                           "process time per mm² of tissue (s)", "wall time (min)"))
+```
+
+In practice:
+
+- **areas up to about 1 mm²**: `piece_um = Inf`;
+- **whole capture areas**: the default 504 µm, `assemble = "light"` (UMI per 2 µm bin, 8 µm matrix, cell and gene tables, without
+  the 2 µm matrix and the per-bin truth), several `workers`, and a machine with room for the main process;
+- `cell_layer` can be the path of an RDS file instead of the object: the file is read, split into pieces and freed, so the child
+  processes do not carry the whole layer.
+
+Choosing the piece size automatically is planned with the optimisation of the cell layer (backlog item BL-252). The time per mm² of the
+colorectal cancer and of the intestine is above the 300 s budget of the design document, a declared limit
+([DEC-077](../docs/decisions/DEC-077.md)).
+
+## Technical layers
+
+`layers` switches the four technical layers: `stripes` (row and column capture factors), `background`, `field` (fine variability at
+1-2 µm) and `second_tail` (the long movement that reaches the glass). All are on by default. A method that corrects one layer should be
+tested with that layer on, and compared with the same seed and the layer off.
+
+```{r}
+#| label: layers
+hd_flat <- simulate_visium_hd_pieces(cl, seed = 1, piece_um = Inf, layers = list(stripes = FALSE, background = FALSE))
+# variability between grid columns of the mean UMI per tissue bin: the stripes add it
+col_cv <- function(h) { u <- Matrix::colSums(h$counts_2um); k <- h$bins$in_tissue
+  m <- tapply(u[k], h$bins$j[k], mean); sd(m) / mean(m) }
+c(with_stripes = col_cv(hd), without_stripes = col_cv(hd_flat))
+range(hd$bins$c)                 # stripe factor used on the 2 um bins
+range(hd_flat$bins$c)
+```
+
+How stripes and background work together:
+
+- transcripts are generated with an overgeneration M\* (`metadata$overgeneration` = `truth$layers$stripes$M`) and each one is kept
+  with probability `c / M*` in the bin where it arrives, where `c` is the stripe factor of the bin;
+- factors above the ceiling M\* are cut to M\*: `bins$c` is the factor used, `bins$c_raw` the raw one, and `metadata$truncated_share` the
+  share of transcripts affected. `ceiling_q` is the probability that a raw factor exceeds the ceiling (default 1e-5,
+  [DEC-075](../docs/decisions/DEC-075.md)); `stripe_ceiling()` computes M\* from `capture_params()`;
+- the background of a bin is Poisson with mean `b c`, with the same cut factor `c` as the capture; `b` comes from `capture_params()`
+  and is zero in some tissues (printed below).
+
+```{r}
+#| label: ceiling
+c(M_star = hd$metadata$overgeneration, M_raw = hd$truth$layers$stripes$M_raw,
+  bins_over_ceiling = hd$metadata$n_bins_over_ceiling, truncated_share = hd$metadata$truncated_share)
+stripe_ceiling(capture_params("A1"))
+sapply(c(A1 = "A1", A2 = "A2", A3 = "A3", A4 = "A4", A5 = "A5", A6 = "A6"), function(a) capture_params(a)$b)   # background b per tissue
+```
+
+## Areas cropped from a larger tissue
+
+By default the edges of the area are edges of the tissue: transcripts near them get the wider edge blur, and the second tail is lost
+outside the grid. For an area cut out of a tissue that continues, set `frame_open = TRUE`: the sides of the frame are not tissue edges,
+and the second tail is reflected back inside the frame. The frame is, by default, the bounding box of territories and regions.
+
+```{r}
+#| label: frame-open
+sq <- expand.grid(x = 1:150, y = 1:150)
+sq$intensity_cluster <- 1L
+cs <- place_cells(sq, tissue_preset = "epithelial", pixel_size_um = 2, random_seed = 7)
+open <- simulate_visium_hd_pieces(cs, seed = 3, piece_um = Inf, frame_open = TRUE)
+closed <- simulate_visium_hd_pieces(cs, seed = 3, piece_um = Inf, frame_open = FALSE)
+glass_umi <- function(h) sum(h$counts_2um[, !h$bins$in_tissue])
+c(open = glass_umi(open), closed = glass_umi(closed))
+```
+
+With `frame_open = TRUE` the argument `frame` (`c(xmin, ymin, xmax, ymax)` in µm, inside the grid) counts twice: the second tail folds
+on its sides, and outside it the distance to the tissue edge treats the space as tissue. If the tissue of a crop does not reach a side of
+the crop window, give the window as `frame`, otherwise the default box treats a real tissue edge as open (backlog item BL-237). In
+step S2.8 this was measured on an area of intestine cut from a real section, with `frame_open = TRUE`: the default box starts 5.5 µm from
+the left side of the crop window, while the tissue edge itself is irregular and lies further in on most rows. Same 3 seeds with the
+default box and with the window as `frame` (`results/S2.8/S2.8_BL237.csv`; distances are measured row by row from the left tissue edge):
+
+```{r}
+#| label: frame-bl237
+b237 <- read.csv("results/S2.8/S2.8_BL237.csv")
+z <- aggregate(cbind(n_bins, umi_default, umi_window, ratio_window_default) ~ zone, data = b237, FUN = mean)
+z$n_bins <- round(z$n_bins)
+zone_label <- c(tissue_all = "tissue, all", tissue_0_8 = "tissue, 0-8 µm from the left edge", tissue_8_16 = "tissue, 8-16 µm",
+                tissue_16_32 = "tissue, 16-32 µm", tissue_32_64 = "tissue, 32-64 µm",
+                glass_left_of_tissue_0_8_from_edge = "glass within 8 µm left of the tissue",
+                glass_left_of_tissue_inside_window = "glass between window side and tissue",
+                glass_window_strip_x0_5.48 = "glass strip between window side and default box",
+                glass_outside_window_left = "glass outside the window, left")
+z$zone <- zone_label[z$zone]
+z <- z[match(zone_label, z$zone), ]
+knitr::kable(z, digits = 3, row.names = FALSE,
+             col.names = c("zone", "bins", "UMI per bin, default frame", "UMI per bin, window as frame", "ratio (mean of 3 seeds)"))
+```
+
+The window changes the counts only on the strip of glass between the default box and the window side; in the tissue and in the glass
+next to it the difference is below 2 %. The true value of that strip is not known.
+
+## Long runs: resume and fingerprint
+
+With `out_dir` the files of each piece and stage are kept in that folder, and a second call with the same arguments reuses them: an
+interrupted run continues where it stopped. The folder holds a fingerprint of the run (file *run.rds*): arguments, a fingerprint of the
+code (`.geo_code_hash()`), of the profiles and of the cell layer. If any of them differs, the function stops and names the fields that
+changed, instead of mixing old and new pieces ([DEC-080](../docs/decisions/DEC-080.md)).
+
+```{r}
+#| label: resume
+od <- file.path(tempdir(), "run_disc")
+first <- simulate_visium_hd_pieces(cl, seed = 1, piece_um = 224, out_dir = od)
+again <- simulate_visium_hd_pieces(cl, seed = 1, piece_um = 224, out_dir = od)
+c(pieces_and_stages = nrow(again$metadata$piece_stats), reused = sum(again$metadata$piece_stats$reused))
+identical(first$counts_2um, hd$counts_2um)   # same counts as the first simulation, with 224 um pieces
+refusal <- tryCatch({ simulate_visium_hd_pieces(cl, seed = 2, piece_um = 224, out_dir = od); "no error" }, error = conditionMessage)
+refusal
+unlink(od, recursive = TRUE)
+```
+
+Limits of the fingerprint: it follows the functions called by name in the code and the constants they read, not functions called through
+`do.call("name")` or `match.fun()`, S3/S4 methods or closures created at run time (none are used in Step 2 today). A change in comments
+only does not change it. A folder written before step S2.8 has no code fingerprint and is not resumed. Without `out_dir` a temporary
+folder is used and deleted.
+
+`metadata$package_version` comes from `.geo_version()`: the installed package if there is one, otherwise the `DESCRIPTION` of the
+folder in `getOption("geo.spatialtrans.root", ".")`, that is the working directory. Run the simulator from the repository root, or set
+that option; elsewhere the version is reported as unknown (the code fingerprint is still recorded).
+
+```{r}
+#| label: version
+.geo_version()
+c(code = hd$metadata$code_hash, profiles = hd$metadata$profiles_hash)
+```
+
+## Other arguments
+
+- `cell_layer`: the output of `place_cells()`, or the path of an RDS file that contains it.
+- `seed`: an integer; the seeds of the stages are drawn from it (`metadata$component_seeds`), and the random state of the session is
+  restored afterwards.
+- `archetype`: the tissue code (`"A1"` ... `"A6"`) whose parameters and profiles are used; default from the preset of the cell layer
+  (`visium_hd_archetype()`).
+- `profiles`: a profile set as returned by `load_cell_profiles()`; default, the profiles of the tissue.
+- `depth_factor`: transcripts per cell multiplier; default `visium_hd_depth_factor()` with the profiles of the preset, the
+  `depth_factor` of the profiles otherwise.
+- `keep_profiles`: keep `truth$cell_counts` (default `TRUE` with `assemble = "full"`, `FALSE` with `"light"`).
+- `assemble`: `"full"` or `"light"` (see [Piece size, time and memory](#piece-size-time-and-memory)).
+- `workers`: child processes; the result does not change.
+- `verbose`: progress messages.
+
+```{r}
+#| label: args
+names(formals(simulate_visium_hd_pieces))
+```
+
+## Lower-level functions
+
+The steps can also be run one by one, for example to study one layer in isolation. These are the functions behind
+`simulate_visium_hd_pieces()`:
+
+| function | what it does |
+|---|---|
+| `build_hd_grid()` | grid around the cell layer and geometric truth; built from `hd_grid_geometry()`, `hd_bin_table()`, `hd_tissue_area()`, `hd_overlap()` |
+| `sum_to_8um()` | sums a 2 µm table or matrix to 8 µm bins |
+| `load_cell_profiles()`, `simulate_cell_profiles()` | profiles of a tissue; subtypes, totals and gene counts per cell |
+| `transcript_params()`, `s23_gamma_field()`, `place_and_move_transcripts()` | displacement parameters; the fine random field; position and movement of transcripts |
+| `capture_params()`, `simulate_stripes()`, `stripe_ceiling()`, `capture_and_bin()` | capture parameters; stripe factors; ceiling of the overgeneration; capture, background and binning |
+| `visium_hd_archetype()`, `visium_hd_depth_factor()`, `visium_hd_chunk_size()` | tissue code of a layer; depth factor of a tissue; cells per block of `simulate_visium_hd()` |
+| `simulate_visium_hd()` | the reference engine of step S2.5 (one area at a time, same model, another realisation) |
+
+## Known limits
+
+The simulated counts were compared with the real reference tissues on the same bins: UMI and detected genes per bin at 2 and 8 µm
+(step S2.5) and the row and column stripes (step S2.4) agree with the real ones in all six tissues. The limits declared so far, with the decision that records each one (details
+in section 17 of the design document and in the step reports):
+
+- **Variability outside the nucleus**: the fine variability is calibrated inside the nucleus; in the cytoplasm around it and in the
+  cell-free space real data vary more and on a larger scale ([DEC-050](../docs/decisions/DEC-050.md)).
+- **Far glass of the colorectal cancer**: far from the tissue the simulated glass has more transcripts than the real one
+  ([DEC-059](../docs/decisions/DEC-059.md)).
+- **Dense tissues**: too few empty bins in the tissue of the intestine and of the colorectal cancer, and a nucleus-to-surroundings
+  contrast of the colorectal cancer above the real one; both wait for the revision of the preset densities
+  ([DEC-069](../docs/decisions/DEC-069.md)).
+- **Heart**: isotropic cells; the real 8 µm counts follow the orientation of the fibres, the simulated ones do not
+  ([DEC-070](../docs/decisions/DEC-070.md)). The heart is the planned negative control of the Voronoi cell layer.
+- **Stroma of the colorectal cancer**: some genes of the panel have a null profile ([DEC-065](../docs/decisions/DEC-065.md)).
+- **Time**: on whole sections of the colorectal cancer and of the intestine the time per mm² is above the budget
+  ([DEC-077](../docs/decisions/DEC-077.md)).
+- **No gene-specific nuclear enrichment and no membrane or peripheral localisation**: the position of a transcript in the cell does not
+  depend on the gene.
+- **Limits of the cell layer** carry over to the counts: too many touching nuclei in dense tissues and territories too uniform with the
+  default uniform seeding (see `README.md`).
+
+## Fingerprints of this run
+
+The lines below are compared between two renders of this guide in a fresh clone (gate G-2 of step S2.8b).
+
+```{r}
+#| label: fingerprints
+#| comment: ""
+md5_of <- function(x) { f <- tempfile(); saveRDS(x, f, compress = FALSE); on.exit(unlink(f)); unname(tools::md5sum(f)) }
+for (nm in c("counts_2um", "counts_8um")) cat("FINGERPRINT", paste0("disc_", nm), md5_of(hd[[nm]]), "\n")
+cat("FINGERPRINT disc_origin", md5_of(hd$truth$origin), "\n")
+cat("FINGERPRINT crop_open_counts_2um", md5_of(open$counts_2um), "\n")
+cat("FINGERPRINT flat_counts_2um", md5_of(hd_flat$counts_2um), "\n")
+cat("CHECK pieces_identical", identical(hd$counts_2um, hd_pieces$counts_2um) && identical(hd$truth$origin, hd_pieces$truth$origin), "\n")
+cat("CHECK internal_checks", all(unlist(hd$metadata$checks)), "\n")
+cat("CHECK resume_reused_all", sum(again$metadata$piece_stats$reused) == nrow(again$metadata$piece_stats), "\n")
+cat("CHECK resume_same_counts", identical(first$counts_2um, hd$counts_2um), "\n")
+cat("CHECK resume_refused_other_seed", grepl("seed", refusal, fixed = TRUE) && refusal != "no error", "\n")
+```

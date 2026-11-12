@@ -1,16 +1,17 @@
 Package: geo.spatialtrans
 Type: Package
 Title: Simulazione di Dati Visium HD con un Livello Cellulare
-Version: 0.1.0
-Date: 2026-10-30
+Version: 0.2.0
+Date: 2026-11-12
 Authors@R: c(
     person("Luca", "Vedovelli", email = "lucavd@gmail.com", role = c("aut", "cre")),
     person("Daniele", "Sabbatini", email = "daniele.sabbatini@ubep.unipd.it", role = "rev"))
 Description: Simulatore di dati di trascrittomica spaziale Visium HD per mettere alla prova i
     metodi di analisi. Lo Step 1 costruisce un livello cellulare (regioni del tessuto, centri
     delle cellule, territori di Voronoi, nuclei) con preset per sei tessuti tarati su dati 10x
-    reali; lo Step 2 portera' l'espressione dalla cellula alla griglia di 2 e 8 micron. I
-    riferimenti biologici e le loro fonti sono in docs/BIO_REFERENCES.md.
+    reali; lo Step 2 porta l'espressione dalla cellula alla griglia di 2 e 8 micron, con la
+    verita' di riferimento di ogni quadratino. I riferimenti biologici e le loro fonti sono in
+    docs/BIO_REFERENCES.md.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

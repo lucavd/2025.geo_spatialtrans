@@ -1,0 +1,183 @@
+---
+title: "Guida alla revisione della griglia di Visium HD (Step 2)"
+subtitle: "geo_spatialtrans, per Daniele Sabbatini. Documento di progetto v0.6, codice consolidato in S2.8, unito in dev in S2.8b"
+date: today
+lang: it
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute:
+  echo: false
+  warning: false
+---
+
+```{r setup}
+#| include: false
+.libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
+MAP <- read.csv("../results/S2.8/S2.8_design_map.csv", stringsAsFactors = FALSE, check.names = FALSE)
+ACT <- read.csv("../results/S2.8/S2.8_design_map_actions.csv", stringsAsFactors = FALSE, check.names = FALSE)
+DES <- readLines("../docs/superpowers/specs/2026-11-03-step2-visium-grid-design.md", encoding = "UTF-8")
+md_table <- function(lines, heading) {
+  i <- grep(heading, lines, fixed = TRUE)[1]; j <- i + 1L
+  while (j <= length(lines) && !startsWith(lines[j], "|")) j <- j + 1L
+  k <- j; while (k <= length(lines) && startsWith(lines[k], "|")) k <- k + 1L
+  rows <- lines[j:(k - 1L)]; rows <- rows[!grepl("^\\|[-| ]+\\|$", rows)]
+  cells <- lapply(rows, function(r) trimws(strsplit(sub("^\\|", "", sub("\\|$", "", r)), "|", fixed = TRUE)[[1]]))
+  df <- as.data.frame(do.call(rbind, cells[-1]), stringsAsFactors = FALSE); names(df) <- cells[[1]]; df
+}
+G1 <- grep("PASS=", readLines("../results/S2.8/S2.8_G1_summary.txt"), value = TRUE)
+G2 <- read.csv("../results/S2.8/S2.8_G2_identity.csv", stringsAsFactors = FALSE)
+```
+
+# A cosa serve questa guida
+
+Lo Step 2 trasforma le cellule dello Step 1 nei conteggi di un vetrino Visium HD: quadratini di 2 µm, somma a 8 µm, e per ogni quadratino
+la verità su da quali cellule vengono i suoi trascritti. È nato dalle tue osservazioni: la revisione del 2025 (sezioni 3 e 4) e i due
+commenti di aprile sul design dello Step 1 (la scala obbligatoria, C-A, e la diffusione laterale degli mRNA, C-B). Il documento di progetto
+dello Step 2 non ti è stato mandato prima del codice: Luca ha deciso così dopo la prima bozza
+([DEC-042](../docs/decisions/DEC-042.md)). Questa guida serve a rivederlo adesso, insieme al codice, senza ripercorrere i nove step che
+lo hanno costruito (S2.0-S2.8).
+
+Cosa trovi: cosa fa oggi lo Step 2; dove sono finite le tue osservazioni; cosa è cambiato nel documento dalla prima bozza; la mappa
+sezione del documento → codice → test → step, con le righe in cui documento e codice non coincidevano e cosa ne è stato fatto; le prove
+rifatte prima dell'unione; i limiti dichiarati. Come per lo Step 1 non ci sono domande per te: le questioni di metodo le decidiamo con i
+dati, nel lavoro a cui servono ([DEC-033](../docs/decisions/DEC-033.md), punto 6). Ogni riga rimanda a un file del ramo `dev`.
+
+La guida d'uso, in inglese, è `vignettes/visium_hd_simulation.qmd` (resa in `vignettes/visium_hd_simulation.html`): esempi eseguiti,
+tempi e memoria, strati tecnici, aree ritagliate, ripresa delle esecuzioni lunghe.
+
+# 1. Cosa fa oggi lo Step 2
+
+L'ingresso è `simulate_visium_hd_pieces()` (`R/05b6_simulate_visium_hd_pieces.R`; [DEC-079](../docs/decisions/DEC-079.md)). Per ogni
+cellula del livello cellulare:
+
+1. **griglia e verità geometrica** (`build_hd_grid()`, `R/05b1_build_hd_grid.R`): quadratini di 2 µm con un margine di vetro di 280 µm; per
+   ogni coppia (quadratino, cellula) l'area coperta dal territorio e dal nucleo (la tua 3.2.A);
+2. **trascritti per cellula** (`simulate_cell_profiles()`, `R/05b2_simulate_cell_profiles.R`): sottotipo, totale e conteggi per gene dai
+   profili di espressione del tessuto, scelti con una regola scritta prima della misura ([DEC-040](../docs/decisions/DEC-040.md); la tua 3.2.B);
+3. **posizione e spostamento** (`place_and_move_transcripts()`, `R/05b3_place_and_move_transcripts.R`): nascita nel nucleo o nel
+   citoplasma con una variabilità fine a 1-2 µm, poi uno spostamento a due livelli (stretto ovunque, più largo vicino al bordo del tessuto,
+   [DEC-037](../docs/decisions/DEC-037.md)) e una seconda coda lunga che arriva sul vetro ([DEC-051](../docs/decisions/DEC-051.md)); la tua
+   3.2.D, 4.3 e C-B;
+4. **cattura e somma** (`capture_and_bin()`, `R/05b4_capture_and_bin.R`): strisce di riga e colonna dell'efficienza di cattura, fondo,
+   assottigliamento e somma a 8 µm (la tua 3.2.C e 3.2.E).
+
+La funzione a pezzi fa gli stessi passi su pezzi quadrati dell'area, con le estrazioni casuali legate a tessere fisse di 56 µm: lo stesso
+seme dà gli stessi conteggi per ogni lato dei pezzi e numero di processi ([DEC-074](../docs/decisions/DEC-074.md)). La funzione scritta
+prima, `simulate_visium_hd()` (`R/05b5_simulate_visium_hd.R`), resta come motore di riferimento delle batterie: stessa legge, un'altra
+realizzazione casuale.
+
+I parametri per tessuto stanno in `transcript_params()` e `capture_params()` (tabella della sezione 9 del documento); ogni valore ha la sua
+fonte (step di riferimento o misura degli step S2.0-S2.5) nella tabella stessa.
+
+# 2. Le tue osservazioni e dove sono finite
+
+La tabella è la sezione 16 del documento di progetto, letta dal file al momento del render.
+
+```{r daniele}
+D16 <- md_table(DES, "## 16. Mappa della revisione di Daniele")
+D16 <- D16[grepl("^revisione", D16[[1]]), ]
+knitr::kable(D16, row.names = FALSE, col.names = c("osservazione", "sezioni del documento"))
+```
+
+La 4.2 (arricchimento nucleare per gene) è rimasta un'estensione: la posizione di un trascritto nella cellula non dipende dal gene, ed è
+un limite dichiarato (sezione 17).
+
+# 3. Cosa è cambiato dalla prima bozza
+
+Il documento è passato dalla v0.1 (2026-11-04, prima bozza con le misure di S2.0) alla v0.6. Lo storico, letto dalla sezione 18:
+
+```{r storico}
+H <- md_table(DES, "## 18. Storico")
+knitr::kable(H[, 1:3], row.names = FALSE, col.names = c("data", "versione", "cosa"))
+```
+
+Fino alla v0.5 il documento non sapeva della simulazione a pezzi (S2.6, S2.7): la v0.6 la annota senza cambiare regole. Le annotazioni della
+v0.6 sono note datate alla fine di ogni sezione, ciascuna con le righe della mappa che la motivano.
+
+# 4. Documento contro codice
+
+In S2.8 un revisore in sola lettura ha messo ogni affermazione del documento (v0.5) accanto al codice e ai test che la coprono e allo step
+che l'ha verificata (`results/S2.8/S2.8_design_map.csv`). Le righe sono `r nrow(MAP)`:
+
+```{r stati}
+lab <- c(consistent = "documento e codice coincidono, con un test", design_behind = "il documento è rimasto indietro rispetto a una decisione",
+         untested = "giusta, ma senza un test", code_deviates = "il codice fa un'altra cosa", unclear = "non chiara")
+st <- table(factor(MAP$status, levels = names(lab)))
+knitr::kable(data.frame(stato = lab[names(st)], righe = as.integer(st)), row.names = FALSE)
+```
+
+Le righe non coerenti hanno tutte un'azione, fatta in S2.8 (`results/S2.8/S2.8_design_map_actions.csv`):
+
+```{r azioni}
+alab <- c(annotated_design_v0.6 = "annotata nel documento (v0.6) con la sua fonte", test_added = "test aggiunto",
+          bug_fixed_with_test = "difetto del codice corretto con un test", doc_fixed_with_test = "documentazione del codice corretta con un test",
+          documented_and_measured = "documentata e misurata", backlog = "voce di BACKLOG")
+ta <- table(factor(ACT$s28_action, levels = names(alab)))
+knitr::kable(data.frame(azione = alab[names(ta)], righe = as.integer(ta)), row.names = FALSE)
+```
+
+Per sezione del documento:
+
+```{r per-sezione}
+sec <- split(MAP, factor(MAP$design_section, levels = unique(MAP$design_section)))
+fun_of <- function(x) { f <- unique(trimws(unlist(strsplit(x, ";")))); f <- f[nzchar(f)]; paste(head(f, 4), collapse = "; ") }
+knitr::kable(data.frame(sezione = names(sec), righe = vapply(sec, nrow, 1L),
+                        coerenti = vapply(sec, function(d) sum(d$status == "consistent"), 1L),
+                        codice = vapply(sec, function(d) fun_of(d$code_location), ""),
+                        step = vapply(sec, function(d) fun_of(d$verified_in_step), "")), row.names = FALSE, format = "html")
+```
+
+Le cinque righe in cui il codice fa un'altra cosa, e come sono state chiuse:
+
+```{r devia}
+dv <- MAP[MAP$status == "code_deviates", c("row_id", "design_section", "design_statement", "code_behaviour")]
+dv$azione <- ACT$s28_where[match(dv$row_id, ACT$row_id)]
+knitr::kable(dv, row.names = FALSE, col.names = c("riga", "sezione", "documento", "codice", "esito in S2.8"), format = "html")
+```
+
+Un'avvertenza: la colonna «verificato in» della mappa è provvisoria. Il revisore ha letto il codice e circa un quarto dei file degli step,
+non ha rieseguito i test (S2.8, deviazione D-4). I test li abbiamo rifatti a parte (sezione 5).
+
+# 5. Le prove rifatte prima dell'unione
+
+- **Batterie dello Step 2** sul codice consolidato (S2.8, `results/S2.8/S2.8_G1_summary.txt`):
+
+```{r g1}
+#| results: asis
+cat(paste0("  - `", sub("^S2.8_G1_", "", sub("\\.txt", "", sub(" .*$", "", G1))), "`: ", sub("^\\S+ ", "", G1)), sep = "\n")
+```
+
+- **Gli stessi conteggi delle volte precedenti**: le simulazioni di S2.7 e S2.5 rifatte con gli stessi semi danno file identici bit per bit:
+  `r sum(G2$expect_equal & G2$equal)` confronti uguali su `r sum(G2$expect_equal)` attesi uguali; e la prova vede una differenza quando
+  c'è (con un tetto diverso della sovra-generazione, `r sum(!G2$expect_equal & !G2$equal)` file diversi su `r sum(!G2$expect_equal)`;
+  `results/S2.8/S2.8_G2_identity.csv`).
+- **Nel clone nuovo dell'unione** (S2.8b): le batterie dello Step 1 e dello Step 2, l'avvio rapido del README e gli esempi della guida d'uso
+  rifatti da una copia presa da GitHub; esiti nel file dello step, `docs/steps/S2.8b.md`, e nel suo report.
+
+# 6. Limiti dichiarati
+
+La sezione 17 del documento elenca i limiti, con la decisione che li registra. I principali, in breve: variabilità fuori dal nucleo
+più bassa del vero ([DEC-050](../docs/decisions/DEC-050.md)); vetro lontano del tumore del colon con più trascritti del vero
+([DEC-059](../docs/decisions/DEC-059.md)); troppo pochi quadratini vuoti nell'intestino e nel tumore e contrasto nucleo/corona del tumore
+sopra il vero, in attesa della revisione della densità dei preset ([DEC-069](../docs/decisions/DEC-069.md)); il cuore senza
+l'orientamento delle fibre, controllo negativo previsto ([DEC-070](../docs/decisions/DEC-070.md)); geni a profilo nullo nello stroma del
+tumore ([DEC-065](../docs/decisions/DEC-065.md)); tempo oltre il bilancio sulle sezioni intere del tumore e dell'intestino
+([DEC-077](../docs/decisions/DEC-077.md)); nessun arricchimento nucleare per gene (tua 4.2).
+
+# 7. I report degli step
+
+Ogni step ha un report HTML in `reports/`: [S2.0](S2.0.html) (documento di progetto e misure sui dati veri), [S2.1](S2.1.html) (griglia e
+verità geometrica), [S2.2](S2.2.html) (profili per cellula), [S2.3](S2.3.html) (posizione e spostamento), [S2.4](S2.4.html) (cattura,
+strisce e fondo), [S2.5](S2.5.html) (simulatore completo contro i tessuti veri), [S2.6](S2.6.html) (prestazioni su aree grandi),
+[S2.7](S2.7.html) (simulazione a pezzi), [S2.8](S2.8.html) (consolidamento del codice); quello di S2.8b (documenti e unione) sta accanto a questa guida.
+Riferimenti reali usati dallo Step 2: [R4](R4.html) (UMI, geni e vuoti a 2 e 8 µm), [R5](R5.html) (bordi e diffusione),
+[R7](R7.html) (aree di riferimento e intervalli).
+
+# Appendice: la mappa completa
+
+```{r mappa}
+knitr::kable(MAP[, c("row_id", "design_section", "design_statement", "code_location", "test_location", "verified_in_step", "status")],
+             row.names = FALSE, col.names = c("riga", "sezione", "documento", "codice", "test", "step", "stato"), format = "html")
+```

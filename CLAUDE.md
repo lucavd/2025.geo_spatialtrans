@@ -7,9 +7,13 @@ quadro del progetto per chi lo usa è in `README.md` (in inglese).
 ## Stato
 
 - Step 1 (livello cellulare, `R/04b*.R`): consolidato in S1.6 e unito in `dev` in S1.6b.
-- Step 2 (griglia di Visium HD): da progettare. Il prossimo step lo sceglie Luca: proposta e alternative in `docs/ROADMAP.md`, sezione 7.
-- Il codice del 2025 (`R/01`-`R/03`, `R/04_clustering.R`, `R/05`-`R/06k`, `R/test functions/`) è la pipeline di espressione precedente:
-  non è validata con il livello cellulare e non va estesa. `generate_synthetic_tissue()` e `cluster_image()` restano in uso per gli input
+- Step 2 (griglia di Visium HD, `R/05b*.R`): consolidato in S2.8 e unito in `dev` in S2.8b. Ingresso unico `simulate_visium_hd_pieces()`
+  ([DEC-079](docs/decisions/DEC-079.md)); `simulate_visium_hd()` resta come motore di riferimento delle batterie di S2.5 e S2.6. Guida
+  d'uso in inglese: `vignettes/visium_hd_simulation.qmd`; documento di progetto `docs/superpowers/specs/2026-11-03-step2-visium-grid-design.md` (v0.6).
+- Il prossimo step lo sceglie Luca: proposta e alternative in `docs/ROADMAP.md`, sezione 7.
+- `main` è fermo al 2025 e non si tocca finché Luca non decide (S2.8b): si lavora su rami di step che avanzano `dev`.
+- Il codice del 2025 (`R/01`-`R/03`, `R/04_clustering.R`, `R/05_grid_sampling.R`, `R/06*.R`, `R/test functions/`) è la pipeline di
+  espressione precedente: non è validata con il livello cellulare e non va estesa. `generate_synthetic_tissue()` e `cluster_image()` restano in uso per gli input
   sintetici dei test (`tools/S1.1_inputs.R`).
 
 ## Principi (fissati da Luca il 2026-09-18)
@@ -45,6 +49,11 @@ quadro del progetto per chi lo usa è in `README.md` (in inglese).
 - La batteria gira solo sul server: legge i dati reali del volume dati, file derivati ignorati da git (maschere e nuclei di R2, finestre di R2b)
   e `.venv`. In un clone nuovo li collega `tools/link_server_inputs.sh` (S1.6b). Un test nuovo che legge un file ignorato da git lo dichiara
   nella sua intestazione.
+- Lo Step 2 legge i profili di espressione dal volume dati (`/mnt/micron/geo_spatialtrans/S2.2/profiles`, opzione
+  `geo.spatialtrans.profiles_dir`) e i livelli cellulari delle aree vere da `/mnt/micron/geo_spatialtrans/S1.6/layers`; fuori dal server
+  non gira (BL-181).
+- La guida d'uso si rende dalla radice con `R_LIBS=$PWD/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu quarto render
+  vignettes/visium_hd_simulation.qmd` (circa 3 minuti): nella cartella `vignettes/` non c'è `.Rprofile`, quindi la libreria va data con `R_LIBS`.
 - Python: `.venv` (Cellpose-SAM, torch con GPU); StarDist con `tools/py_stardist.sh`.
 - Calcolo: al più 50 core in tutto fra i processi R concorrenti; per run lunghi il limite termico pratico è di 20-28 worker a un thread.
   Lanciare con `OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1` e `data.table::setDTthreads(1L)` nei worker; numero di worker letto da un file
@@ -58,6 +67,7 @@ bash tools/link_server_inputs.sh                 # in un clone nuovo sul server:
 bash R/testing/run_S1.6.sh test                  # batteria completa dello Step 1 (GATE G-1 PASS con 4 FAIL noti)
 bash R/testing/run_S1.6.sh mutants               # copie alterate del codice che i test devono rilevare
 bash R/testing/run_S1.6.sh env                   # DESCRIPTION contro il codice, restore in una libreria vuota
+for s in 2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8; do Rscript --vanilla R/testing/test_S$s.R; done   # batterie dello Step 2 (0 FAIL)
 python3 -B tools/okf.py check --bundle docs      # controllo dei documenti OKF, prima di ogni commit
 quarto render reports/<id>.qmd                   # report dello step
 ```
@@ -65,8 +75,14 @@ quarto render reports/<id>.qmd                   # report dello step
 ## Stile del codice
 
 - R in snake_case; un file numerato per stadio (`R/04b0_tissue_presets.R` ... `R/04b6_estimate_pixel_size.R`, orchestratore
-  `R/04b_cell_placement.R`); funzioni piccole a responsabilità singola con intestazione roxygen; funzioni interne con il prefisso del file
-  (`.sc_` nella semina, `.tv_` nella tassellazione, `.dcg_` nella geometria).
+  `R/04b_cell_placement.R`; `R/05b1_build_hd_grid.R` ... `R/05b6_simulate_visium_hd_pieces.R` per lo Step 2); funzioni piccole a
+  responsabilità singola con intestazione roxygen; funzioni interne con il prefisso del file o dello step che le ha introdotte (`.sc_`
+  nella semina, `.tv_` nella tassellazione, `.dcg_` nella geometria; `.hd_`, `.s22_`, `.s23_`, `.s24_`, `.s25_`, `.p27_` nello Step 2).
+- Lo Step 2 ha una sola legge e due motori: una modifica del modello va fatta in entrambi, oppure si dichiara che il motore di riferimento
+  resta indietro. La funzione a pezzi deve dare lo stesso risultato per ogni lato dei pezzi e numero di processi (test di S2.7, gruppo a).
+- Ogni modifica del codice dello Step 2 cambia l'impronta della ripresa (`.geo_code_hash()`): le cartelle `out_dir` scritte prima non si
+  riprendono più, ed è voluto ([DEC-080](docs/decisions/DEC-080.md)). Una funzione chiamata con `do.call("nome")` o `match.fun()` sfugge
+  all'impronta: non usarle.
 - Nessun interruttore di prova nel codice di produzione: i mutanti sono copie modificate del codice (`tools/mutate.py`,
   `R/testing/mutants_<step>.py`).
 - Test in `R/testing/test_<step>.R`, eseguibili con un solo comando che stampa PASS o FAIL per asserzione e `RESULT n/m PASS`; runner dei
@@ -104,3 +120,9 @@ quarto render reports/<id>.qmd                   # report dello step
 - `sf::st_within(<molti poligoni piccoli>, <un poligono grande>)` non finisce: mettere il poligono grande per primo (`st_contains`, `st_intersects`).
 - `deldir` scala male oltre 1e5 punti; `sf::st_voronoi()` è decine di volte più veloce sugli stessi punti.
 - Le liste R indicizzate per nome sono lineari: oltre 1e5 elementi indicizzare per posizione.
+- `metadata$package_version` viene da `.geo_version()`, che legge la `DESCRIPTION` della cartella di lavoro (opzione `geo.spatialtrans.root`):
+  lanciare dalla radice del repository, altrimenti la versione risulta sconosciuta.
+- Le sezioni intere si simulano a pezzi con `assemble = "light"`, ma il processo principale che cuce i pezzi arriva a circa 40 GB nel tumore
+  del colon (S2.7): contare la sua memoria, non solo quella di un pezzo.
+- La seconda coda dello spostamento arriva oltre il margine di 280 µm: con `frame_open = FALSE` i trascritti che escono dalla griglia si
+  perdono (`truth$cells$n_lost`), con `frame_open = TRUE` si ripiegano sul riquadro `frame`.
