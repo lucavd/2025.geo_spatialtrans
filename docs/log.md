@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-11-12 (S2.8, chiusura)
+
+* **Chiusura**: [Il codice dello Step 2 fa ciò che dice il documento di progetto, e quale funzione deve essere l'ingresso del simulatore? (S2.8)](steps/S2.8.md) chiuso con l'approvazione di Luca («ok chiudi»), nessuna decisione.
+* **Modifica**: ROADMAP sezione 7 (stato «chiusa», prossima sessione S2.8b); CHANGELOG; report rigenerato.
+
 ## 2026-11-11 (S2.8, esiti)
 
 * **Modifica**: [Il codice dello Step 2 fa ciò che dice il documento di progetto, e quale funzione deve essere l'ingresso del simulatore? (S2.8)](steps/S2.8.md): correzioni, esiti, revisione avversariale, deviazioni, riassunto «In breve», dubbi rinviati.
