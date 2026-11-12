@@ -4,6 +4,8 @@
 .libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
 suppressPackageStartupMessages({ library(Matrix); library(sf); library(geos); library(parallel) })
 for (f in sort(list.files("R", pattern = "^(04b|05b).*\\.R$", full.names = TRUE))) source(f)
+# Profili: quelli di S2.2 (predefiniti); per il braccio di CP-3 la variabile d'ambiente F31_PROFILES_DIR indica i profili dal solo nucleo.
+if (nzchar(Sys.getenv("F31_PROFILES_DIR"))) options(geo.spatialtrans.profiles_dir = Sys.getenv("F31_PROFILES_DIR"))
 a <- commandArgs(TRUE); out_dir <- a[1]; seed_base <- as.integer(a[2]); tags <- strsplit(a[3], ",")[[1]]; W <- as.integer(a[4])
 ks <- if (length(a) >= 5) as.integer(strsplit(a[5], ",")[[1]]) else 0L
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
@@ -19,7 +21,7 @@ run1 <- function(i) {
   t0 <- proc.time()[["elapsed"]]
   out <- simulate_visium_hd_pieces(L, seed = s, frame_open = TRUE, workers = 1L, assemble = "full")
   out$f31 <- list(tag = tag, k = k, seed = s, seed_base = seed_base, elapsed = proc.time()[["elapsed"]] - t0,
-                  archetype = visium_hd_archetype(L))
+                  archetype = visium_hd_archetype(L), profiles_dir = getOption("geo.spatialtrans.profiles_dir", "default"))
   saveRDS(out, paste0(fo, ".tmp")); file.rename(paste0(fo, ".tmp"), fo)
   sprintf("%s k%d seed %d: %.0f s", tag, k, s, out$f31$elapsed)
 }

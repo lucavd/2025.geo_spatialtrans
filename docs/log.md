@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-11-12 (F3.1, fase sul vero e previsioni)
+
+* **Modifica**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md): fase A (misure vere sulle 30 aree, intervalli di rilevanza), regola sulla soglia di RCTD nel cuore (E-8), previsioni, regola R-1 riscritta prima del simulato, profili dal solo nucleo per la controprova CP-3; in attesa dell'ok di Luca.
+* **Creazione**: `results/F3.1/` (misure vere per area, intervalli, controprova CP-1 sul vero, md5 prima).
+
 ## 2026-11-12 (F3.1, pre-registrazione)
 
 * **Creazione**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md), bozza: perimetro, esplorazioni dichiarate, misure, cancelli, fasi, regola di decisione, controprove; previsioni da scrivere dopo la fase sul vero.

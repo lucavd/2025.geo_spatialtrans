@@ -1,6 +1,7 @@
 # tools/F3.1_rctd.R - F3.1: RCTD (spacexr 2.2.1, commit ccc4344) in modalita' doppietto sui blocchi di 8 um di un'area, e misure.
 # Riferimento: tools/F3.1_reference.py (uguale per i due lati). UMI_min = 20 per blocco e per cellula del riferimento (soglia delle
-# etichette di R6); gli altri parametri ai valori predefiniti. Uso: Rscript --vanilla tools/F3.1_rctd.R <area_dir> <ref_dir> <A> <sim|real>
+# etichette di R6); gli altri parametri ai valori predefiniti. Uso: Rscript --vanilla tools/F3.1_rctd.R <area_dir> <ref_dir> <A> <sim|real> [reuse]
+# Con 'reuse' le misure si ricalcolano da rctd_blocks.csv senza rifare RCTD.
 .libPaths("renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
 suppressPackageStartupMessages({ library(Matrix); library(spacexr); library(jsonlite) })
 a <- commandArgs(TRUE); d <- a[1]; ref_dir <- a[2]; A <- a[3]; side <- a[4]
@@ -12,19 +13,27 @@ rownames(Xb) <- make.unique(g_area); colnames(Xb) <- blk$block
 Xr <- as(readMM(file.path(ref_dir, sprintf("ref_%s_counts.mtx", A))), "CsparseMatrix")
 rc <- read.csv(file.path(ref_dir, sprintf("ref_%s_cells.csv", A)), stringsAsFactors = FALSE)
 rownames(Xr) <- make.unique(readLines(file.path(ref_dir, sprintf("ref_%s_genes.tsv", A)))); colnames(Xr) <- rc$cell_id
+reuse <- length(a) >= 5 && a[5] == "reuse" && file.exists(file.path(d, "rctd_blocks.csv"))
 common <- intersect(rownames(Xr), rownames(Xb))
-ct <- factor(make.names(rc$cell_type)); names(ct) <- rc$cell_id
-type_map <- setNames(rc$cell_type, make.names(rc$cell_type))
-ref <- Reference(Xr[common, ], ct, nUMI = setNames(colSums(Xr), rc$cell_id), min_UMI = 20, n_max_cells = 10000)
-coords <- data.frame(x = blk$x, y = blk$y, row.names = blk$block)
-puck <- SpatialRNA(coords, Xb[common, ], nUMI = setNames(colSums(Xb), blk$block))
-rc_obj <- create.RCTD(puck, ref, max_cores = 1, UMI_min = 20, CELL_MIN_INSTANCE = 25)
-rc_obj <- run.RCTD(rc_obj, doublet_mode = "doublet")
-rd <- rc_obj@results$results_df
-rd$block <- rownames(rd); rd$first <- type_map[as.character(rd$first_type)]; rd$second <- type_map[as.character(rd$second_type)]
-m <- merge(blk, rd[, c("block", "spot_class", "first", "second")], by = "block", all.x = TRUE)
+if (reuse) {
+  m <- read.csv(file.path(d, "rctd_blocks.csv"), stringsAsFactors = FALSE)
+  for (v in intersect(c("nuc_type", "true_type", "spot_class", "first", "second"), names(m))) m[[v]][!is.na(m[[v]]) & m[[v]] == ""] <- NA
+} else {
+  ct <- factor(make.names(rc$cell_type)); names(ct) <- rc$cell_id
+  type_map <- setNames(rc$cell_type, make.names(rc$cell_type))
+  ref <- Reference(Xr[common, ], ct, nUMI = setNames(colSums(Xr), rc$cell_id), min_UMI = 20, n_max_cells = 10000)
+  coords <- data.frame(x = blk$x, y = blk$y, row.names = blk$block)
+  puck <- SpatialRNA(coords, Xb[common, ], nUMI = setNames(colSums(Xb), blk$block))
+  # regola F3.1 (E-8): soglia per la stima del rumore = min(300, UMI del centesimo blocco piu' ricco); cambia solo dove meno di 100 blocchi superano 300
+  ums <- min(300, sort(colSums(Xb), decreasing = TRUE)[min(100L, ncol(Xb))])
+  rc_obj <- create.RCTD(puck, ref, max_cores = 1, UMI_min = 20, CELL_MIN_INSTANCE = 25, UMI_min_sigma = ums)
+  rc_obj <- run.RCTD(rc_obj, doublet_mode = "doublet")
+  rd <- rc_obj@results$results_df
+  rd$block <- rownames(rd); rd$first <- type_map[as.character(rd$first_type)]; rd$second <- type_map[as.character(rd$second_type)]
+  m <- merge(blk, rd[, c("block", "spot_class", "first", "second")], by = "block", all.x = TRUE)
+}
 run <- !is.na(m$spot_class); ok <- run & m$spot_class != "reject"
-res <- list(area = basename(d), archetype = A, side = side, n_blocks = nrow(m), n_run = sum(run), n_genes_common = length(common),
+res <- list(area = basename(d), archetype = A, side = side, UMI_min_sigma = if (reuse) NA else ums, n_blocks = nrow(m), n_run = sum(run), n_genes_common = length(common),
             frac_lowumi = mean(!run), frac_reject = mean(m$spot_class[run] == "reject"),
             frac_singlet = mean(m$spot_class[ok] == "singlet"), frac_doublet_certain = mean(m$spot_class[ok] == "doublet_certain"))
 hn <- ok & !is.na(m$nuc_type) & m$nuc_type %in% rc$cell_type
@@ -42,7 +51,7 @@ if (side == "sim") {
   res$truth_acc_nucleus <- mean(m$nuc_type[hn & tt] == m$true_type[hn & tt])
   res$truth_acc_first_on_nuc <- mean(m$first[hn & tt] == m$true_type[hn & tt])
 }
-res$sec <- proc.time()[["elapsed"]] - t0
-write.csv(m, file.path(d, "rctd_blocks.csv"), row.names = FALSE)
-write_json(res, file.path(d, "rctd.json"), auto_unbox = TRUE, digits = 6)
+res$sec <- if (reuse && file.exists(file.path(d, "rctd.json"))) read_json(file.path(d, "rctd.json"))$sec else proc.time()[["elapsed"]] - t0
+if (!reuse) write.csv(m, file.path(d, "rctd_blocks.csv"), row.names = FALSE)
+write_json(res, file.path(d, "rctd.json"), auto_unbox = TRUE, digits = NA)
 cat(toJSON(res[setdiff(names(res), "first_type_share")], auto_unbox = TRUE, digits = 4), "\n")
