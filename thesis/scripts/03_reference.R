@@ -29,7 +29,8 @@
 # reuse per held-out cell.
 #
 # Settings (Pierangela, 2026-10-30): method reference capped at 1,000 cells per type.
-# φ: 20,000 training cells per tissue, stratified by type (DECISIONS 2026-10-29, refined 2026-10-30).
+# φ: 50,000 training cells per tissue, stratified by type (DECISIONS 2026-10-29, refined 2026-10-30);
+# 20,000 until 2026-11-11, raised after the failed colon check (DECISIONS 2026-11-11).
 # Optional 3rd argument "all" fits φ on all training cells and saves <tissue>_<mode>_phiall.rds,
 # used only by the pre-registered colon check (tests/test_phi_sample.R).
 #
