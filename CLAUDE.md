@@ -12,7 +12,7 @@ quadro del progetto per chi lo usa è in `README.md` (in inglese).
   d'uso in inglese: `vignettes/visium_hd_simulation.qmd`; documento di progetto `docs/superpowers/specs/2026-11-03-step2-visium-grid-design.md` (v0.6).
 - Il prossimo step lo sceglie Luca: proposta e alternative in `docs/ROADMAP.md`, sezione 7.
 - `main` è fermo al 2025 e non si tocca finché Luca non decide (S2.8b): si lavora su rami di step che avanzano `dev`.
-- Il codice del 2025 (`R/01`-`R/03`, `R/04_clustering.R`, `R/05_grid_sampling.R`, `R/06*.R`, `R/test functions/`) è la pipeline di
+- Il codice del 2025 (`R/01*.R`-`R/03*.R`, `R/04_clustering.R`, `R/05_grid_sampling.R`, `R/06*.R`, `R/test functions/`) è la pipeline di
   espressione precedente: non è validata con il livello cellulare e non va estesa. `generate_synthetic_tissue()` e `cluster_image()` restano in uso per gli input
   sintetici dei test (`tools/S1.1_inputs.R`).
 
@@ -40,7 +40,7 @@ quadro del progetto per chi lo usa è in `README.md` (in inglese).
 
 ## Ambiente
 
-- R 4.6.1 sul server (Ubuntu 24.04), libreria del progetto `renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu`, ricostruibile da zero
+- R 4.6 sul server (Ubuntu 24.04; 4.6.2 dal 2026-11-05, aggiornata da apt, prima 4.6.1), libreria del progetto `renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu`, ricostruibile da zero
   con `Rscript --vanilla tools/restore_library.R` (versioni di `renv.lock`, binari Posit PPM). `tools/setup_r_library.R` aggiunge i pacchetti
   mancanti all'ultima versione disponibile, senza garantire quelle del lockfile.
 - Ogni script si lancia con `Rscript --vanilla` e chiama `.libPaths()` sulla libreria del progetto: `.Rprofile` attiva renv e altrimenti
@@ -50,8 +50,8 @@ quadro del progetto per chi lo usa è in `README.md` (in inglese).
   e `.venv`. In un clone nuovo li collega `tools/link_server_inputs.sh` (S1.6b). Un test nuovo che legge un file ignorato da git lo dichiara
   nella sua intestazione.
 - Lo Step 2 legge i profili di espressione dal volume dati (`/mnt/micron/geo_spatialtrans/S2.2/profiles`, opzione
-  `geo.spatialtrans.profiles_dir`) e i livelli cellulari delle aree vere da `/mnt/micron/geo_spatialtrans/S1.6/layers`; fuori dal server
-  non gira (BL-181).
+  `geo.spatialtrans.profiles_dir`); gli script di taratura e di prova dello Step 2 (`tools/S2.*`) leggono anche i livelli cellulari delle
+  aree vere da `/mnt/micron/geo_spatialtrans/S1.6/layers`. Fuori dal server non gira (BL-181).
 - La guida d'uso si rende dalla radice con `R_LIBS=$PWD/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu quarto render
   vignettes/visium_hd_simulation.qmd` (circa 3 minuti): nella cartella `vignettes/` non c'è `.Rprofile`, quindi la libreria va data con `R_LIBS`.
 - Python: `.venv` (Cellpose-SAM, torch con GPU); StarDist con `tools/py_stardist.sh`.
@@ -67,7 +67,7 @@ bash tools/link_server_inputs.sh                 # in un clone nuovo sul server:
 bash R/testing/run_S1.6.sh test                  # batteria completa dello Step 1 (GATE G-1 PASS con 4 FAIL noti)
 bash R/testing/run_S1.6.sh mutants               # copie alterate del codice che i test devono rilevare
 bash R/testing/run_S1.6.sh env                   # DESCRIPTION contro il codice, restore in una libreria vuota
-for s in 2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8; do Rscript --vanilla R/testing/test_S$s.R; done   # batterie dello Step 2 (0 FAIL)
+for s in 2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8; do Rscript --vanilla R/testing/test_S$s.R; done   # batterie dello Step 2 (contare i FAIL)
 python3 -B tools/okf.py check --bundle docs      # controllo dei documenti OKF, prima di ogni commit
 quarto render reports/<id>.qmd                   # report dello step
 ```
@@ -80,9 +80,13 @@ quarto render reports/<id>.qmd                   # report dello step
   nella semina, `.tv_` nella tassellazione, `.dcg_` nella geometria; `.hd_`, `.s22_`, `.s23_`, `.s24_`, `.s25_`, `.p27_` nello Step 2).
 - Lo Step 2 ha una sola legge e due motori: una modifica del modello va fatta in entrambi, oppure si dichiara che il motore di riferimento
   resta indietro. La funzione a pezzi deve dare lo stesso risultato per ogni lato dei pezzi e numero di processi (test di S2.7, gruppo a).
-- Ogni modifica del codice dello Step 2 cambia l'impronta della ripresa (`.geo_code_hash()`): le cartelle `out_dir` scritte prima non si
-  riprendono più, ed è voluto ([DEC-080](docs/decisions/DEC-080.md)). Una funzione chiamata con `do.call("nome")` o `match.fun()` sfugge
-  all'impronta: non usarle.
+- Ogni modifica del codice raggiunto da `simulate_visium_hd_pieces()` (le sue funzioni interne `.p27_*`, quelle dei passi che chiama e le
+  costanti che leggono) cambia l'impronta della ripresa (`.geo_code_hash()`): le cartelle `out_dir` scritte prima non si riprendono più,
+  ed è voluto ([DEC-080](docs/decisions/DEC-080.md)). Le modifiche al solo motore di riferimento o alle funzioni dei passi che la funzione a
+  pezzi non chiama (`build_hd_grid()`, `place_and_move_transcripts()`, `capture_and_bin()` e altre) non la cambiano: se una correzione del
+  modello tocca una di queste, va riportata nella funzione a pezzi. Una funzione chiamata con `do.call("nome")` o `match.fun()` sfugge
+  all'impronta: non usarle. La versione di R e dei pacchetti non entra nell'impronta, e un file salvato con `saveRDS()` porta nella sua
+  intestazione la versione di R che l'ha scritto: confronti di md5 fra versioni di R diverse falliscono anche con oggetti identici (S2.8b).
 - Nessun interruttore di prova nel codice di produzione: i mutanti sono copie modificate del codice (`tools/mutate.py`,
   `R/testing/mutants_<step>.py`).
 - Test in `R/testing/test_<step>.R`, eseguibili con un solo comando che stampa PASS o FAIL per asserzione e `RESULT n/m PASS`; runner dei
@@ -125,4 +129,7 @@ quarto render reports/<id>.qmd                   # report dello step
 - Le sezioni intere si simulano a pezzi con `assemble = "light"`, ma il processo principale che cuce i pezzi arriva a circa 40 GB nel tumore
   del colon (S2.7): contare la sua memoria, non solo quella di un pezzo.
 - La seconda coda dello spostamento arriva oltre il margine di 280 µm: con `frame_open = FALSE` i trascritti che escono dalla griglia si
-  perdono (`truth$cells$n_lost`), con `frame_open = TRUE` si ripiegano sul riquadro `frame`.
+  perdono (`truth$cells$n_lost`), con `frame_open = TRUE` la seconda coda si ripiega sul riquadro `frame` (qualche trascritto della prima
+  coda può ancora uscire: `n_lost` piccolo ma non nullo).
+- `R/testing/test_S2.3.R` esce con stato 0 anche quando un'asserzione fallisce: contare le righe `FAIL` (BL-256).
+- Una cartella `out_dir` con i file dei pezzi ma senza *run.rds* si riusa senza controlli: non cancellare quel file da solo (BL-254).

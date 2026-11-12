@@ -32,23 +32,29 @@ The entry point is `simulate_visium_hd_pieces()` (decision [DEC-079](../docs/dec
 pieces, simulates each cell once in the piece that holds its centre, and passes the transcripts that land in another piece to that piece.
 All random draws are tied to fixed 56 µm tiles, so **the result does not depend on the piece size or on the number of processes**
 ([DEC-074](../docs/decisions/DEC-074.md)). `simulate_visium_hd()`, written earlier (step S2.5), stays in the code as the reference
-engine of the test batteries: with the same seed it gives another realisation of the same model, not the same counts.
+engine of the test batteries: with the same seed it gives another realisation of the same model, not the same counts. The two engines
+differ in three declared details: the entry point cuts the stripe factors at a fixed ceiling (see [Technical layers](#technical-layers)),
+computes the distance to the tissue edge on windows around each piece, and reflects the second tail on the box given by `frame`.
 
 ## What the simulator does
 
 The model is described in the Step 2 design document, `docs/superpowers/specs/2026-11-03-step2-visium-grid-design.md` (version 0.6);
-the steps that built and checked each part are in `docs/steps/` (S2.0 to S2.8). In short, for each cell of the cell layer:
+the steps that built and checked each part are in `docs/steps/` (S2.0 to S2.8). In short, for each cell of the cell layer (the function names are those of the step functions; the entry point uses the same
+arithmetic, see [Lower-level functions](#lower-level-functions)):
 
 1. **Grid and geometric truth** (`build_hd_grid()`): a 2 µm grid around the tissue with a 280 µm margin of glass; for every pair
    (bin, cell) the area of the bin covered by the cell territory and by its nucleus.
 2. **Transcripts per cell** (`simulate_cell_profiles()`): a subtype and a total number of transcripts for each cell, and gene counts drawn
    from the expression profiles of its tissue (`load_cell_profiles()`), scaled by a depth factor (`visium_hd_depth_factor()`).
 3. **Position and movement** (`place_and_move_transcripts()`): each transcript is born in the nucleus or in the cytoplasm, with a fine
-   random field at 1-2 µm, and then moves: a short displacement everywhere, a wider blur near the tissue edge, and a long second tail
-   that reaches the glass (`transcript_params()`).
+   random field at 1-2 µm, and then moves. The first displacement is a mixture: for a small share of transcripts (`w`, 4 to 11 % by tissue)
+   an exponential tail of tens of µm (`ell`, 25 to 42 µm); otherwise a narrow Gaussian blur (`sigma_in`), replaced near the tissue edge by a wider one
+   (`sigma_e`, with probability decaying over the depth `D`). Then a long second tail (`w2`, 2 to 8 %; `ell2`, 113 to 1826 µm) carries
+   transcripts onto the glass. The first displacement and the fine field are in `transcript_params()`.
 4. **Capture and binning** (`capture_and_bin()`): row and column stripes of the capture efficiency (`simulate_stripes()`), thinning to
-   the expected capture, a background on every bin, and the sum to 8 µm bins (`sum_to_8um()`). The capture parameters of each tissue are
-   in `capture_params()`.
+   the expected capture, a background on every bin, and the sum to 8 µm bins (`sum_to_8um()`). The capture parameters of each tissue,
+   including the background `b` and the second tail, fitted together ([DEC-053](../docs/decisions/DEC-053.md)), are in
+   `capture_params()`.
 
 Transcripts are generated in excess and thinned by the stripe factor; the excess (the overgeneration) has a fixed ceiling for each tissue
 (`stripe_ceiling()`, [DEC-075](../docs/decisions/DEC-075.md)).
@@ -119,12 +125,12 @@ With `assemble = "full"` (the default) the result is a list with the same struct
 | `counts_2um` | sparse matrix genes × 2 µm bins, all bins of the grid |
 | `counts_8um` | sparse matrix genes × 8 µm bins (sums of 4 × 4 bins of 2 µm) |
 | `bins` | one row per 2 µm bin: grid row and column, centre (µm), 8 µm bin, tissue area and fraction, `in_tissue` (fraction ≥ 0.5), stripe factor used (`c`) and raw (`c_raw`) |
-| `bins_8um` | one row per 8 µm bin: centre, tissue area, `in_tissue` |
+| `bins_8um` | one row per 8 µm bin: centre, tissue area, `n_in_tissue` (its 2 µm bins in the tissue, out of 16), `in_tissue` (at least one) |
 | `truth$overlap`, `truth$overlap_8um` | for every pair (bin, cell): area and fraction of the bin covered by the territory and by the nucleus |
 | `truth$origin`, `truth$origin_8um` | for every pair (bin, cell): captured transcripts of that cell in that bin, and how many were born in the nucleus |
 | `truth$background`, `truth$background_8um` | background UMI per bin (not from any cell) |
 | `truth$arrived_2um` | transcripts that arrived in each 2 µm bin before capture |
-| `truth$cell_counts` | genes × cells matrix of the transcripts generated for each cell (the true profiles; kept when `keep_profiles = TRUE`, the default with `assemble = "full"`) |
+| `truth$cell_counts` | genes × cells matrix of the transcripts generated for each cell (the true profiles; returned only with `assemble = "full"` and `keep_profiles = TRUE`, the default) |
 | `truth$cells`, `truth$genes` | per cell and per gene: generated, lost, thinned and captured transcripts; cell type and subtype |
 | `truth$layers` | the technical layers actually used: stripe factors and their ceiling, background, displacement parameters, fine field, depth |
 | `metadata` | seeds, pieces, grid, ceiling, checks, time and memory per stage and piece, version and fingerprints of the code and of the profiles |
@@ -186,8 +192,8 @@ c(counts_2um = identical(hd$counts_2um, hd_pieces$counts_2um),
 
 The default, `piece_um = 504`, was chosen so that one piece stays within the 8 GB budget of the design document on whole capture areas:
 with 1008 µm a piece of the colorectal cancer and of the brain went above it (second table below; [DEC-076](../docs/decisions/DEC-076.md)). On small areas a single piece is faster. The table below is read from the measurements of
-step S2.8 (`results/S2.8/S2.8_summary.csv`): areas of 1 mm² of the six reference tissues, 3 seeds, one process each, with the default
-layers.
+step S2.8 (`results/S2.8/S2.8_summary.csv`): areas of 1 mm² of the six reference tissues, 3 seeds, one process each, default layers,
+`frame_open = TRUE`; `simulate_visium_hd()` ran with blocks of 4 million transcripts (`chunk_transcripts = 4e6`, its default is 2e6).
 
 ```{r}
 #| label: perf-small
@@ -219,14 +225,17 @@ knitr::kable(data.frame(tissue = s27$tissue, piece_um = s27$piece_um, pieces = s
 In practice:
 
 - **areas up to about 1 mm²**: `piece_um = Inf`;
-- **whole capture areas**: the default 504 µm, `assemble = "light"` (UMI per 2 µm bin, 8 µm matrix, cell and gene tables, without
-  the 2 µm matrix and the per-bin truth), several `workers`, and a machine with room for the main process;
+- **whole capture areas**: the default 504 µm, `assemble = "light"`, several `workers`, and a machine with room for the main process.
+  The light output holds `umi_2um` (UMI per 2 µm bin), `counts_8um`, `bins`, `bins_8um`, `truth$cells`, `truth$genes`,
+  `truth$background` and `truth$layers`; it has no `counts_2um`, `truth$overlap`, `truth$origin`, `truth$arrived_2um` or
+  `truth$cell_counts`;
 - `cell_layer` can be the path of an RDS file instead of the object: the file is read, split into pieces and freed, so the child
   processes do not carry the whole layer.
 
-Choosing the piece size automatically is planned with the optimisation of the cell layer (backlog item BL-252). The time per mm² of the
-colorectal cancer and of the intestine is above the 300 s budget of the design document, a declared limit
-([DEC-077](../docs/decisions/DEC-077.md)).
+Choosing the piece size automatically is planned with the optimisation of the cell layer (backlog item BL-252). On whole sections the
+process time per mm² of tissue is above the 300 s budget of the design document in the colorectal cancer (with pieces of 1008 and of
+504 µm), in the intestine (1008 µm; not run with 504 µm) and in the mouse brain with the default 504 µm (table above). The first two are a
+declared limit ([DEC-077](../docs/decisions/DEC-077.md)), written on the 1008 µm runs.
 
 ## Technical layers
 
@@ -250,7 +259,7 @@ How stripes and background work together:
 - transcripts are generated with an overgeneration M\* (`metadata$overgeneration` = `truth$layers$stripes$M`) and each one is kept
   with probability `c / M*` in the bin where it arrives, where `c` is the stripe factor of the bin;
 - factors above the ceiling M\* are cut to M\*: `bins$c` is the factor used, `bins$c_raw` the raw one, and `metadata$truncated_share` the
-  share of transcripts affected. `ceiling_q` is the probability that a raw factor exceeds the ceiling (default 1e-5,
+  share of the expected captured transcripts removed by the cut. `ceiling_q` is the probability that a raw factor exceeds the ceiling (default 1e-5,
   [DEC-075](../docs/decisions/DEC-075.md)); `stripe_ceiling()` computes M\* from `capture_params()`;
 - the background of a bin is Poisson with mean `b c`, with the same cut factor `c` as the capture; `b` comes from `capture_params()`
   and is zero in some tissues (printed below).
@@ -280,7 +289,8 @@ glass_umi <- function(h) sum(h$counts_2um[, !h$bins$in_tissue])
 c(open = glass_umi(open), closed = glass_umi(closed))
 ```
 
-With `frame_open = TRUE` the argument `frame` (`c(xmin, ymin, xmax, ymax)` in µm, inside the grid) counts twice: the second tail folds
+With `frame_open = TRUE` the argument `frame` (a named vector in µm inside the grid, for example
+`c(xmin = 0, ymin = 0, xmax = 300, ymax = 300)`; names are required) counts twice: the second tail folds
 on its sides, and outside it the distance to the tissue edge treats the space as tissue. If the tissue of a crop does not reach a side of
 the crop window, give the window as `frame`, otherwise the default box treats a real tissue edge as open (backlog item BL-237). In
 step S2.8 this was measured on an area of intestine cut from a real section, with `frame_open = TRUE`: the default box starts 5.5 µm from
@@ -304,8 +314,9 @@ knitr::kable(z, digits = 3, row.names = FALSE,
              col.names = c("zone", "bins", "UMI per bin, default frame", "UMI per bin, window as frame", "ratio (mean of 3 seeds)"))
 ```
 
-The window changes the counts only on the strip of glass between the default box and the window side; in the tissue and in the glass
-next to it the difference is below 2 %. The true value of that strip is not known.
+The window changes the counts on the strip of glass between the default box and the window side (about 2.6 times as many UMI per bin).
+In the tissue and in the glass within 8 µm of it the difference is below 0.3 %. The row «glass between window side and tissue» includes
+1500 bins of that strip, which explains its 2 %; without them the ratio is within 0.5 % of 1. The true value of the strip is not known.
 
 ## Long runs: resume and fingerprint
 
@@ -320,16 +331,23 @@ od <- file.path(tempdir(), "run_disc")
 first <- simulate_visium_hd_pieces(cl, seed = 1, piece_um = 224, out_dir = od)
 again <- simulate_visium_hd_pieces(cl, seed = 1, piece_um = 224, out_dir = od)
 c(pieces_and_stages = nrow(again$metadata$piece_stats), reused = sum(again$metadata$piece_stats$reused))
-identical(first$counts_2um, hd$counts_2um)   # same counts as the first simulation, with 224 um pieces
+c(resumed_equal = identical(again$counts_2um, first$counts_2um) && identical(again$truth$origin, first$truth$origin),
+  same_as_single_piece = identical(first$counts_2um, hd$counts_2um))
 refusal <- tryCatch({ simulate_visium_hd_pieces(cl, seed = 2, piece_um = 224, out_dir = od); "no error" }, error = conditionMessage)
 refusal
 unlink(od, recursive = TRUE)
 ```
 
-Limits of the fingerprint: it follows the functions called by name in the code and the constants they read, not functions called through
-`do.call("name")` or `match.fun()`, S3/S4 methods or closures created at run time (none are used in Step 2 today). A change in comments
-only does not change it. A folder written before step S2.8 has no code fingerprint and is not resumed. Without `out_dir` a temporary
-folder is used and deleted.
+Limits of the fingerprint:
+
+- it follows the functions reached from `simulate_visium_hd_pieces()` by name and the constants they read, not functions called through
+  `do.call("name")` or `match.fun()`, S3/S4 methods or closures created at run time (none are used in Step 2 today); a change in comments
+  only does not change it;
+- the versions of R and of the packages are not in it;
+- it is checked only if *run.rds* exists: a folder with piece files but without *run.rds* is reused without any check, so never delete
+  that file alone (backlog item BL-254);
+- `keep_profiles` is in it: a run made with `assemble = "full"` is resumed as `"light"` only with `keep_profiles = TRUE`;
+- a folder written before step S2.8 has no code fingerprint and is not resumed. Without `out_dir` a temporary folder is used and deleted.
 
 `metadata$package_version` comes from `.geo_version()`: the installed package if there is one, otherwise the `DESCRIPTION` of the
 folder in `getOption("geo.spatialtrans.root", ".")`, that is the working directory. Run the simulator from the repository root, or set
@@ -351,7 +369,8 @@ c(code = hd$metadata$code_hash, profiles = hd$metadata$profiles_hash)
 - `profiles`: a profile set as returned by `load_cell_profiles()`; default, the profiles of the tissue.
 - `depth_factor`: transcripts per cell multiplier; default `visium_hd_depth_factor()` with the profiles of the preset, the
   `depth_factor` of the profiles otherwise.
-- `keep_profiles`: keep `truth$cell_counts` (default `TRUE` with `assemble = "full"`, `FALSE` with `"light"`).
+- `keep_profiles`: keep `truth$cell_counts` (default `TRUE` with `assemble = "full"`, `FALSE` with `"light"`); with `"light"` the
+  matrix is not returned even when `TRUE`.
 - `assemble`: `"full"` or `"light"` (see [Piece size, time and memory](#piece-size-time-and-memory)).
 - `workers`: child processes; the result does not change.
 - `verbose`: progress messages.
@@ -363,24 +382,28 @@ names(formals(simulate_visium_hd_pieces))
 
 ## Lower-level functions
 
-The steps can also be run one by one, for example to study one layer in isolation. These are the functions behind
-`simulate_visium_hd_pieces()`:
+The entry point calls some exported functions directly and re-implements the arithmetic of the others piece by piece. The step functions
+can be run one by one, for example to study one layer in isolation; chained together they give the realisation of the reference engine,
+with the seeds passed directly (design document, section 17; backlog item BL-224), not that of the entry point.
 
-| function | what it does |
-|---|---|
-| `build_hd_grid()` | grid around the cell layer and geometric truth; built from `hd_grid_geometry()`, `hd_bin_table()`, `hd_tissue_area()`, `hd_overlap()` |
-| `sum_to_8um()` | sums a 2 µm table or matrix to 8 µm bins |
-| `load_cell_profiles()`, `simulate_cell_profiles()` | profiles of a tissue; subtypes, totals and gene counts per cell |
-| `transcript_params()`, `s23_gamma_field()`, `place_and_move_transcripts()` | displacement parameters; the fine random field; position and movement of transcripts |
-| `capture_params()`, `simulate_stripes()`, `stripe_ceiling()`, `capture_and_bin()` | capture parameters; stripe factors; ceiling of the overgeneration; capture, background and binning |
-| `visium_hd_archetype()`, `visium_hd_depth_factor()`, `visium_hd_chunk_size()` | tissue code of a layer; depth factor of a tissue; cells per block of `simulate_visium_hd()` |
-| `simulate_visium_hd()` | the reference engine of step S2.5 (one area at a time, same model, another realisation) |
+| function | what it does | called by `simulate_visium_hd_pieces()` |
+|---|---|---|
+| `hd_grid_geometry()`, `hd_bin_table()`, `sum_to_8um()` | grid geometry; one row per 2 µm bin; sums a 2 µm table or matrix to 8 µm bins | yes |
+| `load_cell_profiles()`, `simulate_cell_profiles()` | profiles of a tissue; subtypes, totals and gene counts per cell | yes |
+| `transcript_params()`, `capture_params()` | parameters of the first displacement and of the fine field; capture, background and second tail | yes |
+| `simulate_stripes()`, `stripe_ceiling()` | stripe factors; ceiling of the overgeneration | yes |
+| `visium_hd_archetype()`, `visium_hd_depth_factor()` | tissue code of a layer; depth factor of a tissue | yes |
+| `build_hd_grid()`, `hd_tissue_area()`, `hd_overlap()` | grid around the cell layer and geometric truth | no (same arithmetic, by piece) |
+| `s23_gamma_field()`, `place_and_move_transcripts()` | the fine random field; position and movement of transcripts | no (same arithmetic, by tile) |
+| `capture_and_bin()` | capture, background and binning | no (same arithmetic, by piece) |
+| `visium_hd_chunk_size()`, `simulate_visium_hd()` | cells per block of the reference engine; the reference engine of step S2.5 (one area at a time, same model except the ceiling, another realisation) | no |
 
 ## Known limits
 
-The simulated counts were compared with the real reference tissues on the same bins: UMI and detected genes per bin at 2 and 8 µm
-(step S2.5) and the row and column stripes (step S2.4) agree with the real ones in all six tissues. The limits declared so far, with the decision that records each one (details
-in section 17 of the design document and in the step reports):
+The simulated counts were compared with the real reference tissues on the same bins: UMI and detected genes per bin at 2 and 8 µm agree
+with the real ones in all six tissues (step S2.5), and no measure of the row and column stripes is refuted in any tissue (step S2.4: 24 of
+36 judgements confirmed, 12 undetermined). The main declared limits, with the decision or backlog item that records each one (the full
+list is section 17 of the design document):
 
 - **Variability outside the nucleus**: the fine variability is calibrated inside the nucleus; in the cytoplasm around it and in the
   cell-free space real data vary more and on a larger scale ([DEC-050](../docs/decisions/DEC-050.md)).
@@ -392,12 +415,19 @@ in section 17 of the design document and in the step reports):
 - **Heart**: isotropic cells; the real 8 µm counts follow the orientation of the fibres, the simulated ones do not
   ([DEC-070](../docs/decisions/DEC-070.md)). The heart is the planned negative control of the Voronoi cell layer.
 - **Stroma of the colorectal cancer**: some genes of the panel have a null profile ([DEC-065](../docs/decisions/DEC-065.md)).
-- **Time**: on whole sections of the colorectal cancer and of the intestine the time per mm² is above the budget
-  ([DEC-077](../docs/decisions/DEC-077.md)).
+- **Time**: on whole sections the time per mm² is above the budget in the colorectal cancer and in the intestine
+  ([DEC-077](../docs/decisions/DEC-077.md)) and, with the default 504 µm pieces, in the mouse brain.
 - **No gene-specific nuclear enrichment and no membrane or peripheral localisation**: the position of a transcript in the cell does not
   depend on the gene.
-- **Limits of the cell layer** carry over to the counts: too many touching nuclei in dense tissues and territories too uniform with the
-  default uniform seeding (see `README.md`).
+- **No cell-free space inside the tissue** and lumens wider than 8 µm of the colorectal cancer and of the heart not reproduced
+  (BL-201).
+- **Stripes**: only the fine part of the row and column factors; the slow trends of the capture are missing
+  ([DEC-056](../docs/decisions/DEC-056.md)); factors above the ceiling are cut ([DEC-075](../docs/decisions/DEC-075.md)).
+- **Orientation index** of the simulated intestine, colorectal cancer and lymph node at or above the real one (BL-236).
+- **Transcripts per area on a whole section** not yet checked against the real one (BL-205).
+- **Limits of the cell layer** carry over to the counts: excess of touching nuclei in the stroma of the colorectal cancer and for pairs of
+  nuclei, undecided in the colorectal cancer, no longer shown in the lymph node ([DEC-063](../docs/decisions/DEC-063.md)); territories
+  too uniform with the default uniform seeding (see `README.md`).
 
 ## Fingerprints of this run
 
@@ -414,6 +444,7 @@ cat("FINGERPRINT flat_counts_2um", md5_of(hd_flat$counts_2um), "\n")
 cat("CHECK pieces_identical", identical(hd$counts_2um, hd_pieces$counts_2um) && identical(hd$truth$origin, hd_pieces$truth$origin), "\n")
 cat("CHECK internal_checks", all(unlist(hd$metadata$checks)), "\n")
 cat("CHECK resume_reused_all", sum(again$metadata$piece_stats$reused) == nrow(again$metadata$piece_stats), "\n")
-cat("CHECK resume_same_counts", identical(first$counts_2um, hd$counts_2um), "\n")
+cat("CHECK resume_same_counts", identical(again$counts_2um, first$counts_2um) && identical(again$truth$origin, first$truth$origin), "\n")
+cat("CHECK pieces224_same_counts", identical(first$counts_2um, hd$counts_2um), "\n")
 cat("CHECK resume_refused_other_seed", grepl("seed", refusal, fixed = TRUE) && refusal != "no error", "\n")
 ```

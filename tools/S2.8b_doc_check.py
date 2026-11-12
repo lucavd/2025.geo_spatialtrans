@@ -12,7 +12,8 @@ funzione marcata @export in R/05b*.R compare nella guida d'uso o nel README.
 
 Uso (radice del repository):
   python3 -B tools/S2.8b_doc_check.py [--tree REV] [--text REV|worktree]   -> PASS/FAIL per riferimento e per voce di copertura, RESULT
-  python3 -B tools/S2.8b_doc_check.py --mutants        -> tre mutanti (percorso inventato, funzione inventata, guida senza `ceiling_q`)
+  python3 -B tools/S2.8b_doc_check.py --mutants        -> quattro mutanti (percorso inventato, funzione inventata, guida senza `ceiling_q`,
+                                                          percorso troncato; il quarto aggiunto dopo la revisione, T01)
   python3 -B tools/S2.8b_doc_check.py --counterproof   -> CP-1: copertura di README.md e CLAUDE.md di 48a5f18 (prima di S2.8b)
 """
 import argparse, os, re, subprocess, sys
@@ -69,7 +70,14 @@ def refs(text, docname):
         m = re.fullmatch(r"((?:[A-Za-z][A-Za-z0-9.]*::)?[A-Za-z_.][A-Za-z0-9_.]*)\(\)", tok)
         if m:
             funs.add(m.group(1)); continue
-        if " " in tok or tok.startswith(("http", "-", "$", "{")) or tok in NOT_PATHS:
+        if " " in tok and not tok.startswith(("http", "{", "r ")):
+            if re.fullmatch(r"(?:R|tools|docs|reports|results|data|inst|vignettes)/[^`]+/", tok):
+                paths.add(tok); continue                                    # cartella con uno spazio nel nome (R/test functions/)
+            # comandi e frasi fra apici inversi: si controllano le parole che sono percorsi del repository (revisione T02)
+            for w in re.findall(r"(?<![\w/~.$-])((?:R|tools|docs|reports|results|data|inst|vignettes)/[A-Za-z0-9_./<>*-]+)", tok):
+                paths.add(w.rstrip(".,;:)"))
+            continue
+        if tok.startswith(("http", "-", "$", "{")) or tok in NOT_PATHS:
             continue
         if "/" in tok or tok.endswith(EXT):
             paths.add(tok.rstrip(".,;:)"))
@@ -82,21 +90,21 @@ def refs(text, docname):
             paths.add("./" + os.path.normpath(os.path.join(os.path.dirname(docname), t)))
     for lang, body in blocks:
         if lang.lower() == "r":
-            body_nc = re.sub(r"#.*", "", body)
-            body_nc = re.sub(r'"(?:[^"\\]|\\.)*"', '""', body_nc)
+            body_nc = re.sub(r'"(?:[^"\\]|\\.)*"', '""', body)   # prima le stringhe, poi i commenti (revisione T02)
+            body_nc = re.sub(r"#.*", "", body_nc)
             body_nc = re.sub(r"`[^`\n]*`", "x_", body_nc)   # nomi fra apici inversi (colonne come `distanza minima (um)`)
             defs.update(re.findall(r"([A-Za-z_.][A-Za-z0-9_.]*)\s*<-\s*function", body_nc))
             libs.update(re.findall(r"\blibrary\(\s*([A-Za-z][A-Za-z0-9.]*)\s*\)", body_nc))
             for m in re.finditer(r"(?<![\w$@.])((?:[A-Za-z][A-Za-z0-9.]*::)?[A-Za-z_.][A-Za-z0-9_.]*)\s*\(", body_nc):
                 funs.add(m.group(1))
-            for m in re.finditer(r'"([A-Za-z0-9_./-]+\.(?:R|csv|json|md|qmd|txt))"', body):
+            for m in re.finditer(r'"([A-Za-z0-9_./-]+\.(?:R|csv|json|md|qmd|txt|rds))"', body):
                 p = m.group(1)
                 if p.startswith("../") or p.startswith("./"):
                     p = "./" + os.path.normpath(os.path.join(os.path.dirname(docname), p))
                 paths.add(p)
         if lang.lower() in ("bash", "sh"):
-            for m in re.finditer(r"(?<![\w/~.-])((?:R|tools|docs|reports|results|data|inst|vignettes)/[A-Za-z0-9_./<>*-]+)", body):
-                paths.add(m.group(1).rstrip(".,;:)"))
+            for m in re.finditer(r"(?<![\w/~.-])((?:R|tools|docs|reports|results|data|inst|vignettes)/[A-Za-z0-9_./<>*$-]+)", body):
+                paths.add(re.sub(r"\$[A-Za-z_]\w*", "*", m.group(1)).rstrip(".,;:)"))   # variabili della shell come *
     return paths, funs, defs | {"lib:" + l for l in libs}
 
 def path_ok(p, files, dirs):
@@ -109,8 +117,10 @@ def path_ok(p, files, dirs):
     if q in files or q in dirs:
         return True
     pat = re.sub(r"<[^>]*>", "\x00", q)
+    wild = "\x00" in pat or "*" in pat
     pat = re.escape(pat).replace("\x00", ".+").replace(r"\*", ".*")
-    rx = re.compile("^" + pat)
+    # ancorato alla fine (revisione di S2.8b, T01): un prefisso troncato non passa; dopo un segnaposto o un * si accetta il resto del percorso
+    rx = re.compile("^" + pat + ("(/.*)?$" if not wild else ".*$"))
     return any(rx.match(f) for f in files) or any(rx.match(d) for d in dirs)
 
 def r_sources(files, rev, pattern=r"\.(R|r)$"):
@@ -231,6 +241,7 @@ def main():
             "N1 percorso inventato": ({**base, "README.md": base["README.md"] + "\nSee `R/05b9_imaginary_step.R`.\n"}, "R/05b9_imaginary_step.R"),
             "N2 funzione inventata": ({**base, GUIDE: g0 + "\n```{r}\nsimulate_visium_grid_fast(cl, seed = 1)\n```\n"}, "simulate_visium_grid_fast()"),
             "N3 guida senza `ceiling_q`": ({**base, GUIDE: "\n".join(l for l in g0.split("\n") if "ceiling_q" not in l)}, "ceiling_q"),
+            "N4 percorso troncato": ({**base, "CLAUDE.md": base["CLAUDE.md"] + "\nVedi `vignettes/visium_hd_simulation.qm`.\n"}, "vignettes/visium_hd_simulation.qm"),
         }
         det = 0
         for k, (texts, target) in muts.items():
@@ -238,7 +249,7 @@ def main():
             _, m2 = check_coverage(texts[GUIDE], texts["README.md"], args, ex, verbose=False)
             hit = any(m[1] == target for m in m1 + m2)
             det += hit; print(f"{'PASS' if hit else 'FAIL'} mutante {k} rilevato")
-        print(f"RESULT {det}/3 mutanti rilevati"); sys.exit(0 if det == 3 else 1)
+        print(f"RESULT {det}/{len(muts)} mutanti rilevati"); sys.exit(0 if det == len(muts) else 1)
     if a.counterproof:
         r0 = text_of(BEFORE, "README.md"); c0 = text_of(BEFORE, "CLAUDE.md")
         n, miss = check_coverage((r0 or "") + "\n" + (c0 or ""), (r0 or "") + "\n" + (c0 or ""), args, ex, verbose=False)

@@ -42,6 +42,9 @@ elif [ "$mode" = quickstart ]; then
     grep -q '^\[place_cells\].* 0 ERROR' "$S28B/qs1_$k.log" || { echo "FAIL Step 1 esecuzione $k: controlli con errori"; fail=1; }
     m=$(md5sum < "$S28B/qs1_cell_df_$k.rds" | cut -c1-32)
     [ "$m" = "$S1_MD5" ] && echo "PASS Step 1 esecuzione $k: md5 di cell_df = S1.6b ($m)" || { echo "FAIL Step 1 esecuzione $k: md5 $m"; fail=1; }
+    # informativo (dopo la prima esecuzione di S2.8b): l'oggetto e' uguale a quello di S1.6b? byte diversi del file e versione di R che lo scrive
+    Rscript --vanilla -e "a <- readRDS('/mnt/micron/geo_spatialtrans/S1.6b/official2/qs_cell_df_1.rds'); b <- readRDS('$S28B/qs1_cell_df_$k.rds'); cat('INFO Step 1 esecuzione $k: cell_df identico a S1.6b:', identical(a, b), '; R', R.version\$major, R.version\$minor, '\n')"
+    echo "INFO Step 1 esecuzione $k: byte diversi dal file di S1.6b: $(cmp -l /mnt/micron/geo_spatialtrans/S1.6b/official2/qs_cell_df_1.rds "$S28B/qs1_cell_df_$k.rds" | wc -l) (posizioni: $(cmp -l /mnt/micron/geo_spatialtrans/S1.6b/official2/qs_cell_df_1.rds "$S28B/qs1_cell_df_$k.rds" | head -3 | awk '{print $1}' | tr '\n' ' '))"
     Rscript --vanilla -e "source('$S28B/qs2.R'); saveRDS(list(hd\$counts_2um, hd\$counts_8um), '$S28B/qs2_counts_$k.rds', compress = FALSE); cat('CHECKS', all(unlist(hd\$metadata\$checks)), '\n')" > "$S28B/qs2_$k.log" 2>&1 || { echo "FAIL Step 2 esecuzione $k (vedi qs2_$k.log)"; fail=1; }
     grep -q '^CHECKS TRUE' "$S28B/qs2_$k.log" || { echo "FAIL Step 2 esecuzione $k: controlli interni"; fail=1; }
   done
@@ -52,17 +55,23 @@ elif [ "$mode" = quickstart ]; then
 elif [ "$mode" = guide ]; then
   cd "$CL" || exit 1
   for k in 1 2; do
-    R_LIBS="$CL/$LIBREL" quarto render "$GUIDE" --output "g2_render_$k.html" > "$S28B/guide_$k.log" 2>&1 || { echo "FAIL resa $k (vedi guide_$k.log)"; fail=1; }
+    # copia non versionata nella stessa cartella della guida: stessa cartella di lavoro degli esempi, risorse incorporate come nella resa
+    # versionata (con --output Quarto scrive fuori da vignettes/ e non incorpora le risorse: prima esecuzione di S2.8b)
+    cp "$GUIDE" "vignettes/g2_render_$k.qmd"
+    R_LIBS="$CL/$LIBREL" quarto render "vignettes/g2_render_$k.qmd" > "$S28B/guide_$k.log" 2>&1 || { echo "FAIL resa $k (vedi guide_$k.log)"; fail=1; }
+    [ -s "vignettes/g2_render_$k.html" ] || { echo "FAIL resa $k: vignettes/g2_render_$k.html assente"; fail=1; }
     grep -oE '(FINGERPRINT|CHECK) [A-Za-z0-9_]+ [A-Za-z0-9]+' "vignettes/g2_render_$k.html" | sort > "$S28B/guide_fp_$k.txt"
     echo "INFO resa $k: $(grep -c FINGERPRINT "$S28B/guide_fp_$k.txt") impronte, $(grep -c CHECK "$S28B/guide_fp_$k.txt") controlli"
-    cp "vignettes/g2_render_$k.html" "$S28B/"; rm -f "vignettes/g2_render_$k.html"
+    cp "vignettes/g2_render_$k.html" "$S28B/"; rm -rf "vignettes/g2_render_$k.qmd" "vignettes/g2_render_$k.html" "vignettes/g2_render_${k}_files"
   done
   [ -s "$S28B/guide_fp_1.txt" ] && cmp -s "$S28B/guide_fp_1.txt" "$S28B/guide_fp_2.txt" && echo "PASS impronte e controlli uguali nelle due rese" || { echo "FAIL impronte diverse o assenti"; fail=1; }
   [ "$(grep -c '^FINGERPRINT' "$S28B/guide_fp_1.txt")" -ge 5 ] || { echo "FAIL meno di 5 impronte"; fail=1; }
   [ "$(grep -c '^CHECK' "$S28B/guide_fp_1.txt")" -ge 5 ] || { echo "FAIL meno di 5 controlli"; fail=1; }
-  grep -q '^CHECK .* FALSE' "$S28B/guide_fp_1.txt" && { echo "FAIL controlli FALSE:"; grep 'FALSE' "$S28B/guide_fp_1.txt"; fail=1; }
+  # ogni controllo deve finire con TRUE (revisione T05: un NA non passa)
+  grep '^CHECK' "$S28B/guide_fp_1.txt" | grep -vq ' TRUE$' && { echo "FAIL controlli non TRUE:"; grep '^CHECK' "$S28B/guide_fp_1.txt" | grep -v ' TRUE$'; fail=1; }
+  # la guida resa nel commit deve mostrare le stesse impronte (revisione T06: era solo informativo)
   grep -oE '(FINGERPRINT|CHECK) [A-Za-z0-9_]+ [A-Za-z0-9]+' "${GUIDE%.qmd}.html" | sort > "$S28B/guide_fp_committed.txt"
-  cmp -s "$S28B/guide_fp_1.txt" "$S28B/guide_fp_committed.txt" && echo "INFO impronte uguali anche alla guida resa nel commit" || echo "INFO impronte diverse dalla guida resa nel commit"
+  cmp -s "$S28B/guide_fp_1.txt" "$S28B/guide_fp_committed.txt" && echo "PASS impronte uguali alla guida resa nel commit" || { echo "FAIL impronte diverse dalla guida resa nel commit"; fail=1; }
   git status --porcelain --untracked-files=no | grep -q . && { echo "FAIL la resa ha modificato file versionati"; fail=1; }
   [ $fail = 0 ] && echo "GATE G-2c PASS" || echo "GATE G-2c FAIL"
 elif [ "$mode" = cp2 ]; then
@@ -70,7 +79,8 @@ elif [ "$mode" = cp2 ]; then
   sed '0,/piece_um = Inf)/s//piece_um = 500)/' "$GUIDE" > vignettes/cp2_guide.qmd
   grep -c 'piece_um = 500)' vignettes/cp2_guide.qmd
   if R_LIBS="$CL/$LIBREL" quarto render vignettes/cp2_guide.qmd > "$S28B/cp2.log" 2>&1; then echo "FAIL CP-2: la guida con piece_um = 500 si e' resa"; fail=1
-  else echo "PASS CP-2: la resa si ferma ($(grep -m1 -oE 'multiplo di 56|Error[^\n]{0,80}' "$S28B/cp2.log" | head -1))"; fi
+  elif grep -q 'multiplo di 56' "$S28B/cp2.log"; then echo "PASS CP-2: la resa si ferma sull'errore del lato dei pezzi (multiplo di 56)"
+  else echo "FAIL CP-2: la resa si ferma, ma non per il lato dei pezzi (vedi cp2.log)"; fail=1; fi   # revisione T07
   rm -f vignettes/cp2_guide.qmd vignettes/cp2_guide.html; rm -rf vignettes/cp2_guide_files
 elif [ "$mode" = battery ]; then
   cd "$CL" || exit 1
@@ -95,8 +105,9 @@ elif [ "$mode" = merge ]; then
   [ -n "$d" ] && [ "$d" = "$s" ] && echo "PASS dev = step2-visium-grid su GitHub ($d)" || { echo "FAIL dev $d, step2-visium-grid $s"; fail=1; }
   git merge-base --is-ancestor "$OLD_DEV" "$d" && echo "PASS il vecchio dev ($OLD_DEV) e' antenato di dev (avanzamento)" || { echo "FAIL vecchio dev non antenato"; fail=1; }
   if [ -n "$MAIN_AT_OPEN" ]; then [ "$m" = "$MAIN_AT_OPEN" ] && echo "PASS main invariato ($m)" || { echo "FAIL main cambiato: $m"; fail=1; }; else echo "FAIL MAIN_AT_OPEN non dato"; fail=1; fi
-  ch=$(git diff --name-only "$S28_HEAD" "$d" -- R/ inst/ renv.lock | grep -v '^R/testing/run_S2.8b.sh$' || true)
-  [ -z "$ch" ] && echo "PASS R/, inst/, renv.lock identici a S2.8 ($S28_HEAD), salvo R/testing/run_S2.8b.sh" || { echo "FAIL file del simulatore cambiati:"; echo "$ch"; fail=1; }
+  ch=$(git diff --name-only "$S28_HEAD" "$d" -- R/ inst/ renv.lock renv/activate.R renv/settings.json .Rprofile tools/restore_library.R tools/link_server_inputs.sh | grep -v '^R/testing/run_S2.8b.sh$' || true)
+  [ -z "$ch" ] && echo "PASS R/, inst/, renv.lock, renv/, .Rprofile, strumenti d'installazione identici a S2.8 ($S28_HEAD), salvo R/testing/run_S2.8b.sh" || { echo "FAIL file del simulatore o dell'ambiente cambiati:"; echo "$ch"; fail=1; }
+  v=$(git show "$d:DESCRIPTION" | sed -n 's/^Version: *//p'); [ "$v" = "0.2.0" ] && echo "PASS Version 0.2.0" || { echo "FAIL Version $v"; fail=1; }   # revisione T08
   python3 - "$S28_HEAD" "$d" <<'PY' || fail=1
 import subprocess, sys, re
 def dcf(rev):

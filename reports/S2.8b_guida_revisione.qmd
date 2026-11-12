@@ -57,13 +57,15 @@ cellula del livello cellulare:
 2. **trascritti per cellula** (`simulate_cell_profiles()`, `R/05b2_simulate_cell_profiles.R`): sottotipo, totale e conteggi per gene dai
    profili di espressione del tessuto, scelti con una regola scritta prima della misura ([DEC-040](../docs/decisions/DEC-040.md); la tua 3.2.B);
 3. **posizione e spostamento** (`place_and_move_transcripts()`, `R/05b3_place_and_move_transcripts.R`): nascita nel nucleo o nel
-   citoplasma con una variabilità fine a 1-2 µm, poi uno spostamento a due livelli (stretto ovunque, più largo vicino al bordo del tessuto,
-   [DEC-037](../docs/decisions/DEC-037.md)) e una seconda coda lunga che arriva sul vetro ([DEC-051](../docs/decisions/DEC-051.md)); la tua
-   3.2.D, 4.3 e C-B;
+   citoplasma con una variabilità fine a 1-2 µm, poi un primo spostamento misto (sfocatura stretta, più larga vicino al bordo del tessuto,
+   e per una piccola quota di trascritti una coda esponenziale di decine di µm; [DEC-037](../docs/decisions/DEC-037.md)) e una seconda coda
+   lunga che arriva sul vetro, nata in S2.3 ([DEC-051](../docs/decisions/DEC-051.md)) e adattata insieme al fondo in S2.4
+   ([DEC-053](../docs/decisions/DEC-053.md)); la tua 3.2.D, 4.3 e C-B;
 4. **cattura e somma** (`capture_and_bin()`, `R/05b4_capture_and_bin.R`): strisce di riga e colonna dell'efficienza di cattura, fondo,
    assottigliamento e somma a 8 µm (la tua 3.2.C e 3.2.E).
 
-La funzione a pezzi fa gli stessi passi su pezzi quadrati dell'area, con le estrazioni casuali legate a tessere fisse di 56 µm: lo stesso
+La funzione a pezzi chiama direttamente alcune di queste funzioni e rifà le altre con la stessa aritmetica pezzo per pezzo (griglia,
+verità geometrica, posizione e spostamento, cattura): lavora su pezzi quadrati dell'area, con le estrazioni casuali legate a tessere fisse di 56 µm: lo stesso
 seme dà gli stessi conteggi per ogni lato dei pezzi e numero di processi ([DEC-074](../docs/decisions/DEC-074.md)). La funzione scritta
 prima, `simulate_visium_hd()` (`R/05b5_simulate_visium_hd.R`), resta come motore di riferimento delle batterie: stessa legge, un'altra
 realizzazione casuale.
@@ -149,10 +151,12 @@ non ha rieseguito i test (S2.8, deviazione D-4). I test li abbiamo rifatti a par
 cat(paste0("  - `", sub("^S2.8_G1_", "", sub("\\.txt", "", sub(" .*$", "", G1))), "`: ", sub("^\\S+ ", "", G1)), sep = "\n")
 ```
 
-- **Gli stessi conteggi delle volte precedenti**: le simulazioni di S2.7 e S2.5 rifatte con gli stessi semi danno file identici bit per bit:
-  `r sum(G2$expect_equal & G2$equal)` confronti uguali su `r sum(G2$expect_equal)` attesi uguali; e la prova vede una differenza quando
-  c'è (con un tetto diverso della sovra-generazione, `r sum(!G2$expect_equal & !G2$equal)` file diversi su `r sum(!G2$expect_equal)`;
-  `results/S2.8/S2.8_G2_identity.csv`).
+- **Gli stessi conteggi delle volte precedenti e con pezzi diversi** (`results/S2.8/S2.8_G2_identity.csv`): le simulazioni di S2.7 e
+  S2.5 rifatte con gli stessi semi danno file identici bit per bit (`r sum(G2$expect_equal & G2$equal & !grepl("^b_", G2$group))` su
+  `r sum(G2$expect_equal & !grepl("^b_", G2$group))`), e la funzione a pezzi dà gli stessi file con pezzi di 1 008 µm e con un pezzo solo
+  che con 504 µm (`r sum(G2$expect_equal & G2$equal & grepl("^b_", G2$group))` su `r sum(G2$expect_equal & grepl("^b_", G2$group))`).
+  La prova vede una differenza quando c'è: con un tetto diverso della sovra-generazione `r sum(!G2$expect_equal & !G2$equal)` file
+  diversi su `r sum(!G2$expect_equal)`.
 - **Nel clone nuovo dell'unione** (S2.8b): le batterie dello Step 1 e dello Step 2, l'avvio rapido del README e gli esempi della guida d'uso
   rifatti da una copia presa da GitHub; esiti nel file dello step, `docs/steps/S2.8b.md`, e nel suo report.
 
@@ -164,7 +168,7 @@ più bassa del vero ([DEC-050](../docs/decisions/DEC-050.md)); vetro lontano del
 sopra il vero, in attesa della revisione della densità dei preset ([DEC-069](../docs/decisions/DEC-069.md)); il cuore senza
 l'orientamento delle fibre, controllo negativo previsto ([DEC-070](../docs/decisions/DEC-070.md)); geni a profilo nullo nello stroma del
 tumore ([DEC-065](../docs/decisions/DEC-065.md)); tempo oltre il bilancio sulle sezioni intere del tumore e dell'intestino
-([DEC-077](../docs/decisions/DEC-077.md)); nessun arricchimento nucleare per gene (tua 4.2).
+([DEC-077](../docs/decisions/DEC-077.md)) e, con i pezzi predefiniti di 504 µm, del cervello; nessun arricchimento nucleare per gene (tua 4.2).
 
 # 7. I report degli step
 

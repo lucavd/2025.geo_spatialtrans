@@ -14,7 +14,7 @@ PI: Luca Vedovelli. Reviewer: Daniele Sabbatini.
 | **Step 1, cell layer** (`R/04b*.R`) | complete and consolidated; six tissue presets calibrated on public 10x Visium HD datasets with H&E; merged into `dev` |
 | **Step 2, Visium HD grid** (`R/05b*.R`) | complete and consolidated: counts on 2 µm bins and 8 µm bins with their ground truth, compared with the real reference tissues; whole capture areas simulated in pieces; merged into `dev` |
 | next | first analysis methods on simulated and real data (plan in `docs/ROADMAP.md`, section 7) |
-| 2025 expression pipeline (`R/01`-`R/03`, `R/04_clustering.R`, `R/05_grid_sampling.R`, `R/06*.R`, `R/test functions/`) | legacy code from before Step 1; not validated against the cell layer and superseded by Step 2. Its README is kept in `docs/legacy/README_2025.md` |
+| 2025 expression pipeline (`R/01*.R`-`R/03*.R`, `R/04_clustering.R`, `R/05_grid_sampling.R`, `R/06*.R`, `R/test functions/`) | legacy code from before Step 1; not validated against the cell layer and superseded by Step 2. Its README is kept in `docs/legacy/README_2025.md` |
 
 Every biological value used by the presets has a row in `docs/BIO_REFERENCES.md` with a DOI or with the script and the dataset that
 estimated it. Nothing is set "from memory".
@@ -33,8 +33,8 @@ estimated it. Nothing is set "from memory".
    densities and sizes against the preset); with `strict = TRUE` a failed check stops the run.
 
 The six presets live in `R/04b0_tissue_presets.R`. The scale comes from the user, as a number or read from Space Ranger's
-`scalefactors_json` (see below). `estimate_pixel_size()` (`R/04b6_estimate_pixel_size.R`) estimates it from the image, but it was wrong in
-five tissues out of six, so `place_cells()` accepts the estimate only with `allow_estimate = TRUE`. The design is `docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md` (version 1.9).
+`scalefactors_json` (see below). `estimate_pixel_size()` (`R/04b6_estimate_pixel_size.R`) estimates it from the image, but it rejected the image or gave a wrong
+scale in five tissues out of six, so `place_cells()` accepts the estimate only with `allow_estimate = TRUE`. The design is `docs/superpowers/specs/2026-04-29-step1-cell-layer-design.md` (version 1.9).
 
 ## Tissue presets
 
@@ -59,7 +59,8 @@ Voronoi territories cannot reproduce elongated cardiomyocytes.
 
 `simulate_visium_hd_pieces()` (`R/05b6_simulate_visium_hd_pieces.R`) turns a cell layer into Visium HD data. For each cell it draws a
 subtype, a number of transcripts and their genes from expression profiles of the same tissue; it places the transcripts in the nucleus
-or in the cytoplasm and moves them (a short displacement, a wider blur near the tissue edge and a long tail that reaches the glass); it
+or in the cytoplasm and moves them (a narrow blur, wider near the tissue edge, an exponential tail of tens of µm for a few per cent of
+transcripts, and a second, longer tail that reaches the glass); it
 captures them on the 2 µm grid with row and column stripes and a background, and sums them to 8 µm bins. The result holds the counts
 (`counts_2um`, `counts_8um`), the bins, and the truth: which cell each captured transcript comes from (`truth$origin`), how much of each
 bin each territory and nucleus covers (`truth$overlap`), the background, the transcripts generated for each cell and the technical layers
@@ -77,7 +78,7 @@ The expression profiles of the six tissues are read from the lab server's data v
 
 ## Installation
 
-The project is developed and tested on Ubuntu 24.04 (noble) with R 4.6.1 and the system libraries GDAL 3.8.4, GEOS 3.12.1 and PROJ 9.4.0.
+The project is developed and tested on Ubuntu 24.04 (noble) with R 4.6 (4.6.2 on the lab server since 2026-11-05, 4.6.1 before) and the system libraries GDAL 3.8.4, GEOS 3.12.1 and PROJ 9.4.0.
 The code is loaded with `source()`: the package is not installed (there is no `NAMESPACE` yet).
 
 ```bash
@@ -123,7 +124,7 @@ The same seed gives the same cells, bit for bit.
 ### Quick start, Step 2
 
 The same kind of square, simulated as Visium HD data. The square is cut out of a tissue that continues (`frame_open = TRUE`); on an area
-this small a single piece (`piece_um = Inf`) is the fastest choice. It takes about 20 seconds on the lab server.
+this small a single piece (`piece_um = Inf`) is the fastest choice. It takes about half a minute on the lab server.
 
 <!-- quickstart2:start -->
 ```r
@@ -177,8 +178,8 @@ types, density or regions.
 
 Declared in the design (§7.4) after comparison with the real tissues; keep them in mind when testing methods on the simulated data:
 
-- **too many nuclei touching each other** in dense tissues: colorectal cancer and lymph node, borderline in the stroma of the cancer;
-  none of the nucleus models tried brings them to the real values;
+- **too many nuclei touching each other**: shown in the stroma of the colorectal cancer and for pairs of nuclei, undecided in the
+  colorectal cancer, no longer shown in the lymph node (`docs/decisions/DEC-063.md`);
 - **territories too uniform** with the default uniform seeding (territory-area variability and number of neighbours below the real ones in
   the intestine, the colorectal cancer and the lymph node); seeding by compartments with voids corrects part of it but is not the default;
 - **heart**: isotropic territories, while real cardiomyocytes are elongated (planned negative control);
@@ -203,8 +204,9 @@ for s in 2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8; do Rscript --vanilla R/testing/test_S$
 ```
 
 The Step 1 battery prints `GATE G-1 PASS` when every assertion passes except four known failures recorded as pre-registration errors
-(`docs/decisions/DEC-011.md`, `docs/decisions/DEC-023.md`). Each Step 2 battery exits with status 0 only if every assertion passes; they
-take from a few minutes to about 25 minutes each and can run in parallel. The Step 1 quick start needs neither the data nor the links; the
+(`docs/decisions/DEC-011.md`, `docs/decisions/DEC-023.md`). The Step 2 batteries print `PASS` or `FAIL` for each assertion; they
+take from a few minutes to about 25 minutes each and can run in parallel. Count the `FAIL` lines: `R/testing/test_S2.3.R` exits with
+status 0 even when an assertion fails. The Step 1 quick start needs neither the data nor the links; the
 Step 2 quick start and the usage guide need the expression profiles on the data volume.
 
 ## Repository map

@@ -3134,15 +3134,15 @@ vertical-align: -.125em;
 
 
 <p>This guide shows how to turn a simulated cell layer (Step 1) into Visium HD data (Step 2): gene counts on the 2 µm grid, their sums on 8 µm bins, and the ground truth that a method can be scored against. Every code chunk below runs when the guide is rendered, on the lab server, with the project library; the numbers in the outputs come from that run.</p>
-<p>The entry point is <code>simulate_visium_hd_pieces()</code> (decision <a href="../docs/decisions/DEC-079.md">DEC-079</a>). It splits the area into square pieces, simulates each cell once in the piece that holds its centre, and passes the transcripts that land in another piece to that piece. All random draws are tied to fixed 56 µm tiles, so <strong>the result does not depend on the piece size or on the number of processes</strong> (<a href="../docs/decisions/DEC-074.md">DEC-074</a>). <code>simulate_visium_hd()</code>, written earlier (step S2.5), stays in the code as the reference engine of the test batteries: with the same seed it gives another realisation of the same model, not the same counts.</p>
+<p>The entry point is <code>simulate_visium_hd_pieces()</code> (decision <a href="../docs/decisions/DEC-079.md">DEC-079</a>). It splits the area into square pieces, simulates each cell once in the piece that holds its centre, and passes the transcripts that land in another piece to that piece. All random draws are tied to fixed 56 µm tiles, so <strong>the result does not depend on the piece size or on the number of processes</strong> (<a href="../docs/decisions/DEC-074.md">DEC-074</a>). <code>simulate_visium_hd()</code>, written earlier (step S2.5), stays in the code as the reference engine of the test batteries: with the same seed it gives another realisation of the same model, not the same counts. The two engines differ in three declared details: the entry point cuts the stripe factors at a fixed ceiling (see <a href="#technical-layers">Technical layers</a>), computes the distance to the tissue edge on windows around each piece, and reflects the second tail on the box given by <code>frame</code>.</p>
 <section id="what-the-simulator-does" class="level2">
 <h2 class="anchored" data-anchor-id="what-the-simulator-does">What the simulator does</h2>
-<p>The model is described in the Step 2 design document, <code>docs/superpowers/specs/2026-11-03-step2-visium-grid-design.md</code> (version 0.6); the steps that built and checked each part are in <code>docs/steps/</code> (S2.0 to S2.8). In short, for each cell of the cell layer:</p>
+<p>The model is described in the Step 2 design document, <code>docs/superpowers/specs/2026-11-03-step2-visium-grid-design.md</code> (version 0.6); the steps that built and checked each part are in <code>docs/steps/</code> (S2.0 to S2.8). In short, for each cell of the cell layer (the function names are those of the step functions; the entry point uses the same arithmetic, see <a href="#lower-level-functions">Lower-level functions</a>):</p>
 <ol type="1">
 <li><strong>Grid and geometric truth</strong> (<code>build_hd_grid()</code>): a 2 µm grid around the tissue with a 280 µm margin of glass; for every pair (bin, cell) the area of the bin covered by the cell territory and by its nucleus.</li>
 <li><strong>Transcripts per cell</strong> (<code>simulate_cell_profiles()</code>): a subtype and a total number of transcripts for each cell, and gene counts drawn from the expression profiles of its tissue (<code>load_cell_profiles()</code>), scaled by a depth factor (<code>visium_hd_depth_factor()</code>).</li>
-<li><strong>Position and movement</strong> (<code>place_and_move_transcripts()</code>): each transcript is born in the nucleus or in the cytoplasm, with a fine random field at 1-2 µm, and then moves: a short displacement everywhere, a wider blur near the tissue edge, and a long second tail that reaches the glass (<code>transcript_params()</code>).</li>
-<li><strong>Capture and binning</strong> (<code>capture_and_bin()</code>): row and column stripes of the capture efficiency (<code>simulate_stripes()</code>), thinning to the expected capture, a background on every bin, and the sum to 8 µm bins (<code>sum_to_8um()</code>). The capture parameters of each tissue are in <code>capture_params()</code>.</li>
+<li><strong>Position and movement</strong> (<code>place_and_move_transcripts()</code>): each transcript is born in the nucleus or in the cytoplasm, with a fine random field at 1-2 µm, and then moves. The first displacement is a mixture: for a small share of transcripts (<code>w</code>, 4 to 11 % by tissue) an exponential tail of tens of µm (<code>ell</code>, 25 to 42 µm); otherwise a narrow Gaussian blur (<code>sigma_in</code>), replaced near the tissue edge by a wider one (<code>sigma_e</code>, with probability decaying over the depth <code>D</code>). Then a long second tail (<code>w2</code>, 2 to 8 %; <code>ell2</code>, 113 to 1826 µm) carries transcripts onto the glass. The first displacement and the fine field are in <code>transcript_params()</code>.</li>
+<li><strong>Capture and binning</strong> (<code>capture_and_bin()</code>): row and column stripes of the capture efficiency (<code>simulate_stripes()</code>), thinning to the expected capture, a background on every bin, and the sum to 8 µm bins (<code>sum_to_8um()</code>). The capture parameters of each tissue, including the background <code>b</code> and the second tail, fitted together (<a href="../docs/decisions/DEC-053.md">DEC-053</a>), are in <code>capture_params()</code>.</li>
 </ol>
 <p>Transcripts are generated in excess and thinned by the stripe factor; the excess (the overgeneration) has a fixed ceiling for each tissue (<code>stripe_ceiling()</code>, <a href="../docs/decisions/DEC-075.md">DEC-075</a>).</p>
 </section>
@@ -3268,7 +3268,7 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
 </tr>
 <tr class="even">
 <td><code>bins_8um</code></td>
-<td>one row per 8 µm bin: centre, tissue area, <code>in_tissue</code></td>
+<td>one row per 8 µm bin: centre, tissue area, <code>n_in_tissue</code> (its 2 µm bins in the tissue, out of 16), <code>in_tissue</code> (at least one)</td>
 </tr>
 <tr class="odd">
 <td><code>truth$overlap</code>, <code>truth$overlap_8um</code></td>
@@ -3288,7 +3288,7 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
 </tr>
 <tr class="odd">
 <td><code>truth$cell_counts</code></td>
-<td>genes × cells matrix of the transcripts generated for each cell (the true profiles; kept when <code>keep_profiles = TRUE</code>, the default with <code>assemble = &quot;full&quot;</code>)</td>
+<td>genes × cells matrix of the transcripts generated for each cell (the true profiles; returned only with <code>assemble = &quot;full&quot;</code> and <code>keep_profiles = TRUE</code>, the default)</td>
 </tr>
 <tr class="even">
 <td><code>truth$cells</code>, <code>truth$genes</code></td>
@@ -3394,7 +3394,7 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
 </section>
 <section id="piece-size-time-and-memory" class="level2">
 <h2 class="anchored" data-anchor-id="piece-size-time-and-memory">Piece size, time and memory</h2>
-<p>The default, <code>piece_um = 504</code>, was chosen so that one piece stays within the 8 GB budget of the design document on whole capture areas: with 1008 µm a piece of the colorectal cancer and of the brain went above it (second table below; <a href="../docs/decisions/DEC-076.md">DEC-076</a>). On small areas a single piece is faster. The table below is read from the measurements of step S2.8 (<code>results/S2.8/S2.8_summary.csv</code>): areas of 1 mm² of the six reference tissues, 3 seeds, one process each, with the default layers.</p>
+<p>The default, <code>piece_um = 504</code>, was chosen so that one piece stays within the 8 GB budget of the design document on whole capture areas: with 1008 µm a piece of the colorectal cancer and of the brain went above it (second table below; <a href="../docs/decisions/DEC-076.md">DEC-076</a>). On small areas a single piece is faster. The table below is read from the measurements of step S2.8 (<code>results/S2.8/S2.8_summary.csv</code>): areas of 1 mm² of the six reference tissues, 3 seeds, one process each, default layers, <code>frame_open = TRUE</code>; <code>simulate_visium_hd()</code> ran with blocks of 4 million transcripts (<code>chunk_transcripts = 4e6</code>, its default is 2e6).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>s28 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;results/S2.8/S2.8_summary.csv&quot;</span>)</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>tissue <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">A1 =</span> <span class="st">&quot;intestine&quot;</span>, <span class="at">A2 =</span> <span class="st">&quot;colorectal cancer&quot;</span>, <span class="at">A3 =</span> <span class="st">&quot;cancer stroma&quot;</span>, <span class="at">A4 =</span> <span class="st">&quot;lymph node&quot;</span>, <span class="at">A5 =</span> <span class="st">&quot;mouse brain&quot;</span>, <span class="at">A6 =</span> <span class="st">&quot;heart&quot;</span>)</span>
@@ -3680,10 +3680,10 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
 <p>In practice:</p>
 <ul>
 <li><strong>areas up to about 1 mm²</strong>: <code>piece_um = Inf</code>;</li>
-<li><strong>whole capture areas</strong>: the default 504 µm, <code>assemble = &quot;light&quot;</code> (UMI per 2 µm bin, 8 µm matrix, cell and gene tables, without the 2 µm matrix and the per-bin truth), several <code>workers</code>, and a machine with room for the main process;</li>
+<li><strong>whole capture areas</strong>: the default 504 µm, <code>assemble = &quot;light&quot;</code>, several <code>workers</code>, and a machine with room for the main process. The light output holds <code>umi_2um</code> (UMI per 2 µm bin), <code>counts_8um</code>, <code>bins</code>, <code>bins_8um</code>, <code>truth$cells</code>, <code>truth$genes</code>, <code>truth$background</code> and <code>truth$layers</code>; it has no <code>counts_2um</code>, <code>truth$overlap</code>, <code>truth$origin</code>, <code>truth$arrived_2um</code> or <code>truth$cell_counts</code>;</li>
 <li><code>cell_layer</code> can be the path of an RDS file instead of the object: the file is read, split into pieces and freed, so the child processes do not carry the whole layer.</li>
 </ul>
-<p>Choosing the piece size automatically is planned with the optimisation of the cell layer (backlog item BL-252). The time per mm² of the colorectal cancer and of the intestine is above the 300 s budget of the design document, a declared limit (<a href="../docs/decisions/DEC-077.md">DEC-077</a>).</p>
+<p>Choosing the piece size automatically is planned with the optimisation of the cell layer (backlog item BL-252). On whole sections the process time per mm² of tissue is above the 300 s budget of the design document in the colorectal cancer (with pieces of 1008 and of 504 µm), in the intestine (1008 µm; not run with 504 µm) and in the mouse brain with the default 504 µm (table above). The first two are a declared limit (<a href="../docs/decisions/DEC-077.md">DEC-077</a>), written on the 1008 µm runs.</p>
 </section>
 <section id="technical-layers" class="level2">
 <h2 class="anchored" data-anchor-id="technical-layers">Technical layers</h2>
@@ -3710,7 +3710,7 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
 <p>How stripes and background work together:</p>
 <ul>
 <li>transcripts are generated with an overgeneration M* (<code>metadata$overgeneration</code> = <code>truth$layers$stripes$M</code>) and each one is kept with probability <code>c / M*</code> in the bin where it arrives, where <code>c</code> is the stripe factor of the bin;</li>
-<li>factors above the ceiling M* are cut to M*: <code>bins$c</code> is the factor used, <code>bins$c_raw</code> the raw one, and <code>metadata$truncated_share</code> the share of transcripts affected. <code>ceiling_q</code> is the probability that a raw factor exceeds the ceiling (default 1e-5, <a href="../docs/decisions/DEC-075.md">DEC-075</a>); <code>stripe_ceiling()</code> computes M* from <code>capture_params()</code>;</li>
+<li>factors above the ceiling M* are cut to M*: <code>bins$c</code> is the factor used, <code>bins$c_raw</code> the raw one, and <code>metadata$truncated_share</code> the share of the expected captured transcripts removed by the cut. <code>ceiling_q</code> is the probability that a raw factor exceeds the ceiling (default 1e-5, <a href="../docs/decisions/DEC-075.md">DEC-075</a>); <code>stripe_ceiling()</code> computes M* from <code>capture_params()</code>;</li>
 <li>the background of a bin is Poisson with mean <code>b c</code>, with the same cut factor <code>c</code> as the capture; <code>b</code> comes from <code>capture_params()</code> and is zero in some tissues (printed below).</li>
 </ul>
 <div class="cell">
@@ -3750,7 +3750,7 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
  17808  34420 </code></pre>
 </div>
 </div>
-<p>With <code>frame_open = TRUE</code> the argument <code>frame</code> (<code>c(xmin, ymin, xmax, ymax)</code> in µm, inside the grid) counts twice: the second tail folds on its sides, and outside it the distance to the tissue edge treats the space as tissue. If the tissue of a crop does not reach a side of the crop window, give the window as <code>frame</code>, otherwise the default box treats a real tissue edge as open (backlog item BL-237). In step S2.8 this was measured on an area of intestine cut from a real section, with <code>frame_open = TRUE</code>: the default box starts 5.5 µm from the left side of the crop window, while the tissue edge itself is irregular and lies further in on most rows. Same 3 seeds with the default box and with the window as <code>frame</code> (<code>results/S2.8/S2.8_BL237.csv</code>; distances are measured row by row from the left tissue edge):</p>
+<p>With <code>frame_open = TRUE</code> the argument <code>frame</code> (a named vector in µm inside the grid, for example <code>c(xmin = 0, ymin = 0, xmax = 300, ymax = 300)</code>; names are required) counts twice: the second tail folds on its sides, and outside it the distance to the tissue edge treats the space as tissue. If the tissue of a crop does not reach a side of the crop window, give the window as <code>frame</code>, otherwise the default box treats a real tissue edge as open (backlog item BL-237). In step S2.8 this was measured on an area of intestine cut from a real section, with <code>frame_open = TRUE</code>: the default box starts 5.5 µm from the left side of the crop window, while the tissue edge itself is irregular and lies further in on most rows. Same 3 seeds with the default box and with the window as <code>frame</code> (<code>results/S2.8/S2.8_BL237.csv</code>; distances are measured row by row from the left tissue edge):</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>b237 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;results/S2.8/S2.8_BL237.csv&quot;</span>)</span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="fu">cbind</span>(n_bins, umi_default, umi_window, ratio_window_default) <span class="sc">~</span> zone, <span class="at">data =</span> b237, <span class="at">FUN =</span> mean)</span>
@@ -3851,7 +3851,7 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
 </table>
 </div>
 </div>
-<p>The window changes the counts only on the strip of glass between the default box and the window side; in the tissue and in the glass next to it the difference is below 2 %. The true value of that strip is not known.</p>
+<p>The window changes the counts on the strip of glass between the default box and the window side (about 2.6 times as many UMI per bin). In the tissue and in the glass within 8 µm of it the difference is below 0.3 %. The row «glass between window side and tissue» includes 1500 bins of that strip, which explains its 2 %; without them the ratio is within 0.5 % of 1. The true value of the strip is not known.</p>
 </section>
 <section id="long-runs-resume-and-fingerprint" class="level2">
 <h2 class="anchored" data-anchor-id="long-runs-resume-and-fingerprint">Long runs: resume and fingerprint</h2>
@@ -3865,9 +3865,11 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
 <pre><code>pieces_and_stages            reused 
                75                75 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(first<span class="sc">$</span>counts_2um, hd<span class="sc">$</span>counts_2um)   <span class="co"># same counts as the first simulation, with 224 um pieces</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">resumed_equal =</span> <span class="fu">identical</span>(again<span class="sc">$</span>counts_2um, first<span class="sc">$</span>counts_2um) <span class="sc">&amp;&amp;</span> <span class="fu">identical</span>(again<span class="sc">$</span>truth<span class="sc">$</span>origin, first<span class="sc">$</span>truth<span class="sc">$</span>origin),</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">same_as_single_piece =</span> <span class="fu">identical</span>(first<span class="sc">$</span>counts_2um, hd<span class="sc">$</span>counts_2um))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
+<pre><code>       resumed_equal same_as_single_piece 
+                TRUE                 TRUE </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>refusal <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({ <span class="fu">simulate_visium_hd_pieces</span>(cl, <span class="at">seed =</span> <span class="dv">2</span>, <span class="at">piece_um =</span> <span class="dv">224</span>, <span class="at">out_dir =</span> od); <span class="st">&quot;no error&quot;</span> }, <span class="at">error =</span> conditionMessage)</span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>refusal</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -3876,7 +3878,14 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
 </div>
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(od, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Limits of the fingerprint: it follows the functions called by name in the code and the constants they read, not functions called through <code>do.call(&quot;name&quot;)</code> or <code>match.fun()</code>, S3/S4 methods or closures created at run time (none are used in Step 2 today). A change in comments only does not change it. A folder written before step S2.8 has no code fingerprint and is not resumed. Without <code>out_dir</code> a temporary folder is used and deleted.</p>
+<p>Limits of the fingerprint:</p>
+<ul>
+<li>it follows the functions reached from <code>simulate_visium_hd_pieces()</code> by name and the constants they read, not functions called through <code>do.call(&quot;name&quot;)</code> or <code>match.fun()</code>, S3/S4 methods or closures created at run time (none are used in Step 2 today); a change in comments only does not change it;</li>
+<li>the versions of R and of the packages are not in it;</li>
+<li>it is checked only if <em>run.rds</em> exists: a folder with piece files but without <em>run.rds</em> is reused without any check, so never delete that file alone (backlog item BL-254);</li>
+<li><code>keep_profiles</code> is in it: a run made with <code>assemble = &quot;full&quot;</code> is resumed as <code>&quot;light&quot;</code> only with <code>keep_profiles = TRUE</code>;</li>
+<li>a folder written before step S2.8 has no code fingerprint and is not resumed. Without <code>out_dir</code> a temporary folder is used and deleted.</li>
+</ul>
 <p><code>metadata$package_version</code> comes from <code>.geo_version()</code>: the installed package if there is one, otherwise the <code>DESCRIPTION</code> of the folder in <code>getOption(&quot;geo.spatialtrans.root&quot;, &quot;.&quot;)</code>, that is the working directory. Run the simulator from the repository root, or set that option; elsewhere the version is reported as unknown (the code fingerprint is still recorded).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">.geo_version</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -3898,7 +3907,7 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
 <li><code>archetype</code>: the tissue code (<code>&quot;A1&quot;</code> … <code>&quot;A6&quot;</code>) whose parameters and profiles are used; default from the preset of the cell layer (<code>visium_hd_archetype()</code>).</li>
 <li><code>profiles</code>: a profile set as returned by <code>load_cell_profiles()</code>; default, the profiles of the tissue.</li>
 <li><code>depth_factor</code>: transcripts per cell multiplier; default <code>visium_hd_depth_factor()</code> with the profiles of the preset, the <code>depth_factor</code> of the profiles otherwise.</li>
-<li><code>keep_profiles</code>: keep <code>truth$cell_counts</code> (default <code>TRUE</code> with <code>assemble = &quot;full&quot;</code>, <code>FALSE</code> with <code>&quot;light&quot;</code>).</li>
+<li><code>keep_profiles</code>: keep <code>truth$cell_counts</code> (default <code>TRUE</code> with <code>assemble = &quot;full&quot;</code>, <code>FALSE</code> with <code>&quot;light&quot;</code>); with <code>&quot;light&quot;</code> the matrix is not returned even when <code>TRUE</code>.</li>
 <li><code>assemble</code>: <code>&quot;full&quot;</code> or <code>&quot;light&quot;</code> (see <a href="#piece-size-time-and-memory">Piece size, time and memory</a>).</li>
 <li><code>workers</code>: child processes; the result does not change.</li>
 <li><code>verbose</code>: progress messages.</li>
@@ -3915,62 +3924,85 @@ Figure 1: UMI per 8 µm bin of the simulated disc of intestine (seed 1). The sq
 </section>
 <section id="lower-level-functions" class="level2">
 <h2 class="anchored" data-anchor-id="lower-level-functions">Lower-level functions</h2>
-<p>The steps can also be run one by one, for example to study one layer in isolation. These are the functions behind <code>simulate_visium_hd_pieces()</code>:</p>
+<p>The entry point calls some exported functions directly and re-implements the arithmetic of the others piece by piece. The step functions can be run one by one, for example to study one layer in isolation; chained together they give the realisation of the reference engine, with the seeds passed directly (design document, section 17; backlog item BL-224), not that of the entry point.</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>function</th>
 <th>what it does</th>
+<th>called by <code>simulate_visium_hd_pieces()</code></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>build_hd_grid()</code></td>
-<td>grid around the cell layer and geometric truth; built from <code>hd_grid_geometry()</code>, <code>hd_bin_table()</code>, <code>hd_tissue_area()</code>, <code>hd_overlap()</code></td>
+<td><code>hd_grid_geometry()</code>, <code>hd_bin_table()</code>, <code>sum_to_8um()</code></td>
+<td>grid geometry; one row per 2 µm bin; sums a 2 µm table or matrix to 8 µm bins</td>
+<td>yes</td>
 </tr>
 <tr class="even">
-<td><code>sum_to_8um()</code></td>
-<td>sums a 2 µm table or matrix to 8 µm bins</td>
-</tr>
-<tr class="odd">
 <td><code>load_cell_profiles()</code>, <code>simulate_cell_profiles()</code></td>
 <td>profiles of a tissue; subtypes, totals and gene counts per cell</td>
-</tr>
-<tr class="even">
-<td><code>transcript_params()</code>, <code>s23_gamma_field()</code>, <code>place_and_move_transcripts()</code></td>
-<td>displacement parameters; the fine random field; position and movement of transcripts</td>
+<td>yes</td>
 </tr>
 <tr class="odd">
-<td><code>capture_params()</code>, <code>simulate_stripes()</code>, <code>stripe_ceiling()</code>, <code>capture_and_bin()</code></td>
-<td>capture parameters; stripe factors; ceiling of the overgeneration; capture, background and binning</td>
+<td><code>transcript_params()</code>, <code>capture_params()</code></td>
+<td>parameters of the first displacement and of the fine field; capture, background and second tail</td>
+<td>yes</td>
 </tr>
 <tr class="even">
-<td><code>visium_hd_archetype()</code>, <code>visium_hd_depth_factor()</code>, <code>visium_hd_chunk_size()</code></td>
-<td>tissue code of a layer; depth factor of a tissue; cells per block of <code>simulate_visium_hd()</code></td>
+<td><code>simulate_stripes()</code>, <code>stripe_ceiling()</code></td>
+<td>stripe factors; ceiling of the overgeneration</td>
+<td>yes</td>
 </tr>
 <tr class="odd">
-<td><code>simulate_visium_hd()</code></td>
-<td>the reference engine of step S2.5 (one area at a time, same model, another realisation)</td>
+<td><code>visium_hd_archetype()</code>, <code>visium_hd_depth_factor()</code></td>
+<td>tissue code of a layer; depth factor of a tissue</td>
+<td>yes</td>
+</tr>
+<tr class="even">
+<td><code>build_hd_grid()</code>, <code>hd_tissue_area()</code>, <code>hd_overlap()</code></td>
+<td>grid around the cell layer and geometric truth</td>
+<td>no (same arithmetic, by piece)</td>
+</tr>
+<tr class="odd">
+<td><code>s23_gamma_field()</code>, <code>place_and_move_transcripts()</code></td>
+<td>the fine random field; position and movement of transcripts</td>
+<td>no (same arithmetic, by tile)</td>
+</tr>
+<tr class="even">
+<td><code>capture_and_bin()</code></td>
+<td>capture, background and binning</td>
+<td>no (same arithmetic, by piece)</td>
+</tr>
+<tr class="odd">
+<td><code>visium_hd_chunk_size()</code>, <code>simulate_visium_hd()</code></td>
+<td>cells per block of the reference engine; the reference engine of step S2.5 (one area at a time, same model except the ceiling, another realisation)</td>
+<td>no</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="known-limits" class="level2">
 <h2 class="anchored" data-anchor-id="known-limits">Known limits</h2>
-<p>The simulated counts were compared with the real reference tissues on the same bins: UMI and detected genes per bin at 2 and 8 µm (step S2.5) and the row and column stripes (step S2.4) agree with the real ones in all six tissues. The limits declared so far, with the decision that records each one (details in section 17 of the design document and in the step reports):</p>
+<p>The simulated counts were compared with the real reference tissues on the same bins: UMI and detected genes per bin at 2 and 8 µm agree with the real ones in all six tissues (step S2.5), and no measure of the row and column stripes is refuted in any tissue (step S2.4: 24 of 36 judgements confirmed, 12 undetermined). The main declared limits, with the decision or backlog item that records each one (the full list is section 17 of the design document):</p>
 <ul>
 <li><strong>Variability outside the nucleus</strong>: the fine variability is calibrated inside the nucleus; in the cytoplasm around it and in the cell-free space real data vary more and on a larger scale (<a href="../docs/decisions/DEC-050.md">DEC-050</a>).</li>
 <li><strong>Far glass of the colorectal cancer</strong>: far from the tissue the simulated glass has more transcripts than the real one (<a href="../docs/decisions/DEC-059.md">DEC-059</a>).</li>
 <li><strong>Dense tissues</strong>: too few empty bins in the tissue of the intestine and of the colorectal cancer, and a nucleus-to-surroundings contrast of the colorectal cancer above the real one; both wait for the revision of the preset densities (<a href="../docs/decisions/DEC-069.md">DEC-069</a>).</li>
 <li><strong>Heart</strong>: isotropic cells; the real 8 µm counts follow the orientation of the fibres, the simulated ones do not (<a href="../docs/decisions/DEC-070.md">DEC-070</a>). The heart is the planned negative control of the Voronoi cell layer.</li>
 <li><strong>Stroma of the colorectal cancer</strong>: some genes of the panel have a null profile (<a href="../docs/decisions/DEC-065.md">DEC-065</a>).</li>
-<li><strong>Time</strong>: on whole sections of the colorectal cancer and of the intestine the time per mm² is above the budget (<a href="../docs/decisions/DEC-077.md">DEC-077</a>).</li>
+<li><strong>Time</strong>: on whole sections the time per mm² is above the budget in the colorectal cancer and in the intestine (<a href="../docs/decisions/DEC-077.md">DEC-077</a>) and, with the default 504 µm pieces, in the mouse brain.</li>
 <li><strong>No gene-specific nuclear enrichment and no membrane or peripheral localisation</strong>: the position of a transcript in the cell does not depend on the gene.</li>
-<li><strong>Limits of the cell layer</strong> carry over to the counts: too many touching nuclei in dense tissues and territories too uniform with the default uniform seeding (see <code>README.md</code>).</li>
+<li><strong>No cell-free space inside the tissue</strong> and lumens wider than 8 µm of the colorectal cancer and of the heart not reproduced (BL-201).</li>
+<li><strong>Stripes</strong>: only the fine part of the row and column factors; the slow trends of the capture are missing (<a href="../docs/decisions/DEC-056.md">DEC-056</a>); factors above the ceiling are cut (<a href="../docs/decisions/DEC-075.md">DEC-075</a>).</li>
+<li><strong>Orientation index</strong> of the simulated intestine, colorectal cancer and lymph node at or above the real one (BL-236).</li>
+<li><strong>Transcripts per area on a whole section</strong> not yet checked against the real one (BL-205).</li>
+<li><strong>Limits of the cell layer</strong> carry over to the counts: excess of touching nuclei in the stroma of the colorectal cancer and for pairs of nuclei, undecided in the colorectal cancer, no longer shown in the lymph node (<a href="../docs/decisions/DEC-063.md">DEC-063</a>); territories too uniform with the default uniform seeding (see <code>README.md</code>).</li>
 </ul>
 </section>
 <section id="fingerprints-of-this-run" class="level2">
@@ -4007,11 +4039,15 @@ FINGERPRINT disc_counts_8um 1a7210d8a417242103a1a6b53a432eb1 </code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>CHECK resume_reused_all TRUE </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;CHECK resume_same_counts&quot;</span>, <span class="fu">identical</span>(first<span class="sc">$</span>counts_2um, hd<span class="sc">$</span>counts_2um), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;CHECK resume_same_counts&quot;</span>, <span class="fu">identical</span>(again<span class="sc">$</span>counts_2um, first<span class="sc">$</span>counts_2um) <span class="sc">&amp;&amp;</span> <span class="fu">identical</span>(again<span class="sc">$</span>truth<span class="sc">$</span>origin, first<span class="sc">$</span>truth<span class="sc">$</span>origin), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>CHECK resume_same_counts TRUE </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;CHECK resume_refused_other_seed&quot;</span>, <span class="fu">grepl</span>(<span class="st">&quot;seed&quot;</span>, refusal, <span class="at">fixed =</span> <span class="cn">TRUE</span>) <span class="sc">&amp;&amp;</span> refusal <span class="sc">!=</span> <span class="st">&quot;no error&quot;</span>, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;CHECK pieces224_same_counts&quot;</span>, <span class="fu">identical</span>(first<span class="sc">$</span>counts_2um, hd<span class="sc">$</span>counts_2um), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CHECK pieces224_same_counts TRUE </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;CHECK resume_refused_other_seed&quot;</span>, <span class="fu">grepl</span>(<span class="st">&quot;seed&quot;</span>, refusal, <span class="at">fixed =</span> <span class="cn">TRUE</span>) <span class="sc">&amp;&amp;</span> refusal <span class="sc">!=</span> <span class="st">&quot;no error&quot;</span>, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>CHECK resume_refused_other_seed TRUE </code></pre>
 </div>
