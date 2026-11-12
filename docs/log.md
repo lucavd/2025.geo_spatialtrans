@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-12 (F3.1, pre-registrazione)
+
+* **Creazione**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md), bozza: perimetro, esplorazioni dichiarate, misure, cancelli, fasi, regola di decisione, controprove; previsioni da scrivere dopo la fase sul vero.
+* **Creazione**: decisione tecnica [F3.1: perimetro, metodi, riferimento e misure della prima prova dei metodi di analisi (DEC-085)](decisions/DEC-085.md).
+* **Modifica**: `tools/setup_r_library.R` (spacexr con commit fissato), `.gitignore` (`.venv-b2c/`); nuovi strumenti `tools/F3.1_*`.
+
 ## 2026-11-12 (S2.8b, chiusura)
 
 * **Chiusura**: [La guida d'uso, il README, le istruzioni del progetto e la guida per Daniele descrivono lo Step 2 com'è, e il ramo della griglia entra in quello di sviluppo senza perdere nulla? (S2.8b)](steps/S2.8b.md) chiuso con l'approvazione di Luca («si chiudi»).

@@ -48,3 +48,4 @@ results/R2b/*.html
 # R3 (2026-10-08)
 results/R3/review/code/cells/
 results/R3/review/code/roi/
+.venv-b2c/

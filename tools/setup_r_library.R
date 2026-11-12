@@ -50,6 +50,13 @@ cat("Chiusura ricorsiva:", length(closure), "pacchetti; mancanti nella libreria 
 if (length(missing3)) install.packages(missing3, lib = lib, dependencies = FALSE)
 cat("Pacchetti nella libreria di progetto dopo il passo 3:", length(rownames(installed.packages(lib.loc = lib))), "\n")
 
+# Passo 4 (F3.1, DEC-085): spacexr (RCTD) da GitHub, commit fissato; dipendenze da PPM
+if (!requireNamespace("spacexr", lib.loc = lib, quietly = TRUE)) {
+  if (!requireNamespace("remotes", lib.loc = lib, quietly = TRUE)) install.packages("remotes", lib = lib)
+  remotes::install_github("dmcable/spacexr@ccc43442cd5b4e3b05cddeeff32afdfce0d9d483", lib = lib, upgrade = "never", dependencies = TRUE, build_vignettes = FALSE)
+}
+pk <- c(pk, "spacexr")
+
 # Verifica di caricamento (in questo processo; la verifica indipendente e' in R/testing/test_S0_library.R)
 res <- vapply(pk, function(p) suppressWarnings(suppressMessages(requireNamespace(p, lib.loc = lib, quietly = TRUE))), logical(1))
 print(data.frame(pkg = pk, loads = res, version = vapply(pk, function(p) tryCatch(as.character(packageVersion(p, lib.loc = lib)), error = function(e) NA_character_), character(1)), row.names = NULL))
