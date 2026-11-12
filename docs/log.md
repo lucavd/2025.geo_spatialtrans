@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-11-12 (F3.1, ok di Luca sulle previsioni)
+
+* **Modifica**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md): ok di Luca sulle previsioni e sul calcolo.
+* **Creazione**: decisione di Luca [F3.1: margine minimo di un punto percentuale per la quota di singoletti di RCTD (DEC-086)](decisions/DEC-086.md).
+
 ## 2026-11-12 (F3.1, fase sul vero e previsioni)
 
 * **Modifica**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md): fase A (misure vere sulle 30 aree, intervalli di rilevanza), regola sulla soglia di RCTD nel cuore (E-8), previsioni, regola R-1 riscritta prima del simulato, profili dal solo nucleo per la controprova CP-3; in attesa dell'ok di Luca.
