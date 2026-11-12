@@ -3271,7 +3271,7 @@ vertical-align: -.125em;
 <section id="cancelli-e-controprove" class="level1">
 <h1>Cancelli e controprove</h1>
 <p>Pre-registrazione: cancelli <code>4d2c637</code>; ok di Luca sulle attese il 2026-11-12 («Approvo (Recommended)»), commit <code>70651e1</code>. Nessuna previsione con intervallo: lo step non cambia il modello (G-4). Commit provato finale <code>fea12bd</code>. File dello step: <code>docs/steps/S2.8b.md</code>. Documenti prodotti: guida d’uso <a href="../vignettes/visium_hd_simulation.html"><code>vignettes/visium_hd_simulation.html</code></a>, guida per Daniele <a href="S2.8b_guida_revisione.html"><code>reports/S2.8b_guida_revisione.html</code></a>.</p>
-<p>Commit provato finale <strong>T = <code>fea12bd</code></strong> (due commit provati prima: <code>038f150</code>, superato dalle correzioni della revisione; <code>9102831</code>, superato dal secondo giro). Log in <code>/mnt/micron/geo_spatialtrans/S2.8b/official3/</code> (<code>fea12bd</code>), <code>official2/</code> (<code>9102831</code>), <code>official/</code> (<code>038f150</code>). Tabelle della revisione in <code>results/S2.8b/</code>.</p>
+<p>Commit provato finale <strong>T = <code>fea12bd</code></strong> (due commit provati prima: <code>038f150</code>, superato dalle correzioni della revisione; <code>9102831</code>, superato dal secondo giro). Log in <code>/mnt/micron/geo_spatialtrans/S2.8b/official3/</code> (<code>fea12bd</code>), <code>official2/</code> (<code>9102831</code>), <code>official/</code> (<code>038f150</code>). Tabelle della revisione in <code>reports/S2.8b_parts/</code>.</p>
 <section id="cancelli" class="level3">
 <h3 class="anchored" data-anchor-id="cancelli">Cancelli</h3>
 <table class="caption-top table">
@@ -3358,7 +3358,7 @@ vertical-align: -.125em;
 </section>
 <section id="revisione-avversariale" class="level1">
 <h1>Revisione avversariale</h1>
-<p>Due sotto-agenti con codice proprio, in sola lettura sul server (2026-11-12): <strong>numeri</strong> (94 controlli al primo giro: ogni numero dei sette documenti contro la sua fonte; tabelle delle due guide ricalcolate dai file) e <strong>codice</strong> (55 controlli: ogni affermazione sul comportamento del codice contro <code>R/05b*.R</code>, prove proprie sul server; strumenti dei cancelli con mutanti propri). Tabelle: <code>results/S2.8b/S2.8b_review_checks.csv</code>, <code>results/S2.8b/S2.8b_review_discrepancies.csv</code> (42 righe, colonna «closure»). Secondo giro sui commit <code>9102831</code> e <code>fea12bd</code>.</p>
+<p>Due sotto-agenti con codice proprio, in sola lettura sul server (2026-11-12): <strong>numeri</strong> (94 controlli al primo giro: ogni numero dei sette documenti contro la sua fonte; tabelle delle due guide ricalcolate dai file) e <strong>codice</strong> (55 controlli: ogni affermazione sul comportamento del codice contro <code>R/05b*.R</code>, prove proprie sul server; strumenti dei cancelli con mutanti propri). Tabelle: <code>reports/S2.8b_parts/S2.8b_review_checks.csv</code>, <code>reports/S2.8b_parts/S2.8b_review_discrepancies.csv</code> (42 righe, colonna «closure»). Secondo giro sui commit <code>9102831</code> e <code>fea12bd</code>.</p>
 <p>Discrepanze principali e chiusura:</p>
 <ul>
 <li><strong>Tempo del cervello</strong> (N-01, D07): con il lato predefinito di 504 µm il cervello impiega 334.6 s per mm² di tessuto, oltre i 300 del bilancio; il limite di <a href="../docs/decisions/DEC-077.md">S2.7: il tempo del tumore del colon e dell’intestino oltre il bilancio resta un limite dichiarato (DEC-077)</a> è stato scritto sulle prove con 1 008 µm. Testi corretti; decisione chiesta a Luca.</li>
@@ -3915,7 +3915,7 @@ vertical-align: -.125em;
 </tr>
 <tr class="even">
 <td>una quarantina di imprecisioni</td>
-<td><code>results/S2.8b/S2.8b_review_discrepancies.csv</code></td>
+<td><code>reports/S2.8b_parts/S2.8b_review_discrepancies.csv</code></td>
 <td>42 righe, una delle quali (N-04) errore del revisore</td>
 </tr>
 <tr class="odd">

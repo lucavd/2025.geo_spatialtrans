@@ -1,4 +1,4 @@
-Commit provato finale **T = `fea12bd`** (due commit provati prima: `038f150`, superato dalle correzioni della revisione; `9102831`, superato dal secondo giro). Log in `/mnt/micron/geo_spatialtrans/S2.8b/official3/` (`fea12bd`), `official2/` (`9102831`), `official/` (`038f150`). Tabelle della revisione in `results/S2.8b/`.
+Commit provato finale **T = `fea12bd`** (due commit provati prima: `038f150`, superato dalle correzioni della revisione; `9102831`, superato dal secondo giro). Log in `/mnt/micron/geo_spatialtrans/S2.8b/official3/` (`fea12bd`), `official2/` (`9102831`), `official/` (`038f150`). Tabelle della revisione in `reports/S2.8b_parts/`.
 
 ### Cancelli
 

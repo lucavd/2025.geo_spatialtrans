@@ -1,4 +1,4 @@
-Due sotto-agenti con codice proprio, in sola lettura sul server (2026-11-12): **numeri** (94 controlli al primo giro: ogni numero dei sette documenti contro la sua fonte; tabelle delle due guide ricalcolate dai file) e **codice** (55 controlli: ogni affermazione sul comportamento del codice contro `R/05b*.R`, prove proprie sul server; strumenti dei cancelli con mutanti propri). Tabelle: `results/S2.8b/S2.8b_review_checks.csv`, `results/S2.8b/S2.8b_review_discrepancies.csv` (42 righe, colonna «closure»). Secondo giro sui commit `9102831` e `fea12bd`.
+Due sotto-agenti con codice proprio, in sola lettura sul server (2026-11-12): **numeri** (94 controlli al primo giro: ogni numero dei sette documenti contro la sua fonte; tabelle delle due guide ricalcolate dai file) e **codice** (55 controlli: ogni affermazione sul comportamento del codice contro `R/05b*.R`, prove proprie sul server; strumenti dei cancelli con mutanti propri). Tabelle: `reports/S2.8b_parts/S2.8b_review_checks.csv`, `reports/S2.8b_parts/S2.8b_review_discrepancies.csv` (42 righe, colonna «closure»). Secondo giro sui commit `9102831` e `fea12bd`.
 
 Discrepanze principali e chiusura:
 

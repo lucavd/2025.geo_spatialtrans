@@ -12,7 +12,7 @@ format:
 ```{r setup}
 #| include: false
 .libPaths("~/2025.geo_spatialtrans/renv/library/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu")
-RV <- read.csv("../results/S2.8b/S2.8b_review_discrepancies.csv", stringsAsFactors = FALSE, check.names = FALSE)
+RV <- read.csv("S2.8b_parts/S2.8b_review_discrepancies.csv", stringsAsFactors = FALSE, check.names = FALSE)
 ```
 
 # In breve

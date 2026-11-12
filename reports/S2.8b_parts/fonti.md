@@ -3,7 +3,7 @@
 | il README di prima nominava una sola delle 15 opzioni e delle 20 funzioni | `/mnt/micron/geo_spatialtrans/S2.8b/official3/CP1.log` | «1/35 voci coperte» |
 | due esecuzioni della guida danno conteggi identici | `official3/gate_guide.log` | «PASS impronte e controlli uguali nelle due rese» |
 | una copia con un esempio sbagliato non si produce | `official3/gate_cp2.log` | «PASS CP-2 … multiplo di 56» |
-| una quarantina di imprecisioni | `results/S2.8b/S2.8b_review_discrepancies.csv` | 42 righe, una delle quali (N-04) errore del revisore |
+| una quarantina di imprecisioni | `reports/S2.8b_parts/S2.8b_review_discrepancies.csv` | 42 righe, una delle quali (N-04) errore del revisore |
 | una frase di dettaglio messa in coda | stesso file, riga N3 | «rinviata» (BL-255) |
 | il cervello impiega 335 secondi per mm² con i pezzi predefiniti | `results/S2.7/S2.7_P3_P4.csv`, riga `sec_A5_p504w8`, colonna `s_per_mm2_tissue` | 334.64 |
 | 300 del bilancio | documento di progetto dello Step 2, sezione 12 («meno di 5 minuti» per mm²) | 300 s |
