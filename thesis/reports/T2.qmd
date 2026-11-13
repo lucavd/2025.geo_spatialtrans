@@ -1,0 +1,172 @@
+---
+title: "T2 — Protocol and pilot"
+subtitle: "Thesis expression-sources · session report (PROTOCOLLO §6, week 2)"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+    fig-width: 10
+---
+
+<!--
+SKELETON (2026-11-12). Render on the server from thesis/reports:
+  quarto render T2.qmd
+[TO FILL] = text still to write; tables are read from the pilot outputs.
+Every number in the prose must come from a chunk or from a dated DECISIONS row.
+-->
+
+```{r setup}
+#| include: false
+lib <- Sys.glob("../renv/library/*/R-4.6/*")
+.libPaths(c(lib, .libPaths()))
+suppressPackageStartupMessages({ library(knitr) })
+
+data_dir <- Sys.getenv("TESI_DATA")
+stopifnot("TESI_DATA not set" = nzchar(data_dir), dir.exists(data_dir))
+pilot_dir <- file.path(data_dir, "derived", "pilot")
+tissues <- c("colon", "lymphoid", "brain")
+
+# read <tissue>_crule_pilot_<what>.csv; NULL (with a note) if missing
+rd_pilot <- function(tissue, what) {
+  f <- file.path(pilot_dir, sprintf("%s_crule_pilot_%s.csv", tissue, what))
+  if (!file.exists(f)) { message("missing: ", f); return(NULL) }
+  read.csv(f, check.names = FALSE, stringsAsFactors = FALSE)
+}
+show_pilot <- function(what, n = 20) {
+  for (t in tissues) {
+    x <- rd_pilot(t, what)
+    cat("\n\n**", t, "**\n\n", sep = "")
+    if (is.null(x)) cat("*not available yet*\n") else print(kable(head(x, n)))
+  }
+}
+```
+
+**Single goal.** Fix the study protocol (ADEMP) before any result, and run a declared pilot whose only use is to give the values the pre-registered rules need. These are the SD of the paired differences for n_sim, runtimes, failures, seed check and depth reached (ADEMP §10). Pilot numbers do not enter the thesis results.
+
+**Dependencies.** T1 (datasets, split). **Branch.** `thesis/expression-sources`. **Data.** `TESI_DATA` on lesexp (`/mnt/micron/geo_spatialtrans/tesi_pp1209/data`).
+
+**Status of the pilot inputs.** Pilot references were rebuilt with φ estimated on 50,000 cells after the failed φ check (DECISIONS 2026-11-11). Only the colon pilot is rerun with the new φ; lymph node and brain pilots keep φ from 20,000 cells, as the same row states. [TO FILL: date the colon rerun finished.]
+
+# 1. Pre-registration
+
+Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.4, 2026-11-11); approval by Luca [TO FILL: date].
+
+| Item | Rule fixed before the pilot | Source |
+|---|---|---|
+| Pilot scope | three tissues, arms E and C− plus the real anchor, CPU methods, 10 replicates per arm × condition; pilot held-out and E′ donors drawn from training | ADEMP §10; DECISIONS 2026-10-30 |
+| n_sim | 2 × MCSE of the paired RMSE difference ≤ δ/2, SD = upper limit from the pilot, δ = 0.02 | DECISIONS 2026-11-03 (two rows) |
+| Dirichlet concentration | α_k = c · p_k, c = median over R6 ROIs per tissue and cells level | DECISIONS 2026-11-06 |
+| Depth thinning | exact downsampling to the target, report spots below target | DECISIONS 2026-11-02 |
+| Failures | null-baseline fill, common-spot set as sensitivity, tolerance 1e-5 | DECISIONS 2026-11-03, 2026-11-03 (ADEMP v0.9) |
+| φ sample | r(log φ) ≥ 0.99 and median ratio 0.95–1.05, else 50,000 cells | DECISIONS 2026-10-29 |
+| Reference cap | 1,000 cells per type kept if r ≥ 0.99 per type | DECISIONS 2026-11-04 |
+| P marker cap | Jaccard ≥ 0.9 per type in the lymph node, else 20,000 | DECISIONS 2026-11-11 |
+
+## Deviations from the pre-registration (recorded, not corrected)
+
+- The φ sample check was run on 2026-11-11, after the pilots, although it was due before them (DECISIONS 2026-11-11).
+- The pilots ran at 175 and 4,900 UMI per cell in every tissue. After the pilots the design kept one Visium HD level per tissue, 174 (colon), 62 (lymph node) and 121 (brain) UMI per cell (DECISIONS 2026-11-12, PROTOCOLLO 1.5). n_sim uses only the 175 rows; for the lymph node and brain the pilot depth was higher than the final level.
+- Lymph node and brain pilots used φ from 20,000 cells and were not rerun (DECISIONS 2026-11-11 on φ).
+- [TO FILL: any other.]
+
+# 2. Check C — software correctness
+
+| Check | Expectation | Outcome | Source |
+|---|---|---|---|
+| C1 split | no donor in two splits | [PASS/FAIL] | `tests/test_split.R` |
+| C2 download | md5 on the server = manifest | [TO FILL] | `scripts/01_download.R`, `data_manifest.csv` |
+| C3 generator | counts conserved, true compositions saved, thinning exact | [PASS/FAIL] | `tests/test_simulate.R` |
+| C4 arms P and O | P reference simulated from μ^P, O from the held-out donor | [PASS/FAIL] | `tests/test_arm_p_o.R` |
+| C5 Aim 1 code | VST equal to Seurat on colon | [PASS/FAIL] | `tests/test_aim1.R` |
+| C6 φ sample | rule of DECISIONS 2026-10-29 | FAIL on correlation, PASS on ratio → 50,000 cells | DECISIONS 2026-11-11; `tests/test_phi_sample.R` |
+| C7 reference cap | r ≥ 0.99 per type | PASS in the three tissues | DECISIONS 2026-11-04; ADEMP §4 |
+| C8 P marker cap | Jaccard ≥ 0.9 per type | FAIL at 10,000 → 20,000 | DECISIONS 2026-11-11; `tests/test_p_cap.R` |
+| C9 seed check | rerun gives identical output | [TO FILL] | ADEMP §8 |
+| C10 proportions | residues within 1e-5 after `clean_props()` | colon done; lymph node and brain [TO FILL] | ADEMP §7.2 |
+
+```{r check-c}
+#| eval: false
+# [TO FILL] read a CSV of test outcomes if the tests write one, otherwise keep the table above by hand.
+```
+
+# 3. Check B — biological plausibility
+
+## 3.1 Depth reached by arms and anchor
+
+Share of spots at and below the target, per arm, anchor and condition (DECISIONS 2026-11-02).
+
+```{r depth}
+#| results: asis
+show_pilot("depth")
+```
+
+[TO FILL: comment. At 175 UMI per cell all spots reached the target in the three tissues. At 4,900 UMI the anchor and the arms stayed below target differently (lymph node 10 cells 33% vs 53% in E; brain 2 cells 41% vs 18%), the reason the level was removed (DECISIONS 2026-11-12).]
+
+## 3.2 Library sizes by cell type
+
+[TO FILL: from `<tissue>_pilot.rds` (`L_by_type`). Large epithelial vs lymphocyte gap in the colon explains RCTD on cell share vs UMI share (DECISIONS 2026-11-03, estimand).]
+
+## 3.3 Cell-type diagnostics
+
+```{r types}
+#| results: asis
+show_pilot("type_diagnostics")
+```
+
+## 3.4 Arm P calibration
+
+[TO FILL: markers per type and gamma parameters per tissue from ADEMP §2.1; brain upper tail of gene means (Check B note carried to T3).]
+
+# 4. Counter-proof
+
+## 4.1 C− against E
+
+If C− gave the same errors as E, the benchmark would be insensitive to μ.
+
+```{r rmse}
+#| results: asis
+show_pilot("rmse_methods")
+```
+
+[TO FILL: verdict.]
+
+## 4.2 Null baseline
+
+Expected RMSE of the null baseline by formula, Monte Carlo and pilot (DECISIONS 2026-11-04). [TO FILL: table per tissue with the c rule.]
+
+# 5. Values passed to the protocol
+
+## 5.1 n_sim
+
+```{r nsim}
+#| results: asis
+show_pilot("nsim")
+```
+
+The `nsim` tables above take the maximum over all pilot conditions, 4,900 UMI included. The design value uses the 175 UMI rows of `rmse_pairs` only (DECISIONS 2026-11-12).
+
+```{r nsim-hd}
+nsim_hd <- do.call(rbind, lapply(tissues, function(t) {
+  x <- rd_pilot(t, "rmse_pairs")
+  if (is.null(x)) return(NULL)
+  x <- x[x$depth == 175, ]
+  r <- x[which.max(x$sd_diff_upper), ]
+  data.frame(tissue = t, sd_upper = r$sd_diff_upper, arm = r$dataset, n_cells = r$n_cells,
+             pair = r$pair, n_sim = ceiling((4 * r$sd_diff_upper / 0.02)^2))
+}))
+kable(nsim_hd, digits = 4)
+```
+
+Expected from DECISIONS 2026-11-12: colon 0.0543 (n_sim 118), lymph node 0.019 (14), brain 0.029 (33), so n_sim = 118.
+
+## 5.2 Runtimes and cost
+
+[TO FILL: per tissue from `scripts/06c_pilot_cost.R`; cell2location timing still to be measured (DECISIONS 2026-11-04).]
+
+# Closure
+
+**Verdict.** [closed / closed with reservations / not closed]. [TO FILL: open items, e.g. ADEMP approval, cell2location timing, lymph node and brain residues.]
+
+**Adversarial review.** [TO FILL: who recomputed which key numbers from scripts and data, and discrepancies found.]
