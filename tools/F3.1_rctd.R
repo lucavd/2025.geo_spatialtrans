@@ -26,6 +26,8 @@ if (reuse) {
   puck <- SpatialRNA(coords, Xb[common, ], nUMI = setNames(colSums(Xb), blk$block))
   # regola F3.1 (E-8): soglia per la stima del rumore = min(300, UMI del centesimo blocco piu' ricco); cambia solo dove meno di 100 blocchi superano 300
   ums <- min(300, sort(colSums(Xb), decreasing = TRUE)[min(100L, ncol(Xb))])
+  # seme dichiarato (G-3: senza seme RCTD non e' riproducibile, perche' estrae a caso i blocchi su cui stima il rumore)
+  set.seed(20261118L, kind = "Mersenne-Twister")
   rc_obj <- create.RCTD(puck, ref, max_cores = 1, UMI_min = 20, CELL_MIN_INSTANCE = 25, UMI_min_sigma = ums)
   rc_obj <- run.RCTD(rc_obj, doublet_mode = "doublet")
   rd <- rc_obj@results$results_df

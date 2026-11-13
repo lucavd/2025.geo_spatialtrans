@@ -5,6 +5,8 @@
 suppressPackageStartupMessages({ library(Matrix); library(sf); library(geos); library(parallel) })
 for (f in sort(list.files("R", pattern = "^(04b|05b).*\\.R$", full.names = TRUE))) source(f)
 # Profili: quelli di S2.2 (predefiniti); per il braccio di CP-3 la variabile d'ambiente F31_PROFILES_DIR indica i profili dal solo nucleo.
+# Livello cellulare: U6 (predefinito: semina uniforme cieca al tipo) o, con F31_LAYER=Q6, la semina a compartimenti di S1.6 (analisi PH-3).
+LAYER <- if (nzchar(Sys.getenv("F31_LAYER"))) Sys.getenv("F31_LAYER") else "U6"
 if (nzchar(Sys.getenv("F31_PROFILES_DIR"))) options(geo.spatialtrans.profiles_dir = Sys.getenv("F31_PROFILES_DIR"))
 a <- commandArgs(TRUE); out_dir <- a[1]; seed_base <- as.integer(a[2]); tags <- strsplit(a[3], ",")[[1]]; W <- as.integer(a[4])
 ks <- if (length(a) >= 5) as.integer(strsplit(a[5], ",")[[1]]) else 0L
@@ -17,11 +19,11 @@ jobs <- expand.grid(tag = tags, k = ks, stringsAsFactors = FALSE)
 run1 <- function(i) {
   tag <- jobs$tag[i]; k <- jobs$k[i]; s <- seed_tab[tag, k + 1L]
   fo <- file.path(out_dir, sprintf("%s_k%d.rds", tag, k)); if (file.exists(fo)) return(paste("skip", tag, k))
-  L <- readRDS(file.path(lay_dir, paste0(tag, "_U6.rds")))
+  L <- readRDS(file.path(lay_dir, paste0(tag, "_", LAYER, ".rds")))
   t0 <- proc.time()[["elapsed"]]
   out <- simulate_visium_hd_pieces(L, seed = s, frame_open = TRUE, workers = 1L, assemble = "full")
   out$f31 <- list(tag = tag, k = k, seed = s, seed_base = seed_base, elapsed = proc.time()[["elapsed"]] - t0,
-                  archetype = visium_hd_archetype(L), profiles_dir = getOption("geo.spatialtrans.profiles_dir", "default"))
+                  archetype = visium_hd_archetype(L), profiles_dir = getOption("geo.spatialtrans.profiles_dir", "default"), layer = LAYER)
   saveRDS(out, paste0(fo, ".tmp")); file.rename(paste0(fo, ".tmp"), fo)
   sprintf("%s k%d seed %d: %.0f s", tag, k, s, out$f31$elapsed)
 }

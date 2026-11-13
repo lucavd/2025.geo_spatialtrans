@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-13 (F3.1, esiti e riassunto)
+
+* **Modifica**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md): esiti, controprove, regola R-1, correzioni, analisi a posteriori PH-1...PH-3, revisione avversariale, deviazioni, riassunto «In breve», dubbi rinviati; in attesa della decisione di Luca.
+* **Creazione**: decisione tecnica [F3.1: il limite del simulatore da sistemare per primo è la disposizione dei tipi cellulari (DEC-087)](decisions/DEC-087.md); BACKLOG BL-259...BL-264; report `reports/F3.1.html`.
+* **Modifica**: ROADMAP sezione 7 (riga di F3.1, prossima sessione proposta); CHANGELOG.
+
 ## 2026-11-12 (F3.1, ok di Luca sulle previsioni)
 
 * **Modifica**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md): ok di Luca sulle previsioni e sul calcolo.

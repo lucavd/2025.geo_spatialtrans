@@ -91,7 +91,8 @@ for d in sorted(glob.glob(f"{main}/real/*")) + sorted(glob.glob(f"{main}/sim/*_k
     ag = float((m["first"][hn] == m.nuc_type[hn]).mean()); sg = float((m.spot_class[ok_] == "singlet").mean())
     check(f"e {os.path.basename(d)}: concordanza e singoletti ricalcolati", abs(ag - j["agree_nucleus"]) < 1e-9 and abs(sg - j["frac_singlet"]) < 1e-9)
     rs = np.random.default_rng(1); nt = m.nuc_type[hn].to_numpy().copy(); rs.shuffle(nt)
-    p = m["first"][hn].value_counts(normalize=True); q = m.nuc_type[hn].value_counts(normalize=True)   # caso: tipi di RCTD e del nucleo indipendenti sugli stessi blocchi; chance = float((p.reindex(q.index).fillna(0) * q).sum())
+    # caso: tipi di RCTD e del nucleo indipendenti sugli stessi blocchi
+    p = m["first"][hn].value_counts(normalize=True); q = m.nuc_type[hn].value_counts(normalize=True); chance = float((p.reindex(q.index).fillna(0) * q).sum())
     agm = float((m["first"][hn].to_numpy() == nt).mean())
     check(f"e {os.path.basename(d)}: mutante tipi rimescolati al livello del caso", abs(agm - chance) < 0.03, f"{agm:.3f} vs {chance:.3f}")
 for f in sorted(glob.glob(f"{main}/sim/*_k0/b2c_label_shift.json"))[:30]:

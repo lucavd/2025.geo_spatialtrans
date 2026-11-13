@@ -1,0 +1,71 @@
+---
+title: "F3.1: i primi metodi di analisi si comportano sui dati simulati come sui dati veri?"
+subtitle: "geo_spatialtrans, report di step (protocollo v2)"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+---
+
+{{< include F3.1_parts/in_breve.md >}}
+
+# Dubbi rinviati
+
+{{< include F3.1_parts/dubbi.md >}}
+
+# Cancelli, previsioni, controprove
+
+Pre-registrazione: cancelli `fc79131`, previsioni e intervalli `c82580c`; ok di Luca sulle previsioni del 2026-11-12, `ba1ee86`.
+
+![Bin2cell e RCTD sul simulato (blu) e sul vero (grigio), 5 aree per tessuto. Bande grigie: intervallo di rilevanza dal vero; × smentita, ? indeterminata, = confermata. **Cosa guardare**: nei primi quattro tessuti le aree simulate stanno fuori dalla banda per marcatori estranei, singoletti e coerenza spaziale; le aree simulate sono quasi sovrapposte, le vere no.](F3.1_parts/F3.1_fig1_verdicts.png)
+
+{{< include F3.1_parts/esiti.md >}}
+
+![Controprova della contaminazione contata due volte: vero, simulato con i profili dai nuclei con la corona, simulato con i profili dal solo nucleo (stessi semi). **Cosa guardare**: le coppie blu-arancio quasi orizzontali: i profili non sono la causa.](F3.1_parts/F3.1_fig2_CP3.png)
+
+![Misure calcolabili sul vero contro la verità del simulato, 10 esecuzioni per tessuto.](F3.1_parts/F3.1_fig3_CP2.png)
+
+# Analisi a posteriori
+
+![Mescolanza dei tipi fra vicini e marcatori estranei ripesati con la mescolanza del vero. **Cosa guardare**: in intestino e tumore il cerchio vuoto (simulato ripesato) scende quasi al grigio.](F3.1_parts/F3.1_fig4_mixing.png)
+
+{{< include F3.1_parts/posthoc.md >}}
+
+# Correzioni
+
+{{< include F3.1_parts/correzioni.md >}}
+
+# Revisione avversariale
+
+{{< include F3.1_parts/revisione.md >}}
+
+# Deviazioni dichiarate
+
+{{< include F3.1_parts/deviazioni.md >}}
+
+# Cosa è girato
+
+{{< include F3.1_parts/riproduzione.md >}}
+
+# Appendice
+
+## Perimetro
+
+{{< include F3.1_parts/perimetro.md >}}
+
+## Metodi e misure
+
+{{< include F3.1_parts/metodi.md >}}
+
+## Esplorazioni dichiarate
+
+{{< include F3.1_parts/esplorazioni.md >}}
+
+## Attese pre-registrate
+
+{{< include F3.1_parts/attese.md >}}
+
+## Da dove vengono i numeri del riassunto
+
+{{< include F3.1_parts/numeri.md >}}

@@ -1,0 +1,24 @@
+A,type,real,sim
+A1,epiteliale,0.672,0.87
+A1,immunitario,0.075,0.052
+A1,stromale e muscolo liscio,0.253,0.078
+A2,epiteliale,0.754,0.791
+A2,fibroblasti,0.246,0.209
+A3,endoteliale,0.072,0.13
+A3,epiteliale,0.246,0.43
+A3,fibroblasti,0.596,0.229
+A3,immunitario,0.086,0.211
+A4,endoteliali,0.028,0.005
+A4,linfociti B,0.2,0.395
+A4,linfociti T,0.418,0.205
+A4,mieloidi,0.152,0.076
+A4,plasmacellule,0.13,0.302
+A4,stromali,0.072,0.017
+A5,astrociti,0.225,0.078
+A5,microglia,0.043,0.032
+A5,neuroni,0.551,0.751
+A5,oligodendrociti,0.091,0.115
+A5,vascolari,0.09,0.024
+A6,cardiomiociti,0.783,0.731
+A6,fibroblasti,0.117,0.149
+A6,immunitari,0.101,0.12
