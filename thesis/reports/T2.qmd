@@ -11,10 +11,10 @@ format:
 ---
 
 <!--
-SKELETON (2026-11-12). Render on the server from thesis/reports:
+Filled 2026-11-16. Render on the server from thesis/reports:
   quarto render T2.qmd
-[TO FILL] = text still to write; tables are read from the pilot outputs.
-Every number in the prose must come from a chunk or from a dated DECISIONS row.
+[TO FILL] = still open (ADEMP approval date, adversarial review, items pending on the server).
+Every number in the prose comes from a chunk or from a dated DECISIONS row / ADEMP section.
 -->
 
 ```{r setup}
@@ -26,6 +26,8 @@ suppressPackageStartupMessages({ library(knitr) })
 data_dir <- Sys.getenv("TESI_DATA")
 stopifnot("TESI_DATA not set" = nzchar(data_dir), dir.exists(data_dir))
 pilot_dir <- file.path(data_dir, "derived", "pilot")
+ref_dir   <- file.path(data_dir, "derived", "reference")
+pcal_dir  <- file.path(data_dir, "derived", "p_calibration")
 tissues <- c("colon", "lymphoid", "brain")
 
 # read <tissue>_crule_pilot_<what>.csv; NULL (with a note) if missing
@@ -41,54 +43,69 @@ show_pilot <- function(what, n = 20) {
     if (is.null(x)) cat("*not available yet*\n") else print(kable(head(x, n)))
   }
 }
+# run a test script from thesis/ and keep its PASS/FAIL lines
+run_test <- function(f) {
+  owd <- setwd(".."); on.exit(setwd(owd))
+  out <- capture.output(try(source(f, local = new.env()), silent = TRUE))
+  grep("PASS|FAIL", out, value = TRUE)
+}
 ```
 
 **Single goal.** Fix the study protocol (ADEMP) before any result, and run a declared pilot whose only use is to give the values the pre-registered rules need. These are the SD of the paired differences for n_sim, runtimes, failures, seed check and depth reached (ADEMP §10). Pilot numbers do not enter the thesis results.
 
 **Dependencies.** T1 (datasets, split). **Branch.** `thesis/expression-sources`. **Data.** `TESI_DATA` on lesexp (`/mnt/micron/geo_spatialtrans/tesi_pp1209/data`).
 
-**Status of the pilot inputs.** Pilot references were rebuilt with φ estimated on 50,000 cells after the failed φ check (DECISIONS 2026-11-11). Only the colon pilot is rerun with the new φ; lymph node and brain pilots keep φ from 20,000 cells, as the same row states. [TO FILL: date the colon rerun finished.]
+**Status of the pilot inputs.** Pilot references were rebuilt with φ estimated on 50,000 cells after the failed φ check (DECISIONS 2026-11-11): colon and lymph node on 2026-11-12, brain on 2026-11-14. Only the colon pilot is rerun with the new φ (finished 2026-11-12, the basis of n_sim = 118, DECISIONS 2026-11-12); lymph node and brain pilots keep φ from 20,000 cells, as the same row states.
 
 # 1. Pre-registration
 
-Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.4, 2026-11-11); approval by Luca [TO FILL: date].
+Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.5, 2026-11-12, for approval); approval by Luca [TO FILL: date].
 
 | Item | Rule fixed before the pilot | Source |
 |---|---|---|
-| Pilot scope | three tissues, arms E and C− plus the real anchor, CPU methods, 10 replicates per arm × condition; pilot held-out and E′ donors drawn from training | ADEMP §10; DECISIONS 2026-10-30 |
-| n_sim | 2 × MCSE of the paired RMSE difference ≤ δ/2, SD = upper limit from the pilot, δ = 0.02 | DECISIONS 2026-11-03 (two rows) |
+| Pilot scope | three tissues, arms E and C− plus the real anchor, CPU methods (RCTD, spatialDWLS, MuSiC, NNLS), 10 replicates per arm × condition; pilot held-out and E′ donors drawn from training (seed 20261030) | ADEMP §10; DECISIONS 2026-10-30 |
+| n_sim | 2 × MCSE of the paired RMSE difference ≤ δ/2, SD = upper 95% limit from the pilot, δ = 0.02 | DECISIONS 2026-11-03 (two rows) |
 | Dirichlet concentration | α_k = c · p_k, c = median over R6 ROIs per tissue and cells level | DECISIONS 2026-11-06 |
 | Depth thinning | exact downsampling to the target, report spots below target | DECISIONS 2026-11-02 |
-| Failures | null-baseline fill, common-spot set as sensitivity, tolerance 1e-5 | DECISIONS 2026-11-03, 2026-11-03 (ADEMP v0.9) |
+| Estimand | cell share for every method (main); UMI share as sensitivity | DECISIONS 2026-11-03 |
+| Failures | null-baseline fill, no exclusion threshold, common-spot set as sensitivity, tolerance 1e-5 | DECISIONS 2026-11-02, 2026-11-03 (two rows) |
+| Null baseline | observed RMSE within 0.005 of the Dirichlet-multinomial formula | `scripts/06b_pilot_nsim.R` header (2026-11-05) |
 | φ sample | r(log φ) ≥ 0.99 and median ratio 0.95–1.05, else 50,000 cells | DECISIONS 2026-10-29 |
 | Reference cap | 1,000 cells per type kept if r ≥ 0.99 per type | DECISIONS 2026-11-04 |
-| P marker cap | Jaccard ≥ 0.9 per type in the lymph node, else 20,000 | DECISIONS 2026-11-11 |
+| P marker cap | Jaccard ≥ 0.9 per type in the lymph node at 10,000 cells, else 20,000 | DECISIONS 2026-11-11 |
 
 ## Deviations from the pre-registration (recorded, not corrected)
 
 - The φ sample check was run on 2026-11-11, after the pilots, although it was due before them (DECISIONS 2026-11-11).
 - The pilots ran at 175 and 4,900 UMI per cell in every tissue. After the pilots the design kept one Visium HD level per tissue, 174 (colon), 62 (lymph node) and 121 (brain) UMI per cell (DECISIONS 2026-11-12, PROTOCOLLO 1.5). n_sim uses only the 175 rows; for the lymph node and brain the pilot depth was higher than the final level.
 - Lymph node and brain pilots used φ from 20,000 cells and were not rerun (DECISIONS 2026-11-11 on φ).
-- [TO FILL: any other.]
+- The first colon pilot was rerun after two fixes: MuSiC failed on every spot for a code error, which also emptied the common-spot set (DECISIONS 2026-11-02, failures), and binomial thinning was replaced by exact thinning because the depth check assumed an exact target (DECISIONS 2026-11-02, thinning).
+- The Dirichlet concentration changed while the colon pilot was running (c = K · p_k, then c = 1, then the R6 rule of DECISIONS 2026-11-06). The values passed to the protocol come from the c-rule pilots only (`<tissue>_crule_pilot_*`); the earlier runs are kept in `derived/pilot/colon_c1`, `colon_c9` (ADEMP §6).
+- spatialDWLS spot clustering moved from k-means (no source) to Leiden with the Spotless parameters (DECISIONS 2026-11-04). n_sim rose from 81 to 217 in the colon after this change; the rule was kept, because changing it once we knew which pairs raise n_sim would be a post-hoc adjustment (DECISIONS 2026-11-03, precision of 2026-11-06).
 
 # 2. Check C — software correctness
 
 | Check | Expectation | Outcome | Source |
 |---|---|---|---|
-| C1 split | no donor in two splits | [PASS/FAIL] | `tests/test_split.R` |
-| C2 download | md5 on the server = manifest | [TO FILL] | `scripts/01_download.R`, `data_manifest.csv` |
-| C3 generator | counts conserved, true compositions saved, thinning exact | [PASS/FAIL] | `tests/test_simulate.R` |
-| C4 arms P and O | P reference simulated from μ^P, O from the held-out donor | [PASS/FAIL] | `tests/test_arm_p_o.R` |
-| C5 Aim 1 code | VST equal to Seurat on colon | [PASS/FAIL] | `tests/test_aim1.R` |
-| C6 φ sample | rule of DECISIONS 2026-10-29 | FAIL on correlation, PASS on ratio → 50,000 cells | DECISIONS 2026-11-11; `tests/test_phi_sample.R` |
-| C7 reference cap | r ≥ 0.99 per type | PASS in the three tissues | DECISIONS 2026-11-04; ADEMP §4 |
-| C8 P marker cap | Jaccard ≥ 0.9 per type | FAIL at 10,000 → 20,000 | DECISIONS 2026-11-11; `tests/test_p_cap.R` |
-| C9 seed check | rerun gives identical output | [TO FILL] | ADEMP §8 |
-| C10 proportions | residues within 1e-5 after `clean_props()` | colon done; lymph node and brain [TO FILL] | ADEMP §7.2 |
+| C1 split | no donor in two splits | PASS (toy data and the three tissues; run below) | `tests/test_split.R` |
+| C2 download | md5 on the server = manifest | NOT RUN yet on lesexp [TO FILL] | `scripts/01_download.R`, `data_manifest.csv` |
+| C3 generator | counts conserved, true compositions saved, thinning exact | PASS (run below) | `tests/test_simulate.R` |
+| C4 arms P and O | P reference simulated from μ^P, O from the held-out donor | PASS on the colon pilot reference (2026-11-05) | `tests/test_arm_p_o.R` |
+| C5 Aim 1 code | VST equal to Seurat on colon | PASS (2026-11-11) | `tests/test_aim1.R` |
+| C6 φ sample | rule of DECISIONS 2026-10-29 | FAIL on correlation (0.882), PASS on ratio (1.025) → 50,000 cells | DECISIONS 2026-11-11; `tests/test_phi_sample.R` |
+| C7 reference cap | r ≥ 0.99 per type | PASS in the three tissues (colon ≥ 0.998, lymph node 0.9989, brain 0.9990) | DECISIONS 2026-11-04; ADEMP §4 |
+| C8 P marker cap | Jaccard ≥ 0.9 per type | FAIL at 10,000 (cd4_cm 0.600) → 20,000 | DECISIONS 2026-11-11; `tests/test_p_cap.R` |
+| C9 seed check | deconvolution packages do not reset the RNG | PASS for the four CPU methods in the three tissues; cell2location [TO FILL] | ADEMP §8 |
+| C10 proportions | residues within 1e-5 after `clean_props()` | colon PASS (largest negative −7.0e-7); lymph node and brain [TO FILL] | ADEMP §7.2 |
+
+The two tests that run in seconds are rerun at every render.
 
 ```{r check-c}
-#| eval: false
-# [TO FILL] read a CSV of test outcomes if the tests write one, otherwise keep the table above by hand.
+for (f in c("tests/test_split.R", "tests/test_simulate.R")) {
+  r <- run_test(f)
+  cat("\n", f, ": ", sum(grepl("PASS", r)), " PASS, ", sum(grepl("FAIL", r)), " FAIL\n", sep = "")
+  cat(paste0("  ", r), sep = "\n")
+}
 ```
 
 # 3. Check B — biological plausibility
@@ -99,16 +116,44 @@ Share of spots at and below the target, per arm, anchor and condition (DECISIONS
 
 ```{r depth}
 #| results: asis
-show_pilot("depth")
+for (t in tissues) {
+  x <- rd_pilot(t, "depth")
+  cat("\n\n**", t, "**\n\n", sep = "")
+  if (is.null(x)) { cat("*not available yet*\n"); next }
+  a <- aggregate(cbind(n_at_target, n_below) ~ n_cells + depth + dataset, x, sum)
+  a$pct_below <- round(100 * a$n_below / (a$n_at_target + a$n_below), 1)
+  print(kable(a))
+}
 ```
 
-[TO FILL: comment. At 175 UMI per cell all spots reached the target in the three tissues. At 4,900 UMI the anchor and the arms stayed below target differently (lymph node 10 cells 33% vs 53% in E; brain 2 cells 41% vs 18%), the reason the level was removed (DECISIONS 2026-11-12).]
+At 175 UMI per cell every spot of every arm and of the anchor reached its target in the three tissues, so the depth is the same everywhere and differences between arms come from μ. At 4,900 UMI per cell part of the spots stayed below target, and differently in the anchor and the arms (lymph node, 10 cells: 33% of anchor spots against 53% in E; brain, 2 cells: 41% against 18%). There the difference from the anchor mixed the source of μ with depth, which is why the level was removed (DECISIONS 2026-11-12). The HD levels of the main run (62–174 UMI per cell) are at or below 175, so all spots are expected to reach the target (depth runs of 2026-11-11).
 
 ## 3.2 Library sizes by cell type
 
-[TO FILL: from `<tissue>_pilot.rds` (`L_by_type`). Large epithelial vs lymphocyte gap in the colon explains RCTD on cell share vs UMI share (DECISIONS 2026-11-03, estimand).]
+Median library size of the training cells of each spot type (pilot references, `L_by_type`).
+
+```{r libsize}
+#| results: asis
+for (t in tissues) {
+  f <- file.path(ref_dir, paste0(t, "_pilot.rds"))
+  cat("\n\n**", t, "**\n\n", sep = "")
+  if (!file.exists(f)) { cat("*not available yet*\n"); next }
+  R0 <- readRDS(f)
+  L <- R0$L_by_type[R0$types_spot]
+  tab <- data.frame(type = names(L), cells = lengths(L),
+                    median_umi = vapply(L, median, numeric(1)),
+                    q25 = vapply(L, quantile, numeric(1), 0.25),
+                    q75 = vapply(L, quantile, numeric(1), 0.75))
+  print(kable(tab[order(-tab$median_umi), ], row.names = FALSE, digits = 0))
+  rm(R0); invisible(gc())
+}
+```
+
+In the colon, epithelial tumour cells carry several times the RNA of lymphocytes (first pilot reference: EpiT median 12,453 UMI against 2,146–2,298 for TCD8 and TCD4; DECISIONS 2026-11-03). This is expected biology (large, transcriptionally active epithelial cells against small resting T cells) and it explains why RCTD, which estimates the share of UMI, overestimates EpiT when read as a share of cells. The gap depends only on the library sizes, which are the same in every arm, so it does not bias the comparison between sources of μ (DECISIONS 2026-11-03, estimand).
 
 ## 3.3 Cell-type diagnostics
+
+Per replicate: bias per spot type and proportion assigned to types absent from the spots (false positives).
 
 ```{r types}
 #| results: asis
@@ -117,24 +162,70 @@ show_pilot("type_diagnostics")
 
 ## 3.4 Arm P calibration
 
-[TO FILL: markers per type and gamma parameters per tissue from ADEMP §2.1; brain upper tail of gene means (Check B note carried to T3).]
+Markers per type of the P calibration (`scripts/04p_calibrate_p.R`; `findMarkers` on at most 20,000 training cells per type, DECISIONS 2026-11-11; FDR 0.05, and 0.01 as the pre-registered check).
+
+```{r pcal}
+#| results: asis
+for (t in tissues) {
+  f <- file.path(pcal_dir, paste0(t, "_p_calibration.rds"))
+  cat("\n\n**", t, "**\n\n", sep = "")
+  if (!file.exists(f)) { cat("*not available yet*\n"); next }
+  pc <- readRDS(f)
+  cat("marker cap:", pc$settings$marker_cap, "cells per type; cells used for markers:",
+      format(pc$n_marker_cells, big.mark = ","), "of", format(pc$n_cells, big.mark = ","), "\n\n")
+  if (pc$settings$marker_cap != 20000) cat("**WARNING: cap differs from 20,000 (DECISIONS 2026-11-11)**\n\n")
+  print(kable(pc$n_markers, row.names = FALSE))
+}
+```
+
+With `pval.type = "some"` every type has markers, so no two P types share a profile (with `"all"` 7 of 18 colon types had none; DECISIONS 2026-11-04). Raising the cap from 10,000 to 20,000 changed the number of markers per type by at most 8 (pdc 49 against 41; DECISIONS 2026-11-11). Note carried to T3: in the brain the upper tail of the gene means differs between P and the real data (99th percentile 0.78 against 1.93; brain calibration 2026-11-11) [TO FILL: check which value is P], to be checked in the Aim 1 distribution measures (ADEMP §5.1).
 
 # 4. Counter-proof
 
 ## 4.1 C− against E
 
-If C− gave the same errors as E, the benchmark would be insensitive to μ.
+If C− gave the same errors as E, the benchmark would be insensitive to μ (ADEMP §9). Mean RMSE (cell-share truth, failed spots filled with the null baseline) at 175 UMI per cell.
 
 ```{r rmse}
 #| results: asis
-show_pilot("rmse_methods")
+cm <- do.call(rbind, lapply(tissues, function(t) {
+  x <- rd_pilot(t, "rmse_methods")
+  if (is.null(x)) return(NULL)
+  x <- x[x$depth == 175 & x$dataset %in% c("E", "Cminus", "anchor"), ]
+  w <- reshape(x[, c("n_cells", "method", "dataset", "mean_rmse")], idvar = c("n_cells", "method"),
+               timevar = "dataset", direction = "wide")
+  names(w) <- sub("mean_rmse.", "", names(w))
+  w$Cminus_minus_E <- w$Cminus - w$E
+  cbind(tissue = t, w)
+}))
+if (is.null(cm)) cat("*not available yet*\n") else {
+  print(kable(cm, row.names = FALSE, digits = 3))
+  m <- cm[cm$method != "null baseline", ]
+  cat("\n\nC− has a higher RMSE than E in", sum(m$Cminus_minus_E > 0), "of", nrow(m),
+      "method × tissue × cells cells; the smallest gap is", round(min(m$Cminus_minus_E), 3), ".\n")
+}
 ```
 
-[TO FILL: verdict.]
+Failures point the same way: spatialDWLS at 2 cells fails on more spots in C− than in E (colon 2,329 against 458 spots, brain 5,703 against 891, summed over replicates and conditions), and RCTD fails only in C− (colon 24 spots, brain 1; ADEMP §7.2).
+
+**Verdict.** [TO FILL after render: the counter-proof passes if C− is worse than E for every method that uses the reference; NNLS and MuSiC should be read next to the null baseline (4.2).]
 
 ## 4.2 Null baseline
 
-Expected RMSE of the null baseline by formula, Monte Carlo and pilot (DECISIONS 2026-11-04). [TO FILL: table per tissue with the c rule.]
+The null baseline gives every spot the training shares. Because α_k = c · p_k, the expected composition of every spot is p, so the null baseline is close to an oracle and its RMSE is fixed by the spread of the true compositions (ADEMP §7.2). Pre-registered check: observed null RMSE within 0.005 of the Dirichlet-multinomial formula.
+
+```{r null}
+#| results: asis
+nb <- do.call(rbind, lapply(tissues, function(t) {
+  x <- rd_pilot(t, "rmse_methods")
+  if (is.null(x)) return(NULL)
+  x <- x[x$depth == 175 & x$method == "null baseline", c("n_cells", "dataset", "mean_rmse")]
+  cbind(tissue = t, x)
+}))
+if (is.null(nb)) cat("*not available yet*\n") else print(kable(nb, row.names = FALSE, digits = 3))
+```
+
+Formula at 2 and 10 cells (c rule): colon 0.182 and 0.149, lymph node 0.137 and 0.105, brain 0.134 and 0.066. The observed values agree within 0.001 in every dataset and condition, so the check PASSES (ADEMP §7.2; `nsim_<tissue>_crule.log`).
 
 # 5. Values passed to the protocol
 
@@ -159,14 +250,27 @@ nsim_hd <- do.call(rbind, lapply(tissues, function(t) {
 kable(nsim_hd, digits = 4)
 ```
 
-Expected from DECISIONS 2026-11-12: colon 0.0543 (n_sim 118), lymph node 0.019 (14), brain 0.029 (33), so n_sim = 118.
+Expected from DECISIONS 2026-11-12: colon 0.0543 (n_sim 118), lymph node 0.019 (14), brain 0.029 (33), so n_sim = 118 in every tissue. The largest SD comes from spatialDWLS − NNLS in arm C− at 10 cells in the colon.
 
 ## 5.2 Runtimes and cost
 
-[TO FILL: per tissue from `scripts/06c_pilot_cost.R`; cell2location timing still to be measured (DECISIONS 2026-11-04).]
+Mean seconds per dataset of 500 spots at 175 UMI per cell (`mean_seconds` in `<tissue>_crule_pilot_summary.csv`).
+
+```{r cost}
+#| results: asis
+for (t in tissues) {
+  x <- rd_pilot(t, "summary")
+  cat("\n\n**", t, "**\n\n", sep = "")
+  if (is.null(x)) { cat("*not available yet*\n"); next }
+  x <- x[x$depth == 175, ]
+  print(kable(aggregate(mean_seconds ~ method + n_cells, x, mean), digits = 0))
+}
+```
+
+Cost check with the c-rule pilots (server, 2026-11-11, `scripts/06c_pilot_cost.R`; ADEMP §6): CPU-hours per replicate colon 1.18, lymph node 2.54, brain 11.0, with MuSiC taking 68% of the CPU time. A brain worker peaks at 14–16 GB, so the brain runs with at most 5 workers. With two depth levels and 169 replicates the brain needed 15.5 days against a 12-day window; with one level, 7.7 days. Days per tissue with n_sim = 118 at the HD levels: [TO FILL: `06c` rerun with 118 and the HD-level times]. Computing the MuSiC basis once per tissue (DECISIONS 2026-11-12) adds margin, after the identity check against `music_prop()`. cell2location timing and n_c2l: [TO FILL] (DECISIONS 2026-11-04, dated amendment before the run).
 
 # Closure
 
-**Verdict.** [closed / closed with reservations / not closed]. [TO FILL: open items, e.g. ADEMP approval, cell2location timing, lymph node and brain residues.]
+**Verdict.** [TO FILL: proposed "not closed" until the ADEMP is approved by Luca (the "done" criterion of PROTOCOLLO §6, week 2); then "closed with reservations".] Open items: ADEMP approval date; md5 check on lesexp (C2); residues of the lymph node and brain pilots (C10); `06c` with n_sim = 118 at the HD levels; cell2location timing and seed check (C9).
 
-**Adversarial review.** [TO FILL: who recomputed which key numbers from scripts and data, and discrepancies found.]
+**Adversarial review.** [TO FILL: who recomputed which key numbers (n_sim from `rmse_pairs`, null-baseline formula, depth table) from scripts and data, and discrepancies found.]
