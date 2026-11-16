@@ -45,7 +45,14 @@
 #   lymphoid 1.79/2.05, brain 3.37/21.8 at 2/10 cells); outputs in derived/pilot/<tissue>_crule/.
 #   A number still gives one c for both levels, so the colon c = 1 pilot is reproducible.
 #
-# Usage (working directory = thesis/):  Rscript scripts/06_pilot.R <tissue> [workers] [reps] [mode] [c | rule]
+# Amendment 2026-11-16 (DECISIONS 2026-11-12 on n_sim, precisato 2026-11-16, Luca; written before the run):
+#   optional 6th argument "hd" replaces the two depth levels 175 / 4,900 with the Visium HD level of the
+#   tissue only (colon 174, lymphoid 62, brain 121 UMI per cell; DECISIONS 2026-11-12). Outputs go to
+#   derived/pilot/<run_id>_hd/ (e.g. lymphoid_crule_hd), so the earlier pilots stay untouched and
+#   reproducible; same pilot seed, donors, arms, methods and checks. Purpose: n_sim of lymphoid and brain
+#   with phi on 50,000 cells at their HD level (the rule takes the maximum over the three tissues).
+#
+# Usage (working directory = thesis/):  Rscript scripts/06_pilot.R <tissue> [workers] [reps] [mode] [c | rule] [hd]
 #   "depth" rebuilds the spots from the same seeds and only counts spot depths, without deconvolution;
 #   it also writes quantiles of the raw UMI per cell (<run_id>_pilot_spot_umi_quantiles.csv, 2026-11-10)
 #   and checks that the depth counts equal those saved by the full run.
@@ -61,6 +68,8 @@ stopifnot(mode %in% c("full", "depth", "truth"))
 conc <- if (length(args) >= 5) args[5] else NA_character_   # Dirichlet concentration: a number, "rule" or NA (c = K)
 stopifnot(is.na(conc) || conc == "rule" || !is.na(suppressWarnings(as.numeric(conc))))
 run_id <- if (is.na(conc)) tissue else if (conc == "rule") paste0(tissue, "_crule") else sprintf("%s_c%g", tissue, as.numeric(conc))
+hd <- length(args) >= 6 && args[6] == "hd"   # amendment 2026-11-16
+if (hd) run_id <- paste0(run_id, "_hd")
 
 data_dir <- Sys.getenv("TESI_DATA")
 stopifnot("TESI_DATA non impostata" = nzchar(data_dir), dir.exists(data_dir))
@@ -74,6 +83,9 @@ depth_file <- file.path(dirname(out_dir), paste0(run_id, "_pilot_depth.csv"))
 n_spots <- 500
 levels_cells <- c(2, 10)
 levels_depth <- c(175, 4900)   # UMI per cell; spot target = n_cells x depth
+hd_depth <- c(colon = 174, lymphoid = 62, brain = 121)   # UMI per cell, DECISIONS 2026-11-12
+if (hd) levels_depth <- unname(hd_depth[tissue])
+stopifnot("no HD depth for this tissue" = !anyNA(levels_depth))
 pilot_seed <- 20261101
 
 R0 <- readRDS(ref_file)
