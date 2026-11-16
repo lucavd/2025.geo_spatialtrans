@@ -88,7 +88,7 @@ Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.5, 2026-11-1
 | Check | Expectation | Outcome | Source |
 |---|---|---|---|
 | C1 split | no donor in two splits | PASS (toy data and the three tissues; run below) | `tests/test_split.R` |
-| C2 download | md5 on the server = manifest | NOT RUN yet on lesexp [TO FILL] | `scripts/01_download.R`, `data_manifest.csv` |
+| C2 download | md5 on the server = manifest | PASS on lesexp (2026-11-16): sizes and md5 of the three files equal the manifest written on the PC. Pre-registered check 3 warned that a newer PsychAD (Aging_Cohort) version exists on CELLxGENE (8f8072c6-…); the pinned version 13e8f1dd-… is the one used, as foreseen | `scripts/01_download.R`, `data_manifest.csv`; `data/md5_check.log` |
 | C3 generator | counts conserved, true compositions saved, thinning exact | PASS (run below) | `tests/test_simulate.R` |
 | C4 arms P and O | P reference simulated from μ^P, O from the held-out donor | PASS on the colon pilot reference (2026-11-05) | `tests/test_arm_p_o.R` |
 | C5 Aim 1 code | VST equal to Seurat on colon | PASS (2026-11-11) | `tests/test_aim1.R` |
@@ -96,7 +96,7 @@ Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.5, 2026-11-1
 | C7 reference cap | r ≥ 0.99 per type | PASS in the three tissues (colon ≥ 0.998, lymph node 0.9989, brain 0.9990) | DECISIONS 2026-11-04; ADEMP §4 |
 | C8 P marker cap | Jaccard ≥ 0.9 per type | FAIL at 10,000 (cd4_cm 0.600) → 20,000 | DECISIONS 2026-11-11; `tests/test_p_cap.R` |
 | C9 seed check | deconvolution packages do not reset the RNG | PASS for the four CPU methods in the three tissues; cell2location [TO FILL] | ADEMP §8 |
-| C10 proportions | residues within 1e-5 after `clean_props()` | colon PASS (largest negative −7.0e-7); lymph node and brain [TO FILL] | ADEMP §7.2 |
+| C10 proportions | no residue between the tolerance 1e-5 and the failure limit 0.01 | see the residue table below (c-rule pilots, three tissues) | ADEMP §7.2; `scripts/06d_pilot_residues.R` |
 
 The two tests that run in seconds are rerun at every render.
 
@@ -105,6 +105,21 @@ for (f in c("tests/test_split.R", "tests/test_simulate.R")) {
   r <- run_test(f)
   cat("\n", f, ": ", sum(grepl("PASS", r)), " PASS, ", sum(grepl("FAIL", r)), " FAIL\n", sep = "")
   cat(paste0("  ", r), sep = "\n")
+}
+```
+
+**C10, numerical residues.** Raw estimates of the c-rule pilots, before `clean_props()` (`scripts/06d_pilot_residues.R <tissue> rule`). The script reproduces the colon values of ADEMP §7.2 on the first colon pilot (RCTD 2 negative values of 1,079,892, smallest −6.98e-7; largest |sum − 1| 8.9e-16; run of 2026-11-16).
+
+```{r residues}
+#| results: asis
+for (t in tissues) {
+  x <- rd_pilot(t, "residues")
+  cat("\n\n**", t, "**\n\n", sep = "")
+  if (is.null(x)) { cat("*not available yet*\n"); next }
+  for (v in c("min_value", "max_dev_ok")) x[[v]] <- formatC(x[[v]], format = "e", digits = 2)
+  print(kable(x[, c("method", "dataset", "values", "n_neg", "min_value", "n_grey_neg", "n_fail_neg",
+                    "max_dev_ok", "n_grey_sum", "n_fail_sum", "pass")], row.names = FALSE))
+  cat("\nPre-registered check:", if (all(x$pass)) "PASS" else "FAIL (tolerance to revise by amendment)", "\n")
 }
 ```
 
@@ -208,7 +223,7 @@ if (is.null(cm)) cat("*not available yet*\n") else {
 
 Failures point the same way: spatialDWLS at 2 cells fails on more spots in C− than in E (colon 2,329 against 458 spots, brain 5,703 against 891, summed over replicates and conditions), and RCTD fails only in C− (colon 24 spots, brain 1; ADEMP §7.2).
 
-**Verdict.** [TO FILL after render: the counter-proof passes if C− is worse than E for every method that uses the reference; NNLS and MuSiC should be read next to the null baseline (4.2).]
+**Verdict.** PASS. C− has a higher RMSE than E for every method, tissue and cells level (24 of 24 at 175 UMI per cell, render of 2026-11-16), and the smallest gap, 0.023, is larger than δ = 0.02, the smallest difference between methods that we consider relevant. Permuting the genes therefore changes the error by more than a relevant amount, so the benchmark is sensitive to μ. NNLS and MuSiC are read next to the null baseline (4.2), which is close to an oracle in this design.
 
 ## 4.2 Null baseline
 
