@@ -9,6 +9,12 @@
 # Larger deviations are failures (e.g. spots returned as all zeros), counted apart, never residues.
 # PASS = no value in (-0.01, -1e-5) and no spot with |sum - 1| in (1e-5, 0.01]: every estimate is then
 # either within the tolerance or clearly a failure, so the tolerance 1e-5 classifies the pilot.
+#
+# Amendment 2026-11-17 (ADEMP §7.2, §12): the check failed in the lymphoid c-rule pilot (RCTD, arm C−,
+# smallest value -1.37e-5); colon and brain c-rule pilots and the HD pilots of lymphoid and brain passed.
+# Rule (Pierangela): the tolerance becomes the smallest power of ten above the largest residue over all
+# pilots, 1e-4. `tol` is now 1e-4 (columns n_grey_neg, n_grey_sum, pass); the pre-registered check at
+# 1e-5 stays in the output (columns n_grey_neg_1e5, n_grey_sum_1e5, pass_1e5).
 # Reads the raw estimates saved by 06_pilot.R (props, before clean_props()).
 #
 # Output: derived/pilot/<run_id>_pilot_residues.csv, one row per method x dataset.
@@ -27,7 +33,7 @@ pilot_dir <- file.path(data_dir, "derived", "pilot")
 files <- list.files(file.path(pilot_dir, run_id), pattern = "^c\\d+_d\\d+_r\\d+\\.rds$", full.names = TRUE)
 stopifnot("no pilot replicate files" = length(files) > 0)
 
-tol <- 1e-5; fail_lim <- 0.01
+tol <- 1e-4; tol0 <- 1e-5; fail_lim <- 0.01   # tol0 = pre-registered tolerance, kept as a column
 acc <- list()
 for (f in files) {
   x <- readRDS(f)
@@ -41,7 +47,8 @@ for (f in files) {
     a <- acc[[k]]
     if (is.null(a)) a <- list(method = m, dataset = d, files = 0, spots = 0, na_spots = 0, values = 0,
                               n_neg = 0, min_value = Inf, n_grey_neg = 0, n_fail_neg = 0,
-                              max_dev_ok = 0, n_grey_sum = 0, n_fail_sum = 0)
+                              max_dev_ok = 0, n_grey_sum = 0, n_fail_sum = 0,
+                              n_grey_neg_1e5 = 0, n_grey_sum_1e5 = 0)
     a$files <- a$files + 1
     a$spots <- a$spots + nrow(p); a$na_spots <- a$na_spots + sum(na_row); a$values <- a$values + length(v)
     a$n_neg <- a$n_neg + length(neg)
@@ -52,6 +59,8 @@ for (f in files) {
     if (any(ok)) a$max_dev_ok <- max(a$max_dev_ok, max(dev[ok]))
     a$n_grey_sum <- a$n_grey_sum + sum(dev > tol & dev <= fail_lim)
     a$n_fail_sum <- a$n_fail_sum + sum(dev > fail_lim)
+    a$n_grey_neg_1e5 <- a$n_grey_neg_1e5 + sum(neg < -tol0 & neg > -fail_lim)
+    a$n_grey_sum_1e5 <- a$n_grey_sum_1e5 + sum(dev > tol0 & dev <= fail_lim)
     acc[[k]] <- a
   }
 }
@@ -60,14 +69,17 @@ res$min_value[!is.finite(res$min_value)] <- NA
 res <- res[order(res$method, res$dataset), ]
 rownames(res) <- NULL
 res$pass <- res$n_grey_neg == 0 & res$n_grey_sum == 0
+res$pass_1e5 <- res$n_grey_neg_1e5 == 0 & res$n_grey_sum_1e5 == 0
 
 out <- file.path(pilot_dir, paste0(run_id, "_pilot_residues.csv"))
 write.csv(res, out, row.names = FALSE)
 print(res[, c("method", "dataset", "values", "n_neg", "min_value", "n_grey_neg", "n_fail_neg",
-              "max_dev_ok", "n_grey_sum", "n_fail_sum", "pass")], digits = 3)
+              "max_dev_ok", "n_grey_sum", "n_fail_sum", "pass", "pass_1e5")], digits = 3)
 cat(sprintf("\n%s: %d files; %s values; %d negative, smallest %.2e; largest |sum - 1| on non-failed spots %.2e\n",
             run_id, length(files), format(sum(res$values), big.mark = ","), sum(res$n_neg),
             min(res$min_value, na.rm = TRUE), max(res$max_dev_ok)))
-cat("Pre-registered check (no residue between 1e-5 and the failure limit 0.01):",
+cat("Pre-registered check at 1e-5 (no residue between 1e-5 and the failure limit 0.01):",
+    if (all(res$pass_1e5)) "PASS" else "FAIL", "\n")
+cat("Check at the amended tolerance 1e-4 (2026-11-17):",
     if (all(res$pass)) "PASS" else "FAIL -> revise the tolerance by amendment (ADEMP §7.2)", "\n")
 cat("Written:", out, "\n")

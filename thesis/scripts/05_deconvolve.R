@@ -7,8 +7,10 @@
 #   Reference: the real capped training reference for every dataset except P; for P the reference is
 #   rebuilt from world_p.rds (reference_p_from_world(), R/arm_p.R), with NNLS profiles = mean counts
 #   per simulated reference cell (ADEMP §2.1).
-#   Outputs cleaned with clean_props() (ADEMP §7.2: tolerance 1e-5, values in [-1e-5, 0) set to 0,
-#   rows rescaled); failed spots get the null-baseline proportions (share of each type among all
+#   Outputs cleaned with clean_props() (ADEMP §7.2: tolerance 1e-4, values in [-1e-4, 0) set to 0,
+#   rows rescaled; amendment 2026-11-17, was 1e-5: the lymphoid c-rule pilot had an RCTD residue of
+#   -1.37e-5, and the tolerance is the smallest power of ten above the largest pilot residue; the failure
+#   rate with the old tolerance 1e-5 is reported as a sensitivity, column fail_rate_1e5); failed spots get the null-baseline proportions (share of each type among all
 #   training cells) in the main analysis; truth = cell shares (main), UMI shares (sensitivity (c)).
 #   Seeds: each method run starts from its own sub-stream of the replicate stream of 04_simulate.R,
 #   numbered 1000 + 100 × condition + 10 × dataset slot + method (disjoint from the generation
@@ -20,7 +22,7 @@
 #   D3. every method returns (after completion) 500 spots x all reference types; after cleaning, the
 #       returned rows have no negative value and sum to 1 (1e-12);
 #   D4. RMSE and JSD are computed on the filled matrix (no NA).
-# Reported per job: RMSE (filled, cell truth), JSD, failure rate, RMSE on the UMI truth, RMSE on the
+# Reported per job: RMSE (filled, cell truth), JSD, failure rate (and at tolerance 1e-5), RMSE on the UMI truth, RMSE on the
 # spots returned by all methods (sensitivity (a)), seconds, error message, smallest raw value
 # (residue check of ADEMP §7.2), RNG state after the method (seed-reset check, ADEMP §8).
 #
@@ -87,6 +89,7 @@ run_job <- function(r) {
         error = function(e) list(prop = NULL, seconds = NA, error = conditionMessage(e)))
       p <- if (is.null(out$prop)) matrix(NA_real_, length(sp), length(types), dimnames = list(sp, types))
            else complete_prop(out$prop, sp, types)
+      fail_1e5 <- mean(failed_spots(clean_props(p, tol = 1e-5)))   # sensitivity: pre-amendment tolerance
       p <- clean_props(p)
       if (!identical(dim(p), c(length(sp), length(types)))) stop("D3 dims: ", d, " ", m)
       okr <- !failed_spots(p)
@@ -94,7 +97,7 @@ run_job <- function(r) {
       est[[m]] <- p
       rows[[length(rows) + 1]] <- data.frame(dataset = d, method = m, seconds = out$seconds,
         error = if (is.null(out$error)) NA else out$error, fail_rate = mean(!okr),
-        min_raw = attr(p, "min_raw"), rng_after = sum(as.numeric(.Random.seed)), stringsAsFactors = FALSE)
+        fail_rate_1e5 = fail_1e5, min_raw = attr(p, "min_raw"), rng_after = sum(as.numeric(.Random.seed)), stringsAsFactors = FALSE)
     }
     fs <- lapply(est, failed_spots)
     fs <- fs[!vapply(fs, all, logical(1))]
@@ -111,7 +114,7 @@ run_job <- function(r) {
     }
     nb <- matrix(p_null, length(sp), length(types), byrow = TRUE, dimnames = list(sp, types))
     rows[[length(rows) + 1]] <- data.frame(dataset = d, method = "null baseline", seconds = 0, error = NA,
-      fail_rate = 0, min_raw = NA, rng_after = NA, rmse = rmse(nb, x$truth), jsd = jsd(nb, x$truth),
+      fail_rate = 0, fail_rate_1e5 = 0, min_raw = NA, rng_after = NA, rmse = rmse(nb, x$truth), jsd = jsd(nb, x$truth),
       rmse_umi = rmse(matrix(p_null_umi, length(sp), length(types), byrow = TRUE), tu), n_common = NA, rmse_common = NA)
     est_all[[d]] <- est
   }
@@ -141,5 +144,7 @@ cat(sprintf("Done in %.1f min\n", (proc.time()[["elapsed"]] - t0) / 60))
 cat("Mean RMSE (cell truth, failed spots filled) by dataset x method:\n")
 print(round(tapply(m$rmse, list(m$dataset, m$method), mean), 3))
 cat("Failure rate:\n"); print(round(tapply(m$fail_rate, list(m$dataset, m$method), mean), 3))
-cat(sprintf("Smallest raw value over all runs: %.2e (tolerance 1e-5)\n", min(m$min_raw, na.rm = TRUE)))
+cat("Failure rate with the pre-amendment tolerance 1e-5 (sensitivity):\n")
+print(round(tapply(m$fail_rate_1e5, list(m$dataset, m$method), mean), 3))
+cat(sprintf("Smallest raw value over all runs: %.2e (tolerance 1e-4)\n", min(m$min_raw, na.rm = TRUE)))
 if (any(duplicated(m$rng_after[!is.na(m$rng_after)]))) cat("WARNING: identical RNG state after two method runs (seed reset?)\n")

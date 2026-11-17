@@ -24,7 +24,9 @@ fill_failed <- function(est, p_null) {
 # below -tol, or a sum that differs from 1 by more than tol; values in [-tol, 0) are numerical zeros,
 # set to 0, then the row is rescaled to 1. Failed rows become NA, so fill_failed() treats them alike.
 # Returns the cleaned matrix with attribute "min_raw" (smallest raw value, for the residue check).
-clean_props <- function(est, tol = 1e-5) {
+# tol = 1e-4 since 2026-11-17 (was 1e-5): smallest power of ten above the largest pilot residue,
+# RCTD -1.37e-5 in the lymphoid c-rule pilot (ADEMP §7.2, §12). tol = 1e-5 gives the sensitivity count.
+clean_props <- function(est, tol = 1e-4) {
   min_raw <- suppressWarnings(min(est, na.rm = TRUE))
   bad <- apply(est, 1, function(p) anyNA(p) || any(p < -tol) || abs(sum(p) - 1) > tol)
   est[bad, ] <- NA

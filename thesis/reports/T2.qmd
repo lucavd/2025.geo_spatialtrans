@@ -68,7 +68,7 @@ Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.5, 2026-11-1
 | Dirichlet concentration | α_k = c · p_k, c = median over R6 ROIs per tissue and cells level | DECISIONS 2026-11-06 |
 | Depth thinning | exact downsampling to the target, report spots below target | DECISIONS 2026-11-02 |
 | Estimand | cell share for every method (main); UMI share as sensitivity | DECISIONS 2026-11-03 |
-| Failures | null-baseline fill, no exclusion threshold, common-spot set as sensitivity, tolerance 1e-5 | DECISIONS 2026-11-02, 2026-11-03 (two rows) |
+| Failures | null-baseline fill, no exclusion threshold, common-spot set as sensitivity, tolerance 1e-4 (1e-5 until 2026-11-17; failures at 1e-5 as sensitivity) | DECISIONS 2026-11-02, 2026-11-03 (two rows); ADEMP §7.2, §12 (2026-11-17) |
 | Null baseline | observed RMSE within 0.005 of the Dirichlet-multinomial formula | `scripts/06b_pilot_nsim.R` header (2026-11-05) |
 | φ sample | r(log φ) ≥ 0.99 and median ratio 0.95–1.05, else 50,000 cells | DECISIONS 2026-10-29 |
 | Reference cap | 1,000 cells per type kept if r ≥ 0.99 per type | DECISIONS 2026-11-04 |
@@ -81,6 +81,7 @@ Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.5, 2026-11-1
 - Lymph node and brain pilots used φ from 20,000 cells and were not rerun (DECISIONS 2026-11-11 on φ).
 - The first colon pilot was rerun after two fixes: MuSiC failed on every spot for a code error, which also emptied the common-spot set (DECISIONS 2026-11-02, failures), and binomial thinning was replaced by exact thinning because the depth check assumed an exact target (DECISIONS 2026-11-02, thinning).
 - The Dirichlet concentration changed while the colon pilot was running (c = K · p_k, then c = 1, then the R6 rule of DECISIONS 2026-11-06). The values passed to the protocol come from the c-rule pilots only (`<tissue>_crule_pilot_*`); the earlier runs are kept in `derived/pilot/colon_c1`, `colon_c9` (ADEMP §6).
+- The pre-registered residue check (C10) failed in the lymph node c-rule pilot: RCTD returned 4 negative values in arm C−, the smallest −1.37e-5, below the tolerance −1e-5 and far above the failure limit −0.01. As pre-registered, the tolerance was revised before any result, by the rule "smallest power of ten above the largest residue over all pilots" (HD pilots included), to 1e-4; failure rates at 1e-5 are kept as a sensitivity (ADEMP §7.2, §12, 2026-11-17).
 - spatialDWLS spot clustering moved from k-means (no source) to Leiden with the Spotless parameters (DECISIONS 2026-11-04). n_sim rose from 81 to 217 in the colon after this change; the rule was kept, because changing it once we knew which pairs raise n_sim would be a post-hoc adjustment (DECISIONS 2026-11-03, precision of 2026-11-06).
 
 # 2. Check C — software correctness
@@ -96,7 +97,7 @@ Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.5, 2026-11-1
 | C7 reference cap | r ≥ 0.99 per type | PASS in the three tissues (colon ≥ 0.998, lymph node 0.9989, brain 0.9990) | DECISIONS 2026-11-04; ADEMP §4 |
 | C8 P marker cap | Jaccard ≥ 0.9 per type | FAIL at 10,000 (cd4_cm 0.600) → 20,000 | DECISIONS 2026-11-11; `tests/test_p_cap.R` |
 | C9 seed check | deconvolution packages do not reset the RNG | PASS for the four CPU methods in the three tissues; cell2location [TO FILL] | ADEMP §8 |
-| C10 proportions | no residue between the tolerance 1e-5 and the failure limit 0.01 | see the residue table below (c-rule pilots, three tissues) | ADEMP §7.2; `scripts/06d_pilot_residues.R` |
+| C10 proportions | no residue between the tolerance 1e-5 and the failure limit 0.01 | FAIL in the lymph node (RCTD, C−, −1.37e-5); colon, brain and HD pilots PASS; PASS at the amended tolerance 1e-4 (table below) | ADEMP §7.2; `scripts/06d_pilot_residues.R` |
 
 The two tests that run in seconds are rerun at every render.
 
@@ -118,8 +119,9 @@ for (t in tissues) {
   if (is.null(x)) { cat("*not available yet*\n"); next }
   for (v in c("min_value", "max_dev_ok")) x[[v]] <- formatC(x[[v]], format = "e", digits = 2)
   print(kable(x[, c("method", "dataset", "values", "n_neg", "min_value", "n_grey_neg", "n_fail_neg",
-                    "max_dev_ok", "n_grey_sum", "n_fail_sum", "pass")], row.names = FALSE))
-  cat("\nPre-registered check:", if (all(x$pass)) "PASS" else "FAIL (tolerance to revise by amendment)", "\n")
+                    "max_dev_ok", "n_grey_sum", "n_fail_sum", "pass_1e5", "pass")], row.names = FALSE))
+  cat("\nPre-registered check at 1e-5:", if (all(x$pass_1e5)) "PASS" else "FAIL", "\n")
+  cat("\nCheck at the amended tolerance 1e-4 (ADEMP §12, 2026-11-17):", if (all(x$pass)) "PASS" else "FAIL", "\n")
 }
 ```
 
@@ -286,6 +288,6 @@ Cost check with the c-rule pilots (server, 2026-11-11, `scripts/06c_pilot_cost.R
 
 # Closure
 
-**Verdict.** [TO FILL: proposed "not closed" until the ADEMP is approved by Luca (the "done" criterion of PROTOCOLLO §6, week 2); then "closed with reservations".] Open items: ADEMP approval date; md5 check on lesexp (C2); residues of the lymph node and brain pilots (C10); `06c` with n_sim = 118 at the HD levels; cell2location timing and seed check (C9).
+**Verdict.** [TO FILL: proposed "not closed" until the ADEMP is approved by Luca (the "done" criterion of PROTOCOLLO §6, week 2); then "closed with reservations".] Open items: ADEMP approval date; md5 check on lesexp (C2);`06c` with n_sim = 118 at the HD levels; cell2location timing and seed check (C9).
 
 **Adversarial review.** [TO FILL: who recomputed which key numbers (n_sim from `rmse_pairs`, null-baseline formula, depth table) from scripts and data, and discrepancies found.]
