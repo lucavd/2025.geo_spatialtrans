@@ -284,10 +284,10 @@ for (t in tissues) {
 }
 ```
 
-Cost check with the c-rule pilots (server, 2026-11-11, `scripts/06c_pilot_cost.R`; ADEMP §6): CPU-hours per replicate colon 1.18, lymph node 2.54, brain 11.0, with MuSiC taking 68% of the CPU time. A brain worker peaks at 14–16 GB, so the brain runs with at most 5 workers. With two depth levels and 169 replicates the brain needed 15.5 days against a 12-day window; with one level, 7.7 days. Days per tissue with n_sim = 118 at the HD levels: [TO FILL: `06c` rerun with 118 and the HD-level times]. Computing the MuSiC basis once per tissue (DECISIONS 2026-11-12) adds margin, after the identity check against `music_prop()`. cell2location timing and n_c2l: [TO FILL] (DECISIONS 2026-11-04, dated amendment before the run).
+Cost check with the c-rule pilots (server, 2026-11-11, `scripts/06c_pilot_cost.R`; ADEMP §6): CPU-hours per replicate colon 1.18, lymph node 2.54, brain 11.0, with MuSiC taking 68% of the CPU time. A brain worker peaks at 14–16 GB, so the brain runs with at most 5 workers. With two depth levels and 169 replicates the brain needed 15.5 days against a 12-day window; with one level, 7.7 days. With n_sim = 118 at the HD levels (server, 2026-11-17; colon pilot rerun at 175 UMI per cell, HD pilots of lymph node and brain at 62 and 121), CPU-hours per replicate are colon 0.68, lymph node 0.66 and brain 4.67, so the brain needs 4.6 days with 5 workers (colon 0.3, lymph node 0.2) against the 12-day window. MuSiC still takes 68% of the CPU time. Computing the MuSiC basis once per tissue (DECISIONS 2026-11-12) adds margin, after the identity check against `music_prop()`. cell2location timing and n_c2l: [TO FILL] (DECISIONS 2026-11-04, dated amendment before the run).
 
 # Closure
 
-**Verdict.** [TO FILL: proposed "not closed" until the ADEMP is approved by Luca (the "done" criterion of PROTOCOLLO §6, week 2); then "closed with reservations".] Open items: ADEMP approval date; md5 check on lesexp (C2);`06c` with n_sim = 118 at the HD levels; cell2location timing and seed check (C9).
+**Verdict.** [TO FILL: proposed "not closed" until the ADEMP is approved by Luca (the "done" criterion of PROTOCOLLO §6, week 2); then "closed with reservations".] Open items: ADEMP approval date; md5 check on lesexp (C2); cell2location timing and seed check (C9).
 
 **Adversarial review.** [TO FILL: who recomputed which key numbers (n_sim from `rmse_pairs`, null-baseline formula, depth table) from scripts and data, and discrepancies found.]
