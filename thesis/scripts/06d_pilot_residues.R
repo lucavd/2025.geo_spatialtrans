@@ -19,14 +19,15 @@
 #
 # Output: derived/pilot/<run_id>_pilot_residues.csv, one row per method x dataset.
 # Usage (working directory = thesis/):
-#   Rscript scripts/06d_pilot_residues.R <tissue> [rule | rule_hd]
+#   Rscript scripts/06d_pilot_residues.R <tissue> [rule | rule_hd | rule_hd_s100]
 #   (2nd argument "rule" reads <tissue>_crule/, "rule_hd" <tissue>_crule_hd/, as 06b_pilot_nsim.R; without it, <tissue>/)
 
 args <- commandArgs(trailingOnly = TRUE)
 stopifnot("Usage: 06d_pilot_residues.R <tissue> [rule]" = length(args) >= 1)
 tissue <- args[1]
 run_id <- if (length(args) < 2) tissue else switch(args[2], rule = paste0(tissue, "_crule"),
-                                                    rule_hd = paste0(tissue, "_crule_hd"), stop("2nd argument: rule or rule_hd"))
+                                                    rule_hd = paste0(tissue, "_crule_hd"), rule_hd_s100 = paste0(tissue, "_crule_hd_s100"),
+                                                    stop("2nd argument: rule, rule_hd or rule_hd_s100"))
 data_dir <- Sys.getenv("TESI_DATA")
 stopifnot("TESI_DATA non impostata" = nzchar(data_dir), dir.exists(data_dir))
 pilot_dir <- file.path(data_dir, "derived", "pilot")

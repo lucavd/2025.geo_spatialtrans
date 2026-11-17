@@ -193,11 +193,11 @@ cat(sprintf("  φ on %d cells in %.1f min; median %.2f, IQR %.2f–%.2f\n", leng
 # Reports for the factor levels (ADEMP §2.2) and the anchor reuse (§2.2 note)
 set.seed(ref_seed + 1)
 Ls <- unlist(L_by_type[types_spot])
+hd_ump <- c(colon = 174, lymphoid = 62, brain = 121)[[tissue]]   # HD UMI per cell, DECISIONS 2026-11-12 (was 175 and 4,900)
 for (n in c(2, 10)) {
   s <- replicate(10000, sum(sample(Ls, n, replace = TRUE)))
-  cat(sprintf("  sum of %2d training library sizes (spot types): median %s; below target %s: %.0f%%; below target %s: %.0f%%\n",
-              n, format(round(median(s)), big.mark = ","), format(n * 175, big.mark = ","), 100 * mean(s < n * 175),
-              format(n * 4900, big.mark = ","), 100 * mean(s < n * 4900)))
+  cat(sprintf("  sum of %2d training library sizes (spot types): median %s; below the HD target %s: %.0f%%\n",
+              n, format(round(median(s)), big.mark = ","), format(n * hd_ump, big.mark = ","), 100 * mean(s < n * hd_ump)))
 }
 held_spot <- sum(held_meta$cell_type %in% types_spot)
 for (n in c(2, 10)) cat(sprintf("  anchor, 500 spots x %d cells: each held-out cell used %.1f times on average per replicate (%d cells)\n",

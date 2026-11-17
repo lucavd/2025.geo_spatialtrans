@@ -4,8 +4,9 @@
 #
 # Design (fixed by ADEMP v1.2; implementation choices written 2026-11-05 before the first run):
 #   datasets of one replicate, per tissue: anchor + arms E, C−, E′, O, P (G reserved: it enters only
-#   by a DECISIONS row, ADEMP §2.1) × cells per spot 2 / 10 × depth 175 / 4,900 UMI per cell
-#   = 24 datasets per tissue (72 over the three tissues; ADEMP §2.2); 500 spots each.
+#   by a DECISIONS row, ADEMP §2.1) × cells per spot 2 / 10 × one depth level, the Visium HD level of the tissue
+#   (colon 174, lymphoid 62, brain 121 UMI per cell; DECISIONS 2026-11-12) = 12 datasets per tissue
+#   (36 over the three tissues; ADEMP §2.2); 500 spots each. Was two depth levels 175 / 4,900 (24 datasets).
 #   - E: μ_E (training) on the spot types; C−: μ_E with gene labels permuted within each type, one new
 #     permutation per replicate (DECISIONS 2026-10-30); E′: μ of the E′ donor; O: μ of the held-out
 #     donor (mu_oracle()); P: μ^P and φ^P drawn in each replicate (R/arm_p.R); every arm with the
@@ -48,8 +49,9 @@
 #   R3. P reference rebuilt twice from world_p: identical; same cells, types and donors as the real
 #       reference; column totals / L mean within 1% of 1.
 #   R4. replicates 1 and 2 differ in μ^P, in the C− permutation and in the compositions.
-#   K1. counter-proof (condition 10 cells, 4,900 UMI per cell, replicate 1): mean over spots of the
-#       Pearson correlation (log1p CP10k) between spot s of a dataset and spot s of the anchor:
+#   K1. counter-proof (condition 10 cells, HD depth of the tissue, replicate 1; 4,900 UMI per cell
+#       before the amendment of 2026-11-17): mean over spots of the Pearson correlation (log1p CP10k)
+#       between spot s of a dataset and spot s of the anchor:
 #       expected O > E > C− and O > E′ > C−; E vs E′ reported without expectation (P has other genes).
 # Reported: seconds per replicate, MB on disk per replicate (input to the cost check, ADEMP §6);
 # spots at and below the target per dataset (DECISIONS 2026-11-02); reuse per held-out cell per type,
@@ -68,7 +70,7 @@ ADEMP_APPROVED <- NA_character_
 args <- commandArgs(trailingOnly = TRUE)
 tissue <- if (length(args) >= 1) args[1] else "colon"
 ref_mode <- if (length(args) >= 2) args[2] else "pilot"
-n_rep <- if (length(args) >= 3) as.integer(args[3]) else 81L
+n_rep <- if (length(args) >= 3) as.integer(args[3]) else 118L   # n_sim (DECISIONS 2026-11-12)
 workers <- if (length(args) >= 4) as.integer(args[4]) else 8L
 run_mode <- if (length(args) >= 5) args[5] else "run"
 stopifnot(tissue %in% c("colon", "lymphoid", "brain"), ref_mode %in% c("pilot", "main"),
@@ -88,7 +90,11 @@ log_file <- file.path(dirname(out_dir), paste0(tissue, "_sim_progress.log"))
 study_seed <- 42
 n_spots <- 500
 levels_cells <- c(2, 10)
-levels_depth <- c(175, 4900)   # UMI per cell; target = cells x UMI per cell (ADEMP §2.2)
+# One depth level, the Visium HD level of the tissue (UMI per cell; target = cells x UMI per cell;
+# DECISIONS 2026-11-12, PROTOCOLLO 1.5, ADEMP §2.2). Was c(175, 4900); amendment 2026-11-17 before
+# the main run. The thinning sub-stream of the single level is d = 1, as for 175 before.
+hd_depth <- c(colon = 174, lymphoid = 62, brain = 121)
+levels_depth <- unname(hd_depth[tissue])
 slot <- c(anchor = 1, E = 2, Cminus = 3, Eprime = 4, O = 5, P = 6, G = 7)
 arms_all <- c("anchor", "E", "Cminus", "Eprime", "O", "P")
 
@@ -214,7 +220,8 @@ log_line <- function(msg) cat(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), msg, "\n"
 run_job <- function(i) {
   rd <- file.path(out_dir, sprintf("r%03d", i))
   files <- c(file.path(rd, "world_p.rds"),
-             file.path(rd, sprintf("c%02d_d%04d.rds", rep(levels_cells, each = 2), rep(levels_depth, 2))))
+             file.path(rd, sprintf("c%02d_d%04d.rds", rep(levels_cells, each = length(levels_depth)),
+                                   rep(levels_depth, length(levels_cells)))))
   if (all(file.exists(files))) return(list(rep = i, skipped = TRUE))   # restart: replicate already on disk
   dir.create(rd, recursive = TRUE, showWarnings = FALSE)
   log_line(sprintf("start rep %d", i))
@@ -240,7 +247,8 @@ if (run_mode == "check") {
   tmp <- tempfile(fileext = ".rds"); saveRDS(r1$world, tmp); mb <- file.size(tmp)
   for (k in names(r1$conditions)) { saveRDS(r1$conditions[[k]], tmp); mb <- mb + file.size(tmp) }
   unlink(tmp)
-  cat(sprintf("Replicate 1: %.1f s, %.0f MB on disk (24 datasets of one tissue, no P reference)\n", sec1, mb / 2^20))
+  cat(sprintf("Replicate 1: %.1f s, %.0f MB on disk (%d datasets of one tissue, no P reference)\n", sec1, mb / 2^20,
+              length(arms_all) * length(levels_cells) * length(levels_depth)))
   same_counts <- function(a, b, ds) all(vapply(names(a$conditions), function(k)
     all(vapply(ds, function(d) identical(a$conditions[[k]]$counts[[d]], b$conditions[[k]]$counts[[d]]), logical(1))), logical(1)))
   r1b <- make_replicate(1)
@@ -257,7 +265,7 @@ if (run_mode == "check") {
      identical(rownames(RP$ref), rownames(r1$world$mu)) && abs(mean(ratio) - 1) < 0.01,
      sprintf("R3 P reference rebuilt twice identical, %d cells, totals/L mean %.4f (%.1f s)", ncol(RP$ref), mean(ratio), t_ref))
   r2 <- make_replicate(2)
-  k10 <- "c10_d4900"
+  k10 <- sprintf("c10_d%04d", levels_depth[1])
   ok(!identical(r1$world$mu, r2$world$mu) &&
      !identical(r1$conditions[[k10]]$counts$Cminus, r2$conditions[[k10]]$counts$Cminus) &&
      !identical(r1$conditions[[k10]]$truth, r2$conditions[[k10]]$truth), "R4 replicates 1 and 2 differ (μ^P, C−, compositions)")
@@ -266,7 +274,7 @@ if (run_mode == "check") {
   la <- lcp(x$anchor)
   k1 <- vapply(c("O", "E", "Eprime", "Cminus"), function(d) { lx <- lcp(x[[d]])
     mean(vapply(seq_len(n_spots), function(s) cor(lx[, s], la[, s]), 1)) }, 1)
-  cat(sprintf("K1 mean per-spot Pearson with the anchor (10 cells, 4,900 UMI): O %.4f, E %.4f, E′ %.4f, C− %.4f -> expected O > E > C− and O > E′ > C−: %s\n",
+  cat(sprintf("K1 mean per-spot Pearson with the anchor (10 cells, HD depth): O %.4f, E %.4f, E′ %.4f, C− %.4f -> expected O > E > C− and O > E′ > C−: %s\n",
               k1["O"], k1["E"], k1["Eprime"], k1["Cminus"],
               if (k1["O"] > k1["E"] && k1["E"] > k1["Cminus"] && k1["O"] > k1["Eprime"] && k1["Eprime"] > k1["Cminus"])
                 "as expected" else "AGAINST the expectation"))
@@ -282,7 +290,7 @@ if (run_mode == "check") {
 
 # ---------------------------------------------------------------------------------------------------
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
-cat(sprintf("[%s, %s] %d replicates x 24 datasets, %d workers\nOutput: %s\n", tissue, ref_mode, n_rep, workers, out_dir))
+cat(sprintf("[%s, %s] %d replicates x %d datasets, %d workers\nOutput: %s\n", tissue, ref_mode, n_rep, length(arms_all) * length(levels_cells) * length(levels_depth), workers, out_dir))
 log_line(sprintf("run start, %s %s, %d replicates, %d workers", tissue, ref_mode, n_rep, workers))
 t0 <- proc.time()[["elapsed"]]
 Sys.setenv(OPENBLAS_NUM_THREADS = "1", OMP_NUM_THREADS = "1")   # one core per worker (ADEMP §6); workers inherit it

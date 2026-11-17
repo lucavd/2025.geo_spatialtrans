@@ -52,7 +52,15 @@
 #   reproducible; same pilot seed, donors, arms, methods and checks. Purpose: n_sim of lymphoid and brain
 #   with phi on 50,000 cells at their HD level (the rule takes the maximum over the three tissues).
 #
-# Usage (working directory = thesis/):  Rscript scripts/06_pilot.R <tissue> [workers] [reps] [mode] [c | rule] [hd]
+# Amendment 2026-11-17 (written before the run): optional 7th argument "s100" runs RCTD with
+#   UMI_min_sigma = 100 instead of the spacexr default 300 (R/deconvolve.R, run_rctd()). In the HD pilots
+#   of lymphoid and brain RCTD stopped on every 2-cell dataset (spots of 124 and 242 UMI, none above 300).
+#   Outputs go to derived/pilot/<run_id>_s100/ (e.g. lymphoid_crule_hd_s100); without the argument
+#   RCTD keeps 300, so the earlier pilots stay reproducible. Pre-registered check: every method other
+#   than RCTD, and RCTD at 10 cells, gives the same results as the run without "s100" (same seeds; at
+#   10 cells all spots are above 300, so the spots used for sigma are the same).
+#
+# Usage (working directory = thesis/):  Rscript scripts/06_pilot.R <tissue> [workers] [reps] [mode] [c | rule] [hd] [s100]
 #   "depth" rebuilds the spots from the same seeds and only counts spot depths, without deconvolution;
 #   it also writes quantiles of the raw UMI per cell (<run_id>_pilot_spot_umi_quantiles.csv, 2026-11-10)
 #   and checks that the depth counts equal those saved by the full run.
@@ -70,6 +78,9 @@ stopifnot(is.na(conc) || conc == "rule" || !is.na(suppressWarnings(as.numeric(co
 run_id <- if (is.na(conc)) tissue else if (conc == "rule") paste0(tissue, "_crule") else sprintf("%s_c%g", tissue, as.numeric(conc))
 hd <- length(args) >= 6 && args[6] == "hd"   # amendment 2026-11-16
 if (hd) run_id <- paste0(run_id, "_hd")
+s100 <- length(args) >= 7 && args[7] == "s100"   # amendment 2026-11-17
+if (s100) run_id <- paste0(run_id, "_s100")
+umi_min_sigma <- if (s100) 100 else 300
 
 data_dir <- Sys.getenv("TESI_DATA")
 stopifnot("TESI_DATA non impostata" = nzchar(data_dir), dir.exists(data_dir))
@@ -170,7 +181,7 @@ run_job <- function(i) {
       assign(".Random.seed", ms, envir = .GlobalEnv)
       r <- tryCatch(switch(m,
         NNLS = run_nnls(x, R$profiles),
-        RCTD = run_rctd(x, R$ref, R$ref_meta$cell_type),
+        RCTD = run_rctd(x, R$ref, R$ref_meta$cell_type, umi_min_sigma = umi_min_sigma),
         MuSiC = run_music(x, R$ref, R$ref_meta$cell_type, R$ref_meta$donor_id),
         spatialDWLS = run_dwls(x, R$ref, R$ref_meta$cell_type, n_cell = g$n_cells)),
         error = function(e) list(prop = NULL, seconds = NA, error = conditionMessage(e)))
@@ -236,7 +247,7 @@ Sys.setenv(OPENBLAS_NUM_THREADS = "1", OMP_NUM_THREADS = "1")   # one core per w
 cl <- parallel::makeCluster(workers, setup_strategy = "sequential")   # parallel start-up drops workers on Windows
 lib <- .libPaths()
 parallel::clusterCall(cl, function(lib) { .libPaths(lib); RNGkind("L'Ecuyer-CMRG"); NULL }, lib)
-parallel::clusterExport(cl, c("grid", "R0", "conc", "out_dir", "n_spots", "alpha_by_n", "tissue", "mode", "log_file", "run_job"))
+parallel::clusterExport(cl, c("grid", "R0", "conc", "out_dir", "n_spots", "alpha_by_n", "tissue", "mode", "log_file", "run_job", "umi_min_sigma"))
 parallel::clusterEvalQ(cl, { for (f in c("R/simulate_spots.R", "R/deconvolve.R", "R/pilot_metrics.R")) source(f); NULL })
 done <- parallel::parLapplyLB(cl, seq_len(nrow(grid)), function(i)
   tryCatch(run_job(i), error = function(e) paste("ERROR", i, conditionMessage(e))))

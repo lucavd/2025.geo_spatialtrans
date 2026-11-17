@@ -4,6 +4,8 @@
 # Design (fixed by ADEMP v1.2; implementation written 2026-11-05 before the first run):
 #   one job = one replicate x one condition (6 datasets: anchor, E, C−, E′, O, P) x 4 methods
 #   (RCTD full, spatialDWLS, MuSiC, NNLS; ADEMP §4 settings, R/deconvolve.R).
+#   MuSiC basis computed once per tissue for the real reference and once per job for P (DECISIONS
+#   2026-11-12; amendment 2026-11-17, identity with music_prop() in tests/test_music_basis.R).
 #   Reference: the real capped training reference for every dataset except P; for P the reference is
 #   rebuilt from world_p.rds (reference_p_from_world(), R/arm_p.R), with NNLS profiles = mean counts
 #   per simulated reference cell (ADEMP §2.1).
@@ -33,7 +35,7 @@
 args <- commandArgs(trailingOnly = TRUE)
 tissue <- if (length(args) >= 1) args[1] else "colon"
 ref_mode <- if (length(args) >= 2) args[2] else "pilot"
-n_rep <- if (length(args) >= 3) as.integer(args[3]) else 81L
+n_rep <- if (length(args) >= 3) as.integer(args[3]) else 118L   # n_sim (DECISIONS 2026-11-12)
 workers <- if (length(args) >= 4) as.integer(args[4]) else 8L
 stopifnot(tissue %in% c("colon", "lymphoid", "brain"), ref_mode %in% c("pilot", "main"))
 
@@ -51,7 +53,14 @@ types <- R0$types_ref
 p_null <- null_props(lengths(R0$L_by_type))[types]
 p_null_umi <- vapply(R0$L_by_type, sum, numeric(1)); p_null_umi <- (p_null_umi / sum(p_null_umi))[types]
 L_ref <- Matrix::colSums(R0$ref)
-cond_keys <- c("c02_d0175", "c02_d4900", "c10_d0175", "c10_d4900")
+# MuSiC basis of the real reference, once per tissue (DECISIONS 2026-11-12; identity with music_prop()
+# checked by tests/test_music_basis.R); arm P rebuilds its basis in every job from its own reference.
+t_b <- system.time(B_music <- music_basis_once(R0$ref, R0$ref_meta$cell_type, R0$ref_meta$donor_id))[["elapsed"]]
+cat(sprintf("MuSiC basis of the real reference: %.0f s\n", t_b))
+# One depth level, the Visium HD level of the tissue (DECISIONS 2026-11-12; amendment 2026-11-17, was
+# 175 / 4,900 UMI per cell): conditions = cells per spot 2 / 10 at that depth, as written by 04_simulate.R.
+hd_depth <- c(colon = 174, lymphoid = 62, brain = 121)
+cond_keys <- sprintf("c%02d_d%04d", c(2, 10), hd_depth[[tissue]])
 jobs <- expand.grid(cond = cond_keys, rep = seq_len(n_rep), stringsAsFactors = FALSE)
 
 substream <- function(seed, k) { for (j in seq_len(k)) seed <- parallel::nextRNGSubStream(seed); seed }
@@ -65,11 +74,15 @@ run_job <- function(r) {
   log_line(sprintf("start rep %d %s", i, key))
   x <- readRDS(file.path(rd, paste0(key, ".rds")))
   sp <- rownames(x$truth); nc <- x$meta$n_cells
-  refs <- list(real = list(ref = R0$ref, meta = R0$ref_meta, profiles = R0$profiles))
+  refs <- list(real = list(ref = R0$ref, meta = R0$ref_meta, profiles = R0$profiles,
+                           music_basis = B_music, music_basis_seconds = 0))
   if ("P" %in% names(x$counts)) {
     RP <- reference_p_from_world(readRDS(file.path(rd, "world_p.rds")), R0$ref_meta, L_ref, colnames(R0$ref))
     if (ncol(RP$ref) != ncol(R0$ref) || !identical(RP$ref_meta, R0$ref_meta)) stop("D2")
     refs$P <- list(ref = RP$ref, meta = RP$ref_meta, profiles = RP$profiles)
+    tb <- system.time(refs$P$music_basis <- tryCatch(
+      music_basis_once(RP$ref, RP$ref_meta$cell_type, RP$ref_meta$donor_id), error = function(e) NULL))[["elapsed"]]
+    refs$P$music_basis_seconds <- tb   # added to the MuSiC seconds of P (P basis rebuilt per job)
   }
   ci <- match(key, cond_keys)
   rows <- list(); est_all <- list()
@@ -84,7 +97,11 @@ run_job <- function(r) {
       out <- tryCatch(switch(m,
         NNLS = run_nnls(spots, rf$profiles),
         RCTD = run_rctd(spots, rf$ref, rf$meta$cell_type),
-        MuSiC = run_music(spots, rf$ref, rf$meta$cell_type, rf$meta$donor_id),
+        MuSiC = {
+          if (is.null(rf$music_basis)) stop("MuSiC basis failed")
+          o <- run_music(spots, rf$ref, rf$meta$cell_type, rf$meta$donor_id, basis = rf$music_basis)
+          o$seconds <- o$seconds + rf$music_basis_seconds; o   # P: one P dataset per job, so counted once
+        },
         spatialDWLS = run_dwls(spots, rf$ref, rf$meta$cell_type, n_cell = nc)),
         error = function(e) list(prop = NULL, seconds = NA, error = conditionMessage(e)))
       p <- if (is.null(out$prop)) matrix(NA_real_, length(sp), length(types), dimnames = list(sp, types))
@@ -124,13 +141,13 @@ run_job <- function(r) {
   met
 }
 
-cat(sprintf("[%s, %s] %d jobs (%d replicates x 4 conditions), %d workers\n", tissue, ref_mode, nrow(jobs), n_rep, workers))
+cat(sprintf("[%s, %s] %d jobs (%d replicates x %d conditions), %d workers\n", tissue, ref_mode, nrow(jobs), n_rep, length(cond_keys), workers))
 t0 <- proc.time()[["elapsed"]]
 Sys.setenv(OPENBLAS_NUM_THREADS = "1", OMP_NUM_THREADS = "1")   # one core per worker (ADEMP §6); workers inherit it
 cl <- parallel::makeCluster(workers, setup_strategy = "sequential")
 lib <- .libPaths()
 invisible(parallel::clusterCall(cl, function(lib) { .libPaths(lib); RNGkind("L'Ecuyer-CMRG"); NULL }, lib))
-parallel::clusterExport(cl, c("R0", "sim_dir", "log_file", "methods", "slot", "types", "p_null", "p_null_umi", "L_ref",
+parallel::clusterExport(cl, c("R0", "B_music", "sim_dir", "log_file", "methods", "slot", "types", "p_null", "p_null_umi", "L_ref",
                               "cond_keys", "jobs", "substream", "run_job", "tissue", "src"))
 invisible(parallel::clusterEvalQ(cl, { suppressPackageStartupMessages(library(Matrix)); for (f in src) source(f); NULL }))
 done <- parallel::parLapplyLB(cl, seq_len(nrow(jobs)), function(r)

@@ -46,10 +46,10 @@
 args <- commandArgs(trailingOnly = TRUE)
 tissue <- if (length(args) >= 1) args[1] else "colon"
 conc <- if (length(args) >= 2) args[2] else NA_character_
-stopifnot(is.na(conc) || conc %in% c("rule", "rule_hd") || !is.na(suppressWarnings(as.numeric(conc))))
+stopifnot(is.na(conc) || conc %in% c("rule", "rule_hd", "rule_hd_s100") || !is.na(suppressWarnings(as.numeric(conc))))
 # "rule_hd" (amendment 2026-11-16): reads the HD-level pilot of 06_pilot.R (<tissue>_crule_hd/)
 run_id <- if (is.na(conc)) tissue else if (conc == "rule") paste0(tissue, "_crule") else
-  if (conc == "rule_hd") paste0(tissue, "_crule_hd") else sprintf("%s_c%g", tissue, as.numeric(conc))
+  if (conc == "rule_hd") paste0(tissue, "_crule_hd") else if (conc == "rule_hd_s100") paste0(tissue, "_crule_hd_s100") else sprintf("%s_c%g", tissue, as.numeric(conc))
 data_dir <- Sys.getenv("TESI_DATA")
 stopifnot("TESI_DATA non impostata" = nzchar(data_dir), dir.exists(data_dir))
 stopifnot("Run from the thesis/ folder" = file.exists("thesis.Rproj"))

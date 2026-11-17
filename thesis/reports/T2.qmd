@@ -30,9 +30,9 @@ ref_dir   <- file.path(data_dir, "derived", "reference")
 pcal_dir  <- file.path(data_dir, "derived", "p_calibration")
 tissues <- c("colon", "lymphoid", "brain")
 
-# read <tissue>_crule_pilot_<what>.csv; NULL (with a note) if missing
-rd_pilot <- function(tissue, what) {
-  f <- file.path(pilot_dir, sprintf("%s_crule_pilot_%s.csv", tissue, what))
+# read <tissue>_<variant>_pilot_<what>.csv (variant "crule" or "crule_hd"); NULL (with a note) if missing
+rd_pilot <- function(tissue, what, variant = "crule") {
+  f <- file.path(pilot_dir, sprintf("%s_%s_pilot_%s.csv", tissue, variant, what))
   if (!file.exists(f)) { message("missing: ", f); return(NULL) }
   read.csv(f, check.names = FALSE, stringsAsFactors = FALSE)
 }
@@ -55,7 +55,7 @@ run_test <- function(f) {
 
 **Dependencies.** T1 (datasets, split). **Branch.** `thesis/expression-sources`. **Data.** `TESI_DATA` on lesexp (`/mnt/micron/geo_spatialtrans/tesi_pp1209/data`).
 
-**Status of the pilot inputs.** Pilot references were rebuilt with φ estimated on 50,000 cells after the failed φ check (DECISIONS 2026-11-11): colon and lymph node on 2026-11-12, brain on 2026-11-14. Only the colon pilot is rerun with the new φ (finished 2026-11-12, the basis of n_sim = 118, DECISIONS 2026-11-12); lymph node and brain pilots keep φ from 20,000 cells, as the same row states.
+**Status of the pilot inputs.** Pilot references were rebuilt with φ estimated on 50,000 cells after the failed φ check (DECISIONS 2026-11-11): colon and lymph node on 2026-11-12, brain on 2026-11-14. The colon pilot was rerun with the new φ on 2026-11-12 (the basis of n_sim = 118, DECISIONS 2026-11-12). The lymph node and brain pilots were rerun with the new φ on 2026-11-17, at the HD level of each tissue only (62 and 121 UMI per cell; `<tissue>_crule_hd_pilot_*`), as Luca asked on 2026-11-16 (same row). The other tables of this report still read the c-rule pilots of 9–11/11.
 
 # 1. Pre-registration
 
@@ -195,7 +195,7 @@ for (t in tissues) {
 }
 ```
 
-With `pval.type = "some"` every type has markers, so no two P types share a profile (with `"all"` 7 of 18 colon types had none; DECISIONS 2026-11-04). Raising the cap from 10,000 to 20,000 changed the number of markers per type by at most 8 (pdc 49 against 41; DECISIONS 2026-11-11). Note carried to T3: in the brain the upper tail of the gene means differs between P and the real data (99th percentile 0.78 against 1.93; brain calibration 2026-11-11) [TO FILL: check which value is P], to be checked in the Aim 1 distribution measures (ADEMP §5.1).
+With `pval.type = "some"` every type has markers, so no two P types share a profile (with `"all"` 7 of 18 colon types had none; DECISIONS 2026-11-04). Raising the cap from 10,000 to 20,000 changed the number of markers per type by at most 8 (pdc 49 against 41; DECISIONS 2026-11-11). Note carried to T3: in the brain the upper tail of the gene means differs between P and the real data (brain calibration 2026-11-11, ADEMP §2.1): the 99th percentile is lower in P (0.78 against 1.93) and the 99.9th is higher (10.7 against 5.8), so P has fewer moderately high genes and a few more extreme ones. This is to be checked in the Aim 1 distribution measures (ADEMP §5.1).
 
 # 4. Counter-proof
 
@@ -253,21 +253,25 @@ Formula at 2 and 10 cells (c rule): colon 0.182 and 0.149, lymph node 0.137 and 
 show_pilot("nsim")
 ```
 
-The `nsim` tables above take the maximum over all pilot conditions, 4,900 UMI included. The design value uses the 175 UMI rows of `rmse_pairs` only (DECISIONS 2026-11-12).
+The `nsim` tables above take the maximum over all pilot conditions of the c-rule pilots, 4,900 UMI included. The design value uses the HD level only (DECISIONS 2026-11-12, precised 2026-11-16): the colon pilot rerun with φ from 50,000 cells (rows at 175 UMI per cell of `rmse_pairs`) and the HD pilots of lymph node and brain (`<tissue>_crule_hd_pilot_rmse_pairs.csv`, one depth level each).
 
 ```{r nsim-hd}
 nsim_hd <- do.call(rbind, lapply(tissues, function(t) {
-  x <- rd_pilot(t, "rmse_pairs")
-  if (is.null(x)) return(NULL)
-  x <- x[x$depth == 175, ]
+  if (t == "colon") {
+    x <- rd_pilot(t, "rmse_pairs")
+    if (!is.null(x)) x <- x[x$depth == 175, ]
+  } else {
+    x <- rd_pilot(t, "rmse_pairs", variant = "crule_hd")
+  }
+  if (is.null(x) || nrow(x) == 0) return(NULL)
   r <- x[which.max(x$sd_diff_upper), ]
-  data.frame(tissue = t, sd_upper = r$sd_diff_upper, arm = r$dataset, n_cells = r$n_cells,
-             pair = r$pair, n_sim = ceiling((4 * r$sd_diff_upper / 0.02)^2))
+  data.frame(tissue = t, depth = if (is.null(r$depth)) NA else r$depth, sd_upper = r$sd_diff_upper, arm = r$dataset,
+             n_cells = r$n_cells, pair = r$pair, n_sim = ceiling((4 * r$sd_diff_upper / 0.02)^2))
 }))
 kable(nsim_hd, digits = 4)
 ```
 
-Expected from DECISIONS 2026-11-12: colon 0.0543 (n_sim 118), lymph node 0.019 (14), brain 0.029 (33), so n_sim = 118 in every tissue. The largest SD comes from spatialDWLS − NNLS in arm C− at 10 cells in the colon.
+Expected from DECISIONS 2026-11-12: colon 0.0543 (n_sim 118), lymph node 0.0402 (65), brain 0.0407 (67), so n_sim = 118 in every tissue. The largest SD comes from spatialDWLS − NNLS in arm C− at 10 cells in the colon.
 
 ## 5.2 Runtimes and cost
 
@@ -288,6 +292,6 @@ Cost check with the c-rule pilots (server, 2026-11-11, `scripts/06c_pilot_cost.R
 
 # Closure
 
-**Verdict.** [TO FILL: proposed "not closed" until the ADEMP is approved by Luca (the "done" criterion of PROTOCOLLO §6, week 2); then "closed with reservations".] Open items: ADEMP approval date; md5 check on lesexp (C2); cell2location timing and seed check (C9).
+**Verdict.** [TO FILL: proposed "not closed" until the ADEMP is approved by Luca (the "done" criterion of PROTOCOLLO §6, week 2); then "closed with reservations".] Open items: ADEMP approval date; cell2location timing and seed check (C9). The md5 check on lesexp (C2) passed on 2026-11-16.
 
 **Adversarial review.** [TO FILL: who recomputed which key numbers (n_sim from `rmse_pairs`, null-baseline formula, depth table) from scripts and data, and discrepancies found.]
