@@ -30,7 +30,7 @@ ref_dir   <- file.path(data_dir, "derived", "reference")
 pcal_dir  <- file.path(data_dir, "derived", "p_calibration")
 tissues <- c("colon", "lymphoid", "brain")
 
-# read <tissue>_<variant>_pilot_<what>.csv (variant "crule" or "crule_hd"); NULL (with a note) if missing
+# read <tissue>_<variant>_pilot_<what>.csv (variant "crule", "crule_hd" or "crule_hd_s100"); NULL (with a note) if missing
 rd_pilot <- function(tissue, what, variant = "crule") {
   f <- file.path(pilot_dir, sprintf("%s_%s_pilot_%s.csv", tissue, variant, what))
   if (!file.exists(f)) { message("missing: ", f); return(NULL) }
@@ -55,7 +55,7 @@ run_test <- function(f) {
 
 **Dependencies.** T1 (datasets, split). **Branch.** `thesis/expression-sources`. **Data.** `TESI_DATA` on lesexp (`/mnt/micron/geo_spatialtrans/tesi_pp1209/data`).
 
-**Status of the pilot inputs.** Pilot references were rebuilt with φ estimated on 50,000 cells after the failed φ check (DECISIONS 2026-11-11): colon and lymph node on 2026-11-12, brain on 2026-11-14. The colon pilot was rerun with the new φ on 2026-11-12 (the basis of n_sim = 118, DECISIONS 2026-11-12). The lymph node and brain pilots were rerun with the new φ on 2026-11-17, at the HD level of each tissue only (62 and 121 UMI per cell; `<tissue>_crule_hd_pilot_*`), as Luca asked on 2026-11-16 (same row). The other tables of this report still read the c-rule pilots of 9–11/11.
+**Status of the pilot inputs.** Pilot references were rebuilt with φ estimated on 50,000 cells after the failed φ check (DECISIONS 2026-11-11): colon and lymph node on 2026-11-12, brain on 2026-11-14. The colon pilot was rerun with the new φ on 2026-11-12 (the basis of n_sim = 118, DECISIONS 2026-11-12). The lymph node and brain pilots were rerun with the new φ on 2026-11-17, at the HD level of each tissue only (62 and 121 UMI per cell; `<tissue>_crule_hd_pilot_*`), as Luca asked on 2026-11-16 (same row), and again with RCTD `UMI_min_sigma` = 100 after RCTD stopped on every 2-cell dataset (`<tissue>_crule_hd_s100_pilot_*`, DECISIONS 2026-11-17). The other tables of this report still read the c-rule pilots of 9–11/11.
 
 # 1. Pre-registration
 
@@ -253,7 +253,7 @@ Formula at 2 and 10 cells (c rule): colon 0.182 and 0.149, lymph node 0.137 and 
 show_pilot("nsim")
 ```
 
-The `nsim` tables above take the maximum over all pilot conditions of the c-rule pilots, 4,900 UMI included. The design value uses the HD level only (DECISIONS 2026-11-12, precised 2026-11-16): the colon pilot rerun with φ from 50,000 cells (rows at 175 UMI per cell of `rmse_pairs`) and the HD pilots of lymph node and brain (`<tissue>_crule_hd_pilot_rmse_pairs.csv`, one depth level each).
+The `nsim` tables above take the maximum over all pilot conditions of the c-rule pilots, 4,900 UMI included. The design value uses the HD level only (DECISIONS 2026-11-12, precised 2026-11-16): the colon pilot rerun with φ from 50,000 cells (rows at 175 UMI per cell of `rmse_pairs`) and the HD pilots of lymph node and brain with RCTD `UMI_min_sigma` = 100 (`<tissue>_crule_hd_s100_pilot_rmse_pairs.csv`, one depth level each).
 
 ```{r nsim-hd}
 nsim_hd <- do.call(rbind, lapply(tissues, function(t) {
@@ -261,7 +261,7 @@ nsim_hd <- do.call(rbind, lapply(tissues, function(t) {
     x <- rd_pilot(t, "rmse_pairs")
     if (!is.null(x)) x <- x[x$depth == 175, ]
   } else {
-    x <- rd_pilot(t, "rmse_pairs", variant = "crule_hd")
+    x <- rd_pilot(t, "rmse_pairs", variant = "crule_hd_s100")
   }
   if (is.null(x) || nrow(x) == 0) return(NULL)
   r <- x[which.max(x$sd_diff_upper), ]
@@ -271,7 +271,7 @@ nsim_hd <- do.call(rbind, lapply(tissues, function(t) {
 kable(nsim_hd, digits = 4)
 ```
 
-Expected from DECISIONS 2026-11-12: colon 0.0543 (n_sim 118), lymph node 0.0402 (65), brain 0.0407 (67), so n_sim = 118 in every tissue. The largest SD comes from spatialDWLS − NNLS in arm C− at 10 cells in the colon.
+Expected from DECISIONS 2026-11-12: colon 0.0543 (n_sim 118), lymph node 0.0402 (65), brain 0.0425 (73; 0.0407 before RCTD `UMI_min_sigma` = 100), so n_sim = 118 in every tissue. The largest SD comes from spatialDWLS − NNLS in arm C− at 10 cells in the colon.
 
 ## 5.2 Runtimes and cost
 
@@ -288,7 +288,7 @@ for (t in tissues) {
 }
 ```
 
-Cost check with the c-rule pilots (server, 2026-11-11, `scripts/06c_pilot_cost.R`; ADEMP §6): CPU-hours per replicate colon 1.18, lymph node 2.54, brain 11.0, with MuSiC taking 68% of the CPU time. A brain worker peaks at 14–16 GB, so the brain runs with at most 5 workers. With two depth levels and 169 replicates the brain needed 15.5 days against a 12-day window; with one level, 7.7 days. With n_sim = 118 at the HD levels (server, 2026-11-17; colon pilot rerun at 175 UMI per cell, HD pilots of lymph node and brain at 62 and 121), CPU-hours per replicate are colon 0.68, lymph node 0.66 and brain 4.67, so the brain needs 4.6 days with 5 workers (colon 0.3, lymph node 0.2) against the 12-day window. MuSiC still takes 68% of the CPU time. Computing the MuSiC basis once per tissue (DECISIONS 2026-11-12) adds margin, after the identity check against `music_prop()`. cell2location timing and n_c2l: [TO FILL] (DECISIONS 2026-11-04, dated amendment before the run).
+Cost check with the c-rule pilots (server, 2026-11-11, `scripts/06c_pilot_cost.R`; ADEMP §6): CPU-hours per replicate colon 1.18, lymph node 2.54, brain 11.0, with MuSiC taking 68% of the CPU time. A brain worker peaks at 14–16 GB, so the brain runs with at most 5 workers. With two depth levels and 169 replicates the brain needed 15.5 days against a 12-day window; with one level, 7.7 days. With n_sim = 118 at the HD levels (server, 2026-11-17; colon pilot rerun at 175 UMI per cell, HD pilots of lymph node and brain at 62 and 121 with RCTD `UMI_min_sigma` = 100), CPU-hours per replicate are colon 0.68, lymph node 0.97 and brain 5.18, so the brain needs 5.1 days with 5 workers (colon 0.3, lymph node 0.3) against the 12-day window. MuSiC still takes 67% of the CPU time. Computing the MuSiC basis once per tissue (DECISIONS 2026-11-12) adds margin, after the identity check against `music_prop()`. cell2location timing and n_c2l: [TO FILL] (DECISIONS 2026-11-04, dated amendment before the run).
 
 # Closure
 
