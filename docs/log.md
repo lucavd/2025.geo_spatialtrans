@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-11-18 (dopo la chiusura di F3.1, sovradattamento)
+
+* **Creazione**: decisione di Luca [Dopo F3.1: prima di cambiare ancora il simulatore, uno step di disegno contro il sovradattamento ai sei tessuti; la prova dei compartimenti viene dopo (DEC-090)](decisions/DEC-090.md).
+* **Modifica**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md) (verifica di Luca dopo la chiusura); BACKLOG BL-265; ROADMAP sezione 7 (prossima sessione); CHANGELOG.
+
 ## 2026-11-18 (F3.1, chiusura)
 
 * **Chiusura**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md) chiuso con l'approvazione di Luca («ok chiudi»); decisione [F3.1: la prova della semina a compartimenti misura anche i trascritti estranei nei nuclei; lo spostamento dei trascritti si rivede in uno step a parte, dopo (DEC-089)](decisions/DEC-089.md).
