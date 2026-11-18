@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-11-18 (F3.1, chiusura)
+
+* **Chiusura**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md) chiuso con l'approvazione di Luca («ok chiudi»); decisione [F3.1: la prova della semina a compartimenti misura anche i trascritti estranei nei nuclei; lo spostamento dei trascritti si rivede in uno step a parte, dopo (DEC-089)](decisions/DEC-089.md).
+* **Modifica**: ROADMAP sezione 7 (F3.1 chiusa, prossima sessione); CHANGELOG.
+
 ## 2026-11-18 (F3.1, risultati delle indagini PH-4...PH-7)
 
 * **Modifica**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md): risultati delle indagini PH-4...PH-7 e del seguito non pre-registrato, riassunto riscritto, dubbi rinviati aggiornati.
