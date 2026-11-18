@@ -1,0 +1,25 @@
+{
+ "label": "RatLiver_6p5mm_SR410",
+ "fault": "",
+ "dataset": "Visium_HD_6p5mm_Rat_Liver",
+ "n_bins2_matrix": 7961640,
+ "n_bins2_in_tissue": 7961640,
+ "n_bins8_matrix": 499460,
+ "n_bins8_in_tissue": 499460,
+ "um_per_px": 0.2738769016084336,
+ "pitch_um": 2.000023696429883,
+ "anisotropy": 1.0000395634024022,
+ "img_H": 40028,
+ "img_W": 39629,
+ "frac_in_tissue_inside": 1.0,
+ "stardist_n_nuclei": 176,
+ "stardist_error": "",
+ "checks": {
+  "a": true,
+  "b": true,
+  "c": true,
+  "d": true,
+  "e": true
+ },
+ "PASS": true
+}

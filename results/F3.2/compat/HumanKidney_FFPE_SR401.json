@@ -1,0 +1,25 @@
+{
+ "label": "HumanKidney_FFPE_SR401",
+ "fault": "",
+ "dataset": "Visium_HD_Human_Kidney_FFPE",
+ "n_bins2_matrix": 10651345,
+ "n_bins2_in_tissue": 10651345,
+ "n_bins8_matrix": 666695,
+ "n_bins8_in_tissue": 666695,
+ "um_per_px": 0.2739013209140399,
+ "pitch_um": 2.0009368236551004,
+ "anisotropy": 1.0000200632684217,
+ "img_H": 43999,
+ "img_W": 32674,
+ "frac_in_tissue_inside": 1.0,
+ "stardist_n_nuclei": 164,
+ "stardist_error": "",
+ "checks": {
+  "a": true,
+  "b": true,
+  "c": true,
+  "d": true,
+  "e": true
+ },
+ "PASS": true
+}

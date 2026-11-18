@@ -1,0 +1,25 @@
+{
+ "label": "CRC_6p5mm_SR410",
+ "fault": "",
+ "dataset": "Visium_HD_6p5mm_Human_Colon_Cancer",
+ "n_bins2_matrix": 9393726,
+ "n_bins2_in_tissue": 9393726,
+ "n_bins8_matrix": 588649,
+ "n_bins8_in_tissue": 588649,
+ "um_per_px": 0.2737785883219416,
+ "pitch_um": 2.0001628801713944,
+ "anisotropy": 1.0000144600376324,
+ "img_H": 43603,
+ "img_W": 53020,
+ "frac_in_tissue_inside": 1.0,
+ "stardist_n_nuclei": 300,
+ "stardist_error": "",
+ "checks": {
+  "a": true,
+  "b": true,
+  "c": true,
+  "d": true,
+  "e": true
+ },
+ "PASS": true
+}

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """tools/F3.2_bridge.py - F3.2, previsioni P-1 (controprova CP-2): Space Ranger 3.0.0 contro 4.0.1 sulla stessa sezione P2 del tumore del colon.
 Per ogni area di R2 del tumore (A2) e dello stroma (A3): quadratini di 2 um dentro il riquadro dell'area e in tessuto per la 4.0.1 (stessa scelta di
-tools/R4_roi.py), gli stessi codici a barre nella 3.0.0 (matrice grezza, che contiene tutti i quadratini). Grandezze: UMI medi per quadratino, quota di
+tools/R4_roi.py), gli stessi codici a barre nella 3.0.0 (matrice grezza). Scarto dichiarato: la grezza della 3.0.0 non contiene
+tutti i quadratini (9 468 111 contro 11 222 500); il confronto si fa sui quadratini presenti in entrambe, la quota mancante si riporta a parte. Grandezze: UMI medi per quadratino, quota di
 quadratini vuoti, geni rilevati per quadratino. Controllo interno: il lato 4.0.1 deve riprodurre results/R4/R4_roi.csv (tolleranza relativa 1e-9).
 Stima per tessuto: media sulle 5 aree della differenza relativa (3.0.0 - 4.0.1) / 4.0.1; errore standard fra aree * kappa di R7; esito con +- 2 ES.
 Uso: .venv/bin/python tools/F3.2_bridge.py -> results/F3.2/F3.2_bridge_roi.csv, F3.2_bridge_predictions.csv, F3.2_bridge_image_md5.csv
@@ -22,10 +23,12 @@ class H5:
         f = h5py.File(p, "r")["matrix"]; self.f = f
         self.bc = pd.Series(np.arange(f["shape"][1]), index=[b.decode() for b in f["barcodes"][:]])
         self.indptr = f["indptr"][:]; self.n_genes = int(f["shape"][0])
+    def has(self, barcodes):
+        return np.asarray(pd.Index(barcodes).isin(self.bc.index))
     def totals(self, barcodes):
-        """UMI e geni rilevati per codice a barre (letture per blocchi contigui di colonne)"""
-        cols = self.bc.reindex(barcodes).to_numpy()
-        miss = int(np.isnan(cols.astype(float)).sum()) if cols.dtype == object else int(pd.isna(cols).sum())
+        """UMI e geni rilevati per codice a barre (letture per blocchi contigui di colonne); i codici a barre devono esistere"""
+        cols = self.bc.reindex(barcodes).to_numpy(); miss = 0
+        assert not pd.isna(cols).any(), "codici a barre assenti: filtrare prima con has()"
         cols = cols.astype(np.int64)
         order = np.argsort(cols); umi = np.zeros(len(cols)); ng = np.zeros(len(cols))
         data = self.f["data"]
@@ -45,17 +48,20 @@ def main():
     for _, R in rois.iterrows():
         box = tp[(tp.pxl_row_in_fullres >= R.r0) & (tp.pxl_row_in_fullres < R.r1) & (tp.pxl_col_in_fullres >= R.c0) & (tp.pxl_col_in_fullres < R.c1)]
         bcs = box.barcode[box.barcode.isin(m4.bc.index)].to_numpy()
-        u4, g4, _ = m4.totals(bcs); u3, g3, miss3 = m3.totals(bcs)
+        u4full, _, _ = m4.totals(bcs)                                     # insieme completo: controllo contro R4
+        both = m3.has(bcs); miss3 = int((~both).sum())                   # scarto dichiarato: confronto sui quadratini presenti in entrambe
+        u4, g4, _ = m4.totals(bcs[both]); u3, g3, _ = m3.totals(bcs[both])
         ref = r4[(r4.archetype == R.archetype) & (r4.roi_id == R.roi_id)].iloc[0]
-        rec = dict(archetype=R.archetype, roi_id=R.roi_id, n_bins=len(bcs), n_missing_in_sr3=miss3,
+        rec = dict(archetype=R.archetype, roi_id=R.roi_id, n_bins=len(bcs), n_bins_both=int(both.sum()), n_missing_in_sr3=miss3,
+                   frac_missing_in_sr3=miss3 / len(bcs), sr4full_mean_umi2=u4full.mean(),
                    sr4_mean_umi2=u4.mean(), sr3_mean_umi2=u3.mean(), sr4_frac_empty2=(u4 == 0).mean(), sr3_frac_empty2=(u3 == 0).mean(),
                    sr4_mean_genes2=g4.mean(), sr3_mean_genes2=g3.mean(), r4_mean_umi2=ref.mean_umi2, r4_frac_empty2=ref.frac_empty2,
                    r4_n_bins2=ref.n_bins2, frac_bins_identical_umi=float((u3 == u4).mean()))
         for q in ("mean_umi2", "frac_empty2", "mean_genes2"):
             rec[f"rel_{q}"] = (rec[f"sr3_{q}"] - rec[f"sr4_{q}"]) / rec[f"sr4_{q}"]
-        rec["r4_reproduced"] = bool(len(bcs) == ref.n_bins2 and abs(rec["sr4_mean_umi2"] / ref.mean_umi2 - 1) < 1e-9
-                                    and abs(rec["sr4_frac_empty2"] - ref.frac_empty2) <= 1e-9 * max(ref.frac_empty2, 1e-12) + 1e-15)
-        rows.append(rec); print({k: rec[k] for k in ("archetype", "roi_id", "n_bins", "rel_mean_umi2", "rel_frac_empty2", "rel_mean_genes2", "r4_reproduced")}, flush=True)
+        rec["r4_reproduced"] = bool(len(bcs) == ref.n_bins2 and abs(u4full.mean() / ref.mean_umi2 - 1) < 1e-9
+                                    and abs((u4full == 0).mean() - ref.frac_empty2) <= 1e-9 * max(ref.frac_empty2, 1e-12) + 1e-15)
+        rows.append(rec); print({k: rec[k] for k in ("archetype", "roi_id", "n_bins", "rel_mean_umi2", "rel_frac_empty2", "rel_mean_genes2", "frac_missing_in_sr3", "r4_reproduced")}, flush=True)
     d = pd.DataFrame(rows); d.to_csv(OUT / "F3.2_bridge_roi.csv", index=False)
     r7 = pd.read_csv(ROOT / "results/R7/Mc/R7_refs_adopted.csv")
     pr = []

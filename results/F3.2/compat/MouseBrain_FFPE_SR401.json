@@ -1,0 +1,25 @@
+{
+ "label": "MouseBrain_FFPE_SR401",
+ "fault": "",
+ "dataset": "Visium_HD_Mouse_Brain",
+ "n_bins2_matrix": 6296688,
+ "n_bins2_in_tissue": 6296688,
+ "n_bins8_matrix": 393543,
+ "n_bins8_in_tissue": 393543,
+ "um_per_px": 0.2738242925717263,
+ "pitch_um": 1.9986804536784608,
+ "anisotropy": 0.9998459102949472,
+ "img_H": 23947,
+ "img_W": 18872,
+ "frac_in_tissue_inside": 1.0,
+ "stardist_n_nuclei": 88,
+ "stardist_error": "",
+ "checks": {
+  "a": true,
+  "b": true,
+  "c": true,
+  "d": true,
+  "e": true
+ },
+ "PASS": true
+}

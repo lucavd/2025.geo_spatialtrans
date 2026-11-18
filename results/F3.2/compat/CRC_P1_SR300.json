@@ -1,0 +1,25 @@
+{
+ "label": "CRC_P1_SR300",
+ "fault": "",
+ "dataset": "Visium_HD_Human_Colon_Cancer_P1",
+ "n_bins2_matrix": 8115564,
+ "n_bins2_in_tissue": 8115564,
+ "n_bins8_matrix": 507684,
+ "n_bins8_in_tissue": 507684,
+ "um_per_px": 0.27380817798463214,
+ "pitch_um": 2.0001880682889572,
+ "anisotropy": 1.0001597010741679,
+ "img_H": 58791,
+ "img_W": 71106,
+ "frac_in_tissue_inside": 1.0,
+ "stardist_n_nuclei": 84,
+ "stardist_error": "",
+ "checks": {
+  "a": true,
+  "b": true,
+  "c": true,
+  "d": true,
+  "e": true
+ },
+ "PASS": true
+}
