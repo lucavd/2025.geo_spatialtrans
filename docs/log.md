@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-11-18 (F3.1, decisione di Luca e indagini dichiarate)
+
+* **Creazione**: decisione di Luca [F3.1: la semina a compartimenti diventerà predefinita dopo una prova; i punti non spiegati si indagano in F3.1 prima di chiuderlo (DEC-088)](decisions/DEC-088.md).
+* **Modifica**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md): verifiche di Luca, indagini PH-4...PH-7 dichiarate prima del calcolo.
+
 ## 2026-11-13 (F3.1, esiti e riassunto)
 
 * **Modifica**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md): esiti, controprove, regola R-1, correzioni, analisi a posteriori PH-1...PH-3, revisione avversariale, deviazioni, riassunto «In breve», dubbi rinviati; in attesa della decisione di Luca.
