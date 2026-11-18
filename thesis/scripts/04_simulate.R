@@ -65,7 +65,7 @@
 # Output: <TESI_DATA>/sim/<pilot|main>/<tissue>/r<rep>/{world_p.rds, c<cells>_d<depth>.rds};
 # summaries <tissue>_sim_depth.csv, <tissue>_sim_reuse.csv, <tissue>_sim_jobs.csv next to the folder.
 
-ADEMP_APPROVED <- NA_character_
+ADEMP_APPROVED <- "2026-11-18"   # ADEMP v1.5 approved by Luca (DECISIONS 2026-11-18)
 
 args <- commandArgs(trailingOnly = TRUE)
 tissue <- if (length(args) >= 1) args[1] else "colon"

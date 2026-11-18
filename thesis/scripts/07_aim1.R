@@ -60,7 +60,7 @@
 # Output: <TESI_DATA>/derived/aim1/<tissue>_<mode>_aim1.rds and CSVs (fidelity, silhouette, ceiling,
 # p_dist, draws) next to it.
 
-ADEMP_APPROVED <- NA_character_
+ADEMP_APPROVED <- "2026-11-18"   # ADEMP v1.5 approved by Luca (DECISIONS 2026-11-18)
 
 args <- commandArgs(trailingOnly = TRUE)
 tissue <- if (length(args) >= 1) args[1] else "colon"

@@ -13,7 +13,7 @@ format:
 <!--
 Filled 2026-11-16. Render on the server from thesis/reports:
   quarto render T2.qmd
-[TO FILL] = still open (ADEMP approval date, adversarial review, items pending on the server).
+[TO FILL] = still open (adversarial review, items pending on the server).
 Every number in the prose comes from a chunk or from a dated DECISIONS row / ADEMP section.
 -->
 
@@ -59,7 +59,7 @@ run_test <- function(f) {
 
 # 1. Pre-registration
 
-Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.5, 2026-11-12, for approval); approval by Luca [TO FILL: date].
+Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.5, 2026-11-12); approved by Luca on 2026-11-18 (DECISIONS 2026-11-18).
 
 | Item | Rule fixed before the pilot | Source |
 |---|---|---|
@@ -292,6 +292,6 @@ Cost check with the c-rule pilots (server, 2026-11-11, `scripts/06c_pilot_cost.R
 
 # Closure
 
-**Verdict.** [TO FILL: proposed "not closed" until the ADEMP is approved by Luca (the "done" criterion of PROTOCOLLO §6, week 2); then "closed with reservations".] Open items: ADEMP approval date; cell2location timing and seed check (C9). The md5 check on lesexp (C2) passed on 2026-11-16.
+**Verdict.** [TO FILL: proposed "not closed" until the ADEMP is approved by Luca (the "done" criterion of PROTOCOLLO §6, week 2); then "closed with reservations".] ADEMP approved by Luca on 2026-11-18. Open items: cell2location timing and seed check (C9). The md5 check on lesexp (C2) passed on 2026-11-16.
 
 **Adversarial review.** [TO FILL: who recomputed which key numbers (n_sim from `rmse_pairs`, null-baseline formula, depth table) from scripts and data, and discrepancies found.]
