@@ -65,4 +65,4 @@ Lc <- readRDS(file.path(lay_dir, "A5_r1_Q6.rds")); sc <- seed_tab["A5_r1", 1L]
 n_fix <- 0L; oc_fix <- simulate_visium_hd_pieces(Lc, seed = sc, frame_open = TRUE, workers = 1L, assemble = "full", keep_profiles = FALSE)
 nf <- n_fix; .s27_cdt <- orig
 oc_orig <- simulate_visium_hd_pieces(Lc, seed = sc, frame_open = TRUE, workers = 1L, assemble = "full", keep_profiles = FALSE)
-cat("(4) controllo A5_r1 (Q6): conteggi a 8 um identici con e senza la correzione:", identical(oc_fix$counts_2um, oc_orig$counts_2um), "| nuovo ripiego usato", nf, "volte\n")
+cat("(4) controllo A5_r1 (Q6): conteggi a 2 um identici con e senza la correzione:", identical(oc_fix$counts_2um, oc_orig$counts_2um), "| nuovo ripiego usato", nf, "volte\n")
