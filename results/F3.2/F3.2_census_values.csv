@@ -1,0 +1,479 @@
+"family","fun","archetype","parameter","value","kind","n_values","values_md5","src_in_code"
+"cell_layer.tissue","tissue_preset_spec()$sources","A1","density","12419","scalar",1,NA,"B-043"
+"cell_layer.tissue","tissue_preset_spec()$sources","A1","density_evident","10291","scalar",1,NA,"B-043"
+"cell_layer.tissue","tissue_preset_spec()$sources","A1","min_dist_um","2.5","scalar",1,NA,"B-049"
+"cell_layer.tissue","tissue_preset_spec()$sources","A1","rho","0.38","scalar",1,NA,"B-091"
+"cell_layer.tissue","tissue_preset_spec()$sources","A1","beta","0.114","scalar",1,NA,"B-092"
+"cell_layer.tissue","tissue_preset_spec()$sources","A1","sigma","0.47499999999999998","scalar",1,NA,"B-093"
+"cell_layer.tissue","tissue_preset_spec()$sources","A1","density_model","10591","scalar",1,NA,"S1.4_calibration.csv"
+"cell_layer.tissue","tissue_preset_spec()$sources","A1","phi","0.75700000000000001","scalar",1,NA,"B-121"
+"cell_layer.tissue","tissue_preset_spec()$sources","A1","c8_lo","2.8100000000000001","scalar",1,NA,"B-109"
+"cell_layer.tissue","tissue_preset_spec()$sources","A1","c8_hi","7.71","scalar",1,NA,"B-109"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","epiteliale:density","12253.683259756783","scalar",1,NA,"B-186"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","epiteliale:nucleus_to_eq_ratio","0.4191974333606609","scalar",1,NA,"B-186"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","epiteliale:nucleus_area_slope","0.15910299999999999","scalar",1,NA,"B-186"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","epiteliale:nucleus_area_sdlog","0.45897700000000002","scalar",1,NA,"B-186"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","epiteliale:nucleus_nc_max","0.75700000000000001","scalar",1,NA,"B-186"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","epiteliale:pale_fraction","0.17135035026974799","scalar",1,NA,"B-186"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","epiteliale:min_dist_um","2.5","scalar",1,NA,"B-186"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","immunitario:density","16984.235049680512","scalar",1,NA,"B-187"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","immunitario:nucleus_to_eq_ratio","0.4336295306086243","scalar",1,NA,"B-187"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","immunitario:nucleus_area_slope","-0.0034429899999999999","scalar",1,NA,"B-187"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","immunitario:nucleus_area_sdlog","0.46047900000000003","scalar",1,NA,"B-187"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","immunitario:nucleus_nc_max","0.75700000000000001","scalar",1,NA,"B-187"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","immunitario:pale_fraction","0.17135035026974799","scalar",1,NA,"B-187"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","immunitario:min_dist_um","2.5","scalar",1,NA,"B-187"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","stromale e muscolo liscio:density","11460.10434139159","scalar",1,NA,"B-188"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","stromale e muscolo liscio:nucleus_to_eq_ratio","0.35571475511481915","scalar",1,NA,"B-188"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","stromale e muscolo liscio:nucleus_area_slope","-0.0034429899999999999","scalar",1,NA,"B-188"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","stromale e muscolo liscio:nucleus_area_sdlog","0.46047900000000003","scalar",1,NA,"B-188"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","stromale e muscolo liscio:nucleus_nc_max","0.75700000000000001","scalar",1,NA,"B-188"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","stromale e muscolo liscio:pale_fraction","0.17135035026974799","scalar",1,NA,"B-188"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A1","stromale e muscolo liscio:min_dist_um","2.5","scalar",1,NA,"B-188"
+"cell_layer.composition","tissue_preset_spec()$composition","A1","epiteliale:fraction","0.68509100000000001","scalar",1,NA,"B-186"
+"cell_layer.composition","tissue_preset_spec()$composition","A1","immunitario:fraction","0.10098","scalar",1,NA,"B-187"
+"cell_layer.composition","tissue_preset_spec()$composition","A1","stromale e muscolo liscio:fraction","0.21392900000000001","scalar",1,NA,"B-188"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A1","epiteliale:ell_um","32","scalar",1,NA,"B-232"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A1","epiteliale:s","7","scalar",1,NA,"B-232"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A1","immunitario:ell_um","16","scalar",1,NA,"B-234"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A1","immunitario:s","7","scalar",1,NA,"B-234"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A1","stromale e muscolo liscio:ell_um","8","scalar",1,NA,"B-233"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A1","stromale e muscolo liscio:s","8","scalar",1,NA,"B-233"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A1","void_frac","0.25","scalar",1,NA,"B-259"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A1","void_ell_um","16","scalar",1,NA,"B-259"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A1","dens_sigma","0","scalar",1,NA,"B-259"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A1","dens_ell_um","NA","scalar",1,NA,"B-259"
+"step2.transcripts","transcript_params()","A1","r","0.7459677413764999","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A1","sigma_e","6.2254110902299846","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A1","D","24.746889331317231","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A1","w","0.08719108841155758","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A1","ell","32.852479833643912","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A1","b","0.16145222298215922","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A1","sigma_in","0.69999999999999996","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A1","field_s2","0.5","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A1","field_L","0.63749999999999996","scalar",1,NA,NA
+"step2.capture","capture_params()","A1","parity_row","1.4170798953430457","scalar",1,NA,NA
+"step2.capture","capture_params()","A1","parity_col","1.7500958071176089","scalar",1,NA,NA
+"step2.capture","capture_params()","A1","sd_alpha","0.19332821166591241","scalar",1,NA,NA
+"step2.capture","capture_params()","A1","sd_beta","0.1846838245230796","scalar",1,NA,NA
+"step2.capture","capture_params()","A1","rho_alpha","-0.30511428941789448","scalar",1,NA,NA
+"step2.capture","capture_params()","A1","rho_beta","-0.27478246889173058","scalar",1,NA,NA
+"step2.capture","capture_params()","A1","b","0","scalar",1,NA,NA
+"step2.capture","capture_params()","A1","w2","0.036225570915715301","scalar",1,NA,NA
+"step2.capture","capture_params()","A1","ell2","1825.5204420931684","scalar",1,NA,NA
+"step2.depth","visium_hd_depth_factor()","A1","depth_factor","1.0127249977836763","scalar",1,NA,NA
+"step2.profiles","load_cell_profiles()$P","A1","P (subtype x gene)",NA,"table",304944,"a450db56772213e1b0464904021934fd",NA
+"step2.profiles","load_cell_profiles()$phi","A1","phi (per gene)",NA,"table",19059,"049ebed7f922206b59d6b4ee926cfdae",NA
+"step2.profiles","load_cell_profiles()$totals","A1","totals (quantiles per type)",NA,"table",4004,"aa5579abffef00ffe385ca97d6c44112",NA
+"step2.profiles","load_cell_profiles()$subtypes","A1","subtype shares",NA,"table",16,"15af756f44f36b0b310df27386860fdc",NA
+"step2.profiles","load_cell_profiles()$meta","A1","depth_factor_S2.2 (superseded by visium_hd_depth_factor)","0.86705458808426905","scalar",1,NA,NA
+"step2.profiles","load_cell_profiles()$meta","A1","n_cells_source","34481","scalar",1,NA,NA
+"cell_layer.tissue","tissue_preset_spec()$sources","A2","density","8924","scalar",1,NA,"B-044"
+"cell_layer.tissue","tissue_preset_spec()$sources","A2","density_evident","7376","scalar",1,NA,"B-044"
+"cell_layer.tissue","tissue_preset_spec()$sources","A2","min_dist_um","3.5","scalar",1,NA,"B-050"
+"cell_layer.tissue","tissue_preset_spec()$sources","A2","rho","0.51000000000000001","scalar",1,NA,"B-094"
+"cell_layer.tissue","tissue_preset_spec()$sources","A2","beta","0.32000000000000001","scalar",1,NA,"B-095"
+"cell_layer.tissue","tissue_preset_spec()$sources","A2","sigma","0.54700000000000004","scalar",1,NA,"B-096"
+"cell_layer.tissue","tissue_preset_spec()$sources","A2","density_model","7723.3000000000002","scalar",1,NA,"S1.4_calibration.csv"
+"cell_layer.tissue","tissue_preset_spec()$sources","A2","phi","1","scalar",1,NA,"B-122"
+"cell_layer.tissue","tissue_preset_spec()$sources","A2","c8_lo","3.2999999999999998","scalar",1,NA,"B-110"
+"cell_layer.tissue","tissue_preset_spec()$sources","A2","c8_hi","9.7200000000000006","scalar",1,NA,"B-110"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","epiteliale:density","10122.279785327601","scalar",1,NA,"B-189"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","epiteliale:nucleus_to_eq_ratio","0.56512030694079096","scalar",1,NA,"B-189"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","epiteliale:nucleus_area_slope","0.40640300000000001","scalar",1,NA,"B-189"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","epiteliale:nucleus_area_sdlog","0.50429400000000002","scalar",1,NA,"B-189"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","epiteliale:nucleus_nc_max","1","scalar",1,NA,"B-189"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","epiteliale:pale_fraction","0.17346481398476021","scalar",1,NA,"B-189"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","epiteliale:min_dist_um","3.5","scalar",1,NA,"B-189"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","fibroblasti:density","6324.0755757846318","scalar",1,NA,"B-190"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","fibroblasti:nucleus_to_eq_ratio","0.4201542897495335","scalar",1,NA,"B-190"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","fibroblasti:nucleus_area_slope","0.32206800000000002","scalar",1,NA,"B-190"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","fibroblasti:nucleus_area_sdlog","0.51004400000000005","scalar",1,NA,"B-190"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","fibroblasti:nucleus_nc_max","1","scalar",1,NA,"B-190"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","fibroblasti:pale_fraction","0.17346481398476021","scalar",1,NA,"B-190"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A2","fibroblasti:min_dist_um","3.5","scalar",1,NA,"B-190"
+"cell_layer.composition","tissue_preset_spec()$composition","A2","epiteliale:fraction","0.77642800000000001","scalar",1,NA,"B-189"
+"cell_layer.composition","tissue_preset_spec()$composition","A2","fibroblasti:fraction","0.22357199999999999","scalar",1,NA,"B-190"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A2","epiteliale:ell_um","256","scalar",1,NA,"B-235"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A2","epiteliale:s","6","scalar",1,NA,"B-235"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A2","fibroblasti:ell_um","32","scalar",1,NA,"B-236"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A2","fibroblasti:s","8","scalar",1,NA,"B-236"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A2","void_frac","0.10000000000000001","scalar",1,NA,"B-260"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A2","void_ell_um","32","scalar",1,NA,"B-260"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A2","dens_sigma","0","scalar",1,NA,"B-260"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A2","dens_ell_um","NA","scalar",1,NA,"B-260"
+"step2.transcripts","transcript_params()","A2","r","0.75461371059767379","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A2","sigma_e","4.7236587542031474","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A2","D","8.9367880490470615","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A2","w","0.039734698098957445","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A2","ell","24.730357429038083","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A2","b","0.19714853642503777","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A2","sigma_in","0.69999999999999996","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A2","field_s2","0.5","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A2","field_L","0.5","scalar",1,NA,NA
+"step2.capture","capture_params()","A2","parity_row","1.577688015068367","scalar",1,NA,NA
+"step2.capture","capture_params()","A2","parity_col","1.7242280073768068","scalar",1,NA,NA
+"step2.capture","capture_params()","A2","sd_alpha","0.22099728838183941","scalar",1,NA,NA
+"step2.capture","capture_params()","A2","sd_beta","0.19087175724703079","scalar",1,NA,NA
+"step2.capture","capture_params()","A2","rho_alpha","-0.31341265667994739","scalar",1,NA,NA
+"step2.capture","capture_params()","A2","rho_beta","-0.21249960935181619","scalar",1,NA,NA
+"step2.capture","capture_params()","A2","b","0.1736089448280754","scalar",1,NA,NA
+"step2.capture","capture_params()","A2","w2","0.023191356738403002","scalar",1,NA,NA
+"step2.capture","capture_params()","A2","ell2","429.48123898526012","scalar",1,NA,NA
+"step2.depth","visium_hd_depth_factor()","A2","depth_factor","0.95403271333133111","scalar",1,NA,NA
+"step2.profiles","load_cell_profiles()$P","A2","P (subtype x gene)",NA,"table",253848,"f358f1b7b177196936a2e3bf49aff816",NA
+"step2.profiles","load_cell_profiles()$phi","A2","phi (per gene)",NA,"table",18132,"cd4c6362a5f1339788e63f885d38bf0f",NA
+"step2.profiles","load_cell_profiles()$totals","A2","totals (quantiles per type)",NA,"table",3003,"0834d54bcaa3b11a5a2074df58541aed",NA
+"step2.profiles","load_cell_profiles()$subtypes","A2","subtype shares",NA,"table",14,"472a2523ffa87baf6889db540fbf547a",NA
+"step2.profiles","load_cell_profiles()$meta","A2","depth_factor_S2.2 (superseded by visium_hd_depth_factor)","0.89347607607460611","scalar",1,NA,NA
+"step2.profiles","load_cell_profiles()$meta","A2","n_cells_source","29289","scalar",1,NA,NA
+"cell_layer.tissue","tissue_preset_spec()$sources","A3","density","3100","scalar",1,NA,"B-045"
+"cell_layer.tissue","tissue_preset_spec()$sources","A3","density_evident","2311","scalar",1,NA,"B-045"
+"cell_layer.tissue","tissue_preset_spec()$sources","A3","min_dist_um","3.5","scalar",1,NA,"B-051"
+"cell_layer.tissue","tissue_preset_spec()$sources","A3","rho","0.374","scalar",1,NA,"B-097"
+"cell_layer.tissue","tissue_preset_spec()$sources","A3","beta","0.14699999999999999","scalar",1,NA,"B-098"
+"cell_layer.tissue","tissue_preset_spec()$sources","A3","sigma","0.55300000000000005","scalar",1,NA,"B-099"
+"cell_layer.tissue","tissue_preset_spec()$sources","A3","density_model","4278.8999999999996","scalar",1,NA,"S1.4_calibration.csv"
+"cell_layer.tissue","tissue_preset_spec()$sources","A3","phi","0.94699999999999995","scalar",1,NA,"B-123"
+"cell_layer.tissue","tissue_preset_spec()$sources","A3","c8_lo","3.6000000000000001","scalar",1,NA,"B-111"
+"cell_layer.tissue","tissue_preset_spec()$sources","A3","c8_hi","14.01","scalar",1,NA,"B-111"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","endoteliale:density","3426.9525743964768","scalar",1,NA,"B-191"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","endoteliale:nucleus_to_eq_ratio","0.33344646212777934","scalar",1,NA,"B-191"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","endoteliale:nucleus_area_slope","0.15700500000000001","scalar",1,NA,"B-191"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","endoteliale:nucleus_area_sdlog","0.54958899999999999","scalar",1,NA,"B-191"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","endoteliale:nucleus_nc_max","0.94699999999999995","scalar",1,NA,"B-191"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","endoteliale:pale_fraction","0.25451612903225806","scalar",1,NA,"B-191"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","endoteliale:min_dist_um","3.5","scalar",1,NA,"B-191"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","epiteliale:density","6447.8314254269962","scalar",1,NA,"B-192"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","epiteliale:nucleus_to_eq_ratio","0.41417144711592618","scalar",1,NA,"B-192"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","epiteliale:nucleus_area_slope","0.15700500000000001","scalar",1,NA,"B-192"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","epiteliale:nucleus_area_sdlog","0.54958899999999999","scalar",1,NA,"B-192"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","epiteliale:nucleus_nc_max","0.94699999999999995","scalar",1,NA,"B-192"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","epiteliale:pale_fraction","0.25451612903225806","scalar",1,NA,"B-192"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","epiteliale:min_dist_um","3.5","scalar",1,NA,"B-192"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","fibroblasti:density","1868.1638568425069","scalar",1,NA,"B-193"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","fibroblasti:nucleus_to_eq_ratio","0.2708003917201483","scalar",1,NA,"B-193"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","fibroblasti:nucleus_area_slope","0.15700500000000001","scalar",1,NA,"B-193"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","fibroblasti:nucleus_area_sdlog","0.54958899999999999","scalar",1,NA,"B-193"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","fibroblasti:nucleus_nc_max","0.94699999999999995","scalar",1,NA,"B-193"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","fibroblasti:pale_fraction","0.25451612903225806","scalar",1,NA,"B-193"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","fibroblasti:min_dist_um","3.5","scalar",1,NA,"B-193"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","immunitario:density","3022.4598717578915","scalar",1,NA,"B-194"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","immunitario:nucleus_to_eq_ratio","0.28217222012865756","scalar",1,NA,"B-194"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","immunitario:nucleus_area_slope","0.16036400000000001","scalar",1,NA,"B-194"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","immunitario:nucleus_area_sdlog","0.51808399999999999","scalar",1,NA,"B-194"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","immunitario:nucleus_nc_max","0.94699999999999995","scalar",1,NA,"B-194"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","immunitario:pale_fraction","0.25451612903225806","scalar",1,NA,"B-194"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A3","immunitario:min_dist_um","3.5","scalar",1,NA,"B-194"
+"cell_layer.composition","tissue_preset_spec()$composition","A3","endoteliale:fraction","0.081399183720163248","scalar",1,NA,"B-191"
+"cell_layer.composition","tissue_preset_spec()$composition","A3","epiteliale:fraction","0.40708991858201626","scalar",1,NA,"B-192"
+"cell_layer.composition","tissue_preset_spec()$composition","A3","fibroblasti:fraction","0.32507893498421297","scalar",1,NA,"B-193"
+"cell_layer.composition","tissue_preset_spec()$composition","A3","immunitario:fraction","0.18643196271360743","scalar",1,NA,"B-194"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A3","endoteliale:ell_um","16","scalar",1,NA,"B-239"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A3","endoteliale:s","3","scalar",1,NA,"B-239"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A3","epiteliale:ell_um","128","scalar",1,NA,"B-237"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A3","epiteliale:s","8","scalar",1,NA,"B-237"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A3","fibroblasti:ell_um","64","scalar",1,NA,"B-238"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A3","fibroblasti:s","3","scalar",1,NA,"B-238"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A3","immunitario:ell_um","16","scalar",1,NA,"B-240"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A3","immunitario:s","3","scalar",1,NA,"B-240"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A3","void_frac","0.10000000000000001","scalar",1,NA,"B-261"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A3","void_ell_um","32","scalar",1,NA,"B-261"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A3","dens_sigma","0","scalar",1,NA,"B-261"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A3","dens_ell_um","NA","scalar",1,NA,"B-261"
+"step2.transcripts","transcript_params()","A3","r","0.82071025416585153","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A3","sigma_e","4.7236587542031474","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A3","D","8.9367880490470615","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A3","w","0.039734698098957445","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A3","ell","24.730357429038083","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A3","b","0.19714853642503777","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A3","sigma_in","0.69999999999999996","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A3","field_s2","0.35355339059327379","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A3","field_L","0.84999999999999998","scalar",1,NA,NA
+"step2.capture","capture_params()","A3","parity_row","1.577688015068367","scalar",1,NA,NA
+"step2.capture","capture_params()","A3","parity_col","1.7242280073768068","scalar",1,NA,NA
+"step2.capture","capture_params()","A3","sd_alpha","0.22099728838183941","scalar",1,NA,NA
+"step2.capture","capture_params()","A3","sd_beta","0.19087175724703079","scalar",1,NA,NA
+"step2.capture","capture_params()","A3","rho_alpha","-0.31341265667994739","scalar",1,NA,NA
+"step2.capture","capture_params()","A3","rho_beta","-0.21249960935181619","scalar",1,NA,NA
+"step2.capture","capture_params()","A3","b","0.1736089448280754","scalar",1,NA,NA
+"step2.capture","capture_params()","A3","w2","0.023191356738403002","scalar",1,NA,NA
+"step2.capture","capture_params()","A3","ell2","429.48123898526012","scalar",1,NA,NA
+"step2.depth","visium_hd_depth_factor()","A3","depth_factor","1.5614917408538553","scalar",1,NA,NA
+"step2.profiles","load_cell_profiles()$P","A3","P (subtype x gene)",NA,"table",761544,"e8e537d3037a03e56f290ffa40632e0f",NA
+"step2.profiles","load_cell_profiles()$phi","A3","phi (per gene)",NA,"table",18132,"6f7a68e89861d19d02cb2503e6bff4e4",NA
+"step2.profiles","load_cell_profiles()$totals","A3","totals (quantiles per type)",NA,"table",5005,"d8464005029d1a31a96ce12d119614f5",NA
+"step2.profiles","load_cell_profiles()$subtypes","A3","subtype shares",NA,"table",42,"f6a72ae8bdedb966ca47c481921bdeff",NA
+"step2.profiles","load_cell_profiles()$meta","A3","depth_factor_S2.2 (superseded by visium_hd_depth_factor)","1.5840310418539951","scalar",1,NA,NA
+"step2.profiles","load_cell_profiles()$meta","A3","n_cells_source","34428","scalar",1,NA,NA
+"cell_layer.tissue","tissue_preset_spec()$sources","A4","density","28096","scalar",1,NA,"B-046"
+"cell_layer.tissue","tissue_preset_spec()$sources","A4","density_evident","26844","scalar",1,NA,"B-046"
+"cell_layer.tissue","tissue_preset_spec()$sources","A4","min_dist_um","4","scalar",1,NA,"B-052"
+"cell_layer.tissue","tissue_preset_spec()$sources","A4","rho","0.67900000000000005","scalar",1,NA,"B-139"
+"cell_layer.tissue","tissue_preset_spec()$sources","A4","beta","0.45500000000000002","scalar",1,NA,"B-140"
+"cell_layer.tissue","tissue_preset_spec()$sources","A4","sigma","0.20999999999999999","scalar",1,NA,"B-141"
+"cell_layer.tissue","tissue_preset_spec()$sources","A4","density_model","27897.5","scalar",1,NA,"R3b_refs.csv"
+"cell_layer.tissue","tissue_preset_spec()$sources","A4","phi","0.79100000000000004","scalar",1,NA,"B-143"
+"cell_layer.tissue","tissue_preset_spec()$sources","A4","c8_lo","2.5899999999999999","scalar",1,NA,"B-142"
+"cell_layer.tissue","tissue_preset_spec()$sources","A4","c8_hi","4.3899999999999997","scalar",1,NA,"B-142"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","endoteliali:density","30700.607444178295","scalar",1,NA,"B-195"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","endoteliali:nucleus_to_eq_ratio","0.68493033730238895","scalar",1,NA,"B-195"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","endoteliali:nucleus_area_slope","0.45500000000000002","scalar",1,NA,"B-195"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","endoteliali:nucleus_area_sdlog","0.20999999999999999","scalar",1,NA,"B-195"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","endoteliali:nucleus_nc_max","0.79100000000000004","scalar",1,NA,"B-195"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","endoteliali:pale_fraction","0.044561503416856496","scalar",1,NA,"B-195"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","endoteliali:min_dist_um","4","scalar",1,NA,"B-195"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti B:density","26474.618876215049","scalar",1,NA,"B-196"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti B:nucleus_to_eq_ratio","0.68038092026731123","scalar",1,NA,"B-196"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti B:nucleus_area_slope","0.45500000000000002","scalar",1,NA,"B-196"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti B:nucleus_area_sdlog","0.20999999999999999","scalar",1,NA,"B-196"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti B:nucleus_nc_max","0.79100000000000004","scalar",1,NA,"B-196"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti B:pale_fraction","0.044561503416856496","scalar",1,NA,"B-196"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti B:min_dist_um","4","scalar",1,NA,"B-196"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti T:density","30238.617246292994","scalar",1,NA,"B-197"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti T:nucleus_to_eq_ratio","0.68446315657971102","scalar",1,NA,"B-197"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti T:nucleus_area_slope","0.45500000000000002","scalar",1,NA,"B-197"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti T:nucleus_area_sdlog","0.20999999999999999","scalar",1,NA,"B-197"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti T:nucleus_nc_max","0.79100000000000004","scalar",1,NA,"B-197"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti T:pale_fraction","0.044561503416856496","scalar",1,NA,"B-197"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","linfociti T:min_dist_um","4","scalar",1,NA,"B-197"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","mieloidi:density","24957.333883986965","scalar",1,NA,"B-198"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","mieloidi:nucleus_to_eq_ratio","0.67857633154691466","scalar",1,NA,"B-198"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","mieloidi:nucleus_area_slope","0.45500000000000002","scalar",1,NA,"B-198"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","mieloidi:nucleus_area_sdlog","0.20999999999999999","scalar",1,NA,"B-198"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","mieloidi:nucleus_nc_max","0.79100000000000004","scalar",1,NA,"B-198"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","mieloidi:pale_fraction","0.044561503416856496","scalar",1,NA,"B-198"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","mieloidi:min_dist_um","4","scalar",1,NA,"B-198"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","plasmacellule:density","28733.667791786414","scalar",1,NA,"B-199"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","plasmacellule:nucleus_to_eq_ratio","0.68289256921593389","scalar",1,NA,"B-199"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","plasmacellule:nucleus_area_slope","0.45500000000000002","scalar",1,NA,"B-199"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","plasmacellule:nucleus_area_sdlog","0.20999999999999999","scalar",1,NA,"B-199"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","plasmacellule:nucleus_nc_max","0.79100000000000004","scalar",1,NA,"B-199"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","plasmacellule:pale_fraction","0.044561503416856496","scalar",1,NA,"B-199"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","plasmacellule:min_dist_um","4","scalar",1,NA,"B-199"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","stromali:density","29934.080218252486","scalar",1,NA,"B-200"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","stromali:nucleus_to_eq_ratio","0.68415145571201752","scalar",1,NA,"B-200"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","stromali:nucleus_area_slope","0.45500000000000002","scalar",1,NA,"B-200"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","stromali:nucleus_area_sdlog","0.20999999999999999","scalar",1,NA,"B-200"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","stromali:nucleus_nc_max","0.79100000000000004","scalar",1,NA,"B-200"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","stromali:pale_fraction","0.044561503416856496","scalar",1,NA,"B-200"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A4","stromali:min_dist_um","4","scalar",1,NA,"B-200"
+"cell_layer.composition","tissue_preset_spec()$composition","A4","endoteliali:fraction","0.015239506095802439","scalar",1,NA,"B-195"
+"cell_layer.composition","tissue_preset_spec()$composition","A4","linfociti B:fraction","0.49463219785287915","scalar",1,NA,"B-196"
+"cell_layer.composition","tissue_preset_spec()$composition","A4","linfociti T:fraction","0.41674716669886669","scalar",1,NA,"B-197"
+"cell_layer.composition","tissue_preset_spec()$composition","A4","mieloidi:fraction","0.020219608087843236","scalar",1,NA,"B-198"
+"cell_layer.composition","tissue_preset_spec()$composition","A4","plasmacellule:fraction","0.031907812763125105","scalar",1,NA,"B-199"
+"cell_layer.composition","tissue_preset_spec()$composition","A4","stromali:fraction","0.0212537085014834","scalar",1,NA,"B-200"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A4","endoteliali:ell_um","NA","scalar",1,NA,"B-218"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A4","endoteliali:s","0","scalar",1,NA,"B-218"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A4","linfociti B:ell_um","1024","scalar",1,NA,"B-241"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A4","linfociti B:s","6","scalar",1,NA,"B-241"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A4","linfociti T:ell_um","32","scalar",1,NA,"B-242"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A4","linfociti T:s","1.5","scalar",1,NA,"B-242"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A4","mieloidi:ell_um","NA","scalar",1,NA,"B-221"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A4","mieloidi:s","0","scalar",1,NA,"B-221"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A4","plasmacellule:ell_um","NA","scalar",1,NA,"B-222"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A4","plasmacellule:s","0","scalar",1,NA,"B-222"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A4","stromali:ell_um","NA","scalar",1,NA,"B-223"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A4","stromali:s","0","scalar",1,NA,"B-223"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A4","void_frac","0.025000000000000001","scalar",1,NA,"B-262"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A4","void_ell_um","16","scalar",1,NA,"B-262"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A4","dens_sigma","0","scalar",1,NA,"B-262"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A4","dens_ell_um","NA","scalar",1,NA,"B-262"
+"step2.transcripts","transcript_params()","A4","r","0.54581662881121418","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A4","sigma_e","4.4855946479908608","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A4","D","22.04369695886815","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A4","w","0.10882106662490754","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A4","ell","41.501772107743939","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A4","b","0.041959205403786642","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A4","sigma_in","0.69999999999999996","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A4","field_s2","0.29730177875068026","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A4","field_L","1.2749999999999999","scalar",1,NA,NA
+"step2.capture","capture_params()","A4","parity_row","0.99638455802831483","scalar",1,NA,NA
+"step2.capture","capture_params()","A4","parity_col","1.1053750236147459","scalar",1,NA,NA
+"step2.capture","capture_params()","A4","sd_alpha","0.21147189286661189","scalar",1,NA,NA
+"step2.capture","capture_params()","A4","sd_beta","0.25070871928134242","scalar",1,NA,NA
+"step2.capture","capture_params()","A4","rho_alpha","-0.38980060360620361","scalar",1,NA,NA
+"step2.capture","capture_params()","A4","rho_beta","-0.46118078123328587","scalar",1,NA,NA
+"step2.capture","capture_params()","A4","b","0","scalar",1,NA,NA
+"step2.capture","capture_params()","A4","w2","0.0363070477108733","scalar",1,NA,NA
+"step2.capture","capture_params()","A4","ell2","1575.0424940987946","scalar",1,NA,NA
+"step2.capture","capture_params()$parity_field","A4","sd_row","0.089999999999999997","scalar",1,NA,NA
+"step2.capture","capture_params()$parity_field","A4","sd_col","0.050000000000000003","scalar",1,NA,NA
+"step2.capture","capture_params()$parity_field","A4","corr_um","300","scalar",1,NA,NA
+"step2.depth","visium_hd_depth_factor()","A4","depth_factor","0.81913993881857006","scalar",1,NA,NA
+"step2.profiles","load_cell_profiles()$P","A4","P (subtype x gene)",NA,"table",1722540,"991b89d843b7900daf88318be8c72378",NA
+"step2.profiles","load_cell_profiles()$phi","A4","phi (per gene)",NA,"table",18132,"6032da473ec6eadfb17d99035a89d539",NA
+"step2.profiles","load_cell_profiles()$totals","A4","totals (quantiles per type)",NA,"table",7007,"ced47e657796705f79b7d1a5662c8ebb",NA
+"step2.profiles","load_cell_profiles()$subtypes","A4","subtype shares",NA,"table",95,"1c0df720d06b65a289b3c898fc4df450",NA
+"step2.profiles","load_cell_profiles()$meta","A4","depth_factor_S2.2 (superseded by visium_hd_depth_factor)","0.78671471279487903","scalar",1,NA,NA
+"step2.profiles","load_cell_profiles()$meta","A4","n_cells_source","60395","scalar",1,NA,NA
+"cell_layer.tissue","tissue_preset_spec()$sources","A5","density","1185","scalar",1,NA,"B-047"
+"cell_layer.tissue","tissue_preset_spec()$sources","A5","density_evident","953","scalar",1,NA,"B-047"
+"cell_layer.tissue","tissue_preset_spec()$sources","A5","min_dist_um","7","scalar",1,NA,"B-053"
+"cell_layer.tissue","tissue_preset_spec()$sources","A5","rho","0.28199999999999997","scalar",1,NA,"B-103"
+"cell_layer.tissue","tissue_preset_spec()$sources","A5","beta","0.621","scalar",1,NA,"B-104"
+"cell_layer.tissue","tissue_preset_spec()$sources","A5","sigma","0.81299999999999994","scalar",1,NA,"B-105"
+"cell_layer.tissue","tissue_preset_spec()$sources","A5","density_model","1039.7","scalar",1,NA,"S1.4_calibration.csv"
+"cell_layer.tissue","tissue_preset_spec()$sources","A5","phi","0.47399999999999998","scalar",1,NA,"B-125"
+"cell_layer.tissue","tissue_preset_spec()$sources","A5","c8_lo","6.9500000000000002","scalar",1,NA,"B-113"
+"cell_layer.tissue","tissue_preset_spec()$sources","A5","c8_hi","26.879999999999999","scalar",1,NA,"B-113"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","astrociti:density","1298.9600270602423","scalar",1,NA,"B-201"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","astrociti:nucleus_to_eq_ratio","0.20880577417737495","scalar",1,NA,"B-201"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","astrociti:nucleus_area_slope","0.58856699999999995","scalar",1,NA,"B-201"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","astrociti:nucleus_area_sdlog","0.86733199999999999","scalar",1,NA,"B-201"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","astrociti:nucleus_nc_max","0.47399999999999998","scalar",1,NA,"B-201"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","astrociti:pale_fraction","0.19578059071729959","scalar",1,NA,"B-201"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","astrociti:min_dist_um","7","scalar",1,NA,"B-201"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","microglia:density","874.3744267258129","scalar",1,NA,"B-202"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","microglia:nucleus_to_eq_ratio","0.21625543168124856","scalar",1,NA,"B-202"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","microglia:nucleus_area_slope","0.58856699999999995","scalar",1,NA,"B-202"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","microglia:nucleus_area_sdlog","0.86733199999999999","scalar",1,NA,"B-202"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","microglia:nucleus_nc_max","0.47399999999999998","scalar",1,NA,"B-202"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","microglia:pale_fraction","0.19578059071729959","scalar",1,NA,"B-202"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","microglia:min_dist_um","7","scalar",1,NA,"B-202"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","oligodendrociti:density","2594.4750666752525","scalar",1,NA,"B-203"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","oligodendrociti:nucleus_to_eq_ratio","0.19639581087394539","scalar",1,NA,"B-203"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","oligodendrociti:nucleus_area_slope","0.58856699999999995","scalar",1,NA,"B-203"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","oligodendrociti:nucleus_area_sdlog","0.86733199999999999","scalar",1,NA,"B-203"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","oligodendrociti:nucleus_nc_max","0.47399999999999998","scalar",1,NA,"B-203"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","oligodendrociti:pale_fraction","0.19578059071729959","scalar",1,NA,"B-203"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","oligodendrociti:min_dist_um","7","scalar",1,NA,"B-203"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","vascolari:density","946.21371102336809","scalar",1,NA,"B-204"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","vascolari:nucleus_to_eq_ratio","0.21474838354446729","scalar",1,NA,"B-204"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","vascolari:nucleus_area_slope","0.58856699999999995","scalar",1,NA,"B-204"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","vascolari:nucleus_area_sdlog","0.86733199999999999","scalar",1,NA,"B-204"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","vascolari:nucleus_nc_max","0.47399999999999998","scalar",1,NA,"B-204"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","vascolari:pale_fraction","0.19578059071729959","scalar",1,NA,"B-204"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","vascolari:min_dist_um","7","scalar",1,NA,"B-204"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","neuroni:density","1069.3089173252838","scalar",1,NA,"B-205"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","neuroni:nucleus_to_eq_ratio","0.33445452214973209","scalar",1,NA,"B-205"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","neuroni:nucleus_area_slope","0.20494999999999999","scalar",1,NA,"B-205"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","neuroni:nucleus_area_sdlog","0.47845399999999999","scalar",1,NA,"B-205"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","neuroni:nucleus_nc_max","0.47399999999999998","scalar",1,NA,"B-205"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","neuroni:pale_fraction","0.19578059071729959","scalar",1,NA,"B-205"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A5","neuroni:min_dist_um","7","scalar",1,NA,"B-205"
+"cell_layer.composition","tissue_preset_spec()$composition","A5","astrociti:fraction","0.061063693893630602","scalar",1,NA,"B-201"
+"cell_layer.composition","tissue_preset_spec()$composition","A5","microglia:fraction","0.031342796865720307","scalar",1,NA,"B-202"
+"cell_layer.composition","tissue_preset_spec()$composition","A5","oligodendrociti:fraction","0.16838098316190167","scalar",1,NA,"B-203"
+"cell_layer.composition","tissue_preset_spec()$composition","A5","vascolari:fraction","0.039676596032340396","scalar",1,NA,"B-204"
+"cell_layer.composition","tissue_preset_spec()$composition","A5","neuroni:fraction","0.69953593004640702","scalar",1,NA,"B-205"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A5","astrociti:ell_um","8","scalar",1,NA,"B-245"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A5","astrociti:s","5","scalar",1,NA,"B-245"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A5","microglia:ell_um","NA","scalar",1,NA,"B-225"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A5","microglia:s","0","scalar",1,NA,"B-225"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A5","oligodendrociti:ell_um","512","scalar",1,NA,"B-244"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A5","oligodendrociti:s","1","scalar",1,NA,"B-244"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A5","vascolari:ell_um","NA","scalar",1,NA,"B-227"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A5","vascolari:s","0","scalar",1,NA,"B-227"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A5","neuroni:ell_um","128","scalar",1,NA,"B-243"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A5","neuroni:s","3","scalar",1,NA,"B-243"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A5","void_frac","0.14999999999999999","scalar",1,NA,"B-263"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A5","void_ell_um","64","scalar",1,NA,"B-263"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A5","dens_sigma","0","scalar",1,NA,"B-263"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A5","dens_ell_um","NA","scalar",1,NA,"B-263"
+"step2.transcripts","transcript_params()","A5","r","1.4834764850727304","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A5","sigma_e","4.9941821590996938","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A5","D","6.8603277929163129","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A5","w","0.11230122544048957","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A5","ell","33.070215508690602","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A5","b","0.30868909091197611","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A5","sigma_in","0.69999999999999996","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A5","field_s2","0.074325444687670064","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A5","field_L","1.2749999999999999","scalar",1,NA,NA
+"step2.capture","capture_params()","A5","parity_row","1.2006273753763901","scalar",1,NA,NA
+"step2.capture","capture_params()","A5","parity_col","1.2314151614428399","scalar",1,NA,NA
+"step2.capture","capture_params()","A5","sd_alpha","0.24199615903775379","scalar",1,NA,NA
+"step2.capture","capture_params()","A5","sd_beta","0.18039228078644279","scalar",1,NA,NA
+"step2.capture","capture_params()","A5","rho_alpha","-0.30997779650834179","scalar",1,NA,NA
+"step2.capture","capture_params()","A5","rho_beta","-0.29630029005140401","scalar",1,NA,NA
+"step2.capture","capture_params()","A5","b","0.14742271032346721","scalar",1,NA,NA
+"step2.capture","capture_params()","A5","w2","0.0412021259748441","scalar",1,NA,NA
+"step2.capture","capture_params()","A5","ell2","304.59460471626346","scalar",1,NA,NA
+"step2.depth","visium_hd_depth_factor()","A5","depth_factor","1.4278291184727523","scalar",1,NA,NA
+"step2.profiles","load_cell_profiles()$P","A5","P (subtype x gene)",NA,"table",381400,"ec8c6613c8f0108b5d2aa41d41bed0a6",NA
+"step2.profiles","load_cell_profiles()$phi","A5","phi (per gene)",NA,"table",19070,"4d62ddd8439a52df2e6a406ece34ffd6",NA
+"step2.profiles","load_cell_profiles()$totals","A5","totals (quantiles per type)",NA,"table",6006,"c0d7a5990eac8fa48696c99e1989fd11",NA
+"step2.profiles","load_cell_profiles()$subtypes","A5","subtype shares",NA,"table",20,"38e444f9bb416711eefdf33148f67f20",NA
+"step2.profiles","load_cell_profiles()$meta","A5","depth_factor_S2.2 (superseded by visium_hd_depth_factor)","1.2518099225033217","scalar",1,NA,NA
+"step2.profiles","load_cell_profiles()$meta","A5","n_cells_source","3871","scalar",1,NA,NA
+"cell_layer.tissue","tissue_preset_spec()$sources","A6","density","988","scalar",1,NA,"B-048"
+"cell_layer.tissue","tissue_preset_spec()$sources","A6","density_evident","906","scalar",1,NA,"B-048"
+"cell_layer.tissue","tissue_preset_spec()$sources","A6","min_dist_um","2.5","scalar",1,NA,"B-054"
+"cell_layer.tissue","tissue_preset_spec()$sources","A6","rho","0.154","scalar",1,NA,"B-150"
+"cell_layer.tissue","tissue_preset_spec()$sources","A6","beta","0.122","scalar",1,NA,"B-151"
+"cell_layer.tissue","tissue_preset_spec()$sources","A6","sigma","0.48999999999999999","scalar",1,NA,"B-152"
+"cell_layer.tissue","tissue_preset_spec()$sources","A6","density_model","1062.4000000000001","scalar",1,NA,"R3b_refs.csv"
+"cell_layer.tissue","tissue_preset_spec()$sources","A6","phi","0.14899999999999999","scalar",1,NA,"B-154"
+"cell_layer.tissue","tissue_preset_spec()$sources","A6","c8_lo","8.8399999999999999","scalar",1,NA,"B-153"
+"cell_layer.tissue","tissue_preset_spec()$sources","A6","c8_hi","24.010000000000002","scalar",1,NA,"B-153"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","cardiomiociti:density","914.42976486757414","scalar",1,NA,"B-206"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","cardiomiociti:nucleus_to_eq_ratio","0.14334071265302362","scalar",1,NA,"B-206"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","cardiomiociti:nucleus_area_slope","0.122","scalar",1,NA,"B-206"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","cardiomiociti:nucleus_area_sdlog","0.48999999999999999","scalar",1,NA,"B-206"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","cardiomiociti:nucleus_nc_max","0.14899999999999999","scalar",1,NA,"B-206"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","cardiomiociti:pale_fraction","0.082995951417003999","scalar",1,NA,"B-206"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","cardiomiociti:min_dist_um","2.5","scalar",1,NA,"B-206"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","fibroblasti:density","1169.0380540344386","scalar",1,NA,"B-207"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","fibroblasti:nucleus_to_eq_ratio","0.15728740764767304","scalar",1,NA,"B-207"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","fibroblasti:nucleus_area_slope","0.122","scalar",1,NA,"B-207"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","fibroblasti:nucleus_area_sdlog","0.48999999999999999","scalar",1,NA,"B-207"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","fibroblasti:nucleus_nc_max","0.14899999999999999","scalar",1,NA,"B-207"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","fibroblasti:pale_fraction","0.082995951417003999","scalar",1,NA,"B-207"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","fibroblasti:min_dist_um","2.5","scalar",1,NA,"B-207"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","immunitari:density","1541.0362011949858","scalar",1,NA,"B-208"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","immunitari:nucleus_to_eq_ratio","0.17460150363566695","scalar",1,NA,"B-208"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","immunitari:nucleus_area_slope","0.122","scalar",1,NA,"B-208"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","immunitari:nucleus_area_sdlog","0.48999999999999999","scalar",1,NA,"B-208"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","immunitari:nucleus_nc_max","0.14899999999999999","scalar",1,NA,"B-208"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","immunitari:pale_fraction","0.082995951417003999","scalar",1,NA,"B-208"
+"cell_layer.type_catalogue","tissue_preset_spec()$cell_types","A6","immunitari:min_dist_um","2.5","scalar",1,NA,"B-208"
+"cell_layer.composition","tissue_preset_spec()$composition","A6","cardiomiociti:fraction","0.75761900000000004","scalar",1,NA,"B-206"
+"cell_layer.composition","tissue_preset_spec()$composition","A6","fibroblasti:fraction","0.12759000000000001","scalar",1,NA,"B-207"
+"cell_layer.composition","tissue_preset_spec()$composition","A6","immunitari:fraction","0.114791","scalar",1,NA,"B-208"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A6","cardiomiociti:ell_um","64","scalar",1,NA,"B-246"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A6","cardiomiociti:s","2","scalar",1,NA,"B-246"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A6","fibroblasti:ell_um","512","scalar",1,NA,"B-247"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A6","fibroblasti:s","1.5","scalar",1,NA,"B-247"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A6","immunitari:ell_um","8","scalar",1,NA,"B-248"
+"cell_layer.compartments(option)","tissue_preset_spec()$compartments","A6","immunitari:s","3.5","scalar",1,NA,"B-248"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A6","void_frac","0.025000000000000001","scalar",1,NA,"B-264"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A6","void_ell_um","32","scalar",1,NA,"B-264"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A6","dens_sigma","0","scalar",1,NA,"B-264"
+"cell_layer.heterogeneity","tissue_preset_spec()$heterogeneity","A6","dens_ell_um","NA","scalar",1,NA,"B-264"
+"step2.transcripts","transcript_params()","A6","r","2.6051175129180271","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A6","sigma_e","4.8589204566514201","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A6","D","15.490242503957607","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A6","w","0.098006077518232565","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A6","ell","32.96134767116726","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A6","b","0.1171531387445022","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A6","sigma_in","0.69999999999999996","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A6","field_s2","0.8408964152537145","scalar",1,NA,NA
+"step2.transcripts","transcript_params()","A6","field_L","0.88500000000000001","scalar",1,NA,NA
+"step2.capture","capture_params()","A6","parity_row","0.94686708494492722","scalar",1,NA,NA
+"step2.capture","capture_params()","A6","parity_col","0.96696207999664097","scalar",1,NA,NA
+"step2.capture","capture_params()","A6","sd_alpha","0.18277732940929561","scalar",1,NA,NA
+"step2.capture","capture_params()","A6","sd_beta","0.18778970098306719","scalar",1,NA,NA
+"step2.capture","capture_params()","A6","rho_alpha","-0.1744003290742564","scalar",1,NA,NA
+"step2.capture","capture_params()","A6","rho_beta","-0.20815868217018299","scalar",1,NA,NA
+"step2.capture","capture_params()","A6","b","0","scalar",1,NA,NA
+"step2.capture","capture_params()","A6","w2","0.077352212357116798","scalar",1,NA,NA
+"step2.capture","capture_params()","A6","ell2","113.04482436271418","scalar",1,NA,NA
+"step2.depth","visium_hd_depth_factor()","A6","depth_factor","2.9386716762361265","scalar",1,NA,NA
+"step2.profiles","load_cell_profiles()$P","A6","P (subtype x gene)",NA,"table",235105,"f03baf1dd3dd8cebbd84eea0debb74b3",NA
+"step2.profiles","load_cell_profiles()$phi","A6","phi (per gene)",NA,"table",18085,"fdb4a42dc46ee481b6363e9a423fd60b",NA
+"step2.profiles","load_cell_profiles()$totals","A6","totals (quantiles per type)",NA,"table",4004,"e073d413b244535ca25de976e87937a9",NA
+"step2.profiles","load_cell_profiles()$subtypes","A6","subtype shares",NA,"table",13,"536e7c171957a4a5e3618e90fefcc275",NA
+"step2.profiles","load_cell_profiles()$meta","A6","depth_factor_S2.2 (superseded by visium_hd_depth_factor)","2.6249399804310785","scalar",1,NA,NA
+"step2.profiles","load_cell_profiles()$meta","A6","n_cells_source","4922","scalar",1,NA,NA
+"cell_layer.size_resid(option)","inst/extdata/size_resid.csv","A1","empirical residuals",NA,"table",2222,"25177b1f2d416374ffff41c2f463608b",NA
+"cell_layer.size_resid(option)","inst/extdata/size_resid.csv","A2","empirical residuals",NA,"table",2222,"1fad8bb45d1df93bf7ebe0569eb28fb2",NA
+"cell_layer.size_resid(option)","inst/extdata/size_resid.csv","A3","empirical residuals",NA,"table",2222,"86fa5fc70718c745e7cea47bf6433e17",NA
+"cell_layer.size_resid(option)","inst/extdata/size_resid.csv","A4","empirical residuals",NA,"table",1111,"893a6f1608743c6ffc4cabe96c1d991b",NA
+"cell_layer.size_resid(option)","inst/extdata/size_resid.csv","A5","empirical residuals",NA,"table",2222,"6fe8ed7581659a08af8aa12baf97f696",NA
+"cell_layer.size_resid(option)","inst/extdata/size_resid.csv","A6","empirical residuals",NA,"table",1111,"abcf9e4ea069b384b900f176c7b9875c",NA
+"cell_layer.defaults",".TP_SPATIAL_DEFAULT","all","spatial","uniform","setting",1,NA,NA
+"cell_layer.defaults",".TP_SIZE_RESID_DEFAULT","all","size_resid","gaussian","setting",1,NA,NA
+"step2.grid","build_hd_grid() formals","all","margin_um","280","scalar",1,NA,NA
+"step2.grid","build_hd_grid() formals","all","bin_um","2","scalar",1,NA,NA
+"step2.pieces",".P27_TILE_UM","all","tile_um","56","scalar",1,NA,NA
