@@ -88,19 +88,19 @@ def g4():
     check("G-4 (a) mappa: stesse righe dei file sorgente", cnt.get("R2_ROI") == n_r2 and cnt.get("R2b_WINDOW") == len(w) and cnt.get("R5_EDGE_TILE") == n_r5,
           f"R2 {cnt.get('R2_ROI')}/{n_r2}, R2b {cnt.get('R2b_WINDOW')}/{len(w)}, R5 {cnt.get('R5_EDGE_TILE')}/{n_r5}")
     check("G-4 (a) finestre di R2b dentro le aree di R2", bool(w.inside_roi.all()))
-    files = sorted(OUT.glob("F3.2_areas2_*.csv"))
+    files = sorted(OUT.glob("F3.2_selected_*.csv"))
     if files:
         mins = []; pair = []
         for f in files:
             d = pd.read_csv(f); lab = d.label.iloc[0]
             if lab not in ("A1", "A23", "A4", "A5", "A6"): continue
-            used = [tuple(v) for v in u[(u.section == lab) & u.x0.notna()][["x0", "y0", "x1", "y1"]].values]
+            used = [tuple(v) for v in u[(u.section == lab) & u.set.isin(["R2_ROI", "R2b_WINDOW"])][["x0", "y0", "x1", "y1"]].values]   # DEC-094
             ar = d[d.level == "L1"]; boxes = [tuple(v) for v in ar[["x0", "y0", "x1", "y1"]].values]
             test = [tuple(v) for v in d[d.level == "test_tile"][["x0", "y0", "x1", "y1"]].values]
             for i, b in enumerate(boxes):
                 mins.append(min(gap(b, x) for x in used + test))
                 pair += [gap(b, c) for c in boxes[i + 1:]]
-        check("G-4 (b) aree di L1 a >= 280 um da ogni area usata e dalla tessera di prova", bool(mins) and min(mins) >= 280 - 1e-6, f"minimo {min(mins):.1f} um su {len(mins)} aree" if mins else "nessuna area")
+        check("G-4 (b) aree di L1 a >= 280 um dalle aree di R2, dalle finestre e dalla tessera di prova (DEC-094)", bool(mins) and min(mins) >= 280 - 1e-6, f"minimo {min(mins):.1f} um su {len(mins)} aree" if mins else "nessuna area")
         check("G-4 (b) aree di L1 a >= 280 um fra loro", (not pair) or min(pair) >= 280 - 1e-6, f"minimo {min(pair):.1f} um" if pair else "")
     else:
         check("G-4 (b) aree di L1 estratte", False, "nessun file F3.2_areas2_*.csv")

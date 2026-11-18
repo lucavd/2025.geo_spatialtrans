@@ -67,7 +67,7 @@ def main():
                 rec.update(source_id="", source_session="", source_text="", area_set="UNKNOWN", note="")
         rec["section"] = SECTION_OF[r["archetype"]]
         a = rec["area_set"]
-        rec["L1_out_of_sample"] = a in ("R2_ROI", "R2b_WINDOW", "R5_EDGE_TILE")      # le aree nuove stanno a >= 280 um da queste
+        rec["L1_out_of_sample"] = a in ("R2_ROI", "R2b_WINDOW")       # DEC-094: le aree nuove stanno a >= 280 um da queste, non dalle tessere di bordo
         rec["L2_out_of_sample"] = a != "DESIGN"
         rec["L3_out_of_sample"] = r["family"] in TECH and a != "DESIGN"
         out.append(rec)

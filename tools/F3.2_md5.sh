@@ -26,7 +26,9 @@ for l in open("results/F3.1/F3.1_md5_after.txt"):
 for l in open("data/real/checksums.md5"):
     if l.strip():
         m, p = l.split(maxsplit=1); p = p.strip().lstrip("*")
-        full = os.path.join("/mnt/micron/geo_spatialtrans/data_real", p[2:] if p.startswith("./") else p)
+        p = p[2:] if p.startswith("./") else p
+        p = p[len("datasets/"):] if p.startswith("datasets/") else p
+        full = os.path.join("/mnt/micron/geo_spatialtrans/data_real", p)
         hist[full] = (m, "R1")
 n = bad = 0
 for p, m in cur.items():

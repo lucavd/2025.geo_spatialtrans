@@ -442,7 +442,8 @@ def pool(label):
     n_cls = len(PANEL[tissue]); n_want = 2 * 5 * n_cls; cmin = cov_min(tissue)
     level = "L1" if label in CAL else ("L3" if tissue == "none" else "L2")
     used_df = pd.read_csv(OUT / "F3.2_used_areas.csv")
-    blocked = [tuple(v) for v in used_df[(used_df.section == label) & used_df.x0.notna()][["x0", "y0", "x1", "y1"]].values] if label in CAL else []
+    L1_SETS = ["R2_ROI", "R2b_WINDOW"]                                          # DEC-094: non le tessere di bordo di R5
+    blocked = [tuple(v) for v in used_df[(used_df.section == label) & used_df.set.isin(L1_SETS)][["x0", "y0", "x1", "y1"]].values] if label in CAL else []
     cx, cy = float(np.median(B.x)), float(np.median(B.y))
     test = (cx - TEST_TILE_UM / 2, cy - TEST_TILE_UM / 2, cx + TEST_TILE_UM / 2, cy + TEST_TILE_UM / 2); blocked.append(test)
     gx0, gy0 = math.floor(B.x.min() / TILE_UM) * TILE_UM, math.floor(B.y.min() / TILE_UM) * TILE_UM
@@ -461,8 +462,10 @@ def pool(label):
         except Exception as e: print("H&E non letto", box, e, flush=True); continue
         if grey > GREY_MAX: continue
         taken.append(box)
+        r5 = [tuple(v) for v in used_df[(used_df.section == label) & (used_df.set == "R5_EDGE_TILE")][["x0", "y0", "x1", "y1"]].values] if label in CAL else []
         rows.append(dict(label=label, level=level, order=len(taken), area_id=f"{label}_c{len(taken):02d}", x0=box[0], y0=box[1], x1=box[2], y1=box[3],
-                         coverage=float(cov[j, i]), cov_min=cmin, grey_frac=grey, um_per_px=u, n_admissible=int(len(cand))))
+                         coverage=float(cov[j, i]), cov_min=cmin, grey_frac=grey, um_per_px=u, n_admissible=int(len(cand)),
+                         gap_to_R5_um=(min(gap(box, q) for q in r5) if r5 else np.nan)))
         if len(taken) == n_want: break
     rows.append(dict(label=label, level="test_tile", order=0, area_id=f"{label}_stardist_test", x0=test[0], y0=test[1], x1=test[2], y1=test[3],
                      coverage=np.nan, cov_min=np.nan, grey_frac=np.nan, um_per_px=u, n_admissible=0))
