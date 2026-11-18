@@ -1,0 +1,61 @@
+side,area,type,umi,own,from_B_or_plasma
+sim,A4_f1_k0,endoteliali,10938,6853,2616
+sim,A4_f1_k0,linfociti B,639045,484212,95592
+sim,A4_f1_k0,linfociti T,374509,254456,74143
+sim,A4_f1_k0,mieloidi,25981,19285,4170
+sim,A4_f1_k0,plasmacellule,34304,24972,5787
+sim,A4_f1_k0,stromali,18930,12831,3765
+sim,A4_f2_k0,endoteliali,12034,7565,2752
+sim,A4_f2_k0,linfociti B,642476,485535,97622
+sim,A4_f2_k0,linfociti T,376969,255624,75440
+sim,A4_f2_k0,mieloidi,26422,19648,4205
+sim,A4_f2_k0,plasmacellule,32273,22952,5742
+sim,A4_f2_k0,stromali,18640,12385,3877
+sim,A4_p1_k0,endoteliali,11783,7593,2595
+sim,A4_p1_k0,linfociti B,651301,497700,95024
+sim,A4_p1_k0,linfociti T,376580,258842,73007
+sim,A4_p1_k0,mieloidi,27557,20336,4524
+sim,A4_p1_k0,plasmacellule,34594,25337,5646
+sim,A4_p1_k0,stromali,18381,12447,3676
+sim,A4_p2_k0,endoteliali,11869,7440,2710
+sim,A4_p2_k0,linfociti B,640791,486268,96078
+sim,A4_p2_k0,linfociti T,377598,258114,73955
+sim,A4_p2_k0,mieloidi,27022,20233,4272
+sim,A4_p2_k0,plasmacellule,32302,23263,5586
+sim,A4_p2_k0,stromali,19075,12581,3976
+sim,A4_p3_k0,endoteliali,10947,6912,2482
+sim,A4_p3_k0,linfociti B,643584,493023,93842
+sim,A4_p3_k0,linfociti T,375158,259548,72121
+sim,A4_p3_k0,mieloidi,26611,20185,3964
+sim,A4_p3_k0,plasmacellule,34386,25242,5677
+sim,A4_p3_k0,stromali,18427,12461,3752
+simq6,A4_f1_k0,endoteliali,11497,7418,1901
+simq6,A4_f1_k0,linfociti B,626490,465701,123941
+simq6,A4_f1_k0,linfociti T,378629,263147,53551
+simq6,A4_f1_k0,mieloidi,23043,17677,2395
+simq6,A4_f1_k0,plasmacellule,37208,27222,4950
+simq6,A4_f1_k0,stromali,21158,14665,2924
+simq6,A4_f2_k0,endoteliali,13717,8403,3299
+simq6,A4_f2_k0,linfociti B,618968,468216,101327
+simq6,A4_f2_k0,linfociti T,386542,263155,64246
+simq6,A4_f2_k0,mieloidi,23511,17436,3893
+simq6,A4_f2_k0,plasmacellule,34589,24427,6358
+simq6,A4_f2_k0,stromali,19866,13355,4117
+simq6,A4_p1_k0,endoteliali,13476,8659,2971
+simq6,A4_p1_k0,linfociti B,633338,480203,112210
+simq6,A4_p1_k0,linfociti T,393716,271783,57288
+simq6,A4_p1_k0,mieloidi,24996,18796,3501
+simq6,A4_p1_k0,plasmacellule,34550,25143,5434
+simq6,A4_p1_k0,stromali,21028,14297,3982
+simq6,A4_p2_k0,endoteliali,13502,8211,3549
+simq6,A4_p2_k0,linfociti B,626609,470564,117889
+simq6,A4_p2_k0,linfociti T,383136,264442,49165
+simq6,A4_p2_k0,mieloidi,23247,17257,4197
+simq6,A4_p2_k0,plasmacellule,36364,25623,7236
+simq6,A4_p2_k0,stromali,19292,12424,4713
+simq6,A4_p3_k0,endoteliali,12362,8231,1496
+simq6,A4_p3_k0,linfociti B,649008,485690,139475
+simq6,A4_p3_k0,linfociti T,372554,263480,36157
+simq6,A4_p3_k0,mieloidi,23215,17979,1988
+simq6,A4_p3_k0,plasmacellule,36648,27698,3408
+simq6,A4_p3_k0,stromali,20616,14346,2345

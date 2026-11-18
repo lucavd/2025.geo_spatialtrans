@@ -1,0 +1,198 @@
+source,area,type,umi,ig
+reference,all,endoteliali,89848.0,948.0
+reference,all,linfociti B,467010.0,44910.0
+reference,all,linfociti T,304952.0,1677.0
+reference,all,mieloidi,215419.0,1790.0
+reference,all,plasmacellule,287297.0,69902.0
+reference,all,stromali,153043.0,1111.0
+reference,all,TUTTE,1517569.0,120338.0
+real_area_all_bins,A4_f1,TUTTE_AREA,2983362.0,202871.0
+real_nucleus_bins,A4_f1,endoteliali,9420.0,115.0
+real_nucleus_bins,A4_f1,linfociti B,549958.0,55065.0
+real_nucleus_bins,A4_f1,linfociti T,146641.0,1176.0
+real_nucleus_bins,A4_f1,mieloidi,17659.0,221.0
+real_nucleus_bins,A4_f1,plasmacellule,42814.0,10323.0
+real_nucleus_bins,A4_f1,stromali,8117.0,55.0
+real_nucleus_bins,A4_f1,TUTTE,774609.0,66955.0
+real_area_all_bins,A4_f2,TUTTE_AREA,3128568.0,146866.0
+real_nucleus_bins,A4_f2,endoteliali,6089.0,69.0
+real_nucleus_bins,A4_f2,linfociti B,566150.0,44393.0
+real_nucleus_bins,A4_f2,linfociti T,227379.0,1168.0
+real_nucleus_bins,A4_f2,mieloidi,18983.0,129.0
+real_nucleus_bins,A4_f2,plasmacellule,17929.0,3975.0
+real_nucleus_bins,A4_f2,stromali,11897.0,106.0
+real_nucleus_bins,A4_f2,TUTTE,848427.0,49840.0
+real_area_all_bins,A4_p1,TUTTE_AREA,2379328.0,57593.0
+real_nucleus_bins,A4_p1,endoteliali,8437.0,58.0
+real_nucleus_bins,A4_p1,linfociti B,180160.0,15052.0
+real_nucleus_bins,A4_p1,linfociti T,269238.0,887.0
+real_nucleus_bins,A4_p1,mieloidi,8888.0,72.0
+real_nucleus_bins,A4_p1,plasmacellule,10942.0,2462.0
+real_nucleus_bins,A4_p1,stromali,12890.0,42.0
+real_nucleus_bins,A4_p1,TUTTE,490555.0,18573.0
+real_area_all_bins,A4_p2,TUTTE_AREA,2886493.0,135773.0
+real_nucleus_bins,A4_p2,endoteliali,6508.0,58.0
+real_nucleus_bins,A4_p2,linfociti B,443368.0,41401.0
+real_nucleus_bins,A4_p2,linfociti T,263985.0,1655.0
+real_nucleus_bins,A4_p2,mieloidi,14728.0,83.0
+real_nucleus_bins,A4_p2,plasmacellule,23604.0,5158.0
+real_nucleus_bins,A4_p2,stromali,12651.0,94.0
+real_nucleus_bins,A4_p2,TUTTE,764844.0,48449.0
+real_area_all_bins,A4_p3,TUTTE_AREA,2879344.0,133600.0
+real_nucleus_bins,A4_p3,endoteliali,6930.0,33.0
+real_nucleus_bins,A4_p3,linfociti B,347304.0,39565.0
+real_nucleus_bins,A4_p3,linfociti T,315145.0,1317.0
+real_nucleus_bins,A4_p3,mieloidi,15388.0,92.0
+real_nucleus_bins,A4_p3,plasmacellule,22488.0,5731.0
+real_nucleus_bins,A4_p3,stromali,13530.0,56.0
+real_nucleus_bins,A4_p3,TUTTE,720785.0,46794.0
+sim_area_all_bins,A4_f1_k0,TUTTE_AREA,2846429.0,180125.0
+sim_nucleus_bins,A4_f1_k0,endoteliali,10938.0,358.0
+sim_nucleus_bins,A4_f1_k0,linfociti B,639045.0,54259.0
+sim_nucleus_bins,A4_f1_k0,linfociti T,374509.0,8898.0
+sim_nucleus_bins,A4_f1_k0,mieloidi,25981.0,571.0
+sim_nucleus_bins,A4_f1_k0,plasmacellule,34304.0,6094.0
+sim_nucleus_bins,A4_f1_k0,stromali,18930.0,469.0
+sim_nucleus_bins,A4_f1_k0,TUTTE,1103707.0,70649.0
+sim_profiles,A4_f1_k0,endoteliali,108507.0,1219.0
+sim_profiles,A4_f1_k0,linfociti B,6866843.0,632302.0
+sim_profiles,A4_f1_k0,linfociti T,3866674.0,20695.0
+sim_profiles,A4_f1_k0,mieloidi,268562.0,2475.0
+sim_profiles,A4_f1_k0,plasmacellule,361010.0,79410.0
+sim_profiles,A4_f1_k0,stromali,192124.0,1395.0
+sim_profiles,A4_f1_k0,TUTTE,11663720.0,737496.0
+sim_area_all_bins,A4_f2_k0,TUTTE_AREA,2874291.0,184084.0
+sim_nucleus_bins,A4_f2_k0,endoteliali,12034.0,369.0
+sim_nucleus_bins,A4_f2_k0,linfociti B,642476.0,54991.0
+sim_nucleus_bins,A4_f2_k0,linfociti T,376969.0,9211.0
+sim_nucleus_bins,A4_f2_k0,mieloidi,26422.0,602.0
+sim_nucleus_bins,A4_f2_k0,plasmacellule,32273.0,5829.0
+sim_nucleus_bins,A4_f2_k0,stromali,18640.0,498.0
+sim_nucleus_bins,A4_f2_k0,TUTTE,1108814.0,71500.0
+sim_profiles,A4_f2_k0,endoteliali,115614.0,1207.0
+sim_profiles,A4_f2_k0,linfociti B,6951078.0,646178.0
+sim_profiles,A4_f2_k0,linfociti T,3891071.0,20909.0
+sim_profiles,A4_f2_k0,mieloidi,271208.0,2386.0
+sim_profiles,A4_f2_k0,plasmacellule,354539.0,82073.0
+sim_profiles,A4_f2_k0,stromali,188126.0,1323.0
+sim_profiles,A4_f2_k0,TUTTE,11771636.0,754076.0
+sim_area_all_bins,A4_p1_k0,TUTTE_AREA,2892852.0,183112.0
+sim_nucleus_bins,A4_p1_k0,endoteliali,11783.0,335.0
+sim_nucleus_bins,A4_p1_k0,linfociti B,651301.0,55486.0
+sim_nucleus_bins,A4_p1_k0,linfociti T,376580.0,8860.0
+sim_nucleus_bins,A4_p1_k0,mieloidi,27557.0,652.0
+sim_nucleus_bins,A4_p1_k0,plasmacellule,34594.0,6046.0
+sim_nucleus_bins,A4_p1_k0,stromali,18381.0,482.0
+sim_nucleus_bins,A4_p1_k0,TUTTE,1120196.0,71861.0
+sim_profiles,A4_p1_k0,endoteliali,117830.0,1184.0
+sim_profiles,A4_p1_k0,linfociti B,7018789.0,642586.0
+sim_profiles,A4_p1_k0,linfociti T,3890363.0,21073.0
+sim_profiles,A4_p1_k0,mieloidi,263928.0,2235.0
+sim_profiles,A4_p1_k0,plasmacellule,371155.0,82019.0
+sim_profiles,A4_p1_k0,stromali,190818.0,1449.0
+sim_profiles,A4_p1_k0,TUTTE,11852883.0,750546.0
+sim_area_all_bins,A4_p2_k0,TUTTE_AREA,2869695.0,182156.0
+sim_nucleus_bins,A4_p2_k0,endoteliali,11869.0,344.0
+sim_nucleus_bins,A4_p2_k0,linfociti B,640791.0,54656.0
+sim_nucleus_bins,A4_p2_k0,linfociti T,377598.0,9032.0
+sim_nucleus_bins,A4_p2_k0,mieloidi,27022.0,578.0
+sim_nucleus_bins,A4_p2_k0,plasmacellule,32302.0,5769.0
+sim_nucleus_bins,A4_p2_k0,stromali,19075.0,482.0
+sim_nucleus_bins,A4_p2_k0,TUTTE,1108657.0,70861.0
+sim_profiles,A4_p2_k0,endoteliali,110786.0,1045.0
+sim_profiles,A4_p2_k0,linfociti B,6930936.0,641757.0
+sim_profiles,A4_p2_k0,linfociti T,3893247.0,21194.0
+sim_profiles,A4_p2_k0,mieloidi,267290.0,2298.0
+sim_profiles,A4_p2_k0,plasmacellule,359872.0,79934.0
+sim_profiles,A4_p2_k0,stromali,186961.0,1262.0
+sim_profiles,A4_p2_k0,TUTTE,11749092.0,747490.0
+sim_area_all_bins,A4_p3_k0,TUTTE_AREA,2878155.0,182661.0
+sim_nucleus_bins,A4_p3_k0,endoteliali,10947.0,338.0
+sim_nucleus_bins,A4_p3_k0,linfociti B,643584.0,54436.0
+sim_nucleus_bins,A4_p3_k0,linfociti T,375158.0,8689.0
+sim_nucleus_bins,A4_p3_k0,mieloidi,26611.0,597.0
+sim_nucleus_bins,A4_p3_k0,plasmacellule,34386.0,6254.0
+sim_nucleus_bins,A4_p3_k0,stromali,18427.0,473.0
+sim_nucleus_bins,A4_p3_k0,TUTTE,1109113.0,70787.0
+sim_profiles,A4_p3_k0,endoteliali,110162.0,1193.0
+sim_profiles,A4_p3_k0,linfociti B,6946038.0,638586.0
+sim_profiles,A4_p3_k0,linfociti T,3892712.0,21705.0
+sim_profiles,A4_p3_k0,mieloidi,274863.0,2136.0
+sim_profiles,A4_p3_k0,plasmacellule,377607.0,84534.0
+sim_profiles,A4_p3_k0,stromali,185398.0,1296.0
+sim_profiles,A4_p3_k0,TUTTE,11786780.0,749450.0
+simq6_area_all_bins,A4_f1_k0,TUTTE_AREA,2862963.0,182787.0
+simq6_nucleus_bins,A4_f1_k0,endoteliali,11497.0,285.0
+simq6_nucleus_bins,A4_f1_k0,linfociti B,626490.0,54834.0
+simq6_nucleus_bins,A4_f1_k0,linfociti T,378629.0,7335.0
+simq6_nucleus_bins,A4_f1_k0,mieloidi,23043.0,401.0
+simq6_nucleus_bins,A4_f1_k0,plasmacellule,37208.0,6296.0
+simq6_nucleus_bins,A4_f1_k0,stromali,21158.0,450.0
+simq6_nucleus_bins,A4_f1_k0,TUTTE,1098025.0,69601.0
+simq6_profiles,A4_f1_k0,endoteliali,108071.0,1072.0
+simq6_profiles,A4_f1_k0,linfociti B,6984255.0,642274.0
+simq6_profiles,A4_f1_k0,linfociti T,3796047.0,20619.0
+simq6_profiles,A4_f1_k0,mieloidi,258786.0,2265.0
+simq6_profiles,A4_f1_k0,plasmacellule,380767.0,81322.0
+simq6_profiles,A4_f1_k0,stromali,200973.0,1344.0
+simq6_profiles,A4_f1_k0,TUTTE,11728899.0,748896.0
+simq6_area_all_bins,A4_f2_k0,TUTTE_AREA,2870922.0,180957.0
+simq6_nucleus_bins,A4_f2_k0,endoteliali,13717.0,463.0
+simq6_nucleus_bins,A4_f2_k0,linfociti B,618968.0,52896.0
+simq6_nucleus_bins,A4_f2_k0,linfociti T,386542.0,7999.0
+simq6_nucleus_bins,A4_f2_k0,mieloidi,23511.0,506.0
+simq6_nucleus_bins,A4_f2_k0,plasmacellule,34589.0,6138.0
+simq6_nucleus_bins,A4_f2_k0,stromali,19866.0,494.0
+simq6_nucleus_bins,A4_f2_k0,TUTTE,1097193.0,68496.0
+simq6_profiles,A4_f2_k0,endoteliali,125983.0,1310.0
+simq6_profiles,A4_f2_k0,linfociti B,6904805.0,635694.0
+simq6_profiles,A4_f2_k0,linfociti T,3897331.0,21111.0
+simq6_profiles,A4_f2_k0,mieloidi,261142.0,2251.0
+simq6_profiles,A4_f2_k0,plasmacellule,367528.0,81262.0
+simq6_profiles,A4_f2_k0,stromali,194323.0,1273.0
+simq6_profiles,A4_f2_k0,TUTTE,11751112.0,742901.0
+simq6_area_all_bins,A4_p1_k0,TUTTE_AREA,2897679.0,183947.0
+simq6_nucleus_bins,A4_p1_k0,endoteliali,13476.0,384.0
+simq6_nucleus_bins,A4_p1_k0,linfociti B,633338.0,54687.0
+simq6_nucleus_bins,A4_p1_k0,linfociti T,393716.0,7695.0
+simq6_nucleus_bins,A4_p1_k0,mieloidi,24996.0,543.0
+simq6_nucleus_bins,A4_p1_k0,plasmacellule,34550.0,6024.0
+simq6_nucleus_bins,A4_p1_k0,stromali,21028.0,544.0
+simq6_nucleus_bins,A4_p1_k0,TUTTE,1121104.0,69877.0
+simq6_profiles,A4_p1_k0,endoteliali,120109.0,1237.0
+simq6_profiles,A4_p1_k0,linfociti B,6996964.0,643006.0
+simq6_profiles,A4_p1_k0,linfociti T,3912846.0,21457.0
+simq6_profiles,A4_p1_k0,mieloidi,270155.0,2299.0
+simq6_profiles,A4_p1_k0,plasmacellule,382308.0,83479.0
+simq6_profiles,A4_p1_k0,stromali,196731.0,1336.0
+simq6_profiles,A4_p1_k0,TUTTE,11879113.0,752814.0
+simq6_area_all_bins,A4_p2_k0,TUTTE_AREA,2864420.0,180053.0
+simq6_nucleus_bins,A4_p2_k0,endoteliali,13502.0,446.0
+simq6_nucleus_bins,A4_p2_k0,linfociti B,626609.0,53959.0
+simq6_nucleus_bins,A4_p2_k0,linfociti T,383136.0,6670.0
+simq6_nucleus_bins,A4_p2_k0,mieloidi,23247.0,588.0
+simq6_nucleus_bins,A4_p2_k0,plasmacellule,36364.0,6374.0
+simq6_nucleus_bins,A4_p2_k0,stromali,19292.0,546.0
+simq6_nucleus_bins,A4_p2_k0,TUTTE,1102150.0,68583.0
+simq6_profiles,A4_p2_k0,endoteliali,120688.0,1124.0
+simq6_profiles,A4_p2_k0,linfociti B,7008531.0,634907.0
+simq6_profiles,A4_p2_k0,linfociti T,3804818.0,20824.0
+simq6_profiles,A4_p2_k0,mieloidi,250136.0,2193.0
+simq6_profiles,A4_p2_k0,plasmacellule,377580.0,82882.0
+simq6_profiles,A4_p2_k0,stromali,187597.0,1144.0
+simq6_profiles,A4_p2_k0,TUTTE,11749350.0,743074.0
+simq6_area_all_bins,A4_p3_k0,TUTTE_AREA,2882455.0,187476.0
+simq6_nucleus_bins,A4_p3_k0,endoteliali,12362.0,298.0
+simq6_nucleus_bins,A4_p3_k0,linfociti B,649008.0,58243.0
+simq6_nucleus_bins,A4_p3_k0,linfociti T,372554.0,5807.0
+simq6_nucleus_bins,A4_p3_k0,mieloidi,23215.0,459.0
+simq6_nucleus_bins,A4_p3_k0,plasmacellule,36648.0,6742.0
+simq6_nucleus_bins,A4_p3_k0,stromali,20616.0,439.0
+simq6_nucleus_bins,A4_p3_k0,TUTTE,1114403.0,71988.0
+simq6_profiles,A4_p3_k0,endoteliali,115140.0,1216.0
+simq6_profiles,A4_p3_k0,linfociti B,7124826.0,660585.0
+simq6_profiles,A4_p3_k0,linfociti T,3735550.0,20117.0
+simq6_profiles,A4_p3_k0,mieloidi,260051.0,2302.0
+simq6_profiles,A4_p3_k0,plasmacellule,384346.0,84787.0
+simq6_profiles,A4_p3_k0,stromali,201447.0,1473.0
+simq6_profiles,A4_p3_k0,TUTTE,11821360.0,770480.0

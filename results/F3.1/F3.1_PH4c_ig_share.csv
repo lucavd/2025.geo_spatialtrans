@@ -1,0 +1,9 @@
+type,real_area_all_bins,real_nucleus_bins,reference,sim_area_all_bins,sim_nucleus_bins,sim_profiles,simq6_area_all_bins,simq6_nucleus_bins,simq6_profiles
+TUTTE,,0.0641,0.0793,,0.0641,0.0636,,0.063,0.0638
+TUTTE_AREA,0.0475,,,0.0635,,,0.0637,,
+endoteliali,,0.0089,0.0106,,0.0303,0.0104,,0.0291,0.0101
+linfociti B,,0.0937,0.0962,,0.0851,0.0922,,0.0871,0.0918
+linfociti T,,0.0051,0.0055,,0.0238,0.0054,,0.0185,0.0054
+mieloidi,,0.0079,0.0083,,0.0225,0.0086,,0.0212,0.0087
+plasmacellule,,0.2348,0.2433,,0.1787,0.2236,,0.176,0.2186
+stromali,,0.006,0.0073,,0.0257,0.0071,,0.0243,0.0067

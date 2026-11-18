@@ -32,6 +32,16 @@ Pre-registrazione: cancelli `fc79131`, previsioni e intervalli `c82580c`; ok di 
 
 {{< include F3.1_parts/posthoc.md >}}
 
+# Indagini dopo la lettura di Luca
+
+{{< include F3.1_parts/indagini_dichiarate.md >}}
+
+![Marcatori estranei nel solo nucleo per tessuto; linfonodo: geni delle immunoglobuline per tipo e origine vera degli UMI nei nuclei simulati. **Cosa guardare**: in intestino, tumore e stroma i punti blu stanno sopra il tratteggio (profili di partenza) e i grigi no; nel linfonodo le barre blu delle cellule T, endoteliali, mieloidi e stromali sono 3-5 volte le grigie.](F3.1_parts/F3.1_fig5_spill.png)
+
+![Anisotropia del campo degli UMI e del campo dei tipi di RCTD (PH-5) e variabilità fra le 5 aree, simulato su vero (PH-6). **Cosa guardare**: in (a) solo il cuore ha i grigi sopra i blu; in (c) composizione e densità del simulato stanno da 5 a migliaia di volte sotto il vero.](F3.1_parts/F3.1_fig6_aniso_var.png)
+
+{{< include F3.1_parts/indagini.md >}}
+
 # Correzioni
 
 {{< include F3.1_parts/correzioni.md >}}

@@ -1,0 +1,9 @@
+(1) riproduzione: .s27_cdt(): triangolazione fallita anche dopo la semplificazione (geometria 168). 
+(2) geometria 168 : tipo polygon | valida TRUE | NA | area 5494.321 um2 | vertici 253 | anelli 4 | spigolo minimo 0.489 um | spigoli < 1e-3 um: 0 
+    make_valid                             triangolazione FALLITA area triangoli NA (originale 5494.32, scarto relativo -)
+    set_precision 1e-6                     triangolazione FALLITA area triangoli NA (originale 5494.32, scarto relativo -)
+    simplify 1e-3                          triangolazione FALLITA area triangoli NA (originale 5494.32, scarto relativo -)
+    make_valid + set_precision 1e-6        triangolazione FALLITA area triangoli NA (originale 5494.32, scarto relativo -)
+    erosione 1e-6 um (dopo PH-7b)          triangolazione ok      area triangoli 5494.321 (originale 5494.32, scarto relativo -1.08e-07)
+(3) A5_r3 con la correzione: ok, UMI totali 9311944, geometrie corrette con il nuovo ripiego 1 
+(4) controllo A5_r1 (Q6): conteggi a 8 um identici con e senza la correzione: TRUE | nuovo ripiego usato 0 volte

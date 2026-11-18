@@ -1,0 +1,13 @@
+side,true_type,endoteliali,linfociti B,linfociti T,mieloidi,plasmacellule,stromali
+sim,endoteliali,0.123,0.223,0.152,0.14,0.315,0.046
+sim,linfociti B,0.003,0.478,0.118,0.062,0.329,0.011
+sim,linfociti T,0.008,0.238,0.4,0.101,0.228,0.025
+sim,mieloidi,0.017,0.271,0.171,0.241,0.269,0.031
+sim,plasmacellule,0.001,0.228,0.044,0.025,0.697,0.005
+sim,stromali,0.008,0.194,0.158,0.105,0.229,0.306
+simq6,endoteliali,0.147,0.217,0.12,0.168,0.31,0.038
+simq6,linfociti B,0.002,0.536,0.078,0.055,0.321,0.008
+simq6,linfociti T,0.012,0.135,0.552,0.109,0.159,0.033
+simq6,mieloidi,0.012,0.183,0.181,0.265,0.319,0.039
+simq6,plasmacellule,0.0,0.163,0.041,0.017,0.766,0.012
+simq6,stromali,0.009,0.127,0.157,0.092,0.286,0.329

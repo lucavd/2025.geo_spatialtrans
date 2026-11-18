@@ -1,0 +1,47 @@
+
+Calcolate dopo la dichiarazione (`4d331b4`). Tabelle in `results/F3.1/F3.1_PH4*`, `F3.1_PH5_*`, `F3.1_PH6_*`, `F3.1_PH7.log`; figure 5 e 6 del report. Gli esiti di F3.1 non cambiano. Dove un'analisi è nata dopo aver visto un risultato lo si scrive (**non pre-registrata**).
+
+**PH-4, linfonodo: non spiegato secondo il criterio; meccanismo trovato dopo** (`tools/F3.1_PH4_lymph.py`, `F3.1_PH4b_blocks.py`, `F3.1_PH4c_ig.py`).
+- Domanda 1, profili. Con il classificatore multinomiale contro il riferimento di F3.1, i profili veri generati dei B simulati, ridotti alla profondità dei nuclei B veri, sono chiamati plasmacellule nello 0.099 dei casi, i nuclei B veri con la corona nello 0.117: i profili generati **non** assomigliano alle plasmacellule più del vero. Due sottotipi B di R6 sono quasi plasmacellule (202: 354 su 376; 147: 582 su 1 283), sui due lati.
+- Domanda 2, dopo lo spostamento. **Deviazione dalla dichiarazione**: la classificazione è stata fatta sui soli quadratini del nucleo (prima dell'allargamento di bin2cell), non sulle cellule allargate; il nucleo è la parte più pulita e la domanda (prima o dopo lo spostamento) resta la stessa. B chiamati plasmacellule: vero 0.126, simulato 0.093, compartimenti 0.097, nessun eccesso. Ma le cellule T simulate sono chiamate B nello 0.236 dei casi (vero 0.044; compartimenti 0.171), endoteliali, mieloidi, stromali nello 0.185-0.208 (vero 0.017-0.048).
+- Blocchi di 8 µm (RCTD), primo tipo = plasmacellule, per tipo del nucleo che domina il blocco: B vero 0.286, simulato 0.323, compartimenti 0.309; T 0.018 / 0.259 / 0.182; endoteliali 0.040 / 0.335 / 0.309; mieloidi 0.034 / 0.290 / 0.320; stromali 0.029 / 0.284 / 0.315; blocchi senza nucleo tipizzato 0.128 / 0.297 / 0.273. Blocchi simulati dominati da B con purezza vera ≥ 0.9: 0.306. Scomposizione dell'eccesso (0.302 contro 0.130 = 0.172): 0.047 dalla composizione dei blocchi (più blocchi B nel simulato, 0.32 contro 0.20), 0.139 dal tasso per tipo, di cui 0.127 dai blocchi non B.
+- Domanda 3, composizione. Simulato: la stessa nelle 5 aree (B 0.495, T 0.417); vero: B 0.639, 0.581 nei follicoli f1, f2 e 0.331, 0.493, 0.416 nella paracorteccia p1-p3 (T 0.252, 0.341; 0.581, 0.422, 0.500).
+- Esito secondo il criterio: la confusione non è nei profili e compare dopo lo spostamento, ma i compartimenti ne spiegano solo il 18 % ((0.302 − 0.271) / 0.172): **non spiegato**.
+- Meccanismo (non pre-registrato, `F3.1_PH4c_ig.py`). Quota degli UMI sui geni delle immunoglobuline (IGKC, JCHAIN, IGHA1, IGHA2, IGHE, IGHG1, IGHG3, IGHD, IGHM, IGLC1, IGLC7) nei soli quadratini del nucleo delle cellule T: riferimento 0.0055, vero 0.0051, profili generati 0.0054, simulato 0.0238, compartimenti 0.0185; endoteliali 0.0106 / 0.0089 / 0.0104 / 0.0303 / 0.0291; stromali 0.0073 / 0.0060 / 0.0071 / 0.0257 / 0.0243. Verità del simulato (`origin.parquet`): degli UMI nei quadratini del nucleo delle T solo 0.684 vengono dalla cellula stessa e 0.196 da B o plasmacellule (compartimenti 0.693 e 0.136); per le altre cellule 0.63-0.76 dalla cellula stessa. Il conto torna: 0.196 × circa 0.10 + 0.684 × 0.0054 ≈ 0.023. Nel vero la quota di immunoglobuline nei nuclei T (0.0051, quanto i nuclei T con la corona) dà un tetto: al più circa 5 % dei loro UMI può venire da B o plasmacellule. **Nel simulato i trascritti delle cellule vicine che finiscono nei nuclei sono circa quattro volte troppi**, e nei blocchi non B il segnale di B e plasmacellule li fa chiamare così.
+
+**Seguito su tutti i tessuti (descrittivo, non pre-registrato; `tools/F3.1_PH4d_spill.py`)**. Marcatori estranei nei soli quadratini del nucleo (vero / simulato / compartimenti / profili dal solo nucleo; tratteggio: profili generati prima dello spostamento):
+
+| tessuto | vero | simulato | compartimenti | profili dal nucleo | profili generati | purezza vera del nucleo (simulato) |
+|---|---|---|---|---|---|---|
+| A1 intestino | 0.210 | 0.324 | 0.269 | 0.329 | 0.224 | 0.599 |
+| A2 tumore del colon | 0.038 | 0.115 | 0.077 | 0.103 | 0.044 | 0.836 |
+| A3 stroma | 0.181 | 0.291 | 0.261 | – | 0.222 | 0.900 |
+| A4 linfonodo | 0.708 | 0.762 | 0.754 | 0.754 | 0.645 | 0.727 |
+| A5 cervello | 0.203 | 0.261 | 0.266 | 0.204 | 0.261 | 0.898 |
+| A6 cuore | 0.050 | 0.163 | 0.162 | 0.125 | 0.222 | 0.901 |
+
+Lettura: in A1-A3 i nuclei veri sono puliti quanto i profili generati, che vengono da nuclei veri con la corona; il simulato aggiunge 0.07-0.11 spostando trascritti delle cellule vicine nei nuclei. L'eccesso resta con i profili dal solo nucleo (A1 0.329, A2 0.103, A4 0.754): non è il doppio conteggio della contaminazione (come già CP-3), è dove il simulatore mette e sposta i trascritti. I compartimenti ne tolgono circa metà in A1 e A2, meno in A3 e A4; in A1 e A4 la mescolanza dei vicini dei compartimenti è già quella vera (PH-3: 0.23 contro 0.22, 0.37 contro 0.36) e l'eccesso resta (0.06 e 0.05). Nel cervello l'eccesso è nei profili (dal solo nucleo 0.204 = vero), nel cuore nei profili generati, più sporchi dei nuclei veri. Candidati, da verificare e non accertati: i parametri dello spostamento di `place_and_move_transcripts()` (gaussiana larga σ_e 4.5-6.2 µm per asse con probabilità exp(−d/D), coda di peso w 0.04-0.11 e scala ℓ 25-42 µm), calibrati in S2.0 su profili di UMI che non distinguono il tipo, e il rapporto nucleo/citoplasma r. → BL-265.
+
+**PH-5, cuore: spiegato per il campo degli UMI, non per il campo dei tipi** (`tools/F3.1_PH5_aniso.py`).
+
+| tessuto | campo dei tipi: vero − simulato | campo degli UMI: vero − simulato |
+|---|---|---|
+| A1 | 0.0444 ± 0.0102 (oltre 2 ES) | 0.0321 ± 0.0167 |
+| A2 | 0.0278 ± 0.0108 (oltre 2 ES) | 0.0132 ± 0.0159 |
+| A3 | 0.0030 ± 0.0059 | 0.0040 ± 0.0108 |
+| A4 | −0.0038 ± 0.0015 | −0.0118 ± 0.0088 |
+| A5 | 0.0151 ± 0.0034 (oltre 2 ES) | 0.0006 ± 0.0098 |
+| A6 cuore | 0.0062 ± 0.0034 | **0.0967 ± 0.0151 (oltre 2 ES)** |
+
+Il campo degli UMI per blocco (correlazione direzionale, come in S2.5) vede il cuore (vero 0.149 ± 0.015, simulato 0.053 ± 0.003) e negli altri tessuti la differenza è minore e entro 2 ES: criterio soddisfatto, è la misura da usare per il controllo negativo del cuore. Il campo dei tipi di RCTD non lo vede (i cardiomiociti dominano i due lati); vede invece più orientamento nel vero in intestino, tumore e cervello (strutture orientate: villi e cripte, ghiandole, strati), un altro aspetto della disposizione dei tipi. In A4 il simulato è più anisotropo del vero (−0.0038 ± 0.0015, 2.5 ES: lo script conta solo il verso vero > simulato).
+
+**PH-6, variabilità fra aree: spiegato** (`tools/F3.1_PH6_variability.py`). Rapporto simulato / vero dei coefficienti di variazione fra le 5 aree (mediana sulle quantità di base; densità; mediana su M-1...M-6), semina uniforme: A1 0.0038, 0.21, 0.53; A2 0.0035, 0.0067, 0.28; A3 0.0046, 0.043, 0.21; A4 0.0029, 0.0065, 0.061; A5 0.033, 0.018, 0.12; A6 0.013, 0.049, 0.17. CV della densità, vero contro simulato: A1 0.019 / 0.004, A2 0.095 / 0.001, A3 0.167 / 0.007, A4 0.117 / 0.001, A5 0.374 / 0.007, A6 0.209 / 0.010. Le quantità di base (mediana) variano fra aree da 30 a 350 volte meno del vero in tutti i tessuti (la densità da 5 a 150 volte, la composizione, mediana sui tipi, da 30 a circa 4 000 volte: rapporti 0.0028, 0.00024, 0.0017, 0.0019, 0.033, 0.0083), e le misure dei metodi meno del vero negli stessi tessuti: criterio soddisfatto. Causa: il preset ha una composizione e una densità per tessuto e le aree differiscono solo per la forma delle regioni. Con i compartimenti la composizione varia di più (rapporto 0.07-0.38) ma resta sotto il vero.
+
+**PH-7, geometria: spiegato** (`tools/F3.1_PH7_geom.R`, `F3.1_PH7b_diag.R`). L'errore si riproduce (A5_r3, Q6). Geometria 168: poligono valido, 5 494.3 µm², 253 vertici, 4 anelli (3 buchi), spigolo minimo 0.489 µm; **il buco 1 tocca il bordo esterno in un punto** (permesso dalle regole dei poligoni); la triangolazione vincolata di GEOS 3.11.1 si ferma con «Unable to find a convex corner». Diverso da BL-241 (spigoli cortissimi, risolto dalla semplificazione). Non funzionano, perché lasciano il contatto: make_valid, buffer 0, set_precision 1e-6...1e-2, semplificazione 1e-3...1e-1. Funzionano (prove nate dopo il fallimento delle quattro dichiarate): erosione di 1e-6 µm (area −1.1e-7 relativo) e taglio a griglia di 50 o 20 µm (area esatta, scarto < 1e-15). Correzione candidata: erosione di 1e-6 µm come ultimo ripiego dopo la semplificazione. A5_r3 con la correzione: simulazione completa (9 311 944 UMI, 1 geometria corretta); controllo A5_r1 (Q6): conteggi a 2 µm identici con e senza la correzione (ripiego mai usato). La correzione va nel pacchetto nello step della prova (BL-259).
+
+**Che cosa cambia**
+1. Un secondo limite che cambia il comportamento dei metodi: troppi trascritti delle cellule vicine nei nuclei (intestino, tumore, stroma, linfonodo; BL-265). Contribuisce a M-3 e, nel linfonodo, a M-5 e alla composizione di RCTD. La disposizione dei tipi resta il primo limite ([DEC-087](../docs/decisions/DEC-087.md)): i compartimenti tolgono circa metà dell'eccesso dove agiscono; il resto è nello spostamento dei trascritti.
+2. La prova dei compartimenti (step successivo) misura anche i marcatori estranei nel solo nucleo e, nel linfonodo, le immunoglobuline nei nuclei T, per separare i due limiti.
+3. Controllo negativo del cuore nelle prove dei metodi: anisotropia del campo degli UMI (BL-263).
+4. Variabilità fra aree: causa nota (un'unica composizione e densità per tessuto); come produrla è da decidere (BL-262).
+

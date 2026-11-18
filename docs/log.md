@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-11-18 (F3.1, risultati delle indagini PH-4...PH-7)
+
+* **Modifica**: [I primi metodi di analisi si comportano sui dati simulati come sui dati veri, e quali limiti del simulatore cambiano il loro comportamento? (F3.1)](steps/F3.1.md): risultati delle indagini PH-4...PH-7 e del seguito non pre-registrato, riassunto riscritto, dubbi rinviati aggiornati.
+* **Modifica**: BACKLOG BL-259, BL-260, BL-262, BL-263; **Creazione**: BL-265; report `reports/F3.1.html` (figure 5 e 6); ROADMAP sezione 7; CHANGELOG.
+
 ## 2026-11-18 (F3.1, decisione di Luca e indagini dichiarate)
 
 * **Creazione**: decisione di Luca [F3.1: la semina a compartimenti diventerà predefinita dopo una prova; i punti non spiegati si indagano in F3.1 prima di chiuderlo (DEC-088)](decisions/DEC-088.md).

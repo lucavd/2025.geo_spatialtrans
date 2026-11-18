@@ -1,44 +1,43 @@
 
 ### In breve: i metodi di analisi si comportano sui dati simulati come sui dati veri, e che cosa va sistemato per primo nel simulatore?
 
-**A cosa serviva.** Il simulatore deve servire a mettere alla prova i metodi di analisi: un metodo dovrebbe comportarsi sui dati simulati come su quelli veri. Abbiamo fatto girare i due metodi più usati su Visium HD, bin2cell (ricostruisce le cellule allargando i nuclei) e RCTD (dice quali tipi cellulari ci sono in ogni quadrato di 8 µm), sulle stesse 30 aree dei sei tessuti, simulate e vere. Il margine accettabile era quanto ogni misura varia fra le aree vere dello stesso tessuto.
+**A cosa serviva.** Il simulatore deve servire a mettere alla prova i metodi di analisi: un metodo dovrebbe comportarsi sui dati simulati come su quelli veri. Abbiamo fatto girare i due metodi più usati su Visium HD, bin2cell (ricostruisce le cellule allargando i nuclei) e RCTD (dice quali tipi cellulari ci sono in ogni quadrato di 8 µm), sulle stesse 30 aree dei sei tessuti, simulate e vere. Il margine accettabile era quanto ogni misura varia fra le aree vere dello stesso tessuto. Dopo la tua prima lettura abbiamo indagato, qui dentro, i quattro punti rimasti aperti.
 
 **Cosa abbiamo trovato.**
 
 1. **Su metà dei confronti, 18 su 36, i metodi si comportano sul simulato in modo diverso che sul vero, soprattutto nell'intestino di topo, nel tumore del colon, nello stroma del tumore e nel linfonodo.**
    - Le cellule ricostruite da bin2cell sono più «sporche»: nel tumore il 15 % dei trascritti dei geni marcatori viene da altri tipi cellulari, contro meno del 5 % nel vero.
-   - RCTD trova più miscugli di due tipi: nel tumore quasi un quadrato su cinque, contro uno su venti nel vero.
-   - I tipi trovati da RCTD sono meno ordinati nello spazio: nello stroma due quadrati vicini hanno lo stesso tipo nel 65 % dei casi, contro l'89 % nel vero.
+   - RCTD trova più miscugli di due tipi (nel tumore quasi un quadrato su cinque, contro uno su venti) e tipi meno ordinati nello spazio (nello stroma due quadrati vicini hanno lo stesso tipo nel 65 % dei casi, contro l'89 %).
    - Il numero di trascritti per cellula invece torna in tutti e sei i tessuti.
-2. **La causa principale è che il simulatore mette i tipi cellulari a caso uno accanto all'altro, mentre nei tessuti veri si raggruppano.**
+2. **La causa principale resta la disposizione: il simulatore mette i tipi cellulari a caso uno accanto all'altro, mentre nei tessuti veri si raggruppano.**
    - Nell'intestino simulato quasi la metà dei vicini di una cellula è di un altro tipo, nel vero un quinto; nel tumore un terzo contro uno su sedici.
-   - Questo spiega quasi tutti i trascritti estranei in più dell'intestino e due terzi di quelli del tumore.
-   - Effetto visibile: nell'intestino simulato RCTD vede lo stroma in un quadrato su dodici, nel vero in uno su quattro, anche se il simulatore ha la stessa quota di cellule stromali dei nuclei veri (una su cinque). Sparse fra le cellule epiteliali, nei quadrati misti spariscono.
-3. **Il simulatore ha già il rimedio: la semina a compartimenti, che oggi non è quella predefinita. Con questa i vicini si mescolano come nel vero, e i metodi si avvicinano al vero in quattro tessuti.**
-   - Si chiude da un terzo a quasi tutta la differenza su miscugli, ordine nello spazio e accordo con il nucleo, e nell'intestino e nel tumore circa metà di quella sulle cellule «sporche»; 5 delle 17 differenze spariscono.
-   - Non basta per tutto: l'intestino resta un po' più «sporco» del vero (anche per la densità troppo alta delle cellule del preset), e nel cervello di topo non cambia quasi niente.
-4. **La mia ipotesi di partenza era sbagliata: i profili di espressione presi dai nuclei veri con la loro corona non sono la causa.** Con profili presi dal solo nucleo le cellule simulate restano sporche come prima, tranne nel cervello.
-5. **Restano tre cose non spiegate e un difetto del codice.**
-   - Nel linfonodo RCTD chiama plasmacellule il 30 % dei quadrati simulati contro il 13 % dei veri, e la disposizione dei tipi non lo spiega.
-   - Nel cuore, dove ci aspettavamo che il simulatore sbagliasse perché le cellule vere sono allungate, nessuna di queste misure vede la differenza.
-   - Le cinque aree simulate di un tessuto si somigliano fra loro molto più di quanto si somiglino le cinque aree vere.
-   - Con la semina a compartimenti una delle cinque aree del cervello si ferma con un errore di geometria.
+   - La semina a compartimenti, che il simulatore ha già, mescola i vicini come nel vero e avvicina i metodi al vero in quattro tessuti: 5 delle 17 differenze spariscono.
+3. **Le indagini hanno trovato una seconda causa: il simulatore fa finire nei nuclei troppi trascritti delle cellule vicine.**
+   - Nel linfonodo i geni degli anticorpi, tipici di linfociti B e plasmacellule, nei nuclei dei linfociti T simulati sono quasi cinque volte più che nei veri. Nel simulato un quinto di quello che si raccoglie sopra un nucleo T viene da linfociti B o plasmacellule; nel vero al massimo un ventesimo.
+   - È questo, e non i profili dei linfociti B (che sono giusti), a far chiamare a RCTD plasmacellule il 30 % dei quadrati simulati contro il 13 % dei veri: tre quarti dell'eccesso viene da quadrati di altre cellule.
+   - Lo stesso succede nell'intestino, nel tumore e nello stroma: i nuclei veri sono puliti quanto i profili di partenza, quelli simulati no. Anche con i profili presi dal solo nucleo l'eccesso resta, quindi nasce dove il simulatore mette e sposta i trascritti.
+   - La semina a compartimenti ne toglie circa metà nell'intestino e nel tumore, meno nello stroma e nel linfonodo. Nell'intestino e nel linfonodo i vicini sono già mescolati come nel vero e l'eccesso resta: è una causa distinta dalla disposizione.
+   - Il sospetto, da verificare, cade su quanto lontano il simulatore sposta i trascritti. Quei valori furono tarati su quantità che non distinguono il tipo di cellula; i geni marcatori, usati qui, sono la prima misura che lo vede.
+4. **Il cuore: una misura giusta esiste già.** Le misure dei metodi non vedevano che le cellule vere del cuore sono allungate e quelle simulate no. Una misura dell'orientamento dei trascritti, la stessa usata nei controlli dei conteggi, lo vede chiaramente nel cuore e non trova differenze negli altri cinque tessuti: è quella da usare come controllo negativo.
+5. **Le aree simulate si somigliano troppo, e sappiamo perché.** Fra le cinque aree simulate la composizione dei tipi varia da 30 a migliaia di volte meno che fra le vere, la densità delle cellule da 5 a 150 volte meno, perché il simulatore usa una sola composizione e una sola densità per tessuto. Nel linfonodo, per esempio, follicoli e paracorteccia simulati hanno la stessa quota di linfociti B (49 %), mentre nei veri va dal 33 % al 64 %. Le misure dei metodi variano di meno negli stessi tessuti.
+6. **L'errore di geometria del cervello è capito e ha una correzione provata.** Un buco di una zona toccava il suo bordo in un solo punto, un caso che la funzione di triangolazione non sa trattare. Un restringimento di un milionesimo di micron, usato solo quando tutto il resto fallisce, lo risolve; un'altra area di controllo esce identica con e senza correzione.
+7. **Nel cervello l'eccesso di trascritti estranei sta nei profili, non nello spostamento,** e la composizione dei tipi chiamati da RCTD (troppi neuroni) resta da guardare.
 
 **Cosa devi decidere.**
 
-1. **Facciamo diventare predefinita la semina a compartimenti, in uno step dedicato? Consiglio di sì.**
-   - È la scelta che più avvicina il comportamento dei metodi al vero, e il codice c'è già, controllato quando abbiamo costruito le cellule.
-   - Lo step dedicato correggerebbe l'errore di geometria del cervello, rifarebbe i controlli delle cellule e dei quadratini con la nuova semina, e rifarebbe queste misure dei metodi con due semi come verifica.
-   - Alternativa: lasciare la semina uniforme come predefinita e dire nella guida d'uso di attivare i compartimenti per provare i metodi. Chi usa il simulatore senza leggerlo troverebbe metodi più in difficoltà che sui dati veri.
-   - Alternativa: farlo insieme alla revisione della densità delle cellule nei preset. Uno step solo, ma più lungo, e sarebbe più difficile capire quale cambiamento ha fatto cosa.
+1. **La prova della semina a compartimenti (lo step che hai già chiesto) deve misurare anche quanto sono sporchi i nuclei, per tenere separate le due cause? Consiglio di sì.**
+   - Costa poco: le misure sono pronte e girano in pochi minuti sulle stesse simulazioni.
+   - Lo step correggerebbe anche l'errore di geometria con la correzione provata qui.
+   - Alternativa: rivedere nello stesso step anche quanto lontano si spostano i trascritti. Sconsiglio: due cambiamenti insieme non permettono di capire quale ha fatto cosa.
+   - Alternativa: fare prima lo step sullo spostamento dei trascritti e poi la prova dei compartimenti. Sconsiglio: la disposizione resta la causa più grande, e lo spostamento va prima misurato bene tipo per tipo.
 
 **Comunque**
 
-- Quando cambieremo la semina o la densità, rifaremo queste misure come controllo: gli strumenti sono pronti e girano in poche ore.
-- Le plasmacellule in eccesso del linfonodo, le aree simulate troppo simili fra loro e una misura che veda le cellule allungate del cuore restano in coda, ciascuna con quello che serve per affrontarla.
-- Una lezione di metodo per i prossimi step: RCTD dà risultati leggermente diversi a ogni esecuzione se non si fissa il seme; ora lo fissiamo.
+- Lo spostamento dei trascritti verso i nuclei vicini diventa una voce a sé in coda, con la misura per verificarlo già scritta.
+- La variabilità fra aree (una sola composizione per tessuto) e la composizione del cervello restano in coda: ora sappiamo da dove vengono, ma decidere come farle variare è una scelta a parte.
+- Per il cuore useremo la misura dell'orientamento nelle prossime prove dei metodi.
 
-Appena decidi questo punto, lo step è chiuso.
+Appena approvi, lo step è chiuso.
 
-**Sui tempi di calcolo.** Li ho misurati io sul server, con 6 processi accanto al lavoro di tesi. Le 30 aree vere con i due metodi hanno richiesto circa un'ora e mezza; le 85 simulazioni del pannello e della controprova con i due metodi circa 4 ore, dopo che una prima corsa è stata fermata per il seme di RCTD; le 30 aree con la semina a compartimenti circa 3 ore con 5 processi. Una simulazione di un'area richiede da 2 a 7 minuti, RCTD da 4 a 20 minuti per area (mediana 11). Rifare le misure con due semi nello step proposto costerebbe circa 4 ore con 6 processi.
+**Sui tempi di calcolo.** Li ho misurati io sul server. La prima parte dello step: le 30 aree vere con i due metodi circa un'ora e mezza; le 85 simulazioni con i due metodi circa 4 ore con 6 processi; le 30 aree con i compartimenti circa 3 ore con 5 processi. Le indagini di oggi hanno riusato quei risultati: la prova della geometria (tre simulazioni del cervello) circa 18 minuti, le altre letture da 1 a 2 minuti ciascuna; la durata della prima tornata, su linfonodo, cuore e variabilità, non l'ho registrata. La prova dei compartimenti con due semi costerebbe circa 4 ore con 6 processi.
 

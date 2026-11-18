@@ -11,6 +11,7 @@ def body(title):
 NAMES = {"In breve": "in_breve", "Dubbi rinviati": "dubbi", "Attese pre-registrate": "attese", "Esiti": "esiti",
          "Correzioni (dopo il calcolo, prima del verdetto)": "correzioni", "Analisi post hoc (dichiarate dopo i risultati; non cambiano gli esiti)": "posthoc",
          "Revisione avversariale": "revisione", "Deviazioni dichiarate": "deviazioni", "Esplorazioni dichiarate (prima della pre-registrazione)": "esplorazioni",
+         "Indagini dopo la lettura di Luca (dichiarate prima del calcolo, 2026-11-18)": "indagini_dichiarate", "Indagini dopo la lettura di Luca: risultati (2026-11-18)": "indagini",
          "Perimetro": "perimetro", "Metodi e misure": "metodi", "Riproduzione": "riproduzione"}
 for t, n in NAMES.items():
     # i titoli di livello 2 dentro una sezione diventano di livello 3 nel report

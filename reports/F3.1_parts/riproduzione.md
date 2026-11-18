@@ -15,9 +15,17 @@ bash tools/F3.1_run_B.sh 6 && bash tools/F3.1_run_PH3.sh 5
 bash tools/F3.1_repro.sh                                                             # G-3
 bash tools/F3.1_md5.sh after                                                         # G-4
 .venv/bin/python tools/F3.1_figures.py results/F3.1 reports/F3.1_parts && .venv/bin/python tools/F3.1_report_parts.py && quarto render reports/F3.1.qmd
+.venv/bin/python tools/F3.1_PH4_lymph.py /mnt/micron/geo_spatialtrans/F3.1/main results/F3.1        # indagini PH-4...PH-7 (2026-11-18)
+.venv/bin/python tools/F3.1_PH4b_blocks.py /mnt/micron/geo_spatialtrans/F3.1/main results/F3.1
+.venv/bin/python tools/F3.1_PH4c_ig.py /mnt/micron/geo_spatialtrans/F3.1/main results/F3.1
+.venv/bin/python tools/F3.1_PH4d_spill.py /mnt/micron/geo_spatialtrans/F3.1/main results/F3.1
+.venv/bin/python tools/F3.1_PH5_aniso.py /mnt/micron/geo_spatialtrans/F3.1/main results/F3.1
+.venv/bin/python tools/F3.1_PH6_variability.py /mnt/micron/geo_spatialtrans/F3.1/main results/F3.1
+Rscript --vanilla tools/F3.1_PH7_geom.R /mnt/micron/geo_spatialtrans/F3.1/PH7 && Rscript --vanilla tools/F3.1_PH7b_diag.R /mnt/micron/geo_spatialtrans/F3.1/PH7
+.venv/bin/python tools/F3.1_figures_PH.py results/F3.1 reports/F3.1_parts
 ```
 
-Semi: pannello base 20261114 (k = 0, 1; tabella Mersenne-Twister sulle 30 aree ordinate), esplorazione 20261112, riferimento 20261113, intervalli del vero 20261115, intervalli del simulato 20261117, PH-3 20261119, RCTD 20261118, prove 20261116. Uscite in `/mnt/micron/geo_spatialtrans/F3.1/` (25G, non nel repository).
+Semi: pannello base 20261114 (k = 0, 1; tabella Mersenne-Twister sulle 30 aree ordinate), esplorazione 20261112, riferimento 20261113, intervalli del vero 20261115, intervalli del simulato 20261117, PH-3 20261119, RCTD 20261118, prove 20261116, PH-4 (riduzione dei profili) 20261120. Uscite in `/mnt/micron/geo_spatialtrans/F3.1/` (25G, non nel repository).
 
 [^bin2cell]: Polański et al. 2024, Bin2cell reconstructs cells from high resolution Visium HD data
 [^rctd]: Cable et al. 2022, Robust decomposition of cell type mixtures in spatial transcriptomics (RCTD)

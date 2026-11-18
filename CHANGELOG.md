@@ -2,9 +2,9 @@
 
 Una voce per sessione (id sessione nel titolo). Lo stato di ogni sessione è in `docs/ROADMAP.md`; le idee rinviate in `docs/BACKLOG.md`.
 
-## F3.1 (2026-11-12 → 2026-11-13): primi metodi di analisi su simulato e vero
+## F3.1 (2026-11-12 → 2026-11-18): primi metodi di analisi su simulato e vero
 
-Ramo `f3-methods` da `dev`. Strumenti `tools/F3.1_*` (simulazione delle 30 aree, esportazione dei due lati in un formato comune, riferimento dai nuclei veri, bin2cell 0.3.5 in `.venv-b2c`, RCTD di spacexr 2.2.1 con commit fissato e seme dichiarato, misure, intervalli, analisi, prove, figure); `tools/setup_r_library.R` installa spacexr. Decisioni [DEC-085](docs/decisions/DEC-085.md), [DEC-086](docs/decisions/DEC-086.md), [DEC-087](docs/decisions/DEC-087.md). BACKLOG BL-259...BL-264. Uscite in `/mnt/micron/geo_spatialtrans/F3.1/` (25G), tabelle in `results/F3.1/`, report `reports/F3.1.html`.
+Ramo `f3-methods` da `dev`. Strumenti `tools/F3.1_*` (simulazione delle 30 aree, esportazione dei due lati in un formato comune, riferimento dai nuclei veri, bin2cell 0.3.5 in `.venv-b2c`, RCTD di spacexr 2.2.1 con commit fissato e seme dichiarato, misure, intervalli, analisi, prove, figure); `tools/setup_r_library.R` installa spacexr. Decisioni [DEC-085](docs/decisions/DEC-085.md), [DEC-086](docs/decisions/DEC-086.md), [DEC-087](docs/decisions/DEC-087.md). BACKLOG BL-259...BL-264. Uscite in `/mnt/micron/geo_spatialtrans/F3.1/` (25G), tabelle in `results/F3.1/`, report `reports/F3.1.html`. Dopo la decisione di Luca del 2026-11-18 ([DEC-088](docs/decisions/DEC-088.md)): indagini PH-4...PH-7 (`tools/F3.1_PH4_lymph.py`, `F3.1_PH4b_blocks.py`, `F3.1_PH4c_ig.py`, `F3.1_PH4d_spill.py`, `F3.1_PH5_aniso.py`, `F3.1_PH6_variability.py`, `F3.1_PH7_geom.R`, `F3.1_PH7b_diag.R`, `F3.1_figures_PH.py`); BL-265.
 
 ## S2.8b, 2026-11-12: documenti e unione dello Step 2 (guida d'uso, README, CLAUDE.md, guida per Daniele, avanzamento di `dev`) (branch `step2-visium-grid`), **chiusa** (letta da Luca il 2026-11-12, «si chiudi»; due decisioni: chiusura con due confronti falliti come scritti per l'aggiornamento di R, DEC-083; cervello con pezzi di 504 µm nel limite di tempo, DEC-084)
 
