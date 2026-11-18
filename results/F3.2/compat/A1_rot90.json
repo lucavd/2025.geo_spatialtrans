@@ -1,0 +1,23 @@
+{
+ "label": "A1",
+ "fault": "rot90",
+ "dataset": "Visium_HD_Mouse_Small_Intestine",
+ "n_bins2_matrix": 5479660,
+ "n_bins2_in_tissue": 5479660,
+ "n_bins8_matrix": 351817,
+ "n_bins8_in_tissue": 351817,
+ "um_per_px": 0.27376126715315274,
+ "pitch_um": 1.999488355771169,
+ "anisotropy": 0.9999689334100771,
+ "img_H": 21943,
+ "img_W": 23618,
+ "frac_in_tissue_inside": 4.927313008471329e-06,
+ "checks": {
+  "a": true,
+  "b": true,
+  "c": true,
+  "d": false,
+  "e": true
+ },
+ "PASS": false
+}

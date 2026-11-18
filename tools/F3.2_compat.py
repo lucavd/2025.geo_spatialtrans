@@ -4,7 +4,8 @@ Controlli (file dello step): (a) matrici a 2 e 8 um leggibili e coerenti con le 
 (b) scala da scalefactors_json in [0.2735, 0.2745] um/px; (c) passo della griglia a 2 um stimato dalle posizioni (minimi quadrati
 pixel ~ array, metodo di R1) in [1.995, 2.005] um; (d) H&E a piena risoluzione leggibile, >= 99 % dei quadratini in tessuto dentro l'immagine;
 (e) StarDist su una tessera di prova di 250 um (centrata sulla mediana dei quadratini in tessuto) senza errori e con almeno un nucleo.
-Guasti costruiti (devono dare FAIL): scale10 (scala * 1.10), rot90 (posizioni ruotate di 90 gradi), trunc (immagine troncata a meta' altezza).
+Guasti costruiti (devono dare FAIL): scale10 (scala * 1.10), rot90 (posizioni ruotate di 90 gradi), trunc (immagine troncata a meta' altezza);
+trunc_mid (aggiunto dopo: immagine troncata alla riga mediana del tessuto, perche' trunc non tocca il tessuto se questo sta nella meta' superiore).
 Uso: .venv/bin/python tools/F3.2_compat.py <label> [fault]  -> results/F3.2/compat/<label>[_<fault>].json
 La tessera di StarDist si segmenta con tools/py_stardist.sh in un passo a parte (stardist <label>), conteggio dei nuclei soltanto.
 """
@@ -62,12 +63,13 @@ def run(label, fault=None):
     try:
         H, W = img_shape(P["img"])
         if fault == "trunc": H = H // 2
+        if fault == "trunc_mid": H = int(q[q.in_tissue == 1].pxl_row_in_fullres.median())
         it = q[q.in_tissue == 1]
         inside = ((it.pxl_col_in_fullres >= 0) & (it.pxl_col_in_fullres < W) & (it.pxl_row_in_fullres >= 0) & (it.pxl_row_in_fullres < H)).mean()
         res.update(img_H=H, img_W=W, frac_in_tissue_inside=float(inside))
         r0 = int(it.pxl_row_in_fullres.median()); c0 = int(it.pxl_col_in_fullres.median())
         reg = A.read_region(P["img"], r0, r0 + 64, c0, c0 + 64)
-        readable = reg.size > 0 and (fault != "trunc" or r0 + 64 <= H)
+        readable = reg.size > 0 and (fault not in ("trunc", "trunc_mid") or r0 + 64 <= H)
         ok["d"] = bool(inside >= 0.99 and readable)
     except Exception as e:
         ok["d"] = False; res["d_error"] = repr(e)

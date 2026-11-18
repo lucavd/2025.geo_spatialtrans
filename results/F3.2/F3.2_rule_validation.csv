@@ -1,0 +1,32 @@
+kind,id,section,label,class_expected,class_majority,share_expected,n_bins8,he_reject_frac,ok,meets_80,he_ok
+R2_ROI,A1_r1,A1,mucosa villi+cripte anello esterno,mucosa,altro,0.39314040728831723,13995,0.2625,False,False,False
+R2_ROI,A1_r2,A1,mucosa anello esterno SW,mucosa,altro,0.37191344929995757,11785,0.38,False,False,False
+R2_ROI,A1_r3,A1,mucosa anello esterno S,mucosa,altro,0.372764595365667,14371,0.24,False,False,False
+R2_ROI,A1_r4,A1,mucosa anelli interni,mucosa,altro,0.3583864850887778,11602,0.42,False,False,False
+R2_ROI,A1_r5,A1,mucosa anelli interni,mucosa,altro,0.3596120757078054,12786,0.3175,False,False,False
+R2_ROI,A2_r1,A23,tumore ghiandolare superficiale,tumore,altro,0.41183823529411767,13600,0.3025,False,False,False
+R2_ROI,A2_r2,A23,tumore ghiandolare superficiale,tumore,tumore,0.48763785770921936,13873,0.155,True,False,False
+R2_ROI,A2_r3,A23,tumore ghiandolare,tumore,tumore,0.5563329745245784,11148,0.325,True,False,False
+R2_ROI,A2_r4,A23,nidi tumorali invasivi,tumore,tumore,0.47275866479089396,15638,0.0425,True,False,True
+R2_ROI,A2_r5,A23,nidi tumorali invasivi,tumore,altro,0.3159240554880777,15643,0.0275,False,False,True
+R2_ROI,A3_r1,A23,stroma desmoplastico (cluster 2),stroma,stroma,0.5328588831185485,15597,0.005,True,False,True
+R2_ROI,A3_r2,A23,stroma desmoplastico (cluster 2),stroma,stroma,0.8257672634271099,15640,0.0075,True,True,True
+R2_ROI,A3_r3,A23,stroma desmoplastico (cluster 2),stroma,stroma,0.636415926375663,15647,0.0,True,False,True
+R2_ROI,A3_r4,A23,stroma desmoplastico (cluster 2),stroma,stroma,0.6422176748944878,15638,0.0025,True,False,True
+R2_ROI,A3_r5,A23,stroma desmoplastico (cluster 2; margine tumorale in basso),stroma,stroma,0.6096017387969059,15643,0.0075,True,False,True
+R2_ROI,A4_f1,A4,follicolo (cluster 5),follicolo,follicolo,0.5215160649009171,15593,0.02,True,False,True
+R2_ROI,A4_f2,A4,follicolo (cluster 5),follicolo,paracorticale,0.407552,15625,0.005,False,False,True
+R2_ROI,A4_p1,A4,paracorticale (cluster 2),paracorticale,paracorticale,0.773632,15625,0.0,True,False,True
+R2_ROI,A4_p2,A4,paracorticale (cluster 2),paracorticale,paracorticale,0.670464,15625,0.005,True,False,True
+R2_ROI,A4_p3,A4,paracorticale (cluster 2),paracorticale,paracorticale,0.76256,15625,0.0,True,False,True
+R2_ROI,A5_r1,A5,corteccia dorsale (cluster 1),corteccia,altro,0.396288,15625,0.0,False,False,True
+R2_ROI,A5_r2,A5,corteccia dorsale (cluster 1),corteccia,altro,0.4613748627881449,14576,0.07,False,False,False
+R2_ROI,A5_r3,A5,corteccia laterale (cluster 1),corteccia,altro,0.39014103982300885,14464,0.075,False,False,False
+R2_ROI,A5_r4,A5,corteccia laterale (cluster 1),corteccia,altro,0.28928068745833024,13499,0.13,False,False,False
+R2_ROI,A5_r5,A5,corteccia dorsale (cluster 1),corteccia,altro,0.46256228243805886,14651,0.0675,False,False,False
+R2_ROI,A6_r1,A6,miocardio,miocardio,altro,0.4048152654158929,15617,0.035,False,False,True
+R2_ROI,A6_r2,A6,miocardio,miocardio,altro,0.12201217558474847,15605,0.0425,False,False,True
+R2_ROI,A6_r3,A6,miocardio,miocardio,altro,0.02890469781452285,15603,0.0375,False,False,True
+R2_ROI,A6_r4,A6,miocardio,miocardio,altro,0.009042759333419454,15482,0.0775,False,False,False
+R2_ROI,A6_r5,A6,miocardio,miocardio,altro,0.1128494485765581,15596,0.1425,False,False,False
+R1_crop,A4_crop1,A4,"non rappresentativo (F. Pezzuto, R1)",scartato,centro riga 8893 colonna 1048,,0,0.875,True,,False

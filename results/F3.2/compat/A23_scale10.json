@@ -1,0 +1,23 @@
+{
+ "label": "A23",
+ "fault": "scale10",
+ "dataset": "Visium_HD_Human_Colon_Cancer",
+ "n_bins2_matrix": 8176117,
+ "n_bins2_in_tissue": 8176117,
+ "n_bins8_matrix": 516880,
+ "n_bins8_in_tissue": 516880,
+ "um_per_px": 0.3010713774683256,
+ "pitch_um": 2.199002675504005,
+ "anisotropy": 1.000113543532155,
+ "img_H": 48740,
+ "img_W": 75250,
+ "frac_in_tissue_inside": 0.996406607195078,
+ "checks": {
+  "a": true,
+  "b": false,
+  "c": false,
+  "d": true,
+  "e": true
+ },
+ "PASS": false
+}

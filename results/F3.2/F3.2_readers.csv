@@ -1,0 +1,146 @@
+file,area_refs,klass,reason
+R/05b2_simulate_cell_profiles.R,R2_ROI,R2_ROI,carica i profili costruiti dai nuclei delle aree di R2 (S2.2)
+R/testing/run_R3b.sh,,R2_ROI,lancia R3b sulle aree di R2
+R/testing/test_R1.sh,,METADATA,batteria di R1
+R/testing/test_R3.R,R2_ROI;R2b_WINDOW,R2_ROI,"file di aree citati: R2_ROI, R2b_WINDOW"
+R/testing/test_S1.4e.R,R2_ROI;R2b_WINDOW,R2_ROI,"file di aree citati: R2_ROI, R2b_WINDOW"
+R/testing/test_S1.5.R,,SECTION,"prova della stima della scala sull'immagine (S1.5), nessun parametro del preset"
+tools/F3.1_PH4c_ig.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/F3.1_export_real.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/F3.1_md5.sh,R2_ROI;R5_EDGE_TILE;SECTION,INTEGRITY,md5 dei file letti dallo step
+tools/F3.1_profiles_nuc.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/F3.1_test.py,,R2_ROI,legge uscite derivate dello step F3.1
+tools/F3.2_areas.py,R2_ROI;R2b_WINDOW;R5_EDGE_TILE;SECTION,F3.2,strumenti di questo step (lettori ammessi dei dati di verifica)
+tools/F3.2_bridge.py,R2_ROI,F3.2,strumenti di questo step (lettori ammessi dei dati di verifica)
+tools/F3.2_md5.sh,R2_ROI;R2b_WINDOW;R5_EDGE_TILE,F3.2,strumenti di questo step (lettori ammessi dei dati di verifica)
+tools/F3.2_readers.py,R2_ROI;R2b_WINDOW;R5_EDGE_TILE;SECTION,F3.2,strumenti di questo step (lettori ammessi dei dati di verifica)
+tools/R1_verify.py,,METADATA,"inventario, scala, md5 e ritagli di controllo istologico (R1)"
+tools/R2_common.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R2_overview.py,,SECTION,panoramica H&E e gruppi di Space Ranger della sezione per scegliere le aree di R2; nessun parametro
+tools/R2_rois.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R2_spaceranger_rois.py,,R2_ROI,legge uscite derivate dello step R2
+tools/R2b_annotator.py,R2b_WINDOW,R2b_WINDOW,file di aree citati: R2b_WINDOW
+tools/R2b_match.py,R2_ROI;R2b_WINDOW,R2_ROI,"file di aree citati: R2_ROI, R2b_WINDOW"
+tools/R2b_windows.py,R2b_WINDOW,R2b_WINDOW,file di aree citati: R2b_WINDOW
+tools/R2c_annotator.py,R2b_WINDOW,R2b_WINDOW,file di aree citati: R2b_WINDOW
+tools/R2c_candidates.py,R2_ROI;R2b_WINDOW,R2_ROI,"file di aree citati: R2_ROI, R2b_WINDOW"
+tools/R2c_check_annotator.py,R2b_WINDOW,R2b_WINDOW,file di aree citati: R2b_WINDOW
+tools/R3_containment.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R3_export_tissue.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R3b_analysis.py,R2b_WINDOW,R2b_WINDOW,file di aree citati: R2b_WINDOW
+tools/R3b_bench.R,R2_ROI;R2b_WINDOW,R2_ROI,"file di aree citati: R2_ROI, R2b_WINDOW"
+tools/R3b_consensus.py,R2_ROI;R2b_WINDOW,R2_ROI,"file di aree citati: R2_ROI, R2b_WINDOW"
+tools/R3b_export.R,,R2_ROI,legge uscite derivate dello step R3b
+tools/R3b_fig_mask.py,R2b_WINDOW,R2b_WINDOW,file di aree citati: R2b_WINDOW
+tools/R3b_nuc.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R3b_p1p2.py,R2b_WINDOW,R2b_WINDOW,file di aree citati: R2b_WINDOW
+tools/R3b_posthoc.py,R2b_WINDOW,R2b_WINDOW,file di aree citati: R2b_WINDOW
+tools/R3b_posthoc_area.R,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R3b_posthoc_sdarea.R,,R2_ROI,legge uscite derivate dello step R3b
+tools/R3b_posthoc_sdarea_windows.py,R2b_WINDOW,R2b_WINDOW,file di aree citati: R2b_WINDOW
+tools/R3b_posthoc_valid.py,R2b_WINDOW,R2b_WINDOW,file di aree citati: R2b_WINDOW
+tools/R3b_report_parts.py,R2_ROI;R2b_WINDOW,R2_ROI,"file di aree citati: R2_ROI, R2b_WINDOW"
+tools/R3b_windows.py,R2b_WINDOW,R2b_WINDOW,file di aree citati: R2b_WINDOW
+tools/R4_check.py,SECTION,SECTION,file di aree citati: SECTION
+tools/R4_figures.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R4_md5.sh,R2_ROI,INTEGRITY,md5 dei file letti dallo step
+tools/R4_posthoc.py,R2_ROI;SECTION,SECTION,alternanza della cattura sulla sezione intera (B-289 e simili)
+tools/R4_repro.sh,,WRAPPER,lancia altri script dello stesso step
+tools/R4_roi.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R4_run.sh,SECTION,WRAPPER,lancia altri script dello stesso step
+tools/R4_section.py,SECTION,SECTION,medie della sezione e spettro dello sfondo (controlli e riferimenti di sezione)
+tools/R5_chain.sh,,WRAPPER,lancia altri script dello stesso step
+tools/R5_chain2.sh,,WRAPPER,lancia altri script dello stesso step
+tools/R5_explore_e0.py,,SECTION,"esplorazione geometrica della maschera del tessuto, nessun conteggio"
+tools/R5_explore_e0b.py,,SECTION,"esplorazione geometrica: copertura dell'immagine, nessun parametro"
+tools/R5_md5.sh,R2_ROI,INTEGRITY,md5 dei file letti dallo step
+tools/R5_nc.py,R2_ROI;SECTION,SECTION,"file di aree citati: R2_ROI, SECTION"
+tools/R5_repro.sh,,WRAPPER,lancia altri script dello stesso step
+tools/R5_section.py,SECTION,SECTION,UMI per quadratino di tutta la sezione: base delle tessere di bordo e delle strisce
+tools/R5_test.py,,R5_EDGE_TILE,legge uscite derivate dello step R5
+tools/R5_thermal_guard.sh,,WRAPPER,lancia altri script dello stesso step
+tools/R5_tiles.py,R5_EDGE_TILE;SECTION,SECTION,"file di aree citati: R5_EDGE_TILE, SECTION"
+tools/R6_aggregate.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R6_analysis.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R6_check.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R6_cluster.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R6_dexp.py,,SECTION,"distanza di espansione nucleo-cellula di Space Ranger su un campione di cellule della sezione; serve alle misure sul vero, non e' un parametro del simulatore"
+tools/R6_fetch_markers.py,,R2_ROI,legge uscite derivate dello step R6
+tools/R6_figures.py,,R2_ROI,legge uscite derivate dello step R6
+tools/R6_md5.sh,R2_ROI,INTEGRITY,md5 dei file letti dallo step
+tools/R6_posthoc.py,,R2_ROI,legge uscite derivate dello step R6
+tools/R6_relabel.py,,R2_ROI,legge uscite derivate dello step R6
+tools/R6_report_parts.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R6_repro.sh,,WRAPPER,lancia altri script dello stesso step
+tools/R6_setup.sh,,WRAPPER,lancia altri script dello stesso step
+tools/R7_cp1.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R7_cp1_v2.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R7_explore_E1.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/R7_md5.sh,R2_ROI,INTEGRITY,md5 dei file letti dallo step
+tools/R7_pieces.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S1.1_inputs.R,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S1.3c_ecm.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S1.3c_posthoc.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S1.4b_cp1.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S1.4c_raster.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S1.4e_explore.py,R2_ROI;R2b_WINDOW,R2_ROI,"file di aree citati: R2_ROI, R2b_WINDOW"
+tools/S1.4e_explore_e4.py,R2b_WINDOW,R2b_WINDOW,file di aree citati: R2b_WINDOW
+tools/S1.5_cp1_resample.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S1.5_fig_crops.py,R2_ROI;R2b_WINDOW,R2_ROI,"file di aree citati: R2_ROI, R2b_WINDOW"
+tools/S1.5b_a5_missed.py,R2_ROI;R2b_WINDOW,R2_ROI,"file di aree citati: R2_ROI, R2b_WINDOW"
+tools/S1.5b_calcheck.R,,R2_ROI,legge uscite derivate dello step S1
+tools/S1.5b_calibration.py,,R2_ROI,legge uscite derivate dello step S1
+tools/S1.5b_figures.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S1.6_explore.py,,R2_ROI,legge uscite derivate dello step S1
+tools/S1.6_real_refs.py,,R2_ROI,legge uscite derivate dello step S1
+tools/S1.6b_doc_check.py,,R2_ROI,legge uscite derivate dello step S1
+tools/S2.0_analysis.py,,R5_EDGE_TILE,legge uscite derivate dello step S2.0
+tools/S2.0_disp.py,R2_ROI,R2_ROI,30 aree di R2
+tools/S2.0_edges.py,,R5_EDGE_TILE,legge uscite derivate dello step S2.0
+tools/S2.0_figures.py,SECTION,SECTION,file di aree citati: SECTION
+tools/S2.0_inner.py,R2_ROI,R2_ROI,30 aree di R2 (rapporto nucleo/citoplasma r)
+tools/S2.0_lumens.py,SECTION,SECTION,controprova CP-1 di S2.0: stessa selezione dei lumi di R5; nessun parametro
+tools/S2.0_md5.sh,R2_ROI;SECTION,INTEGRITY,md5 dei file letti dallo step
+tools/S2.0_ph1_stripes_glass.py,SECTION,SECTION,"strisce sul vetro della sezione, post hoc"
+tools/S2.0_ph5_stripes_hp.py,SECTION,SECTION,"parte fine delle strisce per sezione (valori del simulatore, B-397...B-401)"
+tools/S2.0_report_parts.py,,R5_EDGE_TILE,legge uscite derivate dello step S2.0
+tools/S2.0_stripes.py,SECTION,SECTION,strisce per sezione (parametri parity e sd di capture_params)
+tools/S2.0_thermal_guard.sh,,WRAPPER,lancia altri script dello stesso step
+tools/S2.0_wfix.py,,R5_EDGE_TILE,legge uscite derivate dello step S2.0
+tools/S2.1_cp.R,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S2.1_desc_real.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S2.1_md5.sh,R2_ROI,INTEGRITY,md5 dei file letti dallo step
+tools/S2.2_atlas_fetch.sh,,R2_ROI,legge uscite derivate dello step S2.2
+tools/S2.2_atlas_prep.py,,R2_ROI,legge uscite derivate dello step S2.2
+tools/S2.2_build_profiles.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S2.2_md5.sh,R2_ROI,INTEGRITY,md5 dei file letti dallo step
+tools/S2.2_panel.R,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S2.2_posthoc_ph1.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S2.2_posthoc_ph1bc.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S2.2_posthoc_ph3.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S2.2_posthoc_ph4.R,,R2_ROI,legge uscite derivate dello step S2.2
+tools/S2.2_race.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S2.2_real.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S2.2_repro.sh,,WRAPPER,lancia altri script dello stesso step
+tools/S2.2_repro_content.R,,R2_ROI,legge uscite derivate dello step S2.2
+tools/S2.2_score.py,,R2_ROI,legge uscite derivate dello step S2.2
+tools/S2.3_bench.py,R2_ROI;R5_EDGE_TILE,R2_ROI,"file di aree citati: R2_ROI, R5_EDGE_TILE"
+tools/S2.3_glass.py,R5_EDGE_TILE;SECTION,SECTION,vetro vicino al tessuto sulle cinque sezioni intere (base del fondo e della seconda coda)
+tools/S2.3_md5.sh,R2_ROI;R5_EDGE_TILE;SECTION,INTEGRITY,md5 dei file letti dallo step
+tools/S2.3_panel.R,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S2.3_real.py,R2_ROI;R5_EDGE_TILE;SECTION,SECTION,"file di aree citati: R2_ROI, R5_EDGE_TILE, SECTION"
+tools/S2.3_repro.sh,R5_EDGE_TILE,WRAPPER,lancia altri script dello stesso step
+tools/S2.4_md5.sh,R2_ROI;R5_EDGE_TILE;SECTION,INTEGRITY,md5 dei file letti dallo step
+tools/S2.5_md5.sh,R2_ROI;R5_EDGE_TILE,INTEGRITY,md5 dei file letti dallo step
+tools/S2.5_real.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
+tools/S2.6_PH3_edge.py,,SECTION,"vetro della sezione intera, post hoc di una prova di prestazione"
+tools/S2.6_md5.sh,R2_ROI,INTEGRITY,md5 dei file letti dallo step
+tools/S2.6_prep_estimates.py,,SECTION,"dimensionamento della prova di prestazione, solo posizioni"
+tools/S2.6_section_layer.R,SECTION,SECTION,livello cellulare della sezione intera per la prova di prestazione
+tools/S2.6_section_measures.py,SECTION,SECTION,"misure della sezione intera, verifica della prova di prestazione"
+tools/S2.7_md5.sh,R2_ROI,INTEGRITY,md5 dei file letti dallo step
+tools/S2.7_section_measures.py,SECTION,SECTION,"misure della sezione intera, verifica della simulazione a pezzi"
+tools/S2.8b_doc_check.py,,R2_ROI,legge uscite derivate dello step S2.8
+tools/docs_patch_R1.py,,METADATA,aggiornamento della documentazione di R1
+tools/docs_patch_R2b.py,,METADATA,aggiornamento della documentazione di R2b
+tools/run_R3b.sh,,R2_ROI,lancia R3b sulle aree di R2

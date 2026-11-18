@@ -1,0 +1,23 @@
+{
+ "label": "A6",
+ "fault": "scale10",
+ "dataset": "Visium_HD_6p5mm_Human_Heart",
+ "n_bins2_matrix": 10615406,
+ "n_bins2_in_tissue": 10615406,
+ "n_bins8_matrix": 666027,
+ "n_bins8_in_tissue": 666027,
+ "um_per_px": 0.3011925721246368,
+ "pitch_um": 2.2004713636758844,
+ "anisotropy": 1.0000483565119025,
+ "img_H": 49099,
+ "img_W": 39139,
+ "frac_in_tissue_inside": 1.0,
+ "checks": {
+  "a": true,
+  "b": false,
+  "c": false,
+  "d": true,
+  "e": true
+ },
+ "PASS": false
+}

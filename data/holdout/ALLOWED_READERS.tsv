@@ -1,0 +1,7 @@
+file	step	scopo
+tools/F3.2_download.py	F3.2	scarica e verifica i dati di verifica
+tools/F3.2_areas.py	F3.2	classi, filtro H&E ed estrazione delle aree di verifica (regola del file dello step)
+tools/F3.2_compat.py	F3.2	controllo di compatibilita' (G-3)
+tools/F3.2_stardist.py	F3.2	StarDist sulla tessera di prova (G-3 e)
+tools/F3.2_guard.py	F3.2	questo controllo (contiene i nomi da cercare)
+tools/F3.2_test.py	F3.2	batteria di F3.2 (mutante del controllo di fuga)

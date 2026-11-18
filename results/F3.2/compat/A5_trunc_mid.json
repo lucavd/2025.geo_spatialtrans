@@ -1,0 +1,23 @@
+{
+ "label": "A5",
+ "fault": "trunc_mid",
+ "dataset": "Visium_HD_6p5mm_Mouse_Brain",
+ "n_bins2_matrix": 6343031,
+ "n_bins2_in_tissue": 6343031,
+ "n_bins8_matrix": 399612,
+ "n_bins8_in_tissue": 399612,
+ "um_per_px": 0.2740235311137736,
+ "pitch_um": 1.9997637400747736,
+ "anisotropy": 1.0000257881281194,
+ "img_H": 10794,
+ "img_W": 22354,
+ "frac_in_tissue_inside": 0.49917476361064606,
+ "checks": {
+  "a": true,
+  "b": true,
+  "c": true,
+  "d": false,
+  "e": true
+ },
+ "PASS": false
+}

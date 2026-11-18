@@ -1,0 +1,25 @@
+{
+ "label": "A4",
+ "fault": "",
+ "dataset": "Visium_HD_Human_Lymph_Node_FFPE",
+ "n_bins2_matrix": 5482441,
+ "n_bins2_in_tissue": 5482441,
+ "n_bins8_matrix": 351076,
+ "n_bins8_in_tissue": 351076,
+ "um_per_px": 0.273775031262766,
+ "pitch_um": 1.9999613341586144,
+ "anisotropy": 0.9999326600942527,
+ "img_H": 26128,
+ "img_W": 28248,
+ "frac_in_tissue_inside": 0.9970427406332325,
+ "stardist_n_nuclei": 1294,
+ "stardist_error": "",
+ "checks": {
+  "a": true,
+  "b": true,
+  "c": true,
+  "d": true,
+  "e": true
+ },
+ "PASS": true
+}

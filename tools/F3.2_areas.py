@@ -6,7 +6,12 @@ Uso (radice del repository, .venv/bin/python):
   tools/F3.2_areas.py used                   -> results/F3.2/F3.2_used_areas.csv
   tools/F3.2_areas.py classes <label>        -> results/F3.2/classes/<label>_clusters.csv (+ classe per quadratino di 8 um su micron)
   tools/F3.2_areas.py validate               -> results/F3.2/F3.2_rule_validation.csv (aree di R2, ritaglio di R1)
-  tools/F3.2_areas.py select <label>         -> results/F3.2/F3.2_areas_<label>.csv
+  tools/F3.2_areas.py select <label>         -> results/F3.2/F3.2_areas_<label>.csv   (prima regola, fallita: solo per memoria)
+  tools/F3.2_areas.py validate2              -> results/F3.2/F3.2_rule2_validation.csv (seconda regola, G-4 d')
+  tools/F3.2_areas.py select2 <label>        -> results/F3.2/F3.2_areas2_<label>.csv (fino a 10 aree per classe, in ordine di estrazione)
+  tools/F3.2_areas.py sheet [classe]         -> results/F3.2/sheets/sheet_<classe>.png (foglio della seconda regola, non usato: regola fallita)
+  tools/F3.2_areas.py pool <label>           -> results/F3.2/F3.2_pool_<label>.csv (candidate senza classe per il confronto a vista)
+  tools/F3.2_areas.py pool_sheet <label>     -> results/F3.2/sheets/pool_<label>.png
 Nessuna grandezza confrontata con il simulatore si calcola qui (vedi il file dello step, regola automatica, punto 4).
 """
 import sys, os, json, math, csv, time
@@ -248,9 +253,256 @@ def select(label):
                      class_share=np.nan, he_reject_frac=np.nan, um_per_px=u, n_admissible=0))
     d = pd.DataFrame(rows); d.to_csv(OUT / f"F3.2_areas_{label}.csv", index=False); print("->", OUT / f"F3.2_areas_{label}.csv")
 
+# ================================================================ seconda regola (file dello step, «Regola automatica, seconda versione»; DEC-092)
+LN2 = math.log(2.0); GREY_MAX = 0.02; COV_DEFAULT = 0.90
+R2_TISSUE = {"A1": "A1", "A2": "A23", "A3": "A23", "A4": "A4", "A5": "A5", "A6": "A6"}
+REF_SECTION = {"intestine": "A1", "crc": "A23", "lymph": "A4", "brain": "A5", "heart": "A6"}
+
+def set_list(tissue):
+    out = []
+    for k, (posg, excl) in PANEL[tissue].items():
+        if posg is None: continue
+        for s in [posg] + excl:
+            if tuple(s) not in [tuple(x) for x in out]: out.append(s)
+    return out
+
+def bin_scores(label):
+    """quadratini di 8 um in tessuto con x, y (um) e il punteggio di ogni insieme del pannello; cache sigillata su micron"""
+    P = paths(label); u = upp_of(P); f = SEAL / f"{label}_bin8_setscores.parquet"
+    if f.exists(): return pd.read_parquet(f), u
+    pos = pd.read_parquet(P["sq8"] / "spatial/tissue_positions.parquet")
+    pos = pos[pos.in_tissue == 1][["barcode", "pxl_row_in_fullres", "pxl_col_in_fullres"]].reset_index(drop=True)
+    out = pd.DataFrame({"x": pos.pxl_col_in_fullres.values * u, "y": pos.pxl_row_in_fullres.values * u})
+    sets = set_list(P["tissue"])
+    if sets:
+        X, bc, names = read_h5(P["sq8"]); bidx = pd.Series(np.arange(len(bc)), index=bc)
+        cols = bidx.reindex(pos.barcode).to_numpy(); lib = np.asarray(X.sum(axis=0)).ravel()[cols]
+        for s in sets:
+            gi = [names.index(g) for g in s if g in names]
+            L = np.log1p(np.asarray(X[gi][:, cols].todense()) / np.maximum(lib, 1) * 1e4)
+            out["|".join(s)] = L.mean(axis=0)
+    SEAL.mkdir(exist_ok=True); out.to_parquet(f); return out, u
+
+def area_stats(B, box, sets, upp):
+    """rapporti rho degli insiemi, copertura del tessuto (quadratini di 8 um in tessuto / attesi) nel riquadro box (um)"""
+    m = (B.x >= box[0]) & (B.x < box[2]) & (B.y >= box[1]) & (B.y < box[3])
+    exp_bins = ((box[2] - box[0]) / 8.0) * ((box[3] - box[1]) / 8.0)
+    rho = {k: float(B.loc[m, k].mean() / B[k].mean()) for k in sets}
+    return rho, float(m.sum() / exp_bins)
+
+def grey_fraction(img, upp, box):
+    t = int(round(TILE_UM / upp)); c0, r0 = int(round(box[0] / upp)), int(round(box[1] / upp))
+    n = int(round((box[2] - box[0]) / TILE_UM)); reg = read_region(img, r0, r0 + n * t, c0, c0 + n * t)
+    if reg.ndim == 3 and reg.shape[0] in (3, 4) and reg.shape[-1] not in (3, 4): reg = np.moveaxis(reg, 0, -1)
+    reg = reg[..., :3].astype(np.float32); od = -np.log10((reg + 1.0) / 256.0).sum(axis=-1)
+    mx, mn = reg.max(axis=-1), reg.min(axis=-1); sat = np.where(mx > 0, (mx - mn) / np.maximum(mx, 1e-6), 0.0)
+    grey = (sat < 0.08) & (od >= 0.15); H, W = (grey.shape[0] // t) * t, (grey.shape[1] // t) * t
+    return float((grey[:H, :W].reshape(H // t, t, W // t, t).mean(axis=(1, 3)) > 0.5).mean())
+
+def classify(rho, refs):
+    """classe k se max |ln(rho / ref_k)| <= ln 2 e minore della distanza dalle altre classi; altrimenti 'altro'"""
+    d = {k: max(abs(math.log(max(rho[s], 1e-9) / max(r[s], 1e-9))) for s in r) for k, r in refs.items()}
+    k = min(d, key=d.get)
+    ok = d[k] <= LN2 and all(d[k] < d[j] for j in d if j != k)
+    return (k if ok else "altro"), d
+
+def r2_table():
+    r2 = pd.read_csv(ROOT / "results/R2/R2_rois_checked.csv"); rows = []
+    for _, r in r2.iterrows():
+        u = r.um_per_px; want = R2_CLASS.get(r.archetype) or ("follicolo" if r.roi_id.startswith("f") else "paracorticale")
+        rows.append(dict(id=f"{r.archetype}_{r.roi_id}", archetype=r.archetype, section=R2_TISSUE[r.archetype], klass=want,
+                         box=(r.c0 * u, r.r0 * u, r.c1 * u, r.r1 * u), label=r.label))
+    return rows
+
+def r2_refs(tissue):
+    """rapporti rho delle aree di R2 della sezione di taratura del tessuto, per classe e per area"""
+    sec = REF_SECTION[tissue]; B, u = bin_scores(sec); sets = ["|".join(s) for s in set_list(tissue)]
+    per = []
+    for a in r2_table():
+        if a["section"] != sec: continue
+        rho, cov = area_stats(B, a["box"], sets, u); per.append(dict(a, rho=rho, cov=cov))
+    return per, sets
+
+def ref_of(per, sets, exclude=None):
+    refs = {}
+    for k in sorted({p["klass"] for p in per}):
+        ps = [p for p in per if p["klass"] == k and p["id"] != exclude]
+        refs[k] = {s: float(np.mean([p["rho"][s] for p in ps])) for s in sets}
+    return refs
+
+def cov_min(tissue):
+    if tissue == "none": return COV_DEFAULT
+    per, _ = r2_refs(tissue); return min(p["cov"] for p in per) - 0.05
+
+def validate2():
+    res = []
+    for tissue in ["intestine", "crc", "lymph", "brain", "heart"]:
+        per, sets = r2_refs(tissue); cmin = cov_min(tissue); P = paths(REF_SECTION[tissue]); u = upp_of(P)
+        for p in per:
+            refs = ref_of(per, sets, exclude=p["id"])                     # riferimento senza l'area in esame
+            cls, d = classify(p["rho"], refs)
+            grey = grey_fraction(P["img"], u, p["box"])
+            rec = dict(kind="R2_ROI", id=p["id"], tissue=tissue, class_expected=p["klass"], class_assigned=cls, own_ok=(cls == p["klass"]),
+                       coverage=p["cov"], cov_min=cmin, grey_frac=grey, admitted=(p["cov"] >= cmin and grey <= GREY_MAX))
+            for k, v in d.items(): rec[f"d_{k}"] = v
+            others = [k for k in refs if k != p["klass"]]
+            rec["negatives"] = len(others); rec["negatives_rejected"] = sum(cls != k for k in others)
+            res.append(rec); print({k: (round(v, 3) if isinstance(v, float) else v) for k, v in rec.items()}, flush=True)
+    # ritaglio 1 del linfonodo di R1
+    P = paths("A4"); u = upp_of(P); B, _ = bin_scores("A4")
+    pos = pd.read_parquet(P["sq2"] / "spatial/tissue_positions.parquet"); it = pos[pos.in_tissue == 1]
+    rng = np.random.default_rng(42); s = it.sample(1, random_state=int(rng.integers(1e9))).iloc[0]
+    half = int(round(400.0 / u / 2)); r0c, c0c = max(int(s.pxl_row_in_fullres) - half, 0), max(int(s.pxl_col_in_fullres) - half, 0)
+    box = (c0c * u, r0c * u, c0c * u + 400.0, r0c * u + 400.0)
+    _, cov = area_stats(B, box, [], u); grey = grey_fraction(P["img"], u, box); cmin = cov_min("lymph")
+    res.append(dict(kind="R1_crop", id="A4_crop1", tissue="lymph", class_expected="scartato", class_assigned="", own_ok=np.nan,
+                    coverage=cov, cov_min=cmin, grey_frac=grey, admitted=(cov >= cmin and grey <= GREY_MAX), negatives=0, negatives_rejected=0))
+    d = pd.DataFrame(res); d.to_csv(OUT / "F3.2_rule2_validation.csv", index=False)
+    r = d[d.kind == "R2_ROI"]
+    print(f"G-4 d': (i) classe propria {int(r.own_ok.sum())}/30 (soglia 28); (ii) negativi scartati {int(r.negatives_rejected.sum())}/{int(r.negatives.sum())} "
+          f"(soglia 14/15); (iii) ammesse da copertura e artefatti {int(r.admitted.sum())}/30 (soglia 28); (iv) ritaglio di R1 scartato: {not bool(d[d.kind=='R1_crop'].admitted.iloc[0])}")
+
+def select2(label, n_max=10):
+    P = paths(label); tissue = P["tissue"]; B, u = bin_scores(label); img = P["img"]
+    sets = ["|".join(s) for s in set_list(tissue)]
+    if tissue != "none":
+        per, _ = r2_refs(tissue); refs = ref_of(per, sets)
+    else:
+        refs = {"tessuto": {}}
+    cmin = cov_min(tissue); level = "L1" if label in CAL else ("L3" if tissue == "none" else "L2")
+    used_df = pd.read_csv(OUT / "F3.2_used_areas.csv")
+    blocked = [tuple(v) for v in used_df[(used_df.section == label) & used_df.x0.notna()][["x0", "y0", "x1", "y1"]].values] if label in CAL else []
+    cx, cy = float(np.median(B.x)), float(np.median(B.y))
+    test = (cx - TEST_TILE_UM / 2, cy - TEST_TILE_UM / 2, cx + TEST_TILE_UM / 2, cy + TEST_TILE_UM / 2); blocked.append(test)
+    gx0, gy0 = math.floor(B.x.min() / TILE_UM) * TILE_UM, math.floor(B.y.min() / TILE_UM) * TILE_UM
+    nx, ny = int((B.x.max() - gx0) // TILE_UM) + 1, int((B.y.max() - gy0) // TILE_UM) + 1
+    ix = ((B.x.values - gx0) // TILE_UM).astype(int); iy = ((B.y.values - gy0) // TILE_UM).astype(int)
+    n = int(round(SIDE_UM / TILE_UM)); exp_bins = (SIDE_UM / 8.0) ** 2
+    def boxsum(A):
+        S = np.zeros((A.shape[0] + 1, A.shape[1] + 1)); S[1:, 1:] = A.cumsum(0).cumsum(1)
+        return S[n:, n:] - S[:-n, n:] - S[n:, :-n] + S[:-n, :-n]
+    cnt = np.zeros((ny, nx)); np.add.at(cnt, (iy, ix), 1); C = boxsum(cnt)
+    R = {}
+    for s in sets:
+        a = np.zeros((ny, nx)); np.add.at(a, (iy, ix), B[s].values); R[s] = boxsum(a) / np.maximum(C, 1) / B[s].mean()
+    cov = C / exp_bins
+    rows = []; taken = []
+    for ci, klass in enumerate(sorted(refs)):
+        if tissue != "none":
+            D = {k: np.max(np.stack([np.abs(np.log(np.maximum(R[s], 1e-9) / max(r[s], 1e-9))) for s in sets]), axis=0) for k, r in refs.items()}
+            others = [D[j] for j in D if j != klass]
+            okc = (D[klass] <= LN2) & np.all(np.stack([D[klass] < o for o in others]), axis=0) if others else (D[klass] <= LN2)
+        else:
+            okc = np.ones_like(cov, bool)
+        cand = np.argwhere(okc & (cov >= cmin))
+        rng = np.random.default_rng([SEED, sorted(list(CAL) + list(HOLD)).index(label), ci, 2]); cand = cand[rng.permutation(len(cand))]
+        got = 0
+        for j, i in cand:
+            box = (gx0 + i * TILE_UM, gy0 + j * TILE_UM, gx0 + i * TILE_UM + SIDE_UM, gy0 + j * TILE_UM + SIDE_UM)
+            if any(gap(box, b) < MARGIN_UM for b in blocked + taken): continue
+            try: grey = grey_fraction(img, u, box)
+            except Exception as e: print("H&E non letto", box, e, flush=True); continue
+            if grey > GREY_MAX: continue
+            taken.append(box); got += 1
+            rows.append(dict(label=label, level=level, klass=klass, order=got, area_id=f"{label}_{klass}_{got}", x0=box[0], y0=box[1], x1=box[2], y1=box[3],
+                             coverage=float(cov[j, i]), cov_min=cmin, grey_frac=grey, d_class=float(D[klass][j, i]) if tissue != "none" else np.nan,
+                             um_per_px=u, n_admissible=int(len(cand))))
+            if got == n_max: break
+        print(label, klass, "ammessi", len(cand), "estratte", got, flush=True)
+    rows.append(dict(label=label, level="test_tile", klass="stardist_test", order=0, area_id=f"{label}_stardist_test", x0=test[0], y0=test[1], x1=test[2], y1=test[3],
+                     coverage=np.nan, cov_min=np.nan, grey_frac=np.nan, d_class=np.nan, um_per_px=u, n_admissible=0))
+    pd.DataFrame(rows).to_csv(OUT / f"F3.2_areas2_{label}.csv", index=False); print("->", OUT / f"F3.2_areas2_{label}.csv")
+
+def sheet(klass_filter=None):
+    """fogli per il confronto a vista: per classe, le aree estratte (fino a 10 per sezione) accanto alle 5 aree di R2 della classe"""
+    import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
+    files = sorted(OUT.glob("F3.2_areas2_*.csv")); A = pd.concat([pd.read_csv(f) for f in files]); A = A[A.level != "test_tile"]
+    th = ROOT / "results/R2/rois_thumbs"; out = OUT / "sheets"; out.mkdir(exist_ok=True)
+    for klass, g in A.groupby("klass"):
+        if klass_filter and klass != klass_filter: continue
+        refs = [a for a in r2_table() if a["klass"] == klass]
+        n = len(g); ncol = 5; nrow = 1 + math.ceil(n / ncol)
+        fig, axs = plt.subplots(nrow, ncol, figsize=(3.2 * ncol, 3.4 * nrow), facecolor="white")
+        for ax in axs.ravel(): ax.set_axis_off()
+        for k, a in enumerate(refs[:5]):
+            im = plt.imread(th / f"{a['id']}.png"); axs[0, k].imshow(im[int(im.shape[0]*0.07):, :]); axs[0, k].set_title(f"RIFERIMENTO {a['id']}", fontsize=8, color="darkgreen")
+        for k, (_, r) in enumerate(g.sort_values(["label", "order"]).iterrows()):
+            P = paths(r.label); u = r.um_per_px; t = int(round(SIDE_UM / u)); c0, r0 = int(round(r.x0 / u)), int(round(r.y0 / u))
+            reg = read_region(P["img"], r0, r0 + t, c0, c0 + t)
+            if reg.ndim == 3 and reg.shape[0] in (3, 4) and reg.shape[-1] not in (3, 4): reg = np.moveaxis(reg, 0, -1)
+            s = t // 4 * 4; th4 = reg[:s, :s, :3].reshape(s // 4, 4, s // 4, 4, 3).mean(axis=(1, 3)).astype(np.uint8)
+            ax = axs[1 + k // ncol, k % ncol]; ax.imshow(th4); ax.set_title(f"#{k+1}  {r.area_id}", fontsize=7)
+        fig.suptitle(f"Classe: {klass}. Prima riga: aree di R2 approvate. Sotto: aree estratte. Somiglia / non somiglia?", fontsize=10)
+        fig.tight_layout(); fig.savefig(out / f"sheet_{klass}.png", dpi=90); plt.close(fig); print(out / f"sheet_{klass}.png", n)
+
+# ================================================================ selezione a vista (dopo il fallimento delle due regole; file dello step, DEC-092)
+def pool(label):
+    """aree candidate senza classe: copertura e artefatti della seconda regola, 280 um dalle aree usate e fra loro; 2 x 5 x (numero di classi)"""
+    P = paths(label); tissue = P["tissue"]; B, u = bin_scores(label); img = P["img"]
+    n_cls = len(PANEL[tissue]); n_want = 2 * 5 * n_cls; cmin = cov_min(tissue)
+    level = "L1" if label in CAL else ("L3" if tissue == "none" else "L2")
+    used_df = pd.read_csv(OUT / "F3.2_used_areas.csv")
+    blocked = [tuple(v) for v in used_df[(used_df.section == label) & used_df.x0.notna()][["x0", "y0", "x1", "y1"]].values] if label in CAL else []
+    cx, cy = float(np.median(B.x)), float(np.median(B.y))
+    test = (cx - TEST_TILE_UM / 2, cy - TEST_TILE_UM / 2, cx + TEST_TILE_UM / 2, cy + TEST_TILE_UM / 2); blocked.append(test)
+    gx0, gy0 = math.floor(B.x.min() / TILE_UM) * TILE_UM, math.floor(B.y.min() / TILE_UM) * TILE_UM
+    nx, ny = int((B.x.max() - gx0) // TILE_UM) + 1, int((B.y.max() - gy0) // TILE_UM) + 1
+    ix = ((B.x.values - gx0) // TILE_UM).astype(int); iy = ((B.y.values - gy0) // TILE_UM).astype(int)
+    n = int(round(SIDE_UM / TILE_UM)); exp_bins = (SIDE_UM / 8.0) ** 2
+    cnt = np.zeros((ny, nx)); np.add.at(cnt, (iy, ix), 1)
+    S = np.zeros((ny + 1, nx + 1)); S[1:, 1:] = cnt.cumsum(0).cumsum(1); C = S[n:, n:] - S[:-n, n:] - S[n:, :-n] + S[:-n, :-n]
+    cov = C / exp_bins; cand = np.argwhere(cov >= cmin)
+    rng = np.random.default_rng([SEED, sorted(list(CAL) + list(HOLD)).index(label), 3]); cand = cand[rng.permutation(len(cand))]
+    rows, taken = [], []
+    for j, i in cand:
+        box = (gx0 + i * TILE_UM, gy0 + j * TILE_UM, gx0 + i * TILE_UM + SIDE_UM, gy0 + j * TILE_UM + SIDE_UM)
+        if any(gap(box, b) < MARGIN_UM for b in blocked + taken): continue
+        try: grey = grey_fraction(img, u, box)
+        except Exception as e: print("H&E non letto", box, e, flush=True); continue
+        if grey > GREY_MAX: continue
+        taken.append(box)
+        rows.append(dict(label=label, level=level, order=len(taken), area_id=f"{label}_c{len(taken):02d}", x0=box[0], y0=box[1], x1=box[2], y1=box[3],
+                         coverage=float(cov[j, i]), cov_min=cmin, grey_frac=grey, um_per_px=u, n_admissible=int(len(cand))))
+        if len(taken) == n_want: break
+    rows.append(dict(label=label, level="test_tile", order=0, area_id=f"{label}_stardist_test", x0=test[0], y0=test[1], x1=test[2], y1=test[3],
+                     coverage=np.nan, cov_min=np.nan, grey_frac=np.nan, um_per_px=u, n_admissible=0))
+    pd.DataFrame(rows).to_csv(OUT / f"F3.2_pool_{label}.csv", index=False)
+    print(label, "ammessi", len(cand), "candidate", len(taken), "di", n_want, flush=True)
+
+def pool_sheet(label):
+    """foglio per il confronto a vista: in alto le aree di R2 approvate di ogni classe del tessuto, sotto le candidate numerate"""
+    import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
+    P = paths(label); tissue = P["tissue"]; A = pd.read_csv(OUT / f"F3.2_pool_{label}.csv"); A = A[A.level != "test_tile"]
+    refs = [a for a in r2_table() if tissue != "none" and a["section"] == REF_SECTION[tissue]]
+    klasses = sorted({a["klass"] for a in refs}); ncol = 5
+    nref_rows = len(klasses); nrow = nref_rows + math.ceil(len(A) / ncol)
+    fig, axs = plt.subplots(nrow, ncol, figsize=(3.0 * ncol, 3.25 * nrow), facecolor="white")
+    axs = np.atleast_2d(axs)
+    for ax in axs.ravel(): ax.set_axis_off()
+    th = ROOT / "results/R2/rois_thumbs"
+    for ri, k in enumerate(klasses):
+        for ci, a in enumerate([a for a in refs if a["klass"] == k][:5]):
+            im = plt.imread(th / f"{a['id']}.png"); axs[ri, ci].imshow(im[int(im.shape[0] * 0.07):, :])
+            axs[ri, ci].set_title(f"RIFERIMENTO {k.upper()}\n{a['id']}", fontsize=8, color="darkgreen")
+    for k, (_, r) in enumerate(A.sort_values("order").iterrows()):
+        u = r.um_per_px; t = int(round(SIDE_UM / u)); c0, r0 = int(round(r.x0 / u)), int(round(r.y0 / u))
+        reg = read_region(P["img"], r0, r0 + t, c0, c0 + t)
+        if reg.ndim == 3 and reg.shape[0] in (3, 4) and reg.shape[-1] not in (3, 4): reg = np.moveaxis(reg, 0, -1)
+        s = t // 4 * 4; th4 = reg[:s, :s, :3].reshape(s // 4, 4, s // 4, 4, 3).mean(axis=(1, 3)).astype(np.uint8)
+        ax = axs[nref_rows + k // ncol, k % ncol]; ax.imshow(th4); ax.set_title(f"#{k + 1}", fontsize=12, fontweight="bold")
+    q = (" / ".join(klasses) + " / nessuna") if klasses else "tessuto adatto? sì / no"
+    fig.suptitle(f"{label}: per ogni candidata numerata, a quale riga di riferimento somiglia? ({q})", fontsize=11)
+    fig.tight_layout(rect=(0, 0, 1, 0.98)); (OUT / "sheets").mkdir(exist_ok=True)
+    fig.savefig(OUT / "sheets" / f"pool_{label}.png", dpi=80); plt.close(fig); print(OUT / "sheets" / f"pool_{label}.png", len(A))
+
 if __name__ == "__main__":
     cmd = sys.argv[1]
     if cmd == "used": used()
     elif cmd == "classes": classes(sys.argv[2])
     elif cmd == "validate": validate()
     elif cmd == "select": select(sys.argv[2])
+    elif cmd == "validate2": validate2()
+    elif cmd == "select2": select2(sys.argv[2])
+    elif cmd == "sheet": sheet(sys.argv[2] if len(sys.argv) > 2 else None)
+    elif cmd == "pool": pool(sys.argv[2])
+    elif cmd == "pool_sheet": pool_sheet(sys.argv[2])
