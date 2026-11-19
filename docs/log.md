@@ -1,5 +1,9 @@
 # Registro delle modifiche
 
+## 2026-11-19 (F3.3, pre-registrazione)
+
+* **Creazione**: [Il simulatore di oggi regge fuori dalle aree su cui è stato tarato, e il suo difetto è il sovradattamento o la mancanza di variabilità? (F3.3)](steps/F3.3.md) (perimetro, esplorazioni E-1 ed E-2, cancelli, previsioni proposte); decisione tecnica [F3.3: scelte tecniche della misura fuori campione (DEC-097)](decisions/DEC-097.md).
+
 ## 2026-11-19 (F3.2, chiusura)
 
 * **Chiusura**: [Come separiamo i dati che tarano il simulatore da quelli che lo verificano, e con quali regole accettiamo un cambiamento? (F3.2)](steps/F3.2.md) chiuso con l'approvazione di Luca («ok l'ordinr e la sessione separata. Chiudi»); riassunto corretto dopo la sua lettura (punto 5, decisione 2).

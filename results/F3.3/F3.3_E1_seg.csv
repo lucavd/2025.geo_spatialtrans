@@ -1,0 +1,7 @@
+tag,same_crop,same_mask,n_new,n_old,match_old_in_new,match_new_in_old,sec
+A1_r1,True,True,9064,9064,1.0,1.0,8.0
+A2_r1,True,True,6596,6596,1.0,1.0,8.2
+A3_r1,True,True,4175,4175,1.0,1.0,7.5
+A4_p1,True,True,25672,25672,1.0,1.0,8.3
+A5_r1,True,True,1489,1489,1.0,1.0,7.1
+A6_r1,True,True,682,682,1.0,1.0,6.9
