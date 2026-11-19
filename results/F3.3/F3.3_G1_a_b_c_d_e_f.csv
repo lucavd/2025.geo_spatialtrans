@@ -1,0 +1,212 @@
+part,assertion,pass,detail
+a,ritaglio A1_r1,True,
+a,ritaglio A1_r2,True,
+a,ritaglio A1_r3,True,
+a,ritaglio A1_r4,True,
+a,ritaglio A1_r5,True,
+a,ritaglio A2_r1,True,
+a,ritaglio A2_r2,True,
+a,ritaglio A2_r3,True,
+a,ritaglio A2_r4,True,
+a,ritaglio A2_r5,True,
+a,ritaglio A3_r1,True,
+a,ritaglio A3_r2,True,
+a,ritaglio A3_r3,True,
+a,ritaglio A3_r4,True,
+a,ritaglio A3_r5,True,
+a,ritaglio A4_f1,True,
+a,ritaglio A4_f2,True,
+a,ritaglio A4_p1,True,
+a,ritaglio A4_p2,True,
+a,ritaglio A4_p3,True,
+a,ritaglio A5_r1,True,
+a,ritaglio A5_r2,True,
+a,ritaglio A5_r3,True,
+a,ritaglio A5_r4,True,
+a,ritaglio A5_r5,True,
+a,ritaglio A6_r1,True,
+a,ritaglio A6_r2,True,
+a,ritaglio A6_r3,True,
+a,ritaglio A6_r4,True,
+a,ritaglio A6_r5,True,
+b,Cellpose A1_r1,True,
+b,nuclei e keep A1_r1,True,
+b,Cellpose A1_r2,True,
+b,nuclei e keep A1_r2,True,
+b,Cellpose A1_r3,True,
+b,nuclei e keep A1_r3,True,
+b,Cellpose A1_r4,True,
+b,nuclei e keep A1_r4,True,
+b,Cellpose A1_r5,True,
+b,nuclei e keep A1_r5,True,
+b,Cellpose A2_r1,True,
+b,nuclei e keep A2_r1,True,
+b,Cellpose A2_r2,True,
+b,nuclei e keep A2_r2,True,
+b,Cellpose A2_r3,True,
+b,nuclei e keep A2_r3,True,
+b,Cellpose A2_r4,True,
+b,nuclei e keep A2_r4,True,
+b,Cellpose A2_r5,True,
+b,nuclei e keep A2_r5,True,
+b,Cellpose A3_r1,True,
+b,nuclei e keep A3_r1,True,
+b,Cellpose A3_r2,True,
+b,nuclei e keep A3_r2,True,
+b,Cellpose A3_r3,True,
+b,nuclei e keep A3_r3,True,
+b,Cellpose A3_r4,True,
+b,nuclei e keep A3_r4,True,
+b,Cellpose A3_r5,True,
+b,nuclei e keep A3_r5,True,
+b,spaceranger A4_f1,True,
+b,stardist_he A4_f1,True,
+b,consensus A4_f1,True,
+b,nuclei e keep consenso A4_f1,True,
+b,spaceranger A4_f2,True,
+b,stardist_he A4_f2,True,
+b,consensus A4_f2,True,
+b,nuclei e keep consenso A4_f2,True,
+b,spaceranger A4_p1,True,
+b,stardist_he A4_p1,True,
+b,consensus A4_p1,True,
+b,nuclei e keep consenso A4_p1,True,
+b,spaceranger A4_p2,True,
+b,stardist_he A4_p2,True,
+b,consensus A4_p2,True,
+b,nuclei e keep consenso A4_p2,True,
+b,spaceranger A4_p3,True,
+b,stardist_he A4_p3,True,
+b,consensus A4_p3,True,
+b,nuclei e keep consenso A4_p3,True,
+b,Cellpose A5_r1,True,
+b,nuclei e keep A5_r1,True,
+b,Cellpose A5_r2,True,
+b,nuclei e keep A5_r2,True,
+b,Cellpose A5_r3,True,
+b,nuclei e keep A5_r3,True,
+b,Cellpose A5_r4,True,
+b,nuclei e keep A5_r4,True,
+b,Cellpose A5_r5,True,
+b,nuclei e keep A5_r5,True,
+b,spaceranger A6_r1,True,
+b,stardist_he A6_r1,True,
+b,consensus A6_r1,True,
+b,nuclei e keep consenso A6_r1,True,
+b,spaceranger A6_r2,True,
+b,stardist_he A6_r2,True,
+b,consensus A6_r2,True,
+b,nuclei e keep consenso A6_r2,True,
+b,spaceranger A6_r3,True,
+b,stardist_he A6_r3,True,
+b,consensus A6_r3,True,
+b,nuclei e keep consenso A6_r3,True,
+b,spaceranger A6_r4,True,
+b,stardist_he A6_r4,True,
+b,consensus A6_r4,True,
+b,nuclei e keep consenso A6_r4,True,
+b,spaceranger A6_r5,True,
+b,stardist_he A6_r5,True,
+b,consensus A6_r5,True,
+b,nuclei e keep consenso A6_r5,True,
+c,maschera valida A1_r1,True,
+c,regioni A1_r1,True,3 contro 3
+c,maschera valida A1_r2,True,
+c,regioni A1_r2,True,3 contro 3
+c,maschera valida A1_r3,True,
+c,regioni A1_r3,True,4 contro 4
+c,maschera valida A1_r4,True,
+c,regioni A1_r4,True,3 contro 3
+c,maschera valida A1_r5,True,
+c,regioni A1_r5,True,6 contro 6
+c,maschera valida A2_r1,True,
+c,regioni A2_r1,True,2 contro 2
+c,maschera valida A2_r2,True,
+c,regioni A2_r2,True,3 contro 3
+c,maschera valida A2_r3,True,
+c,regioni A2_r3,True,3 contro 3
+c,maschera valida A2_r4,True,
+c,regioni A2_r4,True,1 contro 1
+c,maschera valida A2_r5,True,
+c,regioni A2_r5,True,1 contro 1
+c,maschera valida A3_r1,True,
+c,regioni A3_r1,True,1 contro 1
+c,maschera valida A3_r2,True,
+c,regioni A3_r2,True,3 contro 3
+c,maschera valida A3_r3,True,
+c,regioni A3_r3,True,1 contro 1
+c,maschera valida A3_r4,True,
+c,regioni A3_r4,True,1 contro 1
+c,maschera valida A3_r5,True,
+c,regioni A3_r5,True,1 contro 1
+c,maschera valida A4_f1,True,
+c,regioni A4_f1,True,1 contro 1
+c,maschera valida A4_f2,True,
+c,regioni A4_f2,True,1 contro 1
+c,maschera valida A4_p1,True,
+c,regioni A4_p1,True,1 contro 1
+c,maschera valida A4_p2,True,
+c,regioni A4_p2,True,1 contro 1
+c,maschera valida A4_p3,True,
+c,regioni A4_p3,True,1 contro 1
+c,maschera valida A5_r1,True,
+c,regioni A5_r1,True,4 contro 4
+c,maschera valida A5_r2,True,
+c,regioni A5_r2,True,4 contro 4
+c,maschera valida A5_r3,True,
+c,regioni A5_r3,True,8 contro 8
+c,maschera valida A5_r4,True,
+c,regioni A5_r4,True,3 contro 3
+c,maschera valida A5_r5,True,
+c,regioni A5_r5,True,1 contro 1
+c,maschera valida A6_r1,True,
+c,regioni A6_r1,True,6 contro 6
+c,maschera valida A6_r2,True,
+c,regioni A6_r2,True,3 contro 3
+c,maschera valida A6_r3,True,
+c,regioni A6_r3,True,1 contro 1
+c,maschera valida A6_r4,True,
+c,regioni A6_r4,True,5 contro 5
+c,maschera valida A6_r5,True,
+c,regioni A6_r5,True,7 contro 7
+d,esportazione A1_r1,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A1_r2,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A1_r3,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A1_r4,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A1_r5,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A2_r1,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A2_r2,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A2_r3,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A2_r4,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A2_r5,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A3_r1,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A3_r2,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A3_r3,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A3_r4,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A3_r5,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A4_f1,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A4_f2,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A4_p1,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A4_p2,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A4_p3,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A5_r1,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A5_r2,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A5_r3,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A5_r4,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A5_r5,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A6_r1,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A6_r2,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A6_r3,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A6_r4,True,quadratini True conteggi True nuclei True geni True
+d,esportazione A6_r5,True,quadratini True conteggi True nuclei True geni True
+d,misure di F3_3_common uguali a F3.1 sulle 90 esecuzioni,True,"n = 90, scarto massimo 1.3e-15"
+e,riconoscimento a 500 UMI,True,1.000
+e,mutante: profili rimescolati,True,0.455
+e,profili fuori area (A1_r1),True,7012 su 9000
+e,mutante: profili non fuori area rilevati,True,9000 contro 7012
+f,"S* senza spostamento, permutazione",True,media 0.016
+f,"S* senza spostamento, modello t",True,media -0.072
+f,G* senza spostamento,True,media 0.003
+f,S* con spostamento di 1 h,False,media 0.557
+f,regola V,True,
+f,componenti di varianza: rapporto alto quando i pazienti differiscono,True,rho 2.90

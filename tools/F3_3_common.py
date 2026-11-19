@@ -103,3 +103,31 @@ def measures(d, A, cell_types, exp, bins, genes, X, box=None, with_aniso=False):
     r["M6"] = float((nb[pp] == sf[pp]).mean()); r["n_pairs"] = int(pp.sum())
     if with_aniso: r["M7"] = aniso_umi(m)
     return r
+
+
+def measures_variants(d, A, cell_types, exp, bins, genes, X):
+    """Varianti di BL-264, descrittive: M2r e M3r con i soli quadratini in tessuto (in_reg) della cellula allargata; M3u senza i marcatori
+    presenti nelle liste di due o piu' tipi."""
+    mk = pd.read_csv(f"{REF}/markers_{A}.csv"); types = sorted(mk.cell_type.unique())
+    reg = bins.in_reg.to_numpy(); nuc = bins["label"].to_numpy().astype(np.int64)
+    lab_ids, inv = np.unique(nuc[nuc > 0], return_inverse=True)
+    nb_all = np.bincount(inv, minlength=len(lab_ids)); nb_reg = np.bincount(inv, weights=reg[nuc > 0].astype(float), minlength=len(lab_ids))
+    cell_set = lab_ids[nb_reg >= 0.5 * nb_all]; ctype = cell_types.reindex(cell_set).to_numpy()
+    gidx = pd.Series(np.arange(len(genes)), index=genes); mk = mk[mk.gene.isin(gidx.index)]
+    dup = set(mk.gene[mk.gene.duplicated(keep=False)])
+    out = {}
+    for tag, regonly, drop in [("M3r", True, False), ("M3u", False, True)]:
+        Mmat = np.zeros((len(genes), len(types)))
+        for k, ty in enumerate(types):
+            g = mk.gene[(mk.cell_type == ty) & (~mk.gene.isin(dup) if drop else True)]
+            Mmat[gidx.reindex(g).dropna().astype(int).to_numpy(), k] = 1
+        e = np.where(reg, exp, 0) if regonly else exp
+        sel = np.isin(e, cell_set); pos = pd.Series(np.arange(len(cell_set)), index=cell_set)
+        I = sp.csr_matrix((np.ones(sel.sum()), (pos.reindex(e[sel]).to_numpy(), np.flatnonzero(sel))), shape=(len(cell_set), len(bins)))
+        C = I @ X; MU = np.asarray(C @ Mmat); tot = MU.sum(axis=1); own = np.full(len(cell_set), np.nan)
+        for k, ty in enumerate(types): own[ctype == ty] = MU[ctype == ty, k]
+        typed = np.isin(ctype, types) & (tot >= 5); fo = 1 - own / np.where(tot > 0, tot, np.nan)
+        out[tag] = float(np.nanmean(fo[typed])) if typed.any() else np.nan
+        if regonly: out["M2r"] = float(np.asarray(C.sum(axis=1)).ravel().mean())
+    out["n_dup_markers"] = len(dup)
+    return out

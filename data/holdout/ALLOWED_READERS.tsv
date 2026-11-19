@@ -7,3 +7,18 @@ tools/F3.2_guard.py	F3.2	questo controllo (contiene i nomi da cercare)
 tools/F3.2_test.py	F3.2	batteria di F3.2 (mutante del controllo di fuga)
 tools/F3.2_rule3.py	F3.2	terza regola delle aree di verifica (DEC-095)
 tools/F3.2_sexcheck.py	F3.2	identita' del paziente del tumore da 6,5 mm (geni dei cromosomi sessuali)
+tools/F3.3_areas.py	F3.3	tabella delle aree di verifica L1 e L2 (riquadri, percorsi)
+tools/F3.3_segment.py	F3.3	ritaglio H&E, maschere, Cellpose, nuclei di Space Ranger delle aree di verifica
+tools/F3.3_stardist.py	F3.3	StarDist sulle aree di verifica di linfonodo e cuore
+tools/F3.3_consensus.py	F3.3	maschera di consenso di R3b sulle aree di verifica di linfonodo e cuore
+tools/F3.3_regions.R	F3.3	regioni dalla maschera valida delle aree di verifica
+tools/F3.3_export.py	F3.3	esportazione delle aree di verifica nel formato comune
+tools/F3.3_run.sh	F3.3	catena completa sulle aree di verifica
+tools/F3.3_holdout_measures.py	F3.3	etichette trasferite e misure M-1...M-7 sulle aree di verifica
+tools/F3.3_analysis.py	F3.3	statistiche pre-registrate dentro e fuori campione
+tools/F3.3_check.py	F3.3	cancello G-4 (invarianti per area)
+tools/F3.3_repro.sh	F3.3	cancello G-3 (riproducibilita')
+tools/F3.3_md5.sh	F3.3	cancello G-2 (integrita')
+tools/F3.3_test.py	F3.3	cancello G-1 (batteria)
+tools/F3.3_figures.py	F3.3	figure del report di F3.3
+tools/F3.3_report_parts.py	F3.3	tabelle del report di F3.3
