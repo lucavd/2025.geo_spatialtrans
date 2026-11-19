@@ -1,0 +1,72 @@
+---
+title: "F3.3: il simulatore di oggi regge fuori dalle aree su cui è stato tarato?"
+subtitle: "geo_spatialtrans, report di step (protocollo v2)"
+date: today
+format:
+  html:
+    toc: true
+    embed-resources: true
+---
+
+{{< include F3.3_parts/in_breve.md >}}
+
+# Dubbi rinviati
+
+{{< include F3.3_parts/dubbi.md >}}
+
+# Cancelli e previsioni
+
+Pre-registrazione: cancelli e previsioni proposte `858a7cf`; ok di Luca sulle previsioni e sulle soglie del 2026-11-19, `eedd71a` («Ok, come proposte (Consigliato)»; tessuti nuovi «Lasciarli sigillati (Consigliato)»). Correzione della descrizione di M-5 prima della lettura: `66f9cc3`. Errore di pre-registrazione trovato dal cancello G-1 prima della lettura, decisione di Luca [DEC-098](../docs/decisions/DEC-098.md); scelte tecniche [DEC-097](../docs/decisions/DEC-097.md).
+
+## Correzione dopo il cancello G-1
+
+{{< include F3.3_parts/prereg.md >}}
+
+{{< include F3.3_parts/esiti.md >}}
+
+![Valori per area delle sei misure dei metodi: taratura (grigio), aree nuove della stessa sezione (verde), altri pazienti e sezioni (arancio, rosso, viola), simulato (blu). **Cosa guardare**: i punti verdi stanno con i grigi; arancio, rosso e viola se ne allontanano, soprattutto negli UMI per cellula del tumore e nella seconda sezione di cervello.](F3.3_parts/F3.3_fig1_values.png)
+
+![Spostamento del vero, media fuori meno media dentro campione, in margini h; asterisco: spostamento smentito con la regola V. **Cosa guardare**: sopra la riga (stesse sezioni) quasi tutto chiaro; sotto (altri pazienti e sezioni) celle scure, fino a 7 margini.](F3.3_parts/F3.3_fig2_shift.png)
+
+![Stime aggregate (radice con segno del quadrato medio, DEC-098) con intervallo al 95 %; in grigio l'intervallo che si avrebbe senza alcuno spostamento; fascia: ±0,5 h. **Cosa guardare**: nelle stesse sezioni le stime stanno dentro il grigio; negli altri pazienti e sezioni ben fuori, oltre 2 margini.](F3.3_parts/F3.3_fig3_aggregate.png)
+
+# Correzioni
+
+{{< include F3.3_parts/correzioni.md >}}
+
+# Revisione avversariale
+
+{{< include F3.3_parts/revisione.md >}}
+
+# Cosa è girato
+
+Commit della catena e dei risultati: vedi `git log` del ramo `f3-methods` (chiusura «F3.3: …»). Script: `tools/F3.3_areas.py`, `F3.3_segment.py`, `F3.3_stardist.py`, `F3.3_consensus.py`, `F3.3_regions.R`, `F3.3_export.py`, `F3.1_b2c.py`, `F3.1_rctd.R`, `F3.3_holdout_measures.py`, `F3_3_common.py`, `F3_3_stats.py`, `F3.3_analysis.py`, `F3.3_run.sh`, `F3.3_fix_a4.sh`. Semi: RCTD 20261118 (come F3.1), statistiche 20261119-20261121, bootstrap B = 2 000. Processi: 4 (catena), 2 (riproducibilità). md5: 1 669 file identici prima e dopo (`/mnt/micron/geo_spatialtrans/F3.3/md5/`). Registro delle letture dei dati di verifica: `data/holdout/HOLDOUT_LOG.tsv`, prima lettura di L1 e L2.
+
+# Appendice
+
+## Tutte le celle (tessuto × misura × insieme)
+
+{{< include F3.3_parts/cells_table.md >}}
+
+## Componenti di varianza fra pazienti e fra aree
+
+{{< include F3.3_parts/varcomp_table.md >}}
+
+## Da dove vengono i numeri del riassunto
+
+| frase del riassunto | fonte | valore letto |
+|---|---|---|
+| 38 aree vere mai usate; 15 nuove nelle stesse sezioni | `results/F3.3/F3.3_areas.csv` (level L1, L2) | 15 L1, 23 L2 |
+| nelle stesse sezioni nessuno spostamento né degrado rilevato | `F3.3_summary.csv`, P-1 L1, P-3 L1 | −0,20 (−0,81; 1,12); −0,19 (−1,14; 1,21) |
+| difetti che restano sulle aree nuove: 10 su 12, i due mancanti nel cervello | `F3.3_summary.csv` P-4 L1; `F3.3_cells.csv` | k = 10, n = 12; A5 M-3, A5 M-6 (1 area) |
+| il simulato peggiora di circa tre margini negli altri pazienti | `F3.3_summary.csv`, P-3 L2 | 2,94 (2,33; 3,43) |
+| trascritti per cellula nel tumore 1 100, 640, 2 000, 270; simulato altrettanti | `F3.3_area_values.csv`, media per insieme di M2 | 1 120; 640; 1 997; 270; simulato 1 096 |
+| cervello FFPE un terzo | `F3.3_area_values.csv` | 1 417 contro 4 514 |
+| conferma costruita che cade in 2 sezioni su 3 dello stroma | `F3.3_summary.csv` P-5 L2 | A3 M-2 in tumore da 6,5 mm e P1 |
+| 4 combinazioni su 12 con variabilità fra sezioni non trascurabile | `F3.3_varcomp.csv`, gruppi «con 6,5 mm» | A2 M-2, A2 M-4, A3 M-4, A3 M-6 smentite |
+| vicini dello stesso tipo 89 %, 72-75 %, 65 % | `F3.3_area_values.csv`, M6 nello stroma | P2 0,886; P1 0,752; P5 0,716; simulato 0,649 |
+| cuore 0,11 contro 0,10 | `F3.3_summary.csv` CP-1; `F3.1_PH5_aniso_diff.csv` | 0,112; 0,0967 |
+| falso fuori campione senza spostamento | `F3.3_summary.csv` CP-2 | 0,007 |
+| 18 valori veri su 228 | `F3.3_summary.csv` P-7 | 18 su 228 |
+| profondità fino a 7 volte | `F3.3_area_values.csv` | tumore 1 997 / 270 = 7,4 |
+| tempi: circa 2 ore con 4 processi; riproducibilità circa 1 ora con 2 | orari dei lavori sul server | 18:48-20:50; 20:01-20:31 più correzione 20:39 |

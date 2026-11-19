@@ -1,0 +1,3 @@
+1. **Distribuzione nulla del modello t** (trovata guardando la figura 3, poi confermata dalla revisione statistica): la funzione riduceva ogni insieme a un solo valore, e gli stimatori quadratici sottraevano una varianza troppo grande; i soli intervalli «senza spostamento» di L2 erano sbagliati (tutti negativi). Corretta conservando le numerosità; stime, intervalli ed esiti non cambiano.
+2. **StarDist sulle aree di 500 µm** (G-3): vedi sopra.
+3. **Esportazioni duplicate**: durante il calcolo 24 esportazioni di aree di taratura a pannello intero (servite a G-1 d) sono state tolte dalla coda di RCTD, per non rifare calcoli identici a F3.1; 6 erano già partite (5 dell'intestino e A2_r1) e restano come controllo.

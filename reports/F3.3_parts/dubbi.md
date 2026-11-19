@@ -1,0 +1,5 @@
+| cosa | perché | cosa serve per chiuderlo | step destinatario | voce di BACKLOG |
+|---|---|---|---|---|
+| Gli altri pazienti e sezioni del tumore e del cervello differiscono dalla sezione di taratura di circa 2,4 margini (profondità fino a 7 volte, stroma più mescolato) | il simulatore ha una profondità e una composizione per tessuto, da una sezione | progettare quali grandezze variano per sezione e per paziente e stimarle su più sezioni | step della variabilità fra aree, sezioni e pazienti | BL-272 (con BL-262, BL-270) |
+| La condizione 4 di R-3 boccia già il simulatore di oggi | i trascritti per cellula nello stroma, tarati su P2, sono smentiti in 2 sezioni | decisione di Luca (decisione 2 del riassunto) | questo step | nessuna |
+| La semina a compartimenti potrebbe allontanare lo stroma simulato da quello degli altri pazienti | nei pazienti 1 e 5 lo stroma è più mescolato che in P2 | giudicare la prova dei compartimenti anche sullo stroma di P1 e P5 | prova della semina a compartimenti | BL-273 |

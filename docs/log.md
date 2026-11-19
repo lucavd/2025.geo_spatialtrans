@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 2026-11-19 (F3.3, risultati e riassunto)
+
+* **Modifica**: [Il simulatore di oggi regge fuori dalle aree su cui è stato tarato, e il suo difetto è il sovradattamento o la mancanza di variabilità? (F3.3)](steps/F3.3.md): esiti, correzioni, revisione avversariale, riassunto (in attesa delle decisioni di Luca); decisione di Luca [F3.3: spostamento e degrado con lo stimatore quadratico corretto; «non rilevato» al posto di «confermato» (DEC-098)](decisions/DEC-098.md).
+* **Modifica**: BACKLOG (BL-264, BL-269, BL-271 chiuse; BL-262, BL-270 aggiornate; BL-272, BL-273 nuove); ROADMAP sezione 7; CHANGELOG; `data/holdout/HOLDOUT_LOG.tsv`; report `reports/F3.3.html`.
+
 ## 2026-11-19 (F3.3, pre-registrazione)
 
 * **Creazione**: [Il simulatore di oggi regge fuori dalle aree su cui è stato tarato, e il suo difetto è il sovradattamento o la mancanza di variabilità? (F3.3)](steps/F3.3.md) (perimetro, esplorazioni E-1 ed E-2, cancelli, previsioni proposte); decisione tecnica [F3.3: scelte tecniche della misura fuori campione (DEC-097)](decisions/DEC-097.md).

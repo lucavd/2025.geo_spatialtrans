@@ -10,6 +10,7 @@ from csbdeep.utils import normalize
 import os; OUT = Path(os.environ.get("F33_ROOT", "/mnt/micron/geo_spatialtrans/F3.3")) / "seg"
 A = pd.read_csv("results/F3.3/F3.3_areas.csv"); A = A[A.seg == "consensus"]; sel = sys.argv[1]
 A = A[A.level == "IN"] if sel == "IN" else A[A.level != "IN"] if sel == "holdout" else A[A.area.isin(sel.split(","))]
+if os.environ.get("F33_SD_DET") == "1": tf.config.experimental.enable_op_determinism()   # G-3: senza, le aree di 500 um (via senza tasselli) non tornano identiche
 tf.random.set_seed(0); np.random.seed(0); model = StarDist2D.from_pretrained("2D_versatile_he")
 for _, r in A.iterrows():
     o = OUT / r.area

@@ -48,12 +48,12 @@ def null_draw(cells, rng, mode):
         elif mode == "resid":      # sensibilita' (non pre-registrata): residui per area ricampionati insieme per tutte le misure del tessuto
             g = c["group"]; Rm = c["resid"]; m0 = float(np.mean(c["in"]))
             if g not in perms: perms[g] = {nm: rng.integers(0, Rm.shape[0], n) for nm, n in [("in", len(c["in"]))] + [(k, len(o)) for k, o in c["out"].items()]}
-            ix = perms[g]; new = {"in": np.array([m0 + Rm[ix["in"], c["mi"]].mean()])}
-            o2 = {nm: np.array([m0 + Rm[ix[nm], c["mi"]].mean()]) for nm in c["out"]}
+            ix = perms[g]; new = {"in": np.full(len(c["in"]), m0 + Rm[ix["in"], c["mi"]].mean())}
+            o2 = {nm: np.full(len(o), m0 + Rm[ix[nm], c["mi"]].mean()) for nm, o in c["out"].items()}
         else:
             s, df = c["sd"], c["df"]; m0 = float(np.mean(c["in"]))
-            new = {"in": np.array([m0 + s / np.sqrt(len(c["in"])) * rng.standard_t(df)])}
-            o2 = {nm: np.array([m0 + s / np.sqrt(len(o)) * rng.standard_t(df)]) for nm, o in c["out"].items()}
+            new = {"in": np.full(len(c["in"]), m0 + s / np.sqrt(len(c["in"])) * rng.standard_t(df))}       # numerosita' conservate (servono a Q_S, Q_G)
+            o2 = {nm: np.full(len(o), m0 + s / np.sqrt(len(o)) * rng.standard_t(df)) for nm, o in c["out"].items()}
         out.append({**c, "in": new["in"], "out": o2})
     return out
 
