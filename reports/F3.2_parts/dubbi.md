@@ -6,3 +6,5 @@
 | Geni diversi fra Space Ranger 3.0.0 e 4.0.1 (18 107 comuni) | il +0,9 % di P-1 è la somma di due effetti opposti | usare i geni comuni in ogni confronto con P1 e P5 | prova della semina a compartimenti | BL-269 |
 | Con l'obiettivo come intervallo, la condizione «vero dentro la variabilità del simulato» oggi boccia tutto (13 aree vere su 240) | una sola composizione e densità per tessuto (BL-262) | passo che produce la variabilità fra aree, poi la condizione si applica | dopo la prova della semina a compartimenti | BL-262, BL-270 |
 
+
+| Misura del simulatore di oggi fuori campione | sintomi di sovradattamento visti da Luca nel riassunto | step a parte prima di ogni modifica | F3.3 | BL-271 |

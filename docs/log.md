@@ -1,5 +1,11 @@
 # Registro delle modifiche
 
+## 2026-11-19 (F3.2, chiusura)
+
+* **Chiusura**: [Come separiamo i dati che tarano il simulatore da quelli che lo verificano, e con quali regole accettiamo un cambiamento? (F3.2)](steps/F3.2.md) chiuso con l'approvazione di Luca («ok l'ordinr e la sessione separata. Chiudi»); riassunto corretto dopo la sua lettura (punto 5, decisione 2).
+* **Creazione**: decisione di Luca [F3.2: prima di cambiare il simulatore, uno step misura quello di oggi fuori campione; la prova dei compartimenti viene dopo (DEC-096)](decisions/DEC-096.md).
+* **Modifica**: [Regole contro il sovradattamento: dati di taratura e di verifica separati, quando si accetta un cambiamento, obiettivo come intervallo, limite alle indagini a posteriori (DEC-093)](decisions/DEC-093.md) adottata, senza la sospensione della condizione sulla variabilita' fra aree; BACKLOG BL-271; ROADMAP sezione 7; CHANGELOG; report.
+
 ## 2026-11-19 (F3.2, risultati e riassunto)
 
 * **Creazione**: [Come separiamo i dati che tarano il simulatore da quelli che lo verificano, e con quali regole accettiamo un cambiamento? (F3.2)](steps/F3.2.md); decisioni di Luca [F3.2: dati di verifica, soglia della versione di Space Ranger e scelta automatica delle aree (DEC-091)](decisions/DEC-091.md), [F3.2: seconda regola per scegliere le aree di verifica e confronto a vista di Luca con le aree già approvate (DEC-092)](decisions/DEC-092.md), [F3.2: le aree nuove delle sezioni di taratura distano 280 µm dalle aree di R2, non dalle tessere di bordo (DEC-094)](decisions/DEC-094.md); decisione tecnica [F3.2: le aree di verifica le sceglie l'agente, con una terza regola sui marcatori e due letture a vista indipendenti; il confronto a vista di Luca è ritirato (DEC-095)](decisions/DEC-095.md); bozza [Regole contro il sovradattamento: dati di taratura e di verifica separati, quando si accetta un cambiamento, obiettivo come intervallo, limite alle indagini a posteriori (DEC-093)](decisions/DEC-093.md).

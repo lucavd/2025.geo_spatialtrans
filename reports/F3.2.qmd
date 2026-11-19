@@ -53,6 +53,10 @@ Intervalli: media delle 5 aree ± 2 errori standard fra aree × κ di R7 (1,655 
 
 {{< include F3.2_parts/aree.md >}}
 
+# Lettura di Luca
+
+Dopo il primo riassunto Luca ha scritto: «fermo fermo fermo. Io vedo un bel disastro nei primi 5 punti. Overfitting problematico e quelli sono i sintomi. Sei sicuro di voler andare avanti?». L'agente ha ritirato la raccomandazione di provare subito la semina a compartimenti sospendendo la condizione sulla variabilità fra aree, e ha proposto una misura del simulatore di oggi fuori campione prima di ogni modifica. Luca: «ok l'ordinr e la sessione separata. Chiudi» ([DEC-096](../docs/decisions/DEC-096.md)). Il riassunto in testa è la versione corretta.
+
 # Revisione avversariale
 
 Un sotto-agente indipendente, con codice proprio e in sola lettura sul server, ha ricalcolato: 20 valori del censimento estratti con seme 20261118 (20/20 uguali al pacchetto), la quota 380 su 478, md5 ed ETag di 3 file, le aree usate per sezione, P-1 per area e per tessuto (differenze relative ≤ 4e-13), accordo e kappa delle letture, le 48 aree tenute, la prova del lato dell'area. Nessuna discrepanza numerica. Due osservazioni accolte: il +0,9 % di P-1 è la somma di due effetti opposti, geni in più nella 3.0.0 e −0,5 % sui geni comuni (BL-269, regola R-8); nel cuore i singoletti valgono 1 ovunque, quindi la prova del lato passa per costruzione in quel caso (19 su 23 casi informativi). Risultato completo: `results/F3.2/F3.2_adversarial_review.json`.
