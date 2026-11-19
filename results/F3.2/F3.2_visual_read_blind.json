@@ -1,0 +1,149 @@
+{
+ "reads": {
+  "A1": {
+   "1": "mucosa",
+   "2": "mucosa",
+   "3": "nessuna",
+   "4": "mucosa",
+   "5": "mucosa",
+   "6": "nessuna",
+   "7": "mucosa"
+  },
+  "A23": {
+   "1": "tumore",
+   "2": "nessuna",
+   "3": "tumore",
+   "4": "nessuna",
+   "5": "nessuna",
+   "6": "tumore",
+   "7": "nessuna",
+   "8": "tumore"
+  },
+  "A4": {
+   "1": "nessuna",
+   "2": "nessuna",
+   "3": "nessuna"
+  },
+  "A5": {
+   "1": "nessuna",
+   "2": "nessuna",
+   "3": "corteccia",
+   "4": "nessuna",
+   "5": "nessuna"
+  },
+  "A6": {
+   "1": "miocardio",
+   "2": "nessuna",
+   "3": "miocardio",
+   "4": "miocardio",
+   "5": "nessuna",
+   "6": "miocardio",
+   "7": "miocardio",
+   "8": "miocardio",
+   "9": "miocardio"
+  },
+  "CRC_P1_SR300": {
+   "1": "nessuna",
+   "2": "stroma",
+   "3": "tumore",
+   "4": "tumore",
+   "5": "stroma",
+   "6": "nessuna",
+   "7": "nessuna",
+   "8": "nessuna",
+   "9": "tumore",
+   "10": "tumore",
+   "11": "stroma",
+   "12": "nessuna"
+  },
+  "CRC_P5_SR300": {
+   "1": "nessuna",
+   "2": "nessuna",
+   "3": "tumore",
+   "4": "tumore",
+   "5": "nessuna",
+   "6": "nessuna",
+   "7": "nessuna",
+   "8": "nessuna",
+   "9": "nessuna",
+   "10": "tumore",
+   "11": "stroma",
+   "12": "nessuna",
+   "13": "nessuna",
+   "14": "nessuna"
+  },
+  "CRC_6p5mm_SR410": {
+   "1": "stroma",
+   "2": "nessuna",
+   "3": "tumore",
+   "4": "stroma",
+   "5": "nessuna",
+   "6": "nessuna",
+   "7": "nessuna",
+   "8": "tumore",
+   "9": "stroma",
+   "10": "tumore",
+   "11": "tumore",
+   "12": "nessuna",
+   "13": "tumore",
+   "14": "tumore",
+   "15": "nessuna"
+  },
+  "MouseBrain_FFPE_SR401": {
+   "1": "nessuna",
+   "2": "corteccia",
+   "3": "nessuna",
+   "4": "corteccia",
+   "5": "corteccia",
+   "6": "corteccia",
+   "7": "nessuna",
+   "8": "nessuna",
+   "9": "nessuna",
+   "10": "corteccia"
+  },
+  "HumanKidney_FFPE_SR401": {
+   "1": "adatto",
+   "2": "adatto",
+   "3": "nessuna",
+   "4": "adatto",
+   "5": "adatto",
+   "6": "adatto",
+   "7": "adatto",
+   "8": "adatto",
+   "9": "adatto",
+   "10": "adatto"
+  },
+  "RatLiver_6p5mm_SR410": {
+   "1": "adatto",
+   "2": "adatto",
+   "3": "adatto",
+   "4": "adatto",
+   "5": "adatto",
+   "6": "nessuna",
+   "7": "adatto",
+   "8": "adatto",
+   "9": "adatto"
+  },
+  "A4_500um": {
+   "1": "follicolo",
+   "2": "paracorticale",
+   "3": "follicolo",
+   "4": "paracorticale",
+   "5": "paracorticale"
+  }
+ },
+ "notes": {
+  "A1": "#3 e #6 contengono un grande aggregato linfoide (placca di Peyer), assente nei riferimenti: nessuna. Le altre sono mucosa con villi come i riferimenti.",
+  "A23": "#2 e #7 mescolano mucosa normale (cripte) e tumore. #4 è grasso/edema con vasi. #5 è muscolo liscio. #1, #3, #6 e #8 sono tumore villoso/ghiandolare (#3 ha un po' di infiltrato alla base).",
+  "A4": "Tutte e tre sono soprattutto tessuto adiposo; #1 e #3 hanno solo un frammento di linfonodo ai margini.",
+  "A5": "#3 è l'unica simile ai riferimenti (corteccia omogenea vicino alla superficie). #2, #4 e #5 hanno zone dense di nuclei (ippocampo/strati granulari, aspetto diverso). #1 ha un aspetto fibroso/di sostanza bianca e non somiglia ai riferimenti.",
+  "A6": "#2 ha un grande vaso con avventizia fibrosa. #5 ha fibre longitudinali di colore e struttura diversi dai riferimenti (forse trabecole). #1 e #4 hanno vasi piccoli, accettati.",
+  "CRC_P1_SR300": "#1, #6, #7, #8 e #12 sono mucosa normale (sola o mista a tumore/muscolo). #2 è stroma fibroso senza ghiandole tumorali, chiamata incerta. #5 e #11 sono stroma con infiltrato infiammatorio, incerte. #9 ha un frammento tumorale con emorragia e qualche cripta normale ai margini, incerta.",
+  "CRC_P5_SR300": "Molte candidate mescolano mucosa normale e tumore, oppure sono muscolare/sottomucosa, grasso o regioni di aspetto diverso: nessuna. #11 è stroma desmoplastico, incerta.",
+  "CRC_6p5mm_SR410": "#1, #4 e #9 sono stroma fibroso con ghiandole sparse (#4 e #9 incerte). Le nessuna sono mucosa normale, muscolo o compartimenti misti.",
+  "MouseBrain_FFPE_SR401": "Corteccia dove è omogenea. Nessuna dove ci sono ippocampo, sostanza bianca/fibre, ventricoli o strati densi.",
+  "HumanKidney_FFPE_SR401": "#3 ha un grande infiltrato infiammatorio interstiziale attorno a un vaso/glomerulo sclerotico: nessuna. #5 ha un piccolo focolaio infiammatorio e un glomerulo sclerotico, chiamata adatto incerta.",
+  "RatLiver_6p5mm_SR410": "#6 contiene un grande vaso pieno di sangue che occupa una parte rilevante dell'area: nessuna. Le altre sono parenchima ben conservato con vasi piccoli o bordo di sezione.",
+  "A4_500um": "#1 e #3 hanno un'area tipo follicolo (centro più chiaro, mantello). #2, #4 e #5 sono zona diffusa, quindi paracorticale. #1, #4 e #5 hanno un po' di grasso/capsula al bordo, accettato perché c'è anche nei riferimenti (f1_q2)."
+ }
+}

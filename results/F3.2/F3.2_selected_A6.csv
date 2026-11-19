@@ -1,0 +1,7 @@
+label,level,klass,area_id,n,x0,y0,x1,y1,side_um,agent,blind,rule3,blind_uncertain
+A6,L1,miocardio,A6_miocardio_1,1,8450.0,3700.0,9450.0,4700.0,1000.0,miocardio,miocardio,miocardio,False
+A6,L1,miocardio,A6_miocardio_2,3,6700.0,8250.0,7700.0,9250.0,1000.0,miocardio,miocardio,miocardio,False
+A6,L1,miocardio,A6_miocardio_3,4,8150.0,9100.0,9150.0,10100.0,1000.0,miocardio,miocardio,miocardio,False
+A6,L1,miocardio,A6_miocardio_4,6,6250.0,3600.0,7250.0,4600.0,1000.0,miocardio,miocardio,miocardio,False
+A6,L1,miocardio,A6_miocardio_5,7,6650.0,6400.0,7650.0,7400.0,1000.0,miocardio,miocardio,miocardio,False
+A6,test_tile,stardist_test,A6_stardist_test,0,6119.644219327437,6744.714597309917,6369.644219327437,6994.714597309917,250.0,,,,False

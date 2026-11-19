@@ -1,0 +1,7 @@
+label,level,klass,area_id,n,x0,y0,x1,y1,side_um,agent,blind,rule3,blind_uncertain
+HumanKidney_FFPE_SR401,L3,adatto,HumanKidney_FFPE_SR401_adatto_1,1,3800.0,5150.0,4800.0,6150.0,1000.0,adatto,adatto,adatto,False
+HumanKidney_FFPE_SR401,L3,adatto,HumanKidney_FFPE_SR401_adatto_2,2,1800.0,3800.0,2800.0,4800.0,1000.0,adatto,adatto,adatto,False
+HumanKidney_FFPE_SR401,L3,adatto,HumanKidney_FFPE_SR401_adatto_3,4,6150.0,8300.0,7150.0,9300.0,1000.0,adatto,adatto,adatto,False
+HumanKidney_FFPE_SR401,L3,adatto,HumanKidney_FFPE_SR401_adatto_4,5,6550.0,6750.0,7550.0,7750.0,1000.0,adatto,adatto,adatto,True
+HumanKidney_FFPE_SR401,L3,adatto,HumanKidney_FFPE_SR401_adatto_5,6,5450.0,4450.0,6450.0,5450.0,1000.0,adatto,adatto,adatto,False
+HumanKidney_FFPE_SR401,test_tile,stardist_test,HumanKidney_FFPE_SR401_stardist_test,0,4268.947073410612,6509.428990937,4518.947073410612,6759.428990937,250.0,,,,False

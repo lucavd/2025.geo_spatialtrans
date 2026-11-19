@@ -1,0 +1,6 @@
+label,level,klass,area_id,n,x0,y0,x1,y1,side_um,agent,blind,rule3,blind_uncertain
+A1,L1,mucosa,A1_mucosa_1,1,2850.0,750.0,3850.0,1750.0,1000.0,mucosa,mucosa,mucosa,False
+A1,L1,mucosa,A1_mucosa_2,2,4600.0,3500.0,5600.0,4500.0,1000.0,mucosa,mucosa,mucosa,False
+A1,L1,mucosa,A1_mucosa_3,4,1400.0,600.0,2400.0,1600.0,1000.0,mucosa,mucosa,mucosa,False
+A1,L1,mucosa,A1_mucosa_4,7,3450.0,4750.0,4450.0,5750.0,1000.0,mucosa,mucosa,mucosa,False
+A1,test_tile,stardist_test,A1_stardist_test,0,2869.317109151035,2838.417035466979,3119.317109151035,3088.417035466979,250.0,,,,False

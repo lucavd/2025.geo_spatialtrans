@@ -1,0 +1,9 @@
+label,level,klass,area_id,n,x0,y0,x1,y1,side_um,agent,blind,rule3,blind_uncertain
+CRC_P1_SR300,L2,stroma,CRC_P1_SR300_stroma_1,2,4500.0,4450.0,5500.0,5450.0,1000.0,stroma,stroma,stroma,True
+CRC_P1_SR300,L2,tumore,CRC_P1_SR300_tumore_2,3,3850.0,9000.0,4850.0,10000.0,1000.0,tumore,tumore,nessuna,False
+CRC_P1_SR300,L2,tumore,CRC_P1_SR300_tumore_3,4,5200.0,8800.0,6200.0,9800.0,1000.0,tumore,tumore,nessuna,False
+CRC_P1_SR300,L2,stroma,CRC_P1_SR300_stroma_4,5,4700.0,6600.0,5700.0,7600.0,1000.0,stroma,stroma,stroma,True
+CRC_P1_SR300,L2,tumore,CRC_P1_SR300_tumore_5,9,250.0,7950.0,1250.0,8950.0,1000.0,tumore,tumore,nessuna,True
+CRC_P1_SR300,L2,tumore,CRC_P1_SR300_tumore_6,10,3150.0,7550.0,4150.0,8550.0,1000.0,tumore,tumore,nessuna,False
+CRC_P1_SR300,L2,stroma,CRC_P1_SR300_stroma_7,11,3100.0,5650.0,4100.0,6650.0,1000.0,stroma,stroma,stroma,True
+CRC_P1_SR300,test_tile,stardist_test,CRC_P1_SR300_stardist_test,0,3948.3680042226833,7009.382649063138,4198.368004222683,7259.382649063138,250.0,,,,False

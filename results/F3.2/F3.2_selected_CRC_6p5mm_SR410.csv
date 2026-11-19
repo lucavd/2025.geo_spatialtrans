@@ -1,0 +1,10 @@
+label,level,klass,area_id,n,x0,y0,x1,y1,side_um,agent,blind,rule3,blind_uncertain
+CRC_6p5mm_SR410,L2,stroma,CRC_6p5mm_SR410_stroma_1,1,3850.0,5100.0,4850.0,6100.0,1000.0,stroma,stroma,nessuna,False
+CRC_6p5mm_SR410,L2,tumore,CRC_6p5mm_SR410_tumore_2,3,1750.0,2600.0,2750.0,3600.0,1000.0,tumore,tumore,nessuna,False
+CRC_6p5mm_SR410,L2,stroma,CRC_6p5mm_SR410_stroma_3,4,7100.0,5900.0,8100.0,6900.0,1000.0,stroma,stroma,nessuna,True
+CRC_6p5mm_SR410,L2,tumore,CRC_6p5mm_SR410_tumore_4,8,6400.0,3000.0,7400.0,4000.0,1000.0,tumore,tumore,nessuna,False
+CRC_6p5mm_SR410,L2,stroma,CRC_6p5mm_SR410_stroma_5,9,3300.0,2200.0,4300.0,3200.0,1000.0,stroma,stroma,nessuna,True
+CRC_6p5mm_SR410,L2,tumore,CRC_6p5mm_SR410_tumore_6,10,3100.0,3550.0,4100.0,4550.0,1000.0,tumore,tumore,nessuna,False
+CRC_6p5mm_SR410,L2,tumore,CRC_6p5mm_SR410_tumore_7,11,1600.0,4350.0,2600.0,5350.0,1000.0,tumore,tumore,nessuna,False
+CRC_6p5mm_SR410,L2,tumore,CRC_6p5mm_SR410_tumore_8,13,6950.0,1650.0,7950.0,2650.0,1000.0,tumore,tumore,stroma,False
+CRC_6p5mm_SR410,test_tile,stardist_test,CRC_6p5mm_SR410_stardist_test,0,5089.408499246284,4221.147868475141,5339.408499246284,4471.147868475141,250.0,,,,False

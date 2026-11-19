@@ -1,0 +1,140 @@
+{
+ "reader": "geo-agent/skill-v2 (lettore 1, non patologo)",
+ "written_at": "2026-11-18T16:40:00+01:00",
+ "rule": "per ogni candidata: la classe della riga di riferimento a cui somiglia, oppure 'nessuna'; rene e fegato: 'adatto' o 'nessuna'. Nessuna = mescola due compartimenti in modo evidente (mucosa normale + tumore, mucosa + muscolo), grasso, necrosi, muscolare, tessuto diverso da quello dei riferimenti.",
+ "reads": {
+  "A1": {
+   "1": "mucosa",
+   "2": "mucosa",
+   "3": "nessuna",
+   "4": "mucosa",
+   "5": "mucosa",
+   "6": "nessuna",
+   "7": "mucosa"
+  },
+  "A23": {
+   "1": "tumore",
+   "2": "nessuna",
+   "3": "tumore",
+   "4": "nessuna",
+   "5": "nessuna",
+   "6": "tumore",
+   "7": "nessuna",
+   "8": "tumore"
+  },
+  "A4": {
+   "1": "nessuna",
+   "2": "nessuna",
+   "3": "nessuna"
+  },
+  "A5": {
+   "1": "nessuna",
+   "2": "nessuna",
+   "3": "corteccia",
+   "4": "corteccia",
+   "5": "nessuna"
+  },
+  "A6": {
+   "1": "miocardio",
+   "2": "nessuna",
+   "3": "miocardio",
+   "4": "miocardio",
+   "5": "miocardio",
+   "6": "miocardio",
+   "7": "miocardio",
+   "8": "miocardio",
+   "9": "miocardio"
+  },
+  "CRC_P1_SR300": {
+   "1": "nessuna",
+   "2": "stroma",
+   "3": "tumore",
+   "4": "tumore",
+   "5": "stroma",
+   "6": "nessuna",
+   "7": "nessuna",
+   "8": "nessuna",
+   "9": "tumore",
+   "10": "tumore",
+   "11": "stroma",
+   "12": "nessuna"
+  },
+  "CRC_P5_SR300": {
+   "1": "nessuna",
+   "2": "nessuna",
+   "3": "tumore",
+   "4": "tumore",
+   "5": "nessuna",
+   "6": "nessuna",
+   "7": "nessuna",
+   "8": "stroma",
+   "9": "nessuna",
+   "10": "tumore",
+   "11": "stroma",
+   "12": "nessuna",
+   "13": "nessuna",
+   "14": "nessuna"
+  },
+  "CRC_6p5mm_SR410": {
+   "1": "stroma",
+   "2": "nessuna",
+   "3": "tumore",
+   "4": "stroma",
+   "5": "nessuna",
+   "6": "nessuna",
+   "7": "stroma",
+   "8": "tumore",
+   "9": "stroma",
+   "10": "tumore",
+   "11": "tumore",
+   "12": "nessuna",
+   "13": "tumore",
+   "14": "tumore",
+   "15": "tumore"
+  },
+  "MouseBrain_FFPE_SR401": {
+   "1": "nessuna",
+   "2": "nessuna",
+   "3": "nessuna",
+   "4": "corteccia",
+   "5": "corteccia",
+   "6": "corteccia",
+   "7": "nessuna",
+   "8": "nessuna",
+   "9": "nessuna",
+   "10": "corteccia"
+  },
+  "HumanKidney_FFPE_SR401": {
+   "1": "adatto",
+   "2": "adatto",
+   "3": "adatto",
+   "4": "adatto",
+   "5": "adatto",
+   "6": "adatto",
+   "7": "adatto",
+   "8": "adatto",
+   "9": "adatto",
+   "10": "adatto"
+  },
+  "RatLiver_6p5mm_SR410": {
+   "1": "adatto",
+   "2": "adatto",
+   "3": "adatto",
+   "4": "adatto",
+   "5": "adatto",
+   "6": "adatto",
+   "7": "adatto",
+   "8": "adatto",
+   "9": "adatto"
+  }
+ },
+ "notes": "A1 3 e 6: grandi aggregati linfoidi (placche di Peyer), assenti nei riferimenti. A23 4: stroma edematoso con vasi, non desmoplastico; 5: muscolare. A4: tutte e tre soprattutto grasso con un follicolo al bordo. A5 1: aspetto fibroso (striato o fibre), 2 e 5: strati scuri densi non corticali. A6 2: grande vaso con fibrosi perivascolare. P5 3, 4, 10: cerchi grigi da bolle di montaggio, come nel cuore.",
+ "reads_500um_A4": {
+  "1": "follicolo",
+  "2": "paracorticale",
+  "3": "follicolo",
+  "4": "follicolo",
+  "5": "follicolo"
+ },
+ "notes_500um_A4": "registrata il 2026-11-19 dopo aver visto le classi della terza regola per queste 5 (tutte follicolo): lettura NON cieca rispetto alla regola. 1 e 5 hanno grasso a un angolo, come il riferimento f1_q2. Follicolo contro paracorticale a questa risoluzione e' incerto."
+}

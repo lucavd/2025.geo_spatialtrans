@@ -1,0 +1,2 @@
+label,level,klass,area_id,n,x0,y0,x1,y1,side_um,agent,blind,rule3,blind_uncertain
+A4,test_tile,stardist_test,A4_stardist_test,0,2980.1119263150536,3035.026170335918,3230.1119263150536,3285.026170335918,250.0,,,,False

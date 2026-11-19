@@ -1,0 +1,3 @@
+label,level,klass,area_id,n,x0,y0,x1,y1,side_um,agent,blind,rule3,blind_uncertain
+A5,L1,corteccia,A5_corteccia_1,3,3700.0,4400.0,4700.0,5400.0,1000.0,corteccia,corteccia,corteccia,False
+A5,test_tile,stardist_test,A5_stardist_test,0,2805.2587036528275,2837.1686807466194,3055.2587036528275,3087.1686807466194,250.0,,,,False

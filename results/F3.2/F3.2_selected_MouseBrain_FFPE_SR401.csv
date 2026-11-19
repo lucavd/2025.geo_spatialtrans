@@ -1,0 +1,6 @@
+label,level,klass,area_id,n,x0,y0,x1,y1,side_um,agent,blind,rule3,blind_uncertain
+MouseBrain_FFPE_SR401,L2,corteccia,MouseBrain_FFPE_SR401_corteccia_1,4,1950.0,250.0,2950.0,1250.0,1000.0,corteccia,corteccia,nessuna,False
+MouseBrain_FFPE_SR401,L2,corteccia,MouseBrain_FFPE_SR401_corteccia_2,5,2300.0,4800.0,3300.0,5800.0,1000.0,corteccia,corteccia,nessuna,False
+MouseBrain_FFPE_SR401,L2,corteccia,MouseBrain_FFPE_SR401_corteccia_3,6,3950.0,3350.0,4950.0,4350.0,1000.0,corteccia,corteccia,nessuna,False
+MouseBrain_FFPE_SR401,L2,corteccia,MouseBrain_FFPE_SR401_corteccia_4,10,450.0,1350.0,1450.0,2350.0,1000.0,corteccia,corteccia,nessuna,False
+MouseBrain_FFPE_SR401,test_tile,stardist_test,MouseBrain_FFPE_SR401_stardist_test,0,2643.532248539875,3166.375444307155,2893.532248539875,3416.375444307155,250.0,,,,False

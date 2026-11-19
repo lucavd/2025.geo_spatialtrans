@@ -88,7 +88,7 @@ def g4():
     check("G-4 (a) mappa: stesse righe dei file sorgente", cnt.get("R2_ROI") == n_r2 and cnt.get("R2b_WINDOW") == len(w) and cnt.get("R5_EDGE_TILE") == n_r5,
           f"R2 {cnt.get('R2_ROI')}/{n_r2}, R2b {cnt.get('R2b_WINDOW')}/{len(w)}, R5 {cnt.get('R5_EDGE_TILE')}/{n_r5}")
     check("G-4 (a) finestre di R2b dentro le aree di R2", bool(w.inside_roi.all()))
-    files = sorted(OUT.glob("F3.2_selected_*.csv"))
+    files = sorted(f for f in OUT.glob("F3.2_selected_*.csv") if not f.name.endswith("_all.csv"))   # _all mescola le sezioni
     if files:
         mins = []; pair = []
         for f in files:

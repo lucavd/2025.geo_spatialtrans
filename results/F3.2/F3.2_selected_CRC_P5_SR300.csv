@@ -1,0 +1,6 @@
+label,level,klass,area_id,n,x0,y0,x1,y1,side_um,agent,blind,rule3,blind_uncertain
+CRC_P5_SR300,L2,tumore,CRC_P5_SR300_tumore_1,3,13250.0,14650.0,14250.0,15650.0,1000.0,tumore,tumore,tumore,False
+CRC_P5_SR300,L2,tumore,CRC_P5_SR300_tumore_2,4,13400.0,16150.0,14400.0,17150.0,1000.0,tumore,tumore,nessuna,False
+CRC_P5_SR300,L2,tumore,CRC_P5_SR300_tumore_3,10,12100.0,15900.0,13100.0,16900.0,1000.0,tumore,tumore,nessuna,False
+CRC_P5_SR300,L2,stroma,CRC_P5_SR300_stroma_4,11,12300.0,11500.0,13300.0,12500.0,1000.0,stroma,stroma,stroma,True
+CRC_P5_SR300,test_tile,stardist_test,CRC_P5_SR300_stardist_test,0,14678.455297139051,13860.272144679631,14928.455297139051,14110.272144679631,250.0,,,,False

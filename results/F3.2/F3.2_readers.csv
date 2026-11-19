@@ -14,6 +14,7 @@ tools/F3.2_areas.py,R2_ROI;R2b_WINDOW;R5_EDGE_TILE;SECTION,F3.2,strumenti di que
 tools/F3.2_bridge.py,R2_ROI,F3.2,strumenti di questo step (lettori ammessi dei dati di verifica)
 tools/F3.2_md5.sh,R2_ROI;R2b_WINDOW;R5_EDGE_TILE,F3.2,strumenti di questo step (lettori ammessi dei dati di verifica)
 tools/F3.2_readers.py,R2_ROI;R2b_WINDOW;R5_EDGE_TILE;SECTION,F3.2,strumenti di questo step (lettori ammessi dei dati di verifica)
+tools/F3.2_sexcheck.py,,F3.2,strumenti di questo step (lettori ammessi dei dati di verifica)
 tools/R1_verify.py,,METADATA,"inventario, scala, md5 e ritagli di controllo istologico (R1)"
 tools/R2_common.py,R2_ROI,R2_ROI,file di aree citati: R2_ROI
 tools/R2_overview.py,,SECTION,panoramica H&E e gruppi di Space Ranger della sezione per scegliere le aree di R2; nessun parametro

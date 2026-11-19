@@ -1,0 +1,103 @@
+{
+ "checks": [
+  {
+   "item": "1a Census: 20 sampled scalar rows re-read from R package (default_rng(20261118).choice(446,20) on kind=='scalar' rows)",
+   "recomputed": "20/20 equal; max relative difference 0 (tolerance 1e-9). Sampled scalar-subset indices: 117,437,343,407,233,232,35,272,339,44,438,167,221,330,20,153,279,21,165,58 (rows: depth_factor A2, capture b/w2 A6, rho_beta A1, parity_col A4, transcript w A4 / r A1, compartments ell_um/s, type_catalogue density/min_dist/slope/sdlog/nc_max/pale_fraction, composition fraction)",
+   "declared": "F3.2_census_values.csv values (446 scalar of 478 rows)",
+   "match": true,
+   "note": "Own R evaluator, separate from tools/F3.2_census.R: sourced all 14 R/04b*.R and R/05b*.R files and called tissue_preset_spec / capture_params / transcript_params / visium_hd_depth_factor per archetype. tissue_presets() is unnamed; I mapped it by position (epithelial, tumor_microenv, stromal_rich, lymphoid, brain_cortex, columnar_muscle = A1..A6), which matches the panel."
+  },
+  {
+   "item": "1b Census: values from R2 areas or windows inside them (area_set in R2_ROI or R2b_WINDOW)",
+   "recomputed": "380 of 478 (R2_ROI 368 + R2b_WINDOW 12; others SECTION 63, R5_EDGE_TILE 24, DESIGN 11); 350 scalar + 30 table",
+   "declared": "380 dei 478",
+   "match": true,
+   "note": "F3.2_census.csv key columns (family, fun, archetype, parameter, value, kind) are identical row by row to F3.2_census_values.csv."
+  },
+  {
+   "item": "2a Integrity: Visium_HD_Human_Colon_Cancer_P1_spatial.tar.gz (multipart ETag)",
+   "recomputed": "md5 ead014aa0fa2234b937b09672c75e362; ETag (md5 of the md5s of 8 MiB parts) 9214ebba84c508b73b99cdce453294f0-10; 77228875 bytes",
+   "declared": "manifest etag 9214ebba84c508b73b99cdce453294f0-10, md5_published empty, bytes 77228875",
+   "match": true,
+   "note": "The status md5_observed column also matches."
+  },
+  {
+   "item": "2b Integrity: Visium_HD_Human_Colon_Cancer_P5_metrics_summary.csv (ETag)",
+   "recomputed": "md5 8320e0811c7449f7647166d1870bdae4; single 8 MiB part (1735 bytes), so the multipart formula would give a6369e283aa4431024fe942edba02251-1",
+   "declared": "manifest etag 8320e0811c7449f7647166d1870bdae4 (no part suffix), md5_published empty",
+   "match": true,
+   "note": "The file fits in one part, so the server ETag is the plain md5 (single-part upload), not md5-of-md5s with -1. The comparison holds on the plain md5. The status column check='ETag multiparte' is only a label nit for this file."
+  },
+  {
+   "item": "2c Integrity: Visium_HD_Human_Kidney_FFPE_spatial.tar.gz (published md5 + ETag)",
+   "recomputed": "md5 20add62be1963b994b16325fee5470a1; ETag 032154122d54637327c4477eefe92eac-10; 80572597 bytes",
+   "declared": "manifest md5_published 20add62be1963b994b16325fee5470a1, etag 032154122d54637327c4477eefe92eac-10",
+   "match": true,
+   "note": "This file is the case with a published md5; both md5 and ETag match."
+  },
+  {
+   "item": "3 Used areas per set and section (F3.2_used_areas.csv vs sources)",
+   "recomputed": "R2_ROI: A1 5, A23 10, A4 5, A5 5, A6 5 = 30 (R2_rois_checked: 5 per A1..A6). R2b_WINDOW: 4, 8, 4, 4, 4 = 24 (R2b_windows: 4 per archetype). R5_EDGE_TILE: A1 130, A23 59, A4 73, A5 47, A6 5 = 314 (R5_tiles key: identical counts). SECTION 3 per section = 15. Total 383",
+   "declared": "30 / 24 / 314 from source files",
+   "match": true,
+   "note": "Id sets also match exactly: R2 ids = archetype_roi_id, R2b = win_id, R5 = key_tile (no duplicates). A2 and A3 share section A23 by design."
+  },
+  {
+   "item": "4a P-1 bridge, per area (10 R2 areas A2+A3): n bins, mean UMI, zero-UMI fraction, mean genes, relative differences (3.0.0 - 4.0.1)/4.0.1",
+   "recomputed": "Independent code (per-column UMI and nonzero counts via cumulative sums over the whole matrices; barcode lookup by get_indexer). All 10 areas: n_bins and n_both identical; max relative difference vs file 1.1e-14 (rel_mean_umi2), 7.1e-14 (rel_frac_empty2), 1.1e-14 (rel_mean_genes2). A2 r3 has 1 bin missing in 3.0.0 raw, as declared.",
+   "declared": "F3.2_bridge_roi.csv",
+   "match": true,
+   "note": "A half-open box [r0,r1) and a closed box [r0,r1] give the same bins. All bins in the box are present in the 4.0.1 filtered matrix and have in_tissue=1."
+  },
+  {
+   "item": "4b P-1 bridge, per tissue predictions (P-1a..f): estimate, SE, kappa, mean ± 2*SE*kappa, margin cv_between_areas/4, verdict",
+   "recomputed": "A2: UMI +0.00883 [0.00808, 0.00958] margin 0.0516; empty -0.01468 [-0.02059, -0.00878] margin 0.1756; genes +0.00942 [0.00871, 0.01013] margin 0.0519. A3: UMI +0.00908 [0.00677, 0.01139] margin 0.0483; empty -0.01191 [-0.02991, 0.00609] margin 0.0900; genes +0.00869 [0.00761, 0.00978] margin 0.0481. 6/6 confermata",
+   "declared": "F3.2_bridge_predictions.csv: same values, 6/6 confermata",
+   "match": true,
+   "note": "Max relative difference: estimate 5e-15, se 3.5e-13, lo/hi 1.5e-14, kappa and margin exact (kappa 1.6553 for A2 from B-280/B-282, 3.1928 for A3 from B-290/B-292)."
+  },
+  {
+   "item": "4c Counter-check (extra, not requested): feature sets of the two Space Ranger versions",
+   "recomputed": "4.0.1 filtered has 18132 features; 3.0.0 raw has 37082. Shared ids: 18107. 898 features exist only in 3.0.0 and carry UMI: 2.0% of all 3.0.0 raw UMI, and 1.40-1.60% of 3.0.0 UMI inside the 10 areas. On the 18107 shared features the sign flips: 3.0.0 minus 4.0.1 is -0.54% UMI and -0.52% genes in both tissues (SE about 0.01%), and +1.3% zero-UMI bins.",
+   "declared": "P-1 description: 3.0.0 counts about 0.9% more UMI and genes, with fewer empty bins",
+   "match": true,
+   "note": "This does not change any verdict: all the shifts are far inside the ±4.8-5.2% margins. It does change how the +0.9% should be read: it is the net of about +1.5% from probes/genes present only in the 3.0.0 feature set and about -0.5% on the shared genes. If the step text attributes the +0.9% to the counting algorithm, that attribution is not supported. match=True refers to the declared numbers, which are reproduced."
+  },
+  {
+   "item": "5a Reader agreement agent vs blind (all 107 rows)",
+   "recomputed": "accordo 0.906542 (97/107), Cohen kappa 0.881611 (own implementation; sklearn gives 0.881611)",
+   "declared": "0.907, kappa 0.882",
+   "match": true,
+   "note": "By level: L1 0.892/0.861 (n=37), L2 0.922/0.881 (n=51), L3 0.895/kappa 0.000 (n=19: agent always 'adatto', so kappa degenerates)."
+  },
+  {
+   "item": "5b Agent vs rule3, L1 (excluding rule3=='MANCA')",
+   "recomputed": "n=34 (3 MANCA excluded), accordo 0.8235, kappa 0.778742",
+   "declared": "kappa 0.779",
+   "match": true,
+   "note": ""
+  },
+  {
+   "item": "5c Agent vs rule3, L2",
+   "recomputed": "n=51 (0 MANCA), accordo 0.5686, kappa 0.255474",
+   "declared": "kappa 0.255",
+   "match": true,
+   "note": ""
+  },
+  {
+   "item": "5d Areas kept (kept==True) by sheet and selected_class",
+   "recomputed": "48 total: A1 mucosa 4; A23 tumore 3; A4_500um follicolo 2; A5 corteccia 1; A6 miocardio 5; CRC_6p5mm_SR410 stroma 3 + tumore 5; CRC_P1_SR300 stroma 3 + tumore 4; CRC_P5_SR300 stroma 1 + tumore 3; HumanKidney_FFPE_SR401 adatto 5; MouseBrain_FFPE_SR401 corteccia 4; RatLiver_6p5mm_SR410 adatto 5",
+   "declared": "48 aree tenute",
+   "match": true,
+   "note": "Side observations, not discrepancies with the declared numbers: (i) the agree3 column is False on 30 rows where agent, blind and rule3 all say 'nessuna'. agree3 apparently means agreement on a usable class, not plain equality; there was no definition to check it against, because grep for 'agree3' in tools/F3.2_*.py returned nothing (tools/F3.2_select.py is untracked). (ii) F3.2_area_agreement.csv is untracked in git (working copy, not committed), so the reviewed version is the working-copy file as of 2026-11-19 15:50 UTC. (iii) 9 rows have selected_class set but kept=False (ranked beyond the kept quota)."
+  },
+  {
+   "item": "6 Area side check (F3.2_size_check_areas.csv -> F3.2_size_check.csv)",
+   "recomputed": "20 of 24 hold; failing: A1 M4, A1 M5, A2 M5, A3 M5; all 4 A4 cases (M4, M5, M6, umi_block) hold. size_shift, se, sd_between_whole and margin match to max relative difference 8.6e-12; ok flags identical on 24/24",
+   "declared": "20 su 24 reggono, tutti e 4 i casi del linfonodo A4",
+   "match": true,
+   "note": "Caveat: A6 M4 passes trivially. All areas and quarters have M4 = 1.0, so shift = SE = SD = margin = 0 and the test is 0 <= 0. That case carries no information; 19 of 24 is the count of informative passes. 30 areas × (whole + 4 quarters), no NaN."
+  }
+ ],
+ "summary": "All six blocks of the F3.2 adversarial recompute reproduce the declared values with independent code (13 checks + 1 extra counter-check, 0 numeric discrepancies). (1) 20/20 sampled census scalars equal the R package values exactly; 380 of 478 census values come from R2 areas or windows. (2) md5 and ETags of the 3 holdout files match the manifest; the P5 metrics file is a single-part upload, so its ETag is the plain md5. (3) The used-area counts and ids match R2 (30), R2b (24) and R5 (314). (4) P-1 per-area and per-tissue numbers match to <=4e-13 relative and 6/6 predictions are confermata. Extra counter-check: the 3.0.0 matrix has 18975 more features, 898 with counts. On the shared genes 3.0.0 has about 0.5% FEWER UMI, so the declared +0.9% is a net of two opposite effects; verdicts are unchanged. (5) Agreement 0.907 / kappa 0.882, L1 0.779, L2 0.255 and 48 kept areas are reproduced. (6) Size check 20/24, all 4 A4 cases hold; note that A6 M4 passes only trivially (all values 1.0, margin 0). Nothing was written to the repo or to /mnt/micron; scratch is in /tmp/f32rev and the job workdirs."
+}

@@ -75,8 +75,8 @@ def fig3():
         for _, r in u[(u.section == sec) & u.x0.notna()].iterrows():
             col = {"R2_ROI": "#1f4e79", "R2b_WINDOW": "#6fa8dc", "R5_EDGE_TILE": "#e69f00"}[r.set]
             ax.add_patch(Rectangle((r.x0 / 1000, r.y0 / 1000), (r.x1 - r.x0) / 1000, (r.y1 - r.y0) / 1000, fill=False, ec=col, lw=0.8))
-        f = R / f"F3.2_pool_{sec}.csv"
-        if f.exists():
+        for f in [R / f"F3.2_selected_{sec}.csv", R / f"F3.2_selected_{sec}_500um.csv"]:
+            if not f.exists(): continue
             p = pd.read_csv(f)
             for _, r in p.iterrows():
                 col = "#cc0000" if r.level == "test_tile" else "#2e7d32"
@@ -84,9 +84,9 @@ def fig3():
         ax.set_aspect("equal"); ax.invert_yaxis(); ax.set_title(NAME[sec], loc="left"); ax.set_xlabel("mm"); ax.margins(0.03)
     axs[-1].set_axis_off()
     h = [Rectangle((0, 0), 1, 1, fill=False, ec=c_, ls=l_, label=t_) for c_, l_, t_ in [("#1f4e79", "-", "aree di R2"), ("#6fa8dc", "-", "finestre contate a mano"),
-         ("#e69f00", "-", "tessere di bordo di R5 (con margine)"), ("#2e7d32", "--", "candidate per la verifica"), ("#cc0000", "--", "tessera di prova di StarDist")]]
+         ("#e69f00", "-", "tessere di bordo di R5 (con margine)"), ("#2e7d32", "--", "aree di verifica scelte"), ("#cc0000", "--", "tessera di prova di StarDist")]]
     axs[-1].legend(handles=h, frameon=False, loc="center")
-    fig.suptitle("Le aree candidate per la verifica stanno ad almeno 280 µm da ogni area già usata", x=0.01, ha="left", fontsize=10)
+    fig.suptitle("Le aree di verifica stanno ad almeno 280 µm dalle aree di R2; poche nei tessuti piccoli o già molto usati", x=0.01, ha="left", fontsize=10)
     fig.tight_layout(rect=(0, 0, 1, 0.96)); fig.savefig(OUT / "F3.2_fig3_areas_map.png", dpi=150); plt.close(fig)
 
 if __name__ == "__main__":
