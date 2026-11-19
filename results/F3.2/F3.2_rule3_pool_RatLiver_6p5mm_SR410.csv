@@ -1,0 +1,10 @@
+label,order,area_id,x0,y0,x1,y1,side_um,rule3_class,white,white_max,coverage,grey
+RatLiver_6p5mm_SR410,1,RatLiver_6p5mm_SR410_c01,7150.0,8050.0,8150.0,9050.0,1000.0,tessuto,0.0575,0.1,0.950464,0.0
+RatLiver_6p5mm_SR410,2,RatLiver_6p5mm_SR410_c02,5850.0,7750.0,6850.0,8750.0,1000.0,tessuto,0.0,0.1,1.0,0.0
+RatLiver_6p5mm_SR410,3,RatLiver_6p5mm_SR410_c03,8150.0,6700.0,9150.0,7700.0,1000.0,tessuto,0.0,0.1,1.0,0.0
+RatLiver_6p5mm_SR410,4,RatLiver_6p5mm_SR410_c04,4900.0,4950.0,5900.0,5950.0,1000.0,tessuto,0.0025,0.1,1.0,0.0
+RatLiver_6p5mm_SR410,5,RatLiver_6p5mm_SR410_c05,6800.0,3900.0,7800.0,4900.0,1000.0,tessuto,0.0,0.1,1.0,0.0
+RatLiver_6p5mm_SR410,6,RatLiver_6p5mm_SR410_c06,4850.0,3550.0,5850.0,4550.0,1000.0,tessuto,0.0,0.1,1.000064,0.0
+RatLiver_6p5mm_SR410,7,RatLiver_6p5mm_SR410_c07,4150.0,6750.0,5150.0,7750.0,1000.0,scartata_bianco,0.105,0.1,0.909824,0.0
+RatLiver_6p5mm_SR410,8,RatLiver_6p5mm_SR410_c08,8000.0,5250.0,9000.0,6250.0,1000.0,tessuto,0.0,0.1,1.0,0.0
+RatLiver_6p5mm_SR410,9,RatLiver_6p5mm_SR410_c09,4550.0,8150.0,5550.0,9150.0,1000.0,tessuto,0.0175,0.1,0.98816,0.0
