@@ -6,7 +6,7 @@ import sys, os, json, numpy as np, pandas as pd
 sys.path.insert(0, "tools"); import F3_3_common as L
 d, outp = sys.argv[1:3]; run = os.path.basename(d); ex = json.load(open(f"{d}/export.json")); A = ex["archetype"]; level = ex["level"]
 area = ex["area"]; roi = area.split("_")[1] if level == "IN" else None
-CACHE = "/mnt/micron/geo_spatialtrans/F3.3/cache"
+CACHE = os.environ.get("F33_CACHE", "/mnt/micron/geo_spatialtrans/F3.3/cache")
 bins, genes, X = L.load_area(d); exp = L.expand(d, bins, genes, X, f"{CACHE}/runs_{run}_exp.npy")
 cells = pd.read_parquet(f"{d}/cells.parquet")
 tl, nref = L.transfer_labels(X, exp, cells.label.to_numpy(), A, genes, exclude_roi=roi)

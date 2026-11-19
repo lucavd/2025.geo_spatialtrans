@@ -1,0 +1,11 @@
+part,assertion,pass,detail
+f,"S* senza spostamento, permutazione",True,media 0.016
+f,"S* senza spostamento, modello t",True,media -0.072
+f,G* senza spostamento,True,media 0.003
+f,"S* con spostamento di 1 h (statistica scritta; fallita il 2026-11-19, DEC-098)",False,media 0.557
+f,QS senza spostamento (quadrato medio),True,media 0.007 h^2
+f,QS con spostamento di 1 h,True,mediana 0.980
+f,QG senza spostamento (quadrato medio),True,media -0.007 h^2
+f,QG con spostamento di 1 h,True,mediana 1.009
+f,regola V,True,
+f,componenti di varianza: rapporto alto quando i pazienti differiscono,True,rho 3.66

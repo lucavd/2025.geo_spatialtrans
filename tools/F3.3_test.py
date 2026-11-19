@@ -41,6 +41,7 @@ if "c" in parts:
 if "d" in parts:
     for _, r in IN.iterrows():
         a, b = f"{RUNS}/{r.area}", f"{M}/F3.1/main/real/{r.area}"
+        if not os.path.exists(a): a = f"{M}/F3.3/runs_IN_panel/{r.area}"
         if not os.path.exists(f"{a}/bins.parquet"): check("d", f"esportazione {r.area}", False, "manca"); continue
         ba, bb = pd.read_parquet(f"{a}/bins.parquet"), pd.read_parquet(f"{b}/bins.parquet")
         xa, xb = pd.read_parquet(f"{a}/X.parquet"), pd.read_parquet(f"{b}/X.parquet")

@@ -30,6 +30,7 @@ for _, r in cal[(cal.labels == "tl")].iterrows():
                  **{m: r[m] for m in MEAS + ["M7"]}})
 for _, r in hol[hol.labels == "tl"].iterrows():
     a = AR.loc[r.area]; lev = r.level
+    if lev == "IN" and r.genes != "common": continue      # ripetizioni di taratura a pannello intero (controllo di riproducibilita'), non dati
     if lev == "IN": src, st, lv = "IN", f"{r.A}_IN", "IN"
     else: src, st, lv = "OUT", f"{a.section}_{a.level}_{r.A}", a.level
     rows.append({"unit": r.area, "run": r.run, "A": r.A, "src": src, "set": st, "level": lv, **{m: r[m] for m in MEAS + ["M7"]},

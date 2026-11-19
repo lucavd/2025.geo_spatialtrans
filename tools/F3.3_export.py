@@ -8,7 +8,7 @@ import sys, os, json, time, numpy as np, pandas as pd, scipy.sparse as sp, pyarr
 sys.path.insert(0, "tools")
 from R6_common import read_h5_csc
 import S22_common as S
-M = "/mnt/micron/geo_spatialtrans"; SEG = f"{M}/F3.3/seg"; RUNS = f"{M}/F3.3/runs"; FRAME_UM = 25.0
+M = "/mnt/micron/geo_spatialtrans"; ROOT = os.environ.get("F33_ROOT", f"{M}/F3.3"); SEG = f"{ROOT}/seg"; RUNS = f"{ROOT}/runs"; FRAME_UM = 25.0
 CG = "results/F3.3/F3.3_crc_common_genes.txt"
 genes_mode, sel = sys.argv[1], sys.argv[2]
 A = pd.read_csv("results/F3.3/F3.3_areas.csv")

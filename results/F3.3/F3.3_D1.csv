@@ -1,0 +1,7 @@
+archetype,rows_total,rows_from_calibration_areas,values_from_calibration_areas,rows_scalar_from_areas,rows_table_from_areas,independent_areas,independent_sections
+A1,70,55,330295,50,5,5,1
+A2,60,45,277259,40,5,5,1
+A3,80,65,787005,60,5,5,1
+A4,103,85,1748965,80,5,5,1
+A5,90,75,408788,70,5,5,1
+A6,70,55,258368,50,5,5,1

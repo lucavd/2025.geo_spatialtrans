@@ -9,7 +9,7 @@ a <- commandArgs(TRUE); A <- read.csv("results/F3.3/F3.3_areas.csv", stringsAsFa
 A <- if (a[1] == "IN") A[A$level == "IN", ] else if (a[1] == "holdout") A[A$level != "IN", ] else A[A$area %in% strsplit(a[1], ",")[[1]], ]
 hex <- function(g) vapply(sf::st_as_binary(sf::st_set_crs(g, NA)), function(b) paste(as.character(b), collapse = ""), character(1))
 for (k in seq_len(nrow(A))) {
-  o <- file.path("/mnt/micron/geo_spatialtrans/F3.3/seg", A$area[k])
+  o <- file.path(Sys.getenv("F33_ROOT", "/mnt/micron/geo_spatialtrans/F3.3"), "seg", A$area[k])
   m <- png::readPNG(file.path(o, "valid_ds4.png")); if (length(dim(m)) == 3) m <- m[, , 1]
   m <- m > 0.5; stopifnot(nrow(m) == ncol(m)); px <- A$side_um[k] / ncol(m)
   idx <- which(m, arr.ind = TRUE); clust <- data.frame(x = idx[, 2], y = idx[, 1], intensity_cluster = 1L)

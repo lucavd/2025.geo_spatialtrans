@@ -5,7 +5,7 @@ import sys, os, json, numpy as np, pandas as pd, tifffile
 from pathlib import Path
 os.environ["R3B_MUTANT"] = "none"; sys.path.insert(0, "tools")
 import R2_common as C, R3b_consensus as R3
-OUT = Path("/mnt/micron/geo_spatialtrans/F3.3/seg")
+OUT = Path(os.environ.get("F33_ROOT", "/mnt/micron/geo_spatialtrans/F3.3")) / "seg"
 A = pd.read_csv("results/F3.3/F3.3_areas.csv"); A = A[A.seg == "consensus"]; sel = sys.argv[1]
 A = A[A.level == "IN"] if sel == "IN" else A[A.level != "IN"] if sel == "holdout" else A[A.area.isin(sel.split(","))]
 for _, r in A.iterrows():

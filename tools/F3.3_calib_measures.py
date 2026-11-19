@@ -6,12 +6,12 @@ import sys, os, json, numpy as np, pandas as pd
 sys.path.insert(0, "tools"); import F3_3_common as L
 d, side, outp = sys.argv[1:4]; run = os.path.basename(d); tag = run.split("_k")[0]; A = tag[:2]; roi = tag.split("_")[1]
 CACHE = "/mnt/micron/geo_spatialtrans/F3.3/cache"
-bins, genes, X = L.load_area(d); exp = L.expand(d, bins, genes, X, f"{CACHE}/{side}_{run}_exp.npy")
+bins, genes, X = L.load_area(d); exp = L.expand(d, bins, genes, X, f"{CACHE}/{side}_{os.path.basename(os.path.dirname(d))}_{run}_exp.npy")
 cells = pd.read_parquet(f"{d}/cells.parquet")
 orig = pd.Series(cells.cell_type.to_numpy(), index=cells.label.to_numpy())
 tl, nref = L.transfer_labels(X, exp, cells.label.to_numpy(), A, genes, exclude_roi=roi if side == "real" else None)
 tls = pd.Series(tl.cell_type.to_numpy(), index=tl.label.to_numpy())
-os.makedirs(f"{CACHE}/labels", exist_ok=True); tl.to_parquet(f"{CACHE}/labels/{side}_{run}_tl.parquet", index=False)
+os.makedirs(f"{CACHE}/labels", exist_ok=True); tl.to_parquet(f"{CACHE}/labels/{side}_{os.path.basename(os.path.dirname(d))}_{run}_tl.parquet", index=False)
 parts = [("whole", None)]
 if A == "A4" and roi.startswith("f"): parts += [(f"q{i}{j}", (i * 500.0, j * 500.0, (i + 1) * 500.0, (j + 1) * 500.0)) for j in (0, 1) for i in (0, 1)]
 rows = []

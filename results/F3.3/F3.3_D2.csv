@@ -1,0 +1,15 @@
+id,archetype,tissue,verdict,built
+M-2,A1,intestino,confermata,costruita (fattore di profondita' di S2.5 tarato sull'UMI per quadratino delle stesse aree)
+M-2,A2,tumore del colon,confermata,costruita (fattore di profondita' di S2.5 tarato sull'UMI per quadratino delle stesse aree)
+M-1,A3,stroma,confermata,in parte (densita' e taglia dei nuclei dalle stesse aree)
+M-2,A3,stroma,confermata,costruita (fattore di profondita' di S2.5 tarato sull'UMI per quadratino delle stesse aree)
+M-1,A4,linfonodo,confermata,in parte (densita' e taglia dei nuclei dalle stesse aree)
+M-2,A4,linfonodo,confermata,costruita (fattore di profondita' di S2.5 tarato sull'UMI per quadratino delle stesse aree)
+M-4,A4,linfonodo,confermata,no
+M-1,A5,cervello,confermata,in parte (densita' e taglia dei nuclei dalle stesse aree)
+M-2,A5,cervello,confermata,costruita (fattore di profondita' di S2.5 tarato sull'UMI per quadratino delle stesse aree)
+M-4,A5,cervello,confermata,no
+M-1,A6,cuore,confermata,in parte (densita' e taglia dei nuclei dalle stesse aree)
+M-2,A6,cuore,confermata,costruita (fattore di profondita' di S2.5 tarato sull'UMI per quadratino delle stesse aree)
+M-4,A6,cuore,confermata,no
+M-6,A6,cuore,confermata,no
