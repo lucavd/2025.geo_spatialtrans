@@ -29,7 +29,7 @@ Sul tumore del colon e sul suo stroma, 18 024 geni, stessa catena di analisi (bi
 | simulatore meno banale (w) | +0,06 (0,29), uguale | +0,05 (0,44), uguale | +0,09 (0,22), uguale |
 | simulatore meno tetto (w) | +5,60 (0,50), diverso | +7,78 (0,83), diverso | +2,65 (0,38), diverso |
 
-Cancelli superati: ricalcolo della catena (7 su 7 entro 1e-9), due pazienti veri non diversi, stimatore senza distorsione, revisione indipendente (G-5), md5 dei 550 file letti invariati.
+Cancelli superati: ricalcolo della catena (7 su 7 entro 1e-9), due pazienti veri non distinguibili come richiede il cancello (P1 meno P5 = -0,42, w 0,68: esito indeterminato, non «diverso»; non vuol dire «uguali»), stimatore senza distorsione, revisione indipendente (G-5), md5 dei 550 file letti invariati.
 
 # Perche' non basta
 

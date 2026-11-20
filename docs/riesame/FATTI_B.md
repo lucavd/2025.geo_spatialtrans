@@ -50,7 +50,7 @@ Per misura (distanza con segno in h, results/riesame/B_per_measure_common.csv):
 | stroma | concordanza col nucleo | 3.6 | 2.5 | 0.5 |
 | stroma | vicini stesso tipo | 3.6 | 5.6 | 5.4 |
 
-Controlli: ricalcolo della catena contro i valori precedenti 7/7 entro 1e-9 (massimo 1,7e-15); due pazienti veri fra loro non diversi (P1 - P5 = -0,42, w 0,68); stimatore senza distorsione su spostamenti costruiti 0, 1, 2 h (stimati: quadrato medio -0,03; 0,99; 2,01); md5 dei 550 file letti uguali prima e dopo.
+Controlli: ricalcolo della catena contro i valori precedenti 7/7 entro 1e-9 (massimo 1,7e-15); due pazienti veri fra loro non distinguibili (P1 - P5 = -0,42, w 0,68: esito indeterminato, che soddisfa il cancello «non diverso» ma non dimostra che siano uguali); stimatore senza distorsione su spostamenti costruiti 0, 1, 2 h (stimati: quadrato medio -0,03; 0,99; 2,01); md5 dei 550 file letti uguali prima e dopo.
 
 Domanda sulla cattura (il modello di strisce, fondo e spostamento batte il dato Xenium vero diviso in quadratini e diradato alla stessa profondita'?): indecidibile con i dati disponibili. Le registrazioni Xenium -> Visium HD pubblicate da 10x appartengono a pacchetti Xenium da circa 1,1 milioni di cellule che non sono su GEO; i pacchetti GEO (P1 307 762, P2 340 837, P5 275 998 cellule) non corrispondono a nessuna registrazione (identificativi comuni 0,02-0,03 %, livello del caso). Vincolo che la riapre: quei pacchetti.
 
