@@ -69,10 +69,19 @@ D(braccio) = radice con segno della media, sulle celle tessuto × misura M-1...M
 |---|---|---|---|
 | G-1 | controllo positivo sul pannello: D(S) oltre D(T) di più di δ, come sui geni completi (8,0 contro 2,1) | diverso, S peggio | il pannello ha perso i difetti noti: la domanda sul generatore si decide sui geni completi con V, T, S, B, e la domanda sulla cattura è indecidibile sul pannello |
 | G-2 | controllo negativo: P1 contro P5, D(P1) − D(P5) | non diverso | il rumore è sottostimato: nessun esito «uguale» vale |
-| G-3 | falso confronto: le 5 aree di V divise 3 + 2 in tutti i 10 modi; D della parte da 2 contro quella da 3 | media entro ±0,5 h | lo stimatore è distorto: la Parte B non si legge |
+| G-3 | stimatore senza distorsione (corretto il 2026-11-20, vedi sotto): dati sintetici con le numerosità e le deviazioni standard osservate (V con la sua, gli altri insiemi con la combinata), spostamenti costruiti 0, 1 e 2 h, 200 repliche, seme 20261124 | sotto nessuno spostamento media entro ±0,15 h² sul quadrato; 1 h stimato entro 1 ± 0,25, 2 h entro 2 ± 0,25 | lo stimatore è distorto: la Parte B non si legge |
 | G-4 | ricalcolo: i bracci V, T, S sui geni completi ritrovano i valori di F3.3 entro 1e-9 relativo | identità | errore di catena: si corregge prima di tutto |
 | G-5 | revisione avversariale: un sotto-agente ricalcola D e Δ di ogni braccio dalle tabelle per area | entro l'errore Monte Carlo | ogni discrepanza è un dubbio da chiudere prima del verdetto |
 | G-6 | controllo positivo della cattura (Luca, 2026-11-20): D(XC2) − D(X1) | diverso | sul pannello la domanda sulla cattura è «indecidibile», non «non aggiunge» |
+
+## Correzione di G-3 prima del calcolo (2026-11-20)
+
+Scoperta preparando lo script dell'analisi (`tools/riesame_D.py`), sui soli dati di F3.3 già letti e prima di ogni calcolo della Parte B. Il falso confronto scritto prima (5 aree di V divise 3 + 2) non prova lo stimatore:
+
+- con la deviazione standard delle sole aree di V vale 0 per costruzione (la media sulle 10 divisioni di (media di 2 − media di 3)² è esattamente s²(1/2 + 1/3)): non può fallire;
+- con la deviazione combinata, quella che lo stimatore usa (DEC-098), vale −0,79 h nel tumore e nello stroma: le 5 aree di V variano meno della media delle sezioni (rapporto fra 0,38 e 1,32 secondo la misura). Misura quindi la disomogeneità delle varianze, non la distorsione.
+
+Effetto sulle stime, sui geni comuni: D(T) 2,23 con la deviazione combinata contro 2,27 con quella di V per il termine di V; D(S) 8,01 contro 8,02. Trascurabile rispetto a δ = 1. Prova sintetica con le varianze disomogenee osservate: spostamenti costruiti di 0, 1, 2 h stimati −0,17, 0,99, 2,01. Decisione tecnica dell'agente (i cancelli spettano all'agente): G-3 diventa la prova sintetica qui sopra; lo stimatore resta quello approvato; il valore del falso confronto si riporta come descrittivo.
 
 ## Esiti e conseguenze
 
