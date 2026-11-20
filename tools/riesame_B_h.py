@@ -14,6 +14,7 @@ MEAS = [("M-1", "M1", "bin", True), ("M-2", "M2", "nuc", False), ("M-3", "M3", "
 U = pd.read_csv("results/riesame/B_area_values.csv"); av = pd.read_csv("results/F3.3/F3.3_area_values.csv")
 P = pd.read_csv("results/F3.3/F3.3_prereg_numbers.csv").set_index(["archetype", "id"])
 sets = {"panel": U[(U.arm == "V") & (U.genes == "panel")], "common": U[(U.arm == "V") & (U.genes == "common")], "full_F33": av[av.src == "IN_panel"]}
+sets = {k: v for k, v in sets.items() if len(v)}   # insiemi senza righe (per esempio il pannello, se lo Xenium non si usa) si saltano
 rows = []
 for gname, D in sets.items():
     for A in ("A2", "A3"):

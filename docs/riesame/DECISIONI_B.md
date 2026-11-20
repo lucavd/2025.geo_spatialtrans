@@ -49,3 +49,10 @@ Regola di esito: `docs/riesame/REGOLA_B.md` (commit `45fdbbe`)[^regola]. Misure 
 
 [^regola]: [Riesame, Parte B: regola di esito scritta prima del calcolo](/riesame/REGOLA_B.md).
 [^f33]: [Il simulatore di oggi regge fuori dalle aree su cui è stato tarato? (F3.3)](/steps/F3.3.md).
+
+## Scelte prese durante il calcolo, prima di vedere D di S e di B (2026-11-20)
+
+| id | data | scelta | motivo |
+|---|---|---|---|
+| B-13 | 2026-11-20 | La simulazione banale A2_r2 con il secondo seme si ferma in `.s27_cdt()` (triangolazione fallita anche dopo la semplificazione, geometria 6635; probabile coppia di centri di Poisson quasi coincidenti, B-2 non ha distanza minima). A2_r2 entra in B con il solo primo seme; non si estrae un seme sostitutivo. 19 esecuzioni su 20. | Nessun seme scelto dopo il fallimento; la media per area resta definita e l'incertezza fra aree la assorbe. |
+| C-10 | 2026-11-20 | Con lo Xenium non usabile (XD-23) i bracci V, T, S, B sul pannello non si calcolano: servivano solo alla domanda sulla cattura (G-1 sul pannello, G-6). Si calcolano S e B sui geni comuni. `tools/riesame_B_h.py` salta gli insiemi di geni senza righe. | REGOLA_B, ultimo capoverso di «Esiti e conseguenze»: il calcolo serve solo a cio' che decide. |
