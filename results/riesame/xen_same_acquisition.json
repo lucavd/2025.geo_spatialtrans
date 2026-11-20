@@ -1,0 +1,85 @@
+{
+ "geo_columns": [
+  "cell_id",
+  "x_centroid",
+  "y_centroid",
+  "transcript_counts",
+  "control_probe_counts",
+  "control_codeword_counts",
+  "unassigned_codeword_counts",
+  "deprecated_codeword_counts",
+  "total_counts",
+  "cell_area",
+  "nucleus_area"
+ ],
+ "github_columns": [
+  "cell_id",
+  "x_centroid",
+  "y_centroid",
+  "transcript_counts",
+  "control_probe_counts",
+  "control_codeword_counts",
+  "unassigned_codeword_counts",
+  "deprecated_codeword_counts",
+  "total_counts",
+  "cell_area",
+  "nucleus_area",
+  "x_centroid_visium_scale",
+  "y_centroid_visium_scale"
+ ],
+ "geo_id_dtype": "str",
+ "github_id_dtype": "str",
+ "geo_id_examples": [
+  "aaaadaba-1",
+  "aaaadgga-1",
+  "aaaadmca-1",
+  "aaaaenln-1",
+  "aaaajoff-1"
+ ],
+ "github_id_examples": [
+  "aaaaamnm-1",
+  "aaaaaoag-1",
+  "aaaabfdb-1",
+  "aaaabhag-1",
+  "aaaacbml-1"
+ ],
+ "n_geo": 340837,
+ "n_github": 1105615,
+ "by_format": {
+  "as_is": {
+   "share_geo_in_github": 0.0002435181626407931,
+   "n_common": 83,
+   "geo_unique": true,
+   "github_unique": true
+  },
+  "drop_suffix": {
+   "share_geo_in_github": 0.0002435181626407931,
+   "n_common": 83,
+   "geo_unique": true,
+   "github_unique": true
+  }
+ },
+ "format_used": "as_is",
+ "n_common": 83,
+ "share_geo_in_github": 0.0002435181626407931,
+ "common_cells": {
+  "dx_mean": 1438.242243387613,
+  "dy_mean": 6722.507650352386,
+  "dx_sd": 2970.004251065408,
+  "dy_sd": 5249.57132146252,
+  "dist_q": {
+   "0.1": 2647.075713208272,
+   "0.5": 8019.775810013023,
+   "0.9": 13742.078604772789
+  },
+  "share_equal_transcript_counts": 0.012048192771084338,
+  "share_equal_total_counts": 0.012048192771084338
+ },
+ "criterion": {
+  "1_ids_99pct": false,
+  "2_constant_vector": false,
+  "3_counts_equal": false,
+  "same_acquisition": false
+ },
+ "md5_unchanged": true
+}
