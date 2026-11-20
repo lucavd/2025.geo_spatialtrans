@@ -5,7 +5,7 @@ description: Protocollo master dei progetti di ricerca destinati a un articolo. 
 
 # Scopo
 
-Portare un progetto di ricerca a un articolo rigoroso con un messaggio semplice, spendendo pochi token e poche ore del PI, e chiuderlo presto quando non può riuscire. Il PI è Luca Vedovelli. Le regole proprie di un progetto stanno nel suo `CLAUDE.md`. Se una skill di progetto contraddice questa sul flusso di lavoro, vale questa.
+Portare un progetto di ricerca a un articolo rigoroso con un messaggio semplice, spendendo pochi token e poche ore del PI. Se l'obiettivo non si può raggiungere, scoprirlo presto e dirlo. Il PI è Luca Vedovelli. Le regole proprie di un progetto stanno nel suo `CLAUDE.md`. Se una skill di progetto contraddice questa sul flusso di lavoro, vale questa.
 
 # Le parole
 
@@ -23,24 +23,25 @@ Queste nove parole hanno un solo significato in tutti i progetti. Con il PI si u
 | colpo | Una sessione che non migliora la misura oltre la sua incertezza. | Una modifica attesa a +4 punti che ne dà +0,5, con un'incertezza di 1 punto. |
 | quadro dell'articolo | La tabella, calcolata dallo strumento, con il messaggio e lo stato di ogni affermazione: regge, non regge, incerta, non misurata. | La prima affermazione regge (74% contro 70%), la seconda non regge, la terza non è misurata. |
 
-# Il metodo in sei righe
+# Il metodo in sette righe
 
 1. Prima del lavoro si firma un contratto: un messaggio, le sue affermazioni, una misura principale con pavimento, tetto e soglia, un budget.
-2. Il primo codice è il metro. Il secondo è la catena più sottile possibile, che produce in forma grezza tutte le figure del contratto.
-3. Ogni sessione parte dal quadro dell'articolo, serve una sua affermazione e lavora sulla voce più grande del bilancio dell'errore, non sul prossimo punto di una lista.
-4. Il rigore si spende sul metro e sulla corsa di conferma. Il resto è usa e getta finché non entra nell'articolo.
-5. Due colpi sulla stessa ipotesi chiudono quella strada. Non esiste la terza prova.
-6. A ogni cancello «chiudere» è fra le opzioni. Raccomandala quando i numeri lo dicono.
+2. Il primo codice è il metro. Il secondo è la catena più banale che gira da capo a fondo: dà il pavimento e tutte le figure in forma grezza.
+3. Un pezzo entra nella catena solo se la migliora oltre l'incertezza. Vale anche per il codice che esiste già.
+4. Ogni sessione parte dal quadro dell'articolo, serve una sua affermazione e lavora sulla voce più grande del bilancio dell'errore.
+5. Il rigore si spende sul metro e sulla corsa di conferma. Il resto è usa e getta finché non entra nell'articolo.
+6. Due colpi chiudono un'ipotesi, non il progetto. L'obiettivo si chiude solo per una delle condizioni scritte in «Quando fermarsi».
+7. A ogni cancello «chiudere» è fra le opzioni. Raccomandala quando quelle condizioni ci sono.
 
 # Perché funziona così
 
-In tre progetti del PI, letti nei repository il 19 e 20 novembre 2026, l'esito ha seguito il criterio di successo.
+In tre progetti del PI l'esito ha seguito il criterio di successo e il momento in cui lo si è misurato.
 
 - MMM aveva un numero con una fonte, l'errore di I tipo dentro l'intervallo di Bradley. È arrivato alla rivista in cinque settimane.
-- simulomicsr aveva «nessun errore si accetta». È durato sei mesi e mezzo, poi lo ha chiuso il PI mentre l'agente proponeva una sesta prova. Solo dopo si è misurato il tetto: due gruppi di curatori umani concordano in 15 studi su 21.
-- geo_spatialtrans aveva «biologicamente solido», senza una misura. Dopo 43 sessioni non ha un articolo definito, e la prima prova d'uso ha smentito metà dei confronti.
+- simulomicsr aveva «nessun errore si accetta». È durato sei mesi e mezzo. Il tetto, misurato solo dopo, era 15 studi su 21 fra due gruppi di curatori umani.
+- geo_spatialtrans aveva «biologicamente solido», senza una misura, per 43 sessioni. Poi due sessioni con metro, tetto e versione banale hanno mostrato che il generatore costruito non batteva il banale: 7,83 contro 7,77, con il tetto a 2,23.
 
-Un progetto parte solo con un criterio del primo tipo.
+Quindi criterio, tetto e pavimento si misurano nelle prime sessioni, non alla fine.
 
 # Il contratto
 
@@ -70,12 +71,12 @@ Regole sul criterio:
 | fase | durata | che cosa produce | cancello del PI |
 |---|---|---|---|
 | Scommessa | 1 o 2 sessioni | Contratto, ricerca dell'esistente, obiezioni di un revisore simulato. Nessun codice. | G0: firma del contratto |
-| Sonda | 3 sessioni, fino a 5 con dati pesanti | Metro con i suoi controlli, pavimento, tetto, catena sottile con tutte le figure in forma grezza, primo bilancio dell'errore. | G1: partire, riposizionare o chiudere |
+| Sonda | 3 sessioni, fino a 5 con dati pesanti | Metro con i suoi controlli, tetto, catena banale con tutte le figure in forma grezza (è il pavimento), primo bilancio dell'errore. | G1: partire, riposizionare o chiudere |
 | Costruzione | firmata a G1 | La misura sale verso la soglia, una voce del bilancio per volta. | G2: soglia raggiunta sui dati di sviluppo, oppure budget finito |
 | Conferma | 1 o 2 sessioni | Catena congelata, una sola pre-registrazione, corsa completa sui dati tenuti da parte. | G3: i numeri dell'articolo |
 | Scrittura | firmata a G3 | Articolo scritto a partire dal contratto, revisione finale. | invio |
 
-Il budget non è uguale per tutti i progetti. Scommessa e sonda restano corte comunque, perché rispondono a una domanda sola: c'è spazio per un articolo? Costruzione e scrittura crescono con il progetto. Per la costruzione proponi due sessioni per ogni voce grande del bilancio, perché ogni strada ha due colpi. Il PI firma il numero al cancello, e lo strumento lo registra con le sue parole (`cancello --fase FASE --budget N --consenso TESTO`). Lo strumento non lascia entrare in costruzione senza pavimento, tetto, soglia e una prima misura di ogni affermazione.
+Il budget non è uguale per tutti i progetti. Scommessa e sonda restano corte comunque, perché rispondono a una domanda sola: c'è spazio per un articolo? Costruzione e scrittura crescono con il progetto. Per la costruzione proponi due sessioni per ogni voce grande del bilancio, perché ogni ipotesi ha due colpi. Il PI firma il numero al cancello, e lo strumento lo registra con le sue parole (`cancello --fase FASE --budget N --consenso TESTO`). Lo strumento non lascia entrare in costruzione senza pavimento, tetto, soglia e una prima misura di ogni affermazione.
 
 A budget finito il PI può prorogare. La richiesta porta quattro cose: dove è arrivata la misura, quante sessioni in più, il valore atteso, che cosa si fa se non lo si raggiunge (`proroga`). La seconda proroga della stessa fase chiede prima un riesame: decide sempre il PI, ma con i fatti sul tavolo.
 
@@ -83,7 +84,7 @@ Il rigore pieno (test completi, pre-registrazione, verifica indipendente) si spe
 
 A ogni cancello porta al massimo 3 opzioni, ognuna con costo e guadagno atteso. «Chiudere» è sempre una delle tre. Prima di G1 e di G3 un sotto-agente a contesto pulito ricalcola i numeri dai dati, perché chi ha fatto il lavoro non lo giudica da solo.
 
-Il PI decide ai cancelli e su ciò che spetta solo a lui: messaggio, perimetro, rivista, autori, budget, accessi, azioni irreversibili. Fra un cancello e l'altro le sessioni non aspettano la sua approvazione.
+Il PI decide ai cancelli e su ciò che spetta solo a lui: messaggio, perimetro, rivista, autori, budget, accessi, azioni irreversibili. Fra un cancello e l'altro le sessioni non aspettano la sua approvazione: una scelta tecnica si fissa con la sua fonte, si scrive nel messaggio e vale finché il PI non la cambia.
 
 Ogni aggiunta al perimetro ha un prezzo, anche se la chiede il PI: quale affermazione serve, quante sessioni e quanto calcolo costa, che cosa cambia nell'articolo nel caso migliore. Se cambia una frase, dillo e sconsigliala. Una corsa completa si fa solo per ciò che entra nell'articolo: prima risponde una corsa ridotta.
 
@@ -93,7 +94,7 @@ Una sessione è una chat, serve una sola affermazione del contratto e prova una 
 
 Apertura:
 
-1. Esegui `python3 tools/progetto.py apri`. Stampa fase, budget, quadro dell'articolo, ultime misure e allarmi. Se c'è un allarme, la sessione serve a risolverlo: non si lavora sopra un allarme.
+1. Esegui `python3 tools/progetto.py apri`. Stampa una riga di stato, il quadro dell'articolo, le ultime misure e gli allarmi. Copia la riga di stato in testa alla tua prima risposta: `progetto-master | fase | sessione n di budget`. Per il PI è la prova che la skill è caricata. Se c'è un allarme, la sessione serve a risolverlo: non si lavora sopra un allarme.
 2. Leggi `docs/PAPER.md` e `docs/STATO.md`. Non leggere altro, salvo ciò che `STATO.md` indica.
 3. Dalla sonda in poi esegui `python3 tools/progetto.py check smoke`. Se fallisce, la sessione serve a ripararlo.
 4. Scrivi in tre righe l'affermazione che la sessione serve, l'ipotesi (quale voce del bilancio attacchi e come), l'effetto atteso come numero, il costo. Se la sessione non serve nessuna affermazione, o l'effetto atteso è più piccolo dell'incertezza della misura, non si fa.
@@ -101,8 +102,9 @@ Apertura:
 Chiusura:
 
 1. Esegui `check smoke` (non nella scommessa, dove non c'è codice), poi `python3 tools/progetto.py chiudi --sessione ID --affermazione ID --ipotesi TESTO --atteso NUMERO`. Lo strumento legge dal file scritto dal check il valore di ogni affermazione. Stabilisce se la sessione avanza o è un colpo sull'affermazione servita, e avvisa se un'altra affermazione che reggeva non regge più. Rifiuta la chiusura se il check è fallito, se il codice è cambiato dopo il check, se manca l'affermazione, o se un documento supera il suo limite di lunghezza.
-2. Riscrivi `docs/STATO.md`. Poi commit e push.
-3. Scrivi al PI il messaggio di chiusura, secondo la sezione «Scrivere per il PI». Non produrre un report.
+2. Se è un colpo, togli la modifica dalla catena.
+3. Riscrivi `docs/STATO.md`. Poi commit e push.
+4. Scrivi al PI il messaggio di chiusura, secondo la sezione «Scrivere per il PI». Non produrre un report.
 
 `docs/STATO.md` è l'unica memoria fra una sessione e l'altra. Contiene: che cosa esiste, la tabella del bilancio dell'errore, le minacce alla validità (5 al massimo), le strade fallite con il motivo, la prossima mossa.
 
@@ -112,9 +114,11 @@ Il difetto da evitare è questo: ogni pezzo passa i suoi test, ma l'insieme non 
 
 Il metro è il primo codice che si scrive, e l'unico con test completi da subito. Ha un controllo positivo, cioè un caso in cui la risposta è nota e deve uscire, e un controllo negativo, in cui non deve uscire nulla. Un numero prodotto da un metro senza controlli non si usa per decidere.
 
-`check smoke` gira a ogni apertura e a ogni chiusura, in circa dieci minuti, su una configurazione ridotta e sui dati di sviluppo. Esegue i test rimasti, la catena da capo a fondo e il metro, e scrive in `results/misura.json` la misura principale e il valore di ogni affermazione. `check full` è la versione completa e gira ai cancelli.
+Se la misura principale è una media di più voci, leggi prima le voci: una media dominata dalle voci più grandi nasconde le differenze sulle altre. Il check scrive anche le voci, e il quadro le mostra.
 
-Non si modifica un test o una soglia per far passare il controllo.
+`check smoke` gira a ogni apertura e a ogni chiusura, in circa dieci minuti, su una configurazione ridotta e sui dati di sviluppo. Esegue i test rimasti, la catena da capo a fondo e il metro, e scrive in `results/misura.json` la misura principale, le sue voci e il valore di ogni affermazione. `check full` è la versione completa e gira ai cancelli.
+
+Non si modifica un test, una soglia o un elenco di esenzioni per far passare un controllo.
 
 # Il bilancio dell'errore
 
@@ -143,7 +147,7 @@ Si cerca nella fase di scommessa, prima di ogni componente che costa più di un'
 
 L'ordine delle fonti è: repository e progetti passati del PI; Zotero (`zotero-library`); CRAN, Bioconductor, PyPI, GitHub; PubMed, bioRxiv, arXiv; web. Servono almeno tre ricerche con parole diverse per tipo di fonte. Le ricerche larghe le fa un sotto-agente, che restituisce dieci righe con i link.
 
-Ogni ricerca lascia una riga in `docs/ESISTENTE.md`: bisogno, candidati con link, decisione, motivo. «Costruire» è ammesso in due casi: non c'è un candidato, oppure il migliore è stato provato sul nostro caso e ha fallito. Il candidato migliore diventa il pavimento. Si cita solo ciò che è stato aperto.
+Ogni ricerca lascia una riga in `docs/ESISTENTE.md`: bisogno, candidati con link, decisione, motivo. «Costruire» è ammesso in due casi: non c'è un candidato, oppure il migliore è stato provato sul nostro caso e ha fallito. Il candidato migliore diventa il pavimento. Si cita solo ciò che è stato aperto, e prima di un contratto i lavori più vicini si leggono per intero.
 
 # Quando ti blocchi
 
@@ -162,28 +166,34 @@ Non chiedere al PI: lavoro manuale oltre 15 minuti, un valore che si può stimar
 
 # Quando fermarsi
 
-Tre regole di arresto. Le calcola `tools/progetto.py` dai numeri del registro, non il giudizio di chi lavora.
+Fermarsi ha tre livelli. Chiudere un'ipotesi o togliere un pezzo non chiude il progetto.
 
-1. Due colpi. Due sessioni di fila sulla stessa ipotesi, senza un guadagno oltre l'incertezza, chiudono quella strada. Si passa a un'altra voce del bilancio o al riesame. Non si propone una terza prova, neanche più piccola. Tre colpi di fila, anche su ipotesi diverse, aprono il riesame.
-2. Budget. Finite le sessioni della fase si va al cancello, dove il PI può prorogare. Per la seconda proroga della stessa fase serve prima un riesame.
-3. Criterio. La soglia sta oltre il tetto, oppure il pavimento è vicino al tetto, la misura è già al tetto, un controllo è fallito, è uscito un lavoro con lo stesso messaggio.
+| che cosa si ferma | quando | che cosa succede |
+|---|---|---|
+| Un'ipotesi | Due colpi di fila sulla stessa ipotesi. | La strada è chiusa. Non si propone una terza prova, neanche più piccola. Si passa a un'altra voce del bilancio. |
+| Un pezzo | Non batte la sua versione banale, oltre l'incertezza. | Si toglie, e resta la versione banale. Vale anche per il codice ereditato, qualunque lavoro sia costato. |
+| L'obiettivo | Vale una di queste quattro condizioni. Fra pavimento e tetto non c'è spazio. L'articolo esiste già, o non ha un lettore. I dati per misurarlo non esistono. Il budget firmato è finito, proroga compresa, e la misura non si è avvicinata alla soglia. | Riesame. Poi decide il PI. |
 
-Il riesame occupa una sessione, non tocca il codice e si registra con `chiudi --riesame`:
+Lo stato dei pezzi non decide dell'obiettivo. Un progetto condotto finora senza metro non ha ancora avuto la sua prova: riparte dal pavimento, non si chiude. Ogni regola di esito scritta prima di una prova dice a quale dei tre livelli si applica.
+
+Gli allarmi (due colpi, tre colpi, budget finito, criterio irraggiungibile, regressione) li calcola `tools/progetto.py` dal registro, non il giudizio di chi lavora. Un allarme dice quale livello guardare: non è un verdetto.
+
+Il riesame si apre con tre colpi di fila, con un allarme sul criterio, alla seconda proroga, o quando esce un lavoro con lo stesso messaggio. Occupa una sessione, non tocca il codice e si registra con `chiudi --riesame`:
 
 1. Attacca prima il criterio, poi il metodo. La soglia è sotto il tetto? Il tetto è misurato? La letteratura usa un altro riferimento?
 2. Scrivi i fatti: solo numeri riletti dai file.
-3. Dai un verdetto per componente (tenere, correggere, sostituire, togliere), con l'osservazione che lo ribalterebbe.
-4. Due sotto-agenti che non conoscono la storia del progetto ricevono i soli fatti. Uno difende «continuare», l'altro «chiudere». Un terzo ricalcola pavimento, tetto e misura.
-5. Non contare i costi già sostenuti.
-6. Dai un solo verdetto fra quattro: continuare, restringere, cambiare strada, chiudere. Un cambio di strada comincia dalla prova più economica della sua ipotesi chiave, con la regola di esito scritta prima, e ha due colpi come ogni altra strada.
+3. Giudica i pezzi uno per uno contro la loro versione banale: tenere, correggere, sostituire, togliere. Per ognuno scrivi l'osservazione che ribalterebbe il giudizio.
+4. Giudica l'obiettivo a parte, sulle quattro condizioni. I costi già sostenuti non contano, in nessuno dei due sensi: il lavoro fatto non è un motivo per continuare, e il lavoro fatto male non è un motivo per chiudere.
+5. Due sotto-agenti che non conoscono la storia del progetto ricevono i soli fatti. Uno difende «continuare», l'altro «chiudere». Un terzo ricalcola pavimento, tetto e misura.
+6. Dai un verdetto sull'obiettivo, uno fra quattro: continuare; restringere il messaggio; cambiare strada, cioè stesso obiettivo e catena nuova che riparte dal pavimento; chiudere. «Chiudere» cita la condizione che vale, con il suo numero. Una strada nuova comincia dalla prova più economica della sua ipotesi chiave, con la regola di esito scritta prima, e ha due colpi come ogni altra.
 
-Se i numeri lo dicono, scrivilo: «Ci abbiamo provato. Con i nostri mezzi non arriviamo a un risultato decente. Consiglio di chiudere.» La chiusura lascia `docs/CHIUSURA.md`, in una pagina: che cosa abbiamo misurato, perché non basta, che cosa si riusa, quale vincolo riapre il progetto se cade.
+Se le condizioni ci sono, scrivilo: «Ci abbiamo provato con il metodo giusto. Con i nostri mezzi non arriviamo a un risultato decente. Consiglio di chiudere.» La chiusura lascia `docs/CHIUSURA.md`, in una pagina: che cosa abbiamo misurato, quale condizione vale, che cosa si riusa, quale vincolo riapre il progetto se cade.
 
 # Scrivere per il PI
 
 Il PI decide su ciò che gli scrivi, quindi deve capire l'essenziale senza aprire un file. Conosce la domanda scientifica e il contesto. Non è uno specialista dei metodi: lavora con dati omici ma non è un bioinformatico, conosce la statistica medica ma non è uno statistico puro. Non spiegargli che cos'è un intervallo di confidenza o l'RNA-seq. Spiegagli che cosa fa uno strumento, un algoritmo o uno stimatore poco comune, e perché qui conta.
 
-Ogni messaggio al PI comincia dal quadro dell'articolo, in due righe: quante affermazioni reggono e che cosa è cambiato oggi. Poi risponde a cinque domande, in quest'ordine:
+Ogni messaggio al PI comincia dal quadro dell'articolo, in due righe: il messaggio, quante affermazioni reggono e che cosa è cambiato oggi. Poi risponde a cinque domande, in quest'ordine:
 
 1. Che cosa volevamo sapere, e perché serve all'articolo.
 2. Che cosa abbiamo fatto, in una o due frasi che capirebbe un collega di un altro laboratorio.
@@ -198,7 +208,7 @@ Regole:
 - I legami logici restano nel testo: perché, quindi, però, invece. Le frasi sono brevi ma non telegrafiche.
 - Un concetto nuovo si aggancia a uno che il PI conosce: «il tetto è come l'accordo fra due patologi».
 - Si usa un termine per ogni concetto, sempre lo stesso. I numeri si rileggono dai file.
-- La lunghezza è quella che serve per decidere: da 8 a 15 righe a fine sessione, una pagina a un cancello.
+- La lunghezza è quella che serve per decidere: da 8 a 15 righe a fine sessione, una pagina a un cancello. Le note di servizio (commit, controlli superati, file toccati) stanno nei file, non nel messaggio.
 - Prima di inviare fai questa prova: dopo una sola lettura, il PI saprebbe spiegare la decisione a un collega?
 
 Un esempio con numeri inventati. Questo è troppo asciutto:
@@ -220,11 +230,10 @@ Regole di forma:
 
 Il costo di una sessione cresce con il numero di chiamate moltiplicato per la lunghezza del contesto: ciò che entra nel contesto si ripaga a ogni chiamata successiva.
 
-- Tieni le sessioni corte: due sessioni da 40 chiamate costano molto meno di una da 80. Oltre le 60 chiamate chiudi e riapri.
+- Tieni le sessioni corte: due sessioni da 40 chiamate costano molto meno di una da 80. Oltre le 60 chiamate chiudi alla prima occasione: finisci il passo in corso, riscrivi `STATO.md`, fai commit e fermati. Delegare a sotto-agenti non sostituisce la chiusura.
 - In apertura leggi meno di tre pagine. Ogni comando stampa al massimo 30 righe: il resto va su file e si interroga con grep.
 - La lettura pesante (letteratura, log, codice altrui) la fa un sotto-agente: il suo contesto si butta e torna una sintesi di dieci righe.
 - Non scrivere un report per sessione né un documento per decisione: bastano una riga in `STATO.md` e il messaggio al PI.
-- Il calcolo costa meno dei token e delle ore del PI: una griglia sul server decide più in fretta di una discussione.
 - I modelli locali fanno il lavoro meccanico su molti casi, con l'errore misurato su un campione etichettato. Non giudicano e non scrivono per il PI.
 - Scommessa, cancelli e riesame usano il modello più capace. Le sessioni di costruzione hanno un'ipotesi chiusa e un check, quindi possono usare un modello più economico, se il PI lo decide.
 
@@ -232,7 +241,8 @@ Il costo di una sessione cresce con il numero di chiamate moltiplicato per la lu
 
 | file | contenuto | limite di lunghezza |
 |---|---|---|
-| `CLAUDE.md` | Scheda del progetto: dove sta tutto, regole scientifiche, limiti di calcolo. | 100 righe |
+| `CLAUDE.md` | Scheda del progetto: dove sta tutto, regole scientifiche, limiti di calcolo. La prima riga dice di caricare `progetto-master` e di fermarsi se manca. | 100 righe |
+| `.claude/skills/progetto-master/SKILL.md` | Copia di questa skill, per le sessioni che non vedono quelle dell'account. Si sostituisce a mano quando la skill cambia. | nessuno |
 | `docs/PAPER.md` | Il contratto e le decisioni del PI, una riga ciascuna. | 500 parole |
 | `progetto.json` | I numeri del contratto, le affermazioni, i comandi del check, i cancelli e le proroghe. | nessuno |
 | `docs/STATO.md` | La memoria fra le sessioni, con il bilancio dell'errore. | 800 parole |
@@ -240,13 +250,16 @@ Il costo di una sessione cresce con il numero di chiamate moltiplicato per la lu
 | `docs/ESISTENTE.md` | Registro di ciò che esiste già. | 1 riga per voce |
 | `tools/progetto.py` | Comandi `init`, `apri`, `quadro`, `check`, `chiudi`, `cancello`, `proroga`. Si copia da un progetto che lo ha. | nessuno |
 
-# Adozione in un progetto già avviato
+# Avvio e adozione
 
-1. Esegui `python3 tools/progetto.py init`.
-2. Scrivi il contratto da ciò che esiste, con le affermazioni e il numero che serve a ognuna, e contesta il criterio.
-3. Elenca che cosa manca fra metro, pavimento, tetto, catena e misura di ogni affermazione. Misurarli è il lavoro delle prossime sessioni, prima di ogni altra cosa.
-4. Scrivi `docs/STATO.md` con il bilancio dell'errore. Sposta backlog e documenti storici in `docs/archivio/`, senza riscriverli: in apertura non si leggono più.
-5. Esegui `apri` e porta gli allarmi al PI come cancello.
+Progetto nuovo. Il PI crea il repository con `tools/progetto.py` e con la copia di questa skill, e scrive l'idea in poche righe: domanda, dati, lettore, vincoli. La prima sessione esegue `init` ed è di scommessa.
+
+Progetto già avviato. Si adotta come un progetto nuovo che ha già del codice: l'obiettivo non si giudica dallo stato del codice.
+
+1. Scommessa: esegui `init` e scrivi il contratto partendo dall'obiettivo, non da ciò che esiste. Contesta il criterio e cerca l'esistente come per un progetto nuovo.
+2. Sonda: costruisci metro, tetto e catena banale. Il codice ereditato entra come un braccio in più, misurato con lo stesso metro sugli stessi dati.
+3. Al cancello G1 porta tre numeri (tetto, banale, ereditato) e le voci del bilancio dell'errore. I pezzi ereditati che non battono il banale si tolgono. La costruzione riparte dalla catena migliore fra le due.
+4. Sposta backlog e documenti storici in `docs/archivio/`, senza riscriverli: in apertura non si leggono più.
 
 # Fonti
 
