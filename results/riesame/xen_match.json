@@ -1,0 +1,48 @@
+{
+ "bytes_fetched": {
+  "Xenium_P1_cell_info.csv.gz": 49914595,
+  "Xenium_P5_cell_info.csv.gz": 45198534,
+  "GEO_P1_partial": 6294261,
+  "GEO_P5_partial": 5245685
+ },
+ "github_P1": {
+  "rows": 1123632,
+  "md5": "fe66013936b88b9a82d68ab2261a92fc",
+  "git_sha1": "783b9650a1b33bdd1ca375c5b805197815144ac1"
+ },
+ "github_P2": {
+  "rows": 1105615,
+  "md5": "bb0a6075d27461b1bd902cdda11ac217",
+  "git_sha1": "156bb0f3d3b33db64ed7f59a0b683891103eef15"
+ },
+ "github_P5": {
+  "rows": 1029090,
+  "md5": "50b5cb30f26b0e0443400d0545a9bcb0",
+  "git_sha1": "4e09b486e8cf8425d3e8de70f7f40dcd13df476b"
+ },
+ "geo_P2": {
+  "rows": 340837,
+  "source": "extracted zip (inventory.tsv)"
+ },
+ "geo_P1": {
+  "rows": 307762,
+  "zip_bytes": 13002851404,
+  "member": "cells.parquet",
+  "member_bytes": 5503158,
+  "md5": "78c37dbd6f9a89ddffd762371220134c",
+  "n_members": 26
+ },
+ "geo_P5": {
+  "rows": 275998,
+  "zip_bytes": 13804388412,
+  "member": "cells.parquet",
+  "member_bytes": 4960809,
+  "md5": "1a8b9d8baa4776cdbb6d0b9ff2c63eb2",
+  "n_members": 26
+ },
+ "matches_per_geo": {
+  "P1": [],
+  "P2": [],
+  "P5": []
+ }
+}
