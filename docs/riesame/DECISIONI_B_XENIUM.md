@@ -81,3 +81,9 @@ Richiesta di Luca in chat: «Scarica da GitHub Xenium_P1_cell_info.csv.gz e Xeni
 | id | data | scelta | motivo |
 |---|---|---|---|
 | XD-25 | 2026-11-20 | Per ogni coppia (pacchetto GEO P1, P2, P5) x (file di registrazione 10x P1, P2, P5), 9 coppie, si applica XD-24 senza modifiche (identificativi >= 99 %, scarto con deviazione standard < 1 µm per componente, conteggi uguali >= 99 %). Corrispondenza = coppia che soddisfa tutte e tre. Un pacchetto con due corrispondenze e' ambiguo e si riporta come tale, senza scegliere. I file GitHub si verificano con lo sha1 git dell'API GitHub; degli zip GEO di P1 e P5 si leggono con richieste HTTP parziali solo l'indice e `cells.parquet` (CRC32 del membro verificato), riportando i byte scaricati. Script `tools/riesame_xen_match.py`; uscite `results/riesame/xen_match.csv`, `results/riesame/xen_match.json`. Nessun braccio Xenium prima del si' di Luca. | Criterio di Luca, gia' scritto in XD-24. |
+
+## Chiusura della domanda sulla cattura (Luca, 2026-11-20)
+
+| id | data | scelta | motivo |
+|---|---|---|---|
+| XD-26 | 2026-11-20 | Decisione di Luca in chat: «Basta così sullo Xenium: non cercare oltre. La domanda sulla cattura si chiude come «indecidibile con i dati disponibili».» Vincolo che la riapre: i pacchetti Xenium da circa 1,1 milioni di cellule (P1 1 123 632, P2 1 105 615, P5 1 029 090 righe) a cui appartengono le registrazioni di 10x su GitHub; non sono su GEO GSE280314 (pacchetti da 307 762, 340 837, 275 998 cellule, nessuna corrispondenza per XD-25). Nessun braccio Xenium calcolato. La Parte B decide solo sul generatore, con V, T, S, B sui geni comuni. | REGOLA_B: «se lo Xenium non e' usabile [...] decide solo sul generatore». |
