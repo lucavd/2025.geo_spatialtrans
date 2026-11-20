@@ -1,65 +1,61 @@
 ---
 type: State
 title: "Stato di geo_spatialtrans"
-description: "Memoria fra le sessioni: fase, numeri, bilancio dell'errore, minacce, strade fallite, prossima mossa."
+description: "Memoria fra le sessioni: fase, dati, numeri, bilancio dell'errore, minacce, strade fallite, prossima mossa."
 status: draft
-generated: { by: geo-agent/skill-v2, at: 2026-11-20T19:00:00+01:00 }
+generated: { by: geo-agent/progetto-master, at: 2026-11-20T21:30:00+01:00 }
 ---
 # Fase
 
-Scommessa. Sessione SC1 (2026-11-20): adozione di progetto-master, contratto in bozza in `docs/PAPER.md`, revisore simulato fatto. Attesa: scelta del tessuto primario (SC2), poi firma (G0).
+Sonda, budget 5, firmata a G0 il 2026-11-20. Scommessa chiusa: SC1 (adozione, contratto sul colon), SC2 (scelta del tessuto: polmone 10x dopo Xenium). Contratto del colon in `docs/archivio/PAPER_colon_SC1.md`: riserva se la registrazione fallisce.
+
+# Dati (polmone 10x, nota tecnica CG000709, 1 blocco FFPE, 1 donatore)
+
+- H1 = Visium_HD_Human_Lung_Cancer_HD_Only_Experiment1; X1 = Visium_HD_Human_Lung_Cancer_post_Xenium_v1_Experiment1 + Xenium_V1_Human_Lung_Cancer_FFPE (289 geni); H2 = Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2; X2 = Visium_HD_Human_Lung_Cancer_post_Xenium_Prime_5K_Experiment2 + Xenium_Prime_Human_Lung_Cancer_FFPE (5001 geni).
+- CDN: `https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/<s>/<s>_<file>`; Xenium `.../samples/xenium/3.0.0/<s>/<s>_<file>`. curl funziona; urllib di Python riceve 403. Pagine 10x bloccate da un controllo anti-bot.
+- UMI medi per bin da 8 um (metrics_summary, SR 3.0.0; mediane assenti): H1 211,7; X1 129,3; H2 274,9; X2 70,4. Colon P2 488,4.
+- Registrazione non fornita. Catena: `he_imagealignment.csv` (H&E -> Xenium) + allineamento Space Ranger (H&E -> quadratini). L'H&E dello Xenium ha dimensioni e pixel (0,2738 um) del tissue_image del Visium HD (sotto-agente SC2, da verificare in S1).
+- Nessun tipo cellulare fornito; riferimento RCTD: HLCA (CELLxGENE).
+- Metadati in `/mnt/micron/geo_spatialtrans/sc2_meta/`; inventario SC2 in ESISTENTE.
 
 # Metro
 
-D = radice con segno della media su 12 voci (tumore, stroma x M-1...M-6) di (Delta^2 - Var Delta)/h^2; Delta = braccio meno P2; h = precisione della media delle 5 aree di P2. `tools/riesame_D.py`; controlli in `docs/riesame/FATTI_B.md`.
+D = radice con segno della media su 12 voci (tumore, stroma x M-1...M-6) di (Delta^2 - Var Delta)/h^2; Delta = braccio meno riferimento; h = precisione della media delle 5 aree della sezione di taratura (H2). `tools/riesame_D.py`; controlli in `docs/riesame/FATTI_B.md`. Aree di tumore e stroma del polmone da definire con una regola scritta prima.
 
 # Numeri (h)
 
-Pavimento 7,77 (banale); tetto 2,23 (P1, P5 contro P2); simulatore ereditato 7,83; soglia proposta 3,23 (tetto + 1 h).
+Polmone: pavimento, tetto, soglia non misurati. Colon (riserva): pavimento 7,77; tetto 2,23; simulatore ereditato 7,83.
 
-# Bilancio dell'errore (per misura, non ancora per causa)
+# Bilancio dell'errore
 
-Quota di D^2(simulatore) - D^2(tetto), `results/riesame/B_per_measure_common.csv`, senza incertezza.
-
-| voce | tetto | simulatore | banale | quota |
-|---|---|---|---|---|
-| tumore, concordanza con il nucleo | 1,9 | 17,1 | 17,7 | 43 % |
-| tumore, vicini dello stesso tipo | 0,2 | 10,9 | 12,3 | 18 % |
-| stroma, singoletti RCTD | 1,9 | 10,4 | 10,6 | 15 % |
-| tumore, singoletti RCTD | 1,3 | 10,2 | 10,2 | 15 % |
-| tumore, marcatori estranei | 2,3 | 8,1 | 3,3 | 9 % |
-| stroma, vicini dello stesso tipo | 3,6 | 5,6 | 5,4 | 3 % |
-
-Raggiungibilita' (ricalcolata dallo stesso file): le 4 voci maggiori portate a 2,0 h danno D = 3,28 (sopra 3,23); le 5 maggiori a 2,0 h danno 2,37; a 3,6 h danno 3,71 e 3,05.
+Polmone: non ancora. Riferimento dal colon (`results/riesame/B_per_measure_common.csv`): tumore, concordanza con il nucleo 43 %; tumore, vicini dello stesso tipo 18 %; singoletti RCTD stroma 15 % e tumore 15 %; marcatori estranei 9 %.
 
 # Minacce alla validita'
 
-1. Circolarita': il metro usa bin2cell + RCTD, che il simulatore deve aiutare a provare (A4: catena mai usata in taratura).
-2. Una sola sezione di taratura (P2): A1 si conferma con P1 e P5 come riferimento.
-3. h dipende dal disegno a 5 aree: tutti i numeri valgono con quel disegno.
-4. Realismo non vuol dire classifica fedele (Crowell 2023); nessuna verita' vera nel colon.
-5. Sul pannello Xenium i singoletti RCTD non hanno spazio (99,9 %): A3 puo' restare indecidibile.
+1. Registrazione composta non misurata: cancello di S1.
+2. Un donatore: il tetto e' fra sezioni seriali, probabilmente piu' stretto che fra pazienti, quindi soglia piu' difficile.
+3. Verita' solo su sezioni meno sensibili (1,64x v1, 3,90x 5K): A5 vale a quella profondita'.
+4. Circolarita': il metro usa bin2cell + RCTD (A4).
+5. h dipende dal disegno a 5 aree; la meta' tenuta da parte riduce l'area per tetto e taratura.
 
 # Strade fallite
 
-- Generatore dello strato cellulare: 7,83 contro 7,77 del banale, uguale (`docs/riesame/CHIUSURA_GENERATORE.md`).
-- Taratura attuale dello spostamento: marcatori estranei del tumore 8,1 con, 3,3 senza.
-- Cattura contro Xenium in quadratini: indecidibile, i pacchetti Xenium registrati (circa 1,1 milioni di cellule) non sono su GEO.
+- Generatore dello strato cellulare (colon): 7,83 contro 7,77 del banale (`docs/riesame/CHIUSURA_GENERATORE.md`).
+- Taratura dello spostamento (colon): marcatori estranei del tumore 8,1 con, 3,3 senza.
+- Cattura contro Xenium in quadratini sul colon: indecidibile (XD-26). Sul polmone diventa A3.
+- Colon con verita' sulla stessa sezione: non esiste (Long 2025 = P2 su sezione seriale; ricerca SC2).
 
 # Prossima mossa
 
-Sessione SC2 (scommessa, ultima del budget): scelta del tessuto primario, polmone o colon. Luca (2026-11-20): una sola decisione presa soppesando pro e contro, non due contratti. Nessun codice; si scaricano solo metadati e file piccoli.
+S1, sonda 1 di 5: cancello della registrazione.
 
-1. Inventario del polmone dopo Xenium (10x): registrazione Xenium -> Visium HD fornita?, geni (Xenium v1, Prime 5K), dimensioni dei file, regioni disgiunte utilizzabili (sviluppo, tetto, dati tenuti da parte), qualita' del Visium HD.
-2. Colon di Long et al. 2025 (Zenodo 15722536): molecole o solo file Loupe?
-3. Tabella unica pro e contro, sui criteri scritti qui prima dell'inventario: verita' per cellula sulla stessa sezione; tetto (fra pazienti o solo fra aree della stessa sezione); geni; qualita' del dato; costo di rifare pavimento, tetto e taratura; dati tenuti da parte per la conferma; misura di utilita' possibile (classifica dei metodi contro la verita').
-Regola SC2 (scritta 2026-11-20 prima dell'inventario). Eliminatori: (E1) il tessuto deve permettere un tetto misurato con lo stesso metro, fra pazienti o, in mancanza, fra regioni disgiunte della stessa sezione dichiarate tali; (E2) servono dati tenuti da parte per A1 che non siano la sezione di taratura. Un tessuto che fallisce E1 o E2 si scarta. Fra i tessuti rimasti decide la misura di utilita' (verita' per cellula sulla stessa sezione, registrazione con residuo al 95 percentile <= 2 um come XD-4); a parita', il costo di rifare pavimento, tetto e taratura.
+1. Prima di scaricare, scrivere e committare: (a) la regola della meta' spaziale tenuta da parte per ogni sezione; (b) il metodo del residuo: nuclei Xenium mappati sull'H&E contro nuclei StarDist sull'H&E, e scarto H&E -> quadratini da 2 um con i picchi di UMI nucleari (MALAT1, NEAT1); 3 regioni disgiunte nella meta' di sviluppo; p95 <= 2 um, affine locale ammessa (XD-4).
+2. Scaricare per X1 e X2: binned_outputs, tissue_image.btf, he_imagealignment.csv, cells, cell_boundaries, transcripts.parquet (circa 15 GB) in `/mnt/micron/geo_spatialtrans/data_lung/`.
+3. Esito: passa in X1 e X2, si prosegue; passa in una sola, si prosegue con quella e il tetto di A5 si riscrive prima di misurarlo; fallisce in entrambe, ritorno al colon.
 
-4. Una raccomandazione, decisa con Luca; poi il contratto si aggiorna e si firma (G0).
-
-Dopo la firma, sonda: check che scrive `results/misura.json`; sostituzioni con i componenti veri (regola di G1 in `docs/PAPER.md`); braccio ENACT e seconda catena. Pulizie: `CLAUDE.md` sotto 100 righe, storici in `docs/archivio/`, controllo OKF su PAPER e STATO.
+Poi S2 metro e check smoke sul polmone; S3 pavimento e tetto; S4 componenti veri e bilancio; S5 A3 e A5, G1. Pulizie: `CLAUDE.md` aggiornato al polmone e sotto 100 righe; storici in `docs/archivio/`.
 
 # Aperti
 
-- SpatialSimBench letto per intero (riga in `docs/ESISTENTE.md`).
 - `results/F3.2/sheets/` non tracciato (PNG del 18-19 novembre, di F3.2): lasciato com'e'.
+- Riserva per un tetto fra pazienti con verita': Vannan 2025 TMA5 (4 donatori, fibrosi); qualita' del Visium HD non letta.
