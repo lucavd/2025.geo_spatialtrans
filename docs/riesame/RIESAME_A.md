@@ -4,7 +4,7 @@ title: "Riesame di geo_spatialtrans, Parte A: criterio, candidati di articolo, v
 description: "Riesame su carta del progetto dopo 43 sessioni: il tetto misurato dai dati di F3.3, le affermazioni possibili, tre candidati di articolo, un verdetto provvisorio per componente e le opzioni per il PI."
 status: draft
 generated: { by: geo-agent/skill-v2, at: 2026-11-20T13:30:00+01:00 }
-pi_approval: pending
+pi_approval: { by: human:luca-vedovelli, at: 2026-11-20, evidence: "in chat: «1. Sì: Parte B come scritta, con il braccio X1. 2. Sì: margine di equivalenza 1,0 h e onere della prova sui nostri componenti.»" }
 sources:
   - id: consegna
     resource: "docs/RIESAME_geo_spatialtrans.md (consegna del 2026-11-20, fuori dal repository)"
@@ -172,3 +172,9 @@ Appena decidi questi 2 punti, il riesame su carta è chiuso.
 [^esistente]: [Che cosa esiste già per simulare Visium HD a livello di cellula](/ESISTENTE.md).
 [^f33]: [Il simulatore di oggi regge fuori dalle aree su cui è stato tarato? (F3.3)](/steps/F3.3.md).
 [^regola]: [Riesame, Parte B: regola di esito scritta prima del calcolo](/riesame/REGOLA_B.md).
+
+# Decisioni di Luca (2026-11-20)
+
+1. «Sì: Parte B come scritta, con il braccio X1.»
+2. «Sì: margine di equivalenza 1,0 h e onere della prova sui nostri componenti.» Con un controllo positivo in più per la cattura (G-6 nella [regola di esito](/riesame/REGOLA_B.md)).
+3. Protocollo: la skill `progetto-master`, copiata in `.claude/skills/progetto-master/SKILL.md` (commit `3f00f5e`).

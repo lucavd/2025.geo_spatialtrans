@@ -4,7 +4,7 @@ title: "Riesame, Parte B: regola di esito scritta prima del calcolo"
 description: "Bracci, misura, soglie di «uguale» e «diverso», cancello sul pannello Xenium e corrispondenza fra esiti e verdetto, scritti prima di ogni calcolo della Parte B."
 status: draft
 generated: { by: geo-agent/skill-v2, at: 2026-11-20T13:30:00+01:00 }
-pi_approval: pending
+pi_approval: { by: human:luca-vedovelli, at: 2026-11-20, evidence: "in chat: «1. Sì: Parte B come scritta, con il braccio X1. 2. Sì: margine di equivalenza 1,0 h e onere della prova sui nostri componenti. Aggiungi un controllo positivo per la cattura (G-6)»" }
 sources:
   - id: dec098
     resource: "/decisions/DEC-098.md"
@@ -18,7 +18,7 @@ sources:
 ---
 # Regola di esito della Parte B
 
-Scritta e committata prima di ogni calcolo della Parte B. Soglie da approvare da Luca (punto 2 del riassunto «In breve» del riesame): finché non le approva, la Parte B non parte.
+Scritta e committata prima di ogni calcolo della Parte B (prima versione `ca73e42`). Approvata da Luca il 2026-11-20 in chat: «1. Sì: Parte B come scritta, con il braccio X1. 2. Sì: margine di equivalenza 1,0 h e onere della prova sui nostri componenti. Aggiungi un controllo positivo per la cattura (G-6): XC con lo spostamento raddoppiato deve risultare «diverso» da X1. Se non lo è, sul pannello la domanda sulla cattura è «indecidibile», non «non aggiunge».» Questa versione aggiunge G-6 e precisa i bracci B, X, XC prima di ogni calcolo.
 
 ## Domanda
 
@@ -38,12 +38,15 @@ Che cosa dà questo simulatore che non si ottiene dividendo in quadratini da 2 �
 | V | Visium HD P2 | le 5 aree di taratura per tessuto |
 | T | Visium HD P1 e P5 (tumore da 6,5 mm come sensibilità, paziente incerto, DEC-093 R-8) | le aree di verifica di F3.3 |
 | S | il simulatore di oggi (simulazioni di F3.1, nessuna nuova) | 5 aree × 2 semi |
-| B | banale: centri a caso con la densità del preset, profilo medio per tipo, cattura senza spostamento | 5 aree × 2 semi |
+| B | banale: centri da un processo di Poisson omogeneo con la densità del preset; territori di Voronoi; nucleo = cerchio con l'area nucleare media del preset, ritagliato nel territorio; tipi estratti a caso dalla composizione del preset; trascritti per cellula dal profilo medio del tipo con la profondità del preset, messi a caso dentro la cellula; cattura dello Step 2 (profondità, strisce, fondo) con lo spostamento spento | stesse 5 aree (geometria) × 2 semi |
 | X | Xenium P2: trascritti con qualità almeno 20 sommati in quadratini da 2 µm sulla griglia Visium HD (registrazione pubblicata da 10x); nuclei Xenium dati a bin2cell | 5 aree nelle posizioni delle aree di V |
 | X1 | come X, con un diradamento binomiale unico che porta gli UMI per quadratino in tessuto alla media di V | come X |
-| XC | cellule e trascritti Xenium P2, poi spostamento e cattura dello Step 2 | 5 aree × 2 semi; solo se costa meno di una sessione |
+| XC | trascritti Xenium P2 con qualità almeno 20, poi lo spostamento dello Step 2 con i parametri del preset del tessuto, poi la cattura dello Step 2 (strisce, fondo) e un fattore di profondità unico che porta gli UMI per quadratino in tessuto alla media di V; nuclei Xenium dati a bin2cell | come X, × 2 semi; solo se costa meno di una sessione |
+| XC2 | come XC, con la scala dello spostamento raddoppiata (controllo positivo G-6) | come XC |
 
 X1 è stato aggiunto dal riesame: lo Xenium grezzo perderebbe contro V per la sola profondità, che chiunque corregge con un numero. Il modello della cattura deve battere X1.
+
+Scelte di attuazione che il codice impone (per esempio come spegnere lo spostamento, come leggere i parametri del preset) si registrano come decisioni tecniche, con il commit, prima del calcolo del braccio interessato; nessuna si decide guardando D.
 
 ## Misura
 
@@ -69,23 +72,26 @@ D(braccio) = radice con segno della media, sulle celle tessuto × misura M-1...M
 | G-3 | falso confronto: le 5 aree di V divise 3 + 2 in tutti i 10 modi; D della parte da 2 contro quella da 3 | media entro ±0,5 h | lo stimatore è distorto: la Parte B non si legge |
 | G-4 | ricalcolo: i bracci V, T, S sui geni completi ritrovano i valori di F3.3 entro 1e-9 relativo | identità | errore di catena: si corregge prima di tutto |
 | G-5 | revisione avversariale: un sotto-agente ricalcola D e Δ di ogni braccio dalle tabelle per area | entro l'errore Monte Carlo | ogni discrepanza è un dubbio da chiudere prima del verdetto |
+| G-6 | controllo positivo della cattura (Luca, 2026-11-20): D(XC2) − D(X1) | diverso | sul pannello la domanda sulla cattura è «indecidibile», non «non aggiunge» |
 
 ## Esiti e conseguenze
 
 | domanda | risultato | conseguenza |
 |---|---|---|
-| Il modello della cattura serve? | D(X1) non diverso da D(T), cioè D(X1) − D(T) non oltre δ con il suo w | la strada corta basta: il simulatore non ha un lettore come sostituto del dato vero |
+| Il modello della cattura serve? (solo se G-1 e G-6 passano) | D(X1) non diverso da D(T), cioè D(X1) − D(T) non oltre δ con il suo w | la strada corta basta: il simulatore non ha un lettore come sostituto del dato vero |
 | | D(X1) oltre D(T), e D(XC) meglio di D(X1) (diverso) | il modello della cattura vale: è il candidato articolo |
 | | D(X1) oltre D(T), e D(XC) uguale o indeterminato rispetto a D(X1) | il modello della cattura non aggiunge |
 | Il generatore serve? | D(S) uguale a D(XC) | il generatore regge il confronto con la disposizione vera: si tiene |
 | | D(S) peggio di D(XC) e meglio di D(B) (tutti e due diversi) | si tiene solo per prove controllate, con lo scarto dichiarato |
 | | D(S) uguale, indeterminato o peggio rispetto a D(B) | il generatore non batte il banale: si toglie |
 
-Se XC non si fa, al suo posto si usa X1, e il verdetto lo dice. Se lo Xenium non è usabile, la Parte B si fa con V, T, S, B sui geni completi e decide solo sul generatore (D(T) al posto di D(XC)).
+Se G-1 o G-6 non passano, la domanda sulla cattura è «indecidibile» sul pannello. Se XC non si fa, al suo posto si usa X1, e il verdetto lo dice. Se lo Xenium non è usabile, la Parte B si fa con V, T, S, B sui geni completi e decide solo sul generatore (D(T) al posto di D(XC)).
 
 Verdetto, uno solo: chiudere, se la strada corta basta oppure se il modello della cattura non aggiunge; cambiare strada, se la cattura vale e il generatore no; continuare, se valgono tutti e due (contratto in `docs/PAPER.md`); restringere, se gli esiti del tumore e dello stroma, calcolati anche separatamente, portano a verdetti diversi: vale quello del tessuto dove la cattura vale.
 
-Prima del verdetto, due sotto-agenti che non conoscono la storia del progetto difendono «continuare» e «chiudere» sui fatti completi; un terzo ricalcola pavimento, tetto e misura. Al più due sessioni: senza risposta dopo la seconda, il verdetto è «chiudere», con il motivo.
+Prima del verdetto, due sotto-agenti che non conoscono la storia del progetto difendono «continuare» e «chiudere» sui fatti completi; un terzo ricalcola pavimento, tetto e misura. Al più due sessioni: senza risposta dopo la seconda, il verdetto è «chiudere», con il motivo. Una domanda sulla cattura «indecidibile» alla fine della seconda sessione è una domanda senza risposta: il motivo e il vincolo che la riaprirebbe (per esempio uno Xenium con molti più geni) vanno in `docs/CHIUSURA.md`.
+
+Calcolo: al più 4 processi in totale sul server condiviso (carico circa 23 e 79 °C il 2026-11-20 alle 12:18).
 
 ## Attese (scritte prima)
 
