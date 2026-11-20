@@ -53,6 +53,8 @@ Sessione SC2 (scommessa, ultima del budget): scelta del tessuto primario, polmon
 1. Inventario del polmone dopo Xenium (10x): registrazione Xenium -> Visium HD fornita?, geni (Xenium v1, Prime 5K), dimensioni dei file, regioni disgiunte utilizzabili (sviluppo, tetto, dati tenuti da parte), qualita' del Visium HD.
 2. Colon di Long et al. 2025 (Zenodo 15722536): molecole o solo file Loupe?
 3. Tabella unica pro e contro, sui criteri scritti qui prima dell'inventario: verita' per cellula sulla stessa sezione; tetto (fra pazienti o solo fra aree della stessa sezione); geni; qualita' del dato; costo di rifare pavimento, tetto e taratura; dati tenuti da parte per la conferma; misura di utilita' possibile (classifica dei metodi contro la verita').
+Regola SC2 (scritta 2026-11-20 prima dell'inventario). Eliminatori: (E1) il tessuto deve permettere un tetto misurato con lo stesso metro, fra pazienti o, in mancanza, fra regioni disgiunte della stessa sezione dichiarate tali; (E2) servono dati tenuti da parte per A1 che non siano la sezione di taratura. Un tessuto che fallisce E1 o E2 si scarta. Fra i tessuti rimasti decide la misura di utilita' (verita' per cellula sulla stessa sezione, registrazione con residuo al 95 percentile <= 2 um come XD-4); a parita', il costo di rifare pavimento, tetto e taratura.
+
 4. Una raccomandazione, decisa con Luca; poi il contratto si aggiorna e si firma (G0).
 
 Dopo la firma, sonda: check che scrive `results/misura.json`; sostituzioni con i componenti veri (regola di G1 in `docs/PAPER.md`); braccio ENACT e seconda catena. Pulizie: `CLAUDE.md` sotto 100 righe, storici in `docs/archivio/`, controllo OKF su PAPER e STATO.
