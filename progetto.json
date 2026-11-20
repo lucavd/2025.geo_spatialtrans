@@ -1,0 +1,22 @@
+{
+  "messaggio": "Un simulatore di Visium HD con verita' per cellula produce, nel tumore del colon, risposte dei metodi d'analisi vicine al vero quanto un secondo paziente.",
+  "misura": "D, distanza da P2 in unita' h sulle 12 voci (tumore e stroma x 6 misure dopo bin2cell + RCTD); unita' indipendente: l'area",
+  "verso": "basso",
+  "pavimento": 7.77,
+  "tetto": 2.23,
+  "soglia": 3.23,
+  "affermazioni": [
+    {"id": "A1", "testo": "D <= soglia, tarato su P2 e misurato con P1 e P5 come riferimento", "figura": "Fig. 1", "principale": true},
+    {"id": "A2", "testo": "Nessuna voce oltre il tetto piu' largo per voce (3,6 h)", "figura": "Fig. 2", "serve": 0, "verso": "basso"},
+    {"id": "A3", "testo": "Batte lo Xenium in quadratini (ENACT) sui geni del pannello: D_xen(ENACT) - D_xen(sim)", "figura": "Fig. 3", "serve": 1.0, "verso": "alto"},
+    {"id": "A4", "testo": "Regge con una catena mai usata in taratura: D2 <= tetto della catena + 1 h (tetto da misurare in sonda)", "figura": "Fig. 4", "serve": null, "verso": "basso"}
+  ],
+  "fase": "scommessa",
+  "budget": {"scommessa": 2, "sonda": 3, "costruzione": null, "conferma": 2, "scrittura": null},
+  "budget_proposto": {"costruzione": 10, "motivo": "5 voci del bilancio x 2 colpi; le 4 voci sopra il 10 % portano D solo a 3,28"},
+  "cancelli": [],
+  "proroghe": [],
+  "check": {"smoke": "echo 'DA SCRIVERE nella sonda: comando smoke' && false", "full": "echo 'DA SCRIVERE nella sonda: comando full' && false"},
+  "file_misura": "results/misura.json",
+  "tetti_parole": {"docs/PAPER.md": 500, "docs/STATO.md": 800}
+}

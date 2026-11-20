@@ -1,3 +1,5 @@
+Carica la skill `progetto-master` (copia in `.claude/skills/progetto-master/SKILL.md`) prima di ogni lavoro; se manca, fermati.
+
 # Istruzioni per chi lavora sul codice di geo.spatialtrans
 
 Simulatore di dati Visium HD con un livello cellulare (territori di Voronoi, griglia a 2 µm, binning a 8 µm), costruito per mettere alla prova i
@@ -10,7 +12,7 @@ quadro del progetto per chi lo usa è in `README.md` (in inglese).
 - Step 2 (griglia di Visium HD, `R/05b*.R`): consolidato in S2.8 e unito in `dev` in S2.8b. Ingresso unico `simulate_visium_hd_pieces()`
   ([DEC-079](docs/decisions/DEC-079.md)); `simulate_visium_hd()` resta come motore di riferimento delle batterie di S2.5 e S2.6. Guida
   d'uso in inglese: `vignettes/visium_hd_simulation.qmd`; documento di progetto `docs/superpowers/specs/2026-11-03-step2-visium-grid-design.md` (v0.6).
-- Il prossimo step lo sceglie Luca: proposta e alternative in `docs/ROADMAP.md`, sezione 7.
+- Dal 2026-11-20 il progetto segue `progetto-master`: contratto in `docs/PAPER.md`, stato e prossima mossa in `docs/STATO.md`.
 - `main` è fermo al 2025 e non si tocca finché Luca non decide (S2.8b): si lavora su rami di step che avanzano `dev`.
 - Il codice del 2025 (`R/01*.R`-`R/03*.R`, `R/04_clustering.R`, `R/05_grid_sampling.R`, `R/06*.R`, `R/test functions/`) è la pipeline di
   espressione precedente: non è validata con il livello cellulare e non va estesa. `generate_synthetic_tissue()` e `cluster_image()` restano in uso per gli input
