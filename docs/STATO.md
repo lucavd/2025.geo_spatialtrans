@@ -7,7 +7,7 @@ generated: { by: geo-agent/skill-v2, at: 2026-11-20T19:00:00+01:00 }
 ---
 # Fase
 
-Scommessa. Sessione SC1 (2026-11-20): adozione di progetto-master, contratto in bozza in `docs/PAPER.md`, revisore simulato fatto. Attesa: firma del contratto (G0) e budget.
+Scommessa. Sessione SC1 (2026-11-20): adozione di progetto-master, contratto in bozza in `docs/PAPER.md`, revisore simulato fatto. Attesa: scelta del tessuto primario (SC2), poi firma (G0).
 
 # Metro
 
@@ -48,10 +48,14 @@ Raggiungibilita' (ricalcolata dallo stesso file): le 4 voci maggiori portate a 2
 
 # Prossima mossa
 
-Dopo la firma, sonda:
-1. `check smoke`/`full` che scrive `results/misura.json` con A1 e A2 dai bracci esistenti; `CLAUDE.md` sotto 100 righe; storici in `docs/archivio/`.
-2. Sostituzioni con i componenti veri (profili da cellule vere di P2, nuclei veri) e spegnimenti (cattura, spostamento): decide G1 con la regola scritta in `docs/PAPER.md`.
-3. Braccio ENACT sui geni del pannello (A3) e seconda catena (A4).
+Sessione SC2 (scommessa, ultima del budget): scelta del tessuto primario, polmone o colon. Luca (2026-11-20): una sola decisione presa soppesando pro e contro, non due contratti. Nessun codice; si scaricano solo metadati e file piccoli.
+
+1. Inventario del polmone dopo Xenium (10x): registrazione Xenium -> Visium HD fornita?, geni (Xenium v1, Prime 5K), dimensioni dei file, regioni disgiunte utilizzabili (sviluppo, tetto, dati tenuti da parte), qualita' del Visium HD.
+2. Colon di Long et al. 2025 (Zenodo 15722536): molecole o solo file Loupe?
+3. Tabella unica pro e contro, sui criteri scritti qui prima dell'inventario: verita' per cellula sulla stessa sezione; tetto (fra pazienti o solo fra aree della stessa sezione); geni; qualita' del dato; costo di rifare pavimento, tetto e taratura; dati tenuti da parte per la conferma; misura di utilita' possibile (classifica dei metodi contro la verita').
+4. Una raccomandazione, decisa con Luca; poi il contratto si aggiorna e si firma (G0).
+
+Dopo la firma, sonda: check che scrive `results/misura.json`; sostituzioni con i componenti veri (regola di G1 in `docs/PAPER.md`); braccio ENACT e seconda catena. Pulizie: `CLAUDE.md` sotto 100 righe, storici in `docs/archivio/`, controllo OKF su PAPER e STATO.
 
 # Aperti
 
