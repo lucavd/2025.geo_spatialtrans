@@ -55,5 +55,5 @@ Dopo la firma, sonda:
 
 # Aperti
 
-- SpatialSimBench: lettura completa in corso (sotto-agente in attesa dell'accesso alle figure dell'editore).
+- SpatialSimBench letto per intero (riga in `docs/ESISTENTE.md`).
 - `results/F3.2/sheets/` non tracciato (PNG del 18-19 novembre, di F3.2): lasciato com'e'.
