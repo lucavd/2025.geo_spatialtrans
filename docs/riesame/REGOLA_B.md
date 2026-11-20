@@ -3,7 +3,7 @@ type: Preregistration
 title: "Riesame, Parte B: regola di esito scritta prima del calcolo"
 description: "Bracci, misura, soglie di «uguale» e «diverso», cancello sul pannello Xenium e corrispondenza fra esiti e verdetto, scritti prima di ogni calcolo della Parte B."
 status: draft
-generated: { by: geo-agent/skill-v2, at: 2026-11-20T13:30:00+01:00 }
+generated: { by: geo-agent/skill-v2, at: 2026-11-20T12:23:17+01:00 }
 pi_approval: { by: human:luca-vedovelli, at: 2026-11-20, evidence: "in chat: «1. Sì: Parte B come scritta, con il braccio X1. 2. Sì: margine di equivalenza 1,0 h e onere della prova sui nostri componenti. Aggiungi un controllo positivo per la cattura (G-6)»" }
 sources:
   - id: dec098

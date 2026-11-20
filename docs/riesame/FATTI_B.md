@@ -3,7 +3,7 @@ type: Facts
 title: "Riesame, Parte B: i fatti sul generatore"
 description: "Numeri riletti da results/riesame (B_D_common.json, B_per_measure_common.csv, B_G4.csv, xen_match.csv); dati ai difensori senza la storia del progetto."
 status: draft
-generated: { by: geo-agent/skill-v2, at: 2026-11-20T17:30:00+01:00 }
+generated: { by: geo-agent/skill-v2, at: 2026-11-20T16:18:19+01:00 }
 sources:
   - id: regola
     resource: "/riesame/REGOLA_B.md"
