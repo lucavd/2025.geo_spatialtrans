@@ -20,3 +20,6 @@ Scritti prima del protocollo v2; restano come sono fino alla migrazione (step DO
 * [sessions](sessions/) - Note di sessione fino a R2c (protocollo v1).
 * [superpowers](superpowers/) - Design dello Step 1 (specifiche) e materiali collegati.
 * [legacy](legacy/) - README e CLAUDE.md del 2025 (pipeline di espressione precedente), conservati per provenienza (S1.6b).
+* [riesame](riesame/) - Riesame del progetto (2026-11-20): fatti riletti, criterio e tetto, candidati di articolo, verdetti per componente, regola di esito della Parte B.
+* [ESISTENTE.md](ESISTENTE.md) - Registro di cio che esiste gia (simulatori, benchmark, dati accoppiati), una riga per voce.
+* [RIESAME_geo_spatialtrans.md](RIESAME_geo_spatialtrans.md) - Consegna del riesame scritta dal PI il 2026-11-20, fuori dal repository, conservata per provenienza.
