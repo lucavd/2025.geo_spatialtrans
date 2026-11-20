@@ -22,3 +22,10 @@ tools/F3.3_md5.sh	F3.3	cancello G-2 (integrita')
 tools/F3.3_test.py	F3.3	cancello G-1 (batteria)
 tools/F3.3_figures.py	F3.3	figure del report di F3.3
 tools/F3.3_report_parts.py	F3.3	tabelle del report di F3.3
+tools/riesame_panel_restrict.py	riesame B	restringe ai geni del pannello o comuni le esportazioni delle aree (V, T, S, B; catena condivisa)
+tools/riesame_panel_run.sh	riesame B	catena del pannello: restrizione, bin2cell, RCTD, misure (V, T, S, B)
+tools/riesame_panel_measures.py	riesame B	etichette trasferite e misure M-1...M-7 sulle esecuzioni della catena del pannello
+tools/riesame_panel_jobs.py	riesame B	liste delle esecuzioni della catena (aree L2 di F3.3 del tumore e dello stroma)
+tools/riesame_panel_table.py	riesame B	tabella per area dei bracci V, T, S, B, cancello G-4, tempi
+tools/riesame_B_h.py	riesame B	margine h per insieme di geni dalle 5 aree di V (legge la tabella per area)
+tools/riesame_B_md5.sh	riesame B	md5 prima e dopo dei file letti dal braccio Catena
