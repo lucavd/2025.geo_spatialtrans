@@ -1,0 +1,30 @@
+R1 xenium tx 2465077 visium umi 334345
+R2 xenium tx 1268384 visium umi 204441
+R3 xenium tx 2773835 visium umi 218408
+region  n  med_dx  med_dy  rms_d    ok
+    R1 25  -0.178  -0.033  0.463  True
+    R2 24   0.246   0.182  0.534  True
+    R3 25   0.310  -0.208  0.511 False
+region     L  coarse_x_um  coarse_y_um  n_tiles  n_valid  n_edge  p95_global_um  p95_local_um  median_global_um  within1  within2  within5  loc_within2  pass_region
+    R1 200.0            0            8       25       25       0         10.129         0.597             9.745      0.0      0.0      0.0          1.0         True
+    R2 200.0            0            8       25       24       0          9.494         0.872             8.960      0.0      0.0      0.0          1.0         True
+    R3 200.0            8            8       25       25       0         11.414         0.733            11.003      0.0      0.0      0.0          1.0         True
+region  inj_x  inj_y  rec_x  rec_y  n   ok
+    R1    1.0    0.0  1.015  0.004 25 True
+    R1    0.0    2.5  0.005  2.491 25 True
+    R1    1.5   -1.5  1.506 -1.512 25 True
+    R2    1.0    0.0  0.992  0.012 24 True
+    R2    0.0    2.5  0.011  2.499 24 True
+    R2    1.5   -1.5  1.500 -1.496 24 True
+    R3    1.0    0.0  0.994 -0.002 25 True
+    R3    0.0    2.5 -0.008  2.485 25 True
+    R3    1.5   -1.5  1.500 -1.525 25 True
+region vs  n  frac_within2   ok
+    R1 R2 24          0.00 True
+    R2 R3 25          0.00 True
+    R3 R1 25          0.04 True
+{'tag': 'X1', 'meter': 'B4', 'L': 200.0, 'meter_ok': True, 'section_pass': True, 'reproduces_S1': False}
+
+real	0m23.809s
+user	0m33.527s
+sys	0m3.028s

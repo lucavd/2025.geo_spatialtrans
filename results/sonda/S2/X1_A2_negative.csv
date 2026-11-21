@@ -1,0 +1,4 @@
+region,vs,n,frac_within2,ok
+R1,R2,24,0.0,True
+R2,R3,25,0.0,True
+R3,R1,25,0.0,True

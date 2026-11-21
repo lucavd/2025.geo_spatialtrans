@@ -1,0 +1,45 @@
+{
+ "admission": {
+  "A2": {
+   "synth": true,
+   "x1_controls": true,
+   "x1_reproduces": true,
+   "x1_same_verdict": true
+  },
+  "A4": {
+   "synth": true,
+   "x1_controls": true,
+   "x1_reproduces": false,
+   "x1_same_verdict": false
+  },
+  "B2": {
+   "synth": true,
+   "x1_controls": true,
+   "x1_reproduces": true,
+   "x1_same_verdict": true
+  },
+  "B4": {
+   "synth": true,
+   "x1_controls": true,
+   "x1_reproduces": false,
+   "x1_same_verdict": true
+  }
+ },
+ "admitted": [
+  "A2",
+  "B2"
+ ],
+ "ranking": [
+  {
+   "meter": "A2",
+   "L_star": null,
+   "max_se": NaN
+  },
+  {
+   "meter": "B2",
+   "L_star": null,
+   "max_se": NaN
+  }
+ ],
+ "choice": null
+}

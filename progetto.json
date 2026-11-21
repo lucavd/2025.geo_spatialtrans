@@ -1,76 +1,77 @@
 {
-  "messaggio": "Un simulatore di Visium HD con verita' per cellula riproduce un tumore polmonare quanto una seconda sezione e ordina i metodi come la verita'.",
-  "misura": "D, distanza da H2 in unita' h sulle 12 voci (tumore e stroma x 6 misure dopo bin2cell + RCTD), polmone 10x; unita' indipendente: l'area",
-  "verso": "basso",
-  "pavimento": null,
-  "tetto": null,
-  "soglia": null,
-  "affermazioni": [
-    {
-      "id": "A1",
-      "testo": "D <= soglia, tarato su H2, H1 come riferimento",
-      "figura": "Fig. 1",
-      "principale": true
-    },
-    {
-      "id": "A2",
-      "testo": "Nessuna voce oltre il tetto piu' largo per voce",
-      "figura": "Fig. 2",
-      "serve": 0,
-      "verso": "basso"
-    },
-    {
-      "id": "A3",
-      "testo": "Batte lo Xenium in quadratini sulla stessa sezione (X1, X2), geni del pannello: D_xen - D_sim",
-      "figura": "Fig. 3",
-      "serve": 1.0,
-      "verso": "alto"
-    },
-    {
-      "id": "A4",
-      "testo": "Regge con una catena mai usata in taratura: D2 <= tetto della catena + 1 h (tetto da misurare in sonda)",
-      "figura": "Fig. 4",
-      "serve": null,
-      "verso": "basso"
-    },
-    {
-      "id": "A5",
-      "testo": "Classifica dei metodi sul simulato concorde con quella contro lo Xenium: >= concordanza X1 contro X2 meno un margine fissato prima",
-      "figura": "Fig. 5",
-      "serve": null,
-      "verso": "alto"
-    }
-  ],
-  "fase": "sonda",
-  "budget": {
-    "scommessa": 2,
-    "sonda": 5,
-    "costruzione": null,
-    "conferma": 2,
-    "scrittura": null
+ "messaggio": "Un simulatore di Visium HD con verita' per cellula riproduce un tumore polmonare quanto una seconda sezione e ordina i metodi come la verita'.",
+ "misura": "D, distanza da H2 in unita' h sulle 12 voci (tumore e stroma x 6 misure dopo bin2cell + RCTD), polmone 10x; unita' indipendente: l'area",
+ "verso": "basso",
+ "pavimento": null,
+ "tetto": null,
+ "soglia": null,
+ "affermazioni": [
+  {
+   "id": "A1",
+   "testo": "D <= soglia, tarato su H2, H1 come riferimento",
+   "figura": "Fig. 1",
+   "principale": true
   },
-  "budget_proposto": {
-    "costruzione": 10,
-    "motivo": "5 voci del bilancio x 2 colpi; numero da confermare a G1 sul bilancio del polmone"
+  {
+   "id": "A2",
+   "testo": "Nessuna voce oltre il tetto piu' largo per voce",
+   "figura": "Fig. 2",
+   "serve": 0,
+   "verso": "basso"
   },
-  "cancelli": [
-    {
-      "data": "2026-11-20",
-      "da": "scommessa",
-      "a": "sonda",
-      "budget": 5,
-      "consenso": "Luca 2026-11-20, G0: Firmo: sonda 5 sessioni, contratto com'e'",
-      "righe": 2
-    }
-  ],
-  "proroghe": [],
-  "check": {
-    "smoke": "echo 'DA SCRIVERE nella sonda: comando smoke' && false",
-    "full": "echo 'DA SCRIVERE nella sonda: comando full' && false"
+  {
+   "id": "A3",
+   "testo": "Batte lo Xenium in quadratini sulla stessa sezione (X1, X2), geni del pannello: D_xen - D_sim",
+   "figura": "Fig. 3",
+   "serve": 1.0,
+   "verso": "alto"
   },
-  "file_misura": "results/misura.json",
-  "tetti_parole": {
-    "docs/PAPER.md": 500,
-    "docs/STATO.md": 800
+  {
+   "id": "A4",
+   "testo": "Regge con una catena mai usata in taratura: D2 <= tetto della catena + 1 h (tetto da misurare in sonda)",
+   "figura": "Fig. 4",
+   "serve": null,
+   "verso": "basso"
+  },
+  {
+   "id": "A5",
+   "testo": "Classifica dei metodi sul simulato concorde con quella contro lo Xenium: >= concordanza X1 contro X2 meno un margine fissato prima",
+   "figura": "Fig. 5",
+   "serve": null,
+   "verso": "alto"
   }
+ ],
+ "fase": "sonda",
+ "budget": {
+  "scommessa": 2,
+  "sonda": 5,
+  "costruzione": null,
+  "conferma": 2,
+  "scrittura": null
+ },
+ "budget_proposto": {
+  "costruzione": 10,
+  "motivo": "5 voci del bilancio x 2 colpi; numero da confermare a G1 sul bilancio del polmone"
+ },
+ "cancelli": [
+  {
+   "data": "2026-11-20",
+   "da": "scommessa",
+   "a": "sonda",
+   "budget": 5,
+   "consenso": "Luca 2026-11-20, G0: Firmo: sonda 5 sessioni, contratto com'e'",
+   "righe": 2
+  }
+ ],
+ "proroghe": [],
+ "check": {
+  "smoke": "OMP_NUM_THREADS=1 .venv/bin/python tools/sonda/S1_test_cc.py > results/check_smoke_S1test.log 2>&1; cat results/check_smoke_S1test.log; grep -q 'RESULT PASS' results/check_smoke_S1test.log",
+  "full": "echo 'DA SCRIVERE nella sonda: comando full' && false",
+  "smoke_nota": "parziale (S2, 2026-11-21): solo il test sintetico del metro della registrazione in uso (S1); catena e metro D si aggiungono quando esistono"
+ },
+ "file_misura": "results/misura.json",
+ "tetti_parole": {
+  "docs/PAPER.md": 500,
+  "docs/STATO.md": 800
+ }
 }
