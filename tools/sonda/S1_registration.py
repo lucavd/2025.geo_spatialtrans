@@ -238,10 +238,11 @@ def load_region_data(tag, T, s, margin_um=240.0):
         fid = [x.decode() for x in g["features/id"][:]]
         bcs = [x.decode() for x in g["barcodes"][:]]
         indptr = g["indptr"][:]
+        all_ind = g["indices"][:]; all_dat = g["data"][:]
         shared = sorted(set(sym2ens.values()) & set(fid))
         gi = {e: i for i, e in enumerate(shared)}
         frow = np.array([gi.get(e, -1) for e in fid])
-        bcpos = tp2.set_index("barcode").loc[bcs, ["array_col", "array_row"]].values
+        bcpos = tp2.set_index("barcode").loc[bcs, ["array_col", "array_row"]].values.astype(np.int64)
         regs = {}
         Tinv = np.linalg.inv(T)
         for R in s["regions"]:
@@ -249,15 +250,15 @@ def load_region_data(tag, T, s, margin_um=240.0):
             c0 = int(round((R["x0"] - margin_um) / 2)); c1 = int(round((R["x0"] + side + margin_um) / 2))
             r0 = int(round((R["y0"] - margin_um) / 2)); r1 = int(round((R["y0"] + side + margin_um) / 2))
             sel = np.nonzero((bcpos[:, 0] >= c0) & (bcpos[:, 0] < c1) & (bcpos[:, 1] >= r0) & (bcpos[:, 1] < r1))[0]
-            rows, cols, vals = [], [], []
-            for b in sel:
-                lo, hi = indptr[b], indptr[b + 1]
-                if hi == lo: continue
-                ii = g["indices"][lo:hi]; dd = g["data"][lo:hi]
-                fr = frow[ii]; k = fr >= 0
-                rows.append(fr[k]); vals.append(dd[k]); cols.append(np.full(k.sum(), b))
-            if rows:
-                rows = np.concatenate(rows); vals = np.concatenate(vals); cols = np.concatenate(cols)
+            lens = (indptr[sel + 1] - indptr[sel]).astype(np.int64)
+            if lens.sum():
+                starts = np.repeat(indptr[sel].astype(np.int64), lens)
+                within = np.arange(lens.sum()) - np.repeat(np.cumsum(lens) - lens, lens)
+                pos = starts + within
+                fr = frow[all_ind[pos]]; cols = np.repeat(sel, lens); vals = all_dat[pos]
+                k = fr >= 0; rows = fr[k]; cols = cols[k]; vals = vals[k]
+            else:
+                rows = cols = vals = np.array([], int)
             V = pd.DataFrame(dict(g=rows, c=bcpos[cols, 0] - c0, r=bcpos[cols, 1] - r0, n=vals))
             corners = np.array([[c0, r0], [c1, r0], [c0, r1], [c1, r1]], float)
             xb = apply_h(Tinv, corners)
