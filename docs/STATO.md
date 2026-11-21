@@ -61,3 +61,4 @@ Decisione di Luca attesa: misurare X2 con un metro più preciso (una sessione, r
 - Aggregazione dei quadratini da 8 µm sfasata di circa 2 µm rispetto a floor(i/4) dei 2 µm: da capire prima di usare i due livelli insieme.
 - Revisione indipendente dei numeri di S1 non fatta (prevista prima di G1).
 - Riserva per un tetto fra pazienti: Vannan 2025 TMA5.
+- S1 non registrata in results/misure.tsv: progetto.py chiudi rifiuta senza check (check smoke da scrivere in S2); registrarla appena il check esiste.
