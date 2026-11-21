@@ -63,3 +63,18 @@ Se il 95° percentile globale supera 2 µm in una regione: affine a 6 parametri 
 
 [^paper]: docs/PAPER.md
 [^xd4]: docs/riesame/DECISIONI_B_XENIUM.md, XD-4
+
+# Errore di pre-registrazione (2026-11-21, prima di misurare il residuo)
+
+La regola della variante (Catena, punto 1) si è fermata: la variante migliore, matrice inversa con pixel Xenium da 0,2125 µm, porta su quadratini in tissue il 62,2% delle cellule Xenium in X1 e il 59,0% in X2 (soglia 0,8); distacco dalla seconda 0,36 e 0,39 (soglia 0,2). Causa: lo Xenium copre più tessuto dell'area di cattura del Visium HD; il denominatore contava anche le cellule fuori dalla griglia.
+
+| variante | dentro la griglia X1 / X2 | su tessuto fra quelle dentro | tessuto Visium con una cellula Xenium vicina |
+|---|---|---|---|
+| inversa, px 0,2125 | 0,622 / 0,590 | 1,000 / 0,999 | 0,871 / 0,874 |
+| diretta, µm | 0,429 / 0,228 | 0,601 / 0,884 | 0,094 / 0,082 |
+| diretta, px 0,2125 | 0,178 / 0,094 | 0,609 / 0,456 | 0,340 / 0,139 |
+| inversa, µm | 0,376 / 0,000 | 0,004 / - | 0,000 / 0,000 |
+
+Decisione di Luca, in chat il 2026-11-21: «Proseguire con la variante scelta». Si usa la variante che la regola mette prima; il resto della regola resta com'è scritto. Nessun residuo era stato calcolato al momento della decisione.
+
+Altri fatti della preparazione: le due immagini H&E sono la stessa immagine (stesse dimensioni, spostamento nullo nei 9 ritagli) in X1 e X2; la proiettiva quadratini -> pixel riproduce Space Ranger entro 2e-11 pixel; il centro di un quadratino da 8 µm dista circa 7,4 pixel (2 µm) dalla media dei suoi 2 µm presunti (aggregazione non allineata a floor(i/4)): irrilevante per la divisione in metà (striscia di 100 µm) e per la copertura.
