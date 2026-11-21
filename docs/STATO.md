@@ -52,7 +52,7 @@ Polmone: non ancora. Riferimento dal colon (`results/riesame/B_per_measure_commo
 
 # Prossima mossa
 
-Decisione di Luca attesa: misurare X2 con un metro più preciso (una sessione, regola scritta prima: pesi dei geni per conteggi invece della standardizzazione per gene, oppure gruppi di geni) oppure proseguire solo con X1 riscrivendo prima il tetto di A5. Poi metro e check smoke sul polmone, con la correzione della registrazione di X1 (affine stimata sulla metà di sviluppo).
+S2, sonda 2 di 5 (Luca, 2026-11-21: «proviamo x2 con altro metodo più preciso»): cancello della registrazione su X2 con un metro più preciso. Prima di guardare: scrivere e committare la regola (pesi dei geni per conteggi invece della standardizzazione per gene, oppure gruppi di geni; stessa soglia di precisione 0,5 µm e stessi controlli), provarla sul caso sintetico e su X1 (deve ridare il risultato di S1 entro l'incertezza), poi giudicare X2. Esito: passa, si prosegue con X1 e X2; non passa o non giudicabile, si prosegue con X1 e il tetto di A5 si riscrive prima di misurarlo. Poi metro e check smoke sul polmone, con la correzione della registrazione (affine stimata sulla metà di sviluppo).
 
 # Aperti
 

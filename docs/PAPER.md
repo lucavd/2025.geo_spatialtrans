@@ -61,3 +61,4 @@ Scommessa 2 (SC1, SC2); sonda 5 (registrazione, check, pavimento e tetto, compon
 # Decisioni del PI
 
 - 2026-11-20 (SC2): polmone 10x dopo Xenium, cancello sulla registrazione, riserva il colon; G0 firmato, sonda 5.
+- 2026-11-21 (S1): X2 si misura con un metro più preciso, una sessione, regola scritta prima («proviamo x2 con altro metodo più preciso»).
