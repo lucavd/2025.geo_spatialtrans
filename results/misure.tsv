@@ -1,3 +1,5 @@
 data	sessione	fase	affermazione	ipotesi	atteso	valore	se	esito	nota
 2026-11-20	SC1	scommessa		adozione progetto-master: contratto scritto dall'obiettivo, ricerca dell'esistente completata (ENACT intero), revisore simulato				contratto	SpatialSimBench intero in corso; okf check rosso su PAPER.md e STATO.md (fuori dal bundle)
 2026-11-20	SC2	scommessa		scelta del tessuto primario: polmone 10x dopo Xenium (verita' per cellula sulla stessa sezione) contro colon; regola scritta prima dell'inventario				contratto	Luca sceglie il polmone con cancello sulla registrazione, riserva il colon; contratto del colon in docs/archivio
+2026-11-21	S1	sonda		cancello della registrazione Xenium -> quadratini da 2 um (polmone)				infra	X1 passa con affine locale (p95 0,84/0,68/0,39 um); X2 non giudicabile (errore standard 1,1-3,4 um). Registrata in S2, quando il check e' esistito
+2026-11-21	S2	sonda		X2 con un metro che pesa i geni per i conteggi (correlazione e Poisson, sigma 2 e 4 um)				infra	X2 ancora non giudicabile: nessun metro a errore standard <= 0,5 um; il filtro per gene ereditato da S1 tiene 0-34% delle UMI di X2 (67-90% in X1). Primo colpo dell'ipotesi
