@@ -1,7 +1,7 @@
 ---
 type: Contract
 title: "Contratto dell'articolo geo_spatialtrans"
-description: "Contratto sul polmone 10x, scelto in SC2."
+description: "Contratto sul polmone 10x."
 status: signed
 generated: { by: geo-agent/progetto-master, at: 2026-11-20T21:00:00+01:00 }
 ---
@@ -17,7 +17,7 @@ Polmone 10x (CG000709), un blocco FFPE, sezioni seriali: H1, H2 solo Visium HD; 
 
 # Misura principale
 
-D (h), meglio verso il basso; metro di `docs/riesame/FATTI_B.md`: 12 voci, tumore e stroma × 6 misure dopo bin2cell + RCTD (HLCA). Unità: l'area (5); bootstrap B = 2000. Taratura su H2. Pavimento (banale) e tetto (H1 contro H2) da misurare. Soglia = tetto + δ, δ = 1,0 h (`docs/riesame/REGOLA_B.md`); sensibilità con δ = 0,5 e 2.
+D (h), meglio verso il basso; metro di `docs/riesame/FATTI_B.md`: 12 voci, tumore e stroma × 6 misure dopo bin2cell + RCTD (HLCA). Unità: l'area (5); bootstrap B = 2000. Pavimento (banale) e tetto (H1 contro H2) da misurare. Soglia = tetto + δ, δ = 1,0 h (`docs/riesame/REGOLA_B.md`); sensibilità con δ = 0,5 e 2.
 
 # Affermazioni
 
@@ -56,9 +56,9 @@ Una metà spaziale di ogni sezione, scelta con una regola scritta prima di legge
 
 # Budget proposto
 
-Scommessa 2 (SC1, SC2); sonda 5 (registrazione, check, pavimento e tetto, componenti veri, A3 e A5); costruzione 10 (5 voci × 2 colpi, confermato a G1); conferma 2; scrittura firmata a G3. Dati circa 25 GB.
+Scommessa 2; sonda 5 (registrazione, check, pavimento e tetto, componenti veri, A3 e A5); costruzione 10 (5 voci × 2 colpi, confermato a G1); conferma 2; scrittura firmata a G3.
 
 # Decisioni del PI
 
 - 2026-11-20 (SC2): polmone 10x dopo Xenium, cancello sulla registrazione, riserva il colon; G0 firmato, sonda 5.
-- 2026-11-21 (S1): X2 si misura con un metro più preciso, una sessione, regola scritta prima («proviamo x2 con altro metodo più preciso»).
+- 2026-11-21 (S1): X2 con un metro più preciso, una sessione, regola scritta prima.
