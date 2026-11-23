@@ -1,0 +1,28 @@
+{
+ "section": "H1",
+ "m_um": 2604.0,
+ "xmax_expression_read_um": 2548.0,
+ "n_bins_read": 219395,
+ "n_ranges": 111794,
+ "genes_E": [
+  "EPCAM",
+  "KRT8",
+  "KRT19",
+  "KRT7",
+  "CDH1"
+ ],
+ "genes_S": [
+  "COL1A1",
+  "COL1A2",
+  "COL3A1",
+  "DCN",
+  "LUM",
+  "COL6A3"
+ ],
+ "missing_E": [
+  "KRT18"
+ ],
+ "missing_S": [],
+ "n_genes": 18085,
+ "names_unique": false
+}

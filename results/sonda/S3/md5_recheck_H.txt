@@ -1,0 +1,10 @@
+H1/visium/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment1_metrics_summary.csv: OK
+H1/visium/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment1_spatial.tar.gz: OK
+H1/visium/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment1_binned_outputs.tar.gz: OK
+H1/visium/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment1_tissue_image.btf: OK
+H2/visium/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_metrics_summary.csv: OK
+H2/visium/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_spatial.tar.gz: OK
+H2/visium/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_binned_outputs.tar.gz: OK
+H2/visium/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_tissue_image.btf: OK
+HLCA_core_066943a2.h5ad: OK
+Mon 23 Nov 15:20:35 CET 2026

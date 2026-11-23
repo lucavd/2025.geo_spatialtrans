@@ -1,0 +1,168 @@
+{
+ "tumour": {
+  "tissue": "tumour",
+  "lambda_um2": 0.0031923279888985165,
+  "lambda_mm2": 3192.3279888985167,
+  "n_nuc_mean": 9.727678571428571,
+  "r_um": 3.519327355563235,
+  "rho_per_bin": 17.279687021557987,
+  "types": [
+   "Airway epithelium",
+   "Alveolar epithelium",
+   "Blood vessels",
+   "Fibroblast lineage",
+   "Hematopoietic stem cells",
+   "Lymphatic EC",
+   "Lymphoid",
+   "Mesothelium",
+   "Myeloid",
+   "Smooth muscle"
+  ],
+  "composition": {
+   "Airway epithelium": 0.4160602578833142,
+   "Alveolar epithelium": 0.06715179369334866,
+   "Blood vessels": 0.062428188433550365,
+   "Fibroblast lineage": 0.12779267202859695,
+   "Hematopoietic stem cells": 0.003063960168517809,
+   "Lymphatic EC": 0.005744925315970892,
+   "Lymphoid": 0.1322609472743521,
+   "Mesothelium": 0.004340610238733563,
+   "Myeloid": 0.14796374313800587,
+   "Smooth muscle": 0.0331929018256096
+  },
+  "n_cells": 7840,
+  "n_typed": 7833,
+  "n_reg": 613972,
+  "per_area": [
+   {
+    "unit": "H2_tumour_1",
+    "cells": 1349,
+    "n_reg": 123201,
+    "lambda_mm2": 2737.396612040487,
+    "n_nuc_mean": 9.896219421793921,
+    "rho": 14.988279315914644,
+    "typed": 1345
+   },
+   {
+    "unit": "H2_tumour_2",
+    "cells": 1804,
+    "n_reg": 123201,
+    "lambda_mm2": 3660.684572365484,
+    "n_nuc_mean": 10.927383592017739,
+    "rho": 23.857225184860514,
+    "typed": 1804
+   },
+   {
+    "unit": "H2_tumour_3",
+    "cells": 1732,
+    "n_reg": 121168,
+    "lambda_mm2": 3573.5507724811832,
+    "n_nuc_mean": 9.068129330254042,
+    "rho": 20.1848342796778,
+    "typed": 1731
+   },
+   {
+    "unit": "H2_tumour_4",
+    "cells": 1268,
+    "n_reg": 123201,
+    "lambda_mm2": 2573.031063059553,
+    "n_nuc_mean": 8.072555205047319,
+    "rho": 7.97146127060657,
+    "typed": 1267
+   },
+   {
+    "unit": "H2_tumour_5",
+    "cells": 1687,
+    "n_reg": 123201,
+    "lambda_mm2": 3423.2676682819133,
+    "n_nuc_mean": 10.231179608772969,
+    "rho": 19.44457431352018,
+    "typed": 1686
+   }
+  ]
+ },
+ "stroma": {
+  "tissue": "stroma",
+  "lambda_um2": 0.003698614573488199,
+  "lambda_mm2": 3698.614573488199,
+  "n_nuc_mean": 6.450862548692265,
+  "r_um": 2.865919275668115,
+  "rho_per_bin": 10.802078633739598,
+  "types": [
+   "Airway epithelium",
+   "Alveolar epithelium",
+   "Blood vessels",
+   "Fibroblast lineage",
+   "Hematopoietic stem cells",
+   "Lymphatic EC",
+   "Lymphoid",
+   "Mesothelium",
+   "Myeloid",
+   "Smooth muscle",
+   "Submucosal Gland"
+  ],
+  "composition": {
+   "Airway epithelium": 0.12879381789674096,
+   "Alveolar epithelium": 0.029230596931347295,
+   "Blood vessels": 0.07234852727069101,
+   "Fibroblast lineage": 0.20898196886549444,
+   "Hematopoietic stem cells": 0.0016799193638705342,
+   "Lymphatic EC": 0.012319408668383918,
+   "Lymphoid": 0.39489304513383355,
+   "Mesothelium": 0.0020159032366446413,
+   "Myeloid": 0.032030462537798184,
+   "Smooth muscle": 0.11692238772538918,
+   "Submucosal Gland": 0.0007839623698062493
+  },
+  "n_cells": 8985,
+  "n_typed": 8929,
+  "n_reg": 607322,
+  "per_area": [
+   {
+    "unit": "H2_stroma_1",
+    "cells": 1377,
+    "n_reg": 114518,
+    "lambda_mm2": 3006.0776471821023,
+    "n_nuc_mean": 5.738562091503268,
+    "rho": 6.327922248030878,
+    "typed": 1342
+   },
+   {
+    "unit": "H2_stroma_2",
+    "cells": 1161,
+    "n_reg": 123201,
+    "lambda_mm2": 2355.906202060048,
+    "n_nuc_mean": 5.357450473729544,
+    "rho": 4.616658955690295,
+    "typed": 1144
+   },
+   {
+    "unit": "H2_stroma_3",
+    "cells": 2194,
+    "n_reg": 123201,
+    "lambda_mm2": 4452.074252644054,
+    "n_nuc_mean": 5.511850501367365,
+    "rho": 12.198456181362165,
+    "typed": 2194
+   },
+   {
+    "unit": "H2_stroma_4",
+    "cells": 1537,
+    "n_reg": 123201,
+    "lambda_mm2": 3118.8870220209255,
+    "n_nuc_mean": 6.321405335068315,
+    "rho": 5.554297448884343,
+    "typed": 1534
+   },
+   {
+    "unit": "H2_stroma_5",
+    "cells": 2716,
+    "n_reg": 123201,
+    "lambda_mm2": 5511.318901632291,
+    "n_nuc_mean": 8.11119293078056,
+    "rho": 24.997727291174584,
+    "typed": 2715
+   }
+  ]
+ }
+}

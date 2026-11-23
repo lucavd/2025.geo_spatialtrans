@@ -3,65 +3,61 @@ type: State
 title: "Stato di geo_spatialtrans"
 description: "Memoria fra le sessioni: fase, dati, numeri, bilancio dell'errore, minacce, strade fallite, prossima mossa."
 status: draft
-generated: { by: geo-agent/progetto-master, at: 2026-11-21T12:30:00+01:00 }
+generated: { by: geo-agent/progetto-master, at: 2026-11-23T16:00:00+01:00 }
 ---
 # Fase
 
-Sonda, budget 5, firmata a G0 il 2026-11-20. Nel registro S1 e S2, entrambe `infra`. Prossima: sessione 3 di 5. Allarme aperto: più di una sessione su tre senza misura. Riserva: colon (`docs/archivio/PAPER_colon_SC1.md`).
+Sonda, budget 5, firmata a G0 il 2026-11-20. Nel registro S1 e S2 (`infra`). S3 aperta nella stessa chat di S2, in deroga (Luca, 2026-11-21: «ok a sessione 3 consigliata in deroga»). S3 non chiusa: `check smoke` rosso per il controllo positivo C-4 (sotto), quindi `chiudi` rifiuta anche `--infra`. Allarme «più di una sessione su tre senza misura» aperto (con S1 e S2 `infra` resterebbe acceso anche dopo una sessione con misura).
 
 # Dati (polmone 10x, CG000709, 1 blocco FFPE, 1 donatore)
 
-- H1, H2 solo Visium HD (non ancora scaricati). X1 = Visium HD dopo Xenium v1 (286 geni in comune con le sonde); X2 = dopo Xenium 5K (4892 in comune).
-- X1, X2 in `/mnt/micron/geo_spatialtrans/data_lung/` (md5 in `MD5_download.txt`); quadratini da 2 e 8 µm in `*/visium/binned/`.
-- MALAT1 e NEAT1 non sono nel pannello di sonde Visium HD.
+- H1 (`..._HD_Only_Experiment1`, T) e H2 (`..._Experiment2`, V) in `/mnt/micron/geo_spatialtrans/data_lung/H1`, `/H2`: 8 file, dimensioni uguali al CDN, md5 in `results/sonda/S3/MD5_download_H.txt`, ricontrollo in `md5_recheck_H.txt`. HLCA core in `/mnt/micron/geo_spatialtrans/ref_lung/` (md5 `MD5_HLCA.txt`).
+- MALAT1, NEAT1 e KRT18 non sono nel pannello di sonde.
 
-# Registrazione
+# S3: metro D e catena banale (`docs/sonda/REGOLA_S3.md`, commit 31b773c, prima di ogni lettura di espressione)
 
-- S1 (`docs/sonda/REGOLA_S1.md`): catena pubblicata spostata di circa 10 µm; X1 passa con affine locale (p95 0,84 / 0,68 / 0,39 µm, controlli 9/9 e 0-4 %). X2 non giudicabile (errore standard 1,1-3,4 µm).
-- S2 (`docs/sonda/REGOLA_S2.md`, `tools/sonda/S2_registration.py`, `results/sonda/S2/`): metri che pesano i geni per i conteggi, A (correlazione) e B (Poisson), σ 2 e 4 µm. Sintetico: tutti passano; sintetico tipo X2 a 100 µm, errore 1,37 µm (S1) contro 0,22-0,56. X1: controlli 9/9 per tutti; ridanno S1 entro 0,3 µm A2 e B2 (ammessi); A4 e B4 no (0,31-0,33 µm in x, R3), A4 cambia l'esito di R2. B2 su X1: p95 locale 0,54 / 0,85 / 0,56 µm. Il percorso S1 dentro S2 ridà S1 esattamente.
-- X2, errore standard a 250 µm: A2 1,09 / 0,89 / 0,53; B2 1,19 / 1,21 / 0,43 (S1: 1,88 / 3,44 / 1,14). Nessun L* (anche: R2 ha 8 riquadri usati su 16-25). Esito: X2 non giudicabile, primo colpo dell'ipotesi «metro pesato».
-- Diagnosi (`S2_diag_counts.py`, solo conteggi): il filtro per gene ereditato (≥ 10 conteggi in entrambe le mappe) tiene in X2 il 0-4 % delle UMI a 100 µm e il 6-34 % a 200-250 µm (X1: 42-90 %). Senza filtro, X2 avrebbe 25/25 e 16/16 riquadri validi a 200 e 250 µm, 60-98/100 a 100 µm. Il metro pesato non ha avuto una prova piena.
+- Codice in `tools/sonda/S3_*`; uscite in `/mnt/micron/geo_spatialtrans/S3_sonda/` (una cartella per unità); tabelle in `results/sonda/S3/`.
+- Aree: rilassamento 2 (lato 750 µm, copertura ≥ 0,9) in H1 e H2; in H2 le aree di tumore sono poco epiteliali (r da 0,59 a −0,02, tumour 5 segnalata), in H1 nettamente (r da 1,09 a 2,54): le due metà di sviluppo coprono tessuto diverso.
+- Riferimento: HLCA core `ann_level_2`, 11 tipi, 27 066 cellule, 17 015 geni (`S3_sonda/ref/ref_L.json`).
+- B tarato su H2: densità e profondità realizzate sui bersagli; nucleo realizzato più piccolo (9,1 contro 9,73 quadratini nel tumore, 6,1 contro 6,45 nello stroma).
+- Corsa: 50 unità, 20 processi, 1 h 55 min; Tctl massimo 83,6 °C.
 
-# Metro
+# Numeri (h, `results/sonda/S3/D.json`), provvisori
 
-D = radice con segno della media su 12 voci (tumore, stroma x M-1...M-6) di (Delta^2 - Var Delta)/h^2; `tools/riesame_D.py`; controlli in `docs/riesame/FATTI_B.md`. Aree di tumore e stroma del polmone da definire con una regola scritta prima.
+Tumore + stroma: D(T) = 0,521 (0,052; 1,055); D(B) = 1,573 (1,212; 1,955), se 0,187; D(P) = 1,874. B − T = 1,052, w 0,526: indeterminato. Soglia che ne verrebbe: 1,521. Attese scritte: tetto circa 2, pavimento circa 7-8: sbagliate di un fattore 4-5.
+
+Controlli: C-1 passa (−0,056; 0,998; 2,012); C-2 passa (scarto 0,0 sul colon); C-3 riferimento registrato (`smoke_ref.json`); C-5 passa (B0 − B1 = −0,069, w 0,116, uguale); C-4 NON passa (P − T = 1,353, w 1,004, indeterminato). Per la regola i numeri sono provvisori: pavimento, tetto e soglia non sono in `progetto.json`; A1 sta in `results/sonda/S3/misura_provvisoria.json`, non in `results/misura.json`.
+
+Diagnosi (non decide nulla, `/tmp`): con h senza i κ del colon (κ = 1) C-4 passerebbe (P − T = 3,04, w 1,77) e B − T sarebbe diverso (2,29, w 0,87; D(T) 0,85, D(B) 3,14). Il fallimento viene dalla scelta scritta di usare i κ del colon (tumore 1,66, stroma 3,19), che allarga h; con quella scelta w(P, T) ≥ δ, quindi «diverso» è quasi impossibile per costruzione.
 
 # Check
 
-`check smoke` parziale: solo il test sintetico del metro della registrazione in uso (S1, `tools/sonda/S1_test_cc.py`). Catena e metro D da aggiungere. `check full` da scrivere.
+`check smoke` = `tools/sonda/S3_smoke.sh` (circa 5 minuti): S1_test_cc, catena ridotta da capo a fondo (250 µm di H2 tumour 1 e un B), C-3, metro con C-1, C-2, C-4, C-5. Rosso per C-4. `check full` da scrivere.
 
-# Numeri (h)
+# Bilancio dell'errore (provvisorio, `results/sonda/S3/per_measure.csv`, termine di B meno termine di T in h²)
 
-Polmone: pavimento, tetto, soglia non misurati. Colon (riserva): pavimento 7,77; tetto 2,23; simulatore ereditato 7,83.
+Tumore singoletti RCTD 62 %; tumore UMI assegnati 20 %; tumore vicini dello stesso tipo 12 %; stroma singoletti 10 %; il resto sotto il 5 %. Tumore marcatori estranei e concordanza col nucleo: T più lontano di B.
 
-# Bilancio dell'errore
+# Minacce alla validità
 
-Polmone: non ancora. Riferimento dal colon (`results/riesame/B_per_measure_common.csv`): tumore, concordanza con il nucleo 43 %; tumore, vicini dello stesso tipo 18 %; singoletti RCTD stroma 15 % e tumore 15 %; marcatori estranei 9 %.
-
-# Minacce alla validita'
-
-1. X2 senza registrazione misurata: A5 (tetto = concordanza X1 contro X2) e la parte X2 di A3 dipendono da X2.
-2. La catena pubblicata sbaglia di circa 10 µm: la verità Xenium va corretta con un'affine stimata anche dall'espressione Visium HD (lieve circolarità per A3).
-3. Un donatore: tetto fra sezioni seriali.
-4. Verita' solo su sezioni meno sensibili.
-5. Circolarita' del metro (bin2cell + RCTD, A4).
+1. Metro senza controllo positivo superato: h dipende da κ trasferiti dal colon.
+2. Aree di tumore non omologhe fra H1 e H2 (metà di sviluppo su tessuto diverso).
+3. HLCA è tessuto sano: le cellule tumorali non hanno un tipo.
+4. Registrazione H&E -> quadratini di Space Ranger non misurata su H1 e H2; il metro non vede uno spostamento dei nuclei (le etichette trasferite vengono dagli stessi quadratini).
+5. Un donatore: tetto fra sezioni seriali.
 
 # Strade fallite
 
-- Generatore dello strato cellulare (colon): 7,83 contro 7,77 del banale (`docs/riesame/CHIUSURA_GENERATORE.md`).
-- Taratura dello spostamento (colon): marcatori estranei del tumore 8,1 con, 3,3 senza.
-- Cattura contro Xenium in quadratini sul colon: indecidibile (XD-26).
-- Residuo della registrazione con MALAT1/NEAT1: geni assenti dal pannello.
+- Generatore dello strato cellulare (colon): 7,83 contro 7,77 del banale.
 
 # Prossima mossa
 
-Proposta a Luca (2026-11-21), in attesa: sessione 3 = metro D e check smoke sul polmone con X1 (aree di tumore e stroma con regola scritta prima, affine di X1 stimata sulla metà di sviluppo), per avere una misura e chiudere l'allarme. La seconda e ultima prova su X2 (metri A2 e B2 senza filtro per gene, validità sui conteggi totali, stessa soglia 0,5 µm, regola scritta prima) diventa il primo passo della sessione su A3 e A5; se fallisce, il tetto di A5 si riscrive prima di misurarlo.
+Decisione di Luca: riparare il metro (la sessione con check rosso serve a ripararlo). Proposta: regola nuova, scritta prima, per h sul polmone senza κ del colon (κ stimati su H2 o κ = 1, dichiarando che la diagnosi è già stata vista) e, se serve, più aree per tessuto per ridurre w; poi ricalcolo dalle tabelle esistenti (nessuna nuova corsa), check verde, chiusura come misura.
 
 # Aperti
 
-- `results/F3.2/sheets/` non tracciato (PNG del 18-19 novembre, di F3.2): lasciato com'e'.
-- `tools/okf.py check` fallisce da SC1: `PAPER.md`, `STATO.md`, `archivio`, `sonda` fuori dalle esenzioni. Elenco non modificato.
-- Aggregazione dei quadratini da 8 µm sfasata di circa 2 µm rispetto a floor(i/4) dei 2 µm.
-- Revisione indipendente dei numeri di S1 e S2 non fatta (prevista prima di G1).
-- X1, R3: metri pesati e S1 differiscono di circa 0,3 µm in x.
-- Riserva per un tetto fra pazienti: Vannan 2025 TMA5.
+- `results/F3.2/sheets/` non tracciato: lasciato com'è.
+- `tools/okf.py check` rosso da SC1 (esenzioni non modificate).
+- Revisione indipendente dei numeri di S1, S2, S3 non fatta (prima di G1).
+- X2 senza registrazione misurata.
+- Idea: aree omologhe fra H1 e H2 per posizione registrata invece che per punteggio.
