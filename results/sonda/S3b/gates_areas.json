@@ -1,0 +1,25 @@
+{
+ "G-R": {
+  "p95_um": 36.76052415337139,
+  "pos_ctrl_um": 39.53706741333008,
+  "pass_": true
+ },
+ "G-O": {
+  "min_frac": 0.9880023793701246,
+  "pass_": true
+ },
+ "G-C": {
+  "min_cov": 0.9008601177003169,
+  "n_below_0_9": 0,
+  "pass_": true
+ },
+ "r_identity_V": {
+  "max_abs_dev": 7.28583859910259e-17
+ },
+ "CP-2": {
+  "spearman_hom": 0.9030303030303028,
+  "sign_agree_hom": 8,
+  "spearman_S3_T_vs_V_same_order": 0.9999999999999999,
+  "pass_": true
+ }
+}

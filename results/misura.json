@@ -1,0 +1,23 @@
+{
+ "valore": 3.139463,
+ "se": 0.240554,
+ "voci": {
+  "tumour M-4": 6.7215,
+  "stroma M-4": 5.077,
+  "tumour M-1": 3.7925,
+  "stroma M-6": 3.2168,
+  "tumour M-6": 2.8726,
+  "stroma M-1": 2.8527,
+  "stroma M-5": 2.3286,
+  "tumour M-5": 0.8409,
+  "tumour M-2": 0.7661,
+  "stroma M-2": -0.1096,
+  "stroma M-3": -0.4882,
+  "tumour M-3": -0.5157
+ },
+ "affermazioni": {},
+ "fonte": "results/sonda/S3b/D.json",
+ "tetto_misurato": -0.768693,
+ "nota": "A1 = D(B): simulatore = catena banale (S3)",
+ "controlli_passati": true
+}

@@ -60,7 +60,7 @@ def per_measure(tab, H, drop):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--table", default="results/sonda/S3/area_values.csv"); ap.add_argument("--h", default="results/sonda/S3/h.csv")
     ap.add_argument("--out", default="results/sonda/S3/D.json"); ap.add_argument("--per", default="results/sonda/S3/per_measure.csv")
-    ap.add_argument("--misura", default=None); ap.add_argument("--skip-c2", action="store_true"); a = ap.parse_args()
+    ap.add_argument("--misura", default=None); ap.add_argument("--provv", default="results/sonda/S3/misura_provvisoria.json"); ap.add_argument("--skip-c2", action="store_true"); a = ap.parse_args()
     tab = pd.read_csv(a.table); H = pd.read_csv(a.h); tab["set"] = tab["set"].astype(str)
     B = tab[tab.arm == "B"]; tab = pd.concat([tab, B[B.k.astype(str) == "0"].assign(arm="B0"), B[B.k.astype(str) == "1"].assign(arm="B1")], ignore_index=True)
     Vs = tab[tab.arm == "V"].groupby("A")["M4"].mean(); drop = {A: bool(Vs.get(A, 0) >= 0.99) for A in ("tumour", "stroma")}
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     allpass = all(res.get(k, {}).get("pass", True) for k in ("C1_synthetic", "C2_colon_identity", "C4_positive", "C5_negative"))
     if a.misura and not allpass:   # REGOLA_S3: con un controllo fallito A1 e' provvisorio e non va in results/misura.json
         if os.path.exists(a.misura): os.remove(a.misura)
-        a.misura = "results/sonda/S3/misura_provvisoria.json"
+        a.misura = a.provv
     if a.misura:
         voci = {f"{r.A} {r.measure}": round(float(r.B_d), 4) for r in P.itertuples()}
         json.dump({"valore": round(pav, 6), "se": round(m["D_se"]["B"], 6), "voci": voci, "affermazioni": {},

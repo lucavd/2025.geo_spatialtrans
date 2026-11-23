@@ -27,7 +27,7 @@ def units():
 def area_bins(tp, u, m):
     x = (tp.array_col.to_numpy() + 0.5) * 2.0; y = (tp.array_row.to_numpy() + 0.5) * 2.0
     s = (x >= u["x0"]) & (x < u["x0"] + u["side"]) & (y >= u["y0"]) & (y < u["y0"] + u["side"])
-    b = tp[s].copy(); xm = C.guard((b.array_col.to_numpy() + 0.5) * 2.0, m)
+    b = tp[s].copy(); xa = (b.array_col.to_numpy() + 0.5) * 2.0; xm = C.guard(xa, m) if C.guard_on(sec) else float(xa.max())
     b["x_um"] = (b.array_col.to_numpy() + 0.5) * 2.0 - u["x0"]; b["y_um"] = (b.array_row.to_numpy() + 0.5) * 2.0 - u["y0"]
     return b.sort_values(["array_row", "array_col"]).reset_index(drop=True), xm
 

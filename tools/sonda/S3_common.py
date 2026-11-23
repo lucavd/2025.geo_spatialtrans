@@ -62,5 +62,8 @@ def read_region(path, r0, r1, c0, c1):
         store.close()
     return arr[..., :3]
 
-def areas(sec): return pd.read_csv(f"{REPO}/results/sonda/S3/areas_{sec}.csv")
+def areas(sec):
+    """aree di S3; S3b: S3_AREAS_<sec> = percorso alternativo (REGOLA_S3b, aree omologhe di H1)."""
+    return pd.read_csv(os.environ.get(f"S3_AREAS_{sec}", f"{REPO}/results/sonda/S3/areas_{sec}.csv"))
+def guard_on(sec): return sec not in os.environ.get("S3_NOGUARD", "").split(",")  # REGOLA_S3b: H1 letta intera
 def unit_name(sec, tissue, k): return f"{sec}_{tissue}_{k}"

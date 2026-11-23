@@ -19,11 +19,11 @@ if mode != "meter":
         if dev <= 1e-9: print(f"ok   C-3 chain identity, max rel dev {dev:.2e}")
         else: print(f"FAIL C-3 chain identity, max rel dev {dev:.3e}"); ok = False
 else:
-    d = json.load(open(f"{S}/D.json")); r = json.load(open("results/sonda/S3/D.json"))
+    DREF = os.environ.get("S3_DREF", "results/sonda/S3/D.json"); d = json.load(open(f"{S}/D.json")); r = json.load(open(DREF))  # S3b: S3_DREF
     for c in ("C1_synthetic", "C2_colon_identity", "C4_positive", "C5_negative"):
         p = d.get(c, {}).get("pass"); print(("ok  " if p else "FAIL"), c); ok &= bool(p)
     dev = max(abs(d["by"][g]["D"][k] - r["by"][g]["D"][k]) / max(abs(r["by"][g]["D"][k]), 1e-12) for g in r["by"] for k in r["by"][g]["D"])
-    print(("ok  " if dev <= 1e-9 else "FAIL"), f"meter identity vs results/sonda/S3/D.json, max rel dev {dev:.2e}"); ok &= dev <= 1e-9
-    f = "results/misura.json" if os.path.exists("results/misura.json") else "results/sonda/S3/misura_provvisoria.json"
+    print(("ok  " if dev <= 1e-9 else "FAIL"), f"meter identity vs {DREF}, max rel dev {dev:.2e}"); ok &= dev <= 1e-9
+    f = "results/misura.json" if os.path.exists("results/misura.json") else os.environ.get("S3_PROVV", "results/sonda/S3/misura_provvisoria.json")
     m = json.load(open(f)); print("ok  " if f == "results/misura.json" else "FAIL", f, "A1 = D(B) =", m["valore"], "se", m["se"]); ok &= f == "results/misura.json"
 sys.exit(0 if ok else 1)

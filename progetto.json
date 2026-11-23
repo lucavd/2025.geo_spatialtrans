@@ -2,7 +2,7 @@
  "messaggio": "Un simulatore di Visium HD con verita' per cellula riproduce un tumore polmonare quanto una seconda sezione e ordina i metodi come la verita'.",
  "misura": "D, distanza da H2 in unita' h sulle 12 voci (tumore e stroma x 6 misure dopo bin2cell + RCTD), polmone 10x; unita' indipendente: l'area",
  "verso": "basso",
- "pavimento": null,
+ "pavimento": 3.139,
  "tetto": null,
  "soglia": null,
  "affermazioni": [
@@ -65,9 +65,9 @@
  ],
  "proroghe": [],
  "check": {
-  "smoke": "bash -c 'set -o pipefail; bash tools/sonda/S3_smoke.sh 2>&1 | tee /mnt/micron/geo_spatialtrans/S3_sonda/check_smoke.log'",
+  "smoke": "bash -c 'set -o pipefail; bash tools/sonda/S3b_smoke.sh 2>&1 | tee /mnt/micron/geo_spatialtrans/S3b_sonda/check_smoke.log'",
   "full": "echo 'DA SCRIVERE nella sonda: comando full' && false",
-  "smoke_nota": "S3, 2026-11-23: test S1_test_cc, catena ridotta da capo a fondo (250 um di H2 tumour 1: H&E, StarDist, export, bin2cell, RCTD, misure; B sullo stesso quadrato), C-3 contro results/sonda/S3/smoke_ref.json, metro sulla tabella completa con C-1, C-2, C-4, C-5 e identita' con results/sonda/S3/D.json; circa 5 minuti. Rosso dal primo giro: C-4 (controllo positivo) non passa. Pavimento, tetto e soglia restano nulli per REGOLA_S3 (un controllo fallito: numeri provvisori, fuori da progetto.json): D(B) 1,573, D(T) 0,521, results/sonda/S3/D.json"
+  "smoke_nota": "S3b, 2026-11-23: come S3 (test S1_test_cc, catena ridotta da capo a fondo, C-3 contro results/sonda/S3/smoke_ref.json) con il metro riparato (docs/sonda/REGOLA_S3b.md: h con kappa = 1, T su aree omologhe di H1): C-1, C-2, C-4, C-5 e identita' con results/sonda/S3b/D.json. Pavimento D(B) 3,139 (results/sonda/S3b/D.json). Tetto e soglia nulli per scelta dichiarata: lo stimatore tratta T e V come aree indipendenti, ma le aree omologhe sono appaiate (correlazione mediana 0,94, results/sonda/S3b/diag_paired.csv): D(T) -0,769 con la formula scritta, +0,336 appaiato; serve uno stimatore appaiato con il suo controllo sintetico."
  },
  "file_misura": "results/misura.json",
  "tetti_parole": {
