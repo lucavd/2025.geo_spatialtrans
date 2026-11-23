@@ -1,0 +1,8 @@
+620b6a030f7c938cce13aad023ce6a3b  results/sonda/S3b/area_values.csv
+bef0263c47940a7c7549b0ab4b54346a  results/sonda/S3b/h.csv
+da81609b72adaab9ae43d435735e3a74  results/sonda/S3b/D.json
+54e98716e69b8e6f945a140833b72be3  results/riesame/B_area_values.csv
+41efbfce0035a2e517c56a5757bde0a6  results/riesame/B_h_panel.csv
+fba2aae528e27617a8324825fe7390d6  results/riesame/B_D_common.json
+48064d9f8618246a8a6ddc15688649d4  tools/riesame_D.py
+4651ac83c81682ac7e21b495da6dde98  tools/sonda/S3_D.py

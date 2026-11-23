@@ -1,0 +1,6 @@
+real reimpl D {'T': -0.7687, 'B': 3.1395, 'P': 3.8894} se {'T': 0.5612, 'B': 0.2404, 'P': 0.7863}
+real S3b    D {'T': -0.7687, 'B': 3.1395, 'P': 3.8894} se {'T': 0.5653, 'B': 0.2406, 'P': 0.7958}
+T {'true_sd_paired': 0.24, 'true_sd_independent': 0.354, 'mean_se_i': 0.169, 'mean_se_ii': 0.267, 'mean_se_param_S3b': 0.545}
+B {'true_sd_paired': 0.11, 'true_sd_independent': 0.111, 'mean_se_i': 0.103, 'mean_se_ii': 0.164, 'mean_se_param_S3b': 0.234}
+P {'true_sd_paired': 0.44, 'true_sd_independent': 0.458, 'mean_se_i': 0.379, 'mean_se_ii': 0.601, 'mean_se_param_S3b': 0.786}
+P-T {'true_sd_paired': 0.481, 'true_sd_independent': 0.518, 'mean_se_i': 0.396, 'mean_se_ii': 0.627, 'mean_se_param_S3b': 0.929}

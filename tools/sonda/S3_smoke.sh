@@ -8,6 +8,7 @@
 #    results/sonda/S3/D.json; scrive results/misura.json (A1 = D(B)). Esce con 0 solo se tutto passa ("SMOKE PASS").
 # Uso: bash tools/sonda/S3_smoke.sh [--init]
 # S3b: il metro legge S3_TABLE, S3_H e confronta con S3_DREF (predefiniti: tabelle di S3); vedi tools/sonda/S3b_smoke.sh.
+# S3c: S3_DSCRIPT sceglie lo script del metro (predefinito tools/sonda/S3_D.py); vedi tools/sonda/S3c_smoke.sh.
 set -uo pipefail
 cd ~/2025.geo_spatialtrans
 S=/mnt/micron/geo_spatialtrans/S3_sonda/smoke; rm -rf $S; mkdir -p $S/jobs
@@ -22,7 +23,7 @@ grep -q 'RESULT PASS' $S/S1test.log && echo "ok   S1_test_cc" || { echo "FAIL S1
 printf 'SMOKE_V\tSMOKE_H2_tumour_1\t%s\ttumour\treal\tH2\t-\nSMOKE_B\tSMOKE_H2_tumour_1_k0\t%s\ttumour\tsimr\tB\t0\n' $S/runs/SMOKE_V/SMOKE_H2_tumour_1 $S/runs/SMOKE_B/SMOKE_H2_tumour_1_k0 > $S/jobs/smoke.tsv
 bash tools/sonda/S3_chain.sh $S/jobs/smoke.tsv 2 >> $S/chain.log 2>&1
 .venv/bin/python -B tools/sonda/S3_smoke_check.py $S ${1:-} || fail=1
-.venv/bin/python -B tools/sonda/S3_D.py --table ${S3_TABLE:-results/sonda/S3/area_values.csv} --h ${S3_H:-results/sonda/S3/h.csv} --out $S/D.json --per $S/per_measure.csv --misura results/misura.json --provv ${S3_PROVV:-results/sonda/S3/misura_provvisoria.json} > $S/D.log 2>&1 || { echo "FAIL S3_D"; fail=1; }
+.venv/bin/python -B ${S3_DSCRIPT:-tools/sonda/S3_D.py} --table ${S3_TABLE:-results/sonda/S3/area_values.csv} --h ${S3_H:-results/sonda/S3/h.csv} --out $S/D.json --per $S/per_measure.csv --misura results/misura.json --provv ${S3_PROVV:-results/sonda/S3/misura_provvisoria.json} > $S/D.log 2>&1 || { echo "FAIL S3_D"; fail=1; }
 .venv/bin/python -B tools/sonda/S3_smoke_check.py $S meter || fail=1
 echo "elapsed $(( $(date +%s) - t0 )) s"
 [ $fail -eq 0 ] && echo "SMOKE PASS" || echo "SMOKE FAIL"

@@ -1,0 +1,12 @@
+D {'tumour+stroma': {'T': 0.336, 'B': 3.151, 'P': 4.019, 'B0': 3.096, 'B1': 3.205}, 'tumour': {'T': 0.321, 'B': 3.405, 'P': 4.051, 'B0': 3.323, 'B1': 3.485}, 'stroma': {'T': 0.351, 'B': 2.875, 'P': 3.986, 'B0': 2.851, 'B1': 2.899}}
+GID True 1.7e-14 | C1p True {'0': 0.068, '1': 0.999, '2': 1.996, 'observed': 0.456} ms0 0.0046
+COV min {'i': 0.807, 'ii': 0.938} method ii flag False f 1.5838
+  cov 1 {'i': {'T': 0.896, 'B': 0.922, 'P': 0.807, 'P-T': None, 'B-T': None}, 'ii': {'T': 0.982, 'B': 0.986, 'P': 0.975, 'P-T': None, 'B-T': None}}
+  cov 2 {'i': {'T': 0.875, 'B': 0.918, 'P': 0.918, 'P-T': None, 'B-T': None}, 'ii': {'T': 0.974, 'B': 0.984, 'P': 0.975, 'P-T': None, 'B-T': None}}
+  cov observed {'i': {'T': 0.81, 'B': 0.918, 'P': 0.876, 'P-T': 0.876, 'B-T': 0.836}, 'ii': {'T': 0.938, 'B': 0.99, 'P': 0.965, 'P-T': 0.971, 'B-T': 0.956}}
+C4 True C5 True C2 True | CP {'tumour': (1, 0), 'stroma': (1, 0)} True
+   B - T 2.814 w 0.568 different T
+   P - T 3.682 w 1.285 different T
+   B0 - B1 -0.109 w 0.116 equal 
+   P - B 0.868 w 1.219 undetermined 
+floor 3.151 ci [2.908, 3.44] se 0.141 | ceiling 0.336 ci [-0.263, 0.821] | threshold 1.336 | G1 precondition True | gates True
