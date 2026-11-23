@@ -41,6 +41,8 @@
 #   pilot held-out and E′ of 03_reference.R), the main group is never read; the training is the main
 #   training minus these 4 donors; φ, the kept genes and the reference of P come from <tissue>_pilot.rds
 #   and the P calibration from the main training (both include pilot group donors: declared, test only).
+#   In pilot run mode the C− and P draws stop at 10 + workers (one extra round per worker, code test;
+#   the plan CSV still gives the numbers of the rule); the noise ceiling is not capped (cheap, and B is in the plan).
 #
 # Pre-registered checks (the script stops if one fails):
 #   A1 4 distinct group donors, none among the training cells read; the first two are the held-out and E′
@@ -344,6 +346,12 @@ cat(sprintf("\nPlan (DECISIONS 2026-11-11), %s; times measured on the pilot draw
 print(plan, row.names = FALSE, digits = 3)
 write.csv(plan, paste0(stem, "_plan.csv"), row.names = FALSE)
 if (run == "plan") { cat("Plan only: pilot draws in", paste0(stem, "_pilot_draws.rds"), "\n"); quit(save = "no") }
+# pilot = code test only (ADEMP §10): one extra round of draws per worker, so every branch after the plan runs
+# and memory peaks as in main; the plan above keeps the numbers of the rule (main is unchanged)
+if (mode == "pilot" && run == "run") {
+  n_C <- min(n_C, n_pilot + workers); n_P <- min(n_P, n_pilot + workers)
+  cat(sprintf("  pilot code test: C− and P capped at %d draws (rule: see plan)\n", n_pilot + workers))
+}
 
 if (n_C > n_pilot) cm <- rbind(cm, do.call(rbind, par_lapply((n_pilot + 1):n_C, cminus_draw)))
 cat("  C− done,", elapsed(), "\n")
