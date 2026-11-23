@@ -36,6 +36,14 @@ rd_pilot <- function(tissue, what, variant = "crule") {
   if (!file.exists(f)) { message("missing: ", f); return(NULL) }
   read.csv(f, check.names = FALSE, stringsAsFactors = FALSE)
 }
+# pilot at the HD level of the main run: colon = c-rule rows at 175 UMI per cell (HD level 174),
+# lymph node and brain = HD pilots with RCTD UMI_min_sigma = 100 (DECISIONS 2026-11-12, 2026-11-17)
+rd_hd <- function(tissue, what) {
+  if (tissue != "colon") return(rd_pilot(tissue, what, variant = "crule_hd_s100"))
+  x <- rd_pilot(tissue, what)
+  if (!is.null(x) && "depth" %in% names(x)) x <- x[x$depth == 175, ]
+  x
+}
 show_pilot <- function(what, n = 20) {
   for (t in tissues) {
     x <- rd_pilot(t, what)
@@ -55,7 +63,7 @@ run_test <- function(f) {
 
 **Dependencies.** T1 (datasets, split). **Branch.** `thesis/expression-sources`. **Data.** `TESI_DATA` on lesexp (`/mnt/micron/geo_spatialtrans/tesi_pp1209/data`).
 
-**Status of the pilot inputs.** Pilot references were rebuilt with φ estimated on 50,000 cells after the failed φ check (DECISIONS 2026-11-11): colon and lymph node on 2026-11-12, brain on 2026-11-14. The colon pilot was rerun with the new φ on 2026-11-12 (the basis of n_sim = 118, DECISIONS 2026-11-12). The lymph node and brain pilots were rerun with the new φ on 2026-11-17, at the HD level of each tissue only (62 and 121 UMI per cell; `<tissue>_crule_hd_pilot_*`), as Luca asked on 2026-11-16 (same row), and again with RCTD `UMI_min_sigma` = 100 after RCTD stopped on every 2-cell dataset (`<tissue>_crule_hd_s100_pilot_*`, DECISIONS 2026-11-17). The other tables of this report still read the c-rule pilots of 9–11/11.
+**Status of the pilot inputs.** Pilot references were rebuilt with φ estimated on 50,000 cells after the failed φ check (DECISIONS 2026-11-11): colon and lymph node on 2026-11-12, brain on 2026-11-14. The colon pilot was rerun with the new φ on 2026-11-12 (the basis of n_sim = 118, DECISIONS 2026-11-12). The lymph node and brain pilots were rerun with the new φ on 2026-11-17, at the HD level of each tissue only (62 and 121 UMI per cell; `<tissue>_crule_hd_pilot_*`), as Luca asked on 2026-11-16 (same row), and again with RCTD `UMI_min_sigma` = 100 after RCTD stopped on every 2-cell dataset (`<tissue>_crule_hd_s100_pilot_*`, DECISIONS 2026-11-17). Sections 3.1, 4.1, 4.2 and 5.2 show the c-rule pilots of 9–11/11 first and then the HD level of the main run (colon c-rule rows at 175 UMI per cell, lymph node and brain HD pilots with `UMI_min_sigma` = 100); n_sim (§5.1) uses the HD level only.
 
 # 1. Pre-registration
 
@@ -69,7 +77,7 @@ Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.5, 2026-11-1
 | Depth thinning | exact downsampling to the target, report spots below target | DECISIONS 2026-11-02 |
 | Estimand | cell share for every method (main); UMI share as sensitivity | DECISIONS 2026-11-03 |
 | Failures | null-baseline fill, no exclusion threshold, common-spot set as sensitivity, tolerance 1e-4 (1e-5 until 2026-11-17; failures at 1e-5 as sensitivity) | DECISIONS 2026-11-02, 2026-11-03 (two rows); ADEMP §7.2, §12 (2026-11-17) |
-| Null baseline | observed RMSE within 0.005 of the Dirichlet-multinomial formula | `scripts/06b_pilot_nsim.R` header (2026-11-05) |
+| Null baseline | observed RMSE within 0.005 of the Dirichlet-multinomial formula | ADEMP §7.2 item 3; `scripts/06b_pilot_nsim.R` (2026-11-05) |
 | φ sample | r(log φ) ≥ 0.99 and median ratio 0.95–1.05, else 50,000 cells | DECISIONS 2026-10-29 |
 | Reference cap | 1,000 cells per type kept if r ≥ 0.99 per type | DECISIONS 2026-11-04 |
 | P marker cap | Jaccard ≥ 0.9 per type in the lymph node at 10,000 cells, else 20,000 | DECISIONS 2026-11-11 |
@@ -77,11 +85,11 @@ Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.5, 2026-11-1
 ## Deviations from the pre-registration (recorded, not corrected)
 
 - The φ sample check was run on 2026-11-11, after the pilots, although it was due before them (DECISIONS 2026-11-11).
-- The pilots ran at 175 and 4,900 UMI per cell in every tissue. After the pilots the design kept one Visium HD level per tissue, 174 (colon), 62 (lymph node) and 121 (brain) UMI per cell (DECISIONS 2026-11-12, PROTOCOLLO 1.5). n_sim uses only the 175 rows; for the lymph node and brain the pilot depth was higher than the final level.
-- Lymph node and brain pilots used φ from 20,000 cells and were not rerun (DECISIONS 2026-11-11 on φ).
+- The pilots ran at 175 and 4,900 UMI per cell in every tissue. After the pilots the design kept one Visium HD level per tissue, 174 (colon), 62 (lymph node) and 121 (brain) UMI per cell (DECISIONS 2026-11-12, PROTOCOLLO 1.5). For the colon n_sim uses only the 175 rows, whose depth matches the colon HD level (174).
+- Lymph node and brain pilots first used φ from 20,000 cells. As Luca asked on 2026-11-16, they were rerun on 2026-11-17 with φ from 50,000 cells at the HD level of each tissue, and these reruns give their n_sim (DECISIONS 2026-11-12, precised 2026-11-16).
 - The first colon pilot was rerun after two fixes: MuSiC failed on every spot for a code error, which also emptied the common-spot set (DECISIONS 2026-11-02, failures), and binomial thinning was replaced by exact thinning because the depth check assumed an exact target (DECISIONS 2026-11-02, thinning).
 - The Dirichlet concentration changed while the colon pilot was running (c = K · p_k, then c = 1, then the R6 rule of DECISIONS 2026-11-06). The values passed to the protocol come from the c-rule pilots only (`<tissue>_crule_pilot_*`); the earlier runs are kept in `derived/pilot/colon_c1`, `colon_c9` (ADEMP §6).
-- The pre-registered residue check (C10) failed in the lymph node c-rule pilot: RCTD returned 4 negative values in arm C−, the smallest −1.37e-5, below the tolerance −1e-5 and far above the failure limit −0.01. As pre-registered, the tolerance was revised before any result, by the rule "smallest power of ten above the largest residue over all pilots" (HD pilots included), to 1e-4; failure rates at 1e-5 are kept as a sensitivity (ADEMP §7.2, §12, 2026-11-17).
+- The pre-registered residue check (C10) failed in the lymph node c-rule pilot: RCTD returned 4 negative values in arm C−, the smallest −1.37e-5, below the tolerance −1e-5, so under the pre-registered rule those values would have counted as failed spots. As pre-registered, the tolerance was revised before any result, by the rule "smallest power of ten above the largest residue over all pilots" (HD pilots included), to 1e-4; failure rates at 1e-5 are kept as a sensitivity (ADEMP §7.2, §12, 2026-11-17).
 - spatialDWLS spot clustering moved from k-means (no source) to Leiden with the Spotless parameters (DECISIONS 2026-11-04). n_sim rose from 81 to 217 in the colon after this change; the rule was kept, because changing it once we knew which pairs raise n_sim would be a post-hoc adjustment (DECISIONS 2026-11-03, precision of 2026-11-06).
 
 # 2. Check C — software correctness
@@ -97,7 +105,7 @@ Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.5, 2026-11-1
 | C7 reference cap | r ≥ 0.99 per type | PASS in the three tissues (colon ≥ 0.998, lymph node 0.9989, brain 0.9990) | DECISIONS 2026-11-04; ADEMP §4 |
 | C8 P marker cap | Jaccard ≥ 0.9 per type | FAIL at 10,000 (cd4_cm 0.600) → 20,000 | DECISIONS 2026-11-11; `tests/test_p_cap.R` |
 | C9 seed check | deconvolution packages do not reset the RNG | PASS for the four CPU methods in the three tissues; cell2location [TO FILL] | ADEMP §8 |
-| C10 proportions | no residue between the tolerance 1e-5 and the failure limit 0.01 | FAIL in the lymph node (RCTD, C−, −1.37e-5); colon, brain and HD pilots PASS; PASS at the amended tolerance 1e-4 (table below) | ADEMP §7.2; `scripts/06d_pilot_residues.R` |
+| C10 proportions | no negative value below the tolerance and no spot sum off 1 by more than the tolerance (1e-5, amended to 1e-4) | FAIL in the lymph node (RCTD, C−, −1.37e-5); colon, brain and HD pilots PASS; PASS at the amended tolerance 1e-4 (table below) | ADEMP §7.2; `scripts/06d_pilot_residues.R` |
 
 The two tests that run in seconds are rerun at every render.
 
@@ -143,7 +151,20 @@ for (t in tissues) {
 }
 ```
 
-At 175 UMI per cell every spot of every arm and of the anchor reached its target in the three tissues, so the depth is the same everywhere and differences between arms come from μ. At 4,900 UMI per cell part of the spots stayed below target, and differently in the anchor and the arms (lymph node, 10 cells: 33% of anchor spots against 53% in E; brain, 2 cells: 41% against 18%). There the difference from the anchor mixed the source of μ with depth, which is why the level was removed (DECISIONS 2026-11-12). The HD levels of the main run (62–174 UMI per cell) are at or below 175, so all spots are expected to reach the target (depth runs of 2026-11-11).
+At 175 UMI per cell every spot of every arm and of the anchor reached its target in the three tissues, so the depth is the same everywhere and differences between arms come from μ. At 4,900 UMI per cell part of the spots stayed below target, and differently in the anchor and the arms (lymph node, 10 cells: 33% of anchor spots against 53% in E; brain, 2 cells: 41% against 18%). There the difference from the anchor mixed the source of μ with depth, which is why the level was removed (DECISIONS 2026-11-12). The table below shows the HD level of the main run (62–174 UMI per cell), with the number of spots below target in the line under it.
+
+```{r depth-hd}
+#| results: asis
+dh <- do.call(rbind, lapply(tissues, function(t) {
+  x <- rd_hd(t, "depth")
+  if (is.null(x)) return(NULL)
+  cbind(tissue = t, aggregate(cbind(n_at_target, n_below) ~ n_cells + depth + dataset, x, sum))
+}))
+if (is.null(dh)) cat("*not available yet*\n") else {
+  print(kable(dh, row.names = FALSE))
+  cat("\n\nSpots below target at the HD level:", sum(dh$n_below), "of", sum(dh$n_at_target + dh$n_below), "\n")
+}
+```
 
 ## 3.2 Library sizes by cell type
 
@@ -223,9 +244,49 @@ if (is.null(cm)) cat("*not available yet*\n") else {
 }
 ```
 
-Failures point the same way: spatialDWLS at 2 cells fails on more spots in C− than in E (colon 2,329 against 458 spots, brain 5,703 against 891, summed over replicates and conditions), and RCTD fails only in C− (colon 24 spots, brain 1; ADEMP §7.2).
+Failures point the same way. The table gives the failed spots of RCTD and spatialDWLS, summed over replicates, in the c-rule pilots at 175 UMI per cell and at the HD level of the main run (ADEMP §7.2; DECISIONS 2026-11-17).
 
-**Verdict.** PASS. C− has a higher RMSE than E for every method, tissue and cells level (24 of 24 at 175 UMI per cell, render of 2026-11-16), and the smallest gap, 0.023, is larger than δ = 0.02, the smallest difference between methods that we consider relevant. Permuting the genes therefore changes the error by more than a relevant amount, so the benchmark is sensitive to μ. NNLS and MuSiC are read next to the null baseline (4.2), which is close to an oracle in this design.
+```{r fails}
+#| results: asis
+fail_wide <- function(x, tissue, pilot) {
+  if (is.null(x) || nrow(x) == 0) return(NULL)
+  x <- x[x$method %in% c("RCTD", "spatialDWLS") & x$dataset %in% c("E", "Cminus", "anchor"), ]
+  w <- reshape(aggregate(fail_spots ~ n_cells + method + dataset, x, sum), idvar = c("n_cells", "method"),
+               timevar = "dataset", direction = "wide")
+  names(w) <- sub("fail_spots.", "", names(w))
+  cbind(tissue = tissue, pilot = pilot, w)
+}
+fl <- do.call(rbind, lapply(tissues, function(t) {
+  a <- rd_pilot(t, "summary"); if (!is.null(a)) a <- a[a$depth == 175, ]
+  rbind(fail_wide(a, t, "c-rule 175"), fail_wide(rd_hd(t, "summary"), t, "HD"))
+}))
+if (is.null(fl)) cat("*not available yet*\n") else print(kable(fl, row.names = FALSE))
+```
+
+**HD level of the main run.** The lymph node and brain pilots were rerun at their HD level (62 and 121 UMI per cell) with RCTD `UMI_min_sigma` = 100 (DECISIONS 2026-11-17). The colon HD level (174 UMI per cell) corresponds to the 175 rows of the table above.
+
+```{r rmse-hd}
+#| results: asis
+mh <- do.call(rbind, lapply(c("lymphoid", "brain"), function(t) {
+  x <- rd_pilot(t, "rmse_methods", variant = "crule_hd_s100")
+  if (is.null(x)) return(NULL)
+  x <- x[x$dataset %in% c("E", "Cminus", "anchor"), ]
+  w <- reshape(x[, c("n_cells", "method", "dataset", "mean_rmse")], idvar = c("n_cells", "method"),
+               timevar = "dataset", direction = "wide")
+  names(w) <- sub("mean_rmse.", "", names(w))
+  w$Cminus_minus_E <- w$Cminus - w$E
+  cbind(tissue = t, w)
+}))
+if (is.null(mh)) cat("*not available yet*\n") else {
+  print(kable(mh, row.names = FALSE, digits = 4))
+  m <- mh[mh$method != "null baseline", ]
+  cat("\n\nC− has a higher RMSE than E in", sum(m$Cminus_minus_E > 0), "of", nrow(m),
+      "method × tissue × cells cells; gaps below δ = 0.02:", sum(m$Cminus_minus_E < 0.02),
+      "; the smallest gap is", round(min(m$Cminus_minus_E), 4), ".\n")
+}
+```
+
+**Verdict.** PASS with a reservation. C− has a higher RMSE than E for every method, tissue and cells level, both at 175 UMI per cell (24 of 24) and at the HD levels of lymph node and brain (16 of 16). At 175 UMI per cell the smallest gap, 0.023, is larger than δ = 0.02, the smallest difference between methods that we consider relevant. At the HD levels two gaps are smaller than δ, both in the lymph node at 2 cells. They are MuSiC with 0.0047 (E 0.192, C− 0.197) and spatialDWLS with 0.017 (E 0.206, C− 0.223), and the other 14 are at least 0.029. In that condition both methods already have a higher RMSE than the null baseline (0.137) with the true μ, at about 124 UMI per spot (2 cells × 62 UMI per cell). They carry little information on the composition there, so permuting the genes cannot make them much worse. This is not a pre-registered failure, because ADEMP §9 judges C− on the main run (low fidelity and rankings different from the anchor). It is reported as a result and carried to T5, where the main run will show whether the gap stays below δ. NNLS and MuSiC are read next to the null baseline (4.2), which is close to an oracle in this design.
 
 ## 4.2 Null baseline
 
@@ -233,16 +294,30 @@ The null baseline gives every spot the training shares. Because α_k = c · p_k,
 
 ```{r null}
 #| results: asis
+# formula values at 2 and 10 cells with the c rule (ADEMP §7.2 item 3; c does not depend on depth)
+fml <- data.frame(tissue = rep(tissues, each = 2), n_cells = rep(c(2, 10), 3),
+                  formula = c(0.182, 0.149, 0.137, 0.105, 0.134, 0.066))
 nb <- do.call(rbind, lapply(tissues, function(t) {
-  x <- rd_pilot(t, "rmse_methods")
-  if (is.null(x)) return(NULL)
-  x <- x[x$depth == 175 & x$method == "null baseline", c("n_cells", "dataset", "mean_rmse")]
-  cbind(tissue = t, x)
+  a <- rd_pilot(t, "rmse_methods"); if (!is.null(a)) a <- a[a$depth == 175, ]
+  b <- rd_hd(t, "rmse_methods")
+  do.call(rbind, lapply(list(list(a, "c-rule 175"), list(b, "HD")), function(p) {
+    x <- p[[1]]
+    if (is.null(x) || nrow(x) == 0) return(NULL)
+    x <- x[x$method == "null baseline", c("n_cells", "dataset", "mean_rmse")]
+    cbind(tissue = t, pilot = p[[2]], x)
+  }))
 }))
-if (is.null(nb)) cat("*not available yet*\n") else print(kable(nb, row.names = FALSE, digits = 3))
+if (is.null(nb)) cat("*not available yet*\n") else {
+  nb <- merge(nb, fml)
+  nb$obs_minus_formula <- nb$mean_rmse - nb$formula
+  print(kable(nb, row.names = FALSE, digits = 4))
+  cat("\n\nLargest |observed − formula|:", round(max(abs(nb$obs_minus_formula)), 4),
+      "(formula rounded to 3 decimals); pre-registered check < 0.005:",
+      if (max(abs(nb$obs_minus_formula)) < 0.005) "PASS" else "FAIL", "\n")
+}
 ```
 
-Formula at 2 and 10 cells (c rule): colon 0.182 and 0.149, lymph node 0.137 and 0.105, brain 0.134 and 0.066. The observed values agree within 0.001 in every dataset and condition, so the check PASSES (ADEMP §7.2; `nsim_<tissue>_crule.log`).
+The formula values come from ADEMP §7.2 item 3 (`nsim_<tissue>_crule.log`). Because c does not depend on depth, the same values apply to the HD pilots.
 
 # 5. Values passed to the protocol
 
@@ -288,10 +363,22 @@ for (t in tissues) {
 }
 ```
 
-Cost check with the c-rule pilots (server, 2026-11-11, `scripts/06c_pilot_cost.R`; ADEMP §6): CPU-hours per replicate colon 1.18, lymph node 2.54, brain 11.0, with MuSiC taking 68% of the CPU time. A brain worker peaks at 14–16 GB, so the brain runs with at most 5 workers. With two depth levels and 169 replicates the brain needed 15.5 days against a 12-day window; with one level, 7.7 days. With n_sim = 118 at the HD levels (server, 2026-11-17; colon pilot rerun at 175 UMI per cell, HD pilots of lymph node and brain at 62 and 121 with RCTD `UMI_min_sigma` = 100), CPU-hours per replicate are colon 0.68, lymph node 0.97 and brain 5.18, so the brain needs 5.1 days with 5 workers (colon 0.3, lymph node 0.3) against the 12-day window. MuSiC still takes 67% of the CPU time. Computing the MuSiC basis once per tissue (DECISIONS 2026-11-12) adds margin, after the identity check against `music_prop()`. cell2location timing and n_c2l: [TO FILL] (DECISIONS 2026-11-04, dated amendment before the run).
+The same at the HD level of the main run (colon rows at 175 UMI per cell, lymph node and brain HD pilots with `UMI_min_sigma` = 100), which the cost check with n_sim = 118 uses.
+
+```{r cost-hd}
+#| results: asis
+for (t in tissues) {
+  x <- rd_hd(t, "summary")
+  cat("\n\n**", t, "**\n\n", sep = "")
+  if (is.null(x) || nrow(x) == 0) { cat("*not available yet*\n"); next }
+  print(kable(aggregate(mean_seconds ~ method + n_cells, x, mean), digits = 0))
+}
+```
+
+Cost check with the c-rule pilots (server, 2026-11-11, `scripts/06c_pilot_cost.R`; ADEMP §6): CPU-hours per replicate colon 1.18, lymph node 2.54, brain 11.0, with MuSiC taking 68% of the CPU time. A brain worker peaks at 14–16 GB, so the brain runs with at most 5 workers. With two depth levels and 169 replicates the brain needed 15.5 days against a 12-day window; with one level, 7.7 days. With n_sim = 118 at the HD levels (server, 2026-11-17; colon pilot rerun at 175 UMI per cell, HD pilots of lymph node and brain at 62 and 121 with RCTD `UMI_min_sigma` = 100), CPU-hours per replicate are colon 0.68, lymph node 0.97 and brain 5.18, so the brain needs 5.1 days with 5 workers (colon 0.3, lymph node 0.3) against the 12-day window. MuSiC still takes 67% of the CPU time. Computing the MuSiC basis once per tissue adds margin. The identity check against `music_prop()` passed (24 of 24 datasets identical, MuSiC time 60% of the original; DECISIONS 2026-11-12, precised 2026-11-17). cell2location timing and n_c2l: [TO FILL] (DECISIONS 2026-11-04, dated amendment before the run).
 
 # Closure
 
-**Verdict.** [TO FILL: proposed "not closed" until the ADEMP is approved by Luca (the "done" criterion of PROTOCOLLO §6, week 2); then "closed with reservations".] ADEMP approved by Luca on 2026-11-18. Open items: cell2location timing and seed check (C9). The md5 check on lesexp (C2) passed on 2026-11-16.
+**Verdict.** Closed with reservations. The "done" criterion of week 2 is met, because the ADEMP was approved by Luca on 2026-11-18 (PROTOCOLLO §6; DECISIONS 2026-11-18), and the md5 check on lesexp (C2) passed on 2026-11-16. Two reservations remain. The cell2location seed check (C9) and its timing, from which n_c2l is computed, need the GPU and will be written as a dated amendment before the main run (DECISIONS 2026-11-04). At the HD levels the smallest C− − E gap is below δ in the lymph node at 2 cells (§4.1), a result carried to T5.
 
-**Adversarial review.** [TO FILL: who recomputed which key numbers (n_sim from `rmse_pairs`, null-baseline formula, depth table) from scripts and data, and discrepancies found.]
+**Adversarial review.** Run on 2026-11-20 on lesexp in a separate session, independent of the sessions that wrote the pipeline code. It used its own script (`~/scratch/t2_review.R`, outside the repository) that recomputes the key numbers from the pilot CSV files without calling the pipeline functions, and compares them with the values written in this report (56 items, `t2_review_summary.csv`). (1) n_sim. The largest upper SD of the paired differences is 0.05431 in the colon, 0.04018 in the lymph node and 0.04245 in the brain, giving n_sim 118, 65 and 73, so the design value is 118, as in §5.1. (2) Null baseline. The Dirichlet concentrations c and the formula values match §4.2, and the observed null RMSE differs from the formula by at most 0.0006 in every tissue and cells level, HD pilots included. (3) Depth. No spot is below the target in the colon at 175 UMI per cell or in the HD pilots of lymph node and brain. (4) C− against E. 24 of 24 with smallest gap 0.0226 at 175 UMI per cell, as in §4.1. (5) Residues. The minima and counts of negative values match C10 and the tolerance rule gives 1e-4. Six items of (5) are marked as mismatches only because the report writes "PASS both" and the script writes "PASS@1e-5, PASS@1e-4". The meaning is the same, so they are not discrepancies. One real discrepancy was found. At the HD levels of the main run the smallest C− − E gap is 0.0047, below δ, which the earlier verdict of §4.1 did not cover. It is now reported in §4.1 as a result and carried to T5.
