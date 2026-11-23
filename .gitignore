@@ -51,3 +51,4 @@ results/R3/review/code/roi/
 .venv-b2c/
 .progetto_check.json
 results/check_*.log
+tools/sonda/__pycache__/
