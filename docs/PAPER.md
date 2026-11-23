@@ -17,7 +17,7 @@ Polmone 10x (CG000709), un blocco FFPE, sezioni seriali: H1, H2 solo Visium HD; 
 
 # Misura principale
 
-D (h), meglio verso il basso; metro di `docs/riesame/FATTI_B.md`: 12 voci, tumore e stroma × 6 misure dopo bin2cell + RCTD (HLCA). Unità: l'area (5); bootstrap B = 2000. Pavimento (banale) e tetto (H1 contro H2) da misurare. Soglia = tetto + δ, δ = 1,0 h (`docs/riesame/REGOLA_B.md`); sensibilità con δ = 0,5 e 2.
+D (h), meglio verso il basso; metro di `docs/riesame/FATTI_B.md`: 12 voci, tumore e stroma × 6 misure dopo bin2cell + RCTD (HLCA). Unità: l'area (5); bootstrap B = 2000. Soglia = tetto + δ, δ = 1,0 h (`docs/riesame/REGOLA_B.md`); sensibilità con δ = 0,5 e 2.
 
 # Affermazioni
 
@@ -61,4 +61,5 @@ Scommessa 2; sonda 5 (registrazione, check, pavimento e tetto, componenti veri, 
 # Decisioni del PI
 
 - 2026-11-20 (SC2): polmone 10x dopo Xenium, cancello sulla registrazione, riserva il colon; G0 firmato, sonda 5.
-- 2026-11-21 (S1): X2 con un metro più preciso, una sessione, regola scritta prima.
+- 2026-11-21 (S1): X2 con un metro più preciso, una sessione.
+- 2026-11-23 (S3): h senza κ del colon, aree omologhe H1-H2.

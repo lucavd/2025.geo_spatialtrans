@@ -52,7 +52,7 @@ Tumore singoletti RCTD 62 %; tumore UMI assegnati 20 %; tumore vicini dello stes
 
 # Prossima mossa
 
-Decisione di Luca: riparare il metro (la sessione con check rosso serve a ripararlo). Proposta: regola nuova, scritta prima, per h sul polmone senza κ del colon (κ stimati su H2 o κ = 1, dichiarando che la diagnosi è già stata vista) e, se serve, più aree per tessuto per ridurre w; poi ricalcolo dalle tabelle esistenti (nessuna nuova corsa), check verde, chiusura come misura.
+Decisione di Luca, 2026-11-23 («1»): riparare il metro con una regola nuova scritta prima (S3b, chat nuova). h del polmone senza κ del colon (κ = 1: sola precisione della media di H2), dichiarando la diagnosi κ = 1 già vista; aree omologhe fra H1 e H2 per posizione registrata (nuova corsa, circa 2 h); C-4 resta cancello. Poi check verde e chiusura come misura. Accettato: la soglia diventa un margine di precisione, non un margine fra pazienti.
 
 # Aperti
 
