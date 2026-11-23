@@ -64,3 +64,4 @@ Scommessa 2; sonda 5 (registrazione, check, pavimento e tetto, componenti veri, 
 - 2026-11-21 (S1): X2 con un metro più preciso, una sessione.
 - 2026-11-23 (S3): h senza κ del colon, aree omologhe H1-H2.
 - 2026-11-23 (S3b): metà nascosta solo in H2.
+- 2026-11-23 (S3c): proroga della sonda da 5 a 7 sessioni.

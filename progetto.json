@@ -44,7 +44,7 @@
  "fase": "sonda",
  "budget": {
   "scommessa": 2,
-  "sonda": 5,
+  "sonda": 7,
   "costruzione": null,
   "conferma": 2,
   "scrittura": null
@@ -63,7 +63,20 @@
    "righe": 2
   }
  ],
- "proroghe": [],
+ "proroghe": [
+  {
+   "data": "2026-11-23",
+   "fase": "sonda",
+   "da": 5,
+   "a": 7,
+   "misura_oggi": 3.15089,
+   "motivo": "S3c: pavimento 3,151, tetto 0,336, soglia 1,336 misurati; resta 1 sessione su 5, non basta per i componenti veri (singoletti RCTD 60 % e UMI assegnati nel tumore 12 % del bilancio, results/sonda/S3c/per_measure.csv) e per A3, A5 (Xenium, orientamento delle griglie di X1 e X2)",
+   "atteso": 2.15,
+   "altrimenti": "G1 con i numeri raggiunti: se D resta sopra pavimento - delta (2,15 h) la regola di G1 dice chiudere o riposizionare",
+   "consenso": "Luca 2026-11-23: va bene la proroga e chiudi",
+   "righe": 6
+  }
+ ],
  "check": {
   "smoke": "bash -c 'set -o pipefail; mkdir -p /mnt/micron/geo_spatialtrans/S3c_sonda; bash tools/sonda/S3c_smoke.sh 2>&1 | tee /mnt/micron/geo_spatialtrans/S3c_sonda/check_smoke.log'",
   "full": "echo 'DA SCRIVERE nella sonda: comando full' && false",

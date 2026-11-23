@@ -7,7 +7,7 @@ generated: { by: geo-agent/progetto-master, at: 2026-11-23T22:00:00+01:00 }
 ---
 # Fase
 
-Sonda, budget 5, firmata a G0 il 2026-11-20. Registro: S1, S2 (`infra`), S3b, S3c (`misura`). Usate 4 sessioni su 5: ne resta 1. S3 non chiusa (C-4 rosso), sostituita da S3b.
+Sonda, budget 5, firmata a G0 il 2026-11-20. Registro: S1, S2 (`infra`), S3b, S3c (`misura`). Usate 4 sessioni; budget prorogato da 5 a 7 il 2026-11-23: ne restano 3. S3 non chiusa (C-4 rosso), sostituita da S3b.
 
 # Dati (polmone 10x, CG000709, 1 blocco FFPE, 1 donatore)
 
@@ -54,7 +54,7 @@ Tumore M-4 (singoletti RCTD) 38 %; stroma M-4 22 %; tumore M-1 (UMI assegnati) 1
 
 # Prossima mossa
 
-Resta 1 sessione di sonda per «componenti veri» e A3, A5: non bastano. Da portare a Luca, prima della prossima sessione: proroga della sonda (circa 2 sessioni: componenti veri su M-4 e M-1; A3 e A5 con l'orientamento delle griglie di X1 e X2) oppure G1 sui numeri di oggi. Con i numeri di oggi G1 non dice «chiudere» per la prima condizione (pavimento − tetto 2,8 > 1).
+Proroga della sonda firmata (Luca, 2026-11-23: «va bene la proroga e chiudi»): budget da 5 a 7, restano 3 sessioni. Ordine proposto: (1) componenti veri sulle voci più grandi del bilancio, singoletti RCTD (60 %) e UMI assegnati, per sostituzione con la versione perfetta o spenta; (2) A3 e A5 sullo Xenium, prima l'orientamento delle griglie di X1 e X2; (3) G1. Atteso della proroga: D ≤ pavimento − δ = 2,15 h; altrimenti G1 con i numeri raggiunti (chiudere o riposizionare).
 
 # Aperti
 
