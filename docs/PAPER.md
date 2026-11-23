@@ -52,7 +52,7 @@ G1, con i componenti veri o spenti migliori:
 
 # Dati tenuti da parte
 
-Una metà spaziale di ogni sezione, scelta con una regola scritta prima di leggere i dati.
+Una metà spaziale di H2, X1 e X2 (regola di S1). H1 si legge intera: solo riferimento, mai taratura (S3b).
 
 # Budget proposto
 
@@ -63,3 +63,4 @@ Scommessa 2; sonda 5 (registrazione, check, pavimento e tetto, componenti veri, 
 - 2026-11-20 (SC2): polmone 10x dopo Xenium, cancello sulla registrazione, riserva il colon; G0 firmato, sonda 5.
 - 2026-11-21 (S1): X2 con un metro più preciso, una sessione.
 - 2026-11-23 (S3): h senza κ del colon, aree omologhe H1-H2.
+- 2026-11-23 (S3b): metà nascosta solo in H2, H1 intera.
