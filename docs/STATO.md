@@ -7,7 +7,7 @@ generated: { by: geo-agent/progetto-master, at: 2026-11-23T16:00:00+01:00 }
 ---
 # Fase
 
-Sonda, budget 5, firmata a G0 il 2026-11-20. Nel registro S1 e S2 (`infra`). S3 aperta nella stessa chat di S2, in deroga (Luca, 2026-11-21: «ok a sessione 3 consigliata in deroga»). S3 non chiusa: `check smoke` rosso per il controllo positivo C-4 (sotto), quindi `chiudi` rifiuta anche `--infra`. Allarme «più di una sessione su tre senza misura» aperto (con S1 e S2 `infra` resterebbe acceso anche dopo una sessione con misura).
+Sonda, budget 5, firmata a G0 il 2026-11-20. Nel registro S1 e S2 (`infra`). S3 aperta nella stessa chat di S2, in deroga (Luca, 2026-11-21: «ok a sessione 3 consigliata in deroga»). S3 non chiusa: `check smoke` rosso per il controllo positivo C-4 (sotto), quindi `chiudi` rifiuta anche `--infra` (2026-11-23: «l'ultimo check e' rosso; manca la misura di A1»). Allarme «più di una sessione su tre senza misura» aperto (con S1 e S2 `infra` resterebbe acceso anche dopo una sessione con misura).
 
 # Dati (polmone 10x, CG000709, 1 blocco FFPE, 1 donatore)
 
@@ -26,7 +26,7 @@ Sonda, budget 5, firmata a G0 il 2026-11-20. Nel registro S1 e S2 (`infra`). S3 
 
 Tumore + stroma: D(T) = 0,521 (0,052; 1,055); D(B) = 1,573 (1,212; 1,955), se 0,187; D(P) = 1,874. B − T = 1,052, w 0,526: indeterminato. Soglia che ne verrebbe: 1,521. Attese scritte: tetto circa 2, pavimento circa 7-8: sbagliate di un fattore 4-5.
 
-Controlli: C-1 passa (−0,056; 0,998; 2,012); C-2 passa (scarto 0,0 sul colon); C-3 riferimento registrato (`smoke_ref.json`); C-5 passa (B0 − B1 = −0,069, w 0,116, uguale); C-4 NON passa (P − T = 1,353, w 1,004, indeterminato). Per la regola i numeri sono provvisori: pavimento, tetto e soglia non sono in `progetto.json`; A1 sta in `results/sonda/S3/misura_provvisoria.json`, non in `results/misura.json`.
+Controlli: C-1 passa (−0,056; 0,998; 2,012); C-2 passa (scarto 0,0 sul colon); C-3 passa (catena ridotta rifatta da capo, scarto 0); C-5 passa (B0 − B1 = −0,069, w 0,116, uguale); C-4 NON passa (P − T = 1,353, w 1,004, indeterminato). Per la regola i numeri sono provvisori: pavimento, tetto e soglia non sono in `progetto.json`; A1 sta in `results/sonda/S3/misura_provvisoria.json`, non in `results/misura.json`.
 
 Diagnosi (non decide nulla, `/tmp`): con h senza i κ del colon (κ = 1) C-4 passerebbe (P − T = 3,04, w 1,77) e B − T sarebbe diverso (2,29, w 0,87; D(T) 0,85, D(B) 3,14). Il fallimento viene dalla scelta scritta di usare i κ del colon (tumore 1,66, stroma 3,19), che allarga h; con quella scelta w(P, T) ≥ δ, quindi «diverso» è quasi impossibile per costruzione.
 

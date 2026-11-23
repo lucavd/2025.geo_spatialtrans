@@ -1,0 +1,23 @@
+{
+ "valore": 1.573401,
+ "se": 0.187442,
+ "voci": {
+  "tumour M-4": 4.0336,
+  "tumour M-1": 2.2841,
+  "tumour M-6": 1.7419,
+  "stroma M-4": 1.5906,
+  "stroma M-6": 1.0119,
+  "stroma M-1": 0.902,
+  "stroma M-5": 0.7327,
+  "tumour M-2": 0.5115,
+  "stroma M-3": -0.0927,
+  "stroma M-2": 0.0694,
+  "tumour M-5": 0.4647,
+  "tumour M-3": -0.4392
+ },
+ "affermazioni": {},
+ "fonte": "/mnt/micron/geo_spatialtrans/S3_sonda/smoke/D.json",
+ "tetto_misurato": 0.521062,
+ "nota": "A1 = D(B): simulatore = catena banale (S3)",
+ "controlli_passati": false
+}
