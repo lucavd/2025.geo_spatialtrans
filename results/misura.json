@@ -16,7 +16,7 @@
   "tumour M-3": -0.5157
  },
  "affermazioni": {},
- "fonte": "results/sonda/S3b/D.json",
+ "fonte": "/mnt/micron/geo_spatialtrans/S3_sonda/smoke/D.json",
  "tetto_misurato": -0.768693,
  "nota": "A1 = D(B): simulatore = catena banale (S3)",
  "controlli_passati": true
