@@ -9,7 +9,7 @@ generated: { by: geo-agent/progetto-master, at: 2026-11-20T21:00:00+01:00 }
 
 Un simulatore di Visium HD con verità per cellula riproduce un tumore polmonare quanto una seconda sezione e ordina i metodi come la verità.
 
-Lettore: chi sviluppa o confronta metodi per Visium HD. Rivista: Genome Biology (A), Bioinformatics (B). Simulatore = banale più i pezzi che lo battono.
+Lettore: chi sviluppa o confronta metodi Visium HD. Rivista: Genome Biology (A), Bioinformatics (B). Simulatore = banale più i pezzi che lo battono.
 
 # Dati
 
@@ -60,8 +60,6 @@ Scommessa 2; sonda 5 (registrazione, check, pavimento e tetto, componenti veri, 
 
 # Decisioni del PI
 
-- 2026-11-20 (SC2): polmone 10x dopo Xenium, cancello sulla registrazione, riserva il colon; G0 firmato, sonda 5.
+- 2026-11-20 (SC2): polmone 10x dopo Xenium, cancello sulla registrazione, riserva il colon; G0: sonda 5.
 - 2026-11-21 (S1): X2 con un metro più preciso, una sessione.
-- 2026-11-23 (S3): h senza κ del colon, aree omologhe H1-H2.
-- 2026-11-23 (S3b): metà nascosta solo in H2.
-- 2026-11-23 (S3c): proroga della sonda da 5 a 7 sessioni.
+- 2026-11-23 (S3, S3b, S3c): h senza κ del colon, aree omologhe H1-H2; metà nascosta solo in H2; sonda prorogata a 7 sessioni.

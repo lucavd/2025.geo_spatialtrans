@@ -22,7 +22,7 @@ Sonda, budget 5, firmata a G0 il 2026-11-20. Registro: S1, S2 (`infra`), S3b, S3
 - Incertezza: bootstrap per coppie stratificato per tessuto, B = 2000, seme 20261123, semi-ampiezze ed se × f = 1,584 (√(5/4) t(0,975; 4)/1,96). Scelta da COV: copertura minima (i) 0,807, (ii) 0,938.
 - Cancelli passati: G-ID (permutazioni = stimatore indipendente, 1,7e-14), C-1p (0,068; 0,999; 1,996), C-2, C-4, C-5; CP-perm rango 1/120 in tumore e stroma.
 - Diagnosi se (`tools/sonda/S3c_diag_se.py`, `results/sonda/S3c/diag_se.json`): sui sintetici con la struttura osservata la deviazione standard vera di D(B) è 0,11; il metro parametrico di S3b stimava 0,234 (circa il doppio), (ii) 0,164 (prudente). Il se di S3b era gonfiato.
-- Revisione indipendente (sotto-agente, seme 777): 126 voci su 127 concordano; unica differenza f con 1,959964 invece di 1,96 (1,8e-5). Il calcolo del revisore è stato fatto nel kernel locale su una copia della tabella (md5 verificati).
+- Revisione indipendente (sotto-agente, seme 777): 126 voci su 127 concordano; unica differenza f con 1,959964 invece di 1,96 (1,8e-5).
 
 # Numeri (h, `results/sonda/S3c/D.json`)
 
