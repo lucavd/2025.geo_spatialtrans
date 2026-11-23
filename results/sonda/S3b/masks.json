@@ -1,0 +1,78 @@
+{
+ "H1": {
+  "R": 838,
+  "C": 838,
+  "m": 2604.0,
+  "n_tissue": 448109,
+  "sf": {
+   "spot_diameter_fullres": 29.22316526051531,
+   "bin_size_um": 8.0,
+   "microns_per_pixel": 0.2737554241192739,
+   "regist_target_img_scalef": 0.13752006,
+   "tissue_lowres_scalef": 0.013752005,
+   "fiducial_diameter_fullres": 1205.4555669962565,
+   "tissue_hires_scalef": 0.13752006
+  },
+  "img_shape": [
+   6000,
+   3524,
+   3
+  ],
+  "pxl_cols": [
+   "pxl_row_in_fullres",
+   "pxl_col_in_fullres"
+  ],
+  "corner_px": [
+   [
+    0.0,
+    0.0,
+    24389.225178836452,
+    -595.9388461382393
+   ],
+   [
+    837.0,
+    837.0,
+    -33.76674197231395,
+    23898.56288119329
+   ]
+  ]
+ },
+ "H2": {
+  "R": 838,
+  "C": 838,
+  "m": 3372.0,
+  "n_tissue": 420997,
+  "sf": {
+   "spot_diameter_fullres": 29.21716813181774,
+   "bin_size_um": 8.0,
+   "microns_per_pixel": 0.27381161527724973,
+   "regist_target_img_scalef": 0.13867702,
+   "tissue_lowres_scalef": 0.013867702,
+   "fiducial_diameter_fullres": 1205.2081854374817,
+   "tissue_hires_scalef": 0.13867702
+  },
+  "img_shape": [
+   6000,
+   3478,
+   3
+  ],
+  "pxl_cols": [
+   "pxl_row_in_fullres",
+   "pxl_col_in_fullres"
+  ],
+  "corner_px": [
+   [
+    0.0,
+    0.0,
+    -903.8893687360653,
+    21668.148564326213
+   ],
+   [
+    837.0,
+    837.0,
+    23385.042460532433,
+    -2963.6342276119112
+   ]
+  ]
+ }
+}
