@@ -1,0 +1,114 @@
+{
+ "X1": {
+  "ecc_init_tries": {
+   "0": {
+    "cc": 0.8338619902719281,
+    "angle_deg": 0.6832724213600159
+   },
+   "90": {
+    "error": "OpenCV(5.0.0) /io/opencv/modules/video/src/ecc.cpp:595: error: (-7:Iterations do"
+   },
+   "180": {
+    "error": "OpenCV(5.0.0) /io/opencv/modules/video/src/ecc.cpp:582: error: (-7:Iterations do"
+   },
+   "270": {
+    "error": "OpenCV(5.0.0) /io/opencv/modules/video/src/ecc.cpp:595: error: (-7:Iterations do"
+   }
+  },
+  "ecc": {
+   "init_deg": 0,
+   "euclid_cc": 0.8338619902719281,
+   "affine_cc": 0.8496248120648594,
+   "angle_deg": 0.746553897857666
+  },
+  "array_map_H2_to_X": {
+   "linear": [
+    [
+     1.0022741943533302,
+     -0.0005907700633756576
+    ],
+    [
+     -0.0005671656812686478,
+     0.9995858138435199
+    ]
+   ],
+   "det": 1.0018587311925264,
+   "angle_deg": -0.03242246137414699
+  },
+  "local_tiles": {
+   "n": 20,
+   "median_um": 240.24921526341043,
+   "p95_um": 460.4548169993187,
+   "max_um": 553.2000395676719
+  },
+  "overlap_mm2": {
+   "tissue_H2": 26.943807999999997,
+   "tissue_both": 26.335552,
+   "mask_dice": 0.9516907542190799,
+   "devH2_and_devX": 12.7104,
+   "devH2_and_holdoutX": 0.0
+  },
+  "areas": {
+   "n_in_dev": 10,
+   "n_in_holdout": 0,
+   "n_straddle": 0,
+   "min_tissue_in_X": 0.9316378908072795
+  }
+ },
+ "X2": {
+  "ecc_init_tries": {
+   "0": {
+    "cc": 0.8650786982859046,
+    "angle_deg": -5.294139385223389
+   },
+   "90": {
+    "error": "OpenCV(5.0.0) /io/opencv/modules/video/src/ecc.cpp:595: error: (-7:Iterations do"
+   },
+   "180": {
+    "error": "OpenCV(5.0.0) /io/opencv/modules/video/src/ecc.cpp:582: error: (-7:Iterations do"
+   },
+   "270": {
+    "error": "OpenCV(5.0.0) /io/opencv/modules/video/src/ecc.cpp:595: error: (-7:Iterations do"
+   }
+  },
+  "ecc": {
+   "init_deg": 0,
+   "euclid_cc": 0.8650786982859046,
+   "affine_cc": 0.8745939582008184,
+   "angle_deg": -5.152678966522217
+  },
+  "array_map_H2_to_X": {
+   "linear": [
+    [
+     0.9940557957552786,
+     -0.10057281594499887
+    ],
+    [
+     0.09873215859421174,
+     0.9915051932878337
+    ]
+   ],
+   "det": 0.9955412551233769,
+   "angle_deg": 5.6721599675926475
+  },
+  "local_tiles": {
+   "n": 20,
+   "median_um": 8.089524139277984,
+   "p95_um": 40.03911615398101,
+   "max_um": 285.4778704804214
+  },
+  "overlap_mm2": {
+   "tissue_H2": 26.943807999999997,
+   "tissue_both": 24.687936,
+   "mask_dice": 0.9270149560402721,
+   "devH2_and_devX": 11.019072,
+   "devH2_and_holdoutX": 0.048704
+  },
+  "areas": {
+   "n_in_dev": 10,
+   "n_in_holdout": 0,
+   "n_straddle": 0,
+   "min_tissue_in_X": 0.015504753282028067
+  }
+ }
+}
