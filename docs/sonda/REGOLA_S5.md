@@ -99,3 +99,11 @@ Sul server al più 12 processi a un thread (file `WORKERS` di `/mnt/micron/geo_s
 [^s3c]: docs/sonda/REGOLA_S3c.md
 [^xen]: docs/riesame/DECISIONI_B_XENIUM.md, XD-9 e XD-11
 [^orient]: results/sonda/S5/orient.json
+
+
+# Esito (2026-11-24, scritto dopo il pilota; la regola sopra resta com'era)
+
+- Cancelli passati: G-XR 10/10 (95° percentile sulla scacchiera al massimo 1,81 µm; mediana di |s| dopo la correzione al massimo 0,41 µm; controlli positivi entro 0,23 µm; con il segno opposto la mediana sale ad almeno 17,5 µm), G-SUB 50/50, G-HALF, G-MD5 (`results/sonda/S5/gates.json`).
+- La regola non è attuabile come scritta. Sui 284 geni di G_p H2 ha il 2 % degli UMI: 1-7 UMI per blocco da 8 µm in mediana per area, blocchi con almeno 20 UMI fra 0 e 4 % in V e circa 0 in B (ricalcolo indipendente dai file di esportazione). RCTD con il suo minimo invariato di 20 UMI non parte in Bp 20/20, Pp 9/10, Vp 3/10, Tp 4/10, XB 2/10 (`results/sonda/S5/diag_summary.csv`); la catena completa non è stata lanciata. Nessuna soglia cambiata dopo il pilota.
+- Quindi A3, G-MET, CP-XB e P2-P5 non sono misurati. P1 è giudicabile: f = 0,094 nel tumore (sotto 0,1, smentita) e 0,113 nello stroma.
+- Sessione registrata come `infra`. La scelta su A3 (portarla su X2, che ha 5000 geni ma non è registrata, oppure toglierla dal contratto dichiarando il fatto) spetta a Luca e va al riesame.
