@@ -63,7 +63,7 @@ Written on 2026-11-18, before the Aim 1 plan and run. Rules from `protocol/ADEMP
 | Top-k markers | Jaccard of the top-100 by log2 fold-change; curve for k = 10, 20, 50, 100, 200 | ADEMP §5.1 |
 | Separability | silhouette per type, 2,000 VST genes, 50 PCs, cells from the common noise model, as many per type as the target | ADEMP §5.1; DECISIONS 2026-11-04 |
 | Arm P | silhouette; quantiles (10, 50, 90, 99, 99.9 %) and KS distance of gene means and of top-100 marker fold-changes, against the target and against E | DECISIONS 2026-11-04 (two rows) |
-| Draws of C− and P | n = max(10, ⌈(SD_upper / 0.005)²⌉), largest over donors, types and measures, per tissue; pilot draws kept | DECISIONS 2026-11-11 |
+| Repetitions of C− and P | n = max(10, ⌈(SD_upper / 0.005)²⌉), largest over donors, types and measures, per tissue; pilot repetitions kept | DECISIONS 2026-11-11 |
 | Seed | 42 | ADEMP §8 |
 
 ## 1.2 Expectations
@@ -106,7 +106,7 @@ show_aim1("p_silhouette")
 
 # 4. Results and counter-proof
 
-## 4.1 Number of draws and B (plan)
+## 4.1 Number of repetitions and B (plan)
 
 ```{r plan}
 #| results: asis

@@ -6,6 +6,7 @@
 #   3. fidelity_cor() and jaccard_topk() of a profile with itself = 1; Jaccard of disjoint tops = 0;
 #   4. noise ceiling: identical halves give 1;
 #   5. pooled_mu() columns = sum of counts / sum of library sizes.
+#   6. run_checkpointed(): interrupted and resumed = uninterrupted run.
 # Usage (working directory = thesis/):  SEURAT_LIB=<path> Rscript tests/test_aim1.R [colon]
 source("renv/activate.R")
 suppressPackageStartupMessages(library(Matrix))
@@ -37,7 +38,7 @@ L <- Matrix::colSums(y)
 # halves are random, so build a case where every cell of a type is identical
 z <- Matrix::Matrix(rep(Matrix::rowSums(x[, 1:5]), 60), nrow = 300, sparse = TRUE)
 rownames(z) <- rownames(x)
-nc <- noise_ceiling_draw(z, rep(c("A", "B"), each = 30), Matrix::colSums(z), c("A", "B"))
+nc <- noise_ceiling_split(z, rep(c("A", "B"), each = 30), Matrix::colSums(z), c("A", "B"))
 ok(all(abs(nc$ceiling_pearson - 1) < 1e-12), "ceiling of identical cells = 1")
 
 # 5. pooled μ
@@ -64,3 +65,20 @@ if (nzchar(lib)) {
   ok(setequal(hv, mine$hvg), "VST: same 2,000 HVGs as Seurat")
   ok(max(abs(sv - mine$std_var)) < 1e-6, "VST: same standardized variance as Seurat")
 } else cat("SKIP Seurat check (SEURAT_LIB not set)\n")
+
+# 6. run_checkpointed(): a run interrupted half-way and resumed gives the same results as an uninterrupted
+#    one (one RNG stream per repetition); another key or a failed worker stops the run.
+RNGkind("L'Ecuyer-CMRG")
+f6 <- function(i) { set.seed(1000 + i); data.frame(i = i, v = rnorm(2)) }
+fA <- tempfile(); fB <- tempfile()
+whole <- run_checkpointed(11:30, f6, fA, list(k = 1), 5)
+crash <- function(i) if (i == 24) stop("killed") else f6(i)
+stopifnot(inherits(try(run_checkpointed(11:30, crash, fB, list(k = 1), 5), silent = TRUE), "try-error"),
+          "half saved" = length(readRDS(fB)$res) == 10)
+ran <- integer(0)
+resumed <- run_checkpointed(11:30, function(i) { ran <<- c(ran, i); f6(i) }, fB, list(k = 1), 5)
+stopifnot("resumed = uninterrupted" = identical(resumed, whole), "= plain lapply" = identical(whole, lapply(11:30, f6)),
+          "only the missing ones run again" = identical(ran, 21:30))
+stopifnot(inherits(try(run_checkpointed(11:30, f6, fB, list(k = 2), 5), silent = TRUE), "try-error"),
+          inherits(try(run_checkpointed(1:4, function(i) NULL, tempfile(), list(k = 1), 2), silent = TRUE), "try-error"))
+cat("6. run_checkpointed: PASS\n")

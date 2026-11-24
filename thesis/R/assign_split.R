@@ -3,19 +3,19 @@
 #    median - 3 MAD on the log scale (the scater::isOutlier convention for cells, OSCA,
 #    Amezquita et al. 2020, doi:10.1038/s41592-019-0654-x, applied here to donors).
 #    Excluded donors go to no split.
-# 2. Among the remaining donors, n_draw are drawn at random with a fixed seed: the first is the
-#    held-out donor, the second E′, the others (n_draw > 2) complete the held-out group of
+# 2. Among the remaining donors, n_sampled donors are chosen at random with a fixed seed: the first is the
+#    held-out donor, the second E′, the others (n_sampled > 2) complete the held-out group of
 #    Aim 1 (DECISIONS 2026-10-30: 4 donors; "group3", "group4"). All other donors go to training.
-#    sample.int() draws in sequence, so the first two donors do not depend on n_draw.
-# Donors are sorted by donor_id before the draw, so the result depends only on the seed and on
+#    sample.int() samples in sequence, so the first two donors do not depend on n_sampled.
+# Donors are sorted by donor_id before the selection, so the result depends only on the seed and on
 # the set of donors, not on the order of the cells.
 
 # cells: data.frame with one row per cell and columns donor_id, cell_type.
 # Returns one row per donor: donor_id, n_cells, n_types_ge<min_cells>, split
 # (training, heldout, eprime, group3.., or excluded).
-# qc = FALSE skips step 1: used for the pilot split, drawn from training donors that already
+# qc = FALSE skips step 1: used for the pilot split, sampled from training donors that already
 # passed QC (ADEMP §10).
-assign_split <- function(cells, seed, min_cells = 50, n_mads = 3, qc = TRUE, n_draw = 2) {
+assign_split <- function(cells, seed, min_cells = 50, n_mads = 3, qc = TRUE, n_sampled = 2) {
   stopifnot(all(c("donor_id", "cell_type") %in% names(cells)), !anyNA(cells$donor_id),
             "seed must be one number" = length(seed) == 1 && is.numeric(seed))
   per_donor <- split(cells$cell_type, cells$donor_id)
@@ -31,14 +31,14 @@ assign_split <- function(cells, seed, min_cells = 50, n_mads = 3, qc = TRUE, n_d
   lower <- if (qc) exp(median(log_cells) - n_mads * mad(log_cells)) else 0
   donors$split <- ifelse(donors$n_cells < lower, "excluded", "training")
   kept <- which(donors$split == "training")
-  stopifnot("Too few donors after QC for the draw plus training" = length(kept) >= n_draw + 1)
+  stopifnot("Too few donors after QC for the selection plus training" = length(kept) >= n_sampled + 1)
 
   old_kind <- RNGkind()
   on.exit(do.call(RNGkind, as.list(old_kind)), add = TRUE)
-  RNGkind("Mersenne-Twister", "Inversion", "Rejection")   # same draw in every R version >= 3.6
+  RNGkind("Mersenne-Twister", "Inversion", "Rejection")   # same selection in every R version >= 3.6
   set.seed(seed)
-  drawn <- kept[sample.int(length(kept), n_draw)]
-  donors$split[drawn] <- c("heldout", "eprime", if (n_draw > 2) paste0("group", 3:n_draw))
+  sampled <- kept[sample.int(length(kept), n_sampled)]
+  donors$split[sampled] <- c("heldout", "eprime", if (n_sampled > 2) paste0("group", 3:n_sampled))
 
   names(donors)[names(donors) == "n_types"] <- paste0("n_types_ge", min_cells)
   attr(donors, "qc_lower_bound") <- lower

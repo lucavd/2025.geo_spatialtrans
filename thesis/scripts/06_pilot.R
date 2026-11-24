@@ -3,7 +3,7 @@
 # seed check, reuse of held-out cells).
 #
 # Design (ADEMP §10, proposal 2026-10-29; levels Pierangela 2026-10-30):
-#   pilot donors from 03_reference.R <tissue> pilot (drawn inside training, seed 20261030);
+#   pilot donors from 03_reference.R <tissue> pilot (sampled inside training, seed 20261030);
 #   arms E and C− (one new gene permutation per replicate), plus the real anchor (built from the
 #   pilot held-out donor), because n_sim takes the largest SD across the design (ADEMP §6) and
 #   the anchor is part of every condition;
@@ -11,7 +11,7 @@
 #   depth per cell 175 / 4,900 UMI (10x Visium HD and standard Visium colorectal datasets, Space
 #   Ranger metrics); spot target = cells x UMI per cell, spots above are thinned (Pierangela 2026-10-31);
 #   composition Dirichlet(alpha_k = K * p_k), p_k = share of spot type k among training cells, then
-#   cells drawn multinomially (Pierangela 2026-10-31);
+#   cells sampled multinomially (Pierangela 2026-10-31);
 #   500 spots per dataset; 10 replicates per condition;
 #   methods RCTD (full), spatialDWLS, MuSiC, NNLS on the training reference (<= 1,000 cells/type).
 # Seeds: one pilot seed (20261101), L'Ecuyer-CMRG; one stream per replicate job, one sub-stream
@@ -125,8 +125,8 @@ run_job <- function(i) {
   assign(".Random.seed", g$seed[[1]], envir = .GlobalEnv)
   ts <- R$types_spot
   target <- g$n_cells * g$depth
-  comp <- draw_compositions(n_spots, g$n_cells, ts, alpha_by_n[[as.character(g$n_cells)]])
-  cells <- draw_cells(comp, R$L_by_type[ts])
+  comp <- sample_compositions(n_spots, g$n_cells, ts, alpha_by_n[[as.character(g$n_cells)]])
+  cells <- sample_cells(comp, R$L_by_type[ts])
   truth <- matrix(0, n_spots, length(R$types_ref), dimnames = list(rownames(comp), R$types_ref))
   truth[, ts] <- comp / g$n_cells
   if (any(abs(rowSums(truth) - 1) > 1e-12)) stop("C1")
@@ -135,7 +135,7 @@ run_job <- function(i) {
   if (any(abs(colSums(mu_C) - colSums(mu_E)) > 1e-9)) stop("C4")
   held_ok <- R$held_meta$cell_type %in% ts
   anc <- anchor_spots(R$held[, held_ok], R$held_meta$cell_type[held_ok], comp)
-  # UMI-fraction truth (secondary estimand, 2026-11-03); draws no random numbers, so the RNG
+  # UMI-fraction truth (secondary estimand, 2026-11-03); uses no random numbers, so the RNG
   # stream of the rest of the job is unchanged. Arms E and C− share it (same cells and L).
   held_used <- R$held[, held_ok][, anc$cells_used, drop = FALSE]
   tu_arm <- umi_truth(cells$spot, cells$type, cells$L, rownames(comp), R$types_ref)

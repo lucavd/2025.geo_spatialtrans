@@ -60,8 +60,8 @@ simulate_splat_means <- function(n_genes, est) {
 #   - μ^P: n_genes base means from simulate_splat_means() with the tissue calibration
 #     (04p_calibrate_p.R); n_genes = genes of the reference the run uses. Genes are named P00001...,
 #     because they are not the real genes. Markers: each type k gets as many markers as found for
-#     it in training, drawn at random among all P genes (without replacement within a type; a gene
-#     drawn for two types gets both fold-changes, one per column); each fold-change is drawn with
+#     it in training, sampled at random among all P genes (without replacement within a type; a gene
+#     sampled for two types gets both fold-changes, one per column); each fold-change is sampled with
 #     replacement from the empirical fold-changes of the training markers of the SAME type
 #     (Pierangela, 2026-11-05: per type, so each type keeps the strength of its own markers, e.g.
 #     Plasma). Columns normalised to 1 (ADEMP §2.1).
@@ -77,7 +77,7 @@ simulate_splat_means <- function(n_genes, est) {
 #     reference cell of each type (the real arms use all training cells; P has only the simulated
 #     reference: declared). A new μ^P, φ^P and reference in every replicate.
 #   - Order of random numbers inside a replicate: μ^P, then φ^P ties, then the reference, then the
-#     spots of P (so the pilot streams of E, C− and the anchor are untouched if P is drawn last).
+#     spots of P (so the pilot streams of E, C− and the anchor are untouched if P is sampled last).
 # Checks: tests/test_arm_p_o.R (pre-registered in its header).
 
 # Pooled training mean of every real gene, from μ_E (genes x types) and the training library

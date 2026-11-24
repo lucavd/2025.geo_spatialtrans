@@ -1,6 +1,6 @@
 # test_arm_p_o.R — arm P (simulated μ^P, φ by rank, simulated method reference) and arm O (oracle μ)
 # on the colon pilot reference (R/arm_p.R, R/simulate_spots.R; ADEMP §2.1; DECISIONS 2026-11-04).
-# Pilot data only (<TESI_DATA>/derived/reference/colon_pilot.rds: pilot held-out donor drawn inside
+# Pilot data only (<TESI_DATA>/derived/reference/colon_pilot.rds: pilot held-out donor sampled inside
 # training), plus the main P calibration (colon_p_calibration.rds); no main held-out cell is read.
 #
 # Pre-registered checks (written 2026-11-05 before the first run; PASS/FAIL printed, stop at the end
@@ -96,8 +96,8 @@ ok(length(hd) == 1 && hd == R$donors$heldout && !any(R$ref_meta$donor_id == hd) 
 
 # --- one replicate ----------------------------------------------------------------------------------
 n_train <- lengths(R$L_by_type[ts]); alpha <- length(n_train) * n_train / sum(n_train)
-comp <- draw_compositions(n_spots, n_cells, ts, alpha)
-cells <- draw_cells(comp, R$L_by_type[ts])
+comp <- sample_compositions(n_spots, n_cells, ts, alpha)
+cells <- sample_cells(comp, R$L_by_type[ts])
 truth <- matrix(0, n_spots, length(types), dimnames = list(rownames(comp), types)); truth[, ts] <- comp / n_cells
 held_ok <- R$held_meta$cell_type %in% ts
 anc <- anchor_spots(R$held[, held_ok], R$held_meta$cell_type[held_ok], comp)

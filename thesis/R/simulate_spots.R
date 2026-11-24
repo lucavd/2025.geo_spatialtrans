@@ -1,13 +1,13 @@
 # simulate_spots.R — pseudo-spot generator (PROTOCOLLO §5.2; ADEMP §2.2–2.4).
-# One replicate = compositions + per-cell library sizes drawn once and shared by every arm and
+# One replicate = compositions + per-cell library sizes sampled once and shared by every arm and
 # by the anchor (common random numbers, ADEMP §2.4); only μ changes between arms.
 
-# Spot compositions: π_s ~ Dirichlet(alpha) over the spot types, then n_cells cells drawn
+# Spot compositions: π_s ~ Dirichlet(alpha) over the spot types, then n_cells cells sampled
 # multinomially (as in the Open Problems spatial-decomposition simulator). alpha is one value
 # (symmetric) or one value per type, alpha_k = c * p_k with p_k the training share of type k and
 # c from dirichlet_c() (ADEMP §2.2; c = K until 2026-11-06). Returns a spots x types matrix of cell
 # counts; the truth is counts / n_cells.
-draw_compositions <- function(n_spots, n_cells, types, alpha = 1) {
+sample_compositions <- function(n_spots, n_cells, types, alpha = 1) {
   k <- length(types)
   alpha <- rep_len(alpha, k)
   g <- matrix(rgamma(n_spots * k, shape = rep(alpha, each = n_spots)), n_spots, k)
@@ -17,9 +17,9 @@ draw_compositions <- function(n_spots, n_cells, types, alpha = 1) {
   cnt
 }
 
-# One row per simulated cell: its spot, its type, and a library size drawn from the real library
+# One row per simulated cell: its spot, its type, and a library size sampled from the real library
 # sizes of training cells of the same type (DECISIONS 2026-10-29, noise model).
-draw_cells <- function(comp, L_by_type) {
+sample_cells <- function(comp, L_by_type) {
   spot <- rep(rep(rownames(comp), ncol(comp)), as.vector(comp))
   type <- rep(rep(colnames(comp), each = nrow(comp)), as.vector(comp))
   L <- numeric(length(type))
@@ -78,8 +78,8 @@ simulate_cells <- function(mu, phi, type, L, block = 1000) {
 # itself (mu_held of 03_reference.R, built like μ_E: counts of gene g over the donor's cells of
 # type k / all their counts), restricted to the spot types; spots then follow the common noise
 # model with the same cells and library sizes as every arm (common random numbers), so anchor vs O
-# = noise model (including the library sizes, drawn from training cells), O vs the other arms =
-# source of μ. Draws no random numbers.
+# = noise model (including the library sizes, sampled from training cells), O vs the other arms =
+# source of μ. Uses no random numbers.
 mu_oracle <- function(mu_held, types) {
   stopifnot(all(types %in% colnames(mu_held)))
   mu <- mu_held[, types, drop = FALSE]
@@ -88,7 +88,7 @@ mu_oracle <- function(mu_held, types) {
   mu
 }
 
-# Real anchor: each spot sums real held-out cells with the same composition (cells drawn with
+# Real anchor: each spot sums real held-out cells with the same composition (cells sampled with
 # replacement within type). held: genes x cells counts; held_type: type of each column.
 anchor_spots <- function(held, held_type, comp) {
   spot_names <- rownames(comp)
@@ -106,9 +106,9 @@ anchor_spots <- function(held, held_type, comp) {
 # UMI-fraction truth (secondary estimand, pilot 2026-11-03): share of the spot's UMI contributed
 # by each type = sum of the library sizes of its cells / sum over all cells of the spot. RCTD's
 # weights are defined on this scale ("proportion of the contribution of cell type k to pixel i",
-# Cable et al. 2022, doi:10.1038/s41587-021-00830-w, Methods). Simulated arms: L = drawn library
+# Cable et al. 2022, doi:10.1038/s41587-021-00830-w, Methods). Simulated arms: L = sampled library
 # sizes (expected UMI, since every μ column sums to 1), so the truth is the same for all arms;
-# anchor: L = total counts of the real cells used. No random numbers are drawn.
+# anchor: L = total counts of the real cells used. No random numbers are generated.
 # Returns spots x types (all `types`, zero for types absent from the spots); rows sum to 1.
 umi_truth <- function(spot, type, L, spot_names, types) {
   out <- matrix(0, length(spot_names), length(types), dimnames = list(spot_names, types))
@@ -118,7 +118,7 @@ umi_truth <- function(spot, type, L, spot_names, types) {
   out / rowSums(out)
 }
 
-# Depth: a spot above the target is thinned to exactly `target` UMI, drawn at random without
+# Depth: a spot above the target is thinned to exactly `target` UMI, sampled at random without
 # replacement from its UMIs (Pierangela 2026-11-01; binomial thinning only matched the target on
 # average); a spot below the target is kept. The target is cells per spot x UMI per cell
 # (ADEMP §2.2), so depth and cells per spot stay crossed.

@@ -14,7 +14,7 @@
 #     important_feature = "all" (default);
 #   - parallel: BiocParallel SnowParam (Windows has no forking), workers from TESI_WORKERS.
 # Output: <TESI_DATA>/derived/scdesign3/<tissue>_<tag>.rds with data, marginal fits, copula, times.
-# Optional 2nd argument = number of genes drawn at random (fixed seed) for a timing test.
+# Optional 2nd argument = number of genes sampled at random (fixed seed) for a timing test.
 #
 # Usage (working directory = thesis/):  Rscript scripts/04m_fit_scdesign3.R colon [n_genes]
 

@@ -28,7 +28,7 @@
 #     pooled profile of each type (ADEMP §2.3), the same definition as the top-k markers of ADEMP §5.1;
 #   - checks printed: cells, donors, types, genes; markers per type at 0.05 and 0.01; gamma and outlier
 #     parameters with empirical vs simulated quantiles of the gene means (10, 50, 90, 99, 99.9%, from one
-#     draw of the fitted model); fold-change summary and share of fold-changes below 1 (expected ~0, since
+#     realisation of the fitted model); fold-change summary and share of fold-changes below 1 (expected ~0, since
 #     markers are tested as up against every other type).
 # Output: <TESI_DATA>/derived/p_calibration/<tissue>_p_calibration.rds (markers, n per type, gamma
 # parameters, fold-changes per type, gene list, settings, session info).
@@ -74,7 +74,7 @@ cat(sprintf("[%s] training: %d cells, %d donors, %d types\n", tissue, nrow(cells
             length(unique(cells$donor_id)), length(unique(cells$cell_type))))
 file <- list.files(file.path(data_dir, "raw"), pattern = paste0("^", tissue, "_.*\\.h5ad$"), full.names = TRUE)
 genes <- read_var_genes(file, counts_group)
-# Cells for findMarkers (DECISIONS 2026-11-11): at most marker_cap cells per type, drawn at random within
+# Cells for findMarkers (DECISIONS 2026-11-11): at most marker_cap cells per type, sampled at random within
 # the type (seed 42); every type is kept, a type with <= marker_cap cells is taken whole. Gene filter,
 # pooled profile and mu_E are sums over ALL training cells, accumulated window by window (the full matrix
 # is never held in memory; PsychAD brain did not fit in 96 GB).

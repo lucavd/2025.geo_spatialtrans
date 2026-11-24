@@ -9,7 +9,7 @@
 #   (36 over the three tissues; ADEMP §2.2); 500 spots each. Was two depth levels 175 / 4,900 (24 datasets).
 #   - E: μ_E (training) on the spot types; C−: μ_E with gene labels permuted within each type, one new
 #     permutation per replicate (DECISIONS 2026-10-30); E′: μ of the E′ donor; O: μ of the held-out
-#     donor (mu_oracle()); P: μ^P and φ^P drawn in each replicate (R/arm_p.R); every arm with the
+#     donor (mu_oracle()); P: μ^P and φ^P sampled in each replicate (R/arm_p.R); every arm with the
 #     common NB noise model, φ_g from training (P: φ by rank); anchor = real held-out cells.
 #   - Common random numbers (ADEMP §2.4): in a replicate and a cells-per-spot level, one composition
 #     table and one cell table (type, library size) for every arm, and the same compositions for the
@@ -27,12 +27,12 @@
 # has its own sub-stream, so adding or cutting an arm (G, or a cut by the cut rule) leaves every
 # other dataset unchanged: 1 = μ^P and φ^P ties; 2 = P reference; 3 = C− permutation;
 # 100 j = compositions and cells of cells-per-spot level j; 100 j + 10 a = counts of dataset a
-# (anchor 1: held-out cells drawn; E 2, C− 3, E′ 4, O 5, P 6, G 7 reserved); 100 j + 10 a + d =
+# (anchor 1: held-out cells sampled; E 2, C− 3, E′ 4, O 5, P 6, G 7 reserved); 100 j + 10 a + d =
 # thinning of dataset a to depth level d. The replicate stream is saved with each output.
 #
 # Pre-registered checks (written 2026-11-05 before the first run; the job stops if one fails):
 #   S1. truth (cell shares): rows sum to 1 (1e-12), zero on reference types absent from the spots;
-#       UMI-share truth (arms: drawn L; anchor: totals of the real cells) rows sum to 1 (1e-9).
+#       UMI-share truth (arms: sampled L; anchor: totals of the real cells) rows sum to 1 (1e-9).
 #   S2. every dataset has the same 500 spot names; real arms and the anchor on the reference genes,
 #       P on its own genes P00001…; arms share one cell table (one truth per condition).
 #   S3. after thinning no spot exceeds the target; a spot at or above the target ends exactly at it,
@@ -157,8 +157,8 @@ make_replicate <- function(i, arms = arms_all) {
   for (j in seq_along(levels_cells)) {
     nc <- levels_cells[j]
     use_stream(substream(sr, 100 * j))
-    comp <- draw_compositions(n_spots, nc, ts, alpha_by_n[[j]])
-    cells <- draw_cells(comp, R0$L_by_type[ts])
+    comp <- sample_compositions(n_spots, nc, ts, alpha_by_n[[j]])
+    cells <- sample_cells(comp, R0$L_by_type[ts])
     sp <- rownames(comp)
     truth <- matrix(0, n_spots, length(types), dimnames = list(sp, types))
     truth[, ts] <- comp / nc
@@ -171,9 +171,9 @@ make_replicate <- function(i, arms = arms_all) {
         raw$anchor <- an$counts
         truth_umi$anchor <- umi_truth(an$spot, held_type[an$cells_used], held_L[an$cells_used], sp, types)
         n_held <- table(factor(held_type, ts))
-        drawn <- table(factor(held_type[an$cells_used], ts))
-        reuse <- data.frame(type = ts, n_held = as.vector(n_held), drawn = as.vector(drawn),
-                            reuse_obs = as.vector(drawn / n_held),
+        sampled <- table(factor(held_type[an$cells_used], ts))
+        reuse <- data.frame(type = ts, n_held = as.vector(n_held), sampled = as.vector(sampled),
+                            reuse_obs = as.vector(sampled / n_held),
                             reuse_exp = n_spots * nc * (n_train / sum(n_train)) / as.vector(n_held))
       } else {
         mu <- switch(a, Cminus = mu_C, P = world$mu[, ts, drop = FALSE], mu_fix[[a]])
@@ -280,7 +280,7 @@ if (run_mode == "check") {
                 "as expected" else "AGAINST the expectation"))
   rs <- r1$conditions[[k10]]$reuse
   cat("Reuse per held-out cell, replicate 1, 10 cells per spot (observed vs expected):\n")
-  print(transform(rs[, c("type", "n_held", "drawn", "reuse_obs", "reuse_exp")], reuse_obs = round(reuse_obs, 2), reuse_exp = round(reuse_exp, 2)), row.names = FALSE)
+  print(transform(rs[, c("type", "n_held", "sampled", "reuse_obs", "reuse_exp")], reuse_obs = round(reuse_obs, 2), reuse_exp = round(reuse_exp, 2)), row.names = FALSE)
   cat("Spots at / below the target, replicate 1:\n")
   print(do.call(rbind, lapply(r1$conditions, `[[`, "depth"))[, c("n_cells", "depth", "dataset", "n_at_target", "n_below")], row.names = FALSE)
   if (any(res == "FAIL")) stop(sum(res == "FAIL"), " check(s) failed")

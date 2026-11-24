@@ -71,7 +71,7 @@ Written before the pilot runs. Full text in `protocol/ADEMP.md` (v1.5, 2026-11-1
 
 | Item | Rule fixed before the pilot | Source |
 |---|---|---|
-| Pilot scope | three tissues, arms E and C− plus the real anchor, CPU methods (RCTD, spatialDWLS, MuSiC, NNLS), 10 replicates per arm × condition; pilot held-out and E′ donors drawn from training (seed 20261030) | ADEMP §10; DECISIONS 2026-10-30 |
+| Pilot scope | three tissues, arms E and C− plus the real anchor, CPU methods (RCTD, spatialDWLS, MuSiC, NNLS), 10 replicates per arm × condition; pilot held-out and E′ donors sampled from training (seed 20261030) | ADEMP §10; DECISIONS 2026-10-30 |
 | n_sim | 2 × MCSE of the paired RMSE difference ≤ δ/2, SD = upper 95% limit from the pilot, δ = 0.02 | DECISIONS 2026-11-03 (two rows) |
 | Dirichlet concentration | α_k = c · p_k, c = median over R6 ROIs per tissue and cells level | DECISIONS 2026-11-06 |
 | Depth thinning | exact downsampling to the target, report spots below target | DECISIONS 2026-11-02 |

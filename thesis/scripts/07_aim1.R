@@ -6,42 +6,42 @@
 #     >= 50 cells in that donor and in the training reference (ADEMP §2.6.1; others "not evaluated");
 #   arms: E (training μ), E′ (each other donor of the group as source: 12 ordered pairs = 6 pairs, the
 #     correlations and Jaccard are symmetric, the silhouette is not), C− (μ_E with gene labels permuted
-#     within type, a new permutation per draw), P (de novo world, distribution properties only);
+#     within type, a new permutation per repetition), P (de novo world, distribution properties only);
 #     O is not an Aim 1 arm (its profile is the held-out profile by construction, ADEMP §2.1);
 #     G only after its DECISIONS row;
 #   per arm x target x type: Pearson (main) and Spearman of log(1 + 10^4 μ) over the kept genes;
 #     Jaccard of the top-k markers (k = 10, 20, 50, 100, 200; main k = 100), markers = highest log2
 #     fold-change vs the mean of the other types of the same comparison (the type set is the same in
 #     source and target); silhouette width per type of cells simulated from the source with the common
-#     noise model (as many per type as the target donor has, library sizes drawn from the training cells
+#     noise model (as many per type as the target donor has, library sizes sampled from the training cells
 #     of the type), against the silhouette of the real cells of the target donor on the same types;
 #   P: separability (silhouette) and distributions of the gene means (log-profile) and of the log2
 #     fold-changes of the top-100 markers per type: quantiles 10/50/90/99/99.9% and two-sample KS
 #     distance, against the target donor and against E;
 #   noise ceiling per target x type: split halves, Spearman-Brown, sqrt (Pearson and Spearman);
-#   number of draws (DECISIONS 2026-11-11): B of the ceiling, n of C−, n of P = max(10,
-#     ceiling((SD_upper / 0.005)^2)), SD_upper = upper 95% limit of the SD over a pilot of 10 draws,
+#   number of repetitions (DECISIONS 2026-11-11): B of the ceiling, n of C−, n of P = max(10,
+#     ceiling((SD_upper / 0.005)^2)), SD_upper = upper 95% limit of the SD over a pilot of 10 repetitions,
 #     the largest over donors, types and measures; computed in this tissue.
 # Implementation choices (Pierangela, 2026-11-11, before any result):
 #   - HVGs: Seurat VST reimplemented on streamed sums (R/aim1.R; check against Seurat in
 #     tests/test_aim1.R), 2,000 genes among the kept genes (§2.6 list), on the raw counts of the
 #     training cells of the reference types; the same HVGs for the held-out, E, E′ and C−;
 #   - P has no real genes, so its HVGs are chosen with the same VST on its simulated method reference
-#     (its "training", ADEMP §2.1), in each draw;
-#   - measures that enter the rule of the number of draws: C− Pearson, Spearman, Jaccard k = 100,
+#     (its "training", ADEMP §2.1), in each repetition;
+#   - measures that enter the rule of the number of repetitions: C− Pearson, Spearman, Jaccard k = 100,
 #     silhouette; P KS distances (means and fold-changes, vs target and vs E) and silhouette; the
 #     quantiles are descriptive (they are on the log-profile scale, not on the 0–1 scale of 0.005);
 #   - a ceiling with negative Spearman-Brown reliability is set to 0 (not expected with >= 50 cells);
-#   - streams: L'Ecuyer-CMRG from the study seed 42 (ADEMP §8), one stream per split / draw, so a
-#     result does not depend on how many draws come before it in another component.
+#   - streams: L'Ecuyer-CMRG from the study seed 42 (ADEMP §8), one stream per split / repetition, so a
+#     result does not depend on how many repetitions come before it in another component.
 #
 # Modes. main: the held-out group of 02_split.R. Blocked until the ADEMP is approved (as 04_simulate.R),
-#   because Aim 1 on the held-out donors is a result. pilot (code test, ADEMP §10): 4 donors drawn from
-#   the training donors with assign_split(qc = FALSE, seed 20261030, n_draw = 4) (the first two are the
+#   because Aim 1 on the held-out donors is a result. pilot (code test, ADEMP §10): 4 donors sampled from
+#   the training donors with assign_split(qc = FALSE, seed 20261030, n_sampled = 4) (the first two are the
 #   pilot held-out and E′ of 03_reference.R), the main group is never read; the training is the main
 #   training minus these 4 donors; φ, the kept genes and the reference of P come from <tissue>_pilot.rds
 #   and the P calibration from the main training (both include pilot group donors: declared, test only).
-#   In pilot run mode the C− and P draws stop at 10 + workers (one extra round per worker, code test;
+#   In pilot run mode the C− and P repetitions stop at 10 + workers (P: 10 + workers_P) (one extra round per worker, code test;
 #   the plan CSV still gives the numbers of the rule); the noise ceiling is not capped (cheap, and B is in the plan).
 #
 # Pre-registered checks (the script stops if one fails):
@@ -53,30 +53,36 @@
 #   A4 a profile against itself gives Pearson = Spearman = Jaccard = 1;
 #   A5 2,000 distinct HVGs, all among the kept genes;
 #   A6 every ceiling in [0, 1];
-#   A7 every number of draws < 3,000 (stream layout).
+#   A7 every number of repetitions < 3,000 (stream layout).
 # Pre-registered expectations (reported, not a stop; ADEMP §1, §9):
 #   H1: C− has the lowest Pearson among E, E′, C− for every target x type (C− Pearson near 0);
 #   §9.2: E or E′ above the ceiling by more than 2 x MCSE of the ceiling is flagged for investigation.
 #
-# Usage (working directory = thesis/):  Rscript scripts/07_aim1.R <tissue> [pilot|main]
+# Usage (working directory = thesis/):  Rscript scripts/07_aim1.R <tissue> [pilot|main] [plan|run] [workers] [workers_P]
+#   workers = ceiling and C−; workers_P = P (default workers; fewer where P needs more memory); both saved in the plan CSV
 # Output: <TESI_DATA>/derived/aim1/<tissue>_<mode>_aim1.rds and CSVs (fidelity, silhouette, ceiling,
-# p_dist, draws) next to it.
+# p_dist, repetitions) next to it.
 
 ADEMP_APPROVED <- "2026-11-18"   # ADEMP v1.5 approved by Luca (DECISIONS 2026-11-18)
 
 args <- commandArgs(trailingOnly = TRUE)
 tissue <- if (length(args) >= 1) args[1] else "colon"
 mode <- if (length(args) >= 2) args[2] else "pilot"
-run <- if (length(args) >= 3) args[3] else "run"        # plan = only the 10-draw pilots and the numbers of draws
+run <- if (length(args) >= 3) args[3] else "run"        # plan = only the 10-repetition pilots and the numbers of repetitions
 workers <- if (length(args) >= 4) as.integer(args[4]) else 1L
+workers_P <- if (length(args) >= 5) as.integer(args[5]) else workers   # P needs more memory per worker than C−
 stopifnot(tissue %in% c("colon", "lymphoid", "brain"), mode %in% c("pilot", "main"), run %in% c("plan", "run"),
-          workers >= 1)
-# Draws in parallel by fork (Linux server); on Windows they run one after the other. Every split / draw sets
+          workers >= 1, workers_P >= 1)
+# Repetitions in parallel by fork (Linux server); on Windows they run one after the other. Every split / repetition sets
 # its own stream, so the results do not depend on the number of workers.
-par_lapply <- function(X, FUN) {
-  if (workers > 1 && .Platform$OS.type == "unix")
-    parallel::mclapply(X, FUN, mc.cores = workers, mc.preschedule = FALSE) else lapply(X, FUN)
+par_lapply <- function(X, FUN, n_workers = workers) {
+  r <- if (n_workers > 1 && .Platform$OS.type == "unix")
+    parallel::mclapply(X, FUN, mc.cores = n_workers, mc.preschedule = FALSE) else lapply(X, FUN)
+  if (any(vapply(r, function(x) is.null(x) || inherits(x, "try-error"), NA)))
+    stop("A parallel worker returned an error or nothing (killed?)")
+  r
 }
+par_lapply_P <- function(X, FUN) par_lapply(X, FUN, workers_P)
 if (mode == "main" && is.na(ADEMP_APPROVED)) stop("Main run blocked: the ADEMP is not approved yet")
 
 data_dir <- Sys.getenv("TESI_DATA")
@@ -108,7 +114,7 @@ if (mode == "main") {
   train_rows <- cells$row[cells$split == "training"]
 } else {
   tr <- cells[cells$split == "training", ]
-  pd <- assign_split(tr, seed = pilot_seed, min_cells = min_cells, qc = FALSE, n_draw = 4)
+  pd <- assign_split(tr, seed = pilot_seed, min_cells = min_cells, qc = FALSE, n_sampled = 4)
   donors <- vapply(c("heldout", "eprime", "group3", "group4"), function(s) pd$donor_id[pd$split == s], "")
   train_rows <- tr$row[!tr$donor_id %in% donors]
 }
@@ -212,7 +218,7 @@ held_sil <- function(d, S) {
   }
   held_sil_cache[[key]]
 }
-score <- function(src, d, arm, source, draw, phi = R0$phi, hvg_src = hvg) {
+score <- function(src, d, arm, source, repetition, phi = R0$phi, hvg_src = hvg) {
   S <- intersect(X[[d]]$types, colnames(src))
   tg <- X[[d]]$mu[, S, drop = FALSE]; sr <- src[, S, drop = FALSE]
   f <- merge(fidelity_cor(sr, tg), jaccard_topk(sr, tg, ks), by = "cell_type")
@@ -220,7 +226,7 @@ score <- function(src, d, arm, source, draw, phi = R0$phi, hvg_src = hvg) {
   sil <- silhouette_by_type(sim$x, sim$type, hvg_src)
   f$silhouette <- sil[f$cell_type]
   f$silhouette_target <- held_sil(d, S)[f$cell_type]
-  data.frame(target = d, arm = arm, source = source, draw = draw, n_types = length(S), f)
+  data.frame(target = d, arm = arm, source = source, repetition = repetition, n_types = length(S), f)
 }
 
 # A4: a profile against itself
@@ -229,12 +235,12 @@ self <- merge(fidelity_cor(X[[d1]]$mu, X[[d1]]$mu), jaccard_topk(X[[d1]]$mu, X[[
 if (any(abs(as.matrix(self[, -1]) - 1) > 1e-12)) stop("A4: self-comparison not 1")
 
 # ---- Noise ceiling (pilot of 10 splits, then up to B)
-ceil_draw <- function(b) {
+ceil_split <- function(b) {
   use_stream(off[["ceiling"]] + b)
   do.call(rbind, lapply(donors, function(d) data.frame(target = d, split = b,
-    noise_ceiling_draw(X[[d]]$x, X[[d]]$type, X[[d]]$L, X[[d]]$types))))
+    noise_ceiling_split(X[[d]]$x, X[[d]]$type, X[[d]]$L, X[[d]]$types))))
 }
-# SD_upper per measure x target x type over the pilot draws, and the rows that set n (largest SD_upper)
+# SD_upper per measure x target x type over the pilot repetitions, and the rows that set n (largest SD_upper)
 sd_table <- function(df, cols) {
   out <- do.call(rbind, lapply(cols, function(v) {
     s <- tapply(df[[v]], paste(df$target, df$cell_type, sep = " / "), sd_upper)
@@ -249,14 +255,14 @@ show_driver <- function(tab, what) {
   print(head(tab, 5), row.names = FALSE, digits = 3)
 }
 t_ceil <- proc.time()[["elapsed"]]
-ceil <- do.call(rbind, par_lapply(seq_len(n_pilot), ceil_draw))
+ceil <- do.call(rbind, par_lapply(seq_len(n_pilot), ceil_split))
 min_per <- list(ceiling = (proc.time()[["elapsed"]] - t_ceil) / 60 / n_pilot)
 sd_c_tab <- sd_table(ceil, c("ceiling_pearson", "ceiling_spearman"))
 sd_ceil <- sd_c_tab$sd_upper
-B <- n_draws_rule(sd_ceil, mcse_target, n_pilot)
+B <- n_repetitions_rule(sd_ceil, mcse_target, n_pilot)
 if (B >= 3000) stop("A7: B")
 show_driver(sd_c_tab, sprintf("noise ceiling, B = %d", B))
-if (B > n_pilot && run == "run") ceil <- rbind(ceil, do.call(rbind, par_lapply((n_pilot + 1):B, ceil_draw)))
+if (B > n_pilot && run == "run") ceil <- rbind(ceil, do.call(rbind, par_lapply((n_pilot + 1):B, ceil_split)))
 if (any(ceil$ceiling_pearson < 0 | ceil$ceiling_pearson > 1 | ceil$ceiling_spearman < 0 |
         ceil$ceiling_spearman > 1)) stop("A6: ceiling out of [0, 1]")
 ceil_sum <- do.call(rbind, lapply(split(ceil, paste(ceil$target, ceil$cell_type)), function(z) data.frame(
@@ -265,7 +271,7 @@ ceil_sum <- do.call(rbind, lapply(split(ceil, paste(ceil$target, ceil$cell_type)
   ceiling_spearman = mean(z$ceiling_spearman), mcse_spearman = sd(z$ceiling_spearman) / sqrt(nrow(z)), B = nrow(z))))
 cat(sprintf("  noise ceiling: B = %d (SD_upper max %.4f), %s\n", B, max(sd_ceil), elapsed()))
 
-# Silhouettes of the real target cells on each target's own types, computed once before the parallel draws
+# Silhouettes of the real target cells on each target's own types, computed once before the parallel repetitions
 # (a cache filled inside a forked worker would be lost)
 for (d in donors) invisible(held_sil(d, X[[d]]$types))
 
@@ -278,16 +284,16 @@ for (d in if (run == "run") donors else character(0)) {
 }
 cat("  E and E′ done,", elapsed(), "\n")
 
-# ---- C− draws
-cminus_draw <- function(i) {
+# ---- C− repetitions
+cminus_rep <- function(i) {
   use_stream(off[["Cminus"]] + i)
   mu_C <- permute_mu(mu_E)
   do.call(rbind, lapply(donors, function(d) score(mu_C, d, "Cminus", "training", i)))
 }
-# ---- P draws (world as in 04_simulate.R: μ^P, φ^P by rank, simulated reference)
+# ---- P repetitions (world as in 04_simulate.R: μ^P, φ^P by rank, simulated reference)
 mean_real <- pooled_mean(R0$mu_E, R0$L_by_type)
 L_ref <- Matrix::colSums(R0$ref)
-p_draw <- function(i) {
+p_rep <- function(i) {
   use_stream(off[["P"]] + i)
   P <- simulate_mu_p(calib, G, types_ref)
   phi_p <- phi_by_rank(R0$phi, mean_real, P$base)
@@ -300,12 +306,12 @@ p_draw <- function(i) {
     S <- X[[d]]$types
     sim <- simulate_type_cells(P$mu[, S, drop = FALSE], phi_p, n_target(d, S), L_by_type)
     sil <- silhouette_by_type(sim$x, sim$type, hvg_p)
-    out_s[[d]] <- data.frame(target = d, arm = "P", source = "P", draw = i, n_types = length(S), cell_type = S,
+    out_s[[d]] <- data.frame(target = d, arm = "P", source = "P", repetition = i, n_types = length(S), cell_type = S,
                              silhouette = sil[S], silhouette_target = held_sil(d, S)[S])
     lp_P <- log_profile(P$mu); lp_T <- log_profile(X[[d]]$mu); lp_E <- log_profile(mu_E)
     fP <- lfc_top(P$mu, S); fT <- lfc_top(X[[d]]$mu, S); fE <- lfc_top(mu_E, S)
     out_d[[d]] <- do.call(rbind, lapply(S, function(k) data.frame(
-      target = d, draw = i, cell_type = k,
+      target = d, repetition = i, cell_type = k,
       ks_mean_target = ks_d(lp_P[, k], lp_T[, k]), ks_mean_E = ks_d(lp_P[, k], lp_E[, k]),
       ks_fc_target = ks_d(fP[[k]], fT[[k]]), ks_fc_E = ks_d(fP[[k]], fE[[k]]),
       t(setNames(dist_quantiles(lp_P[, k]), paste0("mean_P_", names(dist_quantiles(1))))),
@@ -318,45 +324,53 @@ p_draw <- function(i) {
   list(sil = do.call(rbind, out_s), dist = do.call(rbind, out_d))
 }
 
-# ---- Pilots of 10 draws (C−, P), saved before anything else, then the numbers of draws
+# ---- Pilots of 10 repetitions (C−, P), saved before anything else, then the numbers of repetitions
 stem <- file.path(out_dir, sprintf("%s_%s_aim1", tissue, mode))
 t_c <- proc.time()[["elapsed"]]
-cm <- do.call(rbind, par_lapply(seq_len(n_pilot), cminus_draw))
+cm <- do.call(rbind, par_lapply(seq_len(n_pilot), cminus_rep))
 min_per$Cminus <- (proc.time()[["elapsed"]] - t_c) / 60 / n_pilot
 t_p <- proc.time()[["elapsed"]]
-pp <- par_lapply(seq_len(n_pilot), p_draw)
+pp <- par_lapply_P(seq_len(n_pilot), p_rep)
 min_per$P <- (proc.time()[["elapsed"]] - t_p) / 60 / n_pilot
 p_sil <- do.call(rbind, lapply(pp, `[[`, "sil")); p_dist <- do.call(rbind, lapply(pp, `[[`, "dist"))
 saveRDS(list(ceiling = ceil, cminus = cm, p_silhouette = p_sil, p_dist = p_dist, donors = donors, created = Sys.time()),
-        paste0(stem, "_pilot_draws.rds"))
+        paste0(stem, "_pilot_repetitions.rds"))
 sd_C_tab <- sd_table(cm, c("pearson", "spearman", paste0("jaccard_k", k_main), "silhouette"))
 sd_P_tab <- rbind(sd_table(p_sil, "silhouette"), sd_table(p_dist, c("ks_mean_target", "ks_mean_E", "ks_fc_target", "ks_fc_E")))
 sd_P_tab <- sd_P_tab[order(-sd_P_tab$sd_upper), ]
 sd_C <- sd_C_tab$sd_upper; sd_P <- sd_P_tab$sd_upper
-n_C <- n_draws_rule(sd_C, mcse_target, n_pilot); n_P <- n_draws_rule(sd_P, mcse_target, n_pilot)
+n_C <- n_repetitions_rule(sd_C, mcse_target, n_pilot); n_P <- n_repetitions_rule(sd_P, mcse_target, n_pilot)
 if (n_C >= 3000) stop("A7: n of C−")
 if (n_P >= 3000) stop("A7: n of P")
 show_driver(sd_C_tab, sprintf("C−, n = %d", n_C))
 show_driver(sd_P_tab, sprintf("P, n = %d", n_P))
 plan <- data.frame(component = c("ceiling", "Cminus", "P"), n = c(B, n_C, n_P),
-                   wall_min_per_draw = unlist(min_per[c("ceiling", "Cminus", "P")]),
-                   workers = if (.Platform$OS.type == "unix") workers else 1L)
-plan$core_h_remaining <- plan$wall_min_per_draw * plan$workers * pmax(plan$n - n_pilot, 0) / 60
-cat(sprintf("\nPlan (DECISIONS 2026-11-11), %s; times measured on the pilot draws:\n", elapsed()))
+                   wall_min_per_rep = unlist(min_per[c("ceiling", "Cminus", "P")]),
+                   workers = if (.Platform$OS.type == "unix") c(workers, workers, workers_P) else 1L)
+plan$core_h_remaining <- plan$wall_min_per_rep * pmin(plan$workers, n_pilot) * pmax(plan$n - n_pilot, 0) / 60
+cat(sprintf("\nPlan (DECISIONS 2026-11-11), %s; times measured on the pilot repetitions:\n", elapsed()))
 print(plan, row.names = FALSE, digits = 3)
 write.csv(plan, paste0(stem, "_plan.csv"), row.names = FALSE)
-if (run == "plan") { cat("Plan only: pilot draws in", paste0(stem, "_pilot_draws.rds"), "\n"); quit(save = "no") }
-# pilot = code test only (ADEMP §10): one extra round of draws per worker, so every branch after the plan runs
+if (run == "plan") { cat("Plan only: pilot repetitions in", paste0(stem, "_pilot_repetitions.rds"), "\n"); quit(save = "no") }
+# pilot = code test only (ADEMP §10): one extra round of repetitions per worker, so every branch after the plan runs
 # and memory peaks as in main; the plan above keeps the numbers of the rule (main is unchanged)
 if (mode == "pilot" && run == "run") {
-  n_C <- min(n_C, n_pilot + workers); n_P <- min(n_P, n_pilot + workers)
-  cat(sprintf("  pilot code test: C− and P capped at %d draws (rule: see plan)\n", n_pilot + workers))
+  n_C <- min(n_C, n_pilot + workers); n_P <- min(n_P, n_pilot + workers_P)
+  cat(sprintf("  pilot code test: C− and P capped at %d and %d repetitions (rule: see plan)\n", n_C, n_P))
 }
 
-if (n_C > n_pilot) cm <- rbind(cm, do.call(rbind, par_lapply((n_pilot + 1):n_C, cminus_draw)))
+# Batches saved to <stem>_ckpt_*.rds; a restart with the same inputs and code continues from there (R/aim1.R)
+code_files <- c("scripts/07_aim1.R", "R/aim1.R", "R/arm_p.R", "R/simulate_spots.R")
+input_files <- file.path(data_dir, "derived", c(sprintf("reference/%s_%s.rds", tissue, mode),
+                                                sprintf("p_calibration/%s_p_calibration.rds", tissue)))
+key <- list(tissue = tissue, mode = mode, donors = donors, seed = study_seed, n_hvg = n_hvg,
+            md5 = unname(tools::md5sum(c(code_files, input_files))))
+ckpt <- function(what) paste0(stem, "_ckpt_", what, ".rds")
+if (n_C > n_pilot) cm <- rbind(cm, do.call(rbind,
+  run_checkpointed((n_pilot + 1):n_C, cminus_rep, ckpt("Cminus"), key, workers * 5, par_lapply)))
 cat("  C− done,", elapsed(), "\n")
 if (n_P > n_pilot) {
-  pp <- par_lapply((n_pilot + 1):n_P, p_draw)
+  pp <- run_checkpointed((n_pilot + 1):n_P, p_rep, ckpt("P"), key, workers_P * 5, par_lapply_P)
   p_sil <- rbind(p_sil, do.call(rbind, lapply(pp, `[[`, "sil")))
   p_dist <- rbind(p_dist, do.call(rbind, lapply(pp, `[[`, "dist")))
 }
@@ -364,11 +378,11 @@ cat("  P done,", elapsed(), "\n")
 
 # ---- Tables
 fid <- rbind(do.call(rbind, fid), cm)
-draws <- data.frame(component = c("ceiling", "Cminus", "P"), n = c(B, n_C, n_P),
+repetitions <- data.frame(component = c("ceiling", "Cminus", "P"), n = c(B, n_C, n_P),
                     sd_upper_max = c(max(sd_ceil), max(sd_C, na.rm = TRUE), max(sd_P, na.rm = TRUE)))
-# Summary per arm x target x type (mean over draws, MCSE for C−)
+# Summary per arm x target x type (mean over repetitions, MCSE for C−)
 agg <- do.call(rbind, lapply(split(fid, paste(fid$arm, fid$target, fid$cell_type, fid$source)), function(z) {
-  data.frame(arm = z$arm[1], target = z$target[1], source = z$source[1], cell_type = z$cell_type[1], n_draws = nrow(z),
+  data.frame(arm = z$arm[1], target = z$target[1], source = z$source[1], cell_type = z$cell_type[1], n_repetitions = nrow(z),
              pearson = mean(z$pearson), mcse_pearson = if (nrow(z) > 1) sd(z$pearson) / sqrt(nrow(z)) else NA,
              spearman = mean(z$spearman), jaccard_k100 = mean(z$jaccard_k100),
              silhouette = mean(z$silhouette), silhouette_target = z$silhouette_target[1])
@@ -376,19 +390,20 @@ agg <- do.call(rbind, lapply(split(fid, paste(fid$arm, fid$target, fid$cell_type
 rownames(agg) <- NULL
 res <- list(tissue = tissue, mode = mode, donors = donors, hvg = hvg, types = lapply(X, `[[`, "types"),
             fidelity = fid, summary = agg, ceiling = ceil, ceiling_summary = ceil_sum, p_silhouette = p_sil,
-            p_dist = p_dist, draws = draws, settings = list(seed = study_seed, ks = ks, n_hvg = n_hvg,
+            p_dist = p_dist, repetitions = repetitions, settings = list(seed = study_seed, ks = ks, n_hvg = n_hvg,
             mcse_target = mcse_target, n_pilot = n_pilot, min_cells = min_cells), created = Sys.time())
 stem <- file.path(out_dir, sprintf("%s_%s_aim1", tissue, mode))
 saveRDS(res, paste0(stem, ".rds"))
+invisible(file.remove(Filter(file.exists, c(ckpt("Cminus"), ckpt("P")))))   # no longer needed: the results are saved
 write.csv(fid, paste0(stem, "_fidelity.csv"), row.names = FALSE)
 write.csv(agg, paste0(stem, "_summary.csv"), row.names = FALSE)
 write.csv(ceil_sum, paste0(stem, "_ceiling.csv"), row.names = FALSE)
 write.csv(p_sil, paste0(stem, "_p_silhouette.csv"), row.names = FALSE)
 write.csv(p_dist, paste0(stem, "_p_dist.csv"), row.names = FALSE)
-write.csv(draws, paste0(stem, "_draws.csv"), row.names = FALSE)
+write.csv(repetitions, paste0(stem, "_repetitions.csv"), row.names = FALSE)
 
 # ---- Report
-cat("\nNumber of draws (DECISIONS 2026-11-11):\n"); print(draws, row.names = FALSE)
+cat("\nNumber of repetitions (DECISIONS 2026-11-11):\n"); print(repetitions, row.names = FALSE)
 w <- reshape(agg[agg$arm != "Eprime", c("arm", "target", "cell_type", "pearson")], idvar = c("target", "cell_type"),
              timevar = "arm", direction = "wide")
 ep <- aggregate(pearson ~ target + cell_type, agg[agg$arm == "Eprime", ], mean)

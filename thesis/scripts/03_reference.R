@@ -12,7 +12,7 @@
 #   - method reference: up to ref_cap training cells per type (fixed seed), plus the mean counts
 #     per cell of each type over all training cells (NNLS profiles);
 #   - held-out cells (anchor) with their types.
-# mode = "pilot" (ADEMP §10): held-out and E′ are drawn from the training donors with
+# mode = "pilot" (ADEMP §10): held-out and E′ are sampled from the training donors with
 # assign_split(qc = FALSE, seed 20261030); the main held-out and E′ donors are not read at all.
 # mode = "main": the split of 02_split.R (held-out = first donor of the held-out group, E′ = second;
 # the other group donors are used only in Aim 1).
@@ -89,7 +89,7 @@ cat(sprintf("  types: reference %d, held-out %d, E′ %d, spots %d (%s)\n", leng
             length(types_held), length(types_ep), length(types_spot), paste(types_spot, collapse = ", ")))
 cells <- cells[cells$cell_type %in% union(types_ref, union(types_held, types_ep)), ]
 
-# Samples drawn before reading (fixed seed): reference cells and φ cells, from training
+# Samples taken before reading (fixed seed): reference cells and φ cells, from training
 set.seed(ref_seed)
 tr <- which(cells$role == "train" & cells$cell_type %in% types_ref)
 ref_rows <- unlist(lapply(split(cells$row[tr], cells$cell_type[tr]), function(r)

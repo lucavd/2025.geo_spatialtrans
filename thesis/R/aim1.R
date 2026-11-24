@@ -1,7 +1,7 @@
 # aim1.R — measures of Aim 1, fidelity of the cell-type profiles μ (ADEMP §5.1; DECISIONS 2026-11-11).
 # Profiles are genes x types, columns = relative means (sum of counts / sum of library sizes).
-# Log-profile = log(1 + 10^4 μ) (ADEMP §5.1). No random numbers are drawn here except where stated
-# (noise_ceiling_draw, simulate_type_cells), which use the current RNG state.
+# Log-profile = log(1 + 10^4 μ) (ADEMP §5.1). No random numbers are generated here except where stated
+# (noise_ceiling_split, simulate_type_cells), which use the current RNG state.
 
 log_profile <- function(mu) log1p(1e4 * mu)
 
@@ -56,7 +56,7 @@ jaccard_topk <- function(src, tgt, ks = c(10, 20, 50, 100, 200)) {
 # two halves of n_k/2 (odd n_k: the extra cell to a random half), pooled half-profiles, correlation r
 # (Pearson and Spearman on the log-profiles), Spearman-Brown reliability 2r/(1+r), ceiling =
 # sqrt(reliability) (0 if the reliability is negative). Uses the current RNG state.
-noise_ceiling_draw <- function(x, type, L, types) {
+noise_ceiling_split <- function(x, type, L, types) {
   res <- lapply(types, function(k) {
     idx <- which(type == k)
     n <- length(idx)
@@ -126,7 +126,7 @@ silhouette_by_type <- function(x, type, hvg, ncomp = 50) {
 }
 
 # Cells from a profile with the common noise model (ADEMP §2.3): n_by_type cells of each type,
-# library sizes drawn with replacement from the training library sizes of the type (L_by_type).
+# library sizes sampled with replacement from the training library sizes of the type (L_by_type).
 # Uses the current RNG state. Needs simulate_cells() from R/simulate_spots.R.
 simulate_type_cells <- function(mu, phi, n_by_type, L_by_type) {
   type <- rep(names(n_by_type), n_by_type)
@@ -141,7 +141,31 @@ dist_quantiles <- function(v, probs = c(.1, .5, .9, .99, .999))
   stats::setNames(as.numeric(stats::quantile(v, probs, names = FALSE)), paste0("q", probs * 100))
 ks_d <- function(a, b) unname(suppressWarnings(stats::ks.test(a, b)$statistic))
 
-# Number of Monte Carlo draws (DECISIONS 2026-11-11): upper 95% limit of the SD (chi-square, n - 1 df,
+# Number of Monte Carlo repetitions (DECISIONS 2026-11-11): upper 95% limit of the SD (chi-square, n - 1 df,
 # as 06b_pilot_nsim.R) and n = ceiling((SD_upper / target)^2), at least n_min.
 sd_upper <- function(v) { v <- v[is.finite(v)]; n <- length(v); stats::sd(v) * sqrt((n - 1) / stats::qchisq(0.025, n - 1)) }
-n_draws_rule <- function(sd_up, target = 0.005, n_min = 10) max(n_min, ceiling(max(sd_up, na.rm = TRUE)^2 / target^2))
+n_repetitions_rule <- function(sd_up, target = 0.005, n_min = 10) max(n_min, ceiling(max(sd_up, na.rm = TRUE)^2 / target^2))
+
+# Runs FUN(i) for every i of idx in batches and saves the results after each batch, so an interrupted run
+# restarts from the last completed batch (PROTOCOLLO §4.3). key identifies the inputs: a file saved with
+# another key stops the run. apply_fun = lapply or a fork-based equivalent. Stops if a worker returns an
+# error or nothing (mclapply gives NULL for a killed worker). Returns the results in the order of idx, unnamed.
+run_checkpointed <- function(idx, FUN, file, key, batch, apply_fun = lapply) {
+  done <- list()
+  if (file.exists(file)) {
+    z <- readRDS(file)
+    if (!identical(z$key, key)) stop("Saved repetitions come from other inputs or code, remove or rename: ", file)
+    done <- z$res
+    cat(sprintf("  resumed %d saved repetitions from %s\n", length(done), basename(file)))
+  }
+  todo <- setdiff(idx, as.integer(names(done)))
+  for (b in split(todo, ceiling(seq_along(todo) / batch))) {
+    r <- apply_fun(b, FUN)
+    bad <- length(r) != length(b) || any(vapply(r, function(x) is.null(x) || inherits(x, "try-error"), NA))
+    if (bad) stop("A worker failed in repetitions ", min(b), "-", max(b), "; earlier batches are saved in ", file)
+    done[as.character(b)] <- r
+    saveRDS(list(key = key, res = done), paste0(file, ".tmp"))
+    if (!file.rename(paste0(file, ".tmp"), file)) stop("Could not save ", file)
+  }
+  unname(done[as.character(idx)])
+}
