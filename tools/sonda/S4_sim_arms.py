@@ -36,13 +36,16 @@ def real_cells(x, y, lab):
     return ids, cxy, pos
 
 
-def simulate(x, y, in_tissue, lab_v, umi_v, Xexp, real_type, par, P, types, spec, rng):
+def simulate(x, y, in_tissue, lab_v, umi_v, Xexp, real_type, par, P, types, spec, rng, type_source=None):
     """Nucleo del simulatore (puro, testabile).
     x, y: centri dei quadratini (um); in_tissue: bool; lab_v: etichette dei nuclei veri per quadratino (0 = nessuno);
     umi_v: UMI veri per quadratino; Xexp: csr (cellule vere x geni) conteggi dei nuclei allargati, righe nell'ordine di ids di real_cells;
     real_type: array (cellule vere) di indici di tipo in `types` o -1 se non tipizzata; par: parametri di B; P: profili (tipi x geni).
     Restituisce label (nucleo per quadratino), righe/colonne dei trascritti, tipo per cellula, sorgente per cellula, diagnostica."""
     nb = len(x); tb = np.flatnonzero(in_tissue); ids, cxy, pos = real_cells(x, y, lab_v)
+    cxy_t = cxy                                                          # S6: type_source = (baricentri, tipi) di un'altra sorgente
+    if type_source is not None:                                          # dei tipi, solo con geometria B e tipi veri (braccio Y)
+        assert spec["geo"] == "B" and spec["typ"] == "V"; cxy_t, real_type = type_source
     if spec["geo"] == "B":
         N = int(rng.poisson(par["lambda_um2"] * 4.0 * len(tb)))
         pick = rng.integers(0, len(tb), N); cx = x[tb[pick]] + rng.uniform(-1, 1, N); cy = y[tb[pick]] + rng.uniform(-1, 1, N)
@@ -59,7 +62,7 @@ def simulate(x, y, in_tissue, lab_v, umi_v, Xexp, real_type, par, P, types, spec
         src_self = np.arange(n)
     # sorgente vera: cellula vera tipizzata piu' vicina (con geo V la cellula stessa, se tipizzata)
     typed = np.flatnonzero(real_type >= 0)
-    _, nn = cKDTree(cxy[typed]).query(centres); src = typed[nn]
+    _, nn = cKDTree(cxy_t[typed]).query(centres); src = typed[nn]
     if spec["geo"] == "V":
         ok = real_type[src_self] >= 0; src[ok] = src_self[ok]
     if spec["typ"] == "B":
