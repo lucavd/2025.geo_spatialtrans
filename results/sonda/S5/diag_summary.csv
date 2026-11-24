@@ -1,0 +1,71 @@
+arm,unit,tissue,n_blocks,panel_blocks_umi20,panel_genes_ge3,threshold_genes,panel_create_RCTD_ok,panel_message,full_genes_rctd_n_run,full_genes_frac_blocks_run
+B,H2_tumour_1_k0,tumour,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_tumour_1_k1,tumour,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_tumour_2_k0,tumour,7744.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7744.0,1.0
+B,H2_tumour_2_k1,tumour,7744.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7744.0,1.0
+B,H2_tumour_3_k0,tumour,7599.0,1.0,1.0,28.4,False,"assignment of an object of class “numeric” is not valid for @‘counts’ in an object of class “SpatialRNA”; is(value, ""dgC",7599.0,1.0
+B,H2_tumour_3_k1,tumour,7599.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7599.0,1.0
+B,H2_tumour_4_k0,tumour,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_tumour_4_k1,tumour,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_tumour_5_k0,tumour,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_tumour_5_k1,tumour,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_stroma_1_k0,stroma,7187.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7187.0,1.0
+B,H2_stroma_1_k1,stroma,7187.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7187.0,1.0
+B,H2_stroma_2_k0,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_stroma_2_k1,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_stroma_3_k0,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_stroma_3_k1,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_stroma_4_k0,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_stroma_4_k1,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_stroma_5_k0,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+B,H2_stroma_5_k1,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+V,H2_tumour_1,tumour,7743.0,168.0,113.0,28.4,True,ok,6811.0,0.8796332170993155
+V,H2_tumour_2,tumour,7744.0,219.0,113.0,28.4,True,ok,7724.0,0.9974173553719008
+V,H2_tumour_3,tumour,7599.0,337.0,140.0,28.4,True,ok,7152.0,0.9411764705882353
+V,H2_tumour_4,tumour,7743.0,55.0,83.0,28.4,True,ok,7462.0,0.9637091566576262
+V,H2_tumour_5,tumour,7743.0,130.0,101.0,28.4,True,ok,7703.0,0.9948340436523312
+V,H2_stroma_1,stroma,7187.0,2.0,5.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,5987.0,0.8330318630861278
+V,H2_stroma_2,stroma,7743.0,6.0,14.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,4712.0,0.6085496577553919
+V,H2_stroma_3,stroma,7743.0,104.0,127.0,28.4,True,ok,7708.0,0.9954797881957897
+V,H2_stroma_4,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,6685.0,0.8633604546041586
+V,H2_stroma_5,stroma,7743.0,219.0,136.0,28.4,True,ok,7742.0,0.9998708510913082
+T,H1_tumour_1,tumour,7340.0,155.0,123.0,28.4,True,ok,6944.0,0.9460490463215259
+T,H1_tumour_2,tumour,7743.0,106.0,87.0,28.4,True,ok,7743.0,1.0
+T,H1_tumour_3,tumour,6949.0,303.0,127.0,28.4,True,ok,6919.0,0.9956828320621672
+T,H1_tumour_4,tumour,,,,,False,no blocks.csv (bin2cell failed),6164.0,0.7960738731757717
+T,H1_tumour_5,tumour,7743.0,158.0,113.0,28.4,True,ok,7742.0,0.9998708510913082
+T,H1_stroma_1,stroma,7220.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,6240.0,0.8642659279778393
+T,H1_stroma_2,stroma,7744.0,4.0,9.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,5236.0,0.6761363636363636
+T,H1_stroma_3,stroma,7743.0,64.0,84.0,28.4,True,ok,7627.0,0.9850187265917603
+T,H1_stroma_4,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,6744.0,0.8709802402169702
+T,H1_stroma_5,stroma,7744.0,37.0,46.0,28.4,True,ok,7741.0,0.9996126033057852
+P,H2_tumour_1,tumour,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+P,H2_tumour_2,tumour,7744.0,7.0,12.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7744.0,1.0
+P,H2_tumour_3,tumour,7599.0,11.0,23.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7599.0,1.0
+P,H2_tumour_4,tumour,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+P,H2_tumour_5,tumour,7743.0,2.0,3.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+P,H2_stroma_1,stroma,7187.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7185.0,0.9997217197718102
+P,H2_stroma_2,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7703.0,0.9948340436523312
+P,H2_stroma_3,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+P,H2_stroma_4,stroma,7743.0,0.0,0.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,7743.0,1.0
+P,H2_stroma_5,stroma,7743.0,20.0,38.0,28.4,True,ok,7743.0,1.0
+XB,X1_tumour_1,tumour,7240.0,236.0,137.0,28.4,True,ok,,
+XB,X1_tumour_2,tumour,7743.0,291.0,141.0,28.4,True,ok,,
+XB,X1_tumour_3,tumour,6978.0,226.0,140.0,28.4,True,ok,,
+XB,X1_tumour_4,tumour,7743.0,61.0,95.0,28.4,True,ok,,
+XB,X1_tumour_5,tumour,7743.0,254.0,127.0,28.4,True,ok,,
+XB,X1_stroma_1,stroma,7262.0,8.0,22.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,,
+XB,X1_stroma_2,stroma,7743.0,20.0,58.0,28.4,True,ok,,
+XB,X1_stroma_3,stroma,7743.0,54.0,97.0,28.4,True,ok,,
+XB,X1_stroma_4,stroma,7744.0,8.0,25.0,28.4,False,get_de_genes: At least 90% of genes do not match between the SpatialRNA and Reference objects. Please examine this. If t,,
+XB,X1_stroma_5,stroma,7744.0,536.0,175.0,28.4,True,ok,,
+XV,X1_tumour_1,tumour,7240.0,393.0,155.0,28.4,True,ok,,
+XV,X1_tumour_2,tumour,7743.0,682.0,188.0,28.4,True,ok,,
+XV,X1_tumour_3,tumour,6978.0,649.0,177.0,28.4,True,ok,,
+XV,X1_tumour_4,tumour,7743.0,233.0,120.0,28.4,True,ok,,
+XV,X1_tumour_5,tumour,7743.0,570.0,173.0,28.4,True,ok,,
+XV,X1_stroma_1,stroma,7262.0,179.0,89.0,28.4,True,ok,,
+XV,X1_stroma_2,stroma,7743.0,442.0,183.0,28.4,True,ok,,
+XV,X1_stroma_3,stroma,7743.0,354.0,178.0,28.4,True,ok,,
+XV,X1_stroma_4,stroma,7744.0,76.0,63.0,28.4,True,ok,,
+XV,X1_stroma_5,stroma,7744.0,570.0,190.0,28.4,True,ok,,
