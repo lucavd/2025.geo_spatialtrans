@@ -61,7 +61,7 @@
 # Usage (working directory = thesis/):  Rscript scripts/07_aim1.R <tissue> [pilot|main] [plan|run] [workers] [workers_P]
 #   workers = ceiling and C−; workers_P = P (default workers; fewer where P needs more memory); both saved in the plan CSV
 # Output: <TESI_DATA>/derived/aim1/<tissue>_<mode>_aim1.rds and CSVs (fidelity, silhouette, ceiling,
-# p_dist, repetitions) next to it.
+# p_dist, draws) next to it. Output names kept as in the colon and lymphoid runs.
 
 ADEMP_APPROVED <- "2026-11-18"   # ADEMP v1.5 approved by Luca (DECISIONS 2026-11-18)
 
@@ -226,7 +226,7 @@ score <- function(src, d, arm, source, repetition, phi = R0$phi, hvg_src = hvg) 
   sil <- silhouette_by_type(sim$x, sim$type, hvg_src)
   f$silhouette <- sil[f$cell_type]
   f$silhouette_target <- held_sil(d, S)[f$cell_type]
-  data.frame(target = d, arm = arm, source = source, repetition = repetition, n_types = length(S), f)
+  data.frame(target = d, arm = arm, source = source, draw = repetition, n_types = length(S), f)
 }
 
 # A4: a profile against itself
@@ -306,12 +306,12 @@ p_rep <- function(i) {
     S <- X[[d]]$types
     sim <- simulate_type_cells(P$mu[, S, drop = FALSE], phi_p, n_target(d, S), L_by_type)
     sil <- silhouette_by_type(sim$x, sim$type, hvg_p)
-    out_s[[d]] <- data.frame(target = d, arm = "P", source = "P", repetition = i, n_types = length(S), cell_type = S,
+    out_s[[d]] <- data.frame(target = d, arm = "P", source = "P", draw = i, n_types = length(S), cell_type = S,
                              silhouette = sil[S], silhouette_target = held_sil(d, S)[S])
     lp_P <- log_profile(P$mu); lp_T <- log_profile(X[[d]]$mu); lp_E <- log_profile(mu_E)
     fP <- lfc_top(P$mu, S); fT <- lfc_top(X[[d]]$mu, S); fE <- lfc_top(mu_E, S)
     out_d[[d]] <- do.call(rbind, lapply(S, function(k) data.frame(
-      target = d, repetition = i, cell_type = k,
+      target = d, draw = i, cell_type = k,
       ks_mean_target = ks_d(lp_P[, k], lp_T[, k]), ks_mean_E = ks_d(lp_P[, k], lp_E[, k]),
       ks_fc_target = ks_d(fP[[k]], fT[[k]]), ks_fc_E = ks_d(fP[[k]], fE[[k]]),
       t(setNames(dist_quantiles(lp_P[, k]), paste0("mean_P_", names(dist_quantiles(1))))),
@@ -334,7 +334,7 @@ pp <- par_lapply_P(seq_len(n_pilot), p_rep)
 min_per$P <- (proc.time()[["elapsed"]] - t_p) / 60 / n_pilot
 p_sil <- do.call(rbind, lapply(pp, `[[`, "sil")); p_dist <- do.call(rbind, lapply(pp, `[[`, "dist"))
 saveRDS(list(ceiling = ceil, cminus = cm, p_silhouette = p_sil, p_dist = p_dist, donors = donors, created = Sys.time()),
-        paste0(stem, "_pilot_repetitions.rds"))
+        paste0(stem, "_pilot_draws.rds"))
 sd_C_tab <- sd_table(cm, c("pearson", "spearman", paste0("jaccard_k", k_main), "silhouette"))
 sd_P_tab <- rbind(sd_table(p_sil, "silhouette"), sd_table(p_dist, c("ks_mean_target", "ks_mean_E", "ks_fc_target", "ks_fc_E")))
 sd_P_tab <- sd_P_tab[order(-sd_P_tab$sd_upper), ]
@@ -345,13 +345,13 @@ if (n_P >= 3000) stop("A7: n of P")
 show_driver(sd_C_tab, sprintf("C−, n = %d", n_C))
 show_driver(sd_P_tab, sprintf("P, n = %d", n_P))
 plan <- data.frame(component = c("ceiling", "Cminus", "P"), n = c(B, n_C, n_P),
-                   wall_min_per_rep = unlist(min_per[c("ceiling", "Cminus", "P")]),
+                   wall_min_per_draw = unlist(min_per[c("ceiling", "Cminus", "P")]),
                    workers = if (.Platform$OS.type == "unix") c(workers, workers, workers_P) else 1L)
-plan$core_h_remaining <- plan$wall_min_per_rep * pmin(plan$workers, n_pilot) * pmax(plan$n - n_pilot, 0) / 60
+plan$core_h_remaining <- plan$wall_min_per_draw * pmin(plan$workers, n_pilot) * pmax(plan$n - n_pilot, 0) / 60
 cat(sprintf("\nPlan (DECISIONS 2026-11-11), %s; times measured on the pilot repetitions:\n", elapsed()))
 print(plan, row.names = FALSE, digits = 3)
 write.csv(plan, paste0(stem, "_plan.csv"), row.names = FALSE)
-if (run == "plan") { cat("Plan only: pilot repetitions in", paste0(stem, "_pilot_repetitions.rds"), "\n"); quit(save = "no") }
+if (run == "plan") { cat("Plan only: pilot repetitions in", paste0(stem, "_pilot_draws.rds"), "\n"); quit(save = "no") }
 # pilot = code test only (ADEMP §10): one extra round of repetitions per worker, so every branch after the plan runs
 # and memory peaks as in main; the plan above keeps the numbers of the rule (main is unchanged)
 if (mode == "pilot" && run == "run") {
@@ -382,7 +382,7 @@ repetitions <- data.frame(component = c("ceiling", "Cminus", "P"), n = c(B, n_C,
                     sd_upper_max = c(max(sd_ceil), max(sd_C, na.rm = TRUE), max(sd_P, na.rm = TRUE)))
 # Summary per arm x target x type (mean over repetitions, MCSE for C−)
 agg <- do.call(rbind, lapply(split(fid, paste(fid$arm, fid$target, fid$cell_type, fid$source)), function(z) {
-  data.frame(arm = z$arm[1], target = z$target[1], source = z$source[1], cell_type = z$cell_type[1], n_repetitions = nrow(z),
+  data.frame(arm = z$arm[1], target = z$target[1], source = z$source[1], cell_type = z$cell_type[1], n_draws = nrow(z),
              pearson = mean(z$pearson), mcse_pearson = if (nrow(z) > 1) sd(z$pearson) / sqrt(nrow(z)) else NA,
              spearman = mean(z$spearman), jaccard_k100 = mean(z$jaccard_k100),
              silhouette = mean(z$silhouette), silhouette_target = z$silhouette_target[1])
@@ -390,7 +390,7 @@ agg <- do.call(rbind, lapply(split(fid, paste(fid$arm, fid$target, fid$cell_type
 rownames(agg) <- NULL
 res <- list(tissue = tissue, mode = mode, donors = donors, hvg = hvg, types = lapply(X, `[[`, "types"),
             fidelity = fid, summary = agg, ceiling = ceil, ceiling_summary = ceil_sum, p_silhouette = p_sil,
-            p_dist = p_dist, repetitions = repetitions, settings = list(seed = study_seed, ks = ks, n_hvg = n_hvg,
+            p_dist = p_dist, draws = repetitions, settings = list(seed = study_seed, ks = ks, n_hvg = n_hvg,
             mcse_target = mcse_target, n_pilot = n_pilot, min_cells = min_cells), created = Sys.time())
 stem <- file.path(out_dir, sprintf("%s_%s_aim1", tissue, mode))
 saveRDS(res, paste0(stem, ".rds"))
@@ -400,7 +400,7 @@ write.csv(agg, paste0(stem, "_summary.csv"), row.names = FALSE)
 write.csv(ceil_sum, paste0(stem, "_ceiling.csv"), row.names = FALSE)
 write.csv(p_sil, paste0(stem, "_p_silhouette.csv"), row.names = FALSE)
 write.csv(p_dist, paste0(stem, "_p_dist.csv"), row.names = FALSE)
-write.csv(repetitions, paste0(stem, "_repetitions.csv"), row.names = FALSE)
+write.csv(repetitions, paste0(stem, "_draws.csv"), row.names = FALSE)
 
 # ---- Report
 cat("\nNumber of repetitions (DECISIONS 2026-11-11):\n"); print(repetitions, row.names = FALSE)
