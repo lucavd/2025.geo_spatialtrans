@@ -63,8 +63,11 @@ Con i componenti veri D = 0,509 (AE) e 0,961 (A), sotto la soglia.
 
 # Prossima mossa
 
-1. Riesame (nuova chat, senza codice): fatti di S1-S5, decisione su A3, proroga a 9.
-2. A5 sullo Xenium di X1 (tetto da riscrivere senza X2). 3. A4 con A2. 4. G1.
+Luca 2026-11-24, in chat: «ok» alla proposta seguente.
+
+1. Riesame (nuova chat, senza codice): fatti di S1-S5, decisione su A3 (consiglio: toglierla e dichiarare il fatto), proroga.
+2. Prima di A5 e A4: prova della mappa dei tipi presa da un'altra area dello stesso tessuto (statistiche vere, disposizione sbagliata), regola di esito scritta prima: D vicino a D(Y) = 1,77 -> la costruzione ha senso; D verso D(B) = 3,15 (oltre pavimento − δ = 2,15) -> il guadagno di Y veniva dal copiare l'area: chiudere o riposizionare (minaccia 2).
+3. A5 sullo Xenium di X1 (tetto da riscrivere senza X2). 4. A4 con A2. 5. G1.
 
 # Aperti
 
