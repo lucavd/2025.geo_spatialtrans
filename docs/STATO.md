@@ -3,73 +3,74 @@ type: State
 title: "Stato di geo_spatialtrans"
 description: "Memoria fra le sessioni: fase, dati, numeri, bilancio dell'errore, minacce, strade fallite, prossima mossa."
 status: draft
-generated: { by: geo-agent/progetto-master, at: 2026-11-24T13:45:00+01:00 }
+generated: { by: geo-agent/progetto-master, at: 2026-11-24T17:30:00+01:00 }
 ---
 # Fase
 
-Sonda, budget 7. Registro: S1, S2, S5 (`infra`), S3b, S3c, S4 (`misura`), RC (`riesame`, non conta). Usate 6, resta 1. Proroga 7 -> 9 chiesta da Luca il 2026-11-24; il riesame RC consiglia di legarla all'esito della sessione 7 (`docs/riesame/RIESAME_C.md` §6).
+Sonda, budget 7, usate 7: S1, S2, S5 (`infra`), S3b, S3c, S4, S6 (`misura`); RC (`riesame`) non conta. Budget finito. Proroga 7 -> 9 chiesta da Luca il 2026-11-24, legata dal riesame all'esito di S6: esito caso 4 (indeterminato), quindi nessuna proroga automatica; decide Luca a G1.
 
 # Dati (polmone 10x, CG000709, 1 blocco FFPE, 1 donatore)
 
-- H1 (T), H2 (V) in `/mnt/micron/geo_spatialtrans/data_lung/`; md5 in `results/sonda/S3/MD5_download_H.txt`. HLCA core in `ref_lung/`.
+- H1 (T), H2 (V) in `/mnt/micron/geo_spatialtrans/data_lung/`; md5 in `results/sonda/S3/MD5_download_H.txt`. HLCA core in `ref_lung/`. Aree omologhe di H1 in `S3b_sonda/runs/T` (non `S3_sonda/runs/T`, aree vecchie).
 - Metà tenuta da parte: solo H2 (x < m − 50 µm, m = 3372), X1 (m = 3300), X2. H1 letta intera.
-- Orientamento (S5, `results/sonda/S5/orient.json`): X1 come H2, H1 ruotata di 180°, X2 di circa 5,7°. Residuo X1 -> H2 (ECC): mediana 8 µm, p95 19 µm.
+- Orientamento (S5): X1 come H2, H1 ruotata di 180°, X2 di circa 5,7°.
 
 # Metro (S3c, `docs/sonda/REGOLA_S3c.md`)
 
-Stimatore appaiato `tools/sonda/S3c_D.py`, bootstrap per coppie stratificato, B = 2000, seme 20261123, metodo (ii) f = 1,584. Ricalcolo indipendente in RC: 30 D e 15 quote con scarto ≤ 4e-15; estremi superiori di B e A bassi di 0,03 h rispetto al bootstrap esatto (seme, trascurabile).
+`tools/sonda/S3c_D.py`, bootstrap per coppie stratificato, B = 2000, seme 20261123, metodo (ii) f = 1,584. Ricalcolato in RC e in S6 da sotto-agenti.
 
-# Numeri (h)
+# Numeri (h, tumore + stroma)
 
 Pavimento D(B) 3,151 (2,908; 3,440), tetto D(T) 0,336 (−0,263; 0,821), soglia 1,336 (δ = 1). A1 = 3,151: non regge.
 
-Componenti veri (S4, `results/sonda/S4/D.json`), tutti copiati dalle aree misurate di H2: Y (tipi) 1,771; G (nuclei) 3,014; U (UMI) 2,636; A 0,961 (estremo superiore esatto 1,346, a cavallo della soglia); AE 0,509. Quote chiuse 0,69; 0,09; 0,30; 0,92; 0,99. Voci: M-4 60% di D² in B; M-1 63% in Y.
+Componenti veri copiati da H2 (S4, `results/sonda/S4/D.json`): Y (tipi) 1,771 (1,514; 2,200); G 3,014; U 2,636; A 0,961; AE 0,509.
+
+Tipi non copiati (S6, `results/sonda/S6/D.json`, `docs/sonda/REGOLA_S6.md`): Yalt (tipi dall'area successiva di V) 1,735 (1,190; 2,489), quota chiusa 0,71; YH1 (tipi dall'area omologa di H1) 1,786 (1,504; 2,259), 0,69; Yshuf (tipi dell'area permutati) 2,637 (2,324; 3,076), 0,30. Yalt e YH1 contro Y: «uguali» (Δ −0,04 e +0,02). Regola RIESAME_C §6: caso 4 con δ = 1 (estremi superiori 2,489 e 2,259 > 2,151), caso 1 con δ = 0,5.
 
 # A3 (S5)
 
-Non misurabile su X1 alla profondità di H2: pannello 2% degli UMI di H2, RCTD (UMI_min 20) non parte in B 20/20 (`results/sonda/S5/diag_summary.csv`). Braccio XB costruito (G-XR 10/10). RC consiglia di toglierla e dichiarare il fatto; decide Luca.
+Non misurabile su X1 alla profondità di H2: pannello 2 % degli UMI, RCTD non parte in B 20/20. RC consiglia di toglierla; decide Luca.
 
 # Check
 
-`check smoke` = `tools/sonda/S3c_smoke.sh` (circa 5 min). Non contiene S4 né S5. `check full` da scrivere.
+`check smoke` = `tools/sonda/S3c_smoke.sh` (circa 5 min). Non contiene S4, S5, S6 (`S4_test.py` 16/16 e `S6_gates_sim.py` a parte). `check full` da scrivere.
 
-# Bilancio dell'errore (per componente, S4; diagnosi, non fattibilità)
+# Bilancio dell'errore (S4 + S6)
 
-1. Disposizione dei tipi: 69% del divario (copiata dal bersaglio).
-2. UMI concentrati sui nuclei (M-1): torna solo con nuclei e UMI veri insieme.
-3. Espressione: 7%. Nessuna sessione.
-4. Geometria dei nuclei: 9%. Nessuna sessione.
+1. Disposizione dei tipi: 69-71 % del divario, e non viene dal copiare (Yalt = Y). Agisce su M-4: tumore q 45,6 in B, 4,2 in Yalt, 31,1 in Yshuf. Si impara da un'altra area dello stesso tessuto.
+2. UMI concentrati sui nuclei (M-1): in Yalt 76 % di D² nel tumore, 54 % nello stroma; con M-5 dello stroma (48 %) è quasi tutto il resto. Torna solo con nuclei e UMI veri insieme (S4).
+3. Espressione 7 %, geometria dei nuclei 9 %: nessuna sessione.
 
 # Minacce alla validità
 
 1. HLCA è tessuto sano: le cellule tumorali non hanno un tipo (M-4).
-2. I bracci sotto la soglia copiano il bersaglio: G1 letta su di loro è circolare (RC §1.2).
-3. Y copia le etichette trasferite dalla stessa catena (RCTD con HLCA) su V: M-4 e M-6 in parte costruiti; A4 con una tipizzazione diversa (RC §1.3).
-4. δ senza fonte valida dopo S3b; con δ = 2 G1 si contraddice (RC §1.4-1.5).
-5. Un donatore: tetto fra sezioni seriali.
+2. Le tipizzazioni di V e di H1 vengono dalla stessa catena (RCTD con HLCA) che misura: M-4 e M-6 in parte costruiti; A4 con una tipizzazione diversa.
+3. δ senza fonte valida dopo S3b; la precisione non basta a decidere con δ = 1 (anche Y ha estremo superiore 2,200 > 2,151).
+4. Un donatore: tetto fra sezioni seriali.
+5. Una sola permutazione e un solo ciclo di aree in S6 (5 aree per tessuto).
 
 # Strade fallite
 
 - Generatore dello strato cellulare (colon): 7,83 contro 7,77 del banale.
-- Tetto di S3 su aree non omologhe e κ del colon: C-4 rosso.
-- Stimatore indipendente su aree omologhe (S3b): tetto −0,77.
-- A3 sul pannello di X1 alla profondità di H2: troppo pochi UMI per RCTD.
-- X2: registrazione non giudicabile (S1, S2): un colpo.
-- Correlazione di fase su tessere da 1 mm per X1: falsa; usare l'ECC.
+- Tetto di S3 su aree non omologhe e κ del colon; stimatore indipendente su aree omologhe (S3b): tetto −0,77.
+- A3 sul pannello di X1 alla profondità di H2.
+- X2: registrazione non giudicabile (S1, S2).
+- Correlazione di fase su tessere da 1 mm per X1: usare l'ECC.
 
-# Riesame RC (2026-11-24)
+# Decisioni aperte per Luca (G1)
 
-Fatti `docs/riesame/FATTI_C.md`, giudizio `docs/riesame/RIESAME_C.md`. Nessuna condizione di chiusura vale per D (pavimento − tetto 2,81 h > δ). Verdetto: continuare, messaggio invariato, condizionato alla prova dei tipi non copiati. Decisioni aperte per Luca: (1) G1 solo su bracci non copiati e proroga legata all'esito; (2) δ = 1 h con fonte nuova (precisione dell'area vera), sensibilità solo 0,5; (3) A3 tolta.
+1. Proroga della sonda (A5 su X1, A4 con A2) o G1 subito.
+2. δ = 1 h con la fonte nuova (precisione dell'area vera), sensibilità 0,5 (RIESAME_C §7).
+3. A3 tolta con il fatto dichiarato.
 
 # Prossima mossa
 
-1. Sessione 7 (sonda): bracci Y-alt (tipi dall'area successiva dello stesso tessuto, permutazione ciclica fra le 5 aree di V) e Y-H1 (tipi dall'area omologa di H1). Regola di esito già scritta in RIESAME_C §6, soglia 2,151 h.
-2. Se passa: proroga 7 -> 9, poi A5 su X1 (tetto da riscrivere senza X2), A4 con A2 e tipizzazione diversa, G1.
-3. Se non passa: G1 senza proroga.
+G1. Numero del simulatore senza copia: D(Yalt) 1,735, nella fascia «riposizionare» del contratto (fra soglia 1,336 e pavimento − δ 2,151) con intervallo a cavallo di 2,151. In costruzione la prima voce sarebbe M-1 (UMI sui nuclei), poi un generatore della mappa dei tipi che impari la disposizione da un'altra area. A3, A4, A5 non misurate: lo strumento non lascia entrare in costruzione senza una prima misura.
 
 # Aperti
 
 - `results/F3.2/sheets/` non tracciato: lasciato com'è.
 - `tools/okf.py check` rosso da SC1.
 - Revisione indipendente dei numeri di S1, S2, S3b non fatta (prima di G1).
+- REGOLA_S3c scrive 1,96 in f, il codice z = 1,959964 (f 1,5837842 contro 1,5837551): estremi spostati di 1e-5 h, nessun esito cambia (revisione S6).
 - PAPER «Dati tenuti da parte» dice «H1 intera (S3b)», STATO «H1 letta intera»: chiarire a G1.

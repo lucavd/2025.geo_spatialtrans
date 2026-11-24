@@ -1,0 +1,27 @@
+{
+ "G-MAP": {
+  "affine_last_row": [
+   0.0,
+   0.0,
+   1.0
+  ],
+  "max_centre_dev_um": 9.094947017729282e-13,
+  "max_roundtrip_dev_um": 4.092726157978177e-12,
+  "pass_": true
+ },
+ "G-SELF": {
+  "n": 10,
+  "n_pass": 10,
+  "pass_": true
+ },
+ "G-ID": {
+  "n": 30,
+  "n_pass": 30,
+  "pass_": true,
+  "share_types_equal_Y_by_arm": {
+   "Yalt": 0.18532687695499406,
+   "YH1": 0.4604317993159581,
+   "Yshuf": 0.2583459917192415
+  }
+ }
+}
