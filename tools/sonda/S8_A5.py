@@ -38,7 +38,8 @@ def nuclei_gdf(bins, tb):
     boxes = shapely.box(bins.x_um.to_numpy()[b] - 1, bins.y_um.to_numpy()[b] - 1, bins.x_um.to_numpy()[b] + 1, bins.y_um.to_numpy()[b] + 1)
     df = pd.DataFrame({"id": L, "g": boxes}); geoms = df.groupby("id").g.apply(lambda s: shapely.union_all(s.to_numpy()))
     g = gpd.GeoDataFrame({"id": geoms.index.to_numpy()}, geometry=list(geoms.to_numpy())).reset_index(drop=True)
-    cen = g.geometry.centroid; g["cell_x"] = cen.x.to_numpy(); g["cell_y"] = cen.y.to_numpy(); return g
+    cen = g.geometry.centroid; g["cell_x"] = cen.x.to_numpy(); g["cell_y"] = cen.y.to_numpy()
+    g["id"] = ["c%d" % v for v in g.id.to_numpy()]; return g          # ENACT usa identificativi testuali
 
 def enact_obj(method, wd):
     so = object.__new__(ENACT); so.logger = logging.getLogger("enact"); so.patch_size = 1e12; so.bin_representation = "polygon"
@@ -62,7 +63,7 @@ def run_enact(bins, genes, X, tb, gp_ids, wd, seed):
         np.random.seed(seed); so = enact_obj(em, wd); so.assign_bins_to_cells(a, None)
         ch = os.listdir(so.bin_assign_dir); assert ch == ["patch_0_0.csv"], ch
         cnt = pd.read_csv(f"{so.bin_assign_dir}/patch_0_0.csv", index_col=0); lk = pd.read_csv(f"{so.cell_ix_lookup_dir}/patch_0_0.csv", index_col=0)
-        assert len(cnt) == len(lk); cnt.index = lk["id"].to_numpy(); res[m] = cnt
+        assert len(cnt) == len(lk); cnt.index = lk["id"].astype(str).str[1:].astype(np.int64).to_numpy(); res[m] = cnt
     return a, cells, res, n_hvg
 
 def enact_gate(a, cells, res):
@@ -82,7 +83,17 @@ def enact_gate(a, cells, res):
     exp["E-gene"] = rs[inter].sum() - lost
     got = {m: float(res[m].to_numpy().sum()) for m in EM}
     rel = {m: abs(got[m] - exp[m]) / max(exp[m], 1) for m in EM}
-    return dict(expected={m: float(v) for m, v in exp.items()}, got=got, rel=rel, ok=bool(max(rel.values()) < 1e-9), n_shared_bins=int(len(sb)), n_inter_bins=int(inter.sum()))
+    # E-cluster (errore di pre-registrazione, REGOLA_S8 «Correzione del cancello G-ENACT»): una cellula senza quadratini propri non ha profilo;
+    # weight_by_cluster le da' peso 1/n e le altre si dividono comunque il quadratino: eccesso <= somma_b conteggi_b * k_b / n_b
+    has_u = np.zeros(len(cg), bool); has_u[ci[~sh]] = True; exc_max = 0.0; n_bk = 0
+    for b in sb:
+        cc = ci[bi == b]; kb = int((~has_u[cc]).sum())
+        if 0 < kb < len(cc): exc_max += rs[b] * kb / len(cc); n_bk += 1
+    exc = got["E-cluster"] - exp["E-cluster"]; tol = 1e-9 * max(exp["E-cluster"], 1)
+    ok_cl = (abs(exc) <= tol) if n_bk == 0 else (-tol <= exc <= exc_max + tol)
+    ok = all(rel[m] < 1e-9 for m in ("E-naive", "E-area", "E-gene")) and ok_cl
+    return dict(expected={m: float(v) for m, v in exp.items()}, got=got, rel=rel, cluster_excess=float(exc), cluster_excess_max=float(exc_max),
+                n_bins_cell_without_own=n_bk, ok=bool(ok), n_shared_bins=int(len(sb)), n_inter_bins=int(inter.sum()))
 
 def truth_B(u, bins, X, tb, gpi):
     ck = json.load(open(f"{u['d']}/B_check.json")); par = json.load(open(f"{C.ROOT}/B/params_{u['tissue']}.json"))
