@@ -23,7 +23,6 @@ D (h), meglio verso il basso; metro di `docs/riesame/FATTI_B.md`: 12 voci, tumor
 
 - A1* (Fig. 1): D ≤ soglia, tarato su H2, H1 come riferimento.
 - A2 (Fig. 2): nessuna voce oltre il tetto più largo per voce.
-- A3 (Fig. 3): batte lo Xenium in quadratini sulla stessa sezione (X1, X2), geni del pannello; scarto ≥ δ.
 - A4 (Fig. 4): regge con una catena mai usata in taratura; ≤ suo tetto + δ.
 - A5 (Fig. 5): classifica dei metodi sul simulato concorde con quella contro lo Xenium; ≥ concordanza X1 contro X2 meno un margine fissato prima.
 
@@ -40,7 +39,7 @@ G1, con i componenti veri o spenti migliori:
 
 # Esiti
 
-- A: A1-A5 reggono.
+- A: A1, A2, A4, A5 reggono.
 - B: A1 non regge, D ≤ pavimento − δ; si dichiara lo scarto.
 - C: G1 dice chiudere, oppure a costruzione finita D > pavimento − δ.
 
@@ -49,6 +48,7 @@ G1, con i componenti veri o spenti migliori:
 - Un solo donatore: il tetto è fra sezioni seriali, non fra pazienti.
 - Visium HD dopo Xenium meno sensibile (UMI per bin da 8 µm: 129 e 70 contro 212 e 275).
 - La classifica dei metodi è misurata su un solo blocco.
+- Nessun confronto con lo Xenium in quadratini: 284 geni, 2 % degli UMI, la catena non ci gira (S5).
 
 # Dati tenuti da parte
 
@@ -64,3 +64,4 @@ Scommessa 2; sonda 5; costruzione 10 (5 voci × 2 colpi, confermato a G1); confe
 - 2026-11-21 (S1): X2 con un metro più preciso, una sessione.
 - 2026-11-23 (S3, S3b, S3c): h senza κ del colon, aree omologhe H1-H2; metà nascosta solo in H2; sonda prorogata a 7 sessioni.
 - 2026-11-25 (S6): δ = 1 h (RIESAME_C §1.4); sonda a 9.
+- 2026-11-25 (S8): A3 tolta, il fatto va fra i limiti (RIESAME_C §7, punto 3).

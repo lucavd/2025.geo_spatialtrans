@@ -20,13 +20,6 @@
       "verso": "basso"
     },
     {
-      "id": "A3",
-      "testo": "Batte lo Xenium in quadratini sulla stessa sezione (X1, X2), geni del pannello: D_xen - D_sim",
-      "figura": "Fig. 3",
-      "serve": 1.0,
-      "verso": "alto"
-    },
-    {
       "id": "A4",
       "testo": "Regge con una catena mai usata in taratura: D2 <= tetto della catena + 1 h (tetto da misurare in sonda)",
       "figura": "Fig. 4",
@@ -98,5 +91,15 @@
   "tetti_parole": {
     "docs/PAPER.md": 500,
     "docs/STATO.md": 800
-  }
+  },
+  "affermazioni_tolte": [
+    {
+      "id": "A3",
+      "testo": "Batte lo Xenium in quadratini sulla stessa sezione (X1, X2), geni del pannello: D_xen - D_sim",
+      "data": "2026-11-25",
+      "sessione": "S8",
+      "consenso": "Luca 2026-11-25, in chat: «togli il confronto con lo xenium in quadratini»",
+      "motivo": "S5: pannello di X1 = 2 % degli UMI di H2, RCTD non parte (B 20/20); RIESAME_C par. 7 punto 3"
+    }
+  ]
 }

@@ -27,9 +27,9 @@ Componenti veri copiati da H2 (S4, `results/sonda/S4/D.json`): Y (tipi) 1,771 (1
 
 Tipi non copiati (S6, `results/sonda/S6/D.json`, `docs/sonda/REGOLA_S6.md`): Yalt (tipi dall'area successiva di V) 1,735 (1,190; 2,489), quota chiusa 0,71; YH1 (tipi dall'area omologa di H1) 1,786 (1,504; 2,259), 0,69; Yshuf (tipi dell'area permutati) 2,637 (2,324; 3,076), 0,30. Yalt e YH1 contro Y: «uguali» (Δ −0,04 e +0,02). Regola RIESAME_C §6: caso 4 con δ = 1 (estremi superiori 2,489 e 2,259 > 2,151), caso 1 con δ = 0,5.
 
-# A3 (S5)
+# A3 tolta (Luca, 2026-11-25, S8)
 
-Non misurabile su X1 alla profondità di H2: pannello 2 % degli UMI, RCTD non parte in B 20/20. RC consiglia di toglierla; decide Luca.
+Non misurabile su X1 alla profondità di H2 (S5): pannello 2 % degli UMI, RCTD non parte in B 20/20. Il fatto va fra i limiti del contratto.
 
 # Check
 
@@ -57,13 +57,9 @@ Non misurabile su X1 alla profondità di H2: pannello 2 % degli UMI, RCTD non pa
 - X2: registrazione non giudicabile (S1, S2).
 - Correlazione di fase su tessere da 1 mm per X1: usare l'ECC.
 
-# Decisioni aperte per Luca (G1)
-
-1. A3 tolta con il fatto dichiarato (RIESAME_C §7).
-
 # Prossima mossa
 
-Sessione 8: A5 su X1 (tetto riscritto senza X2). Sessione 9: A4 con A2. Poi G1. Numero del simulatore senza copia: D(Yalt) 1,735, nella fascia «riposizionare» del contratto (fra soglia 1,336 e pavimento − δ 2,151) con intervallo a cavallo di 2,151. In costruzione la prima voce sarebbe M-1 (UMI sui nuclei), poi un generatore della mappa dei tipi che impari la disposizione da un'altra area. A3, A4, A5 non misurate: lo strumento non lascia entrare in costruzione senza una prima misura.
+Sessione 8: A5 su X1 (tetto riscritto senza X2). Sessione 9: A4 con A2. Poi G1. Numero del simulatore senza copia: D(Yalt) 1,735, nella fascia «riposizionare» del contratto (fra soglia 1,336 e pavimento − δ 2,151) con intervallo a cavallo di 2,151. In costruzione la prima voce sarebbe M-1 (UMI sui nuclei), poi un generatore della mappa dei tipi che impari la disposizione da un'altra area. A4, A5 non misurate: lo strumento non lascia entrare in costruzione senza una prima misura.
 
 # Aperti
 
