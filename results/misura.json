@@ -15,7 +15,12 @@
   "tumour M-3": -0.47,
   "stroma M-3": -0.4029
  },
- "affermazioni": {},
+ "affermazioni": {
+  "A5": {
+   "valore": -0.5980000000000009,
+   "se": 0.06658510935933094
+  }
+ },
  "fonte": "/mnt/micron/geo_spatialtrans/S3_sonda/smoke/D.json",
  "tetto_misurato": 0.336461,
  "nota": "A1 = D(B), stimatore appaiato (S3c), intervallo ii",
