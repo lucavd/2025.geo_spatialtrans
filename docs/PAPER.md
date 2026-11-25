@@ -48,7 +48,7 @@ G1, con i componenti veri o spenti migliori:
 - Un solo donatore: il tetto è fra sezioni seriali, non fra pazienti.
 - Visium HD dopo Xenium meno sensibile (UMI per bin da 8 µm: 129 e 70 contro 212 e 275).
 - La classifica dei metodi è misurata su un solo blocco.
-- Nessun confronto con lo Xenium in quadratini: 284 geni, 2 % degli UMI, la catena non ci gira (S5).
+- Nessuno Xenium in quadratini: 284 geni, 2 % degli UMI (S5).
 
 # Dati tenuti da parte
 
