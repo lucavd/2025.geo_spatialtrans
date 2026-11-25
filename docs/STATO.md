@@ -45,7 +45,7 @@ Non misurabile su X1 alla profondità di H2: pannello 2 % degli UMI, RCTD non pa
 
 1. HLCA è tessuto sano: le cellule tumorali non hanno un tipo (M-4).
 2. Le tipizzazioni di V e di H1 vengono dalla stessa catena (RCTD con HLCA) che misura: M-4 e M-6 in parte costruiti; A4 con una tipizzazione diversa.
-3. δ senza fonte valida dopo S3b; la precisione non basta a decidere con δ = 1 (anche Y ha estremo superiore 2,200 > 2,151).
+3. δ = 1 h con fonte (precisione dell'area vera, Luca 2026-11-25); con 5 aree per tessuto la prova contro pavimento − δ resta spesso indeterminata (anche Y: estremo superiore 2,200 > 2,151).
 4. Un donatore: tetto fra sezioni seriali.
 5. Una sola permutazione e un solo ciclo di aree in S6 (5 aree per tessuto).
 
@@ -59,8 +59,7 @@ Non misurabile su X1 alla profondità di H2: pannello 2 % degli UMI, RCTD non pa
 
 # Decisioni aperte per Luca (G1)
 
-1. δ = 1 h con la fonte nuova (precisione dell'area vera), sensibilità 0,5 (RIESAME_C §7).
-2. A3 tolta con il fatto dichiarato.
+1. A3 tolta con il fatto dichiarato (RIESAME_C §7).
 
 # Prossima mossa
 
