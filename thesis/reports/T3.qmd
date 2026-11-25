@@ -110,7 +110,7 @@ show_aim1("p_silhouette")
 
 ```{r plan}
 #| results: asis
-show_aim1("plan", mode = "plan")
+show_aim1("plan")
 ```
 
 ## 4.2 Fidelity per arm, target and type
