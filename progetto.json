@@ -28,10 +28,11 @@
     },
     {
       "id": "A5",
-      "testo": "Classifica dei metodi sul simulato concorde con quella contro lo Xenium: >= concordanza X1 contro X2 meno un margine fissato prima",
+      "testo": "Classifica di 5 regole di assegnazione (ENACT, bin2cell) sul simulato concorde con quella contro lo Xenium di X1: S5c - T5 >= -0,2 (T5 = concordanza di X1 fra meta' disgiunte delle aree)",
       "figura": "Fig. 5",
-      "serve": null,
-      "verso": "alto"
+      "serve": -0.2,
+      "verso": "alto",
+      "consenso": "Luca 2026-11-25, in chat: metodi «Regole di ENACT più bin2cell»; margine «Uno scambio di coppia: 0,2»"
     }
   ],
   "fase": "sonda",
