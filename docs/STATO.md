@@ -34,7 +34,7 @@ Non misurabile su X1 alla profondità di H2 (S5). Fra i limiti del contratto.
 Metodi (Luca): ENACT 0.2.5 naive, area, gene, cluster; bin2cell. Coseno per cellula sui 284 geni di G_p contro la verità (B: territori; X1: cellula Xenium abbinata); tau di Kendall su metà disgiunte delle aree; margine 0,2 (Luca).
 
 - T5 (X1 con sé) 0,996 ± 0,079; S5c (B contro X1) 0,398 ± 0,038; A5 −0,598 ± 0,067 (regola: non regge).
-- CP-shuf fallita: T5 con verità permutata 0,872 ± 0,176. Per la regola A5 non si legge come fedeltà: non scritta in `results/misura.json`.
+- CP-shuf fallita: T5 con verità permutata 0,872 ± 0,176. Per la regola A5 non si legge come fedeltà; il valore entra in `results/misura.json` come previsto dalla regola (quadro: «non regge»).
 - Esplorativo, non pre-registrato: guadagno = coseno − coseno permutato: T5 1,000, S5c 0,400, A5 −0,600. Disaccordo: b2c ultimo in B, terzo in X1; E-area ed E-cluster scambiati (3 coppie su 10).
 - Cancelli: G-ENACT 30/30 (E-cluster: peso 1/n di ENACT alle cellule senza quadratini propri, errore di pre-registrazione corretto prima della corsa), G-TRUTH 20/20, G-MATCH 10/10, G-ID 2/2, G-REV (max 7,8e-16), md5 invariati.
 - X1: abbinati 176-984 nuclei StarDist su 1288-2781 per area; tenute 151-837 cellule.
