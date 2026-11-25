@@ -7,7 +7,7 @@ generated: { by: geo-agent/progetto-master, at: 2026-11-24T17:30:00+01:00 }
 ---
 # Fase
 
-Sonda, budget 7, usate 7: S1, S2, S5 (`infra`), S3b, S3c, S4, S6 (`misura`); RC (`riesame`) non conta. Budget finito. Proroga 7 -> 9 chiesta da Luca il 2026-11-24, legata dal riesame all'esito di S6: esito caso 4 (indeterminato), quindi nessuna proroga automatica; decide Luca a G1.
+Sonda, budget 7, usate 7: S1, S2, S5 (`infra`), S3b, S3c, S4, S6 (`misura`); RC (`riesame`) non conta. Proroga 7 -> 9 approvata da Luca il 2026-11-25 dopo l'esito di S6 (caso 4), registrata in `progetto.json`. Scopo: prima misura di A5 e di A4 con A2. Altrimenti G1 con i numeri di oggi; nessuna terza proroga.
 
 # Dati (polmone 10x, CG000709, 1 blocco FFPE, 1 donatore)
 
@@ -59,13 +59,12 @@ Non misurabile su X1 alla profondità di H2: pannello 2 % degli UMI, RCTD non pa
 
 # Decisioni aperte per Luca (G1)
 
-1. Proroga della sonda (A5 su X1, A4 con A2) o G1 subito.
-2. δ = 1 h con la fonte nuova (precisione dell'area vera), sensibilità 0,5 (RIESAME_C §7).
-3. A3 tolta con il fatto dichiarato.
+1. δ = 1 h con la fonte nuova (precisione dell'area vera), sensibilità 0,5 (RIESAME_C §7).
+2. A3 tolta con il fatto dichiarato.
 
 # Prossima mossa
 
-G1. Numero del simulatore senza copia: D(Yalt) 1,735, nella fascia «riposizionare» del contratto (fra soglia 1,336 e pavimento − δ 2,151) con intervallo a cavallo di 2,151. In costruzione la prima voce sarebbe M-1 (UMI sui nuclei), poi un generatore della mappa dei tipi che impari la disposizione da un'altra area. A3, A4, A5 non misurate: lo strumento non lascia entrare in costruzione senza una prima misura.
+Sessione 8: A5 su X1 (tetto riscritto senza X2). Sessione 9: A4 con A2. Poi G1. Numero del simulatore senza copia: D(Yalt) 1,735, nella fascia «riposizionare» del contratto (fra soglia 1,336 e pavimento − δ 2,151) con intervallo a cavallo di 2,151. In costruzione la prima voce sarebbe M-1 (UMI sui nuclei), poi un generatore della mappa dei tipi che impari la disposizione da un'altra area. A3, A4, A5 non misurate: lo strumento non lascia entrare in costruzione senza una prima misura.
 
 # Aperti
 
