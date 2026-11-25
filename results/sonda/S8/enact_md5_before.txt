@@ -1,0 +1,5 @@
+8c73a942d4cb08bdce2a318c5846ecab  .venv-enact/lib/python3.10/site-packages/enact/pipeline.py
+d41d8cd98f00b204e9800998ecf8427e  .venv-enact/lib/python3.10/site-packages/enact/assignment_methods/__init__.py
+c59174ae5b4c42f333c7b963cd8441b5  .venv-enact/lib/python3.10/site-packages/enact/assignment_methods/naive.py
+64bf2a941035be91c9cbba8fe00d2357  .venv-enact/lib/python3.10/site-packages/enact/assignment_methods/weight_by_area.py
+06ee45370ba614e8e9e4ed00cd64df21  .venv-enact/lib/python3.10/site-packages/enact/assignment_methods/weight_by_gene.py

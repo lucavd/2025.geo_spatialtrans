@@ -73,3 +73,15 @@ Atteso: A5 ≈ −0,4, cioè non regge o incerta. Motivo: in B gli UMI sono unif
 [^s5]: docs/sonda/REGOLA_S5.md
 [^s3]: docs/sonda/REGOLA_S3.md
 [^enact]: ENACT: End-to-End Analysis of Visium High Definition (HD) Data, PMC11925495; codice github.com/Sanofi-Public/enact-pipeline
+
+# Aggiunta prima del calcolo (2026-11-25, dopo la lettura del codice di ENACT 0.2.5)
+
+Nessun numero di S8 era stato calcolato. Dettagli tecnici, nessuno cambia metodo, verità, punteggio o esito:
+
+- Geni di ENACT: come `load_visiumhd_dataset` (use_hvg, n_hvg = 1000, scanpy `highly_variable_genes` su log1p dei conteggi normalizzati), con i 284 geni di G_p come marcatori: è il meccanismo di ENACT per i geni d'interesse; senza, i geni del pannello fuori dai 1000 sparirebbero dalle uscite. HVG calcolati per area (ENACT li calcola sul vetrino intero): limite dichiarato.
+- Una sola tessera per area (`patch_size` 1e12): nessun confine di tessera dentro l'area.
+- Identificativi dei quadratini non numerici («b<bin_id>»): ENACT rilegge i CSV intermedi e un identificativo numerico diventerebbe una posizione.
+- Seme del generatore globale di numpy prima di ogni regola, 20261201 + 100 i + s (+ 50 per X1): la PCA di `weight_by_cluster` usa il solver randomizzato senza seme; KMeans ha già random_state = 0.
+- bin2cell (b2c) ricalcolato in `S8_sonda` con `tools/sonda/S8_b2c.py` (stesse chiamate di `F3.1_b2c.py`), su tutti i quadratini dell'area come nella catena; ENACT sui quadratini in tissue, come sulla matrice filtrata.
+- Cellule tenute anche con il criterio della catena: nucleo con almeno metà dei quadratini in `in_reg`.
+- Codice: `tools/sonda/S8_A5.py`, `tools/sonda/S8_b2c.py`.
