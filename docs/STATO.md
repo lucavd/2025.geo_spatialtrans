@@ -66,13 +66,13 @@ Metodi (Luca): ENACT 0.2.5 naive, area, gene, cluster; bin2cell. Coseno per cell
 - Correlazione di fase su tessere da 1 mm per X1: usare l'ECC.
 - A5 con il coseno grezzo sul pannello: controprova fallita (S8).
 
-# Decisioni aperte per Luca
+# Decisioni di Luca dopo S8
 
-1. Punteggio di A5 = guadagno sulla verità permutata, pre-registrato e calcolato sui file di S8 (minuti).
+1. 2026-11-26, in chat, «ok»: punteggio di A5 = guadagno sulla verità permutata, da pre-registrare in S9 e calcolare sui file di S8.
 
 # Prossima mossa
 
-Sessione 9: A4 con A2 (catena con tipizzazione diversa da RCTD con HLCA); in apertura, se Luca approva, regola di A5 con il guadagno. Poi G1: D(Yalt) 1,735 nella fascia «riposizionare» (intervallo a cavallo di 2,151); A5 sul banale oltre il margine.
+Sessione 9: A4 con A2 (catena con tipizzazione diversa da RCTD con HLCA); in apertura regola di A5 con il guadagno (decisa). Poi G1: D(Yalt) 1,735 nella fascia «riposizionare» (intervallo a cavallo di 2,151); A5 sul banale oltre il margine.
 
 # Aperti
 
