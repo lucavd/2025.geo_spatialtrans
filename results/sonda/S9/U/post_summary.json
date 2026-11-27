@@ -1,0 +1,41 @@
+{
+ "G-B2C": {
+  "n_units": 50,
+  "n_identical": 50,
+  "failing": [],
+  "n_md5eq_exp": 50,
+  "n_md5eq_blocks_csv": 50,
+  "n_md5eq_blocks_mtx": 50,
+  "n_b2c_json_refindep_eq": 50,
+  "n_cells_label_refindep_eq": 50,
+  "n_b2c_json_md5eq_whole": 0,
+  "n_cells_label_md5eq_whole": 30
+ },
+ "table_check_vs_S3b": {
+  "equal_frame": true,
+  "md5_equal": false,
+  "n_rows": [
+   50,
+   50
+  ]
+ },
+ "format_vs_S3b": {
+  "same_columns": true,
+  "same_arm_unit_k": true,
+  "counts": {
+   "B|stroma": 10,
+   "B|tumour": 10,
+   "P|stroma": 5,
+   "P|tumour": 5,
+   "T|stroma": 5,
+   "T|tumour": 5,
+   "V|stroma": 5,
+   "V|tumour": 5
+  },
+  "missing_M": 0
+ },
+ "G-MD5_exports": {
+  "n_files": 270,
+  "n_unchanged": 270
+ }
+}

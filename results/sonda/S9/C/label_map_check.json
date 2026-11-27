@@ -1,0 +1,37 @@
+{
+ "n_labels": 61,
+ "n_mapped": 61,
+ "n_hlca_cells": 584944,
+ "finest_not_in_model": [],
+ "level2_types": [
+  "Airway epithelium",
+  "Alveolar epithelium",
+  "Blood vessels",
+  "Fibroblast lineage",
+  "Hematopoietic stem cells",
+  "Lymphatic EC",
+  "Lymphoid",
+  "Mesothelium",
+  "Myeloid",
+  "Smooth muscle",
+  "Submucosal Gland"
+ ],
+ "marker_types": [
+  "Airway epithelium",
+  "Alveolar epithelium",
+  "Blood vessels",
+  "Fibroblast lineage",
+  "Hematopoietic stem cells",
+  "Lymphatic EC",
+  "Lymphoid",
+  "Mesothelium",
+  "Myeloid",
+  "Smooth muscle",
+  "Submucosal Gland"
+ ],
+ "level2_not_in_markers": [],
+ "markers_not_reached": [],
+ "min_purity": 1.0,
+ "n_purity_lt_0.9": 0,
+ "model_md5": "bb198782a612415e56f6565fa9401d21"
+}

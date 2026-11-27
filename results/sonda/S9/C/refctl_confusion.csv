@@ -1,0 +1,12 @@
+true,Airway epithelium,Alveolar epithelium,Blood vessels,Fibroblast lineage,Hematopoietic stem cells,Lymphatic EC,Lymphoid,Mesothelium,Myeloid,Smooth muscle,Submucosal Gland
+Airway epithelium,2993,0,0,0,0,0,3,0,3,0,1
+Alveolar epithelium,3,2992,1,0,0,0,0,0,4,0,0
+Blood vessels,1,2,2988,1,0,2,1,0,5,0,0
+Fibroblast lineage,0,0,0,2998,0,0,1,1,0,0,0
+Hematopoietic stem cells,0,0,0,0,58,0,0,0,2,0,0
+Lymphatic EC,0,0,1,0,0,2998,0,0,1,0,0
+Lymphoid,1,0,0,2,0,0,2989,0,7,1,0
+Mesothelium,0,0,0,0,0,0,0,230,0,0,0
+Myeloid,4,1,2,0,0,0,5,0,2988,0,0
+Smooth muscle,1,0,6,6,0,0,6,0,7,2974,0
+Submucosal Gland,26,0,0,0,0,0,0,0,0,0,2750

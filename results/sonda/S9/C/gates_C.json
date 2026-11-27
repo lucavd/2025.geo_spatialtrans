@@ -1,0 +1,45 @@
+{
+ "G-CODE": {
+  "units": [
+   "V/H2_stroma_1",
+   "T/H1_tumour_1",
+   "B/H2_tumour_2_k1"
+  ],
+  "max_absdiff_M1_M6": 5.551115123125783e-17,
+  "max_absdiff_all": 5.551115123125783e-17,
+  "same_transferred_labels": true,
+  "pass": true,
+  "extra_all50_L_measures_rctd_M4_M6_vs_chain1_max_absdiff": 1.1102230246251565e-16,
+  "extra_all50_M1_M2_vs_chain1_max_absdiff": 5.684341886080802e-14
+ },
+ "G-CT": {
+  "a_rerun_V_H2_stroma_1_identical_files": true,
+  "a_rerun_json_measures_identical": true,
+  "b_labels_mapped": "61/61",
+  "b_min_purity": 1.0,
+  "b_level2_not_in_markers": [],
+  "b_markers_not_reached": [],
+  "c_accuracy": 0.9960097539348259,
+  "c_balanced_accuracy": 0.9936940005239717,
+  "c_min_type_accuracy": 0.9666666666666667,
+  "c_n_cells": 27066,
+  "c_per_type": {
+   "Airway epithelium": 0.9977,
+   "Alveolar epithelium": 0.9973,
+   "Blood vessels": 0.996,
+   "Fibroblast lineage": 0.9993,
+   "Hematopoietic stem cells": 0.9667,
+   "Lymphatic EC": 0.9993,
+   "Lymphoid": 0.9963,
+   "Mesothelium": 1.0,
+   "Myeloid": 0.996,
+   "Smooth muscle": 0.9913,
+   "Submucosal Gland": 0.9906
+  },
+  "pass_3_of_3": true
+ },
+ "G-MD5": {
+  "n_files": 510,
+  "identical": true
+ }
+}

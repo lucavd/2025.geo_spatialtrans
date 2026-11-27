@@ -1,0 +1,12 @@
+cell_type,n,accuracy
+Airway epithelium,3000,0.9976666666666667
+Alveolar epithelium,3000,0.9973333333333333
+Blood vessels,3000,0.996
+Fibroblast lineage,3000,0.9993333333333333
+Hematopoietic stem cells,60,0.9666666666666667
+Lymphatic EC,3000,0.9993333333333333
+Lymphoid,3000,0.9963333333333333
+Mesothelium,230,1.0
+Myeloid,3000,0.996
+Smooth muscle,3000,0.9913333333333333
+Submucosal Gland,2776,0.9906340057636888

@@ -1,0 +1,48 @@
+{
+ "label|ddof0": {
+  "n": 15,
+  "n_match": 15,
+  "max_abs_diff": null
+ },
+ "label|ddof1": {
+  "n": 15,
+  "n_match": 15,
+  "max_abs_diff": null
+ },
+ "label|norm": {
+  "n": 24,
+  "n_match": 24,
+  "max_abs_diff": null
+ },
+ "label|pct": {
+  "n": 24,
+  "n_match": 24,
+  "max_abs_diff": null
+ },
+ "point|text": {
+  "n": 82,
+  "n_match": 82,
+  "max_abs_diff": 1.7763568394002505e-15
+ },
+ "se|ddof0": {
+  "n": 45,
+  "n_match": 0,
+  "max_abs_diff": 0.00048815247778333237
+ },
+ "se|ddof1": {
+  "n": 45,
+  "n_match": 45,
+  "max_abs_diff": 3.219646771412954e-15
+ },
+ "se|norm": {
+  "n": 24,
+  "n_match": 0,
+  "max_abs_diff": 0.10844680698174125
+ },
+ "se|pct": {
+  "n": 24,
+  "n_match": 24,
+  "max_abs_diff": 1.3322676295501878e-15
+ },
+ "label_changes_across_readings": []
+}

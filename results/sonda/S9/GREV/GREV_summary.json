@@ -1,0 +1,10 @@
+{
+ "n_rows": 322,
+ "max_abs_diff_point": 1.1102230246251565e-15,
+ "max_abs_diff_se": 1.7763568394002505e-15,
+ "max_abs_diff_se_A5boot": 1.2559397966072083e-15,
+ "labels_mismatch": [],
+ "numeric_mismatch": [],
+ "md5_identical": true,
+ "n_files_md5": 24
+}

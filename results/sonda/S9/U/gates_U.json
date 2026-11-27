@@ -1,0 +1,104 @@
+{
+ "G-REF_part1_HLCA": {
+  "files_md5_identical": [
+   "markers_L.csv",
+   "ref_L_cells.csv",
+   "ref_L_counts.mtx",
+   "ref_L_genes.tsv"
+  ],
+  "files_md5_different": [
+   "ref_L.json"
+  ],
+  "ref_L.json_note": "differs only in field 'sec' (wall time): 258.2 (S3) vs 282.3 (rerun); all other fields equal (checked on server)"
+ },
+ "G-REF_part2_LuCA": {
+  "n_types": 13,
+  "types": [
+   "B cell",
+   "Endothelial cell",
+   "Epithelial cell",
+   "Macrophage/Monocyte",
+   "Mast cell",
+   "NK cell",
+   "Neutrophils",
+   "Plasma cell",
+   "Stromal",
+   "T cell",
+   "Tumor cells",
+   "cDC",
+   "pDC"
+  ],
+  "n_ref_by_type": {
+   "Macrophage/Monocyte": 3000,
+   "cDC": 3000,
+   "Endothelial cell": 3000,
+   "Plasma cell": 3000,
+   "NK cell": 3000,
+   "T cell": 3000,
+   "Stromal": 3000,
+   "B cell": 3000,
+   "Mast cell": 3000,
+   "Epithelial cell": 3000,
+   "Tumor cells": 3000,
+   "Neutrophils": 3000,
+   "pDC": 1832
+  },
+  "min_ref_cells": 1832,
+  "has_tumor": true,
+  "n_nonint_values_nonexcluded": 0,
+  "pass": true
+ },
+ "G-B2C": {
+  "n_units": 50,
+  "n_identical": 50,
+  "failing": [],
+  "n_md5eq_exp": 50,
+  "n_md5eq_blocks_csv": 50,
+  "n_md5eq_blocks_mtx": 50,
+  "n_b2c_json_refindep_eq": 50,
+  "n_cells_label_refindep_eq": 50,
+  "n_b2c_json_md5eq_whole": 0,
+  "n_cells_label_md5eq_whole": 30
+ },
+ "table_check_vs_S3b": {
+  "equal_frame": true,
+  "md5_equal": false,
+  "n_rows": [
+   50,
+   50
+  ],
+  "note": "md5 differs only by float repr: S3b V/B/P rows passed one extra CSV round trip; max |diff| 5.684e-14 (M1-M6), T rows byte-identical"
+ },
+ "G-MD5": {
+  "exports": {
+   "n_files": 270,
+   "n_unchanged": 270
+  },
+  "h5ad_before": {
+   "/mnt/micron/geo_spatialtrans/ref_lung/HLCA_core_066943a2.h5ad": "3d9352bec0733c42ef0ad53b125faba8",
+   "/mnt/micron/geo_spatialtrans/ref_lung/LuCA_core_46e0287b.h5ad": "058d7069a9322dd4ac54d304ede2d2fc"
+  },
+  "h5ad_after_ref": {
+   "/mnt/micron/geo_spatialtrans/ref_lung/HLCA_core_066943a2.h5ad": "3d9352bec0733c42ef0ad53b125faba8",
+   "/mnt/micron/geo_spatialtrans/ref_lung/LuCA_core_46e0287b.h5ad": "058d7069a9322dd4ac54d304ede2d2fc"
+  },
+  "h5ad_after_chain": {
+   "/mnt/micron/geo_spatialtrans/ref_lung/HLCA_core_066943a2.h5ad": "3d9352bec0733c42ef0ad53b125faba8",
+   "/mnt/micron/geo_spatialtrans/ref_lung/LuCA_core_46e0287b.h5ad": "058d7069a9322dd4ac54d304ede2d2fc"
+  },
+  "h5ad_unchanged": true,
+  "S3_ref_unchanged": true
+ },
+ "runtime": {
+  "pilot_unit": "V/H2_tumour_1",
+  "pilot_chain_s": {
+   "b2c": 2.4,
+   "rctd": 1157.6,
+   "measures": 4.5
+  },
+  "full_wall_s": 8044,
+  "workers": 20,
+  "max_Tctl_C": 80.4,
+  "thermal_stops": 0
+ }
+}

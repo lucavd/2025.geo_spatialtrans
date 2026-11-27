@@ -1,0 +1,62 @@
+label,level2,n_cells,n_majority,purity,second,n_second
+AT0,Airway epithelium,1440,1440,1.0,,0
+AT1,Alveolar epithelium,7937,7937,1.0,,0
+AT2,Alveolar epithelium,61429,61429,1.0,,0
+AT2 proliferating,Alveolar epithelium,976,976,1.0,,0
+Adventitial fibroblasts,Fibroblast lineage,10321,10321,1.0,,0
+Alveolar Mph CCL3+,Myeloid,8065,8065,1.0,,0
+Alveolar Mph MT-positive,Myeloid,1203,1203,1.0,,0
+Alveolar Mph proliferating,Myeloid,1061,1061,1.0,,0
+Alveolar fibroblasts,Fibroblast lineage,5182,5182,1.0,,0
+Alveolar macrophages,Myeloid,68487,68487,1.0,,0
+B cells,Lymphoid,4511,4511,1.0,,0
+Basal resting,Airway epithelium,38955,38955,1.0,,0
+CD4 T cells,Lymphoid,21285,21285,1.0,,0
+CD8 T cells,Lymphoid,29074,29074,1.0,,0
+Classical monocytes,Myeloid,17695,17695,1.0,,0
+Club (nasal),Airway epithelium,26068,26068,1.0,,0
+Club (non-nasal),Airway epithelium,9955,9955,1.0,,0
+DC1,Myeloid,322,322,1.0,,0
+DC2,Myeloid,9133,9133,1.0,,0
+Deuterosomal,Airway epithelium,1004,1004,1.0,,0
+EC aerocyte capillary,Blood vessels,7157,7157,1.0,,0
+EC arterial,Blood vessels,7391,7391,1.0,,0
+EC general capillary,Blood vessels,16048,16048,1.0,,0
+EC venous pulmonary,Blood vessels,6418,6418,1.0,,0
+EC venous systemic,Blood vessels,6557,6557,1.0,,0
+Goblet (bronchial),Airway epithelium,1670,1670,1.0,,0
+Goblet (nasal),Airway epithelium,35833,35833,1.0,,0
+Goblet (subsegmental),Airway epithelium,968,968,1.0,,0
+Hematopoietic stem cells,Hematopoietic stem cells,60,60,1.0,,0
+Hillock-like,Airway epithelium,4600,4600,1.0,,0
+Interstitial Mph perivascular,Myeloid,4805,4805,1.0,,0
+Ionocyte,Airway epithelium,561,561,1.0,,0
+Lymphatic EC differentiating,Lymphatic EC,566,566,1.0,,0
+Lymphatic EC mature,Lymphatic EC,4001,4001,1.0,,0
+Lymphatic EC proliferating,Lymphatic EC,28,28,1.0,,0
+Mast cells,Myeloid,6623,6623,1.0,,0
+Mesothelium,Mesothelium,230,230,1.0,,0
+Migratory DCs,Myeloid,312,312,1.0,,0
+Monocyte-derived Mph,Myeloid,28223,28223,1.0,,0
+Multiciliated (nasal),Airway epithelium,4869,4869,1.0,,0
+Multiciliated (non-nasal),Airway epithelium,35225,35225,1.0,,0
+Myofibroblasts,Fibroblast lineage,716,716,1.0,,0
+NK cells,Lymphoid,16978,16978,1.0,,0
+Neuroendocrine,Airway epithelium,159,159,1.0,,0
+Non-classical monocytes,Myeloid,8834,8834,1.0,,0
+Peribronchial fibroblasts,Fibroblast lineage,1573,1573,1.0,,0
+Pericytes,Fibroblast lineage,3032,3032,1.0,,0
+Plasma cells,Lymphoid,1773,1773,1.0,,0
+Plasmacytoid DCs,Myeloid,552,552,1.0,,0
+SM activated stress response,Smooth muscle,556,556,1.0,,0
+SMG duct,Submucosal Gland,1274,1274,1.0,,0
+SMG mucous,Submucosal Gland,537,537,1.0,,0
+SMG serous (bronchial),Submucosal Gland,1417,1417,1.0,,0
+SMG serous (nasal),Submucosal Gland,1472,1472,1.0,,0
+Smooth muscle,Smooth muscle,2996,2996,1.0,,0
+Smooth muscle FAM83D+,Smooth muscle,335,335,1.0,,0
+Subpleural fibroblasts,Fibroblast lineage,276,276,1.0,,0
+Suprabasal,Airway epithelium,41158,41158,1.0,,0
+T cells proliferating,Lymphoid,500,500,1.0,,0
+Tuft,Airway epithelium,165,165,1.0,,0
+pre-TB secretory,Airway epithelium,4393,4393,1.0,,0

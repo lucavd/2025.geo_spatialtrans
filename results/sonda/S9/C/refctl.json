@@ -1,0 +1,10 @@
+{
+ "n_cells": 27066,
+ "n_genes_ref": 17015,
+ "n_genes_common_model": 4501,
+ "accuracy": 0.9960097539348259,
+ "balanced_accuracy": 0.9936940005239717,
+ "min_type_accuracy": 0.9666666666666667,
+ "threshold": 0.85,
+ "pass": true
+}

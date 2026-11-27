@@ -1,0 +1,13 @@
+{
+ "G-MD5": "pass: U 270/270 esportazioni, HLCA e LuCA invariati; C 510/510; G-REV 24/24",
+ "G-REF": "come scritto non soddisfatto alla lettera (errore di pre-registrazione): ref_L.json registra la durata del calcolo (campo sec); 4/5 file md5 identici, ref_L.json identico in ogni altro campo; LuCA 13/13 tipi, Tumor cells presente, ognuno >= 25 cellule",
+ "G-B2C": "come scritto non soddisfatto alla lettera (errore di pre-registrazione): b2c_label.json e cells_label.parquet contengono campi che dipendono dai marcatori del riferimento; exp_labels_expanded.npy, blocks.csv, blocks_counts.mtx md5 identici 50/50; campi indipendenti dal riferimento identici 50/50",
+ "G-CT": "pass 3/3: rerun identico; 61/61 etichette mappate (purezza 1,0); accuratezza di livello 2 sulle cellule HLCA 0,9960",
+ "G-CODE_C": "pass: con le chiamate RCTD il codice di C ritrova M1-M6 della catena di oggi su 3 unita, max 5,6e-17",
+ "G-A5ID": "pass: la copia del codice di S8 sul coseno ritrova A5.json, scarto 0",
+ "G-REV": "pass: 322 quantita, max 1,8e-15 (stime) e 3,2e-15 (se); limite: ddof e semi-ampiezza visti nel codice, nessun esito cambia con le altre letture",
+ "C-4": "pass U e C",
+ "C-5": "pass U e C",
+ "CP-chain": "pass U e C",
+ "CP-gain": "pass: tau 0,6 < 0,8"
+}

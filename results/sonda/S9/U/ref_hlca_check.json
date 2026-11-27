@@ -1,0 +1,53 @@
+{
+ "source": "/mnt/micron/geo_spatialtrans/ref_lung/HLCA_core_066943a2.h5ad",
+ "md5": "3d9352bec0733c42ef0ad53b125faba8",
+ "label": "ann_level_2",
+ "n_cells_total": 584944,
+ "n_nose_excluded": 78279,
+ "n_pool": 506665,
+ "types_pool": {
+  "Myeloid": 153545,
+  "Airway epithelium": 134637,
+  "Lymphoid": 72143,
+  "Alveolar epithelium": 70342,
+  "Blood vessels": 43414,
+  "Fibroblast lineage": 21045,
+  "Lymphatic EC": 4591,
+  "Smooth muscle": 3882,
+  "Submucosal Gland": 2776,
+  "Mesothelium": 230,
+  "Hematopoietic stem cells": 60
+ },
+ "types_ref": [
+  "Airway epithelium",
+  "Alveolar epithelium",
+  "Blood vessels",
+  "Fibroblast lineage",
+  "Hematopoietic stem cells",
+  "Lymphatic EC",
+  "Lymphoid",
+  "Mesothelium",
+  "Myeloid",
+  "Smooth muscle",
+  "Submucosal Gland"
+ ],
+ "n_ref": 27066,
+ "n_ref_by_type": {
+  "Fibroblast lineage": 3000,
+  "Smooth muscle": 3000,
+  "Lymphoid": 3000,
+  "Lymphatic EC": 3000,
+  "Alveolar epithelium": 3000,
+  "Myeloid": 3000,
+  "Airway epithelium": 3000,
+  "Blood vessels": 3000,
+  "Submucosal Gland": 2776,
+  "Mesothelium": 230,
+  "Hematopoietic stem cells": 60
+ },
+ "n_genes_common": 17015,
+ "n_genes_visium": 18085,
+ "n_genes_hlca": 27402,
+ "seed": 20261123,
+ "sec": 282.3
+}

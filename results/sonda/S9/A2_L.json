@@ -1,0 +1,16 @@
+{
+ "chain": "L",
+ "T_max": 0.8062051157330931,
+ "T_max_voce": "stroma M-1",
+ "A2": 9,
+ "A2_se": 1.9523658043774794,
+ "esito": "non regge",
+ "n_oltre": 6,
+ "n_indeterminata": 6,
+ "n_dentro": 0,
+ "f": 1.5837842021560746,
+ "seed": 20261123,
+ "B": 2000,
+ "table": "results/sonda/S3b/area_values.csv",
+ "h": "results/sonda/S3b/h.csv"
+}

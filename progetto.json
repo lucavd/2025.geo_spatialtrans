@@ -21,18 +21,19 @@
     },
     {
       "id": "A4",
-      "testo": "Regge con una catena mai usata in taratura: D2 <= tetto della catena + 1 h (tetto da misurare in sonda)",
+      "testo": "Regge con una catena mai usata in taratura: e = D2(B) - (tetto della catena + 1 h) <= 0; catena U (RCTD con LuCA), regge solo se regge anche con C (CellTypist) (REGOLA_S9)",
       "figura": "Fig. 4",
-      "serve": null,
-      "verso": "basso"
+      "serve": 0,
+      "verso": "basso",
+      "consenso": "Luca 2026-11-27, in chat: «Tutte e due le catene»"
     },
     {
       "id": "A5",
-      "testo": "Classifica di 5 regole di assegnazione (ENACT, bin2cell) sul simulato concorde con quella contro lo Xenium di X1: S5c - T5 >= -0,2 (T5 = concordanza di X1 fra meta' disgiunte delle aree)",
+      "testo": "Classifica di 5 regole di assegnazione (ENACT, bin2cell) sul simulato concorde con quella contro lo Xenium di X1, punteggio = guadagno sulla verita permutata: S5c - T5 >= -0,2 (REGOLA_S9)",
       "figura": "Fig. 5",
       "serve": -0.2,
       "verso": "alto",
-      "consenso": "Luca 2026-11-25, in chat: metodi «Regole di ENACT più bin2cell»; margine «Uno scambio di coppia: 0,2»"
+      "consenso": "Luca 2026-11-25, in chat: metodi «Regole di ENACT più bin2cell»; margine «Uno scambio di coppia: 0,2»; punteggio = guadagno, Luca 2026-11-26 in chat: «ok»"
     }
   ],
   "fase": "sonda",
@@ -84,9 +85,9 @@
     }
   ],
   "check": {
-    "smoke": "bash -c 'set -o pipefail; mkdir -p /mnt/micron/geo_spatialtrans/S3c_sonda; bash tools/sonda/S3c_smoke.sh 2>&1 | tee /mnt/micron/geo_spatialtrans/S3c_sonda/check_smoke.log && python3 tools/sonda/S8_to_misura.py'",
+    "smoke": "bash -c 'set -o pipefail; mkdir -p /mnt/micron/geo_spatialtrans/S3c_sonda; bash tools/sonda/S3c_smoke.sh 2>&1 | tee /mnt/micron/geo_spatialtrans/S3c_sonda/check_smoke.log && python3 tools/sonda/S8_to_misura.py && python3 tools/sonda/S9_to_misura.py'",
     "full": "echo 'DA SCRIVERE nella sonda: comando full' && false",
-    "smoke_nota": "S3c, 2026-11-23: come S3b (test S1_test_cc, catena ridotta, C-3) con il metro appaiato tools/sonda/S3c_D.py (docs/sonda/REGOLA_S3c.md): d_k = braccio - V per area k, q = (media(d)^2 - var(d)/n)/h^2; bootstrap per coppie stratificato per tessuto con semi-ampiezze x f = 1,584 (scelto da COV); cancelli G-ID, C-1p, C-2, C-4, C-5, controprova CP-perm; identita' con results/sonda/S3c/D.json. Pavimento D(B) 3,151, tetto D(T) 0,336, soglia 1,336 (delta 1 h). S8, 2026-11-25: dopo S3c, tools/sonda/S8_to_misura.py copia A5 da results/sonda/S8/A5.json (REGOLA_S8, Uscite), senza ricalcolo."
+    "smoke_nota": "S3c, 2026-11-23: come S3b (test S1_test_cc, catena ridotta, C-3) con il metro appaiato tools/sonda/S3c_D.py (docs/sonda/REGOLA_S3c.md): d_k = braccio - V per area k, q = (media(d)^2 - var(d)/n)/h^2; bootstrap per coppie stratificato per tessuto con semi-ampiezze x f = 1,584 (scelto da COV); cancelli G-ID, C-1p, C-2, C-4, C-5, controprova CP-perm; identita' con results/sonda/S3c/D.json. Pavimento D(B) 3,151, tetto D(T) 0,336, soglia 1,336 (delta 1 h). S8, 2026-11-25: dopo S3c, tools/sonda/S8_to_misura.py copia A5 da results/sonda/S8/A5.json (REGOLA_S8, Uscite), senza ricalcolo. S9, 2026-11-27: dopo S8, tools/sonda/S9_to_misura.py copia A2, A4 (e_U, con l'esito di C) e A5 col guadagno da results/sonda/S9/ (REGOLA_S9), senza ricalcolo."
   },
   "file_misura": "results/misura.json",
   "tetti_parole": {
