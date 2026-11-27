@@ -1,0 +1,10 @@
+927cce3340d31112025d375661b00d39  /mnt/micron/geo_spatialtrans/S8_sonda/X1/X1_stroma_1/cells.parquet
+4c2fd055836ec12dec0b49cbc1220051  /mnt/micron/geo_spatialtrans/S8_sonda/X1/X1_stroma_2/cells.parquet
+9646fb5b0ac7d2f8599ab466b76598f2  /mnt/micron/geo_spatialtrans/S8_sonda/X1/X1_stroma_3/cells.parquet
+083b24bb93c94e8ec19557c6d3e761d6  /mnt/micron/geo_spatialtrans/S8_sonda/X1/X1_stroma_4/cells.parquet
+b945e740349e8244d485610fecd9d7eb  /mnt/micron/geo_spatialtrans/S8_sonda/X1/X1_stroma_5/cells.parquet
+5bc7422ba3b516cd99b4049f513917fd  /mnt/micron/geo_spatialtrans/S8_sonda/X1/X1_tumour_1/cells.parquet
+5da71a8da90b9d2f9209d973b2df8a86  /mnt/micron/geo_spatialtrans/S8_sonda/X1/X1_tumour_2/cells.parquet
+b4667ebc7a4b30eaaa5766f499ae7a06  /mnt/micron/geo_spatialtrans/S8_sonda/X1/X1_tumour_3/cells.parquet
+432279cf8487d1dc3d009c6a6cc6aff9  /mnt/micron/geo_spatialtrans/S8_sonda/X1/X1_tumour_4/cells.parquet
+ed644a9fa02ea8b344acb6bd9015fa3c  /mnt/micron/geo_spatialtrans/S8_sonda/X1/X1_tumour_5/cells.parquet

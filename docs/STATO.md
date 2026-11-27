@@ -3,7 +3,7 @@ type: State
 title: "Stato di geo_spatialtrans"
 description: "Memoria fra le sessioni: fase, dati, numeri, bilancio dell'errore, minacce, strade fallite, prossima mossa."
 status: draft
-generated: { by: geo-agent/progetto-master, at: 2026-11-27T16:10:00+01:00 }
+generated: { by: geo-agent/progetto-master, at: 2026-11-27T19:30:00+01:00 }
 ---
 # Fase
 
@@ -32,7 +32,7 @@ S4: Y 1,771; G 3,014; U 2,636; A 0,961; AE 0,509. S6: Yalt 1,735 (1,190; 2,489),
 - CP-chain, C-4, C-5 passati con U e C.
 - A2 (catena di oggi): T_max 0,806 (stroma M-1); B oltre in 9 voci su 12 (6 nette, 6 indeterminate, 0 dentro), se 1,95: non regge.
 - A5 col guadagno (Luca 2026-11-26): T5 1,000 ± 0,060, S5c 0,400 ± 0,031, A5 −0,600 ± 0,066: non regge. CP-gain: tau con gli UMI assegnati 0,6 (< 0,8). Guadagno in X1 0,19-0,21, in B 0,58-0,70.
-- Cancelli: G-CT, G-CODE (C), G-A5ID, G-MD5, G-REV (max 1,8e-15) passati. G-REF e G-B2C non soddisfatti alla lettera per errore di pre-registrazione (campo `sec`, campi dei marcatori); identità esatta su tutto il resto.
+- Cancelli passati; G-REF e G-B2C solo per errore di pre-registrazione (REGOLA_S9).
 
 # Check
 
@@ -61,19 +61,20 @@ S4: Y 1,771; G 3,014; U 2,636; A 0,961; AE 0,509. S6: Yalt 1,735 (1,190; 2,489),
 - Correlazione di fase su tessere da 1 mm per X1: usare l'ECC.
 - A5 con il coseno grezzo (S8); LuCA come rimedio ai tipi tumorali (S9).
 
-# Decisioni di Luca dopo S8
+# G1 (2026-11-27, `docs/sonda/G1.md`, `results/G1/`)
 
-1. 2026-11-26, «ok»: punteggio di A5 = guadagno.
-2. 2026-11-27, «Tutte e due le catene»: A4 con LuCA e con CellTypist.
+- Revisione indipendente: D di 13 bracci e M-1…M-6 dal basso su 10/10 aree, scarto 0; registrazione di X1 rifatta dal grezzo, p95 0,97/0,87/0,80 µm, passa. Testo: 284 geni, non 286; quota UMI di X1 42-90 %.
+- Yalt tocca tutte e tre le fasce di G1 (1,190; 2,489); caso 4 con δ = 1.
+- Proposta a Luca: costruzione, messaggio ristretto (disposizione dei tipi da una sezione vera non misurata, nessun generatore della disposizione), budget 5. Prima prova: Yalt + UMI addensati sul nucleo stimati dai dati, D e A5. Uscita: estremo inferiore di D > 2,151 → proposta di chiudere.
 
 # Prossima mossa
 
-G1 (cancello). Fatti: tutte le affermazioni misurate sul banale, nessuna regge. D(Yalt) 1,735 nella fascia «riposizionare» (intervallo a cavallo di 2,151). Pavimento − tetto 2,8 h > δ con ogni catena. Prima di G1: revisione indipendente dei numeri di S1, S2, S3b.
+Risposta di Luca su G1. Poi `chiudi --sessione G1 --riesame`, `cancello` con le sue parole, PAPER (messaggio, budget, decisione), commit.
 
 # Aperti
 
 - `results/F3.2/sheets/` non tracciato: lasciato com'è.
 - `tools/okf.py check` rosso da SC1.
 - REGOLA_S3c: 1,96 contro z = 1,959964 in f; nessun esito cambia.
-- PAPER «H1 intera (S3b)» contro STATO «H1 letta intera»: chiarire a G1.
 - `.venv-enact` (ENACT, CellTypist) non ricostruibile da script; modelli CellTypist in `~/.celltypist` (61, scaricati in S9).
+- `results/misure.tsv`: la riga S9 registra solo A4; A5 col guadagno e A2 solo in `misura.json`.

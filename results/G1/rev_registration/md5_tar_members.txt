@@ -1,0 +1,4 @@
+fd4f724c2f8a1941d4b4a0f6e91c4855  ./binned_outputs/square_002um/filtered_feature_bc_matrix.h5
+23b84eb6e13bae7589bc52ca427ea413  ./binned_outputs/square_002um/spatial/scalefactors_json.json
+8ad50a928341a4761c2527da44e4ceb0  ./binned_outputs/square_002um/spatial/tissue_positions.parquet
+dc22ef7bacec2d018234a8ea13afecd2  ./binned_outputs/square_008um/spatial/tissue_positions.parquet

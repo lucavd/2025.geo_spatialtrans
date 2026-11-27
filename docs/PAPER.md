@@ -52,7 +52,7 @@ G1, con i componenti veri o spenti migliori:
 
 # Dati tenuti da parte
 
-Metà di H2, X1, X2 (S1); H1 intera (S3b).
+Metà di H2, X1, X2 (S1); non H1 (S3b).
 
 # Budget proposto
 

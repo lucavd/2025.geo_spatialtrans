@@ -1,0 +1,12 @@
+X1/xenium/Xenium_V1_Human_Lung_Cancer_FFPE_transcripts.parquet
+X1/xenium/Xenium_V1_Human_Lung_Cancer_FFPE_gene_panel.json
+X1/xenium/Xenium_V1_Human_Lung_Cancer_FFPE_he_imagealignment.csv
+X1/xenium/Xenium_V1_Human_Lung_Cancer_FFPE_cells.parquet
+X1/xenium/Xenium_V1_Human_Lung_Cancer_FFPE_nucleus_boundaries.parquet
+X1/xenium/Xenium_V1_Human_Lung_Cancer_FFPE_he_image.ome.tif
+X1/visium/Visium_HD_Human_Lung_Cancer_post_Xenium_v1_Experiment1_tissue_image.btf
+X1/visium/Visium_HD_Human_Lung_Cancer_post_Xenium_v1_Experiment1_binned_outputs.tar.gz
+X1/visium/binned/binned_outputs/square_002um/filtered_feature_bc_matrix.h5
+X1/visium/binned/binned_outputs/square_002um/spatial/tissue_positions.parquet
+X1/visium/binned/binned_outputs/square_002um/spatial/scalefactors_json.json
+X1/visium/binned/binned_outputs/square_008um/spatial/tissue_positions.parquet

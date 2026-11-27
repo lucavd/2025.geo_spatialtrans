@@ -1,0 +1,64 @@
+{
+ "px2arr_affine_max_resid_bins": 0.2228110947024024,
+ "px2arr_projective_max_resid_bins": 5.4572642620801115e-12,
+ "px2arr_projective_p99_resid_bins": 3.865352482534945e-12,
+ "microns_per_pixel": 0.27368749694215855,
+ "um_per_px_from_map": [
+  14.610120635086899,
+  14.608375158772851
+ ],
+ "um_per_px_from_M": 0.27403672376009647,
+ "variants": {
+  "direct|px0.2125": {
+   "frac_in_grid": 0.1781101633178903,
+   "frac_on_tissue_all": 0.10741084982003093,
+   "frac_on_tissue_given_grid": 0.6030585106382979
+  },
+  "direct|um": {
+   "frac_in_grid": 0.42750099584079465,
+   "frac_on_tissue_all": 0.2548885914325394,
+   "frac_on_tissue_given_grid": 0.5962292343465377
+  },
+  "inverse|px0.2125": {
+   "frac_in_grid": 0.6216809792613912,
+   "frac_on_tissue_all": 0.6210493829375688,
+   "frac_on_tissue_given_grid": 0.9989840507512829
+  },
+  "inverse|um": {
+   "frac_in_grid": 0.3759361800623701,
+   "frac_on_tissue_all": 0.000979692025019827,
+   "frac_on_tissue_given_grid": 0.002606006223868344
+  }
+ },
+ "split_m_um": 3300.0,
+ "region_side_um": 1000.0,
+ "coverage_threshold": 0.9,
+ "n_candidates": 260,
+ "regions": [
+  {
+   "name": "R1",
+   "x0": 1500.0,
+   "y0": 3800.0,
+   "cover": 0.909312
+  },
+  {
+   "name": "R2",
+   "x0": 2200.0,
+   "y0": 1300.0,
+   "cover": 0.916992
+  },
+  {
+   "name": "R3",
+   "x0": 0.0,
+   "y0": 5700.0,
+   "cover": 0.945408
+  }
+ ]
+}
+panel genes with ENSG 289 shared with Visium 284
+visium shared-gene UMI total 3624902
+xenium {'n_all': 32073729, 'n_qv20': 30890718, 'n_kept': 30775724}
+R1 visium UMI 263347 xenium tx 1765034
+R2 visium UMI 164835 xenium tx 939847
+R3 visium UMI 187226 xenium tx 1928057
+setup done in 31 s
