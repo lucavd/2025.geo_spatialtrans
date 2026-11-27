@@ -61,7 +61,7 @@ Scommessa 2; sonda 5; costruzione 10 (5 voci × 2 colpi, confermato a G1); confe
 # Decisioni del PI
 
 - 2026-11-20 (SC2): polmone 10x dopo Xenium, cancello sulla registrazione, riserva il colon; G0: sonda 5.
-- 2026-11-21 (S1): X2 con un metro più preciso, una sessione.
-- 2026-11-23 (S3, S3b, S3c): h senza κ del colon, aree omologhe H1-H2; metà nascosta solo in H2; sonda prorogata a 7 sessioni.
+- 2026-11-21 (S1): X2, metro più preciso.
+- 2026-11-23 (S3, S3b, S3c): h senza κ del colon, aree omologhe H1-H2; metà nascosta solo in H2; sonda a 7.
 - 2026-11-25 (S6): δ = 1 h (RIESAME_C §1.4); sonda a 9.
-- 2026-11-25 (S8): A3 tolta; A5 con ENACT e bin2cell, margine 0,2.
+- 2026-11-25/27 (S8, S9): A3 tolta; A5 con ENACT e bin2cell, margine 0,2, guadagno; A4 con LuCA e CellTypist.

@@ -17,8 +17,22 @@
  },
  "affermazioni": {
   "A5": {
-   "valore": -0.5980000000000009,
-   "se": 0.06658510935933094
+   "valore": -0.600000000000001,
+   "se": 0.06577357434061787,
+   "punteggio": "guadagno sulla verita permutata"
+  },
+  "A2": {
+   "valore": 9,
+   "se": 1.9523658043774794
+  },
+  "A4": {
+   "valore": 3.1082044941062543,
+   "se": 0.39616073553855946,
+   "catena_C": {
+    "valore": 1.1073049093200353,
+    "se": 0.48522305203733634,
+    "esito": "non regge"
+   }
   }
  },
  "fonte": "/mnt/micron/geo_spatialtrans/S3_sonda/smoke/D.json",
