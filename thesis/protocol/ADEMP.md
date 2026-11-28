@@ -61,7 +61,7 @@ Full design: 5 arms (E, P, C−, E′, O) × 3 tissues × 2 cells-per-spot level
 3. Sum the cells of the spot.
 
 **Real anchor:** pseudo-spots built by summing **real cells** of the held-out donor, with the same Dirichlet compositions. The truth is known because each cell's type is known.
-- Every anchor pseudo-spot is built inside a single sample, because a real spot never mixes cells from two samples (DECISIONS 2026-10-26). Colon uses MMRp tumour samples only and lymphoid the thoracic lymph node only (DECISIONS 2026-10-26 "Dataset", refined 2026-10-27, approved by Luca 2026-10-30), so there is one μ per tissue.
+- Every anchor pseudo-spot is built inside a single sample, because a real spot never mixes cells from two samples (DECISIONS 2026-10-26); in colon a sample is one tumour specimen (`PatientTypeID`; 20 donors, 20 specimens), which can include several aliquots. Colon uses MMRp tumour samples only and lymphoid the thoracic lymph node only (DECISIONS 2026-10-26 "Dataset", refined 2026-10-27, approved by Luca 2026-10-30), so there is one μ per tissue.
 - Depth of the anchor: its spots are thinned at random to the same target depth as the simulated arms (DECISIONS 2026-10-30, Luca).
 
 ### 2.4 Common random numbers
@@ -70,7 +70,7 @@ This follows from PROTOCOLLO §5.2 (only the source of μ changes; the anchor us
 
 ### 2.5 Data split
 Split by donor, never by cell (DECISIONS 2026-10-14 and 2026-10-26). One dataset per tissue; training, held-out and E′ are different donors of the same dataset (DECISIONS 2026-10-26). Training split → E, φ_g, P calibration and the reference given to every method except P (§2.1). Held-out donor → Aim 1 target, noise ceiling, the anchor and arm O. Second independent donor → E′.
-- Colon: MMRp tumour samples only (DECISIONS 2026-10-26 "Dataset", refined 2026-10-27, approved by Luca 2026-10-30). All samples of a donor go to the same split (e.g. C130 has two tumour lesions, C130_TA and C130_TB): no pseudoreplication, no leakage.
+- Colon: MMRp tumour samples only (DECISIONS 2026-10-26 "Dataset", refined 2026-10-27, approved by Luca 2026-10-30). All samples of a donor go to the same split (e.g. C104 has two aliquots of the same tumour specimen, C104_T): no pseudoreplication, no leakage.
 - Lymphoid: thoracic lymph node only (DECISIONS 2026-10-26 "Dataset", refined 2026-10-27, approved by Luca 2026-10-30).
 
 | Tissue | Dataset | Chemistry | Donors: training | held-out | E′ |
@@ -243,3 +243,4 @@ Purpose: provide the values the rules need (SD for n_sim, runtimes, failures, se
 | 2026-11-17 | 7.2 | Tolerance for numerical residues 1e-5 → 1e-4 (smallest power of ten above the largest residue over all pilots); failure rate at 1e-5 reported as a sensitivity (`fail_rate_1e5`); `clean_props()` default and `06d` updated | Pre-registered residue check failed in the lymphoid c-rule pilot (RCTD, arm C−, −1.37e-5); colon and brain c-rule pilots and the HD pilots of lymphoid and brain passed | Pierangela, 2026-11-17 |
 | 2026-11-17 | 4, 7.1 | RCTD `UMI_min_sigma` = 100 (default 300): in the HD pilots RCTD stopped on every 2-cell dataset of lymphoid (124 UMI) and brain (242 UMI) because no spot exceeded 300; 100 = `UMI_min`; Bilous et al. 2026. Lymphoid and brain HD pilots rerun with the new value (`06_pilot.R … hd s100`); pre-registered check: other methods and RCTD at 10 cells identical to the previous run; n_sim recomputed with the same rule | RCTD failure on all 2-cell spots of two tissues, found in the HD pilots before any result (DECISIONS 2026-11-17) |
 | 2026-11-24 | all | Wording only: "draw" replaced by "repetition" (Monte Carlo repetition, Morris et al. 2019) or "sampled" throughout, earlier amendment rows included; no design, rule or value changes | Terminology; "draw" is not used in the thesis | Pierangela |
+| 2026-11-25 | 2.3, 2.5 | Wording only: the example of a donor with more than one sample is C104 (two aliquots of the specimen C104_T) instead of C130; "sample" in colon specified as one tumour specimen (`PatientTypeID`), which can include several aliquots; no design, rule or value changes | C130 is MMRd and has no cells in the study data | Pierangela |
