@@ -4,7 +4,8 @@
 # dataset x method; failed spots already filled with the null baseline, DECISIONS 2026-11-03).
 # Outputs in <TESI_DATA>/derived/aim2/:
 #   aim2_summary.csv — mean RMSE, MCSE, failure rate, n by tissue x cells x dataset x method;
-#   aim2_differences.csv — paired RMSE differences arm − anchor (same replicate), mean and MCSE;
+#   aim2_differences.csv — paired RMSE differences arm − anchor (same replicate), mean and MCSE.
+# Figure in thesis/plots/ (small, tracked in git so it reaches the PC with a pull):
 #   aim2_first_look.pdf — A4: (A) mean RMSE ± 2 MCSE by arm, null baseline dotted;
 #                         (B) O − anchor and E′ − anchor, mean ± 2 MCSE.
 # MCSE = SD / sqrt(n replicates) (Morris et al. 2019).
@@ -16,9 +17,11 @@ args <- commandArgs(trailingOnly = TRUE)
 tissues <- if (length(args) >= 1) strsplit(args[1], ",")[[1]] else c("colon", "lymphoid")
 data_dir <- Sys.getenv("TESI_DATA")
 stopifnot("TESI_DATA non impostata" = nzchar(data_dir), dir.exists(data_dir))
+stopifnot("Run from the thesis/ folder" = file.exists("thesis.Rproj"))
 suppressPackageStartupMessages({ library(ggplot2); library(patchwork) })
 out_dir <- file.path(data_dir, "derived", "aim2")
-dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+plot_dir <- "plots"
+for (x in c(out_dir, plot_dir)) dir.create(x, recursive = TRUE, showWarnings = FALSE)
 
 m <- do.call(rbind, lapply(tissues, function(t)
   read.csv(file.path(data_dir, "sim", "main", paste0(t, "_deconv_metrics.csv")))))
@@ -98,7 +101,8 @@ pB <- ggplot(db, aes(method, diff, colour = method, shape = arm)) +
 
 p <- (pA / pB) + plot_layout(heights = c(1.1, 1)) + plot_annotation(tag_levels = "A") &
   theme(plot.tag = element_text(face = "bold", size = 12))
-ggsave(file.path(out_dir, "aim2_first_look.pdf"), p, width = 210, height = 260, units = "mm",
+ggsave(file.path(plot_dir, "aim2_first_look.pdf"), p, width = 210, height = 260, units = "mm",
        device = if (capabilities("cairo")) cairo_pdf else pdf, bg = "white")
-cat("Written:", file.path(out_dir, c("aim2_summary.csv", "aim2_differences.csv", "aim2_first_look.pdf")), sep = "\n")
+cat("Written:", file.path(out_dir, c("aim2_summary.csv", "aim2_differences.csv")),
+    file.path(plot_dir, "aim2_first_look.pdf"), sep = "\n")
 cat("Replicates per cell:", range(s$n), "\n")
